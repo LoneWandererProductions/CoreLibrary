@@ -1,10 +1,26 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Mathematics
+ * FILE:        Mathematics/Permutations.cs
+ * PURPOSE:     Some basic Permutations and Combinations
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections.Generic;
 
 namespace Mathematics
 {
     public static class Permutations
     {
+        /// <summary>
+        /// Gets the combination.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>Combination of all Elements</returns>
         public static IEnumerable<IEnumerable<T>> GetCombination<T>(List<T> list)
         {
             var count = Math.Pow(2, list.Count);
