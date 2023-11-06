@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>Wayfarer</Authors>
+    <Company>Lone Wanderer Productions</Company>
+    <Copyright>Lone Wanderer Productions</Copyright>
+  </PropertyGroup>
+
+</Project>

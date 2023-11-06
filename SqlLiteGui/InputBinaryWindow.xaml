@@ -1,0 +1,55 @@
+﻿<Window x:Class="SQLiteGui.InputBinaryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:local="clr-namespace:SQLiteGui"
+        Height="200"
+        Width="260"
+        Loaded="Window_Loaded" x:ClassModifier="internal">
+    <Window.DataContext>
+        <local:Binary />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+        </Grid.RowDefinitions>
+        <Button Content="Okay" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Stretch"
+                Click="BtnOkay_Click" />
+        <Button Content="Cancel" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Stretch"
+                Click="BtnCancel_Click" />
+        <TextBox
+            Text="{Binding Where, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Column="3"
+            HorizontalAlignment="Stretch"
+            Grid.Row="2" TextWrapping="Wrap"
+            VerticalAlignment="Stretch" />
+        <TextBox
+            Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Column="3"
+            HorizontalAlignment="Stretch"
+            Grid.Row="4" TextWrapping="Wrap"
+            VerticalAlignment="Stretch" />
+        <Label Name="LblFirst" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" />
+        <Label Name="LblSecond" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch" />
+        <Label Name="LblDescription" Grid.Column="1" HorizontalAlignment="Stretch"
+               Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="4" />
+    </Grid>
+</Window>

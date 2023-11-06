@@ -1,0 +1,514 @@
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        CommonLibraryTests/Mathematics.cs
+ * PURPOSE:     Tests for the Math Tools
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using ExtendedSystemObjects;
+using Mathematics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace CommonLibraryTests
+{
+    /// <summary>
+    ///     Test some image related stuff
+    /// </summary>
+    [TestClass]
+    public class Mathematics
+    {
+        /// <summary>
+        ///     Test the custom DirectBitmap and how it works
+        /// </summary>
+        [TestMethod]
+        public void Fractures()
+        {
+            var one = new ExtendedMath.Fraction(14, 2);
+            Assert.AreEqual(7, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
+            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
+            Assert.AreEqual(0, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
+            Assert.AreEqual(7, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            Assert.AreEqual(7, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+
+            one = new ExtendedMath.Fraction(14, 8);
+            Assert.AreEqual(3, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
+            Assert.AreEqual(4, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
+            Assert.AreEqual(1, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
+            Assert.AreEqual(7, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            Assert.AreEqual((decimal)1.75, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+
+            one = new ExtendedMath.Fraction(0, 1, 2);
+            Assert.AreEqual(0, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
+            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
+            Assert.AreEqual(0, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
+            Assert.AreEqual(0, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            Assert.AreEqual(0, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+        }
+
+        /// <summary>
+        ///     Test the custom DirectBitmap and how it works
+        /// </summary>
+        [TestMethod]
+        public void FracturesOperations()
+        {
+            var one = new ExtendedMath.Fraction(1, 2, 2);
+            Assert.AreEqual(5, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            var two = new ExtendedMath.Fraction(1, 2, 2);
+            Assert.AreEqual(5, two.ExponentNumerator, string.Concat("Test Failed: ", two.ExponentNumerator));
+
+            var result = one + two;
+
+            Assert.AreEqual(5, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(1, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual(5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            result = one - two;
+
+            Assert.AreEqual(0, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(4, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(0, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual(0, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            one = new ExtendedMath.Fraction(4, 2);
+            Assert.AreEqual(2, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            Assert.AreEqual(2, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
+            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
+
+            two = new ExtendedMath.Fraction(1, 1, 4);
+            Assert.AreEqual(4, two.ExponentNumerator, string.Concat("Test Failed: ", two.ExponentNumerator));
+
+            result = one * two;
+
+            Assert.AreEqual(8, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(1, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(8, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual(8, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            result = one / two;
+
+            Assert.AreEqual(1, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(2, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(1, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual((decimal)0.5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            one = new ExtendedMath.Fraction(2, 2);
+            // 2 1/2                                                this is the add-on
+            two = new ExtendedMath.Fraction(1, 2, 1);
+
+            result = one + two;
+
+            Assert.AreEqual(1, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(2, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(2, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual((decimal)2.5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            // 1/2
+            one = new ExtendedMath.Fraction(-1, 2);
+            // 3/2  1,5
+            two = new ExtendedMath.Fraction(1, 2, -1);
+            //4/3   1.25
+            var three = new ExtendedMath.Fraction(1, 4, -1);
+
+            //-1/2 * 3/2 = 3 / 4
+            result = one * two;
+            Assert.AreEqual(3, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(4, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(3, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual((decimal)0.75, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            //-1/2 * -5/4 = 5 / 8
+            result = one * three;
+            Assert.AreEqual(5, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
+            Assert.AreEqual(8, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
+            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
+            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
+            Assert.AreEqual((decimal)0.625, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+
+            //todo add +/-
+        }
+
+        /// <summary>
+        ///     Matrix multiplications.
+        /// </summary>
+        [TestMethod]
+        public void MatrixMultiplications()
+        {
+            double[,] x = {{1, 1, 1}};
+            var m1 = new BaseMatrix {Matrix = x};
+
+            double[,] y = {{2}, {2}, {2}};
+            var m2 = new BaseMatrix {Matrix = y};
+
+            var result = MatrixUtility.UnsafeMultiplication(m1, m2);
+
+            Assert.AreEqual(result[0, 0], 6, "First");
+
+            x = new double[,] {{2, 1, 1}, {1, 2, 1}, {1, 1, 2}};
+            m1 = new BaseMatrix {Matrix = x};
+
+            y = new double[,] {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+            m2 = new BaseMatrix {Matrix = y};
+
+            result = MatrixUtility.UnsafeMultiplication(m1, m2);
+
+            Assert.AreEqual(result[0, 0], 2, "00");
+            Assert.AreEqual(result[1, 0], 1, "10");
+            Assert.AreEqual(result[2, 0], 1, "20");
+            Assert.AreEqual(result[0, 1], 1, "01");
+            Assert.AreEqual(result[1, 1], 2, "11");
+            Assert.AreEqual(result[2, 1], 1, "21");
+            Assert.AreEqual(result[0, 2], 1, "02");
+            Assert.AreEqual(result[1, 2], 1, "12");
+            Assert.AreEqual(result[2, 2], 2, "22");
+
+            x = new double[,] {{0, -1, 0}, {1, 0, 0}, {0, 0, 1}};
+            m1 = new BaseMatrix {Matrix = x};
+            y = new double[,] {{1}, {0}, {0}};
+            m2 = new BaseMatrix {Matrix = y};
+
+            result = m1 * m2;
+
+            Assert.AreEqual(result[0, 0], 0, "00");
+            Assert.AreEqual(result[1, 0], 1, "10");
+            Assert.AreEqual(result[2, 0], 0, "20");
+
+            double[,] matrix = {{1, 1, 3, 1}};
+            m1 = new BaseMatrix(matrix);
+
+            double[,] scale = {{320, 0, 0, 0}, {0, 240, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+
+            m2 = new BaseMatrix {Matrix = scale};
+
+            result = m1 * m2;
+
+            var compare = new double[,] {{320, 240, 0, 1}};
+
+            var check = compare.Equal(result.Matrix);
+
+            Assert.IsTrue(check, "4*4");
+        }
+
+        /// <summary>
+        ///     Matrix additions.
+        /// </summary>
+        [TestMethod]
+        public void MatrixAdditions()
+        {
+            double[,] x = {{8, 4}, {3, 2}};
+            var m1 = new BaseMatrix {Matrix = x};
+
+            double[,] y = {{3, 5}, {1, 2}};
+            var m2 = new BaseMatrix {Matrix = y};
+
+            var result = MatrixUtility.UnsafeAddition(m1, m2);
+
+            Assert.AreEqual(result[0, 0], 11, "11");
+            Assert.AreEqual(result[0, 1], 9, "9");
+            Assert.AreEqual(result[1, 0], 4, "4");
+            Assert.AreEqual(result[1, 1], 4, "4");
+        }
+
+        /// <summary>
+        ///     Matrix subtraction.
+        /// </summary>
+        [TestMethod]
+        public void MatrixSubtraction()
+        {
+            double[,] x = {{8, 4}, {3, 2}};
+            var m1 = new BaseMatrix {Matrix = x};
+
+            double[,] y = {{3, 5}, {1, 2}};
+            var m2 = new BaseMatrix {Matrix = y};
+
+            var result = MatrixUtility.UnsafeSubtraction(m1, m2);
+
+            Assert.AreEqual(result[0, 0], 5, "5");
+            Assert.AreEqual(result[0, 1], -1, "-1");
+            Assert.AreEqual(result[1, 0], 2, "2");
+            Assert.AreEqual(result[1, 1], 0, "0");
+        }
+
+        /// <summary>
+        ///     Matrix inversion.
+        /// </summary>
+        [TestMethod]
+        public void MatrixInversion()
+        {
+            double[,] x = {{8, 4}, {3, 2}};
+
+            var i = MatrixIdentity(2);
+
+            var m1 = new BaseMatrix {Matrix = x};
+
+            var m2 = m1.Inverse();
+
+            var result = m1 * m2;
+
+            Assert.IsTrue(result[0, 0].Equals(1), "00");
+            Assert.IsTrue(result[0, 1].Equals(0), "00");
+            Assert.IsTrue(result[1, 0].Equals(0), "00");
+            Assert.IsTrue(result[1, 1].Equals(1), "00");
+
+            var cache = result.Matrix;
+            //check compare of arrays
+            var check = cache.Equal(i);
+            Assert.IsTrue(check, "Inverse Matrix");
+        }
+
+        /// <summary>
+        ///     Vector3D Test.
+        /// </summary>
+        [TestMethod]
+        public void Vector3D()
+        {
+            //TODO extend!
+            var vector = new Vector3D(8, 4, 5);
+
+            Assert.Inconclusive();
+        }
+
+        /// <summary>
+        ///     Vector transformations.
+        /// </summary>
+        [TestMethod]
+        public void VectorTransformations()
+        {
+            var vector = new Vector3D(1, 1, 1);
+
+            //scale Test
+            var result = Projection3D.Scale(vector, 2);
+            var v1 = Projection3D.GetVector(result);
+
+            Assert.IsTrue(v1.X.Equals(2), "X");
+            Assert.IsTrue(v1.Y.Equals(2), "Y");
+            Assert.IsTrue(v1.Z.Equals(2), "Z");
+
+            result = Projection3D.Scale(vector, 2, 2, 2);
+            v1 = Projection3D.GetVector(result);
+
+            Assert.IsTrue(v1.X.Equals(2), "X");
+            Assert.IsTrue(v1.Y.Equals(2), "Y");
+            Assert.IsTrue(v1.Z.Equals(2), "Z");
+
+            vector = new Vector3D(2, 4, 5);
+
+            result = Projection3D.Scale(vector, 4, 2.5, 6);
+            v1 = Projection3D.GetVector(result);
+
+            Assert.IsTrue(v1.X.Equals(8), "X");
+            Assert.IsTrue(v1.Y.Equals(10), "Y");
+            Assert.IsTrue(v1.Z.Equals(30), "Z");
+
+            //translate
+            vector = new Vector3D(1, 1, 1);
+            var target = new Vector3D(2, 2, 2);
+
+            result = Projection3D.Translate(vector, target);
+            v1 = Projection3D.GetVector(result);
+
+            Assert.IsTrue(v1.X.Equals(3), "X");
+            Assert.IsTrue(v1.Y.Equals(3), "Y");
+            Assert.IsTrue(v1.Z.Equals(3), "Z");
+
+            vector = new Vector3D(1, 0, 0);
+
+            //https://en.wikipedia.org/wiki/Rotation_matrix
+            result = Projection3D.RotateZ(vector, 90);
+            v1 = Projection3D.GetVector(result);
+
+            var inputValue = Math.Round(v1.X, 2);
+            Assert.AreEqual(inputValue, 0, "X");
+            Assert.IsTrue(v1.Y.Equals(1), "Y");
+            Assert.IsTrue(v1.Z.Equals(0), "Z");
+
+            vector = new Vector3D(1, 1, 1);
+            result = Projection3D.RotateX(vector, 90);
+            v1 = Projection3D.GetVector(result);
+
+            inputValue = Math.Round(v1.Y, 2);
+
+            Assert.IsTrue(v1.X.Equals(1), "X");
+            Assert.AreEqual(inputValue, -1, "Y");
+            Assert.IsTrue(v1.Z.Equals(1), "Z");
+
+            vector = new Vector3D(1, 1, 1);
+            result = Projection3D.RotateY(vector, 90);
+            v1 = Projection3D.GetVector(result);
+
+            inputValue = Math.Round(v1.Z, 2);
+
+            Assert.IsTrue(v1.X.Equals(1), "X");
+            Assert.IsTrue(v1.Y.Equals(1), "Y");
+            Assert.AreEqual(inputValue, -1, "Z");
+
+            vector = new Vector3D(1, 1, 1);
+            result = Projection3D.RotateZ(vector, 90);
+            v1 = Projection3D.GetVector(result);
+
+            inputValue = Math.Round(v1.X, 2);
+
+            Assert.AreEqual(inputValue, -1, "X");
+            Assert.IsTrue(v1.Y.Equals(1), "Y");
+            Assert.IsTrue(v1.Z.Equals(1), "Z");
+        }
+
+        /// <summary>
+        /// Projections from 3d to 2d.
+        /// </summary>
+        [TestMethod]
+        public void ProjectionTo2D()
+        {
+            var vector = new Vector3D(8, 4, 5);
+
+            const int screenHeight = 240;
+            const int screenWidth = 256;
+
+            // Projection Matrix
+            const float fNear = 0.1f;
+            const float fFar = 1000.0f;
+            const float fFov = 90.0f;
+            const double fAspectRatio = (double)screenHeight / screenWidth;
+            var fFovRad = 1.0f / Math.Tan(fFov * 0.5f / 180.0f * 3.14159f);
+
+            Projection3DRegister.Width = screenWidth;
+            Projection3DRegister.Height = screenHeight;
+            Projection3DRegister.Angle = fFov;
+
+            var matProj = new BaseMatrix();
+
+            var m1 = new double[4, 4];
+
+            m1[0, 0] = fAspectRatio * fFovRad;
+            m1[1, 1] = fFovRad;
+            m1[2, 2] = fFar / (fFar - fNear);
+            m1[3, 2] = (-fFar * fNear) / (fFar - fNear);
+            m1[2, 3] = 1.0f;
+            m1[3, 3] = 0.0f;
+            matProj.Matrix = m1;
+
+            var vec = MultiplyMatrixVector(vector, matProj);
+
+            var comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            //known values: 1,1,3 expected: 1/3, 1/3, 1
+
+            vector = new Vector3D(1, 1, 3);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+        }
+
+        /// <summary>
+        /// Permutations this instance.
+        /// </summary>
+        [TestMethod]
+        public void Permutation()
+        {
+            var lst = new List<string> {"A", "B", "C"};
+
+            foreach (var items in Permutations.GetCombination(lst))
+            {
+                foreach (var item in items)
+                {
+                    Trace.Write(item);
+                }
+
+                Trace.WriteLine("");
+            }
+
+
+            Assert.Inconclusive();
+        }
+
+
+        /// <summary>
+        /// Permutations of k in n Elements.
+        /// </summary>
+        [TestMethod]
+        public void PermutationNk()
+        {
+            Trace.WriteLine("First Test");
+
+            List<string> a = new List<string>() {"A", "B", "C"};
+            //https://stackoverflow.com/questions/33134788/permutations-with-repetition
+            var lst = a.CombinationsWithRepetition(3);
+
+            foreach (var item in lst)
+            {
+                Trace.WriteLine(item);
+            }
+        }
+
+
+        /// <summary>
+        ///     Multiplies the matrix vector.
+        /// </summary>
+        /// <param name="i">The i.</param>
+        /// <param name="matProj">The mat proj.</param>
+        /// <returns>The Projection Vecctor</returns>
+            private static Vector3D MultiplyMatrixVector(Vector3D i, BaseMatrix matProj)
+        {
+            var o = new Vector3D
+            {
+                X = (i.X * matProj.Matrix[0, 0]) + (i.Y * matProj.Matrix[1, 0]) + (i.Z * matProj.Matrix[2, 0]) +
+                    matProj.Matrix[3, 0],
+                Y = (i.X * matProj.Matrix[0, 1]) + (i.Y * matProj.Matrix[1, 1]) + (i.Z * matProj.Matrix[2, 1]) +
+                    matProj.Matrix[3, 1],
+                Z = (i.X * matProj.Matrix[0, 2]) + (i.Y * matProj.Matrix[1, 2]) + (i.Z * matProj.Matrix[2, 2]) +
+                    matProj.Matrix[3, 2]
+            };
+
+            var w = (i.X * matProj.Matrix[0, 3]) + (i.Y * matProj.Matrix[1, 3]) + (i.Z * matProj.Matrix[2, 3]) +
+                    matProj.Matrix[3, 3];
+
+            w = Math.Round(w, 2);
+
+            if (w == 0.0f)
+            {
+                return o;
+            }
+
+            o.X /= w;
+            o.Y /= w;
+            o.Z /= w;
+
+            return o;
+        }
+
+        /// <summary>
+        ///     Identity Matrix.
+        /// </summary>
+        /// <param name="n">The n.</param>
+        /// <returns>An Identity Matrix</returns>
+        private static double[,] MatrixIdentity(int n)
+        {
+            var result = new double[n, n];
+            for (var i = 0; i < n; ++i)
+            {
+                result[i, i] = 1.0;
+            }
+
+            return result;
+        }
+    }
+}

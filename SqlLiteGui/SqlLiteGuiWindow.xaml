@@ -1,0 +1,45 @@
+﻿<!-- ReSharper disable once MemberCanBeInternal -->
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:SQLiteGui"
+    x:Class="SQLiteGui.SqLiteGuiWindow"
+    mc:Ignorable="d"
+    Title="SQLiteGuiWindow" Height="400" Width="500" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="5" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+        <Menu HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="5">
+            <MenuItem Header="Menu">
+                <MenuItem Header="New Database" Click="NewDatabase_Click" />
+                <MenuItem Header="Open Database" Click="OpenDatabase_Click" />
+                <Separator />
+                <MenuItem Header="Close" Click="Close_Click" />
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="View Logs" Click="ViewLogs_Click" />
+            </MenuItem>
+        </Menu>
+        <local:TableOverview x:Name="TableView" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2"
+                             VerticalAlignment="Stretch" />
+        <local:DataOverview x:Name="TableDetailView" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="2"
+                            VerticalAlignment="Stretch" />
+        <local:DbInfo x:Name="DbInfo" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch"
+                      Grid.Column="1" Grid.ColumnSpan="3" />
+    </Grid>
+</Window>

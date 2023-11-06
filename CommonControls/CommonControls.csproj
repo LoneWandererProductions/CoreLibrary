@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Authors>Wayfarer</Authors>
+    <Copyright>Lone Wanderer Productions</Copyright>
+    <Company>Lone Wanderer Productions</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="System\drive.png" />
+    <None Remove="System\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="System\drive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System\folder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Imaging\Imaging.csproj" />
+    <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
+    <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>CommonLibraryTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

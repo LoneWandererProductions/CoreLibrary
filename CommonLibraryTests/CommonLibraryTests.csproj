@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <IsPackable>false</IsPackable>
+    <Product>CommonLibraryTests</Product>
+    <Company>Lone Wanderer Productions</Company>
+    <Copyright>Lone Wanderer Productions</Copyright>
+    <Authors>Wayfarer</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Base.png" />
+    <None Remove="Images\Color.png" />
+    <None Remove="Images\ColorShade.png" />
+    <None Remove="Images\Compare.png" />
+    <None Remove="Images\CompareCopy.png" />
+    <None Remove="Images\CompareSimilar.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images\CompareSimilar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\CompareCopy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\Compare.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\ColorShade.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\Color.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Images\Base.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+    <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
+    <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
+    <ProjectReference Include="..\InterOp\InterOp.csproj" />
+    <ProjectReference Include="..\Interpreter\Interpreter.csproj" />
+    <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
+    <ProjectReference Include="..\Serializer\Serializer.csproj" />
+  </ItemGroup>
+
+</Project>

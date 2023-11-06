@@ -1,0 +1,26 @@
+﻿<!-- ReSharper disable once UnusedType.Global -->
+<UserControl x:Class="CommonControls.ColorSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="25" d:DesignWidth="150">
+    <Grid>
+        <ComboBox x:Name="CmbColor"
+                  ItemsSource="{Binding NamedColors}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch" SelectionChanged="CmbColor_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                        <Rectangle Fill="{Binding Name}" Width="15" Height="15" Margin="0,2,5,2" />
+                        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                        <TextBlock Text="{Binding Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,19 @@
+Interpreter:
+
+- Nestet Code
+- overload methods
+
+SQLiteHelper:
+
+- Generate a execution queue with execution log. Async Execution
+- Add all commands to log and execute in certain intervals
+
+https://stackoverflow.com/questions/53183370/c-sharp-how-to-start-an-async-method-without-await-its-complete
+
+CommonControls
+- Improve ImageZoom, especial zooming and start Position of scrollbars on screen and positioning, overwork generation of the circle
+- rework color picker
+
+Lightvector
+- Add save function for curves, etc
+- finish and add more features
