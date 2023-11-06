@@ -466,7 +466,7 @@ namespace CommonLibraryTests
         /// <param name="i">The i.</param>
         /// <param name="matProj">The mat proj.</param>
         /// <returns>The Projection Vecctor</returns>
-            private static Vector3D MultiplyMatrixVector(Vector3D i, BaseMatrix matProj)
+        private static Vector3D MultiplyMatrixVector(Vector3D i, BaseMatrix matProj)
         {
             var o = new Vector3D
             {

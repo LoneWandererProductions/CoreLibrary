@@ -117,12 +117,38 @@ namespace CommonLibraryTests
 
             var secondClone = lst.Clone();
 
-            Assert.AreEqual(lst.Count, secondClone.Count, "Test passed CloneList, second round:  " + list.Count);
+            Assert.AreEqual(lst.Count, secondClone.Count,
+                string.Concat("Test passed CloneList, second round:  ", list.Count));
 
             secondClone.RemoveAt(0);
 
-            Assert.AreNotEqual(lst.Count, secondClone.Count, "Test passed CloneList, second round:  " + list.Count);
+            Assert.AreNotEqual(lst.Count, secondClone.Count,
+                string.Concat("Test passed CloneList, second round:  ", list.Count));
         }
+
+
+        /// <summary>
+        ///     Chunks of a list.
+        /// </summary>
+        [TestMethod]
+        public void ChunkList()
+        {
+            var lst = new List<int>
+            {
+                1,
+                2,
+                3,
+                4,
+                5
+            };
+            var result = lst.ChunkBy(2);
+
+            Assert.AreEqual(3, result.Count, string.Concat("Test passed ChunkList:  ", result.Count));
+            var cache = result[2];
+
+            Assert.AreEqual(5, cache[0], string.Concat("Test passed ChunkList, second round:  ", cache[0]));
+        }
+
 
         /// <summary>
         ///     Here we Test our Dictionary AddDistinct

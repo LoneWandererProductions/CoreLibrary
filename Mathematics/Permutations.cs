@@ -13,6 +13,9 @@ using System.Collections.Generic;
 
 namespace Mathematics
 {
+    /// <summary>
+    /// Collection of simple permutations
+    /// </summary>
     public static class Permutations
     {
         /// <summary>
