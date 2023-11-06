@@ -24,7 +24,7 @@ namespace Mathematics
         /// <typeparam name="T"></typeparam>
         /// <param name="list">The list.</param>
         /// <returns>Combination of all Elements</returns>
-        public static IEnumerable<IEnumerable<T>> GetCombination<T>(List<T> list)
+        public static IEnumerable<IEnumerable<T>> GetCombination<T>(this List<T> list)
         {
             var count = Math.Pow(2, list.Count);
             var lst = new List<List<T>>();

@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ExtendedSystemObjects;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -364,7 +365,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Projections from 3d to 2d.
+        ///     Projections from 3d to 2d.
         /// </summary>
         [TestMethod]
         public void ProjectionTo2D()
@@ -419,48 +420,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Permutations this instance.
-        /// </summary>
-        [TestMethod]
-        public void Permutation()
-        {
-            var lst = new List<string> {"A", "B", "C"};
-
-            foreach (var items in Permutations.GetCombination(lst))
-            {
-                foreach (var item in items)
-                {
-                    Trace.Write(item);
-                }
-
-                Trace.WriteLine("");
-            }
-
-
-            Assert.Inconclusive();
-        }
-
-
-        /// <summary>
-        /// Permutations of k in n Elements.
-        /// </summary>
-        [TestMethod]
-        public void PermutationNk()
-        {
-            Trace.WriteLine("First Test");
-
-            List<string> a = new List<string>() {"A", "B", "C"};
-            //https://stackoverflow.com/questions/33134788/permutations-with-repetition
-            var lst = a.CombinationsWithRepetition(3);
-
-            foreach (var item in lst)
-            {
-                Trace.WriteLine(item);
-            }
-        }
-
-
-        /// <summary>
         ///     Multiplies the matrix vector.
         /// </summary>
         /// <param name="i">The i.</param>
@@ -493,6 +452,48 @@ namespace CommonLibraryTests
             o.Z /= w;
 
             return o;
+        }
+
+        /// <summary>
+        ///     Permutations this instance.
+        /// </summary>
+        [TestMethod]
+        public void Permutation()
+        {
+            var lst = new List<string> {"A", "B", "C"};
+            var result = lst.GetCombination();
+
+            foreach (var items in result)
+            {
+                foreach (var item in items)
+                {
+                    Trace.Write(item);
+                }
+
+                Trace.WriteLine(string.Empty);
+            }
+
+            Assert.AreEqual(7, result.Count(), "Right amount");
+        }
+
+        /// <summary>
+        ///     Permutations of k in n Elements.
+        /// </summary>
+        [TestMethod]
+        public void PermutationNk()
+        {
+            Trace.WriteLine("First Test");
+
+            var a = new List<string> {"A", "B", "C"};
+
+            var lst = a.CombinationsWithRepetition(3);
+
+            foreach (var item in lst)
+            {
+                Trace.WriteLine(item);
+            }
+
+            Assert.AreEqual(27, lst.Count(), "Right amount");
         }
 
         /// <summary>
