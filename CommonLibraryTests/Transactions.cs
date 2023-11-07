@@ -31,11 +31,7 @@ namespace CommonLibraryTests
 
             var key = log.GetNewKey();
 
-            var data = new DataItem
-            {
-                Id = key,
-                Name = "start"
-            };
+            var data = new DataItem { Id = key, Name = "start" };
 
             //start of the event, nothing was done yet
 
@@ -43,30 +39,21 @@ namespace CommonLibraryTests
 
             key = log.GetNewKey();
 
-            data = new DataItem
-            {
-                Id = key,
-                Name = "added"
-            };
+            data = new DataItem { Id = key, Name = "added" };
             log.Add(data.Id, data, false);
 
-            data = new DataItem
-            {
-                Id = key,
-                Name = "added Change"
-            };
+            data = new DataItem { Id = key, Name = "added Change" };
             log.Change(data.Id, data);
 
-            data = new DataItem
-            {
-                Id = key,
-                Name = "another Change"
-            };
+            data = new DataItem { Id = key, Name = "another Change" };
             log.Change(data.Id, data);
 
             var logEntry = log.Changelog[1];
 
-            if (logEntry.Data is DataItem obj) Assert.AreNotEqual((object)obj.Name, data.Name, "Overwrite Data");
+            if (logEntry.Data is DataItem obj)
+            {
+                Assert.AreNotEqual((object)obj.Name, data.Name, "Overwrite Data");
+            }
 
             var dct = log.GetNewItems();
 

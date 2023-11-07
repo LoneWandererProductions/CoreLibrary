@@ -101,7 +101,7 @@ namespace LightVector
 
             foreach (var point in Points)
             {
-                var rect = new Rectangle {Width = 3, Height = 3};
+                var rect = new Rectangle { Width = 3, Height = 3 };
                 Canvas.SetLeft(rect, point.X - 3);
                 Canvas.SetTop(rect, point.Y - 3);
                 rect.Fill = Brushes.White;

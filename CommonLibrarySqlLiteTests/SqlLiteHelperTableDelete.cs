@@ -67,8 +67,8 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(check, "Create Test did not pass " + _target.LastErrors);
 
             //First
-            var lst = new List<string> {"2", "1"};
-            var tableone = new TableSet {Row = lst};
+            var lst = new List<string> { "2", "1" };
+            var tableone = new TableSet { Row = lst };
 
             //Fill Data into Table
             check = _target.InsertSingleRow(TableName, tableone, Checking);
@@ -76,8 +76,8 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(check, "Insert first failed " + _target.LastErrors);
 
             //second
-            lst = new List<string> {"4", "3"};
-            tableone = new TableSet {Row = lst};
+            lst = new List<string> { "4", "3" };
+            tableone = new TableSet { Row = lst };
 
             //Fill Data into Table
             check = _target.InsertSingleRow(TableName, tableone, Checking);

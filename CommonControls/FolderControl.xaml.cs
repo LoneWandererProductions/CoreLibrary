@@ -141,9 +141,9 @@ namespace CommonControls
 
             //Just get all HD
             foreach (var item in directory.Select(s => new TreeViewItem
-            {
-                Header = s, Tag = s, FontWeight = FontWeights.Normal
-            }))
+                     {
+                         Header = s, Tag = s, FontWeight = FontWeights.Normal
+                     }))
             {
                 //add Method and dummy
                 _ = item.Items.Add(null);
@@ -172,11 +172,12 @@ namespace CommonControls
             try
             {
                 foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!).Select(path => new TreeViewItem
-                {
-                    Header = path[(path.LastIndexOf(ComCtlResources.Path, StringComparison.Ordinal) + 1)..],
-                    Tag = path,
-                    FontWeight = FontWeights.Normal
-                }))
+                         {
+                             Header =
+                                 path[(path.LastIndexOf(ComCtlResources.Path, StringComparison.Ordinal) + 1)..],
+                             Tag = path,
+                             FontWeight = FontWeights.Normal
+                         }))
                 {
                     //add Method and dummy
                     _ = subItem.Items.Add(null);

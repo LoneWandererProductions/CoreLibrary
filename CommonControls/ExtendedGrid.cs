@@ -171,12 +171,12 @@ namespace CommonControls
 
             for (var y = 0; y < Columns; y++)
             {
-                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(_length)});
+                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(_length) });
             }
 
             for (var y = 0; y < Rows; y++)
             {
-                var rows = new RowDefinition {Height = new GridLength(_height)};
+                var rows = new RowDefinition { Height = new GridLength(_height) };
 
                 dynamicGrid.RowDefinitions.Add(rows);
             }
@@ -226,7 +226,7 @@ namespace CommonControls
                         nameof(length)));
                 }
 
-                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(grid)});
+                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(grid) });
                 length += grid;
             }
 
@@ -238,7 +238,7 @@ namespace CommonControls
                         nameof(height)));
                 }
 
-                dynamicGrid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(grid)});
+                dynamicGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(grid) });
                 height += grid;
             }
 

@@ -84,7 +84,7 @@ namespace CommonLibraryGuiTests
         [Apartment(ApartmentState.STA)]
         public void ExtendedGridCustom()
         {
-            var lstColumn = new List<int> {60, 30, 10};
+            var lstColumn = new List<int> { 60, 30, 10 };
             var lstRow = new List<int>
             {
                 50,
@@ -110,7 +110,7 @@ namespace CommonLibraryGuiTests
         [Test]
         public void Win32Api()
         {
-            //TODO Test in Live enviroment
+            //TODO Test in Live environment
             Assert.AreNotEqual(512, Win32Enums.MouseEvents.WmMousemove, "checked out");
         }
     }

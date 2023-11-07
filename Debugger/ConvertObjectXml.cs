@@ -74,7 +74,7 @@ namespace Debugger
 
             string str;
 
-            var settings = new XmlWriterSettings {Indent = true, OmitXmlDeclaration = true};
+            var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
 
             var xns = new XmlSerializerNamespaces();
             xns.Add(string.Empty, string.Empty);

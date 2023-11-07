@@ -29,7 +29,7 @@ namespace SQLiteGui
 
             if (loader)
             {
-                var openFile = new OpenFileDialog {Filter = appendage};
+                var openFile = new OpenFileDialog { Filter = appendage };
                 if (openFile.ShowDialog() == true)
                 {
                     root = openFile.FileName;
@@ -38,7 +38,7 @@ namespace SQLiteGui
                 return root;
             }
 
-            var saveFile = new SaveFileDialog {Filter = appendage};
+            var saveFile = new SaveFileDialog { Filter = appendage };
 
             if (saveFile.ShowDialog() == true)
             {

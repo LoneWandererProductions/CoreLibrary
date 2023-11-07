@@ -81,7 +81,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, list.Count, "Got the Files Folder by single Extension");
 
-            var ext = new List<string> {ResourcesGeneral.TstExt};
+            var ext = new List<string> { ResourcesGeneral.TstExt };
             list = FileHandleSearch.GetFilesByExtensionFullPath(_path, ext, false);
 
             Assert.AreEqual(1, list.Count, "Did not get the Files Folder by multiple Extension");
@@ -129,7 +129,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(list[0], _pathOperations, "Not the correct File");
 
             //search Test with contains string
-            var ext = new List<string> {ResourcesGeneral.TstExt};
+            var ext = new List<string> { ResourcesGeneral.TstExt };
 
             list =
                 FileHandleSearch.GetFilesWithSubString(_path, ext, false, "IO", false);

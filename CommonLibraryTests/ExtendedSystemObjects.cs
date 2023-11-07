@@ -34,7 +34,8 @@ namespace CommonLibraryTests
         ///     The Dictionary three (readonly).
         ///     Value: new Dictionary&lt;int, string&gt; { {1, "test"}, {2, "new"}, {3, "new"}, {4, "hell"} }.
         /// </summary>
-        private readonly Dictionary<int, string> _dictThree = new() {{1, "test"}, {2, "new"}, {3, "new"}, {4, "hell"}};
+        private readonly Dictionary<int, string> _dictThree =
+            new() { { 1, "test" }, { 2, "new" }, { 3, "new" }, { 4, "hell" } };
 
         /// <summary>
         ///     The list one (readonly). Value: new List&lt;string&gt;().
@@ -44,7 +45,7 @@ namespace CommonLibraryTests
         /// <summary>
         ///     The list two (readonly). Value: new List&lt;string&gt; {"test"}.
         /// </summary>
-        private readonly List<string> _listTwo = new() {"test"};
+        private readonly List<string> _listTwo = new() { "test" };
 
         /// <summary>
         ///     Here we Test our List
@@ -68,7 +69,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ExtendedListAddFirst()
         {
-            var lst = new List<int> {0, 1, 3};
+            var lst = new List<int> { 0, 1, 3 };
 
             lst.AddFirst(7);
 
@@ -81,7 +82,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ExtendedListAddDistinct()
         {
-            var lst = new List<int> {2, 3};
+            var lst = new List<int> { 2, 3 };
             lst.AddDistinct(3);
 
             Assert.AreEqual(2, lst.Count, "Not replaced");
@@ -99,7 +100,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void CloneList()
         {
-            var list = new List<int> {2, 3, 1};
+            var list = new List<int> { 2, 3, 1 };
 
             var clone = list.Clone();
 
@@ -110,7 +111,7 @@ namespace CommonLibraryTests
             Assert.AreNotEqual(clone.Count, list.Count, "Test passed CloneList, first round:  " + list.Count);
 
             var lst = new List<TstObj>();
-            var obj = new TstObj {First = 1, Second = 2};
+            var obj = new TstObj { First = 1, Second = 2 };
 
             lst.Add(obj);
             lst.Add(obj);
@@ -158,7 +159,7 @@ namespace CommonLibraryTests
         {
             var lst = new Dictionary<XmlItem, int>
             {
-                {ResourcesGeneral.DataItemOne, 1}, {ResourcesGeneral.DataItemThree, 2}
+                { ResourcesGeneral.DataItemOne, 1 }, { ResourcesGeneral.DataItemThree, 2 }
             };
 
             Debug.WriteLine("Passed the basic add");
@@ -178,8 +179,8 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ExtendedListRemoveListRange()
         {
-            var baseLst = new List<int> {1, 2, 3};
-            var removeList = new List<int> {1, 2};
+            var baseLst = new List<int> { 1, 2, 3 };
+            var removeList = new List<int> { 1, 2 };
             baseLst.RemoveListRange(removeList);
             Assert.AreEqual(1, baseLst.Count, "Not removed");
             Assert.AreEqual(3, baseLst[0], "Right Element removed");
@@ -187,7 +188,7 @@ namespace CommonLibraryTests
             baseLst.Add(5);
             baseLst.Add(6);
 
-            var removeLstAlt = new List<int> {1, 2};
+            var removeLstAlt = new List<int> { 1, 2 };
             baseLst.RemoveListRange(removeLstAlt);
             Assert.AreEqual(3, baseLst.Count, "Not removed");
         }
@@ -240,7 +241,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ExtendedDictionaryGetDictionaryByValues()
         {
-            var lst = new List<int> {2, 4};
+            var lst = new List<int> { 2, 4 };
 
             var cache = _dictThree.GetDictionaryByValues(lst);
 
@@ -273,7 +274,7 @@ namespace CommonLibraryTests
 
             var dctAdv = new Dictionary<int, List<int>>();
 
-            var lst = new List<int> {1, 3};
+            var lst = new List<int> { 1, 3 };
 
             dctAdv.Add(2, lst);
             dctAdv.Add(3, lst);
@@ -290,7 +291,7 @@ namespace CommonLibraryTests
             var dctAdvObj = new Dictionary<int, List<TstObj>>();
 
             var lstObj = new List<TstObj>();
-            var obj = new TstObj {First = 1, Second = 2};
+            var obj = new TstObj { First = 1, Second = 2 };
 
             lstObj.Add(obj);
             lstObj.Add(obj);
@@ -345,7 +346,7 @@ namespace CommonLibraryTests
             dct.AddDistinctKeyValue(3, 3);
             dct.AddDistinctKeyValue(1, 1);
 
-            var lst = new List<int> {1, 2, 3};
+            var lst = new List<int> { 1, 2, 3 };
 
             Assert.IsTrue(dct.ContainsKeys(lst), "Test passed ContainsKeys, contained True");
 
@@ -387,7 +388,7 @@ namespace CommonLibraryTests
         public void DictionarySwap()
         {
             //add some Test Data
-            var loot = new Dictionary<int, Item> {{0, new Item()}, {10, new Item()}};
+            var loot = new Dictionary<int, Item> { { 0, new Item() }, { 10, new Item() } };
 
             //add some Test Data
             //first
@@ -458,7 +459,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MultiArray()
         {
-            int[,] matrix = {{1, 2, 3, 4}, {1, 2, 3, 4}, {5, 2, 3, 1}};
+            int[,] matrix = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 }, { 5, 2, 3, 1 } };
 
             matrix.SwapColumn(0, 2);
             Assert.AreEqual(matrix[2, 3], 4, "4");
@@ -467,7 +468,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(matrix[2, 0], 1, "4");
             Assert.AreEqual(matrix[0, 0], 5, "4");
 
-            matrix = new[,] {{1, 2, 3, 4}, {1, 2, 3, 4}, {5, 2, 3, 1}};
+            matrix = new[,] { { 1, 2, 3, 4 }, { 1, 2, 3, 4 }, { 5, 2, 3, 1 } };
 
             matrix.SwapRow(0, 1);
             Assert.AreEqual(matrix[0, 0], 2, "4");
@@ -480,7 +481,7 @@ namespace CommonLibraryTests
             Assert.IsFalse(string.IsNullOrEmpty(str), "Null string");
             Assert.AreEqual(str.Length, 45, "Count");
 
-            int[,] normal = {{1, 2}, {1, 2}};
+            int[,] normal = { { 1, 2 }, { 1, 2 } };
             var copy = normal.Duplicate();
             normal[0, 0] = 0;
             Assert.AreEqual(copy[0, 0], 1, "00");

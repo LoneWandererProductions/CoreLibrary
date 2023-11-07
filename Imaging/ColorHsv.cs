@@ -271,7 +271,7 @@ namespace Imaging
             var min = Math.Min(r, Math.Min(g, b));
 
             H = GetHue(r, g, b);
-            S = (max == 0) ? 0 : 1d - (1d * min / max);
+            S = max == 0 ? 0 : 1d - (1d * min / max);
             V = max / 255d;
 
             GetHex();

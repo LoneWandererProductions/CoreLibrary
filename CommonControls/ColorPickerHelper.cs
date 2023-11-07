@@ -24,13 +24,13 @@ namespace CommonControls
         /// <returns>A Rectangle</returns>
         internal static Rectangle GetColorPreview(ColorHsv colorHsv)
         {
-            var rectangle = new Rectangle {Width = 25, Height = 25};
+            var rectangle = new Rectangle { Width = 25, Height = 25 };
 
             var col = new Color
             {
                 A = (byte)colorHsv.A, R = (byte)colorHsv.R, G = (byte)colorHsv.G, B = (byte)colorHsv.B
             };
-            rectangle.Fill = new SolidColorBrush {Color = col};
+            rectangle.Fill = new SolidColorBrush { Color = col };
 
             return rectangle;
         }

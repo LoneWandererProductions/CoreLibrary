@@ -56,9 +56,12 @@ namespace CommonLibraryTests
         /// </summary>
         private static readonly Dictionary<int, InCommand> DctCommandOne = new()
         {
-            {0, new InCommand {Command = "First", ParameterCount = 2, Description = "Help First"}},
-            {1, new InCommand {Command = "Second", ParameterCount = 3, Description = "Help Second"}},
-            {2, new InCommand {Command = "Third", ParameterCount = 0, Description = "Special case no Parameter"}}
+            { 0, new InCommand { Command = "First", ParameterCount = 2, Description = "Help First" } },
+            { 1, new InCommand { Command = "Second", ParameterCount = 3, Description = "Help Second" } },
+            {
+                2,
+                new InCommand { Command = "Third", ParameterCount = 0, Description = "Special case no Parameter" }
+            }
         };
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace CommonLibraryTests
         /// </summary>
         private static readonly Dictionary<int, InCommand> DctCommandTwo = new()
         {
-            {4, new InCommand {Command = "Test", ParameterCount = 0, Description = "Here we go"}}
+            { 4, new InCommand { Command = "Test", ParameterCount = 0, Description = "Here we go" } }
         };
 
         /// <summary>
@@ -167,9 +170,9 @@ namespace CommonLibraryTests
         public void Overload()
         {
             var dct = new Dictionary<int, InCommand>();
-            var command = new InCommand {Command = "First", ParameterCount = 0, Description = "Help First"};
+            var command = new InCommand { Command = "First", ParameterCount = 0, Description = "Help First" };
             dct.Add(0, command);
-            command = new InCommand {Command = "First", ParameterCount = 1, Description = "Help Second"};
+            command = new InCommand { Command = "First", ParameterCount = 1, Description = "Help Second" };
             dct.Add(1, command);
 
             //base

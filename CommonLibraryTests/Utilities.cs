@@ -50,7 +50,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void PreviousNextElement()
         {
-            var lst = new List<int> {0, 3, 6};
+            var lst = new List<int> { 0, 3, 6 };
 
             var index = Utility.GetNextElement(3, lst);
             Assert.AreEqual(6, index, string.Concat("Index was false", index));

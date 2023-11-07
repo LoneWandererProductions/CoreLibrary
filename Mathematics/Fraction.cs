@@ -113,7 +113,7 @@ namespace Mathematics
                     }
 
                     //catch negative exponent
-                    var exponentNumerator = Math.Abs((Exponent * Denominator)) + Numerator;
+                    var exponentNumerator = Math.Abs(Exponent * Denominator) + Numerator;
                     if (Exponent < 0)
                     {
                         return exponentNumerator * -1;
@@ -164,7 +164,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator *(Fraction first, Fraction second)
             {
-                return new(first.ExponentNumerator * second.ExponentNumerator, first.Denominator * second.Denominator);
+                return new Fraction(first.ExponentNumerator * second.ExponentNumerator,
+                    first.Denominator * second.Denominator);
             }
 
             /// <summary>
@@ -177,7 +178,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator /(Fraction first, Fraction second)
             {
-                return new(first.ExponentNumerator * second.Denominator, first.Denominator * second.ExponentNumerator);
+                return new Fraction(first.ExponentNumerator * second.Denominator,
+                    first.Denominator * second.ExponentNumerator);
             }
 
             /// <summary>
@@ -190,8 +192,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator +(Fraction first, Fraction second)
             {
-                return new((first.ExponentNumerator * second.Denominator) +
-                           (first.Denominator * second.ExponentNumerator),
+                return new Fraction((first.ExponentNumerator * second.Denominator) +
+                                    (first.Denominator * second.ExponentNumerator),
                     first.Denominator * second.Denominator);
             }
 
@@ -205,8 +207,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator -(Fraction first, Fraction second)
             {
-                return new((first.ExponentNumerator * second.Denominator) -
-                           (first.Denominator * second.ExponentNumerator),
+                return new Fraction((first.ExponentNumerator * second.Denominator) -
+                                    (first.Denominator * second.ExponentNumerator),
                     first.Denominator * second.Denominator);
             }
 

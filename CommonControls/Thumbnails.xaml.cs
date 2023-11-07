@@ -445,7 +445,7 @@ namespace CommonControls
             var id = Keys[clickedButton.Name];
 
             //create new click Object
-            var args = new ImageEventArgs {Id = id};
+            var args = new ImageEventArgs { Id = id };
             OnImageThumbClicked(args);
         }
 
@@ -471,11 +471,11 @@ namespace CommonControls
 
             var cm = new ContextMenu();
 
-            var menuItem = new MenuItem {Header = ComCtlResources.ContextDeselect};
+            var menuItem = new MenuItem { Header = ComCtlResources.ContextDeselect };
             menuItem.Click += Deselect_Click;
             _ = cm.Items.Add(menuItem);
 
-            menuItem = new MenuItem {Header = ComCtlResources.ContextDeselectAll};
+            menuItem = new MenuItem { Header = ComCtlResources.ContextDeselectAll };
             menuItem.Click += DeselectAll_Click;
             _ = cm.Items.Add(menuItem);
 

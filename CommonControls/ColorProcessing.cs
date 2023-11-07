@@ -104,12 +104,12 @@ namespace CommonControls
                 return false;
             }
 
-            if ((sqrt3 * x1) + ((-1) * y1) > 1)
+            if ((sqrt3 * x1) + (-1 * y1) > 1)
             {
                 return false;
             }
 
-            if ((-sqrt3 * x1) + ((-1) * y1) > 1)
+            if ((-sqrt3 * x1) + (-1 * y1) > 1)
             {
                 return false;
             }

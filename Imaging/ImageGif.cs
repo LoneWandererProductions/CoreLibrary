@@ -138,7 +138,7 @@ namespace Imaging
             }
 
             _animation = new Int32Animation(0, info.Frames - 1,
-                new Duration(new TimeSpan(0, 0, 0, time, 0))) {RepeatBehavior = RepeatBehavior.Forever};
+                new Duration(new TimeSpan(0, 0, 0, time, 0))) { RepeatBehavior = RepeatBehavior.Forever };
 
             Source = _imageList[0];
 

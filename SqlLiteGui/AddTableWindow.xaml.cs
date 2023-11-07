@@ -131,7 +131,7 @@ namespace SQLiteGui
                 return;
             }
 
-            var tbl = new TableObject {Header = TxtBoxTableName.Text};
+            var tbl = new TableObject { Header = TxtBoxTableName.Text };
             var dct = new DictionaryTableColumns();
 
             foreach (var table in TableElements)

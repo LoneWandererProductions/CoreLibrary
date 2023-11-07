@@ -74,7 +74,7 @@ namespace LightVector
             }
 
             // Make a PolyBezierSegment from the points.
-            var bezierSegment = new PolyBezierSegment {Points = pointCollection};
+            var bezierSegment = new PolyBezierSegment { Points = pointCollection };
 
             // Add the PolyBezierSegment to other segment collection.
             pathSegmentCollection.Add(bezierSegment);
@@ -99,7 +99,7 @@ namespace LightVector
 
             // Make a list containing the points and
             // appropriate control points.
-            var resultPoints = new List<Point> {points[0]};
+            var resultPoints = new List<Point> { points[0] };
 
             for (var i = 0; i < points.Count - 1; i++)
             {

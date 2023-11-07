@@ -141,7 +141,7 @@ namespace PathFinding
             var modulo = masterId % length;
             var yColumn = masterId / length;
 
-            return new MovePoint {Xrow = modulo, Ycolumn = yColumn};
+            return new MovePoint { Xrow = modulo, Ycolumn = yColumn };
         }
     }
 }

@@ -66,7 +66,7 @@ namespace LightVector
 
             var lines = VgProcessing.GenerateLines(Lines, Width);
             var curves = VgProcessing.GenerateCurves(Curves, Width);
-            var save = new SaveContainer {SavedCurves = curves, SavedLines = lines, Width = Width};
+            var save = new SaveContainer { SavedCurves = curves, SavedLines = lines, Width = Width };
 
             XmlSerializerObject(save, path);
         }
@@ -125,7 +125,7 @@ namespace LightVector
         {
             Curves ??= new List<CurveObject>();
 
-            var crv = new CurveObject {Points = curve};
+            var crv = new CurveObject { Points = curve };
 
             //what????
             var path = crv.GetPath();
@@ -208,7 +208,7 @@ namespace LightVector
             Lines = VgProcessing.LinesRotate(Lines, degree, Width);
             Curves = VgProcessing.CurvesRotate(Curves, degree);
 
-            return new ImageContainer {Lines = Lines, Curves = Curves};
+            return new ImageContainer { Lines = Lines, Curves = Curves };
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace LightVector
             Lines = VgProcessing.LinesScale(Lines, factor, Width);
             Curves = VgProcessing.CurvesScale(Curves, factor);
 
-            return new ImageContainer {Lines = Lines, Curves = Curves};
+            return new ImageContainer { Lines = Lines, Curves = Curves };
         }
 
         /// <summary>

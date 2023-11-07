@@ -101,7 +101,7 @@ namespace Interpreter
             Log = new Dictionary<int, string>();
             _count = -1;
 
-            var use = new UserSpace {UserSpaceName = userSpace, Commands = com};
+            var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
 
             //Upper is needed because of the way we compare commands in the Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
@@ -126,7 +126,7 @@ namespace Interpreter
                 return;
             }
 
-            var use = new UserSpace {UserSpaceName = userSpace, Commands = com};
+            var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
             //Upper is needed because of the way we compare commands in the Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
         }
@@ -137,7 +137,7 @@ namespace Interpreter
         /// </summary>
         public void StartWindow()
         {
-            _prompt = new WindowPrompt(_interpret) {ShowInTaskbar = true};
+            _prompt = new WindowPrompt(_interpret) { ShowInTaskbar = true };
             _prompt.Show();
         }
 

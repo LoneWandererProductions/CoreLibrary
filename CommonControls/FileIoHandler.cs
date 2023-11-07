@@ -58,7 +58,7 @@ namespace CommonControls
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var openFile = new OpenFileDialog {Filter = appendage, InitialDirectory = folder};
+            var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
 
             if (openFile.ShowDialog() != true)
             {
@@ -67,7 +67,7 @@ namespace CommonControls
 
             var path = openFile.FileName;
 
-            return new PathObject {FilePath = path};
+            return new PathObject { FilePath = path };
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace CommonControls
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var saveFile = new SaveFileDialog {Filter = appendage, InitialDirectory = folder, OverwritePrompt = true};
+            var saveFile = new SaveFileDialog { Filter = appendage, InitialDirectory = folder, OverwritePrompt = true };
 
             if (saveFile.ShowDialog() != true)
             {
@@ -100,7 +100,7 @@ namespace CommonControls
 
             var path = saveFile.FileName;
 
-            return new PathObject {FilePath = path};
+            return new PathObject { FilePath = path };
         }
     }
 }

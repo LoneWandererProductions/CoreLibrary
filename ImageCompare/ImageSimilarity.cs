@@ -85,7 +85,7 @@ namespace ImageCompare
                 var dup = new List<ImageSimilar>(duplicates);
 
                 foreach (var cache in duplicates.Select(item => ImageProcessing.FindSimilarImages(item, dup, threshold))
-                    .Where(cache => cache != null))
+                             .Where(cache => cache != null))
                 {
                     dup = dup.Except(cache).ToList();
                     groups.Add(cache);

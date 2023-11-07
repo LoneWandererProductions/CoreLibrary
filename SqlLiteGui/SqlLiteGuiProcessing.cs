@@ -110,7 +110,7 @@ namespace SQLiteGui
             }
 
             //Else Display the Table
-            var table = lst.ConvertAll(tab => new TableDetails {TableAlias = tab});
+            var table = lst.ConvertAll(tab => new TableDetails { TableAlias = tab });
 
             TablesViewModel.Item = table;
         }

@@ -11,7 +11,7 @@
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// Entry that describes Changes to Objects in the Dictionary
+    ///     Entry that describes Changes to Objects in the Dictionary
     /// </summary>
     public sealed class LogEntry
     {

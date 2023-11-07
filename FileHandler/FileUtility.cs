@@ -44,7 +44,10 @@ namespace FileHandler
             {
                 var cache = $"{fileNameOnly}({count++})";
                 var tempFileName = Path.Combine(directory!, Path.ChangeExtension(cache, extension));
-                if (File.Exists(tempFileName)) continue;
+                if (File.Exists(tempFileName))
+                {
+                    continue;
+                }
 
                 newPath = tempFileName;
             }

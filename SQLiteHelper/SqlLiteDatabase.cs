@@ -413,7 +413,7 @@ namespace SQLiteHelper
         /// <returns>Operation Success</returns>
         public bool InsertSingleRow(string tableAlias, TableSet row, bool checking)
         {
-            var table = new List<TableSet> {row};
+            var table = new List<TableSet> { row };
             return _execute.InsertMultipleRow(tableAlias, table, checking);
         }
 

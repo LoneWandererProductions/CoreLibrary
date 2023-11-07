@@ -145,21 +145,21 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MatrixMultiplications()
         {
-            double[,] x = {{1, 1, 1}};
-            var m1 = new BaseMatrix {Matrix = x};
+            double[,] x = { { 1, 1, 1 } };
+            var m1 = new BaseMatrix { Matrix = x };
 
-            double[,] y = {{2}, {2}, {2}};
-            var m2 = new BaseMatrix {Matrix = y};
+            double[,] y = { { 2 }, { 2 }, { 2 } };
+            var m2 = new BaseMatrix { Matrix = y };
 
             var result = MatrixUtility.UnsafeMultiplication(m1, m2);
 
             Assert.AreEqual(result[0, 0], 6, "First");
 
-            x = new double[,] {{2, 1, 1}, {1, 2, 1}, {1, 1, 2}};
-            m1 = new BaseMatrix {Matrix = x};
+            x = new double[,] { { 2, 1, 1 }, { 1, 2, 1 }, { 1, 1, 2 } };
+            m1 = new BaseMatrix { Matrix = x };
 
-            y = new double[,] {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-            m2 = new BaseMatrix {Matrix = y};
+            y = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+            m2 = new BaseMatrix { Matrix = y };
 
             result = MatrixUtility.UnsafeMultiplication(m1, m2);
 
@@ -173,10 +173,10 @@ namespace CommonLibraryTests
             Assert.AreEqual(result[1, 2], 1, "12");
             Assert.AreEqual(result[2, 2], 2, "22");
 
-            x = new double[,] {{0, -1, 0}, {1, 0, 0}, {0, 0, 1}};
-            m1 = new BaseMatrix {Matrix = x};
-            y = new double[,] {{1}, {0}, {0}};
-            m2 = new BaseMatrix {Matrix = y};
+            x = new double[,] { { 0, -1, 0 }, { 1, 0, 0 }, { 0, 0, 1 } };
+            m1 = new BaseMatrix { Matrix = x };
+            y = new double[,] { { 1 }, { 0 }, { 0 } };
+            m2 = new BaseMatrix { Matrix = y };
 
             result = m1 * m2;
 
@@ -184,16 +184,16 @@ namespace CommonLibraryTests
             Assert.AreEqual(result[1, 0], 1, "10");
             Assert.AreEqual(result[2, 0], 0, "20");
 
-            double[,] matrix = {{1, 1, 3, 1}};
+            double[,] matrix = { { 1, 1, 3, 1 } };
             m1 = new BaseMatrix(matrix);
 
-            double[,] scale = {{320, 0, 0, 0}, {0, 240, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+            double[,] scale = { { 320, 0, 0, 0 }, { 0, 240, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
 
-            m2 = new BaseMatrix {Matrix = scale};
+            m2 = new BaseMatrix { Matrix = scale };
 
             result = m1 * m2;
 
-            var compare = new double[,] {{320, 240, 0, 1}};
+            var compare = new double[,] { { 320, 240, 0, 1 } };
 
             var check = compare.Equal(result.Matrix);
 
@@ -206,11 +206,11 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MatrixAdditions()
         {
-            double[,] x = {{8, 4}, {3, 2}};
-            var m1 = new BaseMatrix {Matrix = x};
+            double[,] x = { { 8, 4 }, { 3, 2 } };
+            var m1 = new BaseMatrix { Matrix = x };
 
-            double[,] y = {{3, 5}, {1, 2}};
-            var m2 = new BaseMatrix {Matrix = y};
+            double[,] y = { { 3, 5 }, { 1, 2 } };
+            var m2 = new BaseMatrix { Matrix = y };
 
             var result = MatrixUtility.UnsafeAddition(m1, m2);
 
@@ -226,11 +226,11 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MatrixSubtraction()
         {
-            double[,] x = {{8, 4}, {3, 2}};
-            var m1 = new BaseMatrix {Matrix = x};
+            double[,] x = { { 8, 4 }, { 3, 2 } };
+            var m1 = new BaseMatrix { Matrix = x };
 
-            double[,] y = {{3, 5}, {1, 2}};
-            var m2 = new BaseMatrix {Matrix = y};
+            double[,] y = { { 3, 5 }, { 1, 2 } };
+            var m2 = new BaseMatrix { Matrix = y };
 
             var result = MatrixUtility.UnsafeSubtraction(m1, m2);
 
@@ -246,11 +246,11 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MatrixInversion()
         {
-            double[,] x = {{8, 4}, {3, 2}};
+            double[,] x = { { 8, 4 }, { 3, 2 } };
 
             var i = MatrixIdentity(2);
 
-            var m1 = new BaseMatrix {Matrix = x};
+            var m1 = new BaseMatrix { Matrix = x };
 
             var m2 = m1.Inverse();
 
@@ -393,7 +393,7 @@ namespace CommonLibraryTests
             m1[0, 0] = fAspectRatio * fFovRad;
             m1[1, 1] = fFovRad;
             m1[2, 2] = fFar / (fFar - fNear);
-            m1[3, 2] = (-fFar * fNear) / (fFar - fNear);
+            m1[3, 2] = -fFar * fNear / (fFar - fNear);
             m1[2, 3] = 1.0f;
             m1[3, 3] = 0.0f;
             matProj.Matrix = m1;
@@ -460,7 +460,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Permutation()
         {
-            var lst = new List<string> {"A", "B", "C"};
+            var lst = new List<string> { "A", "B", "C" };
             var result = lst.GetCombination();
 
             foreach (var items in result)
@@ -484,7 +484,7 @@ namespace CommonLibraryTests
         {
             Trace.WriteLine("First Test");
 
-            var a = new List<string> {"A", "B", "C"};
+            var a = new List<string> { "A", "B", "C" };
 
             var lst = a.CombinationsWithRepetition(3);
 

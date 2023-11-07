@@ -129,7 +129,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Chunks the by.
+        ///     Chunks the by.
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="source">The source.</param>
@@ -138,7 +138,7 @@ namespace ExtendedSystemObjects
         public static List<List<TValue>> ChunkBy<TValue>(this IEnumerable<TValue> source, int chunkSize)
         {
             return source
-                .Select((x, i) => new {Index = i, Value = x})
+                .Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / chunkSize)
                 .Select(x => x.Select(v => v.Value).ToList())
                 .ToList();

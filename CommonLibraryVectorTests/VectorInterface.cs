@@ -38,9 +38,9 @@ namespace CommonLibraryVectorTests
         {
             _vctr = new Vectors(Width);
 
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 0, Y = 1};
+            var endPoint = new Point { X = 0, Y = 1 };
 
             var lne = new LineObject
             {
@@ -69,9 +69,9 @@ namespace CommonLibraryVectorTests
         [TestMethod]
         public void ScaleLines()
         {
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 1, Y = 1};
+            var endPoint = new Point { X = 1, Y = 1 };
 
             var line = GetScaleLine(startPoint, endPoint, 5);
 
@@ -80,9 +80,9 @@ namespace CommonLibraryVectorTests
             Assert.AreEqual(5, line.EndPoint.X, "EndPoint X not correct");
             Assert.AreEqual(5, line.EndPoint.Y, "EndPoint Y not correct");
 
-            startPoint = new Point {X = 2, Y = 2};
+            startPoint = new Point { X = 2, Y = 2 };
 
-            endPoint = new Point {X = 4, Y = 4};
+            endPoint = new Point { X = 4, Y = 4 };
 
             line = GetScaleLine(startPoint, endPoint, 3);
 
@@ -98,9 +98,9 @@ namespace CommonLibraryVectorTests
         [TestMethod]
         public void ScaleCurves()
         {
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 1, Y = 1};
+            var endPoint = new Point { X = 1, Y = 1 };
 
             var curve = GetScaleCurve(startPoint, endPoint, 5);
 
@@ -116,9 +116,9 @@ namespace CommonLibraryVectorTests
         [TestMethod]
         public void RotateLines()
         {
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 0, Y = 1};
+            var endPoint = new Point { X = 0, Y = 1 };
 
             var line = GetRotationLine(startPoint, endPoint, 90);
 
@@ -155,9 +155,9 @@ namespace CommonLibraryVectorTests
             Assert.AreEqual(0, line.EndPoint.X, "EndPoint X not correct");
             Assert.AreEqual(1, line.EndPoint.Y, "EndPoint Y not correct");
 
-            startPoint = new Point {X = 0, Y = 0};
+            startPoint = new Point { X = 0, Y = 0 };
 
-            endPoint = new Point {X = 0, Y = 2};
+            endPoint = new Point { X = 0, Y = 2 };
 
             line = GetRotationLine(startPoint, endPoint, 90);
 
@@ -166,9 +166,9 @@ namespace CommonLibraryVectorTests
             Assert.AreEqual(-2, line.EndPoint.X, "EndPoint X not correct");
             Assert.AreEqual(0, line.EndPoint.Y, "EndPoint Y not correct");
 
-            startPoint = new Point {X = 1, Y = 1};
+            startPoint = new Point { X = 1, Y = 1 };
 
-            endPoint = new Point {X = 1, Y = 3};
+            endPoint = new Point { X = 1, Y = 3 };
 
             line = GetRotationLine(startPoint, endPoint, 90);
 
@@ -184,9 +184,9 @@ namespace CommonLibraryVectorTests
         [TestMethod]
         public void RotateCurves()
         {
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 0, Y = 1};
+            var endPoint = new Point { X = 0, Y = 1 };
 
             var curve = GetRotationCurve(startPoint, endPoint, 90);
 
@@ -209,9 +209,9 @@ namespace CommonLibraryVectorTests
         [TestMethod]
         public void AlgorithmLines()
         {
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 0, Y = 1};
+            var endPoint = new Point { X = 0, Y = 1 };
 
             const int degree = -90;
             const double rad = Math.PI / 180.0;
@@ -244,12 +244,12 @@ namespace CommonLibraryVectorTests
         {
             var vct = new Vectors();
 
-            var startPoint = new Point {X = 0, Y = 0};
+            var startPoint = new Point { X = 0, Y = 0 };
 
-            var endPoint = new Point {X = 0, Y = 1};
+            var endPoint = new Point { X = 0, Y = 1 };
 
             var line = GetRotationLine(startPoint, endPoint, 90);
-            var points = new List<Point>(2) {startPoint, endPoint};
+            var points = new List<Point>(2) { startPoint, endPoint };
 
             vct.LineAdd(line);
             var crv = vct.CurveAdd(points);
@@ -269,8 +269,8 @@ namespace CommonLibraryVectorTests
         /// <returns>The <see cref="CurveObject" />Changed Vector.</returns>
         private static CurveObject GetScaleCurve(Point startPoint, Point endPoint, int factor)
         {
-            var points = new List<Point>(2) {startPoint, endPoint};
-            var curve = new CurveObject {Points = points};
+            var points = new List<Point>(2) { startPoint, endPoint };
+            var curve = new CurveObject { Points = points };
 
             return VgProcessing.CurveScale(curve, factor);
         }
@@ -284,7 +284,7 @@ namespace CommonLibraryVectorTests
         /// <returns>The <see cref="LineObject" />Changed Vector.</returns>
         private static LineObject GetScaleLine(Point startPoint, Point endPoint, int factor)
         {
-            var trsLine = new LineObject {StartPoint = startPoint, EndPoint = endPoint};
+            var trsLine = new LineObject { StartPoint = startPoint, EndPoint = endPoint };
 
             return VgProcessing.LineScale(trsLine, factor, Width);
         }
@@ -298,7 +298,7 @@ namespace CommonLibraryVectorTests
         /// <returns>Changed Vector</returns>
         private static LineObject GetRotationLine(Point startPoint, Point endPoint, int degree)
         {
-            var trsLine = new LineObject {StartPoint = startPoint, EndPoint = endPoint};
+            var trsLine = new LineObject { StartPoint = startPoint, EndPoint = endPoint };
 
             return VgProcessing.GetLineObject(trsLine, degree, Width);
         }
@@ -312,8 +312,8 @@ namespace CommonLibraryVectorTests
         /// <returns>Changed Vector</returns>
         private static CurveObject GetRotationCurve(Point startPoint, Point endPoint, int degree)
         {
-            var points = new List<Point>(2) {startPoint, endPoint};
-            var curve = new CurveObject {Points = points};
+            var points = new List<Point>(2) { startPoint, endPoint };
+            var curve = new CurveObject { Points = points };
 
             return VgProcessing.CurveRotate(curve, degree);
         }

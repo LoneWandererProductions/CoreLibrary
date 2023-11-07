@@ -90,7 +90,7 @@ namespace ImageCompare
             }
 
             //File was skipped? Return null
-            if (lst.Count != (imagePaths.Count - 1))
+            if (lst.Count != imagePaths.Count - 1)
             {
                 return null;
             }
@@ -156,7 +156,7 @@ namespace ImageCompare
                 Trace.WriteLine(ex);
             }
 
-            return new ImageColor {R = r, G = g, B = b, Path = path};
+            return new ImageColor { R = r, G = g, B = b, Path = path };
         }
 
         /// <summary>

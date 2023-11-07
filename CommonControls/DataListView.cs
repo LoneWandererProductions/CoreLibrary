@@ -87,7 +87,7 @@ namespace CommonControls
 
             if (dataItems == null || dataItems.Count == 0)
             {
-                Items = new BindingList<DataItem> {new() {Id = 0, Name = ComCtlResources.DatalistEntry}};
+                Items = new BindingList<DataItem> { new() { Id = 0, Name = ComCtlResources.DatalistEntry } };
 
                 foreach (var item in Items)
                 {
@@ -267,7 +267,10 @@ namespace CommonControls
                 while (CheckItemName(name))
                 {
                     var cache = $"{name}({count++})";
-                    if (CheckItemName(cache)) continue;
+                    if (CheckItemName(cache))
+                    {
+                        continue;
+                    }
 
                     name = cache;
                 }
@@ -302,7 +305,7 @@ namespace CommonControls
                 .Except(idList)
                 .FirstOrDefault();
 
-            var item = new DataItem {Name = name, Id = (int)firstAvailable};
+            var item = new DataItem { Name = name, Id = (int)firstAvailable };
 
             Items.Add(item);
             _dataList.Added(item);

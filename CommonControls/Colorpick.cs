@@ -195,7 +195,7 @@ namespace CommonControls
             if (distanceFromCenter > OuterRadius)
                 // Outside
             {
-                return new PickResult {Area = Area.Outside};
+                return new PickResult { Area = Area.Outside };
             }
 
             if (distanceFromCenter > InnerRadius)
@@ -209,7 +209,7 @@ namespace CommonControls
 
                 var hue = angle;
 
-                return new PickResult {Area = Area.Wheel, Hue = hue};
+                return new PickResult { Area = Area.Wheel, Hue = hue };
             }
 
             // Inside
@@ -217,24 +217,24 @@ namespace CommonControls
             var y1 = (y - Center) * 1.0 / InnerRadius;
             if ((0 * x1) + (2 * y1) > 1)
             {
-                return new PickResult {Area = Area.Outside};
+                return new PickResult { Area = Area.Outside };
             }
 
-            if ((sqrt3 * x1) + ((-1) * y1) > 1)
+            if ((sqrt3 * x1) + (-1 * y1) > 1)
             {
-                return new PickResult {Area = Area.Outside};
+                return new PickResult { Area = Area.Outside };
             }
 
-            if ((-sqrt3 * x1) + ((-1) * y1) > 1)
+            if ((-sqrt3 * x1) + (-1 * y1) > 1)
             {
-                return new PickResult {Area = Area.Outside};
+                return new PickResult { Area = Area.Outside };
             }
 
             // Triangle
             var sat = (1 - (2 * y1)) / ((sqrt3 * x1) - y1 + 2);
             var val = ((sqrt3 * x1) - y1 + 2) / 3;
 
-            return new PickResult {Area = Area.Triangle, Sat = sat, Val = val};
+            return new PickResult { Area = Area.Triangle, Sat = sat, Val = val };
         }
 
         /// <summary>

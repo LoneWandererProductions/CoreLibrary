@@ -251,7 +251,7 @@ namespace CommonLibraryTests
             var image = ImageStream.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
 
-            var point = new Point {X = 51, Y = 51};
+            var point = new Point { X = 51, Y = 51 };
 
             var color = ImageStream.GetPixel(btm, point);
 
@@ -259,7 +259,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(39, color.B, "done");
             Assert.AreEqual(39, color.G, "done");
 
-            point = new Point {X = 1, Y = 1};
+            point = new Point { X = 1, Y = 1 };
 
             color = ImageStream.GetPixel(btm, point);
 
@@ -267,7 +267,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 51, Y = 51};
+            point = new Point { X = 51, Y = 51 };
             btm = ImageStream.SetPixel(btm, point, color);
 
             color = ImageStream.GetPixel(btm, point);
@@ -284,7 +284,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 51, Y = 51};
+            point = new Point { X = 51, Y = 51 };
             btm = ImageStream.SetPixel(btm, point, color);
 
             color = ImageStream.GetPixel(btm, point);
@@ -293,7 +293,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 50, Y = 50};
+            point = new Point { X = 50, Y = 50 };
             color = ImageStream.GetPixel(btm, point, 10);
 
             Assert.AreEqual(121, color.R, "done");
@@ -426,21 +426,21 @@ namespace CommonLibraryTests
 
             ImageStream.SaveBitmap(btm, resultPath, ImageFormat.Png);
 
-            var point = new Point {X = 51, Y = 51};
+            var point = new Point { X = 51, Y = 51 };
             var color = ImageStream.GetPixel(btm, point);
 
             Assert.AreEqual(39, color.R, "done");
             Assert.AreEqual(39, color.B, "done");
             Assert.AreEqual(39, color.G, "done");
 
-            point = new Point {X = 1, Y = 1};
+            point = new Point { X = 1, Y = 1 };
             color = ImageStream.GetPixel(btm, point);
 
             Assert.AreEqual(255, color.R, "done");
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 50, Y = 50};
+            point = new Point { X = 50, Y = 50 };
             color = ImageStream.GetPixel(btm, point, 10);
 
             Assert.AreEqual(103, color.R, "done");
@@ -468,21 +468,21 @@ namespace CommonLibraryTests
             btm = Custom.GetCifFile(cifPath);
             ImageStream.SaveBitmap(btm, resultPathCompressed, ImageFormat.Png);
 
-            point = new Point {X = 51, Y = 51};
+            point = new Point { X = 51, Y = 51 };
             color = ImageStream.GetPixel(btm, point);
 
             Assert.AreEqual(39, color.R, "done");
             Assert.AreEqual(39, color.B, "done");
             Assert.AreEqual(39, color.G, "done");
 
-            point = new Point {X = 1, Y = 1};
+            point = new Point { X = 1, Y = 1 };
             color = ImageStream.GetPixel(btm, point);
 
             Assert.AreEqual(255, color.R, "done");
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 50, Y = 50};
+            point = new Point { X = 50, Y = 50 };
             color = ImageStream.GetPixel(btm, point, 10);
 
             Assert.AreEqual(103, color.R, "done");
@@ -502,14 +502,14 @@ namespace CommonLibraryTests
 
             ImageStream.SaveBitmap(btm, resultPathUnCompressed, ImageFormat.Png);
 
-            point = new Point {X = 51, Y = 51};
+            point = new Point { X = 51, Y = 51 };
             color = ImageStream.GetPixel(btm, point);
 
             Assert.AreEqual(39, color.R, "done");
             Assert.AreEqual(39, color.B, "done");
             Assert.AreEqual(39, color.G, "done");
 
-            point = new Point {X = 1, Y = 1};
+            point = new Point { X = 1, Y = 1 };
 
             color = ImageStream.GetPixel(btm, point);
 
@@ -517,7 +517,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(255, color.B, "done");
             Assert.AreEqual(255, color.G, "done");
 
-            point = new Point {X = 50, Y = 50};
+            point = new Point { X = 50, Y = 50 };
             color = ImageStream.GetPixel(btm, point, 10);
 
             Assert.AreEqual(103, color.R, "done");

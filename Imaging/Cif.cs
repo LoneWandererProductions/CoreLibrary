@@ -103,7 +103,7 @@ namespace Imaging
                 }
                 else
                 {
-                    var cache = new List<int> {id};
+                    var cache = new List<int> { id };
                     cifImage.Add(color, cache);
                 }
 

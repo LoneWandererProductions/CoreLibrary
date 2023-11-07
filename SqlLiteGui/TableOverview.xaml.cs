@@ -158,7 +158,7 @@ namespace SQLiteGui
                 return;
             }
 
-            var tbl = new TableDetails {TableAlias = content.Text};
+            var tbl = new TableDetails { TableAlias = content.Text };
 
             OnListBoxSelectionChanged(tbl);
         }

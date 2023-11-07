@@ -235,7 +235,7 @@ namespace Imaging
                 //Possible error here
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 subChild.AddRange(value.Select(id => id.ToString()));
 
@@ -275,7 +275,7 @@ namespace Imaging
             {
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 var sequence = Utility.Sequencer(value, 3);
 

@@ -225,10 +225,10 @@ namespace FileHandler
             var myFiles = new List<string>();
 
             foreach (var files
-                in
-                fileExtList.Select(
-                    appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
-            )
+                     in
+                     fileExtList.Select(
+                         appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
+                    )
             {
                 myFiles.AddRange(files);
 

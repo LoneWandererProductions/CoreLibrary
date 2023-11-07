@@ -63,19 +63,19 @@ namespace CommonLibrarySqlLiteTests
             columns.DColumns.Add("Two", elementTwo);
 
             var lst = new List<List<string>>();
-            var header = new List<string> {"One", "Two"};
+            var header = new List<string> { "One", "Two" };
             lst.Add(header);
-            var line = new List<string> {"1", "2"};
+            var line = new List<string> { "1", "2" };
             lst.Add(line);
-            line = new List<string> {"2", "4"};
+            line = new List<string> { "2", "4" };
             lst.Add(line);
-            line = new List<string> {"5", "7"};
+            line = new List<string> { "5", "7" };
             lst.Add(line);
-            line = new List<string> {"1", "0"};
+            line = new List<string> { "1", "0" };
             lst.Add(line);
-            line = new List<string> {"10", "13"};
+            line = new List<string> { "10", "13" };
             lst.Add(line);
-            line = new List<string> {"11", "5"};
+            line = new List<string> { "11", "5" };
             lst.Add(line);
 
             var check = Target.LoadCsv(CsvTable, columns, lst, true);

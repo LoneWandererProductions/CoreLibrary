@@ -110,7 +110,7 @@ namespace SQLiteGui
             LblFirst.Content = _first;
             LblSecond.Content = _second;
 
-            _binary = new Binary {Where = _firstValue};
+            _binary = new Binary { Where = _firstValue };
             DataContext = _binary;
         }
 

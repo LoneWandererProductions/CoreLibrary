@@ -40,7 +40,7 @@ namespace DataFormatter
             var other = new List<string>();
 
             foreach (var trim in lst.Select(line => line.Trim())
-                .Where(trim => !trim.StartsWith(DataFormatterResources.Comment)))
+                         .Where(trim => !trim.StartsWith(DataFormatterResources.Comment)))
             {
                 if (trim.StartsWith(DataFormatterResources.Vector))
                 {
@@ -67,7 +67,7 @@ namespace DataFormatter
                         continue;
                     }
 
-                    var vector = new TertiaryVector {X = x, Y = y, Z = z};
+                    var vector = new TertiaryVector { X = x, Y = y, Z = z };
 
                     vectors.Add(vector);
 
@@ -97,7 +97,7 @@ namespace DataFormatter
                         continue;
                     }
 
-                    var vector = new TertiaryFace {X = x, Y = y, Z = z};
+                    var vector = new TertiaryFace { X = x, Y = y, Z = z };
 
                     faces.Add(vector);
 
@@ -107,7 +107,7 @@ namespace DataFormatter
                 other.Add(trim);
             }
 
-            return new ObjFile {Face = faces, Vectors = vectors, Other = other};
+            return new ObjFile { Face = faces, Vectors = vectors, Other = other };
         }
     }
 }

@@ -94,7 +94,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
 
             //select only specific headers
-            var lst = new List<string> {FrstHeader};
+            var lst = new List<string> { FrstHeader };
             cache = _target.SimpleSelect(TblName, lst);
 
             Assert.AreEqual(1, cache.Width,
@@ -163,7 +163,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.AreEqual("39", item, "Test not passed Get Value of Cell: " + item);
 
             //now for the real deal multiple where Clause
-            var lst = new List<string> {FrstHeader};
+            var lst = new List<string> { FrstHeader };
             cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0");
             Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
             Assert.AreEqual(1, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
@@ -210,9 +210,9 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
 
             //check our custom Object
-            var lst = new List<string> {"0"};
+            var lst = new List<string> { "0" };
 
-            var headers = new List<string> {FrstHeader, ScdHeader};
+            var headers = new List<string> { FrstHeader, ScdHeader };
 
             //test 1
             var cache = _target.SelectIn(TblName, FrstHeader, lst);

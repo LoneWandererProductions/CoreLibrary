@@ -44,7 +44,7 @@ namespace Communication
 
             try
             {
-                using var webC = new WebClient {Credentials = CredentialCache.DefaultNetworkCredentials};
+                using var webC = new WebClient { Credentials = CredentialCache.DefaultNetworkCredentials };
                 webC.DownloadProgressChanged += DownloadProgressChanged;
 
                 var link = new Uri(url);
@@ -108,7 +108,7 @@ namespace Communication
             {
                 try
                 {
-                    using var webC = new WebClient {Credentials = CredentialCache.DefaultNetworkCredentials};
+                    using var webC = new WebClient { Credentials = CredentialCache.DefaultNetworkCredentials };
 
                     var urls = new Uri(link);
 

@@ -49,7 +49,7 @@ namespace Imaging
 
             try
             {
-                var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
                 bmp.UriSource = new Uri(path);
@@ -97,7 +97,7 @@ namespace Imaging
 
             try
             {
-                var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
                 bmp.DecodePixelHeight = height;
                 bmp.DecodePixelWidth = width;
@@ -141,7 +141,7 @@ namespace Imaging
                 throw new IOException(ImagingResources.ErrorMissingFile, innerException);
             }
 
-            var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
             try
             {
@@ -201,7 +201,7 @@ namespace Imaging
                 throw new IOException(ImagingResources.ErrorMissingFile, innerException);
             }
 
-            var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
             try
             {
@@ -720,7 +720,7 @@ namespace Imaging
             var hOver = image.Height / 2.0f;
 
             // Get the coordinates of the corners, taking the origin to be the centre of the bitmap.
-            PointF[] corners = {new(-wOver, -hOver), new(+wOver, -hOver), new(+wOver, +hOver), new(-wOver, +hOver)};
+            PointF[] corners = { new(-wOver, -hOver), new(+wOver, -hOver), new(+wOver, +hOver), new(-wOver, +hOver) };
 
             for (var i = 0; i < 4; i++)
             {

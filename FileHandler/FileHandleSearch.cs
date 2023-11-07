@@ -53,7 +53,7 @@ namespace FileHandler
             var lst = new List<string>();
 
             foreach (var file in appendix.Select(app =>
-                FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories)))
+                         FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories)))
             {
                 if (file == null)
                 {

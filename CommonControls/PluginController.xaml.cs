@@ -105,9 +105,9 @@ namespace CommonControls
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
-            {
-                Command = plugin, Name = plugin.Name, Version = plugin.Version
-            }))
+                     {
+                         Command = plugin, Name = plugin.Name, Version = plugin.Version
+                     }))
             {
                 lst.Add(item);
             }

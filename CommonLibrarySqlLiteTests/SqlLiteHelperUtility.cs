@@ -52,7 +52,7 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void ConvertToTableRow()
         {
-            var tst = new TstObjAttribute {First = "1", Second = "2", Third = 3, Fourth = 4};
+            var tst = new TstObjAttribute { First = "1", Second = "2", Third = 3, Fourth = 4 };
 
             var cache = _util.ConvertToAttribute(tst);
 
@@ -77,7 +77,7 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void ConvertToTableRowEnums()
         {
-            var tst = new TstObjEnumAttribute {Start = "1", End = TstEnm.Second};
+            var tst = new TstObjEnumAttribute { Start = "1", End = TstEnm.Second };
 
             var cache = _util.ConvertToAttribute(tst);
 
@@ -85,7 +85,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(cache[0] == "1", "Wrong Element Name: " + cache[0]);
             Assert.IsTrue(cache[1] == "Second", "Wrong Element Name: " + cache[1]);
 
-            tst = new TstObjEnumAttribute {Start = "3", End = TstEnm.First};
+            tst = new TstObjEnumAttribute { Start = "3", End = TstEnm.First };
 
             cache = _util.ConvertToAttribute(tst);
 
@@ -155,7 +155,7 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void FillObjectEnum()
         {
-            var tst = new TstObjEnumAttribute {Start = "1", End = TstEnm.Second};
+            var tst = new TstObjEnumAttribute { Start = "1", End = TstEnm.Second };
 
             var data = _util.ConvertToAttribute(tst);
 

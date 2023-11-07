@@ -62,7 +62,7 @@ namespace ImageCompare
             }
 
             //Generate Image we compare to
-            var dup = new ImageColor {R = r, G = g, B = b, Threshold = range};
+            var dup = new ImageColor { R = r, G = g, B = b, Threshold = range };
 
             //Just get all Images that are in the same Color Space
 

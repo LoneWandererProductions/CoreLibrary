@@ -31,17 +31,17 @@ namespace Mathematics
             //convert to Rad
             var angle = angleD * Rad;
 
-            double[,] matrix = {{vector.X, vector.Y, vector.Z, 1}};
+            double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 
-            var m1 = new BaseMatrix {Matrix = matrix};
+            var m1 = new BaseMatrix { Matrix = matrix };
 
             double[,] rotation =
             {
-                {1, 0, 0, 0}, {0, Math.Cos(angle), Math.Sin(angle), 0}, {0, -Math.Sin(angle), Math.Cos(angle), 0},
-                {0, 0, 0, 1}
+                { 1, 0, 0, 0 }, { 0, Math.Cos(angle), Math.Sin(angle), 0 },
+                { 0, -Math.Sin(angle), Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
-            var m2 = new BaseMatrix {Matrix = rotation};
+            var m2 = new BaseMatrix { Matrix = rotation };
 
             return m1 * m2;
         }
@@ -60,17 +60,17 @@ namespace Mathematics
             //convert to Rad
             var angle = angleD * Rad;
 
-            double[,] matrix = {{vector.X, vector.Y, vector.Z, 1}};
+            double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 
-            var m1 = new BaseMatrix {Matrix = matrix};
+            var m1 = new BaseMatrix { Matrix = matrix };
 
             double[,] rotation =
             {
-                {Math.Cos(angle), 0, -Math.Sin(angle), 0}, {0, 1, 0, 0}, {Math.Sin(angle), 0, Math.Cos(angle), 0},
-                {0, 0, 0, 1}
+                { Math.Cos(angle), 0, -Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { Math.Sin(angle), 0, Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
-            var m2 = new BaseMatrix {Matrix = rotation};
+            var m2 = new BaseMatrix { Matrix = rotation };
 
             return m1 * m2;
         }
@@ -90,17 +90,17 @@ namespace Mathematics
             //convert to Rad
             var angle = angleD * Rad;
 
-            double[,] matrix = {{vector.X, vector.Y, vector.Z, 1}};
+            double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 
-            var m1 = new BaseMatrix {Matrix = matrix};
+            var m1 = new BaseMatrix { Matrix = matrix };
 
             double[,] rotation =
             {
-                {Math.Cos(angle), Math.Sin(angle), 0, 0}, {-Math.Sin(angle), Math.Cos(angle), 0, 0}, {0, 0, 1, 0},
-                {0, 0, 0, 1}
+                { Math.Cos(angle), Math.Sin(angle), 0, 0 }, { -Math.Sin(angle), Math.Cos(angle), 0, 0 },
+                { 0, 0, 1, 0 }, { 0, 0, 0, 1 }
             };
 
-            var m2 = new BaseMatrix {Matrix = rotation};
+            var m2 = new BaseMatrix { Matrix = rotation };
 
             return m1 * m2;
         }
@@ -114,12 +114,12 @@ namespace Mathematics
         /// <returns>Scale Matrix</returns>
         public static BaseMatrix Scale(Vector3D start, int value)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
             var m1 = new BaseMatrix(matrix);
 
-            double[,] scale = {{value, 0, 0, 0}, {0, value, 0, 0}, {0, 0, value, 0}, {0, 0, 0, 1}};
+            double[,] scale = { { value, 0, 0, 0 }, { 0, value, 0, 0 }, { 0, 0, value, 0 }, { 0, 0, 0, 1 } };
 
-            var m2 = new BaseMatrix {Matrix = scale};
+            var m2 = new BaseMatrix { Matrix = scale };
 
             return m1 * m2;
         }
@@ -134,11 +134,11 @@ namespace Mathematics
         /// <returns>Translation Matrix</returns>
         public static BaseMatrix Scale(Vector3D start, double one, double two, double three)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
             var m1 = new BaseMatrix(matrix);
 
-            double[,] scale = {{one, 0, 0, 0}, {0, two, 0, 0}, {0, 0, three, 0}, {0, 0, 0, 1}};
-            var m2 = new BaseMatrix {Matrix = scale};
+            double[,] scale = { { one, 0, 0, 0 }, { 0, two, 0, 0 }, { 0, 0, three, 0 }, { 0, 0, 0, 1 } };
+            var m2 = new BaseMatrix { Matrix = scale };
 
             return m1 * m2;
         }
@@ -152,12 +152,12 @@ namespace Mathematics
         /// <returns>Transplanted Vector</returns>
         public static BaseMatrix Translate(Vector3D start, Vector3D end)
         {
-            double[,] matrix = {{end.X, end.Y, end.Z, 1}};
-            var m1 = new BaseMatrix {Matrix = matrix};
+            double[,] matrix = { { end.X, end.Y, end.Z, 1 } };
+            var m1 = new BaseMatrix { Matrix = matrix };
 
-            double[,] translate = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {start.X, start.Y, start.Z, 1}};
+            double[,] translate = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { start.X, start.Y, start.Z, 1 } };
 
-            var m2 = new BaseMatrix {Matrix = translate};
+            var m2 = new BaseMatrix { Matrix = translate };
 
             return m1 * m2;
         }
@@ -170,7 +170,7 @@ namespace Mathematics
         public static Vector3D GetVector(BaseMatrix matrix)
         {
             //TODO higly untested!
-            return new(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
+            return new Vector3D(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
         }
     }
 }

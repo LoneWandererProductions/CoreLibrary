@@ -14,12 +14,12 @@ using System.Collections.Generic;
 namespace Mathematics
 {
     /// <summary>
-    /// Collection of simple permutations
+    ///     Collection of simple permutations
     /// </summary>
     public static class Permutations
     {
         /// <summary>
-        /// Gets the combination.
+        ///     Gets the combination.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list">The list.</param>
@@ -49,8 +49,8 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Combinations with repetition.
-        /// https://stackoverflow.com/questions/25824376/combinations-with-repetitions-c-sharp
+        ///     Combinations with repetition.
+        ///     https://stackoverflow.com/questions/25824376/combinations-with-repetitions-c-sharp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="input">The input.</param>
@@ -66,7 +66,9 @@ namespace Mathematics
             {
                 foreach (var i in input)
                 foreach (var c in CombinationsWithRepetition(input, length - 1))
-                    yield return i.ToString() + c;
+                {
+                    yield return i + c;
+                }
             }
         }
     }

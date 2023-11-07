@@ -28,8 +28,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix GrayScale = new(new[]
         {
-            new[] {.3f, .3f, .3f, 0, 0}, new[] {.59f, .59f, .59f, 0, 0}, new[] {.11f, .11f, .11f, 0, 0},
-            new float[] {0, 0, 0, 1, 0}, new float[] {0, 0, 0, 0, 1}
+            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Invert = new(new[]
         {
-            new float[] {-1, 0, 0, 0, 0}, new float[] {0, -1, 0, 0, 0}, new float[] {0, 0, -1, 0, 0},
-            new float[] {0, 0, 0, 1, 0}, new float[] {1, 1, 1, 0, 1}
+            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
         });
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Sepia = new(new[]
         {
-            new[] {.393f, .349f, .272f, 0, 0}, new[] {.769f, .686f, .534f, 0, 0},
-            new[] {0.189f, 0.168f, 0.131f, 0, 0}, new float[] {0, 0, 0, 1, 0}, new float[] {0, 0, 0, 0, 1}
+            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
+            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Swap = new(new[]
         {
-            new float[] {0, 0, 1, 0, 0}, new float[] {0, 1, 0, 0, 0}, new float[] {1, 0, 0, 0, 0},
-            new float[] {0, 0, 0, 1, 0}, new float[] {0, 0, 0, 0, 1}
+            new float[] { 0, 0, 1, 0, 0 }, new float[] { 0, 1, 0, 0, 0 }, new float[] { 1, 0, 0, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>

@@ -248,8 +248,8 @@ namespace Interpreter
         /// <param name="parameterPart">Parameter Part.</param>
         private void CommandContainer(string inputString, string parameterPart)
         {
-            char[] openParenthesis = {IrtConst.BaseOpen, IrtConst.AdvancedOpen};
-            char[] closeParenthesis = {IrtConst.BaseClose, IrtConst.AdvancedClose};
+            char[] openParenthesis = { IrtConst.BaseOpen, IrtConst.AdvancedOpen };
+            char[] closeParenthesis = { IrtConst.BaseClose, IrtConst.AdvancedClose };
 
             var check = Irt.CheckMultiple(inputString, openParenthesis, closeParenthesis);
 
@@ -310,7 +310,7 @@ namespace Interpreter
         /// <returns>Result of our Command</returns>
         private void SetResult(int key, List<string> parameter)
         {
-            var com = new OutCommand {Command = key, Parameter = parameter};
+            var com = new OutCommand { Command = key, Parameter = parameter };
 
             OnCommand(com);
         }
@@ -320,7 +320,7 @@ namespace Interpreter
         /// </summary>
         private void SetError()
         {
-            var com = new OutCommand {Command = IrtConst.ErrorParam, Parameter = null};
+            var com = new OutCommand { Command = IrtConst.ErrorParam, Parameter = null };
 
             OnCommand(com);
         }

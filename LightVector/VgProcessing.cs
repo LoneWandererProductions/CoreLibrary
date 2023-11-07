@@ -407,7 +407,7 @@ namespace LightVector
         {
             var start = IdToPoint(mVector.MasterId, width);
 
-            var end = new Point {X = start.X + mVector.ColumnX, Y = start.Y + mVector.RowY};
+            var end = new Point { X = start.X + mVector.ColumnX, Y = start.Y + mVector.RowY };
 
             return new LineObject
             {
@@ -435,7 +435,7 @@ namespace LightVector
                 var pnt = mVector.MasterId[i];
                 var start = IdToPoint(pnt, width);
 
-                points[i] = new Point {X = (int)start.X, Y = (int)start.Y};
+                points[i] = new Point { X = (int)start.X, Y = (int)start.Y };
             }
 
             return new CurveObject
@@ -484,7 +484,7 @@ namespace LightVector
             var modulo = masterId % width;
             var yColumn = masterId / width;
 
-            return new Point {X = modulo, Y = yColumn};
+            return new Point { X = modulo, Y = yColumn };
         }
 
         /// <summary>

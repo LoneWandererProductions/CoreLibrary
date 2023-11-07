@@ -106,7 +106,7 @@ namespace SQLiteHelper
         internal bool DatabaseContextSwitch(string location, string dbName)
         {
             MessageHandling.ClearErrors();
-            var message = new MessageItem {Message = SqLiteHelperResources.ContextSwitchLog, Level = 2};
+            var message = new MessageItem { Message = SqLiteHelperResources.ContextSwitchLog, Level = 2 };
             OnError(message);
 
             SetDataBaseInfo(location, dbName);
@@ -205,7 +205,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tblName))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -213,7 +213,7 @@ namespace SQLiteHelper
 
             if (CheckIfDatabaseTableExists(tblNameNew))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -298,7 +298,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -317,7 +317,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
                 return false;
             }
@@ -336,7 +336,7 @@ namespace SQLiteHelper
         {
             if (CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
                 OnError(_message);
                 return false;
             }
@@ -348,7 +348,7 @@ namespace SQLiteHelper
                 return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -379,7 +379,7 @@ namespace SQLiteHelper
             //empty input
             if (table == null || table.Count == 0)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorEmptyInput, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorEmptyInput, Level = 0 };
                 OnError(_message);
                 return false;
             }
@@ -394,7 +394,7 @@ namespace SQLiteHelper
                 return ExecuteInsertQuery(sqlQuery, table, tableInfo, checking);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorInsertSingleRow, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorInsertSingleRow, Level = 0 };
             OnError(_message);
 
             return false;
@@ -417,7 +417,7 @@ namespace SQLiteHelper
                 return ExecuteDeleteQuery(sqlQuery);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorDeleteRows, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorDeleteRows, Level = 0 };
             OnError(_message);
 
             return -1;
@@ -460,7 +460,7 @@ namespace SQLiteHelper
                 return ExecuteUpdateQuery(sqlQuery, lst);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorUpdateTable, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorUpdateTable, Level = 0 };
             OnError(_message);
 
             return -1;
@@ -478,7 +478,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -491,7 +491,7 @@ namespace SQLiteHelper
                 return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -512,7 +512,7 @@ namespace SQLiteHelper
                 return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -525,7 +525,7 @@ namespace SQLiteHelper
         /// <returns>Converted Object for external Access</returns>
         internal DictionaryTableColumns PragmaTable_Info(string tableAlias)
         {
-            return new DictionaryTableColumns {DColumns = InternalPragmaTableInfo(tableAlias)};
+            return new DictionaryTableColumns { DColumns = InternalPragmaTableInfo(tableAlias) };
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace SQLiteHelper
 
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return uniqueColumnsList;
@@ -554,7 +554,7 @@ namespace SQLiteHelper
 
             if (table == null)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -564,7 +564,7 @@ namespace SQLiteHelper
 
             if (tableInfo.Count == 0)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorCheckUniqueTableHeaders, Level = 1};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorCheckUniqueTableHeaders, Level = 1 };
                 OnError(_message);
 
                 return new List<string>();
@@ -579,7 +579,7 @@ namespace SQLiteHelper
 
                 if (string.IsNullOrEmpty(columnName))
                 {
-                    _message = new MessageItem {Message = SqLiteHelperResources.ErrorGetTableHeader, Level = 0};
+                    _message = new MessageItem { Message = SqLiteHelperResources.ErrorGetTableHeader, Level = 0 };
                     OnError(_message);
 
                     return uniqueColumnsList;
@@ -621,7 +621,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -646,7 +646,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -675,7 +675,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -703,7 +703,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -733,7 +733,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -761,7 +761,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -782,7 +782,7 @@ namespace SQLiteHelper
         {
             if (sqlQuery == SqLiteHelperResources.ErrorCheck)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorSimpleSelectParameters, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorSimpleSelectParameters, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -794,7 +794,7 @@ namespace SQLiteHelper
                 return table;
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorSimpleSelectExecution, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorSimpleSelectExecution, Level = 0 };
             OnError(_message);
 
             return null;
@@ -813,7 +813,7 @@ namespace SQLiteHelper
             }
             catch (SQLiteException ex1)
             {
-                _message = new MessageItem {Message = ex1.ToString(), Level = 0};
+                _message = new MessageItem { Message = ex1.ToString(), Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -833,7 +833,7 @@ namespace SQLiteHelper
         {
             if (!File.Exists(location + Path.DirectorySeparatorChar + dbName))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorDatabaseAlreadyExists, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorDatabaseAlreadyExists, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -886,7 +886,7 @@ namespace SQLiteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem {Message = string.Concat(ex1, sqlQuery), Level = 0};
+                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
                 if (!suppress)
                 {
                     OnError(_message);
@@ -908,7 +908,7 @@ namespace SQLiteHelper
         {
             DataTable dt = null;
 
-            var cmd = new SQLiteCommand {CommandText = sqlQuery, CommandTimeout = SqlLiteConnectionConfig.TimeOut};
+            var cmd = new SQLiteCommand { CommandText = sqlQuery, CommandTimeout = SqlLiteConnectionConfig.TimeOut };
 
             using var conn = GetConn();
             if (conn == null)
@@ -933,7 +933,7 @@ namespace SQLiteHelper
             //Normal Sql Exceptions
             catch (SQLiteException ex1)
             {
-                _message = new MessageItem {Message = string.Concat(ex1, sqlQuery), Level = 0};
+                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
                 OnError(_message);
             }
             //check if something went wrong when we selected something
@@ -944,7 +944,7 @@ namespace SQLiteHelper
                     Message = string.Concat(SqLiteHelperResources.ErrorInSelectStatement, sqlQuery), Level = 1
                 };
                 OnError(_message);
-                _message = new MessageItem {Message = ex1.ToString(), Level = 0};
+                _message = new MessageItem { Message = ex1.ToString(), Level = 0 };
                 OnError(_message);
             }
 
@@ -1062,7 +1062,7 @@ namespace SQLiteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem {Message = string.Concat(ex1, sqlQuery), Level = 0};
+                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -1123,7 +1123,7 @@ namespace SQLiteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem {Message = string.Concat(ex1, sqlQuery), Level = 0};
+                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
                 OnError(_message);
 
                 return lines;
@@ -1174,7 +1174,7 @@ namespace SQLiteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem {Message = string.Concat(ex1, sqlQuery), Level = 0};
+                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
                 OnError(_message);
 
                 return lines;
@@ -1197,7 +1197,10 @@ namespace SQLiteHelper
         {
             if (tableInfo.Count != table.First().Row.Count)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorMoreElementsToAddThanRows, Level = 0};
+                _message = new MessageItem
+                {
+                    Message = SqLiteHelperResources.ErrorMoreElementsToAddThanRows, Level = 0
+                };
                 OnError(_message);
 
                 return false;
@@ -1207,13 +1210,13 @@ namespace SQLiteHelper
 
             foreach (var rows in row.Row)
             {
-                var uniqueList = new List<string> {rows};
+                var uniqueList = new List<string> { rows };
                 count++;
 
                 //check if nullable
                 if (rows == null && !convert.NotNull)
                 {
-                    _message = new MessageItem {Message = SqLiteHelperResources.ErrorNotNullAble, Level = 0};
+                    _message = new MessageItem { Message = SqLiteHelperResources.ErrorNotNullAble, Level = 0 };
                     OnError(_message);
 
                     return false;
@@ -1240,12 +1243,12 @@ namespace SQLiteHelper
                 if (row.Row.Count != count
                     || uniqueList.Distinct().Count() == uniqueList.Count
                     || (!convert.PrimaryKey && !convert.Unique)
-                )
+                   )
                 {
                     continue;
                 }
 
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorNotUnique, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorNotUnique, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -1371,7 +1374,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -1382,7 +1385,7 @@ namespace SQLiteHelper
             var table = SelectDataTable(sqlQuery);
             if (table == null)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -1391,7 +1394,7 @@ namespace SQLiteHelper
             var tableInfo = SqlLiteProcessing.ConvertTableHeaders(table);
             if (tableInfo == null)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorConvertTableInfos, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorConvertTableInfos, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -1402,7 +1405,7 @@ namespace SQLiteHelper
 
             if (tableHeaders == null)
             {
-                _message = new MessageItem {Message = SqLiteHelperResources.ErrorPragmaIndexList, Level = 0};
+                _message = new MessageItem { Message = SqLiteHelperResources.ErrorPragmaIndexList, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -1415,7 +1418,7 @@ namespace SQLiteHelper
                 return tableInfo;
             }
 
-            _message = new MessageItem {Message = SqLiteHelperResources.ErrorAddUniqueStatus, Level = 0};
+            _message = new MessageItem { Message = SqLiteHelperResources.ErrorAddUniqueStatus, Level = 0 };
             OnError(_message);
 
             return null;
