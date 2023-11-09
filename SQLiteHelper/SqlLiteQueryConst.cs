@@ -118,7 +118,7 @@ namespace SQLiteHelper
         }
 
         /// <summary>
-        ///     Add Data into a Sqlite Table
+        ///     Add Data into a SqlLite Table
         ///     https://www.tutorialspoint.com/sqlite/sqlite_insert_query.htm
         /// </summary>
         /// <param name="tableAlias">name of table</param>
@@ -139,11 +139,11 @@ namespace SQLiteHelper
             var queryStart = $"INSERT INTO {tableAlias} (";
             const string queryEnd = " VALUES(";
 
-            return BuildConcation(queryStart, queryEnd, headerTable);
+            return BuildConjunction(queryStart, queryEnd, headerTable);
         }
 
         /// <summary>
-        ///     Remove data from Sqlite Table
+        ///     Remove data from SqlLite Table
         ///     https://www.tutorialspoint.com/sqlite/sqlite_insert_query.htm
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
@@ -161,7 +161,7 @@ namespace SQLiteHelper
         }
 
         /// <summary>
-        ///     Update Data in a Sqlite Table
+        ///     Update Data in a SqlLite Table
         ///     https://www.tutorialspoint.com/sqlite/sqlite_update_query.htm
         ///     Example:
         ///     update new one set First = 1, Second=2, Third=3,Fourth=4, Five=5  where First = 1
@@ -270,12 +270,12 @@ namespace SQLiteHelper
                 return SqLiteHelperResources.ErrorCheck;
             }
 
-            var querystart = SqLiteHelperResources.SqlSelect;
+            var queryStart = SqLiteHelperResources.SqlSelect;
             string vector;
 
             if (headers != null)
             {
-                vector = GetTableHeaders(querystart, headers, headerTable);
+                vector = GetTableHeaders(queryStart, headers, headerTable);
                 if (vector == SqLiteHelperResources.ErrorCheck)
                 {
                     return SqLiteHelperResources.ErrorCheck;
@@ -286,8 +286,8 @@ namespace SQLiteHelper
                 vector = SqLiteHelperResources.SqlSelect + SqLiteHelperResources.Star;
             }
 
-            querystart = vector;
-            var queryend = $"from ({tableAlias})";
+            queryStart = vector;
+            var queryEnd = $"from ({tableAlias})";
 
             // we got the basic select statement, now we only need the where clause
             if (headers != null)
@@ -298,13 +298,13 @@ namespace SQLiteHelper
                     return SqLiteHelperResources.ErrorCheck;
                 }
 
-                queryend += vector;
+                queryEnd += vector;
             }
             else
             {
                 if (operators == CompareOperator.None || string.IsNullOrEmpty(whereValue))
                 {
-                    return string.Concat(querystart, queryend);
+                    return string.Concat(queryStart, queryEnd);
                 }
 
                 vector = string.Concat(
@@ -313,10 +313,10 @@ namespace SQLiteHelper
                     SqLiteHelperResources.Spacing, SqLiteHelperResources.Escape, whereValue,
                     SqLiteHelperResources.Escape
                 );
-                queryend += vector;
+                queryEnd += vector;
             }
 
-            return string.Concat(querystart, queryend);
+            return string.Concat(queryStart, queryEnd);
         }
 
         /// <summary>
@@ -511,7 +511,7 @@ namespace SQLiteHelper
         /// <param name="queryEnd">End of the query</param>
         /// <param name="headerTable">Name of the table</param>
         /// <returns>Returns build Statement</returns>
-        private static string BuildConcation(string queryStart, string queryEnd, ICollection<string> headerTable)
+        private static string BuildConjunction(string queryStart, string queryEnd, ICollection<string> headerTable)
         {
             var count = headerTable.Count;
             var endColumn = string.Concat(headerTable.Last(), SqLiteHelperResources.BracketClose);
@@ -534,14 +534,14 @@ namespace SQLiteHelper
         /// <summary>
         ///     Adds all Headers for the select Statement
         /// </summary>
-        /// <param name="querystart">Start of the query</param>
+        /// <param name="queryStart">Start of the query</param>
         /// <param name="headers">Optional, select over specific headers</param>
         /// <param name="headerTable">Headers of the table</param>
         /// <returns>Added Parameters, empty if wrong parameters</returns>
-        private static string GetTableHeaders(string querystart, IList<string> headers, IList<string> headerTable)
+        private static string GetTableHeaders(string queryStart, IList<string> headers, IList<string> headerTable)
         {
-            string lastrow;
-            bool isfound;
+            string lastRow;
+            bool isFound;
 
             //custom headers
             switch (headers.Count)
@@ -550,49 +550,49 @@ namespace SQLiteHelper
                     break;
 
                 case 1:
-                    isfound = headers.Intersect(headerTable).Any();
-                    if (!isfound)
+                    isFound = headers.Intersect(headerTable).Any();
+                    if (!isFound)
                     {
                         return SqLiteHelperResources.ErrorCheck;
                     }
 
-                    lastrow = headers.Last();
+                    lastRow = headers.Last();
 
-                    return string.Concat(querystart, lastrow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
 
                 default:
-                    isfound = headers.Intersect(headerTable).Any();
-                    if (!isfound)
+                    isFound = headers.Intersect(headerTable).Any();
+                    if (!isFound)
                     {
                         return SqLiteHelperResources.ErrorCheck;
                     }
 
-                    lastrow = headers.Last();
+                    lastRow = headers.Last();
                     headers.RemoveAt(headers.Count - 1);
 
-                    querystart = headers.Aggregate(querystart,
+                    queryStart = headers.Aggregate(queryStart,
                         (current, row) => string.Concat(current, row, SqLiteHelperResources.Comma));
 
-                    return string.Concat(querystart, lastrow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
             }
 
             //standard headers
             switch (headerTable.Count)
             {
                 case 1:
-                    lastrow = headerTable.Last();
+                    lastRow = headerTable.Last();
 
-                    return string.Concat(querystart, lastrow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
 
                 default:
-                    lastrow = headerTable.Last();
+                    lastRow = headerTable.Last();
 
                     headerTable.RemoveAt(headerTable.Count - 1);
 
-                    querystart = headerTable.Aggregate(querystart,
+                    queryStart = headerTable.Aggregate(queryStart,
                         (current, row) => string.Concat(current, row, SqLiteHelperResources.Comma));
 
-                    return string.Concat(querystart, lastrow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
             }
         }
 

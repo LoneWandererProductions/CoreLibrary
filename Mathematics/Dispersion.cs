@@ -76,7 +76,7 @@ namespace Mathematics
         /// <value>
         ///     The coefficient of variation.
         /// </value>
-        public double CoefficientOfVariation { get; set; }
+        public double CoefficientOfVariation { get; private set; }
 
         /// <summary>
         ///     Gets or sets the span.
@@ -84,7 +84,7 @@ namespace Mathematics
         /// <value>
         ///     The span.
         /// </value>
-        public double Span { get; set; }
+        public double Span { get; private set; }
 
         /// <summary>
         ///     Gets or sets the mean absolute deviation.
@@ -92,7 +92,7 @@ namespace Mathematics
         /// <value>
         ///     The mean absolute deviation.
         /// </value>
-        public double MeanAbsoluteDeviation { get; set; }
+        public double MeanAbsoluteDeviation { get; private set; }
 
         /// <summary>
         ///     Calculates the arithmetic mean.
