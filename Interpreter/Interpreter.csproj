@@ -9,11 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <Compile Remove="Themes\**" />
+    <EmbeddedResource Remove="Themes\**" />
+    <None Remove="Themes\**" />
+    <Page Remove="Themes\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Themes\" />
+    <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
   </ItemGroup>
   
   <ItemGroup>
