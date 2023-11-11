@@ -17,7 +17,7 @@ For one:<br>
 - Some wrappers around the win32k and the Operating System to add some missing features, also added Registry manipulation<br>
 - Skeleton Plugin Interface<br>
 - An A* Pathfinder Implementation<br>
-
+<br>
 Some Math Operations:<br>
 - Generic Matrix Calculation<br>
 - 3D Vector Calculations<br>
