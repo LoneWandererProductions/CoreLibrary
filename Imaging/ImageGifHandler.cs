@@ -31,33 +31,47 @@ namespace Imaging
         {
             var info = new ImageGifInfo();
 
-            using var image = Image.FromFile(path);
-            info.Height = image.Height;
-            info.Width = image.Width;
-            info.Name = Path.GetFileName(path);
-            info.Size = image.Size;
-
-            if (!image.RawFormat.Equals(ImageFormat.Gif))
+            try
             {
-                return null;
-            }
+                using var image = Image.FromFile(path);
+                info.Height = image.Height;
+                info.Width = image.Width;
+                info.Name = Path.GetFileName(path);
+                info.Size = image.Size;
 
-            if (!ImageAnimator.CanAnimate(image))
+                if (!image.RawFormat.Equals(ImageFormat.Gif))
+                {
+                    return null;
+                }
+
+                if (!ImageAnimator.CanAnimate(image))
+                {
+                    return info;
+                }
+
+                var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
+
+                var frameCount = image.GetFrameCount(frameDimension);
+
+                info.AnimationLength = frameCount / 10 * frameCount;
+
+                info.IsAnimated = true;
+
+                info.IsLooped = BitConverter.ToInt16(image.GetPropertyItem(20737)?.Value!, 0) != 1;
+
+                info.Frames = frameCount;
+            }
+            catch (OutOfMemoryException ex)
             {
-                return info;
+                var currentProcess = Process.GetCurrentProcess();
+                var memorySize = currentProcess.PrivateMemorySize64;
+
+                Trace.WriteLine(string.Concat(ex, ImagingResources.Separator, ImagingResources.ErrorMemory,
+                    memorySize));
+
+                //enforce clean up and hope for the best
+                GC.Collect();
             }
-
-            var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
-
-            var frameCount = image.GetFrameCount(frameDimension);
-
-            info.AnimationLength = frameCount / 10 * frameCount;
-
-            info.IsAnimated = true;
-
-            info.IsLooped = BitConverter.ToInt16(image.GetPropertyItem(20737)?.Value!, 0) != 1;
-
-            info.Frames = frameCount;
 
             return info;
         }
