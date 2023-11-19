@@ -260,20 +260,6 @@ namespace Interpreter
                 return comm.Key;
             }
 
-            const int value = -1;
-
-            //Todo add some check for nestet method
-            //Todo add check for multible parameter
-
-            switch (value)
-            {
-                case 1:
-                    return IrtConst.OverloadParam;
-
-                case 2:
-                    return IrtConst.NestetParam;
-            }
-
             return IrtConst.ErrorParam;
         }
     }

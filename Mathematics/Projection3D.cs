@@ -12,7 +12,9 @@ using System;
 
 namespace Mathematics
 {
-    //TODO https://bhavesh7393.artstation.com/pages/3d-transformation-to-4x4-matrix
+    /// <summary>
+    /// Helper Class that handles some 3D Transformations
+    /// </summary>
     public static class Projection3D
     {
         private const double Rad = Math.PI / 180.0;
