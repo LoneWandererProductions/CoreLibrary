@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security;
 using System.Xml;
-using Debugger;
 using FileHandler;
 
 // ReSharper disable once UnusedMember.Global, it is used, or should be at least
@@ -32,7 +31,6 @@ namespace Serializer
         /// <param name="path">Target Path with extension</param>
         /// <param name="property">Property of the XML File</param>
         /// <returns>First Value as string.Can return null.</returns>
-        [return: MaybeNull]
         public static string GetFirstAttributeFromXml(string path, string property)
         {
             //if File exists
@@ -54,9 +52,7 @@ namespace Serializer
                 return elements[0]?.InnerText;
             }
 
-            DebugLog.CreateLogFile(SerialResources.ErrorPropertyNotFound, ErCode.Error);
-
-            return string.Empty;
+            throw new XmlException(SerialResources.ErrorPropertyNotFound);
         }
 
         /// <summary>
@@ -65,7 +61,6 @@ namespace Serializer
         /// <param name="path">Target Path with extension</param>
         /// <param name="property">Property of the XML File</param>
         /// <returns>All Values in a string list. Can return null.</returns>
-        [return: MaybeNull]
         public static List<string> GetAttributesFromXml(string path, string property)
         {
             //if File exists
@@ -85,8 +80,7 @@ namespace Serializer
 
             if (elements.Count == 0)
             {
-                DebugLog.CreateLogFile(SerialResources.ErrorPropertyNotFound, ErCode.Error);
-                return null;
+                throw new XmlException(SerialResources.ErrorPropertyNotFound);
             }
 
             for (var i = 0; i < elements.Count; i++)
@@ -114,33 +108,27 @@ namespace Serializer
             }
             catch (FileNotFoundException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new FileNotFoundException(ex.ToString());
             }
             catch (ArgumentException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new ArgumentException(ex.ToString());
             }
             catch (XmlException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new XmlException(ex.ToString());
             }
             catch (IOException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new IOException(ex.ToString());
             }
             catch (NotSupportedException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new NotSupportedException(ex.ToString());
             }
             catch (SecurityException ex)
             {
-                DebugLog.CreateLogFile(ex.ToString(), ErCode.Error);
-                return null;
+                throw new SecurityException(ex.ToString());
             }
 
             return doc;

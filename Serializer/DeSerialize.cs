@@ -10,11 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using Debugger;
 using FileHandler;
 
 namespace Serializer
@@ -31,21 +29,18 @@ namespace Serializer
         /// <param name="path">The path.</param>
         /// <returns>The Generic Object<see cref="T" />Can return null.</returns>
         /// <typeparam name="T">Type of the Object.</typeparam>
-        [return: MaybeNull]
         public static T LoadObjectFromXml<T>(string path) where T : class, new()
         {
             //if File exists
             if (!FileHandleSearch.FileExists(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorPath, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
             }
 
             //check if file is empty, if empty return a new empty one
             if (!FileContent(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorFileEmpty, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
             }
 
             try
@@ -57,30 +52,28 @@ namespace Serializer
             }
             catch (InvalidOperationException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (XmlException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (NullReferenceException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (UnauthorizedAccessException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (ArgumentException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (IOException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
-
-            return null;
         }
 
         /// <summary>
@@ -89,21 +82,18 @@ namespace Serializer
         /// <param name="path">The path.</param>
         /// <returns>The <see cref="T" />Can return null.</returns>
         /// <typeparam name="T"></typeparam>
-        [return: MaybeNull]
         public static List<T> LoadListFromXml<T>(string path) where T : class, new()
         {
             //if File exists
             if (!FileHandleSearch.FileExists(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorPath, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
             }
 
             //check if file is empty, if empty return a new empty one
             if (!FileContent(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorFileEmpty, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
             }
 
             try
@@ -113,32 +103,30 @@ namespace Serializer
                 using Stream tr = File.OpenRead(path);
                 return (List<T>)ser.Deserialize(tr);
             }
-            catch (XmlException ex)
-            {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
-            }
             catch (InvalidOperationException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+            }
+            catch (XmlException ex)
+            {
+                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (NullReferenceException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (UnauthorizedAccessException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (ArgumentException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (IOException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
-
-            return null;
         }
 
         /// <summary>
@@ -148,21 +136,18 @@ namespace Serializer
         /// <returns>The <see cref="T:Dictionary{TKey, TValue}" />Can return null.</returns>
         /// <typeparam name="TKey">Dictionary Key</typeparam>
         /// <typeparam name="TValue">Dictionary Value</typeparam>
-        [return: MaybeNull]
         public static Dictionary<TKey, TValue> LoadDictionaryFromXml<TKey, TValue>(string path)
         {
             //if File exists
             if (!FileHandleSearch.FileExists(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorPath, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
             }
 
             //check if file is empty, if empty return a new empty one
             if (!FileContent(path))
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorFileEmpty, path), ErCode.Error);
-                return null;
+                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
             }
 
             var sr = new StreamReader(path);
@@ -188,32 +173,30 @@ namespace Serializer
 
                 return dct;
             }
-            catch (XmlException ex)
-            {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
-            }
             catch (InvalidOperationException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+            }
+            catch (XmlException ex)
+            {
+                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (NullReferenceException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorSerializerXml, ex), ErCode.Error);
+                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (UnauthorizedAccessException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (ArgumentException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
             catch (IOException ex)
             {
-                DebugLog.CreateLogFile(string.Concat(SerialResources.ErrorStream, ex), ErCode.Error);
+                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
             }
-
-            return null;
         }
 
         /// <summary>
