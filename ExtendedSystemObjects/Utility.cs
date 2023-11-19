@@ -47,7 +47,6 @@ namespace ExtendedSystemObjects
                 return lst.Min();
             }
 
-            lst.Sort();
             var index = lst.IndexOf(position);
 
             return index == -1 ? lst.Min() : lst[index + 1];
@@ -66,21 +65,20 @@ namespace ExtendedSystemObjects
                 return lst.Max();
             }
 
-            lst.Sort();
             var index = lst.IndexOf(position);
 
             return index == -1 ? lst.Max() : lst[index - 1];
         }
 
         /// <summary>
-        ///     Gets the index of the available.
+        ///     Gets the index of the available indexes.
         ///     Only usable for positive int Values
         /// </summary>
         /// <param name="lst">The List.</param>
         /// <param name="count">The count of keys we need.</param>
         /// <returns>A list of keys we can use</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static List<int> GetAvailableIndex(List<int> lst, int count)
+        public static List<int> GetAvailableIndexes(List<int> lst, int count)
         {
             if (count < 0)
             {
@@ -100,7 +98,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Sequencers the specified LST.
+        ///     Sequencers the specified List.
         /// </summary>
         /// <param name="lst">The input list.</param>
         /// <param name="sequence">The min count of the sequence.</param>

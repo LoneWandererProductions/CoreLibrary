@@ -37,7 +37,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, index, string.Concat("Index was false", index));
 
-            var keys = Utility.GetAvailableIndex(lst, 3);
+            var keys = Utility.GetAvailableIndexes(lst, 3);
 
             Assert.AreEqual(1, keys[0], string.Concat("Index was false", keys[0]));
             Assert.AreEqual(5, keys[1], string.Concat("Index was false", keys[1]));
