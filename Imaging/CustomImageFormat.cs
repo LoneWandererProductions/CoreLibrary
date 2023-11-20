@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using DataFormatter;
 
-//TODO Checkssum in line 1. Max Numbers, custom exception class
+//TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?
 namespace Imaging
 {

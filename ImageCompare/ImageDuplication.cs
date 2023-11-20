@@ -57,10 +57,7 @@ namespace ImageCompare
 
             //create Directories
             var imagePaths = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, extensions, checkSubfolders);
-            if (imagePaths.IsNullOrEmpty())
-            {
-                return null;
-            }
+            if (imagePaths.IsNullOrEmpty()) return null;
 
             Translator = imagePaths.ToDictionary();
 
@@ -91,7 +88,6 @@ namespace ImageCompare
 
             //with sanity check in Case one file went missing, we won't have to stop everything
             foreach (var (key, value) in Translator.Where(pathImage => File.Exists(pathImage.Value)))
-            {
                 try
                 {
                     using var btm = new Bitmap(value);
@@ -114,7 +110,6 @@ namespace ImageCompare
                     Trace.WriteLine(ex);
                     throw new InvalidOperationException(ex.ToString());
                 }
-            }
 
             return imagePathsAndGrayValues;
         }
@@ -149,10 +144,7 @@ namespace ImageCompare
                 currentDuplicates.Add(image);
             }
 
-            if (currentDuplicates.Count > 1)
-            {
-                duplicateGroups.Add(currentDuplicates);
-            }
+            if (currentDuplicates.Count > 1) duplicateGroups.Add(currentDuplicates);
 
             return duplicateGroups;
         }

@@ -50,16 +50,10 @@ namespace ImageCompare
             {
                 var percentageDiff =
                     GetPercentageDifference(image, imageToCompareTo);
-                if (percentageDiff >= maximumDifferenceInPercentage)
-                {
-                    similarImagesFound.Add(image);
-                }
+                if (percentageDiff >= maximumDifferenceInPercentage) similarImagesFound.Add(image);
             });
 
-            if (similarImagesFound.IsNullOrEmpty())
-            {
-                return null;
-            }
+            if (similarImagesFound.IsNullOrEmpty()) return null;
 
             return similarImagesFound.Count == 1 ? null : similarImagesFound;
         }
@@ -147,10 +141,7 @@ namespace ImageCompare
                 int one = imageToCompareTo.Image[x, y];
                 int two = targetBitmap.Image[x, y];
 
-                if (one.Interval(two, ImageResources.ColorThreshold))
-                {
-                    diff++;
-                }
+                if (one.Interval(two, ImageResources.ColorThreshold)) diff++;
             }
 
             //Debug.WriteLine(diff);
@@ -160,14 +151,14 @@ namespace ImageCompare
             Debug.WriteLine("Pixels: " + pixel);
 
             var color = (float)
-                (((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor) +
-                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor) +
-                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
-                  ImageResources.MaxColor)) / 3 * 100;
+                ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor +
+                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor +
+                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
+                 ImageResources.MaxColor) / 3 * 100;
 
             Debug.WriteLine("Color: " + color);
 
-            Debug.WriteLine("Diff: " + ((pixel + color) / 2));
+            Debug.WriteLine("Diff: " + (pixel + color) / 2);
 
             return (pixel + color) / 2;
         }

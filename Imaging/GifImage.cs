@@ -14,10 +14,11 @@ using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Helper Class to display gif
     /// </summary>
-    /// <seealso cref="Image" />
+    /// <seealso cref="T:System.Windows.Controls.Image" />
     internal sealed class GifImage : Image
     {
         public static readonly DependencyProperty FrameIndexProperty =

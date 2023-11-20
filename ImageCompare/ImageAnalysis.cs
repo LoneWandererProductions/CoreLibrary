@@ -71,16 +71,10 @@ namespace ImageCompare
             lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count)
-            {
-                return null;
-            }
+            if (lst.Count != imagePaths.Count) return null;
 
             var similarity = AnalysisProcessing.GetSimilarity(imagePaths);
-            for (var i = 0; i < lst.Count; i++)
-            {
-                lst[i].Similarity = similarity[i];
-            }
+            for (var i = 0; i < lst.Count; i++) lst[i].Similarity = similarity[i];
 
             return lst;
         }
