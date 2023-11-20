@@ -13,7 +13,7 @@ using System;
 namespace Mathematics
 {
     /// <summary>
-    /// Helper Class that handles some 3D Transformations
+    ///     Helper Class that handles some 3D Transformations
     /// </summary>
     public static class Projection3D
     {
