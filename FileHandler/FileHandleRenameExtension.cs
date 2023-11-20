@@ -57,14 +57,15 @@ namespace FileHandler
         /// <returns>string with replaced substring</returns>
         public static string ReplacePart(this string str, string targetStr, string update)
         {
+            targetStr ??= string.Empty;
             return !str.Contains(targetStr) ? str : str.Replace(targetStr, update);
         }
 
         /// <summary>
-        ///     Res the order numbers.
+        ///     Reorders Numbers in a string and appends them.
         /// </summary>
         /// <param name="str">The string.</param>
-        /// <returns></returns>
+        /// <returns>New string</returns>
         public static string ReOrderNumbers(this string str)
         {
             var charsToRemove = Regex.Split(str);
