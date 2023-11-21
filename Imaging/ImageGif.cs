@@ -221,7 +221,7 @@ namespace Imaging
         /// <summary>
         ///     Stops the animation
         /// </summary>
-        private void StopAnimation()
+        internal void StopAnimation()
         {
             BeginAnimation(FrameIndexProperty, null);
         }
