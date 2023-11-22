@@ -20,7 +20,7 @@
                         Stretch="None"
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True"
-                        x:Name="BtmImage"
+                        Name="BtmImage"
                         RenderOptions.BitmapScalingMode="NearestNeighbor"
                         AutoStart="{Binding ElementName=ImgZoom, Path=AutoplayGifImage}">
                         <imaging1:ImageGif.LayoutTransform>
