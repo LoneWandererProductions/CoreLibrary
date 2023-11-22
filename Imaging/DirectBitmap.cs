@@ -100,8 +100,7 @@ namespace Imaging
         /// <summary>
         ///     Gets the instance.
         /// </summary>
-        /// <param name="btm">The BTM.</param>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="btm">The custom Bitmap.</param>
         public static DirectBitmap GetInstance(Bitmap btm)
         {
             var dbm = new DirectBitmap(btm.Width, btm.Height);
