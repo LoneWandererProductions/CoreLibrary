@@ -33,7 +33,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Vector3D"/> class.
+        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
         /// </summary>
         public Vector3D()
         {
@@ -110,10 +110,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
@@ -121,7 +121,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts to text.
+        ///     Converts to text.
         /// </summary>
         /// <returns>string representation of the Vector</returns>
         public string ToText()
@@ -139,7 +139,7 @@ namespace Mathematics
         /// </returns>
         public static Vector3D operator +(Vector3D first, Vector3D second)
         {
-            return new(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
+            return new Vector3D(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Mathematics
         /// </returns>
         public static Vector3D operator -(Vector3D first, Vector3D second)
         {
-            return new(first.X - second.X, first.Y - second.Y, first.Z - second.Z);
+            return new Vector3D(first.X - second.X, first.Y - second.Y, first.Z - second.Z);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Mathematics
         /// </returns>
         public Vector3D CrossProduct(Vector3D second)
         {
-            return new()
+            return new Vector3D
             {
                 X = (Y * second.Z) - (Z * second.Y),
                 Y = (Z * second.X) - (X * second.Z),
@@ -192,7 +192,7 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public Vector3D Multiply(double value)
         {
-            return new() { X = X * value, Y = Y * value, Z = Z * value };
+            return new Vector3D { X = X * value, Y = Y * value, Z = Z * value };
         }
 
         /// <summary>
@@ -211,12 +211,7 @@ namespace Mathematics
         public Vector3D Normalize()
         {
             var l = VectorLength();
-            return new()
-            {
-                X = X / l,
-                Y = Y / l,
-                Z = Z / l
-            };
+            return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
         }
     }
 }

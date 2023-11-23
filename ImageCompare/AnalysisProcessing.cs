@@ -37,14 +37,23 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static List<float> GetSimilarity(List<string> imagePaths)
         {
-            if (imagePaths.IsNullOrEmpty()) return null;
+            if (imagePaths.IsNullOrEmpty())
+            {
+                return null;
+            }
 
-            if (imagePaths.Count == 1) return null;
+            if (imagePaths.Count == 1)
+            {
+                return null;
+            }
 
             var paths = new List<string>(imagePaths);
 
             var path = imagePaths[0];
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path))
+            {
+                return null;
+            }
 
             var lst = new List<float>(paths.Count - 1);
 
@@ -56,6 +65,7 @@ namespace ImageCompare
 
                 //with sanity check in Case one file went missing, we won't have to stop everything
                 foreach (var element in paths.Where(File.Exists))
+                {
                     try
                     {
                         using var btm = new Bitmap(element);
@@ -70,6 +80,7 @@ namespace ImageCompare
                         Trace.WriteLine(ex);
                         throw new InvalidOperationException(ex.ToString());
                     }
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -79,7 +90,10 @@ namespace ImageCompare
             }
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count - 1) return null;
+            if (lst.Count != imagePaths.Count - 1)
+            {
+                return null;
+            }
 
             lst.AddFirst(100);
             return lst;
@@ -153,7 +167,10 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static ImageData GetImageDetails(string imagePath)
         {
-            if (!File.Exists(imagePath)) return null;
+            if (!File.Exists(imagePath))
+            {
+                return null;
+            }
 
             using var btm = new Bitmap(imagePath);
             var color = GenerateData(btm, string.Empty);

@@ -49,11 +49,17 @@ namespace ImageCompare
             //create Directories
             var imagePaths = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, extensions, checkSubfolders);
 
-            if (imagePaths.IsNullOrEmpty()) return null;
+            if (imagePaths.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             var images = GetSortedColorValues(imagePaths);
 
-            if (images.IsNullOrEmpty()) return null;
+            if (images.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             //Generate Image we compare to
             var dup = new ImageColor { R = r, G = g, B = b, Threshold = range };
@@ -79,6 +85,7 @@ namespace ImageCompare
 
             //with sanity check in Case one file went missing, we won't have to stop everything
             foreach (var path in imagePaths.Where(File.Exists))
+            {
                 try
                 {
                     using var btm = new Bitmap(path);
@@ -95,6 +102,7 @@ namespace ImageCompare
                     Trace.WriteLine(ex);
                     throw new InvalidOperationException(ex.ToString());
                 }
+            }
 
             return imagePathsAndGrayValues;
         }

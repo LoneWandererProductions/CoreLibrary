@@ -19,11 +19,11 @@ namespace ImageCompare
     internal readonly struct ImageSimilar : IComparable<ImageSimilar>
     {
         /// <summary>
-        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -31,10 +31,10 @@ namespace ImageCompare
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
@@ -91,7 +91,10 @@ namespace ImageCompare
         /// </returns>
         public bool Equals(ImageSimilar other)
         {
-            if (Image == null || other.Image == null) return false;
+            if (Image == null || other.Image == null)
+            {
+                return false;
+            }
 
             return other.R.Interval(R, ImageResources.ColorThreshold) &&
                    other.G.Interval(G, ImageResources.ColorThreshold) &&
@@ -108,13 +111,25 @@ namespace ImageCompare
         /// </returns>
         public int CompareTo(ImageSimilar other)
         {
-            if (Image == null) return 0;
+            if (Image == null)
+            {
+                return 0;
+            }
 
-            if (!other.R.Interval(R, ImageResources.ColorThreshold)) return 0;
+            if (!other.R.Interval(R, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.G.Interval(G, ImageResources.ColorThreshold)) return 0;
+            if (!other.G.Interval(G, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.B.Interval(B, ImageResources.ColorThreshold)) return 0;
+            if (!other.B.Interval(B, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
             return 1;
         }

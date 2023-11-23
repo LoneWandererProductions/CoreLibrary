@@ -50,13 +50,19 @@ namespace ImageCompare
             //create Directories
             var imagePaths = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, extensions, checkSubfolders);
 
-            if (imagePaths.IsNullOrEmpty()) return null;
+            if (imagePaths.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             Translator = imagePaths.ToDictionary();
 
             var images = GetSortedGrayScaleValues();
 
-            if (images.IsNullOrEmpty()) return null;
+            if (images.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             //Just get all Images that are in the same Color Space
             var duplicateGroups = GetDuplicateGroups(images);
@@ -65,7 +71,10 @@ namespace ImageCompare
 
             //Let's compare all result sets, oif empty well tough luck
 
-            if (duplicateGroups.IsNullOrEmpty()) return null;
+            if (duplicateGroups.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             Debug.WriteLine(duplicateGroups.Count);
 
@@ -86,7 +95,10 @@ namespace ImageCompare
             localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
 
-            if (groups.IsNullOrEmpty()) return null;
+            if (groups.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             var result = Translate(groups);
 
@@ -111,6 +123,7 @@ namespace ImageCompare
 
             //with sanity check in Case one file went missing, we won't have to stop everything
             foreach (var (key, value) in Translator.Where(pathImage => File.Exists(pathImage.Value)))
+            {
                 try
                 {
                     using var btm = new Bitmap(value);
@@ -132,6 +145,7 @@ namespace ImageCompare
                     Trace.WriteLine(ex);
                     throw new InvalidOperationException(ex.ToString());
                 }
+            }
 
             Trace.WriteLine(nameof(GetSortedGrayScaleValues));
             return imagePathsAndGrayValues;

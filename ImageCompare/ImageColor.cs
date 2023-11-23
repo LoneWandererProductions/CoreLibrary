@@ -19,11 +19,11 @@ namespace ImageCompare
     internal readonly struct ImageColor : IComparable<ImageColor>, IEquatable<ImageColor>
     {
         /// <summary>
-        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -31,10 +31,10 @@ namespace ImageCompare
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
@@ -91,11 +91,20 @@ namespace ImageCompare
         /// </returns>
         public int CompareTo(ImageColor other)
         {
-            if (!other.R.Interval(R, Threshold)) return 0;
+            if (!other.R.Interval(R, Threshold))
+            {
+                return 0;
+            }
 
-            if (!other.G.Interval(G, Threshold)) return 0;
+            if (!other.G.Interval(G, Threshold))
+            {
+                return 0;
+            }
 
-            if (!other.B.Interval(B, Threshold)) return 0;
+            if (!other.B.Interval(B, Threshold))
+            {
+                return 0;
+            }
 
 
             return 1;
@@ -112,11 +121,20 @@ namespace ImageCompare
         /// </returns>
         public bool Equals(ImageColor other)
         {
-            if (!other.R.Interval(R, Threshold)) return false;
+            if (!other.R.Interval(R, Threshold))
+            {
+                return false;
+            }
 
-            if (!other.G.Interval(G, Threshold)) return false;
+            if (!other.G.Interval(G, Threshold))
+            {
+                return false;
+            }
 
-            if (!other.B.Interval(B, Threshold)) return false;
+            if (!other.B.Interval(B, Threshold))
+            {
+                return false;
+            }
 
 
             return true;

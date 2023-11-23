@@ -31,7 +31,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Vector2D"/> class.
+        ///     Initializes a new instance of the <see cref="Vector2D" /> class.
         /// </summary>
         public Vector2D()
         {
@@ -93,7 +93,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts to text.
+        ///     Converts to text.
         /// </summary>
         /// <returns>string representation of the Vector</returns>
         public string ToText()
@@ -102,10 +102,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
@@ -122,7 +122,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator +(Vector2D first, Vector2D second)
         {
-            return new(first.X + second.X, first.Y + second.Y);
+            return new Vector2D(first.X + second.X, first.Y + second.Y);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator -(Vector2D first, Vector2D second)
         {
-            return new(first.X - second.X, first.Y - second.Y);
+            return new Vector2D(first.X - second.X, first.Y - second.Y);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public Vector2D Multiply(double value)
         {
-            return new() {X = X * value, Y = Y * value};
+            return new Vector2D { X = X * value, Y = Y * value };
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Mathematics
         public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector2D {X = X / l, Y = Y / l};
+            return new Vector2D { X = X / l, Y = Y / l };
         }
 
         /// <summary>

@@ -1,7 +1,22 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Mathematics
+ * FILE:        Mathematics/Projection3DCamera.cs
+ * PURPOSE:     Some basics for 3D displays. mostly the camera
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+
+using System;
 
 namespace Mathematics
 {
+    /// <summary>
+    /// 3D Projection
+    /// </summary>
     public static class Projection3DCamera
     {
         /// <summary>
