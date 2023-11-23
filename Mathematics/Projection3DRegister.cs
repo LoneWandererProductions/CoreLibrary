@@ -1,7 +1,22 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Mathematics
+ * FILE:        Mathematics/Projection3DRegister.cs
+ * PURPOSE:     Basic Config for the 3D Camera
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+
+using System;
 
 namespace Mathematics
 {
+    /// <summary>
+    /// 3D Config, mostly the camera
+    /// </summary>
     public static class Projection3DRegister
     {
         /// <summary>
