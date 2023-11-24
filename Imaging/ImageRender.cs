@@ -399,7 +399,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///     Loads the GIF.
+        ///     Loads a gif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif as ImageSource</returns>
@@ -407,6 +407,18 @@ namespace Imaging
         public List<ImageSource> LoadGif(string path)
         {
             return ImageGifHandler.LoadGif(path);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IImageRender" /> interface.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="target">The target.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void CreateGif(string path, string target)
+        {
+            ImageGifHandler.CreateGif(path, target);
         }
     }
 }

@@ -308,5 +308,12 @@ namespace Imaging
         /// <returns>List of Images from gif as ImageSource</returns>
         /// <exception cref="IOException">Could not find the File</exception>
         List<ImageSource> LoadGif(string path);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IImageRender"/> interface.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="target">The target.</param>
+        void CreateGif(string path, string target);
     }
 }

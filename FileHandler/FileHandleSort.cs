@@ -24,10 +24,10 @@ namespace FileHandler
     public static class FileHandleSort
     {
         /// <summary>
-        ///     Pat hSort.
+        /// Path Sort. Sorts a list of strings in a more sane way.
         /// </summary>
         /// <param name="value">The list.</param>
-        /// <returns>Sorted Path</returns>
+        /// <returns>The sorted list.</returns>
         public static List<string> PathSort(this List<string> value)
         {
             var lst = new List<FilePathStruct>(value.Count);

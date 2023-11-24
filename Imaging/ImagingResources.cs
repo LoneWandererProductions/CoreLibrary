@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
+
 namespace Imaging
 {
     /// <summary>
@@ -52,5 +54,43 @@ namespace Imaging
         ///     The cif Separator used for compression (const). Value:  "-".
         /// </summary>
         internal const string CifSeparator = "-";
+
+        /// <summary>
+        ///     The jpg Extension (const). Value: ".jpg"
+        /// </summary>
+        internal const string JpgExt = ".jpg";
+
+        /// <summary>
+        ///     The png Extension (const). Value: ".png"
+        /// </summary>
+        internal const string PngExt = ".png";
+
+        /// <summary>
+        ///     The Bmp Extension (const). Value: ".Bmp"
+        /// </summary>
+        internal const string BmpExt = ".Bmp";
+
+        /// <summary>
+        ///     The Gif Extension (const). Value: ".gif"
+        /// </summary>
+        internal const string GifExt = ".gif";
+
+        /// <summary>
+        ///     The Tif Extension (const). Value: ".tif"
+        /// </summary>
+        internal const string TifExt = ".tif";
+
+
+        /// <summary>
+        ///     The File Appendix
+        /// </summary>
+        internal static readonly List<string> Appendix = new()
+        {
+            JpgExt,
+            PngExt,
+            BmpExt,
+            GifExt,
+            TifExt
+        };
     }
 }
