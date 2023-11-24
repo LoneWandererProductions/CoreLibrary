@@ -15,7 +15,7 @@ using System;
 namespace Mathematics
 {
     /// <summary>
-    /// 3D Projection
+    ///     3D Projection
     /// </summary>
     public static class Projection3DCamera
     {

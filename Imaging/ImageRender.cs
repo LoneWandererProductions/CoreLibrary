@@ -411,7 +411,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="IImageRender" /> interface.
+        ///     Initializes a new instance of the <see cref="IImageRender" /> interface.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="target">The target.</param>

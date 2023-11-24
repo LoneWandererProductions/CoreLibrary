@@ -30,7 +30,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts to binary.
+        ///     Converts to binary.
         /// </summary>
         /// <param name="i">The i.</param>
         /// <returns>int as binary string</returns>
@@ -41,7 +41,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Binaries to int.
+        ///     Binaries to int.
         /// </summary>
         /// <param name="binary">The binary.</param>
         /// <returns>a binary string to decimal</returns>
@@ -52,7 +52,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts to base.
+        ///     Converts to base.
         /// </summary>
         /// <param name="i">The i.</param>
         /// <param name="toBase">To base.</param>
@@ -64,7 +64,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Binaries to base.
+        ///     Binaries to base.
         /// </summary>
         /// <param name="binary">The binary.</param>
         /// <param name="toBase">To base.</param>

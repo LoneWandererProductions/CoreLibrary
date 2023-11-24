@@ -24,7 +24,7 @@ namespace FileHandler
     public static class FileHandleSort
     {
         /// <summary>
-        /// Path Sort. Sorts a list of strings in a more sane way.
+        ///     Path Sort. Sorts a list of strings in a more sane way.
         /// </summary>
         /// <param name="value">The list.</param>
         /// <returns>The sorted list.</returns>

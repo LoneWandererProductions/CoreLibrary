@@ -15,7 +15,7 @@ using System;
 namespace Mathematics
 {
     /// <summary>
-    /// 3D Config, mostly the camera
+    ///     3D Config, mostly the camera
     /// </summary>
     public static class Projection3DRegister
     {
