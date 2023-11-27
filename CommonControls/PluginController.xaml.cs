@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using ExtendedSystemObjects;
 using PluginLoader;
 
 namespace CommonControls
@@ -97,8 +96,9 @@ namespace CommonControls
                 return;
             }
 
-            if (PluginLoad.PluginContainer.IsNullOrEmpty())
+            if (PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
             {
+                Trace.WriteLine(ComCtlResources.InformationPlugin);
                 return;
             }
 

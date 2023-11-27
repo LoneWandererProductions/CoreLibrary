@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using FileHandler;
 using Plugin;
 
 namespace PluginLoader
@@ -38,7 +37,7 @@ namespace PluginLoader
         /// <returns>Success Status</returns>
         public static bool LoadAll(string path)
         {
-            var pluginPaths = FileHandleSearch.GetFilesByExtensionFullPath(path, PluginLoaderResources.FileExt, false);
+            var pluginPaths = GetFilesByExtensionFullPath(path);
 
             if (pluginPaths == null)
             {
@@ -88,6 +87,33 @@ namespace PluginLoader
         }
 
         /// <summary>
+        /// Gets the files by extension full path.
+        /// Adopted from FileHandler to decrease dependencies
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>List of files by extension with full path</returns>
+        private static IEnumerable<string> GetFilesByExtensionFullPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Trace.WriteLine(PluginLoaderResources.ErrorEmptyPath);
+                return null;
+            }
+
+            if (Directory.Exists(path))
+            {
+                return Directory.EnumerateFiles(path,
+                        string.Concat(PluginLoaderResources.StarDot, PluginLoaderResources.FileExt),
+                        SearchOption.TopDirectoryOnly)
+                    .ToList();
+            }
+
+            Trace.WriteLine(PluginLoaderResources.ErrorDirectory);
+
+            return null;
+        }
+
+        /// <summary>
         ///     Loads the plugin.
         /// </summary>
         /// <param name="pluginLocation">The plugin location.</param>
@@ -131,10 +157,7 @@ namespace PluginLoader
             var availableTypes =
                 string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
 
-            var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin,
-                $" {assembly} from {assembly.Location}.",
-                Environment.NewLine, PluginLoaderResources.MessageTypes,
-                $" {availableTypes}");
+            var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin, PluginLoaderResources.Information(assembly, availableTypes));
 
             throw new ArgumentException(message);
         }
