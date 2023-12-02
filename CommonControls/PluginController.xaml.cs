@@ -6,6 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedType.Global
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -84,19 +88,14 @@ namespace CommonControls
         /// </summary>
         private void Initiate()
         {
-            if (!Directory.Exists(PluginPath))
-            {
-                return;
-            }
+            var directory = Directory.GetCurrentDirectory();
+            var path = Path.Combine(directory, PluginPath);
 
-            var check = PluginLoad.LoadAll(PluginPath);
+            if (!Directory.Exists(path)) return;
 
-            if (!check)
-            {
-                return;
-            }
+            var check = PluginLoad.LoadAll(path);
 
-            if (PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
+            if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
             {
                 Trace.WriteLine(ComCtlResources.InformationPlugin);
                 return;
@@ -105,7 +104,7 @@ namespace CommonControls
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
-                     {
+            {
                          Command = plugin, Name = plugin.Name, Version = plugin.Version
                      }))
             {
