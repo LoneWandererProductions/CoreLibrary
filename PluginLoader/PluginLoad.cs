@@ -102,8 +102,7 @@ namespace PluginLoader
 
             if (Directory.Exists(path))
             {
-                return Directory.EnumerateFiles(path,
-                        string.Concat(PluginLoaderResources.StarDot, PluginLoaderResources.FileExt),
+                return Directory.EnumerateFiles(path, PluginLoaderResources.FileExt,
                         SearchOption.TopDirectoryOnly)
                     .ToList();
             }

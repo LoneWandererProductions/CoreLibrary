@@ -20,17 +20,12 @@ namespace PluginLoader
         /// <summary>
         ///     The file ext
         /// </summary>
-        internal const string FileExt = ".dll";
+        internal const string FileExt = "*.dll";
 
         /// <summary>
         ///     The separator
         /// </summary>
         internal const string Separator = ",";
-
-        /// <summary>
-        ///     The star dot (const). Value: "*.".
-        /// </summary>
-        internal const string StarDot = "*.";
 
         /// <summary>
         ///     The error could not find plugin
