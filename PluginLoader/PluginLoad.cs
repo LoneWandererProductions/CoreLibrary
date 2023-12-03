@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
- * FILE:        Plugin/PluginLoader.cs
+ * FILE:        PluginLoader/PluginLoader.cs
  * PURPOSE:     Basic Plugin Support, Load all Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
@@ -23,6 +23,11 @@ namespace PluginLoader
     public static class PluginLoad
     {
         /// <summary>
+        /// The load error event
+        /// </summary>
+        public static EventHandler loadErrorEvent;
+
+        /// <summary>
         ///     Gets or sets the plugin container.
         /// </summary>
         /// <value>
@@ -39,49 +44,47 @@ namespace PluginLoader
         {
             var pluginPaths = GetFilesByExtensionFullPath(path);
 
-            if (pluginPaths == null)
-            {
-                return false;
-            }
+            if (pluginPaths == null) return false;
 
-            try
-            {
-                PluginContainer = new List<IPlugin>();
+            PluginContainer = new List<IPlugin>();
 
-                foreach (var pluginPath in pluginPaths)
+            foreach (var pluginPath in pluginPaths)
+                try
                 {
-                    try
-                    {
-                        var pluginAssembly = LoadPlugin(pluginPath);
-                        var lst = CreateCommands(pluginAssembly).ToList();
-                        PluginContainer.AddRange(lst);
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
+                    var pluginAssembly = LoadPlugin(pluginPath);
+                    var lst = CreateCommands(pluginAssembly).ToList();
+                    PluginContainer.AddRange(lst);
                 }
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (FileLoadException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (ApplicationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (BadImageFormatException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (FileNotFoundException ex)
-            {
-                Trace.WriteLine(ex);
-            }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (FileLoadException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (ApplicationException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (BadImageFormatException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
 
             return PluginContainer.Count != 0;
         }

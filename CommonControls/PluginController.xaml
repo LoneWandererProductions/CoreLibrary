@@ -17,7 +17,9 @@
             ItemsSource="{Binding ObservablePlugin}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                <DataGridTextColumn Binding="{Binding Type}" Header="Type" />
                 <DataGridTextColumn Binding="{Binding Version}" Header="Version" />
+                <DataGridTextColumn Binding="{Binding Description}" Header="Description" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

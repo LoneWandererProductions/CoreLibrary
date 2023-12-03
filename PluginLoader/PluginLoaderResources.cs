@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
- * FILE:        Plugin/PluginLoaderResources.cs
+ * FILE:        PluginLoader/PluginLoaderResources.cs
  * PURPOSE:     String Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support

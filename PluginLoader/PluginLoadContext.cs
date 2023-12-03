@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
- * FILE:        Plugin/PluginLoadContext.cs
+ * FILE:        PluginLoader/PluginLoadContext.cs
  * PURPOSE:     Basic Plugin Support, Load all Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support

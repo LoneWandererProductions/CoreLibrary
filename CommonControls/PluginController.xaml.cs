@@ -45,6 +45,7 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets the plugin path.
+        ///     The path must be equal to the Current Directory or a sub Directory.
         /// </summary>
         /// <value>
         ///     The plugin path.
@@ -105,8 +106,8 @@ namespace CommonControls
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
             {
-                         Command = plugin, Name = plugin.Name, Version = plugin.Version
-                     }))
+                Command = plugin, Name = plugin.Name, Version = plugin.Version,Type = plugin.Type, Description = plugin.Description
+            }))
             {
                 lst.Add(item);
             }

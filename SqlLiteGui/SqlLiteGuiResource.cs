@@ -108,5 +108,15 @@ namespace SQLiteGui
         ///     The header (const). Value: "Table Name, DataType, Unique, PrimaryKey".
         /// </summary>
         internal const string Header = "Table Name, DataType, Unique, PrimaryKey";
+
+        /// <summary>
+        ///     The Type (const). Value: "Database Viewer".
+        /// </summary>
+        internal const string Type = "Database Viewer";
+
+        /// <summary>
+        ///     The Description (const). Value: "A simple Database Viewer with some administrative tools.".
+        /// </summary>
+        internal const string Description = "A simple Database Viewer with some administrative tools.";
     }
 }

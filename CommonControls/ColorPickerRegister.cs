@@ -10,6 +10,9 @@ using Imaging;
 
 namespace CommonControls
 {
+    /// <summary>
+    /// Handles some configurations at runtime for the Color picker Control
+    /// </summary>
     internal static class ColorPickerRegister
     {
         /// <summary>

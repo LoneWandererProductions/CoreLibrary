@@ -35,6 +35,16 @@ namespace CommonControls
         private Version _version;
 
         /// <summary>
+        /// The type
+        /// </summary>
+        private string _type;
+
+        /// <summary>
+        /// The description
+        /// </summary>
+        private string _description;
+
+        /// <summary>
         ///     Gets or sets the name.
         /// </summary>
         /// <value>
@@ -47,6 +57,38 @@ namespace CommonControls
             {
                 _name = value;
                 RaisePropertyChangedEvent(nameof(Name));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
+        /// <value>
+        /// The type.
+        /// </value>
+        public string Type
+        {
+            get => _type;
+            set
+            {
+                _type = value;
+                RaisePropertyChangedEvent(nameof(Type));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                RaisePropertyChangedEvent(nameof(Description));
             }
         }
 
