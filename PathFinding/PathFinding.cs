@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Debugger;
 
 namespace PathFinding
 {
@@ -185,14 +184,12 @@ namespace PathFinding
             ////bail should not happen if files are loaded correct, if we load a wrong map, this might actual be possible, but we should still catch it
             if (end.Xrow > (_length * 3) - 2)
             {
-                DebugLog.CreateLogFile(string.Concat(PathResources.ErrorLength, _height), ErCode.Error);
-                return null;
+                throw new Exception(string.Concat(PathResources.ErrorLength, _length));
             }
 
             if (end.Ycolumn > (_height * 3) - 2)
             {
-                DebugLog.CreateLogFile(string.Concat(PathResources.ErrorHeight, _height), ErCode.Error);
-                return null;
+                throw new Exception(string.Concat(PathResources.ErrorHeight, _height));
             }
 
             current = _gridArray[end.Xrow, end.Ycolumn]; //Current = end designation node

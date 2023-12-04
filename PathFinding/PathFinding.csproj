@@ -10,8 +10,4 @@
     <Authors>Wayfarer</Authors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Debugger\Debugger.csproj" />
-  </ItemGroup>
-
 </Project>
