@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Plugin\Plugin.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
