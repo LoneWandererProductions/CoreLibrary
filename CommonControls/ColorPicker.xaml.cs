@@ -13,6 +13,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using ExtendedSystemObjects;
 using Imaging;
 using Mathematics;
 
