@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -6,9 +6,5 @@
     <Authors>Wayfarer</Authors>
     <Copyright>Lone Wanderer Productions</Copyright>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
-  </ItemGroup>
 
 </Project>
