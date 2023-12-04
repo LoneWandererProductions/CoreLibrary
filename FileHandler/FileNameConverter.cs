@@ -11,7 +11,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using ExtendedSystemObjects;
 
 namespace FileHandler
 {
@@ -29,7 +28,7 @@ namespace FileHandler
         {
             var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
-            if (lst.IsNullOrEmpty())
+            if (lst == null || lst.Count == 0)
             {
                 return 0;
             }
@@ -79,7 +78,7 @@ namespace FileHandler
         {
             var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
-            if (lst.IsNullOrEmpty())
+            if (lst == null || lst.Count == 0)
             {
                 return 0;
             }
@@ -130,7 +129,7 @@ namespace FileHandler
         {
             var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
-            if (lst.IsNullOrEmpty())
+            if (lst == null || lst.Count == 0)
             {
                 return 0;
             }
@@ -183,7 +182,7 @@ namespace FileHandler
         {
             var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
-            if (lst.IsNullOrEmpty())
+            if (lst == null || lst.Count == 0)
             {
                 return 0;
             }

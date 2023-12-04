@@ -14,7 +14,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using ExtendedSystemObjects;
 
 namespace FileHandler
 {
@@ -153,11 +152,12 @@ namespace FileHandler
         [return: MaybeNull]
         public static List<FileDetails> GetFilesDetails(List<string> files)
         {
-            var data = new List<FileDetails>(files.Count);
-            if (data.IsNullOrEmpty())
+            if (files == null || files.Count == 0)
             {
                 return null;
             }
+
+            var data = new List<FileDetails>(files.Count);
 
             data.AddRange(from file in files where File.Exists(file) select GetFileDetails(file));
 
@@ -248,7 +248,7 @@ namespace FileHandler
         {
             var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);
 
-            if (lst.IsNullOrEmpty())
+            if (lst == null || lst.Count == 0)
             {
                 return null;
             }
