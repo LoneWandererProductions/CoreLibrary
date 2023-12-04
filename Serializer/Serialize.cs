@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using ExtendedSystemObjects;
 using FileHandler;
 
 namespace Serializer
@@ -138,7 +137,7 @@ namespace Serializer
             FileHandleCreate.CreateFolder(folder);
 
             //check if file is empty, if empty return
-            if (dct.IsNullOrEmpty())
+            if (dct == null || dct.Count == 0)
             {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
             }
@@ -183,7 +182,7 @@ namespace Serializer
         private static void SerializeDictionary(Dictionary<string, string> dct, string path)
         {
             //check if file is empty, if empty return
-            if (dct.IsNullOrEmpty())
+            if (dct == null || dct.Count == 0)
             {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
             }
