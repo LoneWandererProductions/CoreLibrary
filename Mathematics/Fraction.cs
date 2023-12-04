@@ -7,6 +7,8 @@
  * SOURCES:     https://dotnet-snippets.de/snippet/klasse-bruchrechnung-class-fraction/12049
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 
 namespace Mathematics
@@ -220,7 +222,7 @@ namespace Mathematics
             /// </returns>
             public override int GetHashCode()
             {
-                return Numerator ^ Denominator ^ Exponent;
+                return HashCode.Combine(Numerator, Denominator, Exponent);
             }
 
             /// <summary>

@@ -7,7 +7,6 @@ using ExtendedSystemObjects;
 using FileHandler;
 using ImageCompare;
 using Imaging;
-using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /*

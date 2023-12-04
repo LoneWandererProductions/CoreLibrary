@@ -7,6 +7,8 @@
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,7 +25,7 @@ namespace PluginLoader
     public static class PluginLoad
     {
         /// <summary>
-        /// The load error event
+        ///     The load error event
         /// </summary>
         public static EventHandler loadErrorEvent;
 
@@ -44,11 +46,15 @@ namespace PluginLoader
         {
             var pluginPaths = GetFilesByExtensionFullPath(path);
 
-            if (pluginPaths == null) return false;
+            if (pluginPaths == null)
+            {
+                return false;
+            }
 
             PluginContainer = new List<IPlugin>();
 
             foreach (var pluginPath in pluginPaths)
+            {
                 try
                 {
                     var pluginAssembly = LoadPlugin(pluginPath);
@@ -85,13 +91,14 @@ namespace PluginLoader
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
                 }
+            }
 
             return PluginContainer.Count != 0;
         }
 
         /// <summary>
-        /// Gets the files by extension full path.
-        /// Adopted from FileHandler to decrease dependencies
+        ///     Gets the files by extension full path.
+        ///     Adopted from FileHandler to decrease dependencies
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of files by extension with full path</returns>
@@ -159,7 +166,8 @@ namespace PluginLoader
             var availableTypes =
                 string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
 
-            var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin, PluginLoaderResources.Information(assembly, availableTypes));
+            var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin,
+                PluginLoaderResources.Information(assembly, availableTypes));
 
             throw new ArgumentException(message);
         }

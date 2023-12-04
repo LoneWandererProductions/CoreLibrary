@@ -53,7 +53,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Cifs to image.
+        ///     Cif to image.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <returns>The converted Image</returns>
@@ -115,7 +115,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Cifs to image.
+        ///     Cif to image.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <returns>The converted Image</returns>
@@ -280,6 +280,11 @@ namespace Imaging
                 var sequence = Utility.Sequencer(value, 3);
 
                 var compressed = new List<int>();
+
+                if (sequence == null)
+                {
+                    continue;
+                }
 
                 foreach (var (startS, endS) in sequence)
                 {

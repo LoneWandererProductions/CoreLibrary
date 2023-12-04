@@ -25,24 +25,24 @@ namespace CommonControls
         private readonly IPlugin _command;
 
         /// <summary>
+        ///     The description
+        /// </summary>
+        private string _description;
+
+        /// <summary>
         ///     The name
         /// </summary>
         private string _name;
 
         /// <summary>
-        ///     The version
-        /// </summary>
-        private Version _version;
-
-        /// <summary>
-        /// The type
+        ///     The type
         /// </summary>
         private string _type;
 
         /// <summary>
-        /// The description
+        ///     The version
         /// </summary>
-        private string _description;
+        private Version _version;
 
         /// <summary>
         ///     Gets or sets the name.
@@ -61,10 +61,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the type.
+        ///     Gets or sets the type.
         /// </summary>
         /// <value>
-        /// The type.
+        ///     The type.
         /// </value>
         public string Type
         {
@@ -77,10 +77,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the description.
+        ///     Gets or sets the description.
         /// </summary>
         /// <value>
-        /// The description.
+        ///     The description.
         /// </value>
         public string Description
         {

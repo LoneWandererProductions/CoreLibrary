@@ -92,7 +92,10 @@ namespace CommonControls
             var directory = Directory.GetCurrentDirectory();
             var path = Path.Combine(directory, PluginPath);
 
-            if (!Directory.Exists(path)) return;
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
 
             var check = PluginLoad.LoadAll(path);
 
@@ -105,9 +108,13 @@ namespace CommonControls
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
-            {
-                Command = plugin, Name = plugin.Name, Version = plugin.Version,Type = plugin.Type, Description = plugin.Description
-            }))
+                     {
+                         Command = plugin,
+                         Name = plugin.Name,
+                         Version = plugin.Version,
+                         Type = plugin.Type,
+                         Description = plugin.Description
+                     }))
             {
                 lst.Add(item);
             }

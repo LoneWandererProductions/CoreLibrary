@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedType.Global
 
 using System.Windows;
 using System.Windows.Controls;
@@ -83,6 +85,7 @@ namespace CommonControls
         private void ColorPickerMenu_ColorChanged(ColorHsv colorHsv)
         {
             AddColor(colorHsv);
+            ColorChanged?.Invoke(colorHsv);
         }
 
         /// <summary>
