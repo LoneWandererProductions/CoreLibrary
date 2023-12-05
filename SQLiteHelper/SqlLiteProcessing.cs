@@ -42,11 +42,11 @@ namespace SQLiteHelper
             {
                 var column = new TableColumns
                 {
-                    NotNull = row.ItemArray[3]?.ToString() == SqLiteHelperResources.TableContentsName,
-                    RowId = row.ItemArray[0]?.ToString()
+                    NotNull = row.ItemArray[3].ToString() == SqLiteHelperResources.TableContentsName,
+                    RowId = row.ItemArray[0].ToString()
                 };
 
-                if (row.ItemArray[5]?.ToString() == SqLiteHelperResources.TableContentsName)
+                if (row.ItemArray[5].ToString() == SqLiteHelperResources.TableContentsName)
                 {
                     column.PrimaryKey = true;
                     column.Unique = true;
@@ -56,14 +56,14 @@ namespace SQLiteHelper
                     column.PrimaryKey = false;
                 }
 
-                column = SetDataType(column, row.ItemArray[2]?.ToString());
+                column = SetDataType(column, row.ItemArray[2].ToString());
 
                 if (column == null)
                 {
                     return null;
                 }
 
-                vector.Add(row.ItemArray[1]?.ToString(), column);
+                vector.Add(row.ItemArray[1].ToString(), column);
             }
 
             return vector;
@@ -164,7 +164,7 @@ namespace SQLiteHelper
         [return: MaybeNull]
         private static TableColumns SetDataType(TableColumns column, string type)
         {
-            switch (type)
+            switch (type.ToLower())
             {
                 case SqLiteHelperResources.SqlLiteDataTypeInteger:
                     column.DataType = SqLiteDataTypes.Integer;

@@ -134,29 +134,29 @@ namespace SQLiteHelper
         internal const string CompNotLike = "not like";
 
         /// <summary>
-        ///     The sql lite data type integer (const). Value: "Integer".
+        ///     The sql lite data type integer (const). Value: "integer".
         /// </summary>
-        internal const string SqlLiteDataTypeInteger = "Integer";
+        internal const string SqlLiteDataTypeInteger = "integer";
 
         /// <summary>
-        ///     The sql lite data type decimal (const). Value: "Decimal".
+        ///     The sql lite data type decimal (const). Value: "decimal".
         /// </summary>
-        internal const string SqlLiteDataTypeDecimal = "Decimal";
+        internal const string SqlLiteDataTypeDecimal = "decimal";
 
         /// <summary>
-        ///     The sql lite data type date time (const). Value: "DateTime".
+        ///     The sql lite data type date time (const). Value: "datetime".
         /// </summary>
-        internal const string SqlLiteDataTypeDateTime = "DateTime";
+        internal const string SqlLiteDataTypeDateTime = "datetime";
 
         /// <summary>
-        ///     The sql lite data type real (const). Value: "Real".
+        ///     The sql lite data type real (const). Value: "real".
         /// </summary>
-        internal const string SqlLiteDataTypeReal = "Real";
+        internal const string SqlLiteDataTypeReal = "real";
 
         /// <summary>
         ///     The sql lite data type text (const). Value: "Text".
         /// </summary>
-        internal const string SqlLiteDataTypeText = "Text";
+        internal const string SqlLiteDataTypeText = "text";
 
         /// <summary>
         ///     The convert to (const). Value: " to: ".
