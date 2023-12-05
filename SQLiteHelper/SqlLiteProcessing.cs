@@ -6,9 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable PossibleNullReferenceException
+// ReSharper disable AssignNullToNotNullAttribute
+
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -40,6 +44,8 @@ namespace SQLiteHelper
 
             foreach (DataRow row in table.Rows)
             {
+                if (row == null) continue;
+
                 var column = new TableColumns
                 {
                     NotNull = row.ItemArray[3].ToString() == SqLiteHelperResources.TableContentsName,
@@ -187,6 +193,7 @@ namespace SQLiteHelper
                     return column;
 
                 default:
+                    Trace.WriteLine(string.Concat(SqLiteHelperResources.TraceCouldNotConvert, type));
                     return null;
             }
         }
