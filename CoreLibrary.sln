@@ -51,8 +51,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication", "Communicat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVector", "LightVector\LightVector.csproj", "{8DD286ED-2358-47E1-BD4D-B4DCB550681E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLibraryVectorTests", "CommonLibraryVectorTests\CommonLibraryVectorTests.csproj", "{2CC321A7-3BF7-4F77-AC68-A917953AD787}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLibraryTestsCommunication", "CommonLibraryTestsCommunication\CommonLibraryTestsCommunication.csproj", "{B98A7BCE-4188-4E1E-B733-A89906049BEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mathematics", "Mathematics\Mathematics.csproj", "{03B1DB00-54D5-4095-BE71-B26CFA923420}"
@@ -145,10 +143,6 @@ Global
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CC321A7-3BF7-4F77-AC68-A917953AD787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CC321A7-3BF7-4F77-AC68-A917953AD787}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CC321A7-3BF7-4F77-AC68-A917953AD787}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CC321A7-3BF7-4F77-AC68-A917953AD787}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU

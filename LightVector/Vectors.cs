@@ -6,14 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Shapes;
-using System.Xml.Serialization;
 using Debugger;
-using Path = System.Windows.Shapes.Path;
 
 namespace LightVector
 {
@@ -32,26 +31,22 @@ namespace LightVector
             Width = width;
         }
 
-        public Vectors()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         ///     Gets the lines.
         /// </summary>
-        public List<LineObject> Lines { get; private set; }
+        internal List<LineObject> Lines { get; private set; }
 
         /// <summary>
         ///     Gets the curves.
         /// </summary>
-        public List<CurveObject> Curves { get; private set; }
+        private List<CurveObject> Curves { get; set; }
 
         /// <summary>
         ///     length of the Picture
         /// </summary>
-        private int Width { get; set; } = 300;
+        private int Width { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Save the container.
         /// </summary>
@@ -64,18 +59,39 @@ namespace LightVector
                 return;
             }
 
-            var lines = VgProcessing.GenerateLines(Lines, Width);
-            var curves = VgProcessing.GenerateCurves(Curves, Width);
-            var save = new SaveContainer { SavedCurves = curves, SavedLines = lines, Width = Width };
+            var saveList = new List<SaveObject>();
+            SaveObject save;
 
-            XmlSerializerObject(save, path);
+            if (Lines.Count != 0)
+            {
+                foreach (var line in Lines)
+                {
+                    save = new SaveObject {Type = VectorObjects.Line, Graphic = line};
+                    saveList.Add(save);
+                }
+            }
+
+            if (Curves.Count != 0)
+            {
+                foreach (var curve in Curves)
+                {
+                    save = new SaveObject {Type = VectorObjects.Curve, Graphic = curve};
+                    saveList.Add(save);
+                }
+            }
+
+
+            var saveObject = new SaveContainer {Objects = saveList, Width = Width};
+
+            SaveHelper.XmlSerializerObject(saveObject, path);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Get the vector image.
         /// </summary>
         /// <param name="path">Target Path of svg Object</param>
-        /// <returns>The <see cref="ImageContainer" />.</returns>
+        /// <returns>The <see cref="T:LightVector.ImageContainer" />.</returns>
         public ImageContainer GetVectorImage(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -84,7 +100,7 @@ namespace LightVector
                 return null;
             }
 
-            var save = XmlDeSerializerSaveContainer(path);
+            var save = SaveHelper.XmlDeSerializerSaveContainer(path);
             Width = save.Width;
 
             return new ImageContainer
@@ -93,12 +109,13 @@ namespace LightVector
             };
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Get the point.
         /// </summary>
         /// <param name="point">The point.</param>
-        /// <returns>The <see cref="Rectangle" />.</returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <returns>The <see cref="T:System.Windows.Shapes.Rectangle" />.</returns>
+        /// <exception cref="T:System.NotImplementedException"></exception>
         public Rectangle GetPoint(Point point)
         {
             return GraphicHelper.GetPoint(point);
@@ -125,7 +142,7 @@ namespace LightVector
         {
             Curves ??= new List<CurveObject>();
 
-            var crv = new CurveObject { Points = curve };
+            var crv = new CurveObject {Points = curve};
 
             //what????
             var path = crv.GetPath();
@@ -136,6 +153,7 @@ namespace LightVector
             return path;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The line remove.
         /// </summary>
@@ -145,6 +163,7 @@ namespace LightVector
             Lines?.Remove(line);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The curve remove.
         /// </summary>
@@ -154,6 +173,7 @@ namespace LightVector
             Curves?.Remove(curve);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The line rotate.
         /// </summary>
@@ -165,39 +185,43 @@ namespace LightVector
             return VgProcessing.GetLineObject(line, degree, Width);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The curve rotate.
         /// </summary>
         /// <param name="curve">Curve Object</param>
         /// <param name="degree">Degree we want to Rotate</param>
-        /// <returns>The <see cref="CurveObject" />.</returns>
+        /// <returns>The <see cref="T:LightVector.CurveObject" />.</returns>
         public CurveObject CurveRotate(CurveObject curve, int degree)
         {
             return VgProcessing.CurveRotate(curve, degree);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The line scale.
         /// </summary>
         /// <param name="line">Line Object</param>
         /// <param name="factor">Resize Factor</param>
-        /// <returns>The <see cref="LineObject" />.</returns>
+        /// <returns>The <see cref="T:LightVector.LineObject" />.</returns>
         public LineObject LineScale(LineObject line, int factor)
         {
             return VgProcessing.LineScale(line, factor, Width);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The curve scale.
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <param name="factor">The factor.</param>
-        /// <returns>The <see cref="CurveObject" />.</returns>
+        /// <returns>The <see cref="T:LightVector.CurveObject" />.</returns>
         public CurveObject CurveScale(CurveObject curve, int factor)
         {
             return VgProcessing.CurveScale(curve, factor);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     The rotate.
         /// </summary>
@@ -208,9 +232,10 @@ namespace LightVector
             Lines = VgProcessing.LinesRotate(Lines, degree, Width);
             Curves = VgProcessing.CurvesRotate(Curves, degree);
 
-            return new ImageContainer { Lines = Lines, Curves = Curves };
+            return new ImageContainer {Lines = Lines, Curves = Curves};
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Scale whole Image.
         /// </summary>
@@ -221,72 +246,7 @@ namespace LightVector
             Lines = VgProcessing.LinesScale(Lines, factor, Width);
             Curves = VgProcessing.CurvesScale(Curves, factor);
 
-            return new ImageContainer { Lines = Lines, Curves = Curves };
-        }
-
-        /// <summary>
-        ///     Generic Serializer Of Objects
-        /// </summary>
-        /// <param name="serializeObject">Target Object</param>
-        /// <param name="path">Target Path with extension</param>
-        private static void XmlSerializerObject<T>(T serializeObject, string path)
-        {
-            var directory = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory) && directory != null)
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            //check if file is empty, if empty return
-            if (serializeObject.Equals(null))
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorSerializerEmpty + path, 0);
-                File.Delete(path);
-                return;
-            }
-
-            try
-            {
-                var serializer = new XmlSerializer(serializeObject.GetType());
-                using var tr = new StreamWriter(path);
-                serializer.Serialize(tr, serializeObject);
-            }
-            catch (Exception error)
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorSerializer + error, 0);
-            }
-        }
-
-        /// <summary>
-        ///     DeSerializes Object Type of: MapObject
-        /// </summary>
-        /// <param name="path">Target Path</param>
-        private static SaveContainer XmlDeSerializerSaveContainer(string path)
-        {
-            if (!File.Exists(path))
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorPath, 0);
-                return new SaveContainer();
-            }
-
-            //check if file is empty, if empty return a new empty one
-            if (new FileInfo(path).Length == 0)
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorFileEmpty + path, 0);
-                return new SaveContainer();
-            }
-
-            try
-            {
-                var serializer = new XmlSerializer(typeof(SaveContainer));
-                using Stream tr = File.OpenRead(path);
-                return (SaveContainer)serializer.Deserialize(tr);
-            }
-            catch (Exception error)
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorDeSerializer + error, 0);
-                return new SaveContainer();
-            }
+            return new ImageContainer {Lines = Lines, Curves = Curves};
         }
     }
 

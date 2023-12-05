@@ -114,30 +114,4 @@ namespace LightVector
             return lst;
         }
     }
-
-    /// <summary>
-    ///     TODO overthink
-    ///     The save object class.
-    ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
-    /// </summary>
-    public sealed class SaveObject
-    {
-        /// <summary>
-        ///     Gets or sets the point id.
-        /// </summary>
-        public List<int> PointIds { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the parent id. Key of the Dictionary
-        /// </summary>
-        public int ParentId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the Type.
-        ///     0 is Point
-        ///     1 is Line
-        ///     2 is Curve
-        /// </summary>
-        public int Type { get; set; }
-    }
 }

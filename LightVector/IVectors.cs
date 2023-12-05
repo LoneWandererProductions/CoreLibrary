@@ -71,7 +71,7 @@ namespace LightVector
         ///     Gets the vector image.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns></returns>
+        /// <returns>Vector Collection</returns>
         ImageContainer GetVectorImage(string path);
 
         /// <summary>

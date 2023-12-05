@@ -30,8 +30,7 @@ namespace LightVector
         {
             try
             {
-                return
-                    container.SavedLines.AsParallel().Select(vector => GenerateLine(vector, container.Width)).ToList();
+                return (from graphic in container.Objects where graphic.Type == VectorObjects.Line select graphic.Graphic as LineObject).ToList();
             }
             catch (AggregateException aex)
             {
@@ -53,67 +52,7 @@ namespace LightVector
         {
             try
             {
-                return
-                    container.SavedCurves.AsParallel().Select(vector => GenerateCurve(vector, container.Width))
-                        .ToList();
-            }
-            catch (AggregateException aex)
-            {
-                foreach (var ex in aex.InnerExceptions)
-                {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
-                }
-
-                return null;
-            }
-        }
-
-        /// <summary>
-        ///     The generate lines.
-        /// </summary>
-        /// <param name="lines">The lines.</param>
-        /// <param name="width">length of the Picture</param>
-        /// <returns>The <see cref="List{LineVector}" />.</returns>
-        internal static List<LineVector> GenerateLines(List<LineObject> lines, int width)
-        {
-            if (lines.IsNullOrEmpty())
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorLineEmpty, 0);
-                return null;
-            }
-
-            try
-            {
-                return lines.AsParallel().Select(line => GenerateLine(line, width)).ToList();
-            }
-            catch (AggregateException aex)
-            {
-                foreach (var ex in aex.InnerExceptions)
-                {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
-                }
-
-                return null;
-            }
-        }
-
-        /// <summary>
-        ///     The generate curves.
-        /// </summary>
-        /// <param name="curves">The curves.</param>
-        /// <param name="width">length of the Picture</param>
-        /// <returns>The <see cref="List{CurveVector}" />.</returns>
-        internal static List<CurveVector> GenerateCurves(List<CurveObject> curves, int width)
-        {
-            if (curves.IsNullOrEmpty())
-            {
-                DebugLog.CreateLogFile(WvgResources.ErrorCurveEmpty, 0);
-                return null;
-            }
-
-            try
-            {
-                return curves.AsParallel().Select(curve => GenerateCurve(curve, width)).ToList();
+                return (from graphic in container.Objects where graphic.Type == VectorObjects.Curve select graphic.Graphic as CurveObject).ToList();
             }
             catch (AggregateException aex)
             {
@@ -421,34 +360,6 @@ namespace LightVector
         }
 
         /// <summary>
-        ///     The generate curve.
-        /// </summary>
-        /// <param name="mVector">The mVector.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>The <see cref="CurveObject" />.</returns>
-        private static CurveObject GenerateCurve(CurveVector mVector, int width)
-        {
-            var points = new List<Point>(mVector.MasterId.Count);
-
-            for (var i = 0; i < mVector.MasterId.Count; i++)
-            {
-                var pnt = mVector.MasterId[i];
-                var start = IdToPoint(pnt, width);
-
-                points[i] = new Point { X = (int)start.X, Y = (int)start.Y };
-            }
-
-            return new CurveObject
-            {
-                Points = points,
-                Fill = mVector.Fill,
-                Stroke = mVector.Stroke,
-                StrokeLineJoin = mVector.StrokeLineJoin,
-                Thickness = mVector.Thickness
-            };
-        }
-
-        /// <summary>
         ///     Example:
         ///     0,1,2,3
         ///     0,  0,1,2,3
@@ -495,7 +406,7 @@ namespace LightVector
         /// <returns>The <see cref="LineVector" />.</returns>
         private static LineVector GenerateLine(LineObject line, int width)
         {
-            return new LineVector
+            return new()
             {
                 MasterId = CalculateId(line.StartPoint, width),
                 ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),

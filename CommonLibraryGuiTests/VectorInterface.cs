@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using LightVector;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 /*
  * COPYRIGHT:   See COPYING in the top level directory
@@ -17,7 +18,6 @@ namespace CommonLibraryVectorTests
     /// <summary>
     ///     The vector interface unit test class.
     /// </summary>
-    [TestClass]
     public sealed class VectorInterface
     {
         /// <summary>
@@ -33,7 +33,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Increase Length of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void InterfaceRotate()
         {
             _vctr = new Vectors(Width);
@@ -66,7 +66,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Increase Length of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ScaleLines()
         {
             var startPoint = new Point { X = 0, Y = 0 };
@@ -95,7 +95,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Increase Length of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ScaleCurves()
         {
             var startPoint = new Point { X = 0, Y = 0 };
@@ -113,7 +113,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Rotation of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void RotateLines()
         {
             var startPoint = new Point { X = 0, Y = 0 };
@@ -181,7 +181,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Rotation of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void RotateCurves()
         {
             var startPoint = new Point { X = 0, Y = 0 };
@@ -206,7 +206,7 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Rotation of Vector
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AlgorithmLines()
         {
             var startPoint = new Point { X = 0, Y = 0 };
@@ -239,10 +239,11 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     Test Save and Load
         /// </summary>
-        [TestMethod]
+        [Test]
+        [Apartment(ApartmentState.STA)]
         public void SaveLoad()
         {
-            var vct = new Vectors();
+            var vct = new Vectors(100);
 
             var startPoint = new Point { X = 0, Y = 0 };
 
