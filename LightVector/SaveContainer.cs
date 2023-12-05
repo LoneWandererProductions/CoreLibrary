@@ -14,7 +14,7 @@ namespace LightVector
     /// <summary>
     /// Describes the typ of Vector Object
     /// </summary>
-    public enum VectorObjects
+    internal enum VectorObjects
     {
         /// <summary>
         /// The line
@@ -106,7 +106,7 @@ namespace LightVector
     /// <summary>
     /// Save Container
     /// </summary>
-    public sealed class SaveContainer
+    internal sealed class SaveContainer
     {
         /// <summary>
         /// Gets or sets the objects.
@@ -114,7 +114,7 @@ namespace LightVector
         /// <value>
         /// The objects.
         /// </value>
-        public List<SaveObject> Objects { get; init; }
+        internal List<SaveObject> Objects { get; init; }
 
         /// <summary>
         /// Gets or sets the width.
@@ -122,19 +122,19 @@ namespace LightVector
         /// <value>
         /// The width.
         /// </value>
-        public int Width { get; init; }
+        internal int Width { get; init; }
     }
 
     /// <summary>
     ///     The save object class.
     ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
     /// </summary>
-    public sealed class SaveObject
+    internal sealed class SaveObject
     {
         /// <summary>
         ///     Gets or sets the point id.
         /// </summary>
-        public object Graphic { get; set; }
+        internal object Graphic { get; set; }
 
         /// <summary>
         ///     Gets or sets the Type.
@@ -142,6 +142,6 @@ namespace LightVector
         ///     1 is Line
         ///     2 is Curve
         /// </summary>
-        public VectorObjects Type { get; set; }
+        internal VectorObjects Type { get; set; }
     }
 }

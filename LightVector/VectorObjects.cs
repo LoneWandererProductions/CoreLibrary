@@ -7,9 +7,11 @@
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
+
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -24,7 +26,7 @@ namespace LightVector
         /// <summary>
         ///     Optional
         /// </summary>
-        public int Thickness { get; set; } = 1;
+        public int Thickness { get; init; } = 1;
 
         /// <summary>
         ///     Gets or sets the stroke.
@@ -89,29 +91,6 @@ namespace LightVector
             path.StrokeThickness = Thickness;
             path.StrokeLineJoin = StrokeLineJoin;
             return path;
-        }
-
-        /// <summary>
-        ///     Get the points.
-        /// </summary>
-        /// <returns>The <see cref="List{Rectangle}" />.</returns>
-        public IEnumerable<Rectangle> GetPoints()
-        {
-            var lst = new List<Rectangle>();
-
-            foreach (var point in Points)
-            {
-                var rect = new Rectangle { Width = 3, Height = 3 };
-                Canvas.SetLeft(rect, point.X - 3);
-                Canvas.SetTop(rect, point.Y - 3);
-                rect.Fill = Brushes.White;
-                rect.Stroke = Brushes.Gray;
-                rect.StrokeThickness = 3;
-
-                lst.Add(rect);
-            }
-
-            return lst;
         }
     }
 }

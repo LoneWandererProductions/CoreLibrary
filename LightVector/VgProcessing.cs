@@ -158,7 +158,7 @@ namespace LightVector
 
             try
             {
-                return lines.AsParallel().Select(line => GetLineObject(line, degree, width)).ToList();
+                return lines.AsParallel().Select(line => LineRotate(line, degree, width)).ToList();
             }
             catch (AggregateException aex)
             {
@@ -214,7 +214,7 @@ namespace LightVector
         /// <param name="degree">Degree we want to Rotate</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>The <see cref="LineObject" />.</returns>
-        internal static LineObject GetLineObject(LineObject line, int degree, int width)
+        internal static LineObject LineRotate(LineObject line, int degree, int width)
         {
             //no need to do anything
             if (degree is 360 or 0)
@@ -415,28 +415,6 @@ namespace LightVector
                 Stroke = line.Stroke,
                 StrokeLineJoin = line.StrokeLineJoin,
                 Thickness = line.Thickness
-            };
-        }
-
-        /// <summary>
-        ///     The generate curve.
-        /// </summary>
-        /// <param name="curve">Curve Object</param>
-        /// <param name="width">length of the Picture</param>
-        /// <returns>The <see cref="CurveVector" />.</returns>
-        private static CurveVector GenerateCurve(CurveObject curve, int width)
-        {
-            var masterId = new List<int>(curve.Points.Count);
-
-            masterId.AddRange(curve.Points.Select(pnt => CalculateId(pnt, width)));
-
-            return new CurveVector
-            {
-                MasterId = masterId,
-                Fill = curve.Fill,
-                Stroke = curve.Stroke,
-                StrokeLineJoin = curve.StrokeLineJoin,
-                Thickness = curve.Thickness
             };
         }
     }

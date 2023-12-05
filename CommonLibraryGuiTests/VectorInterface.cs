@@ -301,7 +301,7 @@ namespace CommonLibraryVectorTests
         {
             var trsLine = new LineObject { StartPoint = startPoint, EndPoint = endPoint };
 
-            return VgProcessing.GetLineObject(trsLine, degree, Width);
+            return VgProcessing.LineRotate(trsLine, degree, Width);
         }
 
         /// <summary>

@@ -91,7 +91,7 @@ namespace LightVector
         ///     Get the vector image.
         /// </summary>
         /// <param name="path">Target Path of svg Object</param>
-        /// <returns>The <see cref="T:LightVector.ImageContainer" />.</returns>
+        /// <returns>The <see cref="ImageContainer" />.</returns>
         public ImageContainer GetVectorImage(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -111,13 +111,13 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        ///     Get the point.
+        ///     Generate Rectangle at point.
         /// </summary>
         /// <param name="point">The point.</param>
-        /// <returns>The <see cref="T:System.Windows.Shapes.Rectangle" />.</returns>
-        /// <exception cref="T:System.NotImplementedException"></exception>
-        public Rectangle GetPoint(Point point)
+        /// <returns>The <see cref="Rectangle" />.</returns>
+        public Rectangle GetRectangle(Point point)
         {
+            //TODO refine
             return GraphicHelper.GetPoint(point);
         }
 
@@ -147,7 +147,7 @@ namespace LightVector
             //what????
             var path = crv.GetPath();
 
-            //TODO wtf?
+            //TODO implement cuvier path
             Curves.Add(crv);
 
             return path;
@@ -182,7 +182,7 @@ namespace LightVector
         /// <returns>The <see cref="LineObject" />.</returns>
         public LineObject LineRotate(LineObject line, int degree)
         {
-            return VgProcessing.GetLineObject(line, degree, Width);
+            return VgProcessing.LineRotate(line, degree, Width);
         }
 
         /// <inheritdoc />
@@ -215,7 +215,7 @@ namespace LightVector
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <param name="factor">The factor.</param>
-        /// <returns>The <see cref="T:LightVector.CurveObject" />.</returns>
+        /// <returns>The <see cref="CurveObject" />.</returns>
         public CurveObject CurveScale(CurveObject curve, int factor)
         {
             return VgProcessing.CurveScale(curve, factor);

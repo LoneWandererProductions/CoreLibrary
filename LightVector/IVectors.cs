@@ -25,14 +25,14 @@ namespace LightVector
         ///     Rotates the specified degree.
         /// </summary>
         /// <param name="degree">The degree.</param>
-        /// <returns></returns>
+        /// <returns>All Elements rotated by the degree.</returns>
         ImageContainer Rotate(int degree);
 
         /// <summary>
         ///     Scales the specified factor.
         /// </summary>
         /// <param name="factor">The factor.</param>
-        /// <returns></returns>
+        /// <returns>All Elements scaled by the factor.</returns>
         ImageContainer Scale(int factor);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace LightVector
         /// </summary>
         /// <param name="line">The line.</param>
         /// <param name="degree">The degree.</param>
-        /// <returns></returns>
+        /// <returns>Element rotated by degree.</returns>
         LineObject LineRotate(LineObject line, int degree);
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace LightVector
         /// </summary>
         /// <param name="line">The line.</param>
         /// <param name="factor">The factor.</param>
-        /// <returns></returns>
+        /// <returns>Element scaled by factor.</returns>
         LineObject LineScale(LineObject line, int factor);
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LightVector
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <param name="degree">The degree.</param>
-        /// <returns></returns>
+        /// <returns>Element rotated by degree.</returns>
         CurveObject CurveRotate(CurveObject curve, int degree);
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace LightVector
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <param name="factor">The factor.</param>
-        /// <returns></returns>
+        /// <returns>Element scaled by factor.</returns>
         CurveObject CurveScale(CurveObject curve, int factor);
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace LightVector
         /// </summary>
         /// <param name="point">The point.</param>
         /// <returns></returns>
-        Rectangle GetPoint(Point point);
+        Rectangle GetRectangle(Point point);
 
         /// <summary>
         ///     The line add.
