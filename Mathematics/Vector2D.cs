@@ -9,6 +9,8 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
 
@@ -43,7 +45,7 @@ namespace Mathematics
         /// <value>
         ///     The x.
         /// </value>
-        public double X { get; set; }
+        public double X { get; init; }
 
         /// <summary>
         ///     Gets or sets the y.
@@ -51,7 +53,7 @@ namespace Mathematics
         /// <value>
         ///     The y.
         /// </value>
-        public double Y { get; set; }
+        public double Y { get; init; }
 
         /// <summary>
         ///     Gets the rounded x.
@@ -122,7 +124,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator +(Vector2D first, Vector2D second)
         {
-            return new(first.X + second.X, first.Y + second.Y);
+            return new Vector2D(first.X + second.X, first.Y + second.Y);
         }
 
         /// <summary>
@@ -135,7 +137,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator -(Vector2D first, Vector2D second)
         {
-            return new(first.X - second.X, first.Y - second.Y);
+            return new Vector2D(first.X - second.X, first.Y - second.Y);
         }
 
         /// <summary>
@@ -170,7 +172,7 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public Vector2D Multiply(double value)
         {
-            return new() {X = X * value, Y = Y * value};
+            return new Vector2D { X = X * value, Y = Y * value };
         }
 
         /// <summary>
@@ -189,7 +191,7 @@ namespace Mathematics
         public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector2D {X = X / l, Y = Y / l};
+            return new Vector2D { X = X / l, Y = Y / l };
         }
 
         /// <summary>

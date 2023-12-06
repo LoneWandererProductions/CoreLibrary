@@ -12,22 +12,22 @@ using System.Windows.Media;
 namespace LightVector
 {
     /// <summary>
-    /// Describes the typ of Vector Object
+    ///     Describes the typ of Vector Object
     /// </summary>
     internal enum VectorObjects
     {
         /// <summary>
-        /// The line
+        ///     The line
         /// </summary>
         Point = 0,
 
         /// <summary>
-        /// The line
+        ///     The line
         /// </summary>
         Line = 0,
 
         /// <summary>
-        /// The curve
+        ///     The curve
         /// </summary>
         Curve = 1
     }
@@ -104,23 +104,23 @@ namespace LightVector
     }
 
     /// <summary>
-    /// Save Container
+    ///     Save Container
     /// </summary>
     internal sealed class SaveContainer
     {
         /// <summary>
-        /// Gets or sets the objects.
+        ///     Gets or sets the objects.
         /// </summary>
         /// <value>
-        /// The objects.
+        ///     The objects.
         /// </value>
         internal List<SaveObject> Objects { get; init; }
 
         /// <summary>
-        /// Gets or sets the width.
+        ///     Gets or sets the width.
         /// </summary>
         /// <value>
-        /// The width.
+        ///     The width.
         /// </value>
         internal int Width { get; init; }
     }

@@ -8,6 +8,7 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
 
@@ -166,7 +167,7 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator *(Fraction first, Fraction second)
             {
-                return new(first.ExponentNumerator * second.ExponentNumerator,
+                return new Fraction(first.ExponentNumerator * second.ExponentNumerator,
                     first.Denominator * second.Denominator);
             }
 
@@ -180,7 +181,7 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator /(Fraction first, Fraction second)
             {
-                return new(first.ExponentNumerator * second.Denominator,
+                return new Fraction(first.ExponentNumerator * second.Denominator,
                     first.Denominator * second.ExponentNumerator);
             }
 
@@ -194,8 +195,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator +(Fraction first, Fraction second)
             {
-                return new((first.ExponentNumerator * second.Denominator) +
-                           (first.Denominator * second.ExponentNumerator),
+                return new Fraction((first.ExponentNumerator * second.Denominator) +
+                                    (first.Denominator * second.ExponentNumerator),
                     first.Denominator * second.Denominator);
             }
 
@@ -209,8 +210,8 @@ namespace Mathematics
             /// </returns>
             public static Fraction operator -(Fraction first, Fraction second)
             {
-                return new((first.ExponentNumerator * second.Denominator) -
-                           (first.Denominator * second.ExponentNumerator),
+                return new Fraction((first.ExponentNumerator * second.Denominator) -
+                                    (first.Denominator * second.ExponentNumerator),
                     first.Denominator * second.Denominator);
             }
 

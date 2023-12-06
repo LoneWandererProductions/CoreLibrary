@@ -8,6 +8,7 @@
  */
 
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnassignedField.Global
 
 using System;
 using System.Collections.Generic;

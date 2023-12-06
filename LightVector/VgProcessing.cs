@@ -30,7 +30,9 @@ namespace LightVector
         {
             try
             {
-                return (from graphic in container.Objects where graphic.Type == VectorObjects.Line select graphic.Graphic as LineObject).ToList();
+                return (from graphic in container.Objects
+                    where graphic.Type == VectorObjects.Line
+                    select graphic.Graphic as LineObject).ToList();
             }
             catch (AggregateException aex)
             {
@@ -52,7 +54,9 @@ namespace LightVector
         {
             try
             {
-                return (from graphic in container.Objects where graphic.Type == VectorObjects.Curve select graphic.Graphic as CurveObject).ToList();
+                return (from graphic in container.Objects
+                    where graphic.Type == VectorObjects.Curve
+                    select graphic.Graphic as CurveObject).ToList();
             }
             catch (AggregateException aex)
             {
@@ -406,7 +410,7 @@ namespace LightVector
         /// <returns>The <see cref="LineVector" />.</returns>
         private static LineVector GenerateLine(LineObject line, int width)
         {
-            return new()
+            return new LineVector
             {
                 MasterId = CalculateId(line.StartPoint, width),
                 ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),

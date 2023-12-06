@@ -44,7 +44,10 @@ namespace SQLiteHelper
 
             foreach (DataRow row in table.Rows)
             {
-                if (row == null) continue;
+                if (row == null)
+                {
+                    continue;
+                }
 
                 var column = new TableColumns
                 {

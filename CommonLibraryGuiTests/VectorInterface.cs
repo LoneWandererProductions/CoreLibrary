@@ -32,7 +32,7 @@ namespace CommonLibraryVectorTests
         private static Vectors _vector;
 
         /// <summary>
-        /// The path
+        ///     The path
         /// </summary>
         private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "test.obj");
 

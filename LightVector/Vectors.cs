@@ -66,7 +66,7 @@ namespace LightVector
             {
                 foreach (var line in Lines)
                 {
-                    save = new SaveObject {Type = VectorObjects.Line, Graphic = line};
+                    save = new SaveObject { Type = VectorObjects.Line, Graphic = line };
                     saveList.Add(save);
                 }
             }
@@ -75,13 +75,13 @@ namespace LightVector
             {
                 foreach (var curve in Curves)
                 {
-                    save = new SaveObject {Type = VectorObjects.Curve, Graphic = curve};
+                    save = new SaveObject { Type = VectorObjects.Curve, Graphic = curve };
                     saveList.Add(save);
                 }
             }
 
 
-            var saveObject = new SaveContainer {Objects = saveList, Width = Width};
+            var saveObject = new SaveContainer { Objects = saveList, Width = Width };
 
             SaveHelper.XmlSerializerObject(saveObject, path);
         }
@@ -103,7 +103,10 @@ namespace LightVector
             var save = SaveHelper.XmlDeSerializerSaveContainer(path);
             Width = save.Width;
 
-            if (save.Objects == null) return null;
+            if (save.Objects == null)
+            {
+                return null;
+            }
 
             return new ImageContainer
             {
@@ -144,7 +147,7 @@ namespace LightVector
         {
             Curves ??= new List<CurveObject>();
 
-            var crv = new CurveObject {Points = curve};
+            var crv = new CurveObject { Points = curve };
 
             //what????
             var path = crv.GetPath();
@@ -234,7 +237,7 @@ namespace LightVector
             Lines = VgProcessing.LinesRotate(Lines, degree, Width);
             Curves = VgProcessing.CurvesRotate(Curves, degree);
 
-            return new ImageContainer {Lines = Lines, Curves = Curves};
+            return new ImageContainer { Lines = Lines, Curves = Curves };
         }
 
         /// <inheritdoc />
@@ -248,7 +251,7 @@ namespace LightVector
             Lines = VgProcessing.LinesScale(Lines, factor, Width);
             Curves = VgProcessing.CurvesScale(Curves, factor);
 
-            return new ImageContainer {Lines = Lines, Curves = Curves};
+            return new ImageContainer { Lines = Lines, Curves = Curves };
         }
     }
 
