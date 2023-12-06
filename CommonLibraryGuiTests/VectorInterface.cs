@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using LightVector;
@@ -28,7 +29,12 @@ namespace CommonLibraryVectorTests
         /// <summary>
         ///     The Vector Interface.
         /// </summary>
-        private static Vectors _vctr;
+        private static Vectors _vector;
+
+        /// <summary>
+        /// The path
+        /// </summary>
+        private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "test.obj");
 
         /// <summary>
         ///     Test Increase Length of Vector
@@ -36,7 +42,7 @@ namespace CommonLibraryVectorTests
         [Test]
         public void InterfaceRotate()
         {
-            _vctr = new Vectors(Width);
+            _vector = new Vectors(Width);
 
             var startPoint = new Point { X = 0, Y = 0 };
 
@@ -48,11 +54,11 @@ namespace CommonLibraryVectorTests
                 EndPoint = new Point(Convert.ToInt32(endPoint.X), Convert.ToInt32(endPoint.Y))
             };
 
-            _vctr.LineAdd(lne);
+            _vector.LineAdd(lne);
 
-            _vctr.Rotate(90);
+            _vector.Rotate(90);
 
-            var lineOne = _vctr.Lines[0];
+            var lineOne = _vector.Lines[0];
             var lineTwo = GetRotationLine(startPoint, endPoint, 90);
 
             Assert.AreEqual(lineTwo.StartPoint.X, lineOne.StartPoint.X, "StartPoint X not correct: 1");
@@ -257,8 +263,10 @@ namespace CommonLibraryVectorTests
 
             //vct.CurveRemove(curve);
 
-            vct.SaveContainer("test.obj");
-            var container = vct.GetVectorImage("test.obj");
+            vct.SaveContainer(Path);
+            var container = vct.GetVectorImage(Path);
+
+            Assert.IsNotNull(container, "Container was null");
         }
 
         /// <summary>

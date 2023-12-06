@@ -103,6 +103,8 @@ namespace LightVector
             var save = SaveHelper.XmlDeSerializerSaveContainer(path);
             Width = save.Width;
 
+            if (save.Objects == null) return null;
+
             return new ImageContainer
             {
                 Lines = VgProcessing.GetVectorLines(save), Curves = VgProcessing.GetVectorCurves(save)
