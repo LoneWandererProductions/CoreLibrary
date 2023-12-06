@@ -139,7 +139,7 @@ namespace Mathematics
         /// </returns>
         public static Vector3D operator +(Vector3D first, Vector3D second)
         {
-            return new Vector3D(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
+            return new(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Mathematics
         /// </returns>
         public static Vector3D operator -(Vector3D first, Vector3D second)
         {
-            return new Vector3D(first.X - second.X, first.Y - second.Y, first.Z - second.Z);
+            return new(first.X - second.X, first.Y - second.Y, first.Z - second.Z);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Mathematics
         /// </returns>
         public Vector3D CrossProduct(Vector3D second)
         {
-            return new Vector3D
+            return new()
             {
                 X = (Y * second.Z) - (Z * second.Y),
                 Y = (Z * second.X) - (X * second.Z),
@@ -192,7 +192,7 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public Vector3D Multiply(double value)
         {
-            return new Vector3D { X = X * value, Y = Y * value, Z = Z * value };
+            return new() {X = X * value, Y = Y * value, Z = Z * value};
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Mathematics
         public Vector3D Normalize()
         {
             var l = VectorLength();
-            return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
+            return new Vector3D {X = X / l, Y = Y / l, Z = Z / l};
         }
     }
 }

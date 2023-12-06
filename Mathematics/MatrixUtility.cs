@@ -8,6 +8,8 @@
  *              https://jamesmccaffrey.wordpress.com/2015/03/06/inverting-a-matrix-using-c/
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using ExtendedSystemObjects;
 
@@ -16,8 +18,25 @@ namespace Mathematics
     /// <summary>
     ///     Helper Methods, all unsafe for Matrix operations
     /// </summary>
-    internal static class MatrixUtility
+    public static class MatrixUtility
     {
+        /// <summary>
+        ///     Create an Identity Matrix.
+        /// </summary>
+        /// <param name="n">The n.</param>
+        /// <returns>An Identity Matrix</returns>
+        public static BaseMatrix MatrixIdentity(int n)
+        {
+            var result = new double[n, n];
+            for (var i = 0; i < n; ++i)
+            {
+                result[i, i] = 1.0;
+            }
+
+            return new BaseMatrix(result);
+        }
+
+
         /// <summary>
         ///     Unsafe Matrix  multiplication.
         ///     Source:

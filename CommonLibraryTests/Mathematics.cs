@@ -248,7 +248,7 @@ namespace CommonLibraryTests
         {
             double[,] x = { { 8, 4 }, { 3, 2 } };
 
-            var i = MatrixIdentity(2);
+            var i = MatrixUtility.MatrixIdentity(2);
 
             var m1 = new BaseMatrix { Matrix = x };
 
@@ -263,7 +263,7 @@ namespace CommonLibraryTests
 
             var cache = result.Matrix;
             //check compare of arrays
-            var check = cache.Equal(i);
+            var check = cache.Equal(i.Matrix);
             Assert.IsTrue(check, "Inverse Matrix");
         }
 
@@ -494,22 +494,6 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(27, lst.Count(), "Right amount");
-        }
-
-        /// <summary>
-        ///     Identity Matrix.
-        /// </summary>
-        /// <param name="n">The n.</param>
-        /// <returns>An Identity Matrix</returns>
-        private static double[,] MatrixIdentity(int n)
-        {
-            var result = new double[n, n];
-            for (var i = 0; i < n; ++i)
-            {
-                result[i, i] = 1.0;
-            }
-
-            return result;
         }
     }
 }
