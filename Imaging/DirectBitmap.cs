@@ -4,6 +4,9 @@
  * FILE:        Imaging/DirectBitmap.cs
  * PURPOSE:     Custom Image Class, speeds up Get and Set Pixel
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * Sources:     https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=net-7.0
+ *              https://learn.microsoft.com/en-us/dotnet/api/system.drawing.imaging.pixelformat?view=dotnet-plat-ext-8.0
+ *              https://learn.microsoft.com/en-us/dotnet/api/system.drawing.bitmap.-ctor?view=dotnet-plat-ext-8.0#system-drawing-bitmap-ctor(system-int32-system-int32-system-int32-system-drawing-imaging-pixelformat-system-intptr)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -32,6 +35,10 @@ namespace Imaging
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
+        ///     Bitmap which references pixel data directly
+        ///     PixelFormat, Specifies the format of the color data for each pixel in the image.
+        ///     AddrOfPinnedObject, reference to address of pinned object
+        ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
