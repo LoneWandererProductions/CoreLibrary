@@ -204,11 +204,11 @@ namespace CommonLibraryTests
 
             var path = DirectoryInformation.GetParentDirectory(1);
 
-            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal), "Wrong Directory Name");
+            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal), string.Concat("Wrong Directory Name: ", path));
 
             path = DirectoryInformation.GetParentDirectory(2);
 
-            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal), "Wrong Directory Name");
+            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal), string.Concat("Wrong Directory Name: ", path));
         }
 
         /// <summary>
