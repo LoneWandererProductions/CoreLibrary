@@ -204,15 +204,11 @@ namespace CommonLibraryTests
 
             var path = DirectoryInformation.GetParentDirectory(1);
 
-            Assert.AreEqual(
-                "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", path,
-                "Wrong Directory Name");
+            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal), "Wrong Directory Name");
 
             path = DirectoryInformation.GetParentDirectory(2);
 
-            Assert.AreEqual(
-                "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibraryTests", path,
-                "Wrong Directory Name");
+            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal), "Wrong Directory Name");
         }
 
         /// <summary>
@@ -252,15 +248,11 @@ namespace CommonLibraryTests
             var info = FileUtility.GetNewFileName(fileOne);
             HelperMethods.CreateFile(info);
 
-            Assert.AreEqual(
-                @"D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\CommonLibraryTests\bin\Debug\net5.0-windows\IoFileHandler\GetNewFileName\IO(0).txt",
-                info, "Expected File Name");
+            Assert.IsTrue(info.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt", StringComparison.Ordinal), "Expected File Name");
 
             info = FileUtility.GetNewFileName(fileOne);
 
-            Assert.AreEqual(
-                @"D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\CommonLibraryTests\bin\Debug\net5.0-windows\IoFileHandler\GetNewFileName\IO(1).txt",
-                info, "Expected File Name");
+            Assert.IsTrue(info.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt", StringComparison.Ordinal), "Expected File Name");
 
             _ = FileHandleDelete.DeleteFile(fileOne);
             var check = FileHandleSearch.FileExists(fileOne);
