@@ -236,18 +236,19 @@ namespace LightVector
             var columnX = (int)((vector.ColumnX * cos) - (vector.RowY * sin));
             var rowY = (int)((vector.ColumnX * sin) + (vector.RowY * cos));
 
-            var endpoint = new Point(columnX, rowY);
+            var transVector = new LineVector
+            {
+                ColumnX = columnX,
+                RowY = rowY,
+                Fill = vector.Fill,
+                Stroke = vector.Stroke,
+                StrokeLineJoin = vector.StrokeLineJoin,
+                Thickness = vector.Thickness,
+                MasterId = vector.MasterId
+            };
 
             //Calculate new Endpoint and return
-            return new LineObject
-            {
-                StartPoint = line.StartPoint,
-                EndPoint = endpoint,
-                //Fill = vector.Fill,
-                //Stroke = vector.Stroke,
-                //StrokeLineJoin = vector.StrokeLineJoin,
-                //Thickness = vector.Thickness,
-            };
+            return GenerateLine(transVector, width);
         }
 
         /// <summary>
