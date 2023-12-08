@@ -10,10 +10,12 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace LightVector
 {
@@ -21,7 +23,10 @@ namespace LightVector
     ///     The graphic object class.
     ///     Contains all the basic Options
     /// </summary>
-    public class GraphicObject
+    [XmlInclude(typeof(LineObject))]
+    [XmlInclude(typeof(CurveObject))]
+    [Serializable]
+    public abstract class GraphicObject
     {
         /// <summary>
         ///     Optional
@@ -50,7 +55,8 @@ namespace LightVector
     /// <summary>
     ///     The line object class.
     /// </summary>
-    public sealed class LineObject : GraphicObject
+    [Serializable]
+    public sealed class LineObject
     {
         /// <summary>
         ///     Gets or sets the start point.
@@ -67,7 +73,8 @@ namespace LightVector
     /// <summary>
     ///     The curve object class.
     /// </summary>
-    public sealed class CurveObject : GraphicObject
+    [Serializable]
+    public sealed class CurveObject
     {
         /// <summary>
         ///     Gets or sets the points.
@@ -86,11 +93,55 @@ namespace LightVector
         internal Path GetPath()
         {
             var path = CustomObjects.ReturnBezierCurve(Points, Tension);
-            path.Fill = Fill;
-            path.Stroke = Stroke;
-            path.StrokeThickness = Thickness;
-            path.StrokeLineJoin = StrokeLineJoin;
+            //path.Fill = Fill;
+            //path.Stroke = Stroke;
+            //path.StrokeThickness = Thickness;
+            //path.StrokeLineJoin = StrokeLineJoin;
             return path;
         }
+    }
+
+    /// <summary>
+    ///     Save Container
+    /// </summary>
+    [XmlRoot(ElementName = "Element")]
+    public sealed class SaveContainer
+    {
+        /// <summary>
+        ///     Gets or sets the objects.
+        /// </summary>
+        /// <value>
+        ///     The objects.
+        /// </value>
+        public List<SaveObject> Objects { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the width.
+        /// </summary>
+        /// <value>
+        ///     The width.
+        /// </value>
+        public int Width { get; init; }
+    }
+
+    /// <summary>
+    ///     The save object class.
+    ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
+    /// </summary>
+    [Serializable]
+    public sealed class SaveObject
+    {
+        /// <summary>
+        ///     Gets or sets the point id.
+        /// </summary>
+        public object Graphic { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the Type.
+        ///     0 is Point
+        ///     1 is Line
+        ///     2 is Curve
+        /// </summary>
+        public VectorObjects Type { get; set; }
     }
 }

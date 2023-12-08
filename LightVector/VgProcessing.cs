@@ -236,19 +236,18 @@ namespace LightVector
             var columnX = (int)((vector.ColumnX * cos) - (vector.RowY * sin));
             var rowY = (int)((vector.ColumnX * sin) + (vector.RowY * cos));
 
-            var transVector = new LineVector
-            {
-                ColumnX = columnX,
-                RowY = rowY,
-                Fill = vector.Fill,
-                Stroke = vector.Stroke,
-                StrokeLineJoin = vector.StrokeLineJoin,
-                Thickness = vector.Thickness,
-                MasterId = vector.MasterId
-            };
+            var endpoint = new Point(columnX, rowY);
 
             //Calculate new Endpoint and return
-            return GenerateLine(transVector, width);
+            return new LineObject
+            {
+                StartPoint = line.StartPoint,
+                EndPoint = endpoint,
+                //Fill = vector.Fill,
+                //Stroke = vector.Stroke,
+                //StrokeLineJoin = vector.StrokeLineJoin,
+                //Thickness = vector.Thickness,
+            };
         }
 
         /// <summary>
@@ -356,10 +355,30 @@ namespace LightVector
             {
                 StartPoint = start,
                 EndPoint = end,
-                Fill = mVector.Fill,
-                Stroke = mVector.Stroke,
-                StrokeLineJoin = mVector.StrokeLineJoin,
-                Thickness = mVector.Thickness
+                //Fill = mVector.Fill,
+                //Stroke = mVector.Stroke,
+                //StrokeLineJoin = mVector.StrokeLineJoin,
+                //Thickness = mVector.Thickness
+            };
+        }
+
+        /// <summary>
+        ///     The generate line.
+        /// </summary>
+        /// <param name="line">Line Object</param>
+        /// <param name="width">length of the Picture</param>
+        /// <returns>The <see cref="LineVector" />.</returns>
+        private static LineVector GenerateLine(LineObject line, int width)
+        {
+            return new()
+            {
+                MasterId = CalculateId(line.StartPoint, width),
+                ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),
+                RowY = (int)(line.EndPoint.Y - line.StartPoint.Y),
+                //Fill = line.Fill,
+                //Stroke = line.Stroke,
+                //StrokeLineJoin = line.StrokeLineJoin,
+                //Thickness = line.Thickness
             };
         }
 
@@ -400,26 +419,6 @@ namespace LightVector
             var yColumn = masterId / width;
 
             return new Point { X = modulo, Y = yColumn };
-        }
-
-        /// <summary>
-        ///     The generate line.
-        /// </summary>
-        /// <param name="line">Line Object</param>
-        /// <param name="width">length of the Picture</param>
-        /// <returns>The <see cref="LineVector" />.</returns>
-        private static LineVector GenerateLine(LineObject line, int width)
-        {
-            return new LineVector
-            {
-                MasterId = CalculateId(line.StartPoint, width),
-                ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),
-                RowY = (int)(line.EndPoint.Y - line.StartPoint.Y),
-                Fill = line.Fill,
-                Stroke = line.Stroke,
-                StrokeLineJoin = line.StrokeLineJoin,
-                Thickness = line.Thickness
-            };
         }
     }
 }

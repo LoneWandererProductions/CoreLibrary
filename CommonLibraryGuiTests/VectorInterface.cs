@@ -249,6 +249,8 @@ namespace CommonLibraryVectorTests
         [Apartment(ApartmentState.STA)]
         public void SaveLoad()
         {
+            File.Delete(Path);
+
             var vct = new Vectors(100);
 
             var startPoint = new Point { X = 0, Y = 0 };
@@ -264,6 +266,9 @@ namespace CommonLibraryVectorTests
             //vct.CurveRemove(curve);
 
             vct.SaveContainer(Path);
+
+            Assert.IsTrue(File.Exists(Path), "File does not exist.");
+
             var container = vct.GetVectorImage(Path);
 
             Assert.IsNotNull(container, "Container was null");

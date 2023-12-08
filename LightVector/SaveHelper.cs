@@ -41,13 +41,13 @@ namespace LightVector
 
             try
             {
-                var serializer = new XmlSerializer(serializeObject.GetType());
+                var serializer = new XmlSerializer(serializeObject.GetType(), new[] { typeof(LineObject), typeof(CurveObject) });
                 using var tr = new StreamWriter(path);
                 serializer.Serialize(tr, serializeObject);
             }
             catch (Exception error)
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorSerializer + error, 0);
+                DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorSerializer, error), 0);
             }
         }
 
@@ -72,13 +72,13 @@ namespace LightVector
 
             try
             {
-                var serializer = new XmlSerializer(typeof(object));
+                var serializer = new XmlSerializer(typeof(SaveContainer));
                 using Stream tr = File.OpenRead(path);
                 return (SaveContainer)serializer.Deserialize(tr);
             }
             catch (Exception error)
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorDeSerializer + error, 0);
+                DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorDeSerializer, error), 0);
                 return new SaveContainer();
             }
         }

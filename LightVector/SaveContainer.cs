@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 
@@ -14,7 +17,7 @@ namespace LightVector
     /// <summary>
     ///     Describes the typ of Vector Object
     /// </summary>
-    internal enum VectorObjects
+    public enum VectorObjects
     {
         /// <summary>
         ///     The line
@@ -24,52 +27,52 @@ namespace LightVector
         /// <summary>
         ///     The line
         /// </summary>
-        Line = 0,
+        Line = 1,
 
         /// <summary>
         ///     The curve
         /// </summary>
-        Curve = 1
+        Curve = 2
     }
 
     /// <summary>
     ///     The line vector class.
     /// </summary>
-    internal sealed class LineVector
+    public sealed class LineVector
     {
-        internal int MasterId { get; init; }
+        public int MasterId { get; init; }
 
         /// <summary>
         ///     Needed
-        ///     Reihe y
+        ///     Row Y
         /// </summary>
-        internal int RowY { get; set; }
+        public int RowY { get; set; }
 
         /// <summary>
         ///     Needed
-        ///     Spalte x
+        ///     Column X
         /// </summary>
-        internal int ColumnX { get; set; }
+        public int ColumnX { get; set; }
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal int Thickness { get; init; } = 1;
+        public int Thickness { get; init; } = 1;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal SolidColorBrush Stroke { get; init; } = Brushes.Black;
+        public SolidColorBrush Stroke { get; init; } = Brushes.Black;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal SolidColorBrush Fill { get; init; } = Brushes.Black;
+        public SolidColorBrush Fill { get; init; } = Brushes.Black;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
+        public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
     }
 
     /// <summary>
@@ -80,68 +83,26 @@ namespace LightVector
         /// <summary>
         ///     Curve Points
         /// </summary>
-        internal List<int> MasterId { get; init; }
+        public List<int> MasterId { get; init; }
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal int Thickness { get; init; } = 1;
+        public int Thickness { get; init; } = 1;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal SolidColorBrush Stroke { get; init; } = Brushes.Black;
+        public SolidColorBrush Stroke { get; init; } = Brushes.Black;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal SolidColorBrush Fill { get; init; } = Brushes.Black;
+        public SolidColorBrush Fill { get; init; } = Brushes.Black;
 
         /// <summary>
         ///     Optional
         /// </summary>
-        internal PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
-    }
-
-    /// <summary>
-    ///     Save Container
-    /// </summary>
-    internal sealed class SaveContainer
-    {
-        /// <summary>
-        ///     Gets or sets the objects.
-        /// </summary>
-        /// <value>
-        ///     The objects.
-        /// </value>
-        internal List<SaveObject> Objects { get; init; }
-
-        /// <summary>
-        ///     Gets or sets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
-        internal int Width { get; init; }
-    }
-
-    /// <summary>
-    ///     The save object class.
-    ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
-    /// </summary>
-    internal sealed class SaveObject
-    {
-        /// <summary>
-        ///     Gets or sets the point id.
-        /// </summary>
-        internal object Graphic { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the Type.
-        ///     0 is Point
-        ///     1 is Line
-        ///     2 is Curve
-        /// </summary>
-        internal VectorObjects Type { get; set; }
+        public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
     }
 }
