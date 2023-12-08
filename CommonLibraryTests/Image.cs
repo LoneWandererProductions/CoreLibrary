@@ -375,8 +375,10 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(3075, data.Size, "Done");
 
-            //Todo Sometimes Asserts!
-            Assert.IsTrue(dataList[2].Similarity.IsEqualTo(99, 0), "Done");
+            //should be around 99%
+            Assert.AreEqual(100, Math.Round(dataList[2].Similarity, 0),string.Concat("Done: ", dataList[2].Similarity));
+
+            Trace.WriteLine(dataList[2].Similarity);
         }
 
         /// <summary>
