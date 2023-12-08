@@ -115,6 +115,8 @@ namespace CommonLibrarySqlLiteTests
 
         internal static string PathDbCreateComplex => Path.Combine(Root, DbComplex);
 
+        internal static string PathDbDbImportExport => Path.Combine(Root, DbImportExport);
+
         internal static string PathDbDbSelectIn => Path.Combine(Root, DbSelectIn);
 
         internal static string PathPragmaTableInfo => Path.Combine(Root, DbPragmaIndexList);

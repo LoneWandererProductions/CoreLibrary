@@ -43,7 +43,8 @@ namespace CommonLibrarySqlLiteTests
             SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbCreate);
 
             //Check if file was created
-            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbImportExport, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.PathDbDbImportExport, true);
+
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCreateComplex),
                 "Test failed Create: " + Target.LastErrors);
 
