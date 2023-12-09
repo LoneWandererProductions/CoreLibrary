@@ -14,7 +14,10 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Imaging
 {
@@ -117,6 +120,20 @@ namespace Imaging
                 GraphicsUnit.Pixel);
 
             return dbm;
+        }
+
+        /// <summary>
+        /// Draws a line with a specified color.
+        /// It is quite faster than the normal way of drawing a line, at least for a vertical line that is one pixel wide.
+        /// </summary>
+        /// <param name="x">The x Coordinate.</param>
+        /// <param name="y">The y Coordinate.</param>
+        /// <param name="length">The length.</param>
+        /// <param name="color">The color.</param>
+        public void DrawVerticalLine(int x, int y, int length, Color color)
+        {
+            for (int i = x; i < length; i++)
+                SetPixel(x, i, color);
         }
 
         /// <summary>

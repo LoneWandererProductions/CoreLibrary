@@ -302,6 +302,55 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        /// Speeds the compare.
+        /// </summary>
+        [TestMethod]
+        public void SpeedCompare()
+        {
+            var bmp = new Bitmap(1000, 1000);
+            Pen blackPen = new Pen(Color.Black, 1);
+
+            int x1 = 0;
+            int y1 = 0;
+            int x2 = 0;
+            int y2 = 1000;
+
+            var watch = Stopwatch.StartNew();
+            // the code that you want to measure comes here
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Draw line to screen.
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.DrawLine(blackPen, x1, y1, x2, y2);
+            }
+
+            watch.Stop();
+
+            var elapsedOne = watch.ElapsedMilliseconds;
+
+            Trace.WriteLine(string.Concat("First: ", elapsedOne));
+
+            var dbm = DirectBitmap.GetInstance(bmp);
+
+            watch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Draw line to screen.
+                dbm.DrawVerticalLine(x1, y1, 1000, Color.Black);
+            }
+
+            watch.Stop();
+
+            var elapsedTwo = watch.ElapsedMilliseconds;
+
+            Trace.WriteLine(string.Concat("Second: ", elapsedTwo));
+
+            Assert.IsTrue(elapsedOne > elapsedTwo, "Was faster");
+        }
+
+        /// <summary>
         ///     Compares the colors.
         /// </summary>
         [TestMethod]
