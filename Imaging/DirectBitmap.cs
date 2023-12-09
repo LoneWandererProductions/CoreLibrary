@@ -14,10 +14,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Imaging
 {
@@ -132,7 +129,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int length, Color color)
         {
-            for (int i = x; i < length; i++)
+            for (int i = y; i < length; i++)
                 SetPixel(x, i, color);
         }
 
