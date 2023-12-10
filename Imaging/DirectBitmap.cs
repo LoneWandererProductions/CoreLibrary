@@ -159,8 +159,12 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawRectangle(int x, int y, int width, int height, Color color)
         {
-            Parallel.For(x, height,
-                index => DrawHorizontalLine(index, y, width, color));
+            if(width > height)
+                Parallel.For(x, height,
+                    index => DrawVerticalLine(index, y, width, color));
+            else
+                Parallel.For(y, width,
+                    index => DrawHorizontalLine(x, index, height, color));
         }
 
         /// <summary>
