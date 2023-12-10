@@ -14,9 +14,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Imaging
@@ -164,7 +162,6 @@ namespace Imaging
             Parallel.For(x, height,
                 index => DrawHorizontalLine(index, y, width, color));
         }
-
 
         /// <summary>
         ///     Sets the pixel.
