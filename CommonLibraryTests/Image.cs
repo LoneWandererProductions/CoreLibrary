@@ -329,7 +329,7 @@ namespace CommonLibraryTests
 
             var elapsedOne = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("First: ", elapsedOne));
+            Trace.WriteLine(string.Concat("First, DrawLine: ", elapsedOne));
 
             var dbm = DirectBitmap.GetInstance(bmp);
 
@@ -345,9 +345,59 @@ namespace CommonLibraryTests
 
             var elapsedTwo = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("Second: ", elapsedTwo));
+            Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo));
 
             Assert.IsTrue(elapsedOne > elapsedTwo, "Was faster");
+
+
+            watch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Draw line to screen.
+                dbm.DrawRectangle(x1, y1, 1, 1000, Color.Black);
+            }
+
+            watch.Stop();
+
+            var elapsed = watch.ElapsedMilliseconds;
+
+            Trace.WriteLine(string.Concat("Rectangle draw Line: ", elapsed));
+
+
+            watch = Stopwatch.StartNew();
+            // the code that you want to measure comes here
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Draw line to screen.
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.DrawRectangle(blackPen, x1, y1, 100, 200);
+            }
+
+            watch.Stop();
+
+            var elapsedThree = watch.ElapsedMilliseconds;
+
+            Trace.WriteLine(string.Concat("Three Rectangle: ", elapsedThree));
+
+            dbm = DirectBitmap.GetInstance(bmp);
+
+            watch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Draw line to screen.
+                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
+            }
+
+            watch.Stop();
+
+            var elapsedFour = watch.ElapsedMilliseconds;
+
+            Trace.WriteLine(string.Concat("Four DirectBitmap: ", elapsedFour));
+
+            Assert.Inconclusive(string.Concat("Results: ", elapsedThree, "Rectangle Microsoft: ", elapsedFour));
         }
 
         /// <summary>
