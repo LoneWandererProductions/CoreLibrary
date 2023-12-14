@@ -4,6 +4,9 @@
  * FILE:        Imaging/ImageRegister.cs
  * PURPOSE:     Register for Image Operations, and some helpful extensions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
+ *              https://archive.ph/hzR2W
+ *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -28,8 +31,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix GrayScale = new(new[]
         {
-            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] {.3f, .3f, .3f, 0, 0}, new[] {.59f, .59f, .59f, 0, 0}, new[] {.11f, .11f, .11f, 0, 0},
+            new float[] {0, 0, 0, 1, 0}, new float[] {0, 0, 0, 0, 1}
         });
 
         /// <summary>
@@ -39,8 +42,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Invert = new(new[]
         {
-            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
+            new float[] {-1, 0, 0, 0, 0}, new float[] {0, -1, 0, 0, 0}, new float[] {0, 0, -1, 0, 0},
+            new float[] {0, 0, 0, 1, 0}, new float[] {1, 1, 1, 0, 1}
         });
 
         /// <summary>
@@ -50,19 +53,30 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Sepia = new(new[]
         {
-            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
-            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] {.393f, .349f, .272f, 0, 0}, new[] {.769f, .686f, .534f, 0, 0},
+            new[] {0.189f, 0.168f, 0.131f, 0, 0}, new float[] {0, 0, 0, 1, 0}, new float[] {0, 0, 0, 0, 1}
         });
 
         /// <summary>
-        ///     the color matrix needed to Color Swap an image
+        ///     the color matrix needed to Color Swap an image to Polaroid
         ///     Source:
-        ///     https://archive.ph/hzR2W
+        ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal static readonly ColorMatrix Swap = new(new[]
+        internal static readonly ColorMatrix Polaroid = new(new[]
         {
-            new float[] { 0, 0, 1, 0, 0 }, new float[] { 0, 1, 0, 0, 0 }, new float[] { 1, 0, 0, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] {1.438f, -0.062f, -0.062f, 0, 0}, new[] {-0.122f, 1.378f, -0.122f, 0, 0},
+            new[] {0.016f, -0.016f, 1.483f, 0, 0}, new float[] {0, 0, 0, 1, 0}, new[] {0.03f, 0.05f, -0.02f, 0, 1}
+        });
+
+        /// <summary>
+        ///     the color matrix needed to Color Swap an image to BlackAndWhite
+        ///     Source:
+        ///     https://docs.rainmeter.net/tips/colormatrix-guide/
+        /// </summary>
+        internal static readonly ColorMatrix BlackAndWhite = new(new[]
+        {
+            new[] {1.5f, 1.5f, 1.5f, 0, 0}, new[] {1.5f, 1.5f, 1.5f, 0, 0}, new[] {1.5f, 1.5f, 1.5f, 0, 0},
+            new float[] {0, 0, 0, 1, 0}, new float[] {-1, -1, -1, 0, 1}
         });
 
         /// <summary>
@@ -128,7 +142,7 @@ namespace Imaging
         GrayScale = 0,
         Invert = 1,
         Sepia = 2,
-        Swap = 3,
-        BlackAndWhite = 4
+        BlackAndWhite = 3,
+        Polaroid = 4
     }
 }

@@ -589,6 +589,7 @@ namespace Imaging
             using var graph = Graphics.FromImage(btm);
             //create some image attributes
             using var atr = new ImageAttributes();
+
             //set the color matrix attribute
             switch (filter)
             {
@@ -601,14 +602,12 @@ namespace Imaging
                 case ImageFilter.Sepia:
                     atr.SetColorMatrix(ImageRegister.Sepia);
                     break;
-                case ImageFilter.Swap:
-                    atr.SetColorMatrix(ImageRegister.Swap);
-                    break;
                 case ImageFilter.BlackAndWhite:
-                    //convert to Gray scale
-                    btm = FilterImage(image, ImageFilter.GrayScale);
-                    //convert to Black and White
-                    return CreateBlackAndWhite(btm);
+                    atr.SetColorMatrix(ImageRegister.BlackAndWhite);
+                    break;
+                case ImageFilter.Polaroid:
+                    atr.SetColorMatrix(ImageRegister.Polaroid);
+                    break;
                 default:
                     return null;
             }
@@ -1136,40 +1135,6 @@ namespace Imaging
         {
             //0,0,0 is Black or Transparent
             return color.R == 0 && color.G == 0 && color.B == 0;
-        }
-
-        /// <summary>
-        ///     Creates the black and white image.
-        ///     Averages a gray Scale Image.
-        /// </summary>
-        /// <param name="btm">The bitmap.</param>
-        /// <returns>Black and White Image</returns>
-        private static Bitmap CreateBlackAndWhite(Bitmap btm)
-        {
-            //use our new Format
-            var dbm = DirectBitmap.GetInstance(btm);
-
-            for (var y = 0; y < dbm.Height; y++)
-            for (var x = 0; x < dbm.Width; x++)
-            {
-                var pixel = dbm.GetPixel(x, y);
-                int a = pixel.A;
-                int r = pixel.R;
-                int g = pixel.G;
-                int b = pixel.B;
-                //get the average and decide based on Value
-                var avg = (r + g + b) / 3;
-
-                avg = avg < 128 ? 0 : 255;
-
-                dbm.SetPixel(x, y, Color.FromArgb(a, avg, avg, avg));
-            }
-
-            //get the Bitmap
-            btm = new Bitmap(dbm.Bitmap);
-            //cleanup
-            dbm.Dispose();
-            return btm;
         }
 
         /// <summary>

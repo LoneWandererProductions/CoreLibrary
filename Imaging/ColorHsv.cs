@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Media;
 using ExtendedSystemObjects;
+using Mathematics;
 
 namespace Imaging
 {
