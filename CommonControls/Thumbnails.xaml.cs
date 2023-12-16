@@ -8,6 +8,10 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedType.Global
 
 using System;
 using System.Collections.Generic;

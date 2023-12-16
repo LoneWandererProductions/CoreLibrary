@@ -8,7 +8,6 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 

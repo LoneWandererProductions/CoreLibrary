@@ -8,6 +8,7 @@
 
 // ReSharper disable EventNeverSubscribedTo.Global, only used outside of the dll
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
+// ReSharper disable UnusedType.Global
 
 using System.IO;
 using System.Windows;

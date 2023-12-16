@@ -121,8 +121,8 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Draws a vertical line with a specified color.
-        /// For now Microsoft's Rectangle Method is faster in certain circumstances
+        ///     Draws a vertical line with a specified color.
+        ///     For now Microsoft's Rectangle Method is faster in certain circumstances
         /// </summary>
         /// <param name="x">The x Coordinate.</param>
         /// <param name="y">The y Coordinate.</param>
@@ -130,27 +130,32 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (int i = y; i < height; i++)
+            for (var i = y; i < height; i++)
+            {
                 SetPixel(x, i, color);
+            }
         }
 
         /// <summary>
-        /// Draws a horizontal line with a specified color.
-        /// For now Microsoft's Rectangle Method is faster in certain circumstances
-        /// /// </summary>
+        ///     Draws a horizontal line with a specified color.
+        ///     For now Microsoft's Rectangle Method is faster in certain circumstances
+        ///     ///
+        /// </summary>
         /// <param name="x">The x Coordinate.</param>
         /// <param name="y">The y Coordinate.</param>
         /// <param name="length">The length.</param>
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (int i = x; i < length; i++)
+            for (var i = x; i < length; i++)
+            {
                 SetPixel(i, y, color);
+            }
         }
 
         /// <summary>
-        /// Draws the rectangle.
-        /// For now Microsoft's Rectangle Method is faster
+        ///     Draws the rectangle.
+        ///     For now Microsoft's Rectangle Method is faster
         /// </summary>
         /// <param name="x">The x Coordinate.</param>
         /// <param name="y">The y Coordinate.</param>
@@ -159,12 +164,16 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawRectangle(int x, int y, int width, int height, Color color)
         {
-            if(width > height)
+            if (width > height)
+            {
                 Parallel.For(x, height,
                     index => DrawVerticalLine(index, y, width, color));
+            }
             else
+            {
                 Parallel.For(y, width,
                     index => DrawHorizontalLine(x, index, height, color));
+            }
         }
 
         /// <summary>

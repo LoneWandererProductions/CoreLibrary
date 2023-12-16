@@ -7,8 +7,8 @@ namespace CommonControls
 {
     /// <inheritdoc />
     /// <summary>
-    /// https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
-    /// https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/markup-extensions-and-wpf-xaml?view=netframeworkdesktop-4.8
+    ///     https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+    ///     https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/markup-extensions-and-wpf-xaml?view=netframeworkdesktop-4.8
     /// </summary>
     /// <seealso cref="T:System.Windows.Markup.MarkupExtension" />
     public sealed class EnumBindingSourceExtension : MarkupExtension

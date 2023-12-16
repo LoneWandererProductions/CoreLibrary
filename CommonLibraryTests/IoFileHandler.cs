@@ -204,11 +204,13 @@ namespace CommonLibraryTests
 
             var path = DirectoryInformation.GetParentDirectory(1);
 
-            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal), string.Concat("Wrong Directory Name: ", path));
+            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal),
+                string.Concat("Wrong Directory Name: ", path));
 
             path = DirectoryInformation.GetParentDirectory(2);
 
-            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal), string.Concat("Wrong Directory Name: ", path));
+            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal),
+                string.Concat("Wrong Directory Name: ", path));
         }
 
         /// <summary>
@@ -248,11 +250,17 @@ namespace CommonLibraryTests
             var info = FileUtility.GetNewFileName(fileOne);
             HelperMethods.CreateFile(info);
 
-            Assert.IsTrue(info.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt", StringComparison.Ordinal), "Expected File Name");
+            Assert.IsTrue(
+                info.EndsWith(
+                    "Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
+                    StringComparison.Ordinal), "Expected File Name");
 
             info = FileUtility.GetNewFileName(fileOne);
 
-            Assert.IsTrue(info.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt", StringComparison.Ordinal), "Expected File Name");
+            Assert.IsTrue(
+                info.EndsWith(
+                    "Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
+                    StringComparison.Ordinal), "Expected File Name");
 
             _ = FileHandleDelete.DeleteFile(fileOne);
             var check = FileHandleSearch.FileExists(fileOne);

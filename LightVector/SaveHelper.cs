@@ -41,7 +41,8 @@ namespace LightVector
 
             try
             {
-                var serializer = new XmlSerializer(serializeObject.GetType(), new[] { typeof(LineObject), typeof(CurveObject) });
+                var serializer = new XmlSerializer(serializeObject.GetType(),
+                    new[] { typeof(LineObject), typeof(CurveObject) });
                 using var tr = new StreamWriter(path);
                 serializer.Serialize(tr, serializeObject);
             }

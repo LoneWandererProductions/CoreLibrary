@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;

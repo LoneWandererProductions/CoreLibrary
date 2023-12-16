@@ -301,24 +301,24 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Speed compare.
-        /// We use TestCleanup to execute it at the end, so no other test execution interferes
+        ///     Speed compare.
+        ///     We use TestCleanup to execute it at the end, so no other test execution interferes
         /// </summary>
         [TestMethod]
         public void SpeedCompare()
         {
             var bmp = new Bitmap(1000, 1000);
-            Pen blackPen = new Pen(Color.Black, 1);
+            var blackPen = new Pen(Color.Black, 1);
 
-            int x1 = 0;
-            int y1 = 0;
-            int x2 = 0;
-            int y2 = 1000;
+            var x1 = 0;
+            var y1 = 0;
+            var x2 = 0;
+            var y2 = 1000;
 
             var watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 // Draw line to screen.
                 using var graphics = Graphics.FromImage(bmp);
@@ -335,7 +335,7 @@ namespace CommonLibraryTests
 
             watch = Stopwatch.StartNew();
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 // Draw line to screen.
                 dbm.DrawVerticalLine(x1, y1, 1000, Color.Black);
@@ -353,7 +353,7 @@ namespace CommonLibraryTests
 
             watch = Stopwatch.StartNew();
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 // Draw line to screen.
                 dbm.DrawRectangle(x1, y1, 1, 1000, Color.Black);
@@ -369,7 +369,7 @@ namespace CommonLibraryTests
             watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 // Draw line to screen.
                 using var graphics = Graphics.FromImage(bmp);
@@ -386,7 +386,7 @@ namespace CommonLibraryTests
 
             watch = Stopwatch.StartNew();
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 // Draw line to screen.
                 dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
@@ -476,7 +476,8 @@ namespace CommonLibraryTests
             Assert.AreEqual(3075, data.Size, "Done");
 
             //should be around 99%
-            Assert.AreEqual(100, Math.Round(dataList[2].Similarity, 0),string.Concat("Done: ", dataList[2].Similarity));
+            Assert.AreEqual(100, Math.Round(dataList[2].Similarity, 0),
+                string.Concat("Done: ", dataList[2].Similarity));
 
             Trace.WriteLine(dataList[2].Similarity);
         }

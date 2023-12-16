@@ -354,8 +354,7 @@ namespace LightVector
 
             return new LineObject
             {
-                StartPoint = start,
-                EndPoint = end,
+                StartPoint = start, EndPoint = end
                 //Fill = mVector.Fill,
                 //Stroke = mVector.Stroke,
                 //StrokeLineJoin = mVector.StrokeLineJoin,
@@ -371,11 +370,11 @@ namespace LightVector
         /// <returns>The <see cref="LineVector" />.</returns>
         private static LineVector GenerateLine(LineObject line, int width)
         {
-            return new()
+            return new LineVector
             {
                 MasterId = CalculateId(line.StartPoint, width),
                 ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),
-                RowY = (int)(line.EndPoint.Y - line.StartPoint.Y),
+                RowY = (int)(line.EndPoint.Y - line.StartPoint.Y)
                 //Fill = line.Fill,
                 //Stroke = line.Stroke,
                 //StrokeLineJoin = line.StrokeLineJoin,
