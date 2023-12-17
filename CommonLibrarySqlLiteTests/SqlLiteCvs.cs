@@ -40,12 +40,12 @@ namespace CommonLibrarySqlLiteTests
             Target.SendMessage += SharedHelperClass.DebugPrints;
 
             //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbCreate);
+            SharedHelperClass.CleanUp(ResourcesSqlLite.DbImportExport);
 
             //Check if file was created
-            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.PathDbDbImportExport, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbImportExport, true);
 
-            Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCreateComplex),
+            Assert.IsTrue(File.Exists(ResourcesSqlLite.DbImportExport),
                 "Test failed Create: " + Target.LastErrors);
 
             var elementOne = new TableColumns

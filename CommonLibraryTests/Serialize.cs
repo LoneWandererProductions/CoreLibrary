@@ -85,7 +85,8 @@ namespace CommonLibraryTests
         public void Cvs()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Serialize),
-                "test.cvs");
+                "cvstest.cvs");
+
             var lst = new List<List<string>>();
 
             for (var i = 0; i < 10; i++)
