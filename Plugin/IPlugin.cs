@@ -7,6 +7,9 @@
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
  */
 
+// ReSharper disable UnusedParameter.Global, future proofing, it is up to the person how to use this ids
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections.Generic;
 

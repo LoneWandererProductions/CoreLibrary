@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 
 using System.Collections.Generic;
 using System.Windows.Media;

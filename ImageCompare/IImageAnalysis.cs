@@ -1,10 +1,12 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/IImageAnalysis.cs
  * PURPOSE:     Interface for the Image Analysis Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 using System;
 using System.Collections.Generic;

@@ -236,6 +236,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="input">The input string.</param>
         /// <returns>Well formed Parenthesis</returns>
+        // ReSharper disable once UnusedMember.Global, for future uses
         internal static string WellFormedParenthesis(string input)
         {
             var regex = new Regex(@"\)(\s*,\s*)\(");

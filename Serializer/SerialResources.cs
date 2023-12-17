@@ -37,10 +37,5 @@ namespace Serializer
         ///     Error string in serializer XML.
         /// </summary>
         internal const string ErrorSerializerXml = "Could not Serialize, Error in XML: ";
-
-        /// <summary>
-        ///     Error string in serializer Stream.
-        /// </summary>
-        internal const string ErrorStream = "Could not Serialize, Error in Stream: ";
     }
 }

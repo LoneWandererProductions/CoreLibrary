@@ -52,15 +52,5 @@ namespace LightVector
         ///     The error file empty (const). Value: @"File was empty: ".
         /// </summary>
         internal const string ErrorFileEmpty = "File was empty: ";
-
-        /// <summary>
-        ///     The error curve empty (const). Value: @"Curve Object was Empty".
-        /// </summary>
-        internal const string ErrorCurveEmpty = "Curve Object was Empty";
-
-        /// <summary>
-        ///     The error line empty (const). Value: @"Line Object was Empty".
-        /// </summary>
-        internal const string ErrorLineEmpty = "Line Object was Empty";
     }
 }

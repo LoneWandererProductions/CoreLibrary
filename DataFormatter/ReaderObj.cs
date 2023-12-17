@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -24,12 +25,12 @@ namespace DataFormatter
         /// <summary>
         ///     Reads the object.
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns>Readable Obj File</returns>
         [return: MaybeNull]
-        public static ObjFile ReadObj(string filepath)
+        public static ObjFile ReadObj(string filePath)
         {
-            var lst = ReadText.ReadFile(filepath);
+            var lst = ReadText.ReadFile(filePath);
             if (lst == null)
             {
                 return null;

@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMemberInSuper.Global
 
 using System.Collections.Generic;
 

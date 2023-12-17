@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -97,7 +100,7 @@ namespace SQLiteHelper
         }
 
         /// <summary>
-        ///     Rowses the specified width.
+        ///     Rows the specified width.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <returns>
@@ -124,7 +127,7 @@ namespace SQLiteHelper
         }
 
         /// <summary>
-        ///     Get a specific cell of the Dataset
+        ///     Get a specific cell of the DataSet
         /// </summary>
         /// <param name="height">Height of the Column</param>
         /// <param name="width">Width of the Row</param>

@@ -9,6 +9,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,6 @@ namespace LightVector
         public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
     }
 
-    /// <inheritdoc />
     /// <summary>
     ///     The line object class.
     /// </summary>
@@ -69,7 +69,6 @@ namespace LightVector
         public Point EndPoint { get; init; }
     }
 
-    /// <inheritdoc />
     /// <summary>
     ///     The curve object class.
     /// </summary>

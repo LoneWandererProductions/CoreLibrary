@@ -7,6 +7,8 @@
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
  */
 
+// ReSharper disable UnusedMemberInSuper.Global
+
 using System.Collections.Generic;
 
 namespace ImageCompare

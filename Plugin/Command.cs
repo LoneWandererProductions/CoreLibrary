@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedMember.Global
+
 
 using System.Collections.Generic;
 

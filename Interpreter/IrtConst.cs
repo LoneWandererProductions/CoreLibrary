@@ -127,16 +127,6 @@ namespace Interpreter
         internal const int ErrorParam = -1;
 
         /// <summary>
-        ///     The overload Parameter (const). Value: -2.
-        /// </summary>
-        internal const int OverloadParam = -2;
-
-        /// <summary>
-        ///     The nestet Parameter (const). Value: -3.
-        /// </summary>
-        internal const int NestetParam = -3;
-
-        /// <summary>
         ///     The open Clause, Standard is'('
         /// </summary>
         internal const char BaseOpen = '(';

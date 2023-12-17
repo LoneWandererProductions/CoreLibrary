@@ -12,6 +12,7 @@
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -50,28 +51,28 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Height (in lines)
         /// </summary>
-        public static readonly DependencyProperty ThmbHeight = DependencyProperty.Register(nameof(ThmbHeight),
+        public static readonly DependencyProperty DepThumbHeight = DependencyProperty.Register(nameof(DepThumbHeight),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Length (in lines)
         /// </summary>
-        public static readonly DependencyProperty ThmbLength = DependencyProperty.Register(nameof(ThmbLength),
+        public static readonly DependencyProperty DepThumbLength = DependencyProperty.Register(nameof(DepThumbLength),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty ThmbCellSize = DependencyProperty.Register(nameof(ThmbCellSize),
+        public static readonly DependencyProperty DepThumbCellSize = DependencyProperty.Register(nameof(DepThumbCellSize),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty ThmbGrid = DependencyProperty.Register(nameof(ThmbGrid),
+        public static readonly DependencyProperty DepThumbGrid = DependencyProperty.Register(nameof(DepThumbGrid),
             typeof(bool),
             typeof(Thumbnails), null);
 
@@ -116,8 +117,8 @@ namespace CommonControls
         /// </value>
         public int ThumbHeight
         {
-            get => (int)GetValue(ThmbHeight);
-            set => SetValue(ThmbHeight, value);
+            get => (int)GetValue(DepThumbHeight);
+            set => SetValue(DepThumbHeight, value);
         }
 
         /// <summary>
@@ -128,8 +129,8 @@ namespace CommonControls
         /// </value>
         public int ThumbLength
         {
-            get => (int)GetValue(ThmbLength);
-            set => SetValue(ThmbLength, value);
+            get => (int)GetValue(DepThumbLength);
+            set => SetValue(DepThumbLength, value);
         }
 
         /// <summary>
@@ -140,8 +141,8 @@ namespace CommonControls
         /// </value>
         public int ThumbCellSize
         {
-            get => (int)GetValue(ThmbCellSize);
-            set => SetValue(ThmbCellSize, value);
+            get => (int)GetValue(DepThumbCellSize);
+            set => SetValue(DepThumbCellSize, value);
         }
 
         /// <summary>
@@ -153,8 +154,8 @@ namespace CommonControls
         public bool ThumbGrid
 
         {
-            get => (bool)GetValue(ThmbGrid);
-            set => SetValue(ThmbGrid, value);
+            get => (bool)GetValue(DepThumbGrid);
+            set => SetValue(DepThumbGrid, value);
         }
 
         /// <summary>

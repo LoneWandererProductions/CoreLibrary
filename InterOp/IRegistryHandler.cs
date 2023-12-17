@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz
  */
 
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
+
 using System.Collections.Generic;
 
 namespace InterOp
