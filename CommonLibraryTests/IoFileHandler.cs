@@ -208,7 +208,7 @@ namespace CommonLibraryTests
 
             path = DirectoryInformation.GetParentDirectory(2);
 
-            Assert.IsTrue(path.EndsWith("Projects\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal),
+            Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal),
                 string.Concat("Wrong Directory Name: ", path));
         }
 
