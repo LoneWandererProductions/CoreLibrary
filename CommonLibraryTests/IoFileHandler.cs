@@ -203,8 +203,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Did not get all Folders");
 
             var path = DirectoryInformation.GetParentDirectory(1);
-
-            Assert.IsTrue(path.EndsWith("\\Projects\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal),
+            Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal),
                 string.Concat("Wrong Directory Name: ", path));
 
             path = DirectoryInformation.GetParentDirectory(2);
@@ -252,14 +251,14 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(
                 info.EndsWith(
-                    "Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
+                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
             info = FileUtility.GetNewFileName(fileOne);
 
             Assert.IsTrue(
                 info.EndsWith(
-                    "Projects\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
+                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
             _ = FileHandleDelete.DeleteFile(fileOne);
