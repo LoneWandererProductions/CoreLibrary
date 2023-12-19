@@ -11,6 +11,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable NonReadonlyMemberInGetHashCode
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 using System;
 
@@ -45,7 +46,7 @@ namespace Mathematics
         /// <value>
         ///     The x.
         /// </value>
-        public double X { get; init; }
+        public double X { get; set; }
 
         /// <summary>
         ///     Gets or sets the y.
@@ -53,7 +54,7 @@ namespace Mathematics
         /// <value>
         ///     The y.
         /// </value>
-        public double Y { get; init; }
+        public double Y { get; set; }
 
         /// <summary>
         ///     Gets the rounded x.

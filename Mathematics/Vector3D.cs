@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable NonReadonlyMemberInGetHashCode
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 using System;
 
