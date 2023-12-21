@@ -77,6 +77,8 @@ namespace Mathematics
         ///     [ModelViewProjectionMatrix] = [View To Projection]x[World To View]x[Model to World]
         ///     Creates a 3D world transformation
         ///     Todo test
+        ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Graphics/Viewport.cs
+        ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Vector3.cs#L1043
         /// </summary>
         /// <param name="vector">The vector.</param>
         /// <param name="camera">The camera.</param>
