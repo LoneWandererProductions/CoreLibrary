@@ -215,5 +215,24 @@ namespace Mathematics
             var l = VectorLength();
             return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
         }
+
+        /// <summary>
+        /// Converts to matrix.
+        /// </summary>
+        /// <returns>Vector transformed to Matrix</returns>
+        public BaseMatrix ToMatrix()
+        {
+            return new() {[0, 0] = X, [0, 1] = Y, [0, 2] = Z};
+        }
+
+        /// <summary>
+        /// Converts to matrix.
+        /// In this case especially for 3D Projection
+        /// </summary>
+        /// <returns>Vector transformed to Matrix</returns>
+        public BaseMatrix To3DMatrix()
+        {
+            return new() { [0, 0] = X, [0, 1] = Y, [0, 2] = Z, [0, 3] = 1 };
+        }
     }
 }

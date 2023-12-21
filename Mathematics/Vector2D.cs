@@ -203,5 +203,14 @@ namespace Mathematics
         {
             return Math.Atan(Y / X) * 180 / Math.PI;
         }
+
+        /// <summary>
+        /// Converts to matrix.
+        /// </summary>
+        /// <returns>Vector transformed to Matrix</returns>
+        public BaseMatrix ToMatrix()
+        {
+            return new() { [0, 0] = X, [0, 1] = Y};
+        }
     }
 }

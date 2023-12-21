@@ -100,7 +100,7 @@ namespace Mathematics
         public double this[int x, int y]
         {
             get => Matrix[x, y];
-            init => Matrix[x, y] = value;
+            set => Matrix[x, y] = value;
         }
 
         /// <inheritdoc />
@@ -172,6 +172,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Implements the operator *.
+        ///     https://en.wikipedia.org/wiki/Matrix_multiplication
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
@@ -180,8 +181,7 @@ namespace Mathematics
         /// </returns>
         public static BaseMatrix operator *(BaseMatrix first, BaseMatrix second)
         {
-            //Todo rework check
-            if (first.Width != second.Width && first.Width != second.Height)
+            if (first.Width != second.Height)
             {
                 throw new ArithmeticException();
             }
