@@ -4,6 +4,8 @@
  * FILE:        CommonControls/SqlConnect.cs
  * PURPOSE:     Class that will build a sql Connection string in the future
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCE:      https://stackoverflow.com/questions/55590869/how-to-protect-strings-without-securestring
+ * NOTE:        Based on security concerns we won't provide a login via password and id over .Net, for more information read provided Link
  */
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -15,117 +17,141 @@
 namespace CommonControls
 {
     /// <summary>
-    /// The Sql connection string class
+    ///     The Sql connection string class
     /// </summary>
-    public class SqlConnect
+    internal sealed class SqlConnect
     {
         /// <summary>
-        /// Gets or sets the server.
+        ///     The persist security information, for Security reasons always deactivated
+        ///     Until I know of a case where it is necessary it stays that way.
         /// </summary>
-        /// <value>
-        /// The server.
-        /// </value>
-        public string Server { get; set; }
+        internal const bool PersistSecurityInfo = false;
 
         /// <summary>
-        /// Gets or sets the database.
+        ///     The persist information string configuration for the connection string.
         /// </summary>
-        /// <value>
-        /// The database.
-        /// </value>
-        public string Database { get; set; }
+        private readonly string _persistInfo =
+            string.Concat("PersistSecurity Info= ", PersistSecurityInfo.ToString(), ";");
 
         /// <summary>
-        /// Gets or sets a value indicating whether [integrated security].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [integrated security]; otherwise, <c>false</c>.
-        /// </value>
-        public bool IntegratedSecurity { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [trust server certificate].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
-        /// </value>
-        public bool TrustServerCertificate { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets the user identifier.
-        /// </summary>
-        /// <value>
-        /// The user identifier.
-        /// </value>
-        public string UserId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        /// <value>
-        /// The password.
-        /// </value>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// The persist security information, for Security reasons always deactivated
-        /// Until I know of a case where it is necessary it stays that way.
-        /// </summary>
-        public const bool PersistSecurityInfo = false;
-
-        /// <summary>
-        /// The persist information string configuration for the connection string.
-        /// </summary>
-        private readonly string _persistInfo = string.Concat("PersistSecurity Info= ", PersistSecurityInfo.ToString(), ";");
-
-        /// <summary>
-        /// The IntegratedSecurity string for the connection string
+        ///     The IntegratedSecurity string for the connection string
         /// </summary>
         private string _security;
 
         /// <summary>
-        /// The TrustServerCertificate string for the connection string
+        ///     The TrustServerCertificate string for the connection string
         /// </summary>
         private string _trust;
 
         /// <summary>
-        /// Gets the connection string to a SQL Server.
+        ///     Initializes a new instance of the <see cref="SqlConnect" /> class.
         /// </summary>
-        /// <returns>Complete Connection string based on chosen Connection Typ</returns>
-        public string GetConnectionString()
+        /// <param name="database">The database.</param>
+        /// <param name="server">The server.</param>
+        /// <param name="isActive">if set to <c>true</c> [is active].</param>
+        internal SqlConnect(string database, string server, bool isActive)
         {
-            _security = IntegratedSecurity ? @"Integrated Security=True;" : @"Integrated Security=False;";
-            _trust = TrustServerCertificate ? @"TrustServerCertificate=True;" : @"TrustServerCertificate=False;";
-            return IntegratedSecurity ? SqlWindowsAuthentication() : SqlAuthentication();
+            Server = server;
+            Database = database;
+            TrustServerCertificate = isActive;
         }
 
         /// <summary>
-        /// Authentication with Windows Authentication.
+        ///     Gets or sets the server.
+        /// </summary>
+        /// <value>
+        ///     The server.
+        /// </value>
+        internal string Server { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the database.
+        /// </summary>
+        /// <value>
+        ///     The database.
+        /// </value>
+        internal string Database { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [trust server certificate].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
+        /// </value>
+        internal bool TrustServerCertificate { get; set; } = true;
+
+        /// <summary>
+        ///     Gets the connection string to a SQL Server.
+        /// </summary>
+        /// <returns>Complete Connection string based on chosen Connection Typ</returns>
+        internal string GetConnectionString()
+        {
+            //_security = IntegratedSecurity ? @"Integrated Security=True;" : @"Integrated Security=False;";
+            _security = "Integrated Security=True;";
+            _trust = TrustServerCertificate ? @"TrustServerCertificate=True;" : @"TrustServerCertificate=False;";
+            //return IntegratedSecurity ? SqlWindowsAuthentication() : SqlAuthentication();
+            return SqlWindowsAuthentication();
+        }
+
+        /// <summary>
+        ///     Authentication with Windows Authentication.
         /// </summary>
         /// <returns>Connection string</returns>
         private string SqlWindowsAuthentication()
         {
-            if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
-            if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+            if (string.IsNullOrEmpty(Server))
+            {
+                return "Error: Server Name";
+            }
+
+            if (string.IsNullOrEmpty(Database))
+            {
+                return "Error: Database Name";
+            }
 
             return string.Concat(_persistInfo, _trust, _security, Server, ";", Database);
         }
 
-        /// <summary>
-        /// Authentication with SqlClient and Password.
-        /// </summary>
-        /// <returns>Connection string</returns>
-        private string SqlAuthentication()
-        {
-            if (string.IsNullOrEmpty(UserId)) return "Error: UserId";
-            if (string.IsNullOrEmpty(Password)) return "Error: Password";
-            if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
-            if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+        ///// <summary>
+        ///// Gets or sets a value indicating whether [integrated security].
+        ///// </summary>
+        ///// <value>
+        /////   <c>true</c> if [integrated security]; otherwise, <c>false</c>.
+        ///// </value>
+        //public bool IntegratedSecurity { get; set; } = true;
 
-            string user = string.Concat("User ID = ", UserId, ");");
-            string password = string.Concat("Password =", Password, ");");
+        ///// <summary>
+        ///// Gets or sets the user identifier.
+        ///// </summary>
+        ///// <value>
+        ///// The user identifier.
+        ///// </value>
+        //public string UserId { get; set; }
 
-            return string.Concat(_persistInfo, _trust, _security, user, password, Server, ";", Database);
-        }
+        ///// <summary>
+        ///// Gets or sets the password.
+        ///// </summary>
+        ///// <value>
+        ///// The password.
+        ///// </value>
+        //public string Password { get; set; }
+
+
+        ///// <summary>
+        ///// Authentication with SqlClient and Password.
+        ///// </summary>
+        ///// <returns>Connection string</returns>
+        //private string SqlAuthentication()
+        //{
+        //    if (string.IsNullOrEmpty(UserId)) return "Error: UserId";
+        //    if (string.IsNullOrEmpty(Password)) return "Error: Password";
+        //    if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
+        //    if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+
+        //    string user = string.Concat("User ID = ", UserId, ");");
+        //    string password = string.Concat("Password =", Password, ");");
+
+        //    return string.Concat(_persistInfo, _trust, _security, user, password, Server, ";", Database);
+        //}
     }
 }
