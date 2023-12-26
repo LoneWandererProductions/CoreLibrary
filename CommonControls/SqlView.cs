@@ -11,6 +11,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
@@ -27,6 +28,11 @@ namespace CommonControls
         ///     The connect command
         /// </summary>
         private ICommand _connectCommand;
+
+        /// <summary>
+        /// The close command
+        /// </summary>
+        private ICommand _closeCommand;
 
         /// <summary>
         ///     The data base
@@ -137,6 +143,15 @@ namespace CommonControls
             _connectCommand ??= new DelegateCommand<object>(ConnectAction, CanExecute);
 
         /// <summary>
+        /// Gets the close command.
+        /// </summary>
+        /// <value>
+        /// The close command.
+        /// </value>
+        public ICommand CloseCommand =>
+            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
+
+        /// <summary>
         ///     Gets the connection string.
         /// </summary>
         /// <value>
@@ -152,7 +167,6 @@ namespace CommonControls
         ///     The add log.
         /// </value>
         public string AddLog { get; set; }
-
 
         /// <inheritdoc />
         /// <summary>
@@ -193,6 +207,15 @@ namespace CommonControls
         {
             var connect = new SqlConnect(Database, Server, IsActive);
             ConnectionString = connect.GetConnectionString();
+        }
+
+        /// <summary>
+        ///     Closes the app
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void CloseAction(object obj)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

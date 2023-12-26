@@ -49,6 +49,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\Communication\Communication.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />

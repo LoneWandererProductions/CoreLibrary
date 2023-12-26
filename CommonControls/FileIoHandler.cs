@@ -39,6 +39,19 @@ namespace CommonControls
         }
 
         /// <summary>
+        /// Shows the login screen.
+        /// </summary>
+        /// <returns>Connection String</returns>
+        public static string ShowLoginScreen()
+        {
+            var login = new SqlLogin();
+            _ = login.ShowDialog();
+
+            return login.View.ConnectionString;
+        }
+
+
+        /// <summary>
         ///     Looks up a file
         ///     Returns the PathObject
         ///     With Start Folder

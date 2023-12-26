@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Connect to Server" Height="450" Width="450">
     <Window.DataContext>
-        <local:SqlView x:Name="View" />
+        <local:SqlView x:Name="View" x:FieldModifier="public" />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -38,7 +38,7 @@
         <TextBox  Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Server, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox  Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=Database, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Button  Content="Connect" Grid.Column="2" HorizontalAlignment="Left"  Grid.Row="7" VerticalAlignment="Top"  Command="{Binding ConnectCommand}"/>
-        <Button  Content="Close" Grid.Column="3" HorizontalAlignment="Left"  Grid.Row="7" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button  Content="Close" Grid.Column="3" HorizontalAlignment="Left"  Grid.Row="7" VerticalAlignment="Top" Command="{Binding CloseCommand}"/>
         <TextBox Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Log, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
     </Grid>
 </Window>

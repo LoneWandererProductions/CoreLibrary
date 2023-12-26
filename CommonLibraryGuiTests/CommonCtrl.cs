@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonControls;
@@ -112,6 +113,25 @@ namespace CommonLibraryGuiTests
         {
             //TODO Test in Live environment
             Assert.AreNotEqual(512, Win32Enums.MouseEvents.WmMousemove, "checked out");
+        }
+
+        /// <summary>
+        /// Test of the ConnectionString Dialog.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void ConnectionString()
+        {
+            var login = new SqlLogin();
+            login.Show();
+            login.View.Server = "SqlServer";
+            login.View.Database = @"MyDB\Hello";
+            login.View.ConnectCommand.Execute(null);
+            var result = login.View.ConnectionString;
+            login.Close();
+
+            Assert.IsTrue(result.Equals(@"PersistSecurity Info= False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello", StringComparison.Ordinal),
+                string.Concat("Wrong Connection string: ", result));
         }
     }
 }

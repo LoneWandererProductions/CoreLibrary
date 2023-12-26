@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.8.34330.188
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34301.259
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{9B2741D2-443A-4136-B9A4-1191686DA4AD}"
 EndProject
@@ -50,8 +50,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication", "Communication\Communication.csproj", "{7F4C5533-0E24-4381-A3F1-CC3BD4AADFB3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightVector", "LightVector\LightVector.csproj", "{8DD286ED-2358-47E1-BD4D-B4DCB550681E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLibraryTestsCommunication", "CommonLibraryTestsCommunication\CommonLibraryTestsCommunication.csproj", "{B98A7BCE-4188-4E1E-B733-A89906049BEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mathematics", "Mathematics\Mathematics.csproj", "{03B1DB00-54D5-4095-BE71-B26CFA923420}"
 EndProject
@@ -143,10 +141,6 @@ Global
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD286ED-2358-47E1-BD4D-B4DCB550681E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B98A7BCE-4188-4E1E-B733-A89906049BEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{03B1DB00-54D5-4095-BE71-B26CFA923420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03B1DB00-54D5-4095-BE71-B26CFA923420}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03B1DB00-54D5-4095-BE71-B26CFA923420}.Release|Any CPU.ActiveCfg = Release|Any CPU
