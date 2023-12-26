@@ -16,12 +16,12 @@ namespace CommonLibraryTests
     public class Communication
     {
         /// <summary>
-        /// The path
+        ///     The path
         /// </summary>
         private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication));
 
         /// <summary>
-        /// Communicationses this instance.
+        ///     Communicationses this instance.
         /// </summary>
         [TestMethod]
         public void Communications()

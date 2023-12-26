@@ -116,7 +116,7 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Test of the ConnectionString Dialog.
+        ///     Test of the ConnectionString Dialog.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -130,7 +130,10 @@ namespace CommonLibraryGuiTests
             var result = login.View.ConnectionString;
             login.Close();
 
-            Assert.IsTrue(result.Equals(@"PersistSecurity Info= False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello", StringComparison.Ordinal),
+            Assert.IsTrue(
+                result.Equals(
+                    @"PersistSecurity Info= False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello",
+                    StringComparison.Ordinal),
                 string.Concat("Wrong Connection string: ", result));
         }
     }

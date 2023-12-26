@@ -78,7 +78,7 @@ namespace CommonControls
         /// <value>
         ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
         /// </value>
-        internal bool TrustServerCertificate { get; set; } = true;
+        internal bool TrustServerCertificate { get; set; }
 
         /// <summary>
         ///     Gets the connection string to a SQL Server.

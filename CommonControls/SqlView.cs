@@ -25,14 +25,14 @@ namespace CommonControls
     public sealed class SqlView : INotifyPropertyChanged
     {
         /// <summary>
+        ///     The close command
+        /// </summary>
+        private ICommand _closeCommand;
+
+        /// <summary>
         ///     The connect command
         /// </summary>
         private ICommand _connectCommand;
-
-        /// <summary>
-        /// The close command
-        /// </summary>
-        private ICommand _closeCommand;
 
         /// <summary>
         ///     The data base
@@ -143,10 +143,10 @@ namespace CommonControls
             _connectCommand ??= new DelegateCommand<object>(ConnectAction, CanExecute);
 
         /// <summary>
-        /// Gets the close command.
+        ///     Gets the close command.
         /// </summary>
         /// <value>
-        /// The close command.
+        ///     The close command.
         /// </value>
         public ICommand CloseCommand =>
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);

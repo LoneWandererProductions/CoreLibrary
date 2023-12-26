@@ -205,12 +205,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts to matrix.
+        ///     Converts to matrix.
         /// </summary>
         /// <returns>Vector transformed to Matrix</returns>
         public BaseMatrix ToMatrix()
         {
-            return new() { [0, 0] = X, [0, 1] = Y};
+            return new BaseMatrix { [0, 0] = X, [0, 1] = Y };
         }
     }
 }

@@ -126,7 +126,10 @@ namespace CommonLibrarySqlLiteTests
 
             var data = Target.Pragma_index_list(TableThree);
 
-            if (data == null) Assert.Fail("Pragma was empty");
+            if (data == null)
+            {
+                Assert.Fail("Pragma was empty");
+            }
 
             foreach (var item in data)
             {

@@ -39,7 +39,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Shows the login screen.
+        ///     Shows the login screen.
         /// </summary>
         /// <returns>Connection String</returns>
         public static string ShowLoginScreen()

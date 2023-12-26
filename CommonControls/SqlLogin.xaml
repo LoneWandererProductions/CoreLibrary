@@ -12,33 +12,39 @@
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="5" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
             <RowDefinition Height="50" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="150" />
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
-        <Label Content="Server Name" Grid.Column="1"  Grid.Row="1"/>
-        <Label Content="Database Name" Grid.Column="1"  Grid.Row="3"/>
-        <Label Content="Trust Server Certificate" Grid.Column="1"  Grid.Row="5"/>
-        <CheckBox Grid.Column="2" Grid.Row="5" IsEnabled="{Binding Path =IsActive}"/>
-        <TextBox  Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Server, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox  Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=Database, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <Button  Content="Connect" Grid.Column="2" HorizontalAlignment="Left"  Grid.Row="7" VerticalAlignment="Top"  Command="{Binding ConnectCommand}"/>
-        <Button  Content="Close" Grid.Column="3" HorizontalAlignment="Left"  Grid.Row="7" VerticalAlignment="Top" Command="{Binding CloseCommand}"/>
-        <TextBox Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Log, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+        <Label Content="Server Name" Grid.Column="1" Grid.Row="1" />
+        <Label Content="Database Name" Grid.Column="1" Grid.Row="3" />
+        <Label Content="Trust Server Certificate" Grid.Column="1" Grid.Row="5" />
+        <CheckBox Grid.Column="2" Grid.Row="5" IsEnabled="{Binding Path =IsActive}" />
+        <TextBox Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap"
+                 Text="{Binding Path=Server, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap"
+                 Text="{Binding Path=Database, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Content="Connect" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top"
+                Command="{Binding ConnectCommand}" />
+        <Button Content="Close" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top"
+                Command="{Binding CloseCommand}" />
+        <TextBox Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap"
+                 VerticalAlignment="Stretch"
+                 Text="{Binding Path=Log, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
     </Grid>
 </Window>
