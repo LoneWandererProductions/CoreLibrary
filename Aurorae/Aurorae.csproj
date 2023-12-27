@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+    <ProjectReference Include="..\Imaging\Imaging.csproj" />
+  </ItemGroup>
+
+</Project>

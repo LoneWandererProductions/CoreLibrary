@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mathematics", "Mathematics\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imaging", "Imaging\Imaging.csproj", "{810F6A32-3C86-4DB8-B3C3-F9CF438A1D47}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aurorae", "Aurorae\Aurorae.csproj", "{A8CCA803-65EC-449A-ACDB-E2FA89F3D240}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{810F6A32-3C86-4DB8-B3C3-F9CF438A1D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{810F6A32-3C86-4DB8-B3C3-F9CF438A1D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{810F6A32-3C86-4DB8-B3C3-F9CF438A1D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8CCA803-65EC-449A-ACDB-E2FA89F3D240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8CCA803-65EC-449A-ACDB-E2FA89F3D240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8CCA803-65EC-449A-ACDB-E2FA89F3D240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8CCA803-65EC-449A-ACDB-E2FA89F3D240}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
