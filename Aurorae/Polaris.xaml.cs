@@ -11,9 +11,9 @@ namespace Aurorae
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>
-    ///     Generate a playing field
+    ///     Generate a playing field for the editor
     /// </summary>
-    public sealed partial class Aurora
+    public partial class Polaris
     {
         public static readonly DependencyProperty MapHeight = DependencyProperty.Register(nameof(MapHeight),
             typeof(int),
@@ -39,15 +39,13 @@ namespace Aurorae
             typeof(bool),
             typeof(Aurora), null);
 
-        //todo add a List Property for the Movement
-        //todo add an Image for the Avatar
-        //todo add starting point for Avatar
-        //todo add a block Property
-        //todo add animation code in Helper
+        public static readonly DependencyProperty Number = DependencyProperty.Register(nameof(Number),
+            typeof(bool),
+            typeof(Aurora), null);
 
         private Cursor _cursor;
 
-        public Aurora()
+        public Polaris()
         {
             InitializeComponent();
             Initiate();
@@ -58,7 +56,6 @@ namespace Aurorae
             get => (int)GetValue(MapHeight);
             set => SetValue(MapHeight, value);
         }
-
 
         public int DependencyWidth
         {
@@ -96,6 +93,18 @@ namespace Aurorae
             }
         }
 
+        public bool DependencyNumber
+        {
+            get => (bool)GetValue(Number);
+            set
+            {
+                SetValue(Number, value);
+                LayerThree.Source = !DependencyNumber
+                    ? null
+                    : Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
+            }
+        }
+
         private void Initiate()
         {
             if (DependencyWidth == 0 || DependencyHeight == 0 || DependencyTextureSize == 0)
@@ -106,12 +115,16 @@ namespace Aurorae
             Touch.Height = DependencyHeight * DependencyTextureSize;
             Touch.Width = DependencyWidth * DependencyTextureSize;
 
-            LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
-                DependencyTextures, DependencyMap);
+            //LayerOne.Source = Helper.EmptyImage(DependencyWidth, DependencyHeight, DependencyTextureSize);
 
             if (DependencyGrid)
             {
                 LayerTwo.Source = Helper.GenerateGrid(DependencyWidth, DependencyHeight, DependencyTextureSize);
+            }
+
+            if (DependencyNumber)
+            {
+                LayerThree.Source = Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
             }
         }
 
