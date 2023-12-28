@@ -129,7 +129,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Chunks the by.
+        ///     Chunks a list by a certain amount.
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="source">The source.</param>

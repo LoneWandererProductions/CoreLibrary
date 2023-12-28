@@ -166,11 +166,11 @@ namespace CommonLibraryTests
 
             lst.AddDistinct(ResourcesGeneral.DataItemOne, 3);
 
-            Assert.AreEqual(2, lst.Count, "Tested not as equal: " + lst.Count);
+            Assert.AreEqual(2, lst.Count, string.Concat("Tested not as equal: " , lst.Count));
 
             lst.AddDistinct(ResourcesGeneral.DataItemTwo, 4);
 
-            Assert.AreEqual(3, lst.Count, "Tested not as equal: " + lst.Count);
+            Assert.AreEqual(3, lst.Count, string.Concat("Tested not as equal: " , lst.Count));
         }
 
         /// <summary>
@@ -191,6 +191,23 @@ namespace CommonLibraryTests
             var removeLstAlt = new List<int> { 1, 2 };
             baseLst.RemoveListRange(removeLstAlt);
             Assert.AreEqual(3, baseLst.Count, "Not removed");
+        }
+
+        /// <summary>
+        ///     Here we Test our List AddReplace
+        /// </summary>
+        [TestMethod]
+        public void ExtendedListChunk()
+        {
+            var baseLst = new List<int> { 1, 2, 3 };
+            var removeList = new List<int> { 1, 2 };
+
+            baseLst.AddRange(removeList);
+            var result = baseLst.ChunkBy(3);
+
+            Assert.AreEqual(2, result.Count, "Not enough Chunks.");
+
+            Assert.AreEqual(2, result[1][1], "Wrong element.");
         }
 
         /// <summary>
