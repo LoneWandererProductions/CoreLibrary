@@ -5,5 +5,7 @@
         public string Path { get; set; }
 
         public int Layer { get; set; }
+
+        public int Id { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ExtendedSystemObjects
@@ -82,6 +83,16 @@ namespace ExtendedSystemObjects
             return result;
         }
 
+        public static TValue[,] GetRange<TValue>(this TValue[,] array, int index, int height)
+        {
+            var width = array.GetLength(1);
+
+            TValue[,] result = new TValue[width,height];
+            Array.Copy(array, index, result, 0, height);
+            return result;
+        }
+
+
         /// <summary>
         ///     Equals the specified arrays.
         /// </summary>
@@ -113,6 +124,28 @@ namespace ExtendedSystemObjects
             }
 
             return true;
+        }
+
+        public static List<TValue[,]> Chunk<TValue>(this TValue[,] array, int chunkSize)
+        {
+            var upper = array.GetLength(0);
+            var lst = new List<TValue[,]>();
+            var modulo = upper % chunkSize;
+
+            TValue[,] slice;
+
+            for (int i = 0; i < upper; i += chunkSize)
+            {
+                slice = array.GetRange(i, chunkSize);
+                lst.Add(slice);
+            }
+
+            if (modulo == 0) return lst;
+
+            slice = array.GetRange(upper - modulo, modulo);
+            lst.Add(slice);
+
+            return lst;
         }
     }
 }

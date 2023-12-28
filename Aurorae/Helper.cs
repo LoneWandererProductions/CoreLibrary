@@ -34,32 +34,31 @@ namespace Aurorae
         /// <param name="map">The map.</param>
         /// <returns>The generated Map</returns>
         internal static BitmapImage GenerateImage(int width, int height, int textureSize, List<Texture> textures,
-            IEnumerable<int> map)
+            int[,] map)
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
             var boxes = new List<Box>();
 
-            var layers = map.ChunkBy(height);
-
-            for (var y = 0; y < layers.Count; y++)
+            foreach (var slice in map.Chunk(height))
             {
-                var slice = layers[y];
-
-                for (var x = 0; x < slice.Count; x++)
+                for (var y = 0; y < slice.GetLength(0); y++)
                 {
-                    var id = slice[x];
-                    if (id <= 0)
+                    for (var x = 0; x < slice.GetLength(1); x++)
                     {
-                        continue;
+                        var id = slice[x, y];
+                        if (id <= 0)
+                        {
+                            continue;
+                        }
+
+                        var texture = textures[id];
+                        var image = Render.GetBitmapFile(texture.Path);
+
+                        var box = new Box { X = x * textureSize, Y = y * textureSize, Image = image, Layer = texture.Layer };
+
+                        boxes.Add(box);
                     }
-
-                    var texture = textures[id];
-                    var image = Render.GetBitmapFile(texture.Path);
-
-                    var box = new Box {X = x * textureSize, Y = y * textureSize, Image = image, Layer = texture.Layer};
-
-                    boxes.Add(box);
                 }
             }
 
