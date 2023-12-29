@@ -28,11 +28,11 @@ namespace Aurorae
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Map = DependencyProperty.Register(nameof(Map),
-            typeof(int[,]),
+            typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Textures = DependencyProperty.Register(nameof(Textures),
-            typeof(List<Texture>),
+            typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Grid = DependencyProperty.Register(nameof(Grid),
@@ -72,15 +72,15 @@ namespace Aurorae
             set => SetValue(TextureSize, value);
         }
 
-        public int[,] DependencyMap
+        public Dictionary<int, List<int>> DependencyMap
         {
-            get => (int[,])GetValue(Map);
+            get => (Dictionary<int, List<int>>)GetValue(Map);
             set => SetValue(Map, value);
         }
 
-        public List<Texture> DependencyTextures
+        public Dictionary<int, Texture> DependencyTextures
         {
-            get => (List<Texture>)GetValue(Textures);
+            get => (Dictionary<int, Texture>)GetValue(Textures);
             set => SetValue(Textures, value);
         }
 

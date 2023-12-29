@@ -33,36 +33,15 @@ namespace Aurorae
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
         /// <returns>The generated Map</returns>
-        internal static BitmapImage GenerateImage(int width, int height, int textureSize, List<Texture> textures,
-            int[,] map)
+        internal static BitmapImage GenerateImage(int width, int height, int textureSize, Dictionary<int, Texture>textures,
+            Dictionary<int, List<int>> map)
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            var boxes = new List<Box>();
+            var tiles = (from tile in map from layer in tile.Value select new Box {X = IdToX(tile.Key, width), Y = IdToY(tile.Key, width), Layer = textures[tile.Key].Layer, Image = Render.GetBitmapFile(textures[tile.Key].Path)}).ToList();
 
-            foreach (var slice in map.Chunk(height))
-            {
-                for (var y = 0; y < slice.GetLength(0); y++)
-                {
-                    for (var x = 0; x < slice.GetLength(1); x++)
-                    {
-                        var id = slice[x, y];
-                        if (id <= 0)
-                        {
-                            continue;
-                        }
 
-                        var texture = textures[id];
-                        var image = Render.GetBitmapFile(texture.Path);
-
-                        var box = new Box { X = x * textureSize, Y = y * textureSize, Image = image, Layer = texture.Layer };
-
-                        boxes.Add(box);
-                    }
-                }
-            }
-
-            background = boxes.OrderBy(layer => layer.Layer).ToList().Aggregate(background,
+            background = tiles.OrderBy(layer => layer.Layer).ToList().Aggregate(background,
                 (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
 
             return background.ToBitmapImage();
@@ -118,6 +97,28 @@ namespace Aurorae
             }
 
             return background.ToBitmapImage();
+        }
+
+        /// <summary>
+        ///     Identifiers to x.
+        /// </summary>
+        /// <param name="masterId">The master identifier.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>x coordinate</returns>
+        private static int IdToX(int masterId, int width)
+        {
+            return masterId % width;
+        }
+
+        /// <summary>
+        ///     Identifiers to y.
+        /// </summary>
+        /// <param name="masterId">The master identifier.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>y coordinate</returns>
+        private static int IdToY(int masterId, int width)
+        {
+            return masterId / width;
         }
     }
 }
