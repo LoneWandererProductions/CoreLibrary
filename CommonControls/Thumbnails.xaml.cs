@@ -302,7 +302,7 @@ namespace CommonControls
 
             //Handle some special cases
             if (ThumbCellSize == 0) ThumbCellSize = 100;
-            if (ThumbHeight == 0) ThumbHeight = 1;
+            if (ThumbHeight == 0 && ThumbLength == 0) ThumbHeight = 1;
 
             //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
             //catch on reload
@@ -350,7 +350,6 @@ namespace CommonControls
                 Keys.Add(images.Name, key);
                 ImageDct.Add(images.Name, images);
                 images.MouseDown += ImageClick_MouseDown;
-                if (SelectBox) images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
 
                 //Add Image to Canvas
                 _ = myCanvas.Children.Add(images);
@@ -358,6 +357,7 @@ namespace CommonControls
                 //add an overlay here to get a selection frame
                 if (SelectBox)
                 {
+                    images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
                     var checkbox = new CheckBox();
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
