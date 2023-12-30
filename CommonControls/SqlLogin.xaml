@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CommonControls"
         mc:Ignorable="d"
+        Topmost="True"
         Title="Connect to Server" Height="450" Width="450">
     <Window.DataContext>
         <local:SqlView x:Name="View" x:FieldModifier="public" />
