@@ -236,10 +236,7 @@ namespace CommonControls
         {
             var control = sender as Thumbnails;
             // add an Can Execute
-            if (!_refresh)
-            {
-                return;
-            }
+            if (!_refresh) return;
 
             control?.OnItemsSourceChanged();
         }
@@ -252,17 +249,11 @@ namespace CommonControls
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id))
-            {
-                return;
-            }
+            if (!ItemsSource.ContainsKey(id)) return;
 
             var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-            if (image != null)
-            {
-                image.Source = null;
-            }
+            if (image != null) image.Source = null;
 
             _ = ItemsSource.Remove(id);
 
@@ -308,31 +299,27 @@ namespace CommonControls
             ImageDct = new Dictionary<string, Image>(pics.Count);
             Selection = new List<int>();
 
-            if (SelectBox)
-            {
-                ChkBox = new Dictionary<int, CheckBox>(pics.Count);
-            }
+            if (SelectBox) ChkBox = new Dictionary<int, CheckBox>(pics.Count);
 
             //Handle some special cases
-            if (ThumbCellSize == 0)
-            {
-                ThumbCellSize = 100;
-            }
+            if (ThumbCellSize == 0) ThumbCellSize = 100;
 
-            if (ThumbHeight == 0)
-            {
-                ThumbHeight = 1;
-            }
+            if (ThumbHeight == 0) ThumbHeight = 1;
+            if (ThumbLength == 0) ThumbLength = 1;
 
             //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
             //catch on reload
             if (ThumbHeight * ThumbLength < pics.Count)
             {
-                if (pics.Count == 1)
+                if (ThumbHeight == 1)
                 {
-                    ThumbLength = 1;
+                    ThumbLength = pics.Count;
                 }
-                else
+                else if(ThumbLength == 1)
+                {
+                    ThumbHeight = pics.Count;
+                }
+                else if(ThumbHeight != 1 || ThumbLength != 1)
                 {
                     var fraction = new ExtendedMath.Fraction(pics.Count, ThumbHeight);
                     ThumbLength = (int)Math.Ceiling(fraction.Decimal);
@@ -344,89 +331,78 @@ namespace CommonControls
             _ = Thb.Children.Add(exGrid);
 
             for (var y = 0; y < ThumbHeight; y++)
+            for (var x = 0; x < ThumbLength; x++)
             {
-                for (var x = 0; x < ThumbLength; x++)
+                //everything empty? well bail out, if not well we have work
+                if (pics.Count == 0) continue;
+
+                var (key, name) = pics.First();
+
+                //Add Canvas to Grid
+                var myCanvas = new Canvas();
+                Grid.SetRow(myCanvas, y);
+                Grid.SetColumn(myCanvas, x);
+                _ = exGrid.Children.Add(myCanvas);
+
+                //Create new Image with Click Handler
+                var images = new Image();
+                images.Height = images.Width = ThumbCellSize;
+                images.Name = string.Concat(ComCtlResources.ImageAdd, key);
+                Keys.Add(images.Name, key);
+                ImageDct.Add(images.Name, images);
+                images.MouseDown += ImageClick_MouseDown;
+                if (SelectBox) images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
+
+                //Add Image to Canvas
+                _ = myCanvas.Children.Add(images);
+
+                //add an overlay here to get a selection frame
+                if (SelectBox)
                 {
-                    //everything empty? well bail out, if not well we have work
-                    if (pics.Count == 0)
-                    {
-                        continue;
-                    }
+                    var checkbox = new CheckBox();
+                    checkbox.Checked += CheckBox_Checked;
+                    checkbox.Unchecked += CheckBox_Unchecked;
+                    ChkBox.Add(key, checkbox);
 
-                    var (key, name) = pics.First();
-
-                    //Add Canvas to Grid
-                    var myCanvas = new Canvas();
-                    Grid.SetRow(myCanvas, y);
-                    Grid.SetColumn(myCanvas, x);
-                    _ = exGrid.Children.Add(myCanvas);
-
-                    //Create new Image with Click Handler
-                    var images = new Image();
-                    images.Height = images.Width = ThumbCellSize;
-                    images.Name = string.Concat(ComCtlResources.ImageAdd, key);
-                    Keys.Add(images.Name, key);
-                    ImageDct.Add(images.Name, images);
-                    images.MouseDown += ImageClick_MouseDown;
-                    if (SelectBox)
-                    {
-                        images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
-                    }
-
-                    //Add Image to Canvas
-                    _ = myCanvas.Children.Add(images);
-
-                    //add an overlay here to get a selection frame
-                    if (SelectBox)
-                    {
-                        var checkbox = new CheckBox();
-                        checkbox.Checked += CheckBox_Checked;
-                        checkbox.Unchecked += CheckBox_Unchecked;
-                        ChkBox.Add(key, checkbox);
-
-                        checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
-                        //Add checkbox to Canvas
-                        _ = myCanvas.Children.Add(checkbox);
-                    }
-
-                    _ = pics.Reduce();
-                    BitmapImage myBitmapCell = null;
-
-                    try
-                    {
-                        myBitmapCell = ImageStream.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                    catch (IOException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                    catch (NotSupportedException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-
-                    //handle error gracefully
-                    if (myBitmapCell == null)
-                    {
-                        continue;
-                    }
-
-                    images.ToolTip = name;
-
-                    //Source:
-                    //http://blog.andreweichacker.com/2008/10/just-a-bit-loading-images-asynchronously-in-wpf/
-
-                    _ = images.Dispatcher?.BeginInvoke(DispatcherPriority.Loaded,
-                        (ThreadStart)(() => images.Source = myBitmapCell));
+                    checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
+                    //Add checkbox to Canvas
+                    _ = myCanvas.Children.Add(checkbox);
                 }
+
+                _ = pics.Reduce();
+                BitmapImage myBitmapCell = null;
+
+                try
+                {
+                    myBitmapCell = ImageStream.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+                catch (IOException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+                catch (NotSupportedException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+
+                //handle error gracefully
+                if (myBitmapCell == null) continue;
+
+                images.ToolTip = name;
+
+                //Source:
+                //http://blog.andreweichacker.com/2008/10/just-a-bit-loading-images-asynchronously-in-wpf/
+
+                _ = images.Dispatcher?.BeginInvoke(DispatcherPriority.Loaded,
+                    (ThreadStart)(() => images.Source = myBitmapCell));
             }
         }
 
@@ -438,15 +414,9 @@ namespace CommonControls
         private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            if (sender is not Image clickedButton) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedButton.Name)) return;
 
             var id = Keys[clickedButton.Name];
 
@@ -463,15 +433,9 @@ namespace CommonControls
         private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            if (sender is not Image clickedButton) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedButton.Name)) return;
 
             _selection = Keys[clickedButton.Name];
 
@@ -506,15 +470,9 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0)
-            {
-                return;
-            }
+            if (Selection.Count == 0) return;
 
-            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
-            {
-                check.IsChecked = false;
-            }
+            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id])) check.IsChecked = false;
         }
 
         /// <summary>
@@ -525,15 +483,9 @@ namespace CommonControls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -548,15 +500,9 @@ namespace CommonControls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 
