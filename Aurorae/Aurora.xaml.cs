@@ -2,6 +2,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,14 @@ namespace Aurorae
 
         public static readonly DependencyProperty Map = DependencyProperty.Register(nameof(Map),
             typeof(Dictionary<int, List<int>>),
+            typeof(Aurora), null);
+
+        public static readonly DependencyProperty Avatar = DependencyProperty.Register(nameof(Avatar),
+            typeof(Image),
+            typeof(Aurora), null);
+
+        public static readonly DependencyProperty Movement = DependencyProperty.Register(nameof(Movement),
+            typeof(List<int>),
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Textures = DependencyProperty.Register(nameof(Textures),
@@ -76,6 +85,28 @@ namespace Aurorae
         {
             get => (Dictionary<int, List<int>>)GetValue(Map);
             set => SetValue(Map, value);
+        }
+
+        public Image DependencyAvatar
+        {
+            get => (Image)GetValue(Avatar);
+            set => SetValue(Avatar, value);
+        }
+
+        public List<int> DependencyMovement
+        {
+            get => (List<int>)GetValue(Movement);
+            set
+            {
+                if (value == null) return;
+
+                SetValue(Movement, value);
+
+                //display an movement Animation, block the whole control while displaying
+                IsEnabled = false;
+                LayerThree.Source = Helper.DisplayMovement(this, value, DependencyAvatar, DependencyWidth, DependencyHeight, DependencyTextureSize);
+                IsEnabled = true;
+            }
         }
 
         public Dictionary<int, Texture> DependencyTextures

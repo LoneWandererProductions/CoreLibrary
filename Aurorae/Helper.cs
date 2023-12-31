@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using Imaging;
 using Brushes = System.Drawing.Brushes;
+using Image = System.Windows.Controls.Image;
 
 namespace Aurorae
 {
@@ -77,7 +79,7 @@ namespace Aurorae
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <returns>A number overlay</returns>
-        public static ImageSource GenerateNumbers(int width, int height, int textureSize)
+        internal static ImageSource GenerateNumbers(int width, int height, int textureSize)
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
@@ -94,6 +96,32 @@ namespace Aurorae
                         textureSize - Padding, textureSize - Padding);
                     graphics.DrawString(count.ToString(), new Font("Tahoma", 8), Brushes.Black, rectangle);
                 }
+            }
+
+            return background.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Displays the movement.
+        /// </summary>
+        /// <param name="aurora">The aurora.</param>
+        /// <param name="steps">The steps.</param>
+        /// <param name="avatar">The avatar.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <returns></returns>
+        internal static ImageSource DisplayMovement(Aurora aurora, List<int> steps, Image avatar,
+            int width,
+            int height,
+            int textureSize)
+        {
+            var background = new Bitmap(width * textureSize, height * textureSize);
+
+            foreach (var step in steps)
+            {
+                var x = IdToX(step, width);
+                var y = IdToY(step, width);
             }
 
             return background.ToBitmapImage();
