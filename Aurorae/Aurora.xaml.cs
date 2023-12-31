@@ -103,9 +103,7 @@ namespace Aurorae
                 SetValue(Movement, value);
 
                 //display an movement Animation, block the whole control while displaying
-                IsEnabled = false;
-                LayerThree.Source = Helper.DisplayMovement(this, value, DependencyAvatar, DependencyWidth, DependencyHeight, DependencyTextureSize);
-                IsEnabled = true;
+                Helper.DisplayMovement(this, value, DependencyAvatar, DependencyWidth, DependencyHeight, DependencyTextureSize);
             }
         }
 

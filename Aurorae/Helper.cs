@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -110,21 +112,30 @@ namespace Aurorae
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        /// <returns></returns>
-        internal static ImageSource DisplayMovement(Aurora aurora, List<int> steps, Image avatar,
+        internal static async void DisplayMovement(Aurora aurora, List<int> steps, Image avatar,
             int width,
             int height,
             int textureSize)
         {
+            aurora.IsEnabled = false;
+
             var background = new Bitmap(width * textureSize, height * textureSize);
 
             foreach (var step in steps)
             {
                 var x = IdToX(step, width);
                 var y = IdToY(step, width);
+
+                await Task.Run(SwitchPosition);
             }
 
-            return background.ToBitmapImage();
+            aurora.IsEnabled = true;
+            aurora.LayerThree.Source = background.ToBitmapImage();
+        }
+
+        private static void SwitchPosition()
+        {
+            Thread.Sleep(1000);
         }
 
         /// <summary>
