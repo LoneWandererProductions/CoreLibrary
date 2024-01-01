@@ -3,13 +3,10 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ExtendedSystemObjects;
 using Imaging;
 using Brushes = System.Drawing.Brushes;
-using Image = System.Windows.Controls.Image;
 
 namespace Aurorae
 {
@@ -29,7 +26,7 @@ namespace Aurorae
         private static readonly ImageRender Render = new();
 
         /// <summary>
-        /// Generates the image.
+        ///     Generates the image.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -37,12 +34,21 @@ namespace Aurorae
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
         /// <returns>The generated Map</returns>
-        internal static BitmapImage GenerateImage(int width, int height, int textureSize, Dictionary<int, Texture>textures,
+        internal static BitmapImage GenerateImage(int width, int height, int textureSize,
+            Dictionary<int, Texture> textures,
             Dictionary<int, List<int>> map)
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            var tiles = (from tile in map from layer in tile.Value select new Box {X = IdToX(tile.Key, width), Y = IdToY(tile.Key, width), Layer = textures[tile.Key].Layer, Image = Render.GetBitmapFile(textures[tile.Key].Path)}).ToList();
+            var tiles = (from tile in map
+                from layer in tile.Value
+                select new Box
+                {
+                    X = IdToX(tile.Key, width),
+                    Y = IdToY(tile.Key, width),
+                    Layer = textures[tile.Key].Layer,
+                    Image = Render.GetBitmapFile(textures[tile.Key].Path)
+                }).ToList();
 
 
             background = tiles.OrderBy(layer => layer.Layer).ToList().Aggregate(background,
@@ -52,7 +58,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Generates the grid.
+        ///     Generates the grid.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -75,7 +81,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Generates the numbers.
+        ///     Generates the numbers.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -104,7 +110,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Displays the movement.
+        ///     Displays the movement.
         /// </summary>
         /// <param name="aurora">The aurora.</param>
         /// <param name="steps">The steps.</param>
@@ -112,7 +118,7 @@ namespace Aurorae
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        internal static async void DisplayMovement(Aurora aurora, List<int> steps, Image avatar,
+        internal static async void DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap avatar,
             int width,
             int height,
             int textureSize)
@@ -123,20 +129,23 @@ namespace Aurorae
 
             foreach (var step in steps)
             {
-                var x = IdToX(step, width);
-                var y = IdToY(step, width);
+                var x = IdToX(step, width) * textureSize;
+                var y = IdToY(step, width) * textureSize;
 
-                await Task.Run(SwitchPosition);
+                _ = await Task.Run(() => SwitchPosition(x, y, background, avatar, 100));
             }
 
             aurora.IsEnabled = true;
             aurora.LayerThree.Source = background.ToBitmapImage();
         }
 
-        private static void SwitchPosition()
+        private static bool SwitchPosition(int x, int y, Bitmap background, Bitmap avatar, int sleep)
         {
-            Thread.Sleep(1000);
+            Render.CombineBitmap(background, avatar, x, y);
+            Thread.Sleep(sleep);
+            return true;
         }
+
 
         /// <summary>
         ///     Identifiers to x.
