@@ -64,8 +64,7 @@ namespace CommonControls
         /// </summary>
         public static readonly DependencyProperty AutoplayGif = DependencyProperty.Register(nameof(AutoplayGifImage),
             typeof(bool),
-            typeof(ImageZoom), new PropertyMetadata(OnAutoplayGifSourcePropertyChanged));
-
+            typeof(ImageZoom), null);
 
         /// <summary>
         ///     The image Start Point
@@ -151,15 +150,6 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Called when [autoplay GIF source property changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void OnAutoplayGifSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-        }
-
-        /// <summary>
         ///     Occurs when [selected frame] was changed
         /// </summary>
         public event DelegateFrame SelectedFrame;
@@ -204,7 +194,20 @@ namespace CommonControls
                 return;
             }
 
+            //reset position
+            var matrix = BtmImage.RenderTransform.Value;
+            matrix.OffsetX = 0;
+            matrix.OffsetY = 0;
+            BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+            //reset Scrollbar
+            ScrollView.ScrollToTop();
+            ScrollView.UpdateLayout();
+
             BtmImage.GifSource = ImageGifPath;
+
+            MainCanvas.Height = BtmImage.Source.Height;
+            MainCanvas.Width = BtmImage.Source.Width;
         }
 
         /// <summary>
