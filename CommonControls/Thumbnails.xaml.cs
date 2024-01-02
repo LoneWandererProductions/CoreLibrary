@@ -65,15 +65,15 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty DepThumbCellSize = DependencyProperty.Register(
-            nameof(DepThumbCellSize),
+        public static readonly DependencyProperty DependencyThumbCellSize = DependencyProperty.Register(
+            nameof(DependencyThumbCellSize),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty DepThumbGrid = DependencyProperty.Register(nameof(DepThumbGrid),
+        public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(nameof(DependencyThumbGrid),
             typeof(bool),
             typeof(Thumbnails), null);
 
@@ -81,6 +81,13 @@ namespace CommonControls
         ///     The Thumb Cell Size
         /// </summary>
         public static readonly DependencyProperty SelectionBox = DependencyProperty.Register(nameof(SelectionBox),
+            typeof(bool),
+            typeof(Thumbnails), null);
+
+        /// <summary>
+        ///     The Thumb Cell Size
+        /// </summary>
+        public static readonly DependencyProperty IsSelected = DependencyProperty.Register(nameof(IsSelected),
             typeof(bool),
             typeof(Thumbnails), null);
 
@@ -152,8 +159,8 @@ namespace CommonControls
         /// </value>
         public int ThumbCellSize
         {
-            get => (int)GetValue(DepThumbCellSize);
-            set => SetValue(DepThumbCellSize, value);
+            get => (int)GetValue(DependencyThumbCellSize);
+            set => SetValue(DependencyThumbCellSize, value);
         }
 
         /// <summary>
@@ -165,8 +172,8 @@ namespace CommonControls
         public bool ThumbGrid
 
         {
-            get => (bool)GetValue(DepThumbGrid);
-            set => SetValue(DepThumbGrid, value);
+            get => (bool)GetValue(DependencyThumbGrid);
+            set => SetValue(DependencyThumbGrid, value);
         }
 
         /// <summary>
@@ -180,6 +187,19 @@ namespace CommonControls
         {
             get => (bool)GetValue(SelectionBox);
             set => SetValue(SelectionBox, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is CheckBox selected.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is CheckBox selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCheckBoxSelected
+
+        {
+            get => (bool)GetValue(IsSelected);
+            set => SetValue(IsSelected, value);
         }
 
         /// <summary>
@@ -383,8 +403,12 @@ namespace CommonControls
                         Height = 23,
                         Width = 23,
                         VerticalAlignment = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Left
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        IsChecked = IsCheckBoxSelected
                     };
+
+                    //add to our List of selected Items
+                    if(IsCheckBoxSelected) Selection.Add(key);
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;

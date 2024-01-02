@@ -15,7 +15,7 @@
                 MouseUp="Canvas_MouseUp"
                 MouseMove="Canvas_MouseMove"
                 MouseWheel="Canvas_MouseWheel">
-                <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Canvas>
                     <imaging1:ImageGif
                         Stretch="None"
                         SnapsToDevicePixels="True"
