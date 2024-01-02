@@ -50,7 +50,6 @@ namespace Aurorae
                     Image = Render.GetBitmapFile(textures[tile.Key].Path)
                 }).ToList();
 
-
             background = tiles.OrderBy(layer => layer.Layer).ToList().Aggregate(background,
                 (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
 
@@ -145,7 +144,6 @@ namespace Aurorae
             Thread.Sleep(sleep);
             return true;
         }
-
 
         /// <summary>
         ///     Identifiers to x.

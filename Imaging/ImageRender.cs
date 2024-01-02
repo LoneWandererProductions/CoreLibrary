@@ -130,6 +130,22 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Combines the bitmaps.
+        /// </summary>
+        /// <param name="original">The original image.</param>
+        /// <param name="overlay">The overlay image.</param>
+        /// <param name="x">The x position.</param>
+        /// <param name="y">The y position.</param>
+        /// <returns>Combined Image</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        [return: MaybeNull]
+        public Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+        {
+            return ImageStream.CombineBitmap(original, overlay, x, y);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Cuts a piece out of a bitmap.
         /// </summary>
         /// <param name="image">The image.</param>

@@ -482,6 +482,38 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Combines the bitmaps.
+        /// </summary>
+        /// <param name="original">The original image.</param>
+        /// <param name="overlay">The overlay image.</param>
+        /// <param name="x">The x position.</param>
+        /// <param name="y">The y position.</param>
+        /// <returns>Combined Image</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal static Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+        {
+            if (original == null)
+            {
+                var innerException = new ArgumentNullException(nameof(original));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
+            if (overlay == null)
+            {
+                var innerException = new ArgumentNullException(nameof(overlay));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
+            //get a graphics object from the image so we can draw on it
+            using var graph = Graphics.FromImage(original);
+
+            graph.DrawImage(overlay,
+                new Rectangle(x, y, overlay.Width, overlay.Height));
+
+            return original;
+        }
+
+        /// <summary>
         ///     Cuts a piece out of a bitmap.
         /// </summary>
         /// <param name="image">The image.</param>

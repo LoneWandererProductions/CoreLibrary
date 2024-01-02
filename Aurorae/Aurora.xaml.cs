@@ -68,7 +68,6 @@ namespace Aurorae
             set => SetValue(MapHeight, value);
         }
 
-
         public int DependencyWidth
         {
             get => (int)GetValue(MapWidth);
@@ -152,7 +151,6 @@ namespace Aurorae
         {
             _cursor = new Cursor();
             var position = e.GetPosition(Touch);
-
 
             if (position.X < DependencyTextureSize)
             {

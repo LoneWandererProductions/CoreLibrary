@@ -335,8 +335,6 @@ namespace CommonControls
             ExtendedGrid.CellSize = ThumbCellSize;
             var pics = new Dictionary<int, string>(ItemsSource);
 
-            if (pics.Count <= 0) return;
-
             Keys = new Dictionary<string, int>(pics.Count);
             ImageDct = new Dictionary<string, Image>(pics.Count);
             Selection = new List<int>();

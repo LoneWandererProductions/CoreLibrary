@@ -127,7 +127,6 @@ namespace CommonLibraryTests
                 string.Concat("Test passed CloneList, second round:  ", list.Count));
         }
 
-
         /// <summary>
         ///     Chunks of a list.
         /// </summary>
@@ -149,7 +148,6 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(5, cache[0], string.Concat("Test passed ChunkList, second round:  ", cache[0]));
         }
-
 
         /// <summary>
         ///     Here we Test our Dictionary AddDistinct

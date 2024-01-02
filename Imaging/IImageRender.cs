@@ -101,6 +101,20 @@ namespace Imaging
         Bitmap CombineBitmap(List<string> files);
 
         /// <summary>
+        /// Combines the bitmaps.
+        /// </summary>
+        /// <param name="original">The original image.</param>
+        /// <param name="overlay">The overlay image.</param>
+        /// <param name="x">The x position.</param>
+        /// <param name="y">The y position.</param>
+        /// <returns>Combined Image</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y);
+
+        /// <summary>
+        ///     Cuts a piece out of a bitmap.
+        /// </summary>
+        /// <summary>
         ///     Cuts a piece out of a bitmap.
         /// </summary>
         /// <param name="image">The image.</param>
