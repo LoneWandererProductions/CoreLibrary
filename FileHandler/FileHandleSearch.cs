@@ -51,7 +51,10 @@ namespace FileHandler
         {
             var lst = new List<string>();
 
-            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) return null;
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+            {
+                return null;
+            }
 
             foreach (var file in appendix.Select(app =>
                          FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories)))

@@ -164,11 +164,11 @@ namespace CommonLibraryTests
 
             lst.AddDistinct(ResourcesGeneral.DataItemOne, 3);
 
-            Assert.AreEqual(2, lst.Count, string.Concat("Tested not as equal: " , lst.Count));
+            Assert.AreEqual(2, lst.Count, string.Concat("Tested not as equal: ", lst.Count));
 
             lst.AddDistinct(ResourcesGeneral.DataItemTwo, 4);
 
-            Assert.AreEqual(3, lst.Count, string.Concat("Tested not as equal: " , lst.Count));
+            Assert.AreEqual(3, lst.Count, string.Concat("Tested not as equal: ", lst.Count));
         }
 
         /// <summary>

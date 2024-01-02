@@ -1,4 +1,5 @@
-﻿<UserControl xmlns:commonControls="clr-namespace:CommonControls"
+﻿<!-- ReSharper disable once UnusedType.Global -->
+<UserControl xmlns:commonControls="clr-namespace:CommonControls"
              x:Class="CommonControls.ColorPickerMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

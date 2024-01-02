@@ -14,7 +14,7 @@ using NUnit.Framework;
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CommonLibraryVectorTests
+namespace CommonLibraryGuiTests
 {
     /// <summary>
     ///     The vector interface unit test class.

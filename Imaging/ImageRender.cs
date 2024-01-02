@@ -130,7 +130,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Combines the bitmaps.
+        ///     Combines the bitmaps.
         /// </summary>
         /// <param name="original">The original image.</param>
         /// <param name="overlay">The overlay image.</param>
@@ -427,7 +427,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Creates a gif.
+        ///     Creates a gif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="target">The target.</param>
@@ -438,7 +438,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Creates a gif.
+        ///     Creates a gif.
         /// </summary>
         /// <param name="path">The paths of the images.</param>
         /// <param name="target">The target File.</param>

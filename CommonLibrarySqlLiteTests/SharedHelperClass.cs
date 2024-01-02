@@ -125,7 +125,7 @@ namespace CommonLibrarySqlLiteTests
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
             };
 
-            var elementfour = new TableColumns
+            var elementFour = new TableColumns
             {
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
             };
@@ -140,7 +140,7 @@ namespace CommonLibrarySqlLiteTests
             columns.DColumns.Add("First", elementone);
             columns.DColumns.Add("Second", elementtwo);
             columns.DColumns.Add("Third", elementthree);
-            columns.DColumns.Add("Fourth", elementfour);
+            columns.DColumns.Add("Fourth", elementFour);
             columns.DColumns.Add("Five", elementfive);
 
             return columns;
