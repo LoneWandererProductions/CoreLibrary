@@ -78,22 +78,13 @@ namespace Imaging
         {
             var id = CifProcessing.CalculateId(x, y, Width);
 
-            if (id > CheckSum)
-            {
-                return false;
-            }
+            if (id > CheckSum) return false;
 
             foreach (var (key, value) in cifImage)
             {
-                if (!value.Contains(id))
-                {
-                    continue;
-                }
+                if (!value.Contains(id)) continue;
 
-                if (key == color)
-                {
-                    return false;
-                }
+                if (key == color) return false;
 
                 cifImage[key].Remove(id);
 
@@ -121,22 +112,15 @@ namespace Imaging
         /// <returns>Success Status</returns>
         public bool ChangeColor(Color oldColor, Color newColor)
         {
-            if (!cifImage.ContainsKey(oldColor))
-            {
-                return false;
-            }
+            if (!cifImage.ContainsKey(oldColor)) return false;
 
             var cache = cifImage[oldColor];
             cifImage.Remove(oldColor);
 
             if (cifImage.ContainsKey(newColor))
-            {
                 cifImage[newColor].AddRange(cache);
-            }
             else
-            {
                 cifImage.Add(newColor, cache);
-            }
 
             return true;
         }
@@ -148,22 +132,17 @@ namespace Imaging
         [return: MaybeNull]
         public Image GetImage()
         {
-            if (cifImage == null)
-            {
-                return null;
-            }
+            if (cifImage == null) return null;
 
             var image = new Bitmap(Height, Width);
             var dbm = DirectBitmap.GetInstance(image);
 
             foreach (var (key, value) in cifImage)
+            foreach (var id in value)
             {
-                foreach (var id in value)
-                {
-                    var x = CifProcessing.IdToX(id, Width);
-                    var y = CifProcessing.IdToY(id, Width);
-                    dbm.SetPixel(x, y, key);
-                }
+                var x = CifProcessing.IdToX(id, Width);
+                var y = CifProcessing.IdToY(id, Width);
+                dbm.SetPixel(x, y, key);
             }
 
             return null;

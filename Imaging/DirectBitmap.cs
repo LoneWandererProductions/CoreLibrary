@@ -130,10 +130,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++)
-            {
-                SetPixel(x, i, color);
-            }
+            for (var i = y; i < height; i++) SetPixel(x, i, color);
         }
 
         /// <summary>
@@ -147,10 +144,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++)
-            {
-                SetPixel(i, y, color);
-            }
+            for (var i = x; i < length; i++) SetPixel(i, y, color);
         }
 
         /// <summary>
@@ -165,15 +159,11 @@ namespace Imaging
         public void DrawRectangle(int x, int y, int width, int height, Color color)
         {
             if (width > height)
-            {
                 Parallel.For(x, height,
                     index => DrawVerticalLine(index, y, width, color));
-            }
             else
-            {
                 Parallel.For(y, width,
                     index => DrawHorizontalLine(x, index, height, color));
-            }
         }
 
         /// <summary>
@@ -184,7 +174,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             _bits[index] = color.ToArgb();
         }
 
@@ -196,7 +186,7 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             var col = _bits[index];
             return Color.FromArgb(col);
         }
@@ -210,10 +200,7 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {

@@ -47,15 +47,9 @@ namespace Imaging
                 info.Name = Path.GetFileName(path);
                 info.Size = image.Size;
 
-                if (!image.RawFormat.Equals(ImageFormat.Gif))
-                {
-                    return null;
-                }
+                if (!image.RawFormat.Equals(ImageFormat.Gif)) return null;
 
-                if (!ImageAnimator.CanAnimate(image))
-                {
-                    return info;
-                }
+                if (!ImageAnimator.CanAnimate(image)) return info;
 
                 var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
 
@@ -172,24 +166,39 @@ namespace Imaging
             //collect and convert all images
             var btm = lst.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty())
-            {
-                return;
-            }
+            if (btm.IsNullOrEmpty()) return;
 
+            CreateGif(btm, target);
+        }
+
+        internal static void CreateGif(List<string> path, string target)
+        {
+            //collect and convert all images
+            var btm = path.ConvertAll(ImageStream.GetOriginalBitmap);
+
+            if (btm.IsNullOrEmpty()) return;
+
+            CreateGif(btm, target);
+        }
+
+        /// <summary>
+        /// Create the gif.
+        /// </summary>
+        /// <param name="btm">A list of Bitmaps.</param>
+        /// <param name="target">The target.</param>
+        private static void CreateGif(IEnumerable<Bitmap> btm, string target)
+        {
             var gEnc = new GifBitmapEncoder();
 
             //TODO encode and change to one size, add more sanity checks
 
             foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
-                         System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                             bmp,
-                             IntPtr.Zero,
-                             Int32Rect.Empty,
-                             BitmapSizeOptions.FromEmptyOptions())))
-            {
+                System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                    bmp,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions())))
                 gEnc.Frames.Add(BitmapFrame.Create(src));
-            }
 
             using var ms = new MemoryStream();
             gEnc.Save(ms);
