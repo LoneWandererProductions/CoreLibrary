@@ -356,37 +356,7 @@ namespace CommonControls
                 ChkBox = new Dictionary<int, CheckBox>(pics.Count);
             }
 
-            //Handle some special cases
-            if (ThumbCellSize == 0)
-            {
-                ThumbCellSize = 100;
-            }
-
-            if (ThumbHeight == 0 && ThumbWidth == 0)
-            {
-                ThumbHeight = 1;
-            }
-
-            //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
-            //catch on reload
-            if (ThumbHeight * ThumbWidth < pics.Count)
-            {
-                if (ThumbWidth == 1)
-                {
-                    ThumbHeight = pics.Count;
-                }
-
-                if (ThumbHeight == 1)
-                {
-                    ThumbWidth = pics.Count;
-                }
-
-                if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
-                {
-                    var fraction = new ExtendedMath.Fraction(pics.Count, ThumbHeight);
-                    ThumbWidth = (int)Math.Ceiling(fraction.Decimal);
-                }
-            }
+            CalculateGrid(pics.Count);
 
             var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
             Thb.Children.Clear();
@@ -488,6 +458,40 @@ namespace CommonControls
             timer.Stop();
 
             Trace.WriteLine("End: " + timer.Elapsed);
+        }
+
+        /// <summary>
+        /// Calculates the grid.
+        /// </summary>
+        /// <param name="count">The count.</param>
+        private void CalculateGrid(int count)
+        {
+            //Handle some special cases
+            if (ThumbCellSize == 0) ThumbCellSize = 100;
+            if (ThumbHeight == 0 && ThumbWidth == 0) ThumbHeight = 1;
+
+            //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
+            //catch on reload
+            if (ThumbHeight * ThumbWidth >= count)
+            {
+                return;
+            }
+
+            if (ThumbWidth == 1)
+            {
+                ThumbHeight = count;
+            }
+
+            if (ThumbHeight == 1)
+            {
+                ThumbWidth = count;
+            }
+
+            if (ThumbHeight != 1 && ThumbWidth != 1 && count > 1)
+            {
+                var fraction = new ExtendedMath.Fraction(count, ThumbHeight);
+                ThumbWidth = (int)Math.Ceiling(fraction.Decimal);
+            }
         }
 
         /// <summary>
