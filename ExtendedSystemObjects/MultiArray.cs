@@ -114,5 +114,24 @@ namespace ExtendedSystemObjects
 
             return true;
         }
+
+        /// <summary>
+        /// Converts an array to span.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="array">The array.</param>
+        /// <returns>A Multi array as span Type.</returns>
+        public static unsafe Span<TValue> ToSpan<TValue>(this TValue[,] array) where TValue : unmanaged
+        {
+            var length = array.GetLength(0) * array.GetLength(1);
+            Span<TValue> result;
+
+            fixed (TValue* a = array)
+            {
+                result = new Span<TValue>(a, length);
+            }
+
+            return result;
+        }
     }
 }
