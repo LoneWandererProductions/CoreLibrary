@@ -137,7 +137,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>Inverse Matrix</returns>
-        /// <exception cref="Exception">Unable to compute inverse</exception>
+        /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
         internal static double[,] MatrixInverse(double[,] matrix)
         {
             var n = matrix.GetLength(0);
@@ -148,9 +148,11 @@ namespace Mathematics
 
             if (lum == null)
             {
-                throw new Exception("Unable to compute inverse");
+                throw new ArithmeticException(MathResources.MatrixErrorInverse);
             }
 
+            //var b = new double[n];
+            //constant vector
             var b = new double[n];
 
             for (var i = 0; i < n; ++i)
@@ -183,15 +185,14 @@ namespace Mathematics
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>Determinant of the matrix</returns>
-        /// <exception cref="Exception">Unable to compute MatrixDeterminant</exception>
+        /// <exception cref="ArithmeticException">Unable to compute MatrixDeterminant</exception>
         internal static double MatrixDeterminant(double[,] matrix)
         {
             var lum = MatrixDecompose(matrix, out _, out var toggle);
 
             if (lum == null)
-                //TODO replace
             {
-                throw new Exception("Unable to compute MatrixDeterminant");
+                throw new ArithmeticException(MathResources.MatrixErrorDeterminant);
             }
 
             double result = toggle;
@@ -211,7 +212,7 @@ namespace Mathematics
         /// <param name="perm">The perm.</param>
         /// <param name="toggle">The toggle.</param>
         /// <returns>Decomposed Matrix</returns>
-        /// <exception cref="Exception">
+        /// <exception cref="ArithmeticException">
         ///     Attempt to decompose a non-square m
         ///     or
         ///     Cannot use Doolittle's method
@@ -226,7 +227,7 @@ namespace Mathematics
 
             if (rows != cols)
             {
-                throw new Exception("Attempt to decompose a non-square m");
+                throw new ArithmeticException(MathResources.MatrixErrorDecompose);
             }
 
             var n = rows; // convenience
@@ -292,14 +293,10 @@ namespace Mathematics
 
                     if (goodRow == -1)
                     {
-                        throw new Exception("Cannot use Doolittle's method");
+                        throw new ArithmeticException(MathResources.MatrixErrorDoolittle);
                     }
 
                     // swap rows so 0.0 no longer on diagonal
-                    //TODO
-                    //double[] rowPtr = result[goodRow];
-                    //result[goodRow] = result[j];
-                    //result[j] = rowPtr;
                     result.SwapRow(goodRow, j);
 
                     (perm[goodRow], perm[j]) = (perm[j], perm[goodRow]);
@@ -326,7 +323,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Helpers the solve.
+        ///     Helper solve.
         /// </summary>
         /// <param name="luMatrix">The lu matrix.</param>
         /// <param name="b">The b.</param>
