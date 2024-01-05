@@ -66,16 +66,19 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="array">The array.</param>
         /// <returns>Copy of the called array</returns>
-        public static TValue[,] Duplicate<TValue>(this TValue[,] array)
+        public static unsafe TValue[,] Duplicate<TValue>(this TValue[,] array) where TValue : unmanaged
         {
             // allocates/creates a duplicate of a matrix.
             var result = new TValue[array.GetLength(0), array.GetLength(1)];
 
-            for (var i = 0; i < array.GetLength(0); ++i) // copy the values
+            fixed (TValue* one = result, two = array)
             {
-                for (var j = 0; j < array.GetLength(1); ++j)
+                for (var i = 0; i < array.GetLength(0); i++)
+                for (var j = 0; j < array.GetLength(1); j++)
                 {
-                    result[i, j] = array[i, j];
+                    var cursor = i + (j * array.GetLength(1));
+
+                    one[cursor] = two[cursor];
                 }
             }
 
@@ -89,7 +92,7 @@ namespace ExtendedSystemObjects
         /// <param name="array">The array.</param>
         /// <param name="compare">The compare target.</param>
         /// <returns>Equal or not</returns>
-        public static bool Equal<TValue>(this TValue[,] array, TValue[,] compare)
+        public static unsafe bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
         {
             if (array.GetLength(0) != compare.GetLength(0))
             {
@@ -101,11 +104,13 @@ namespace ExtendedSystemObjects
                 return false;
             }
 
-            for (var i = 0; i < array.GetLength(0); ++i)
+            var length = array.GetLength(0) * array.GetLength(1);
+
+            fixed (TValue* one = array, two = compare)
             {
-                for (var j = 0; j < array.GetLength(1); ++j)
+                for (var i = 0; i < length; ++i)
                 {
-                    if (!array[i, j].Equals(compare[i, j]))
+                    if (!one[i].Equals(two[i]))
                     {
                         return false;
                     }
