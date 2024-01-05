@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace ExtendedSystemObjects
@@ -34,6 +35,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+
         /// <summary>
         ///     Converts to string.
         /// </summary>
@@ -42,18 +44,32 @@ namespace ExtendedSystemObjects
         /// <returns>
         ///     A <see cref="string" /> that represents this instance.
         /// </returns>
-        public static string ToText<TValue>(this TValue[,] array)
+        public static unsafe string ToText<TValue>(this TValue[,] array) where TValue : unmanaged
         {
             var str = new StringBuilder();
 
-            for (var i = 0; i < array.GetLength(0); i++)
-            for (var j = 0; j < array.GetLength(1); j++)
+            var length = array.GetLength(0) * array.GetLength(1);
+            var row = array.GetLength(1);
+
+            fixed (TValue* one = array)
             {
-                var tmp = array[i, j];
-                _ = str.Append(tmp);
-                _ = str.Append(j != array.GetLength(1) - 1
-                    ? ExtendedSystemObjectsResources.Separator
-                    : Environment.NewLine);
+                for (var i = 0; i < length; i++)
+                {
+                    var tmp = one[i];
+                    _ = str.Append(tmp);
+                    Trace.WriteLine(i);
+                    Trace.WriteLine(i % row);
+
+                    if ((i+1) % row == 0 && (i + 1) >= row)
+                    {
+                        _ = str.Append(Environment.NewLine);
+                        Trace.WriteLine("here");
+                    }
+                    else
+                    {
+                        _ = str.Append(ExtendedSystemObjectsResources.Separator);
+                    }
+                }
             }
 
             return str.ToString();
