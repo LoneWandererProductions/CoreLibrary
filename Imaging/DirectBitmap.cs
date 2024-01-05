@@ -32,7 +32,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        private readonly int[] _bits;
+        private readonly int[]_bits;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.

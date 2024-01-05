@@ -163,6 +163,22 @@ namespace CommonLibraryTests
 
             result = MatrixUtility.UnsafeMultiplication(m1, m2);
 
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var compare1 = MathSpeedTests.TestOne(m1, m2);
+
+            timer.Stop();
+            Trace.WriteLine(string.Concat("Test one (span Version): ", timer.Elapsed));
+
+            timer = new Stopwatch();
+            timer.Start();
+
+            var compare2 = MatrixUtility.UnsafeMultiplication(m1, m2);
+
+            timer.Stop();
+            Trace.WriteLine(string.Concat("Test two (unsafe multiplication): ", timer.Elapsed));
+
             Assert.AreEqual(result[0, 0], 2, "00");
             Assert.AreEqual(result[1, 0], 1, "10");
             Assert.AreEqual(result[2, 0], 1, "20");
@@ -172,6 +188,26 @@ namespace CommonLibraryTests
             Assert.AreEqual(result[0, 2], 1, "02");
             Assert.AreEqual(result[1, 2], 1, "12");
             Assert.AreEqual(result[2, 2], 2, "22");
+
+            Assert.AreEqual(compare1[0, 0], 2, "00");
+            Assert.AreEqual(compare1[1, 0], 1, "10");
+            Assert.AreEqual(compare1[2, 0], 1, "20");
+            Assert.AreEqual(compare1[0, 1], 1, "01");
+            Assert.AreEqual(compare1[1, 1], 2, "11");
+            Assert.AreEqual(compare1[2, 1], 1, "21");
+            Assert.AreEqual(compare1[0, 2], 1, "02");
+            Assert.AreEqual(compare1[1, 2], 1, "12");
+            Assert.AreEqual(compare1[2, 2], 2, "22");
+
+            Assert.AreEqual(compare2[0, 0], 2, "00");
+            Assert.AreEqual(compare2[1, 0], 1, "10");
+            Assert.AreEqual(compare2[2, 0], 1, "20");
+            Assert.AreEqual(compare2[0, 1], 1, "01");
+            Assert.AreEqual(compare2[1, 1], 2, "11");
+            Assert.AreEqual(compare2[2, 1], 1, "21");
+            Assert.AreEqual(compare2[0, 2], 1, "02");
+            Assert.AreEqual(compare2[1, 2], 1, "12");
+            Assert.AreEqual(compare2[2, 2], 2, "22");
 
             x = new double[,] { { 0, -1, 0 }, { 1, 0, 0 }, { 0, 0, 1 } };
             m1 = new BaseMatrix { Matrix = x };

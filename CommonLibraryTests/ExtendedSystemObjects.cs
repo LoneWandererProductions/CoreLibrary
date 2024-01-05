@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ExtendedSystemObjects;
+using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
@@ -501,6 +502,26 @@ namespace CommonLibraryTests
             normal[0, 0] = 0;
             Assert.AreEqual(copy[0, 0], 1, "00");
             Assert.AreEqual(copy[0, 1], 2, "01");
+
+            //see Matrix Multiplication, the speed is sadly slower, but it converts arrays to span in a fast way and the results are the same
+
+            var x = new double[,] { { 2, 1, 1 }, { 1, 2, 1 }, { 1, 1, 2 } };
+            var m1 = new BaseMatrix { Matrix = x };
+
+            var y = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+            var m2 = new BaseMatrix { Matrix = y };
+
+            var compare1 = MathSpeedTests.TestOne(m1, m2);
+
+            Assert.AreEqual(compare1[0, 0], 2, "00");
+            Assert.AreEqual(compare1[1, 0], 1, "10");
+            Assert.AreEqual(compare1[2, 0], 1, "20");
+            Assert.AreEqual(compare1[0, 1], 1, "01");
+            Assert.AreEqual(compare1[1, 1], 2, "11");
+            Assert.AreEqual(compare1[2, 1], 1, "21");
+            Assert.AreEqual(compare1[0, 2], 1, "02");
+            Assert.AreEqual(compare1[1, 2], 1, "12");
+            Assert.AreEqual(compare1[2, 2], 2, "22");
         }
 
         /// <summary>
