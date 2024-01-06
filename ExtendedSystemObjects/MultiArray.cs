@@ -60,7 +60,7 @@ namespace ExtendedSystemObjects
                     Trace.WriteLine(i);
                     Trace.WriteLine(i % row);
 
-                    if ((i+1) % row == 0 && (i + 1) >= row)
+                    if ((i + 1) % row == 0 && (i + 1) >= row)
                     {
                         _ = str.Append(Environment.NewLine);
                         Trace.WriteLine("here");

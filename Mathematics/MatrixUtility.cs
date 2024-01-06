@@ -28,6 +28,7 @@ namespace Mathematics
         public static BaseMatrix MatrixIdentity(int n)
         {
             var result = new double[n, n];
+
             for (var i = 0; i < n; ++i)
             {
                 result[i, i] = 1.0;
