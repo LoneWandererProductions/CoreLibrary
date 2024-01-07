@@ -97,7 +97,7 @@ namespace CommonControls
 
                 foreach (var item in Items)
                 {
-                    var check = _uniqueName.AddIsDistinct(item.Name);
+                    var check = _uniqueName.AddDistinct(item.Name);
 
                     if (!check && _unique)
                     {
@@ -321,7 +321,7 @@ namespace CommonControls
                     //NewIndex = OldIndex
                     var item = Items[e.NewIndex];
 
-                    check = _uniqueName.AddIsDistinct(item.Name);
+                    check = _uniqueName.AddDistinct(item.Name);
 
                     if (!check && _unique)
                     {
@@ -338,7 +338,7 @@ namespace CommonControls
                     //must be NewIndex
                     var item = Items[e.NewIndex];
 
-                    check = _uniqueName.AddIsDistinct(item.Name);
+                    check = _uniqueName.AddDistinct(item.Name);
 
                     if (!check && _unique)
                     {
