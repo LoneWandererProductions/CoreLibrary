@@ -139,6 +139,18 @@ namespace Imaging
         List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width);
 
         /// <summary>
+        /// Erases the rectangle from an Image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>Original Image with the erased area</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width);
+
+        /// <summary>
         ///     Loads File one Time
         ///     Can only used to load an Image Once
         /// </summary>

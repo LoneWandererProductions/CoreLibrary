@@ -9,11 +9,14 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Imaging;
 
 namespace Aurorae
 {
@@ -55,12 +58,21 @@ namespace Aurorae
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-
         public static readonly DependencyProperty Remove = DependencyProperty.Register(nameof(Remove),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
+        public static readonly DependencyProperty AddDisplay = DependencyProperty.Register(nameof(Add),
+            typeof(KeyValuePair<int, int>),
+            typeof(Aurora), null);
+
+        public static readonly DependencyProperty RemoveDisplay = DependencyProperty.Register(nameof(Remove),
+            typeof(int),
+            typeof(Aurora), null);
+
         private Cursor _cursor;
+
+        private Bitmap _thirdLayer;
 
         public Polaris()
         {
@@ -138,7 +150,12 @@ namespace Aurorae
             set
             {
                 SetValue(Add, value);
-                DependencyMap = Helper.AddTile(DependencyMap, value);
+                var check = Helper.AddTile(DependencyMap, value);
+                if (!check)
+                {
+                    return;
+                }
+
                 LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
             }
@@ -149,10 +166,40 @@ namespace Aurorae
             get => (KeyValuePair<int, int>)GetValue(Remove);
             set
             {
-                SetValue(Number, value);
-                DependencyMap = Helper.RemoveTile(DependencyWidth, DependencyHeight, DependencyMap, value);
+                SetValue(Remove, value);
+                var check = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+                if (!check)
+                {
+                    return;
+                }
+
                 LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+            }
+        }
+
+        public KeyValuePair<int, int> DependencyAddDisplay
+        {
+            get => (KeyValuePair<int, int>)GetValue(AddDisplay);
+            set
+            {
+                SetValue(AddDisplay, value);
+                Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
+                    DependencyTextures, _thirdLayer, value);
+
+                LayerThree.Source = _thirdLayer.ToBitmapImage();
+            }
+        }
+
+        public int DependencyRemoveDisplay
+        {
+            get => (int)GetValue(RemoveDisplay);
+            set
+            {
+                SetValue(RemoveDisplay, value);
+                Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, _thirdLayer, value);
+
+                LayerThree.Source = _thirdLayer.ToBitmapImage();
             }
         }
 
@@ -177,13 +224,14 @@ namespace Aurorae
             {
                 LayerThree.Source = Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
             }
+
+            _thirdLayer = new Bitmap(DependencyWidth * DependencyTextureSize, DependencyHeight * DependencyTextureSize);
         }
 
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _cursor = new Cursor();
             var position = e.GetPosition(Touch);
-
 
             if (position.X < DependencyTextureSize)
             {

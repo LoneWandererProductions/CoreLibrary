@@ -593,6 +593,36 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Erases the rectangle from an Image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>Original Image with the erased area</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
+        {
+            if (image == null)
+            {
+                var innerException = new ArgumentNullException(nameof(image));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
+            var btm = new Bitmap(width, height);
+            btm.MakeTransparent();
+
+            using var graph = Graphics.FromImage(image);
+            graph.DrawImage(btm,
+                new Rectangle(x, y, btm.Width, btm.Height));
+
+            btm.Dispose();
+
+            return image;
+        }
+
+        /// <summary>
         ///     Converts an image to gray scale
         ///     Source:
         ///     https://web.archive.org/web/20110525014754/http://www.switchonthecode.com/tutorials/csharp-tutorial-convert-a-color-image-to-grayscale

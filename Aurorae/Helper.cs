@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
@@ -46,8 +45,8 @@ namespace Aurorae
                 from layer in tile.Value
                 select new Box
                 {
-                    X = IdToX(tile.Key, width),
-                    Y = IdToY(tile.Key, width),
+                    X = IdToX(tile.Key, width) * textureSize,
+                    Y = IdToY(tile.Key, width) * textureSize,
                     Layer = textures[tile.Key].Layer,
                     Image = Render.GetBitmapFile(textures[tile.Key].Path)
                 }).ToList();
@@ -111,28 +110,99 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Adds the tile.
+        ///     Adds the tile.
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="idTexture">The identifier texture.</param>
-        /// <returns>Changed Map, if changes are necessary</returns>
-        internal static Dictionary<int, List<int>> AddTile(Dictionary<int, List<int>> map,
+        /// <returns>If changes are needed</returns>
+        internal static bool AddTile(Dictionary<int, List<int>> map,
             KeyValuePair<int, int> idTexture)
         {
-            var (key, value) = idTexture;
-            var lst = map[key];
-            var check = lst.AddDistinct(value);
+            var (id, texture) = idTexture;
+            if (!map.ContainsKey(id))
+            {
+                return false;
+            }
 
-            if (check) return map;
+            var lst = map[id];
+            var check = lst.AddDistinct(texture);
 
-            map[key] = lst;
-            return map;
+            if (check)
+            {
+                return false;
+            }
+
+            map[id] = lst;
+
+            return true;
         }
 
-        internal static Dictionary<int, List<int>> RemoveTile(int width, int height, Dictionary<int, List<int>> map,
+        /// <summary>
+        ///     Removes the tile.
+        /// </summary>
+        /// <param name="map">The map.</param>
+        /// <param name="textures">The textures.</param>
+        /// <param name="idLayer">The identifier layer.</param>
+        /// <returns>If changes are needed</returns>
+        internal static bool RemoveTile(Dictionary<int, List<int>> map,
+            Dictionary<int, Texture> textures,
             KeyValuePair<int, int> idLayer)
         {
-            throw new System.NotImplementedException();
+            var (id, layer) = idLayer;
+            if (!map.ContainsKey(id))
+            {
+                return false;
+            }
+
+            var lst = map[id];
+
+            var cache = new List<int>(lst);
+            cache.AddRange(from tile in lst let compare = textures[tile] where compare.Layer != layer select tile);
+
+            if (cache.Count == lst.Count)
+            {
+                return false;
+            }
+
+            map[id] = cache;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Adds the display.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="textures">The textures.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="idTile">The id Position and the tile Id.</param>
+        public static void AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer, KeyValuePair<int, int> idTile)
+        {
+            var (position, tileId) = idTile;
+            var x = IdToX(position, width) * textureSize;
+            var y = IdToY(position, width) * textureSize;
+
+            var image = Render.GetBitmapFile(textures[tileId].Path);
+
+            //TODO Test, should work since it references the original Object
+            _ = Render.CombineBitmap(layer, image, x, y);
+        }
+
+        /// <summary>
+        /// Removes the display.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="position">The position.</param>
+        public static void RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
+        {
+            var x = IdToX(position, width) * textureSize;
+            var y = IdToY(position, width) * textureSize;
+
+            //TODO Test, should work since it references the original Object
+            _ = Render.EraseRectangle(layer, x, y, textureSize, textureSize);
         }
 
         /// <summary>
@@ -165,6 +235,15 @@ namespace Aurorae
             aurora.LayerThree.Source = background.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Switches the position.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="background">The background.</param>
+        /// <param name="avatar">The avatar.</param>
+        /// <param name="sleep">The sleep.</param>
+        /// <returns>Generic return value needed for threading.</returns>
         private static bool SwitchPosition(int x, int y, Bitmap background, Bitmap avatar, int sleep)
         {
             Render.CombineBitmap(background, avatar, x, y);
