@@ -1,4 +1,12 @@
-﻿// ReSharper disable MemberCanBeInternal
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Aurorae
+ * FILE:        Aurorae/Polaris.cs
+ * PURPOSE:     Editor Control
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
@@ -28,11 +36,11 @@ namespace Aurorae
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Map = DependencyProperty.Register(nameof(Map),
-            typeof(int[,]),
+            typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Textures = DependencyProperty.Register(nameof(Textures),
-            typeof(List<Texture>),
+            typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
         public static readonly DependencyProperty Grid = DependencyProperty.Register(nameof(Grid),
@@ -41,6 +49,15 @@ namespace Aurorae
 
         public static readonly DependencyProperty Number = DependencyProperty.Register(nameof(Number),
             typeof(bool),
+            typeof(Aurora), null);
+
+        public static readonly DependencyProperty Add = DependencyProperty.Register(nameof(Add),
+            typeof(KeyValuePair<int, int>),
+            typeof(Aurora), null);
+
+
+        public static readonly DependencyProperty Remove = DependencyProperty.Register(nameof(Remove),
+            typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         private Cursor _cursor;
@@ -69,15 +86,25 @@ namespace Aurorae
             set => SetValue(TextureSize, value);
         }
 
-        public int[,] DependencyMap
+        public Dictionary<int, List<int>> DependencyMap
         {
-            get => (int[,])GetValue(Map);
-            set => SetValue(Map, value);
+            get => (Dictionary<int, List<int>>)GetValue(Map);
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                SetValue(Map, value);
+                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                    DependencyTextures, DependencyMap);
+            }
         }
 
-        public List<Texture> DependencyTextures
+        public Dictionary<int, Texture> DependencyTextures
         {
-            get => (List<Texture>)GetValue(Textures);
+            get => (Dictionary<int, Texture>)GetValue(Textures);
             set => SetValue(Textures, value);
         }
 
@@ -102,6 +129,30 @@ namespace Aurorae
                 LayerThree.Source = !DependencyNumber
                     ? null
                     : Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
+            }
+        }
+
+        public KeyValuePair<int, int> DependencyAdd
+        {
+            get => (KeyValuePair<int, int>)GetValue(Add);
+            set
+            {
+                SetValue(Add, value);
+                DependencyMap = Helper.AddTile(DependencyMap, value);
+                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                    DependencyTextures, DependencyMap);
+            }
+        }
+
+        public KeyValuePair<int, int> DependencyRemove
+        {
+            get => (KeyValuePair<int, int>)GetValue(Remove);
+            set
+            {
+                SetValue(Number, value);
+                DependencyMap = Helper.RemoveTile(DependencyWidth, DependencyHeight, DependencyMap, value);
+                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                    DependencyTextures, DependencyMap);
             }
         }
 

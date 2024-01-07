@@ -84,14 +84,17 @@ namespace CommonLibraryTests
         public void ExtendedListAddDistinct()
         {
             var lst = new List<int> { 2, 3 };
-            lst.AddDistinct(3);
+            var check = lst.AddDistinct(3);
 
-            Assert.AreEqual(2, lst.Count, "Not replaced");
-            Assert.AreEqual(3, lst[1], "Not replaced");
+            Assert.IsFalse(check, "Wrong bool");
 
-            var check = lst.AddIsDistinct(4);
+            Assert.AreEqual(2, lst.Count, "Value added");
+
+            check = lst.AddDistinct(4);
+            Assert.IsTrue(check, "Wrong bool");
+
             Assert.IsTrue(check, "Element added");
-            check = lst.AddIsDistinct(2);
+            check = lst.AddDistinct(2);
             Assert.IsFalse(check, "Element not added");
         }
 

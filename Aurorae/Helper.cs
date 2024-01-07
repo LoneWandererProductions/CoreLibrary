@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ExtendedSystemObjects;
 using Imaging;
 using Brushes = System.Drawing.Brushes;
 
@@ -106,6 +108,31 @@ namespace Aurorae
             }
 
             return background.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Adds the tile.
+        /// </summary>
+        /// <param name="map">The map.</param>
+        /// <param name="idTexture">The identifier texture.</param>
+        /// <returns>Changed Map, if changes are necessary</returns>
+        internal static Dictionary<int, List<int>> AddTile(Dictionary<int, List<int>> map,
+            KeyValuePair<int, int> idTexture)
+        {
+            var (key, value) = idTexture;
+            var lst = map[key];
+            var check = lst.AddDistinct(value);
+
+            if (check) return map;
+
+            map[key] = lst;
+            return map;
+        }
+
+        internal static Dictionary<int, List<int>> RemoveTile(int width, int height, Dictionary<int, List<int>> map,
+            KeyValuePair<int, int> idLayer)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>

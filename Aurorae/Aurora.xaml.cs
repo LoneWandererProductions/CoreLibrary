@@ -1,4 +1,12 @@
-﻿// ReSharper disable MemberCanBeInternal
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Aurorae
+ * FILE:        Aurorae/Aurora.cs
+ * PURPOSE:     Game Control
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
