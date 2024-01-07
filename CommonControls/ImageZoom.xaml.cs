@@ -94,10 +94,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -221,10 +218,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -261,10 +255,12 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
+                case SelectionTools.SelectPixel:
                     // nothing
                     break;
 
                 case SelectionTools.SelectRectangle:
+                case SelectionTools.Erase:
                 {
                     // Get the Position on the Image
                     _imageStartPoint = e.GetPosition(BtmImage);
@@ -277,10 +273,7 @@ namespace CommonControls
 
                     // Make the drag selection box visible.
                     SelectionBox.Visibility = Visibility.Visible;
-                    break;
                 }
-                case SelectionTools.SelectPixel:
-                    // nothing
                     break;
                 default:
                     // nothing
@@ -312,59 +305,48 @@ namespace CommonControls
                     break;
 
                 case SelectionTools.SelectRectangle:
-                {
-                    SelectionBox.Visibility = Visibility.Collapsed;
-
-                    // Get the Position on the Image
-                    endpoint = e.GetPosition(BtmImage);
-                    var frame = new SelectionFrame();
-
-                    if (_imageStartPoint.X < endpoint.X)
+                case SelectionTools.Erase:
                     {
-                        frame.X = (int)_imageStartPoint.X;
-                        frame.Width = (int)(endpoint.X - _imageStartPoint.X);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.X;
-                        frame.Width = (int)(_imageStartPoint.X - endpoint.X);
-                    }
+                        SelectionBox.Visibility = Visibility.Collapsed;
 
-                    if (_startPoint.Y < endpoint.Y)
-                    {
-                        frame.Y = (int)_startPoint.Y;
-                        frame.Height = (int)(endpoint.Y - _imageStartPoint.Y);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.Y;
-                        frame.Height = (int)(_imageStartPoint.Y - endpoint.Y);
-                    }
-                    //cleanups, In case we overstepped the boundaries
+                        // Get the Position on the Image
+                        endpoint = e.GetPosition(BtmImage);
+                        var frame = new SelectionFrame();
 
-                    if (frame.X < 0)
-                    {
-                        frame.X = 0;
-                    }
+                        if (_imageStartPoint.X < endpoint.X)
+                        {
+                            frame.X = (int)_imageStartPoint.X;
+                            frame.Width = (int)(endpoint.X - _imageStartPoint.X);
+                        }
+                        else
+                        {
+                            frame.Y = (int)endpoint.X;
+                            frame.Width = (int)(_imageStartPoint.X - endpoint.X);
+                        }
 
-                    if (frame.Y < 0)
-                    {
-                        frame.Y = 0;
-                    }
+                        if (_startPoint.Y < endpoint.Y)
+                        {
+                            frame.Y = (int)_startPoint.Y;
+                            frame.Height = (int)(endpoint.Y - _imageStartPoint.Y);
+                        }
+                        else
+                        {
+                            frame.Y = (int)endpoint.Y;
+                            frame.Height = (int)(_imageStartPoint.Y - endpoint.Y);
+                        }
+                        //cleanups, In case we overstepped the boundaries
 
-                    if (frame.Width > ItemsSource.Width)
-                    {
-                        frame.Width = (int)ItemsSource.Width;
-                    }
+                        if (frame.X < 0) frame.X = 0;
 
-                    if (frame.Height < 0)
-                    {
-                        frame.Height = (int)ItemsSource.Height;
-                    }
+                        if (frame.Y < 0) frame.Y = 0;
 
-                    SelectedFrame?.Invoke(frame);
+                        if (frame.Width > ItemsSource.Width) frame.Width = (int)ItemsSource.Width;
+
+                        if (frame.Height < 0) frame.Height = (int)ItemsSource.Height;
+
+                        SelectedFrame?.Invoke(frame);
+                    }
                     break;
-                }
                 case SelectionTools.SelectPixel:
                     endpoint = e.GetPosition(BtmImage);
                     SelectedPoint?.Invoke(endpoint);
@@ -382,10 +364,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             switch (ZoomTool)
             {
@@ -400,6 +379,7 @@ namespace CommonControls
                 }
 
                 case SelectionTools.SelectRectangle:
+                case SelectionTools.Erase:
                 {
                     // When the mouse is held down, reposition the drag selection box.
 
@@ -426,9 +406,8 @@ namespace CommonControls
                         Canvas.SetTop(SelectionBox, mousePos.Y);
                         SelectionBox.Height = _startPoint.Y - mousePos.Y;
                     }
-
-                    break;
                 }
+                    break;
                 case SelectionTools.SelectPixel:
                     break;
                 default:
@@ -515,6 +494,11 @@ namespace CommonControls
         /// <summary>
         ///     The select Color of Point
         /// </summary>
-        SelectPixel = 2
+        SelectPixel = 2,
+
+        /// <summary>
+        /// The erase
+        /// </summary>
+        Erase = 3
     }
 }

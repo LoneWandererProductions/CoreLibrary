@@ -610,14 +610,14 @@ namespace Imaging
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
-            var btm = new Bitmap(width, height);
-            btm.MakeTransparent();
-
             using var graph = Graphics.FromImage(image);
-            graph.DrawImage(btm,
-                new Rectangle(x, y, btm.Width, btm.Height));
 
-            btm.Dispose();
+            graph.CompositingMode = CompositingMode.SourceCopy;
+
+            using var br = new SolidBrush(Color.FromArgb(0, 255, 255, 255));
+
+            graph.FillRectangle(br, new Rectangle(x, y, width, height));
+
 
             return image;
         }

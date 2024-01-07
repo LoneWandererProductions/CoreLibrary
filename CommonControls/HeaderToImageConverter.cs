@@ -46,34 +46,22 @@ namespace CommonControls
             var str = value as string;
 
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (root == null)
-            {
-                return null;
-            }
+            if (root == null) return null;
 
             var drive = Path.Combine(root, ComCtlResources.DriveImage);
             var folder = Path.Combine(root, ComCtlResources.FolderImage);
 
             var source = new BitmapImage();
 
-            if (string.IsNullOrEmpty(str))
-            {
-                return source;
-            }
+            if (string.IsNullOrEmpty(str)) return source;
 
             if (str.Contains(ComCtlResources.PathElement))
             {
-                if (File.Exists(drive))
-                {
-                    return ImageStream.GetBitmapImageFileStream(drive);
-                }
+                if (File.Exists(drive)) return ImageStream.GetBitmapImageFileStream(drive);
             }
             else
             {
-                if (File.Exists(folder))
-                {
-                    return ImageStream.GetBitmapImageFileStream(folder);
-                }
+                if (File.Exists(folder)) return ImageStream.GetBitmapImageFileStream(folder);
             }
 
             return source;

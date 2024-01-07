@@ -102,10 +102,7 @@ namespace CommonControls
         /// <param name="e">The selection changed event arguments.</param>
         private void CmbColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CmbColor?.SelectedItem is not PropertyInfo property)
-            {
-                return;
-            }
+            if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
             var selectedColor = (Color)property.GetValue(null, null);
             Color = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
@@ -116,10 +113,7 @@ namespace CommonControls
         /// </summary>
         private void SwitchColor()
         {
-            if (Color != null)
-            {
-                CmbColor.SelectedItem = typeof(Colors).GetProperty(Color);
-            }
+            if (Color != null) CmbColor.SelectedItem = typeof(Colors).GetProperty(Color);
         }
 
         /// <summary>
