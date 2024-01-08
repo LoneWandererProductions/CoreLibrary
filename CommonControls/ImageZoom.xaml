@@ -9,26 +9,31 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ScrollViewer x:Name="ScrollView" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Grid x:Name="MainCanvas" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp"
-                  MouseMove="Canvas_MouseMove" MouseWheel="Canvas_MouseWheel">
-                <imag:ImageGif
-                    Stretch="None"
-                    SnapsToDevicePixels="True"
-                    UseLayoutRounding="True"
-                    Name="BtmImage"
-                    RenderOptions.BitmapScalingMode="NearestNeighbor"
-                    AutoStart="{Binding ElementName=ImgZoom, Path=AutoplayGifImage}">
-                    <imag:ImageGif.LayoutTransform>
-                        <ScaleTransform x:Name="Scale" />
-                    </imag:ImageGif.LayoutTransform>
-                </imag:ImageGif>
-                <Rectangle
-                    x:Name="SelectionBox"
-                    Visibility="Collapsed"
-                    Stroke="Black"
-                    StrokeThickness="1" />
-
-            </Grid>
+            <Canvas
+                x:Name="MainCanvas"
+                MouseDown="Canvas_MouseDown"
+                MouseUp="Canvas_MouseUp"
+                MouseMove="Canvas_MouseMove"
+                MouseWheel="Canvas_MouseWheel">
+                <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <imag:ImageGif
+                        Stretch="None"
+                        SnapsToDevicePixels="True"
+                        UseLayoutRounding="True"
+                        Name="BtmImage"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        AutoStart="{Binding ElementName=ImgZoom, Path=AutoplayGifImage}">
+                        <imag:ImageGif.LayoutTransform>
+                            <ScaleTransform x:Name="Scale" />
+                        </imag:ImageGif.LayoutTransform>
+                    </imag:ImageGif>
+                    <Rectangle
+                        x:Name="SelectionBox"
+                        Visibility="Collapsed"
+                        Stroke="Black"
+                        StrokeThickness="1" />
+                </Canvas>
+            </Canvas>
         </ScrollViewer>
     </Grid>
 </UserControl>
