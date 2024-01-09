@@ -13,23 +13,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\Base.png" />
-    <None Remove="Images\LayerOne.png" />
-    <None Remove="Images\Layertwo.png" />
-    <None Remove="Images\ResultOne.png" />
+    <None Remove="Image\LayerOne.png" />
+    <None Remove="Image\Layertwo.png" />
+    <None Remove="Image\ResultOne.png" />
+    <None Remove="Image\Tile.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Images\Base.png">
+    <EmbeddedResource Include="Image\Tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\LayerOne.png">
+    <EmbeddedResource Include="Image\LayerOne.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\Layertwo.png">
+    <EmbeddedResource Include="Image\Layertwo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\ResultOne.png">
+    <EmbeddedResource Include="Image\ResultOne.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
