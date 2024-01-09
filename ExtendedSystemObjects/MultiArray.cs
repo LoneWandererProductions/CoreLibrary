@@ -60,7 +60,7 @@ namespace ExtendedSystemObjects
                     Trace.WriteLine(i);
                     Trace.WriteLine(i % row);
 
-                    if ((i + 1) % row == 0 && (i + 1) >= row)
+                    if ((i + 1) % row == 0 && i + 1 >= row)
                     {
                         _ = str.Append(Environment.NewLine);
                         Trace.WriteLine("here");
@@ -137,7 +137,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts an array to span.
+        ///     Converts an array to span.
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="array">The array.</param>

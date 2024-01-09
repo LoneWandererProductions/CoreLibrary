@@ -66,7 +66,7 @@ namespace CommonLibrarySqlLiteTests
         ///     Generate all table Headers
         /// </summary>
         /// <returns>Dictionary with Table Headers</returns>
-        public static DictionaryTableColumns CreateTableHeadersMultible()
+        public static DictionaryTableColumns CreateTableHeadersMultiple()
         {
             var elementOne = new TableColumns
             {
@@ -105,43 +105,39 @@ namespace CommonLibrarySqlLiteTests
         }
 
         /// <summary>
-        ///     Like CreateTableHeadersMultible but with Unique Column
+        ///     Like CreateTableHeadersMultiple but with Unique Column
         /// </summary>
         /// <returns>Dictionary with Table Headers</returns>
-        internal static DictionaryTableColumns CreateTableHeadersUniqueMultible()
+        internal static DictionaryTableColumns CreateTableHeadersUniqueMultiple()
         {
-            var elementone = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false
-            };
-
-            var elementtwo = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
-            };
-
-            var elementthree = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-            };
-
             var elementFour = new TableColumns
             {
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
             };
 
-            var elementfive = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-            };
-
             var columns = new DictionaryTableColumns();
 
-            columns.DColumns.Add("First", elementone);
-            columns.DColumns.Add("Second", elementtwo);
-            columns.DColumns.Add("Third", elementthree);
+            columns.DColumns.Add("First",
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false
+                });
+            columns.DColumns.Add("Second",
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+                });
+            columns.DColumns.Add("Third",
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
+                });
             columns.DColumns.Add("Fourth", elementFour);
-            columns.DColumns.Add("Five", elementfive);
+            columns.DColumns.Add("Five",
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
+                });
 
             return columns;
         }
@@ -196,20 +192,20 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     Compares to Table Result Set
         /// </summary>
-        /// <param name="tableone">Table One</param>
-        /// <param name="tabletwo">Table Two</param>
+        /// <param name="tableOne">Table One</param>
+        /// <param name="tableTwo">Table Two</param>
         /// <returns>If Tables are equal or not</returns>
-        internal static bool CompareTableMultibleSet(List<TableSet> tableone, List<TableSet> tabletwo)
+        internal static bool CompareTableMultipleSet(List<TableSet> tableOne, List<TableSet> tableTwo)
         {
-            if (tableone.Count != tabletwo.Count)
+            if (tableOne.Count != tableTwo.Count)
             {
                 return false; // Different number of items
             }
 
-            for (var i = 0; i < tableone.Count; i++)
+            for (var i = 0; i < tableOne.Count; i++)
             {
-                var one = tableone[i];
-                var two = tabletwo[i];
+                var one = tableOne[i];
+                var two = tableTwo[i];
                 if (!one.Row.SequenceEqual(two.Row))
                 {
                     return false;

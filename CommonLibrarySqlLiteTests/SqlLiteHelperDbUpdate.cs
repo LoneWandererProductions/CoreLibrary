@@ -52,7 +52,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbUpdate),
                 "Test passed Create: " + _target.LastErrors);
 
-            var header = SharedHelperClass.CreateTableHeadersMultible();
+            var header = SharedHelperClass.CreateTableHeadersMultiple();
 
             //create the Table
             var check = _target.CreateTable(TblName, header);

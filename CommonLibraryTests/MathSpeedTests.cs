@@ -6,7 +6,7 @@ namespace CommonLibraryTests
     internal static class MathSpeedTests
     {
         /// <summary>
-        /// Tests one. Matrix Multiplication
+        ///     Tests one. Matrix Multiplication
         /// </summary>
         /// <param name="mOne">The m one.</param>
         /// <param name="mTwo">The m two.</param>

@@ -170,14 +170,15 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Adds the display.
+        ///     Adds the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The id Position and the tile Id.</param>
-        public static void AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer, KeyValuePair<int, int> idTile)
+        public static void AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
+            KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
             var x = IdToX(position, width) * textureSize;
@@ -190,7 +191,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Removes the display.
+        ///     Removes the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
@@ -236,7 +237,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Switches the position.
+        ///     Switches the position.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>

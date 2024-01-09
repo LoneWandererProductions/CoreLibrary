@@ -53,7 +53,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Only works with equal and Implemented IEquality Interface
+        ///     Only works with equal and Implemented IEquality Interface
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">List we want to add to</param>

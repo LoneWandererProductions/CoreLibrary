@@ -92,7 +92,10 @@ namespace CommonControls
             var directory = Directory.GetCurrentDirectory();
             var path = Path.Combine(directory, PluginPath);
 
-            if (!Directory.Exists(path)) return;
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
 
             var check = PluginLoad.LoadAll(path);
 
@@ -112,7 +115,9 @@ namespace CommonControls
                          Type = plugin.Type,
                          Description = plugin.Description
                      }))
+            {
                 lst.Add(item);
+            }
 
             ObservablePlugin = new ObservableCollection<PluginItem>(lst);
 
@@ -127,7 +132,10 @@ namespace CommonControls
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var selectedItem = DataGrid.SelectedItem;
-            if (selectedItem is not PluginItem item) return;
+            if (selectedItem is not PluginItem item)
+            {
+                return;
+            }
 
             var exe = item.Command.Execute();
 

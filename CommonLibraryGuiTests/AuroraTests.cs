@@ -38,8 +38,7 @@ namespace CommonLibraryGuiTests
             var bmpLayertwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "Layertwo.png"));
             var bmResultOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "ResultOne.png"));
 
-            var lst = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayertwo, bmResultOne };
-
+            var lst = new List<Bitmap> { bmpBase, bmpLayerOne, bmpLayertwo, bmResultOne };
         }
     }
 }

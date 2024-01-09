@@ -269,7 +269,10 @@ namespace CommonControls
         {
             var control = sender as Thumbnails;
             // add an Can Execute
-            if (!_refresh) return;
+            if (!_refresh)
+            {
+                return;
+            }
 
             control?.OnItemsSourceChanged();
         }
@@ -282,11 +285,17 @@ namespace CommonControls
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id)) return;
+            if (!ItemsSource.ContainsKey(id))
+            {
+                return;
+            }
 
             var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-            if (image != null) image.Source = null;
+            if (image != null)
+            {
+                image.Source = null;
+            }
 
             _ = ItemsSource.Remove(id);
 
@@ -342,19 +351,35 @@ namespace CommonControls
             ImageDct = new Dictionary<string, Image>(pics.Count);
             Selection = new List<int>();
 
-            if (SelectBox) ChkBox = new Dictionary<int, CheckBox>(pics.Count);
+            if (SelectBox)
+            {
+                ChkBox = new Dictionary<int, CheckBox>(pics.Count);
+            }
 
             //Handle some special cases
-            if (ThumbCellSize == 0) ThumbCellSize = 100;
-            if (ThumbHeight == 0 && ThumbWidth == 0) ThumbHeight = 1;
+            if (ThumbCellSize == 0)
+            {
+                ThumbCellSize = 100;
+            }
+
+            if (ThumbHeight == 0 && ThumbWidth == 0)
+            {
+                ThumbHeight = 1;
+            }
 
             //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
             //catch on reload
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
-                if (ThumbWidth == 1) ThumbHeight = pics.Count;
+                if (ThumbWidth == 1)
+                {
+                    ThumbHeight = pics.Count;
+                }
 
-                if (ThumbHeight == 1) ThumbWidth = pics.Count;
+                if (ThumbHeight == 1)
+                {
+                    ThumbWidth = pics.Count;
+                }
 
                 if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
@@ -371,7 +396,10 @@ namespace CommonControls
             for (var x = 0; x < ThumbWidth; x++)
             {
                 //everything empty? well bail out, if not well we have work
-                if (pics.Count == 0) continue;
+                if (pics.Count == 0)
+                {
+                    continue;
+                }
 
                 var (key, name) = pics.First();
 
@@ -403,7 +431,10 @@ namespace CommonControls
                     };
 
                     //add to our List of selected Items
-                    if (IsCheckBoxSelected) Selection.Add(key);
+                    if (IsCheckBoxSelected)
+                    {
+                        Selection.Add(key);
+                    }
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
@@ -440,7 +471,10 @@ namespace CommonControls
                 }
 
                 //handle error gracefully
-                if (myBitmapCell == null) continue;
+                if (myBitmapCell == null)
+                {
+                    continue;
+                }
 
                 images.ToolTip = name;
 
@@ -464,9 +498,15 @@ namespace CommonControls
         private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton) return;
+            if (sender is not Image clickedButton)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedButton.Name)) return;
+            if (!Keys.ContainsKey(clickedButton.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedButton.Name];
 
@@ -483,9 +523,15 @@ namespace CommonControls
         private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton) return;
+            if (sender is not Image clickedButton)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedButton.Name)) return;
+            if (!Keys.ContainsKey(clickedButton.Name))
+            {
+                return;
+            }
 
             _selection = Keys[clickedButton.Name];
 
@@ -520,9 +566,15 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0) return;
+            if (Selection.Count == 0)
+            {
+                return;
+            }
 
-            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id])) check.IsChecked = false;
+            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
+            {
+                check.IsChecked = false;
+            }
         }
 
         /// <summary>
@@ -533,9 +585,15 @@ namespace CommonControls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox) return;
+            if (sender is not CheckBox clickedCheckBox)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
+            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -550,9 +608,15 @@ namespace CommonControls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox) return;
+            if (sender is not CheckBox clickedCheckBox)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
+            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedCheckBox.Name];
 

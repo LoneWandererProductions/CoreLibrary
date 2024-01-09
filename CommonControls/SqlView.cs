@@ -60,7 +60,10 @@ namespace CommonControls
             get => _isActive;
             set
             {
-                if (_isActive == value) return;
+                if (_isActive == value)
+                {
+                    return;
+                }
 
                 _isActive = value;
                 OnPropertyChanged(nameof(IsActive));
@@ -78,7 +81,10 @@ namespace CommonControls
             get => _dataBase;
             set
             {
-                if (_dataBase == value) return;
+                if (_dataBase == value)
+                {
+                    return;
+                }
 
                 _dataBase = value;
                 OnPropertyChanged(nameof(Database));
@@ -96,7 +102,10 @@ namespace CommonControls
             get => _server;
             set
             {
-                if (_server == value) return;
+                if (_server == value)
+                {
+                    return;
+                }
 
                 _server = value;
                 OnPropertyChanged(nameof(Server));
@@ -114,7 +123,10 @@ namespace CommonControls
             get => AddLog;
             set
             {
-                if (AddLog == value) return;
+                if (AddLog == value)
+                {
+                    return;
+                }
 
                 AddLog = value;
                 OnPropertyChanged(nameof(Log));

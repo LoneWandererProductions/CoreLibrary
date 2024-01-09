@@ -166,14 +166,14 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Get All Keys by Value
+        ///     Get All Keys by Value
         /// </summary>
         /// <typeparam name="TKey">Internal Key</typeparam>
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="value">Value we look up</param>
         /// <returns>
-        /// List of Keys with described Value
+        ///     List of Keys with described Value
         /// </returns>
         /// <exception cref="ValueNotFoundException"><paramref name="dic" /> value not found.</exception>
         public static Dictionary<TKey, TValue> GetDictionaryByValues<TKey, TValue>(this IDictionary<TKey, TValue> dic,

@@ -78,7 +78,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCreateComplex),
                 "Test failed Create: " + Target.LastErrors);
 
-            var tableHeaders = SharedHelperClass.CreateTableHeadersMultible();
+            var tableHeaders = SharedHelperClass.CreateTableHeadersMultiple();
             var check = Target.CreateTable(TableOne, tableHeaders);
             Assert.IsTrue(check, TableOne + " Test failed Add" + Target.LastErrors);
 
@@ -86,7 +86,7 @@ namespace CommonLibrarySqlLiteTests
             check = Target.InsertMultipleRow(TableOne, table, false);
             Assert.IsTrue(check, TableOne + " Test not passed Insert into Table: " + Target.LastErrors);
 
-            tableHeaders = SharedHelperClass.CreateTableHeadersMultible();
+            tableHeaders = SharedHelperClass.CreateTableHeadersMultiple();
             check = Target.CreateTable(TableTwo, tableHeaders);
             Assert.IsTrue(check, TableTwo + " Test failed Add" + Target.LastErrors);
 
@@ -94,7 +94,7 @@ namespace CommonLibrarySqlLiteTests
             check = Target.InsertMultipleRow(TableTwo, table, false);
             Assert.IsTrue(check, TableTwo + " Test not passed Insert into Table: " + Target.LastErrors);
 
-            tableHeaders = SharedHelperClass.CreateTableHeadersUniqueMultible();
+            tableHeaders = SharedHelperClass.CreateTableHeadersUniqueMultiple();
             check = Target.CreateTable(TableThree, tableHeaders);
             Assert.IsTrue(check, TableThree + " Test failed Add" + Target.LastErrors);
 

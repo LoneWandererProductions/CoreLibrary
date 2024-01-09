@@ -39,7 +39,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathPragmaTableInfo),
                 "Test passed Create " + _target.LastErrors);
 
-            var header = SharedHelperClass.CreateTableHeadersMultible();
+            var header = SharedHelperClass.CreateTableHeadersMultiple();
             //create the Table
             var check = _target.CreateTable("newOne", header);
             Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);

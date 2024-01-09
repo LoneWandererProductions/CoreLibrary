@@ -99,9 +99,15 @@ namespace CommonControls
         /// <returns>Connection string</returns>
         private string SqlWindowsAuthentication()
         {
-            if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
+            if (string.IsNullOrEmpty(Server))
+            {
+                return "Error: Server Name";
+            }
 
-            if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+            if (string.IsNullOrEmpty(Database))
+            {
+                return "Error: Database Name";
+            }
 
             return string.Concat(_persistInfo, _trust, _security, Server, ";", Database);
         }

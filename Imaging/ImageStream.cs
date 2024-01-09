@@ -593,7 +593,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Erases the rectangle from an Image.
+        ///     Erases the rectangle from an Image.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="x">The x.</param>

@@ -384,7 +384,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathCopyTable),
                 "Test failed Create " + _target.LastErrors);
 
-            var header = SharedHelperClass.CreateTableHeadersMultible();
+            var header = SharedHelperClass.CreateTableHeadersMultiple();
             //create the Table
             var check = _target.CreateTable(DbSource, header);
             Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
@@ -420,7 +420,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathCopyTableAdvanced),
                 "Test failed Create " + _target.LastErrors);
 
-            var header = SharedHelperClass.CreateTableHeadersMultible();
+            var header = SharedHelperClass.CreateTableHeadersMultiple();
             //create the Table
             var check = _target.CreateTable(DbSource, header);
             Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
