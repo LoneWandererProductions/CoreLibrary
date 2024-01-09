@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using Aurorae;
 using NUnit.Framework;
 
 namespace CommonLibraryGuiTests
@@ -34,11 +35,15 @@ namespace CommonLibraryGuiTests
         public void CombineBitMap()
         {
             var bmpBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "Tile.png"));
-            var bmpLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "layerone.png"));
-            var bmpLayertwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "Layertwo.png"));
+            var bmpLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "layerOne.png"));
+            var bmpLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png"));
             var bmResultOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "ResultOne.png"));
 
-            var lst = new List<Bitmap> { bmpBase, bmpLayerOne, bmpLayertwo, bmResultOne };
+            var lst = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne };
+
+
+            //new Test with UI
+            var aurora = new Aurora();
         }
     }
 }
