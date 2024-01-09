@@ -1,8 +1,18 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryGuiTests
+ * FILE:        CommonLibraryGuiTests/AuroraTests.cs
+ * PURPOSE:     Tests the Aurorae Display
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading;
 using Aurorae;
+using ImageCompare;
+using Imaging;
 using NUnit.Framework;
 
 namespace CommonLibraryGuiTests
@@ -30,6 +40,9 @@ namespace CommonLibraryGuiTests
         private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
 
 
+        /// <summary>
+        /// Test combining bitmaps.
+        /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
         public void CombineBitMap()
@@ -41,6 +54,14 @@ namespace CommonLibraryGuiTests
 
             var lst = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne };
 
+            var render = new ImageRender();
+
+            var cache = render.CombineBitmap(bmpBase, bmpLayerOne, 0, 0);
+            cache = render.CombineBitmap(cache, bmpLayerTwo, 0, 0);
+
+            var compare = new ImageComparer();
+
+            //Todo implement ImageComparer, 2 images
 
             //new Test with UI
             var aurora = new Aurora();
