@@ -189,5 +189,26 @@ namespace ImageCompare
                 Extension = Path.GetExtension(imagePath)
             };
         }
+
+        /// <summary>
+        ///     Gets the image details.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Image Data</returns>
+        [return: MaybeNull]
+        internal static ImageData GetImageDetails(Bitmap image)
+        {
+            var color = GenerateData(image, string.Empty);
+
+            return new ImageData
+            {
+                Height = image.Height,
+                Width = image.Width,
+                R = color.R,
+                G = color.G,
+                B = color.B,
+                Similarity = 100
+            };
+        }
     }
 }

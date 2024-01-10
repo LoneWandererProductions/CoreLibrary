@@ -100,11 +100,21 @@ namespace ImageCompare
         /// <summary>
         ///     Gets the details.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Information about the Image</returns>
         public string GetDetails()
         {
             return string.Concat(ImageResources.ImagePath, ImagePath, ImageResources.ImageName,
                 ImageName, ImageResources.ImageHeight, Height, ImageResources.ImageWidth, Width,
+                ImageResources.ImageSize, Height * Width);
+        }
+
+        /// <summary>
+        ///     Gets the details.
+        /// </summary>
+        /// <returns>Information about the Image, without Path Information</returns>
+        public string GetDetailsSimple()
+        {
+            return string.Concat(ImageResources.ImageHeight, Height, ImageResources.ImageWidth, Width,
                 ImageResources.ImageSize, Height * Width);
         }
     }

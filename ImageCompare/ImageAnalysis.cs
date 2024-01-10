@@ -6,9 +6,12 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Linq;
 
 namespace ImageCompare
@@ -83,6 +86,47 @@ namespace ImageCompare
             }
 
             return lst;
+        }
+
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="one">The Bitmap one.</param>
+        /// <param name="two">The Bitmap two.</param>
+        /// <returns>Data about two images</returns>
+        public ImageCompareData CompareImages(Bitmap one, Bitmap two)
+        {
+            var oneSimilar = ImageProcessing.GenerateData(one, 0);
+            var twoSimilar = ImageProcessing.GenerateData(two, 1);
+
+            return new ImageCompareData
+            {
+                Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
+                ImageOne = AnalysisProcessing.GetImageDetails(one).GetDetailsSimple(),
+                ImageTwo = AnalysisProcessing.GetImageDetails(two).GetDetailsSimple()
+            };
+        }
+
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="pathOne">The path to image one.</param>
+        /// <param name="pathTwo">The path to image two.</param>
+        /// <returns>Data about two images</returns>
+        public ImageCompareData CompareImages(string pathOne, string pathTwo)
+        {
+            var one = new Bitmap(pathOne);
+            var two = new Bitmap(pathTwo);
+
+            var oneSimilar = ImageProcessing.GenerateData(one, 0);
+            var twoSimilar = ImageProcessing.GenerateData(two, 1);
+
+            return new ImageCompareData
+            {
+                Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
+                ImageOne = AnalysisProcessing.GetImageDetails(pathOne).GetDetails(),
+                ImageTwo = AnalysisProcessing.GetImageDetails(pathTwo).GetDetails()
+            };
         }
     }
 }

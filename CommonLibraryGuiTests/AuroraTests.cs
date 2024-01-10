@@ -59,7 +59,10 @@ namespace CommonLibraryGuiTests
             var cache = render.CombineBitmap(bmpBase, bmpLayerOne, 0, 0);
             cache = render.CombineBitmap(cache, bmpLayerTwo, 0, 0);
 
-            var compare = new ImageComparer();
+            var compare = new ImageAnalysis();
+
+            //should be near 100%
+            compare.CompareImages(bmResultOne, cache);
 
             //Todo implement ImageComparer, 2 images
 
