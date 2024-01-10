@@ -26,11 +26,11 @@ namespace Aurorae
     /// </summary>
     public partial class Polaris
     {
-        public static readonly DependencyProperty MapHeight = DependencyProperty.Register(nameof(MapHeight),
+        public static readonly DependencyProperty EditorHeight = DependencyProperty.Register(nameof(EditorHeight),
             typeof(int),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty MapWidth = DependencyProperty.Register(nameof(MapWidth),
+        public static readonly DependencyProperty EditorWidth = DependencyProperty.Register(nameof(EditorWidth),
             typeof(int),
             typeof(Aurora), null);
 
@@ -82,14 +82,14 @@ namespace Aurorae
 
         public int DependencyHeight
         {
-            get => (int)GetValue(MapHeight);
-            set => SetValue(MapHeight, value);
+            get => (int)GetValue(EditorHeight);
+            set => SetValue(EditorHeight, value);
         }
 
         public int DependencyWidth
         {
-            get => (int)GetValue(MapWidth);
-            set => SetValue(MapWidth, value);
+            get => (int)GetValue(EditorWidth);
+            set => SetValue(EditorWidth, value);
         }
 
         public int DependencyTextureSize

@@ -66,11 +66,11 @@ namespace Aurorae
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty AddDisplay = DependencyProperty.Register(nameof(Add),
+        public static readonly DependencyProperty AddDisplay = DependencyProperty.Register(nameof(AddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty RemoveDisplay = DependencyProperty.Register(nameof(Remove),
+        public static readonly DependencyProperty RemoveDisplay = DependencyProperty.Register(nameof(RemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 

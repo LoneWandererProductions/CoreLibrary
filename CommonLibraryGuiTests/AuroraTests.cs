@@ -68,6 +68,9 @@ namespace CommonLibraryGuiTests
 
             //new Test with UI
             var aurora = new Aurora();
+
+            //TODO fix Polaris
+            //var polaris = new Polaris();
         }
     }
 }
