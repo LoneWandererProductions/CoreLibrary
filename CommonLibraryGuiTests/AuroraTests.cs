@@ -62,15 +62,20 @@ namespace CommonLibraryGuiTests
             var compare = new ImageAnalysis();
 
             //should be near 100%
-            compare.CompareImages(bmResultOne, cache);
+            var data = compare.CompareImages(bmResultOne, cache);
 
             //Todo implement ImageComparer, 2 images
+            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed: ", data.Similarity));
+
+            data = compare.CompareImages(Path.Combine(SampleImagesFolder.FullName, "Tile.png"), Path.Combine(SampleImagesFolder.FullName, "Tile.png"));
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed Path: ", data.Similarity));
 
             //new Test with UI
             var aurora = new Aurora();
+            var polaris = new Polaris();
 
-            //TODO fix Polaris
-            //var polaris = new Polaris();
+
         }
     }
 }

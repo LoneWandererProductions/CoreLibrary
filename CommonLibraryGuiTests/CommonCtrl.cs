@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedVariable
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -20,6 +22,27 @@ namespace CommonLibraryGuiTests
     /// </summary>
     public sealed class CommonCtrl
     {
+        /// <summary>
+        /// Creates and initiates all basic custom controls
+        /// It may sound stupid, but some may throw exceptions because of my own stupidity.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void Basic()
+        {
+            var colorPicker = new ColorPicker();
+            var colorPickerMenu = new ColorPickerMenu();
+            var colorSelection = new ColorSelection();
+            var dataList = new DataList();
+            var folderControl = new FolderControl();
+            var imageZoom = new ImageZoom();
+            var scrollingTextBox = new ScrollingTextBoxes();
+            var scrollingRichTextBox = new ScrollingRichTextBox();
+            var thumbNails = new Thumbnails();
+
+            Assert.Pass();
+        }
+
         /// <summary>
         ///     The exGrid Test.
         /// </summary>

@@ -203,6 +203,8 @@ namespace Imaging
             var gEnc = new GifBitmapEncoder();
 
             //TODO encode and change to one size, add more sanity checks
+            //TODO possible Thumbnail
+            //TODO add more encoding
 
             foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
                          System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(

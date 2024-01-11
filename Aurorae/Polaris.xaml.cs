@@ -24,7 +24,7 @@ namespace Aurorae
     /// <summary>
     ///     Generate a playing field for the editor
     /// </summary>
-    public partial class Polaris
+    public sealed partial class Polaris
     {
         public static readonly DependencyProperty EditorHeight = DependencyProperty.Register(nameof(EditorHeight),
             typeof(int),
@@ -34,39 +34,39 @@ namespace Aurorae
             typeof(int),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty TextureSize = DependencyProperty.Register(nameof(TextureSize),
+        public static readonly DependencyProperty EditorTextureSize = DependencyProperty.Register(nameof(EditorTextureSize),
             typeof(int),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Map = DependencyProperty.Register(nameof(Map),
+        public static readonly DependencyProperty EditorMap = DependencyProperty.Register(nameof(EditorMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Textures = DependencyProperty.Register(nameof(Textures),
+        public static readonly DependencyProperty EditorTextures = DependencyProperty.Register(nameof(EditorTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Grid = DependencyProperty.Register(nameof(Grid),
+        public static readonly DependencyProperty EditorGrid = DependencyProperty.Register(nameof(EditorGrid),
             typeof(bool),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Number = DependencyProperty.Register(nameof(Number),
+        public static readonly DependencyProperty EditorNumber = DependencyProperty.Register(nameof(EditorNumber),
             typeof(bool),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Add = DependencyProperty.Register(nameof(Add),
+        public static readonly DependencyProperty EditorAdd = DependencyProperty.Register(nameof(EditorAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty Remove = DependencyProperty.Register(nameof(Remove),
+        public static readonly DependencyProperty EditorRemove = DependencyProperty.Register(nameof(EditorRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty AddDisplay = DependencyProperty.Register(nameof(Add),
+        public static readonly DependencyProperty EditorAddDisplay = DependencyProperty.Register(nameof(EditorAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty RemoveDisplay = DependencyProperty.Register(nameof(Remove),
+        public static readonly DependencyProperty EditorRemoveDisplay = DependencyProperty.Register(nameof(EditorRemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 
@@ -94,13 +94,13 @@ namespace Aurorae
 
         public int DependencyTextureSize
         {
-            get => (int)GetValue(TextureSize);
-            set => SetValue(TextureSize, value);
+            get => (int)GetValue(EditorTextureSize);
+            set => SetValue(EditorTextureSize, value);
         }
 
         public Dictionary<int, List<int>> DependencyMap
         {
-            get => (Dictionary<int, List<int>>)GetValue(Map);
+            get => (Dictionary<int, List<int>>)GetValue(EditorMap);
             set
             {
                 if (value == null)
@@ -108,7 +108,7 @@ namespace Aurorae
                     return;
                 }
 
-                SetValue(Map, value);
+                SetValue(EditorMap, value);
                 LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
             }
@@ -116,16 +116,16 @@ namespace Aurorae
 
         public Dictionary<int, Texture> DependencyTextures
         {
-            get => (Dictionary<int, Texture>)GetValue(Textures);
-            set => SetValue(Textures, value);
+            get => (Dictionary<int, Texture>)GetValue(EditorTextures);
+            set => SetValue(EditorTextures, value);
         }
 
         public bool DependencyGrid
         {
-            get => (bool)GetValue(Grid);
+            get => (bool)GetValue(EditorGrid);
             set
             {
-                SetValue(Grid, value);
+                SetValue(EditorGrid, value);
                 LayerTwo.Source = !DependencyGrid
                     ? null
                     : Helper.GenerateGrid(DependencyWidth, DependencyHeight, DependencyTextureSize);
@@ -134,10 +134,10 @@ namespace Aurorae
 
         public bool DependencyNumber
         {
-            get => (bool)GetValue(Number);
+            get => (bool)GetValue(EditorNumber);
             set
             {
-                SetValue(Number, value);
+                SetValue(EditorNumber, value);
                 LayerThree.Source = !DependencyNumber
                     ? null
                     : Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
@@ -146,10 +146,10 @@ namespace Aurorae
 
         public KeyValuePair<int, int> DependencyAdd
         {
-            get => (KeyValuePair<int, int>)GetValue(Add);
+            get => (KeyValuePair<int, int>)GetValue(EditorAdd);
             set
             {
-                SetValue(Add, value);
+                SetValue(EditorAdd, value);
                 var check = Helper.AddTile(DependencyMap, value);
                 if (!check)
                 {
@@ -163,10 +163,10 @@ namespace Aurorae
 
         public KeyValuePair<int, int> DependencyRemove
         {
-            get => (KeyValuePair<int, int>)GetValue(Remove);
+            get => (KeyValuePair<int, int>)GetValue(EditorRemove);
             set
             {
-                SetValue(Remove, value);
+                SetValue(EditorRemove, value);
                 var check = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
                 if (!check)
                 {
@@ -180,10 +180,10 @@ namespace Aurorae
 
         public KeyValuePair<int, int> DependencyAddDisplay
         {
-            get => (KeyValuePair<int, int>)GetValue(AddDisplay);
+            get => (KeyValuePair<int, int>)GetValue(EditorAddDisplay);
             set
             {
-                SetValue(AddDisplay, value);
+                SetValue(EditorAddDisplay, value);
                 Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
                     DependencyTextures, _thirdLayer, value);
 
@@ -193,10 +193,10 @@ namespace Aurorae
 
         public int DependencyRemoveDisplay
         {
-            get => (int)GetValue(RemoveDisplay);
+            get => (int)GetValue(EditorRemoveDisplay);
             set
             {
-                SetValue(RemoveDisplay, value);
+                SetValue(EditorRemoveDisplay, value);
                 Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, _thirdLayer, value);
 
                 LayerThree.Source = _thirdLayer.ToBitmapImage();
