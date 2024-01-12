@@ -62,5 +62,15 @@ namespace ImageCompare
         ///     The Image Path (const). Value: " Path: "
         /// </summary>
         internal const string ImagePath = " Path: ";
+
+        /// <summary>
+        ///     The Error Image was empty (const). Value: "Error image was empty: "
+        /// </summary>
+        internal const string ErrorImageEmpty = "Error image was empty: ";
+
+        /// <summary>
+        ///     The Error File not found (const). Value: "Error file not found: "
+        /// </summary>
+        internal const string ErrorFileNotFound = "Error file not found: ";
     }
 }

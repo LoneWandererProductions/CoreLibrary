@@ -88,45 +88,33 @@ namespace ImageCompare
             return lst;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Compares the two images.
         /// </summary>
-        /// <param name="one">The Bitmap one.</param>
-        /// <param name="two">The Bitmap two.</param>
+        /// <param name="first">The Bitmap one.</param>
+        /// <param name="second">The Bitmap two.</param>
         /// <returns>Data about two images</returns>
-        public ImageCompareData CompareImages(Bitmap one, Bitmap two)
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        public ImageCompareData CompareImages(Bitmap first, Bitmap second)
         {
-            var oneSimilar = ImageProcessing.GenerateData(one, 0);
-            var twoSimilar = ImageProcessing.GenerateData(two, 1);
+            if (first == null) throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
+            if (second == null) throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
 
-            return new ImageCompareData
-            {
-                Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
-                ImageOne = AnalysisProcessing.GetImageDetails(one).GetDetailsSimple(),
-                ImageTwo = AnalysisProcessing.GetImageDetails(two).GetDetailsSimple()
-            };
+            return ImageHelper.CompareImages(first, second);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Compares the two images.
         /// </summary>
-        /// <param name="pathOne">The path to image one.</param>
-        /// <param name="pathTwo">The path to image two.</param>
+        /// <param name="first">The path to image one.</param>
+        /// <param name="second">The path to image two.</param>
         /// <returns>Data about two images</returns>
-        public ImageCompareData CompareImages(string pathOne, string pathTwo)
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        public ImageCompareData CompareImages(string first, string second)
         {
-            var one = new Bitmap(pathOne);
-            var two = new Bitmap(pathTwo);
-
-            var oneSimilar = ImageProcessing.GenerateData(one, 0);
-            var twoSimilar = ImageProcessing.GenerateData(two, 1);
-
-            return new ImageCompareData
-            {
-                Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
-                ImageOne = AnalysisProcessing.GetImageDetails(pathOne).GetDetails(),
-                ImageTwo = AnalysisProcessing.GetImageDetails(pathTwo).GetDetails()
-            };
+            return ImageHelper.CompareImages(first, second);
         }
     }
 }

@@ -57,17 +57,19 @@ namespace ImageCompare
         /// <summary>
         /// Compares the two images.
         /// </summary>
-        /// <param name="one">The Bitmap one.</param>
-        /// <param name="two">The Bitmap two.</param>
+        /// <param name="first">The Bitmap one.</param>
+        /// <param name="second">The Bitmap two.</param>
         /// <returns>Data about two images</returns>
-        ImageCompareData CompareImages(Bitmap one, Bitmap two);
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        ImageCompareData CompareImages(Bitmap first, Bitmap second);
 
         /// <summary>
         /// Compares the two images.
         /// </summary>
-        /// <param name="pathOne">The path to image one.</param>
-        /// <param name="pathTwo">The path to image two.</param>
+        /// <param name="first">The path to image one.</param>
+        /// <param name="second">The path to image two.</param>
         /// <returns>Data about two images</returns>
-        ImageCompareData CompareImages(string pathOne, string pathTwo);
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        ImageCompareData CompareImages(string first, string second);
     }
 }
