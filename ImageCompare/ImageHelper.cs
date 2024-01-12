@@ -13,12 +13,12 @@ using System.IO;
 namespace ImageCompare
 {
     /// <summary>
-    /// Image Helper methods
+    ///     Image Helper methods
     /// </summary>
     internal static class ImageHelper
     {
         /// <summary>
-        /// Compares the images.
+        ///     Compares the images.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
@@ -38,7 +38,7 @@ namespace ImageCompare
         }
 
         /// <summary>
-        /// Compares the images.
+        ///     Compares the images.
         /// </summary>
         /// <param name="first">First Image Path</param>
         /// <param name="second">Second Image Path</param>
@@ -46,8 +46,15 @@ namespace ImageCompare
         /// <exception cref="ArgumentException">Argument Exception</exception>
         internal static ImageCompareData CompareImages(string first, string second)
         {
-            if (!File.Exists(first)) throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, first));
-            if (!File.Exists(second)) throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, second));
+            if (!File.Exists(first))
+            {
+                throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, first));
+            }
+
+            if (!File.Exists(second))
+            {
+                throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, second));
+            }
 
             var one = new Bitmap(first);
             var two = new Bitmap(second);

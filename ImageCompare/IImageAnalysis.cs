@@ -55,7 +55,7 @@ namespace ImageCompare
         List<ImageData> GetImageDetails(List<string> imagePaths);
 
         /// <summary>
-        /// Compares the two images.
+        ///     Compares the two images.
         /// </summary>
         /// <param name="first">The Bitmap one.</param>
         /// <param name="second">The Bitmap two.</param>
@@ -64,7 +64,7 @@ namespace ImageCompare
         ImageCompareData CompareImages(Bitmap first, Bitmap second);
 
         /// <summary>
-        /// Compares the two images.
+        ///     Compares the two images.
         /// </summary>
         /// <param name="first">The path to image one.</param>
         /// <param name="second">The path to image two.</param>

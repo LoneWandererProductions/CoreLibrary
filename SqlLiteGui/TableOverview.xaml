@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SQLiteGui.TableOverview"
+﻿<!-- ReSharper disable once MemberCanBeInternal -->
+<UserControl x:Class="SQLiteGui.TableOverview"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -58,7 +59,7 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <Button Content="Trunc"
+        <Button Content="Truncate"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Grid.Row="1"

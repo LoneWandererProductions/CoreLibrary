@@ -1,11 +1,43 @@
-﻿namespace ImageCompare
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ImageCompare
+ * FILE:        ImageCompare/ImageCompareData.cs
+ * PURPOSE:     Compare results of 2 images
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBeInternal
+
+namespace ImageCompare
 {
-    public class ImageCompareData
+    /// <summary>
+    /// Compare results between two images
+    /// </summary>
+    public sealed class ImageCompareData
     {
-        public string ImageOne { get; set; }
+        /// <summary>
+        /// Gets the image one.
+        /// </summary>
+        /// <value>
+        /// The image one.
+        /// </value>
+        public string ImageOne { get; internal set; }
 
-        public string ImageTwo { get; set; }
+        /// <summary>
+        /// Gets the image two.
+        /// </summary>
+        /// <value>
+        /// The image two.
+        /// </value>
+        public string ImageTwo { get; internal set; }
 
-        public double Similarity { get; set; }
+        /// <summary>
+        /// Gets the similarity.
+        /// </summary>
+        /// <value>
+        /// The similarity.
+        /// </value>
+        public double Similarity { get; init; }
     }
 }
