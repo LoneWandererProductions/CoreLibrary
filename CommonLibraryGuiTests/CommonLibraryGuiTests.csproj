@@ -16,10 +16,22 @@
     <None Remove="Image\LayerOne.png" />
     <None Remove="Image\Layertwo.png" />
     <None Remove="Image\ResultOne.png" />
+    <None Remove="Image\result_layer_one.png" />
+    <None Remove="Image\result_layer_other.png" />
+    <None Remove="Image\result_layer_two.png" />
     <None Remove="Image\Tile.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Image\result_layer_one.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Image\result_layer_other.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Image\result_layer_two.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Image\Tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

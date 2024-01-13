@@ -51,8 +51,11 @@ namespace CommonLibraryGuiTests
             var bmpLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "layerOne.png"));
             var bmpLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png"));
             var bmResultOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "ResultOne.png"));
+            var bmResultLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_one.png"));
+            var bmResultLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_two.png"));
+            var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
 
-            var lst = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne };
+            var imageList = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne, bmResultLayerOne, bmResultLayerTwo, bmResultLayerOther };
 
             var render = new ImageRender();
 
@@ -72,10 +75,48 @@ namespace CommonLibraryGuiTests
             Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed Path: ", data.Similarity));
 
             //new Test with UI
-            var aurora = new Aurora();
+            //generate texture Dictionary, and all the other data;
+            var map = new Dictionary<int, List<int>>
+            {
+                {0, new List<int> { 0 } },
+                {1, new List<int> { 0 } },
+                {2, new List<int> { 0 } },
+                {3, new List<int> { 0 } },
+                {4, new List<int> { 0 } },
+                {5, new List<int> { 0 } }
+            };
+
+            var aurora = new Aurora
+            {
+                DependencyTextures = new Dictionary<int, Texture>
+                {
+                    {
+                        0, new Texture
+                        {
+                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
+                        }
+                    },
+                    {
+                        1, new Texture
+                        {
+                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
+                        }
+                    },
+                    {
+                        2, new Texture
+                        {
+                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
+                        }
+                    },
+                },
+                DependencyTextureSize = 100,
+                DependencyHeight = 2,
+                DependencyWidth = 3,
+                DependencyMap = map
+            };
+
+            //new Test with other UI
             var polaris = new Polaris();
-
-
         }
     }
 }
