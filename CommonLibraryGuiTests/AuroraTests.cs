@@ -17,6 +17,9 @@ using NUnit.Framework;
 
 namespace CommonLibraryGuiTests
 {
+    /// <summary>
+    /// Some Basic tests for the Aurora Engine and the image Combining
+    /// </summary>
     public sealed class AuroraTests
     {
         /// <summary>
@@ -54,8 +57,9 @@ namespace CommonLibraryGuiTests
             var bmResultLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_one.png"));
             var bmResultLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_two.png"));
             var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
+            var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
 
-            var imageList = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne, bmResultLayerOne, bmResultLayerTwo, bmResultLayerOther };
+            var imageList = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne, bmResultLayerOne, bmResultLayerTwo, bmResultLayerOther, bmResultBase };
 
             var render = new ImageRender();
 
@@ -114,6 +118,13 @@ namespace CommonLibraryGuiTests
                 DependencyWidth = 3,
                 DependencyMap = map
             };
+
+            //way hacky but works for for now....
+            aurora.Initiate();
+
+            data = compare.CompareImages(bmResultBase, aurora._bitmapLayerOne);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
 
             //TODO add tests and more functions
 

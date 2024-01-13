@@ -74,6 +74,8 @@ namespace Aurorae
 
         private Bitmap _thirdLayer;
 
+        internal Bitmap _bitmapLayerOne { get; private set; }
+
         public Polaris()
         {
             InitializeComponent();
@@ -109,8 +111,14 @@ namespace Aurorae
                 }
 
                 SetValue(EditorMap, value);
-                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                    DependencyTextures, DependencyMap);
+
+                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -156,8 +164,10 @@ namespace Aurorae
                     return;
                 }
 
-                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+
+                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -173,8 +183,10 @@ namespace Aurorae
                     return;
                 }
 
-                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+
+                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
             }
         }
 

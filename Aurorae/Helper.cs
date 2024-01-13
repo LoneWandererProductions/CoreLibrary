@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using Imaging;
-using Brushes = System.Drawing.Brushes;
 
 namespace Aurorae
 {
@@ -35,26 +33,19 @@ namespace Aurorae
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
         /// <returns>The generated Map</returns>
-        internal static BitmapImage GenerateImage(int width, int height, int textureSize,
+        internal static Bitmap GenerateImage(int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
             Dictionary<int, List<int>> map)
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            var tiles = (from tile in map
-                from layer in tile.Value
-                select new Box
-                {
-                    X = IdToX(tile.Key, width) * textureSize,
-                    Y = IdToY(tile.Key, width) * textureSize,
-                    Layer = textures[tile.Key].Layer,
-                    Image = Render.GetBitmapFile(textures[tile.Key].Path)
-                }).ToList();
+            var tiles = (from tile in map where !tile.Value.IsNullOrEmpty() from texture in tile.Value select new Box() {X = IdToX(tile.Key, width) * textureSize, Y = IdToY(tile.Key, width) * textureSize, Layer = textures[texture].Layer, Image = Render.GetBitmapFile(textures[texture].Path)}).ToList();
 
-            background = tiles.OrderBy(layer => layer.Layer).ToList().Aggregate(background,
-                (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
+            tiles.OrderBy(layer => layer.Layer).ToList();
 
-            return background.ToBitmapImage();
+            background = tiles.Aggregate(background, (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
+
+            return background;
         }
 
         /// <summary>
@@ -102,7 +93,7 @@ namespace Aurorae
                     using var graphics = Graphics.FromImage(background);
                     var rectangle = new RectangleF((x * textureSize) + Padding, (y * textureSize) + Padding,
                         textureSize - Padding, textureSize - Padding);
-                    graphics.DrawString(count.ToString(), new Font("Tahoma", 8), Brushes.Black, rectangle);
+                    graphics.DrawString(count.ToString(), new Font("Tahoma", 8), System.Drawing.Brushes.Black, rectangle);
                 }
             }
 

@@ -78,10 +78,11 @@ namespace Aurorae
 
         private Bitmap _thirdLayer;
 
+        internal Bitmap _bitmapLayerOne { get; private set; }
+
         public Aurora()
         {
             InitializeComponent();
-            Initiate();
         }
 
         public int DependencyHeight
@@ -132,8 +133,10 @@ namespace Aurorae
                     return;
                 }
 
-                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+
+                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -149,8 +152,10 @@ namespace Aurorae
                     return;
                 }
 
-                LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
+
+                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -209,7 +214,7 @@ namespace Aurorae
             }
         }
 
-        private void Initiate()
+        public void Initiate()
         {
             if (DependencyWidth == 0 || DependencyHeight == 0 || DependencyTextureSize == 0)
             {
@@ -219,8 +224,10 @@ namespace Aurorae
             Touch.Height = DependencyHeight * DependencyTextureSize;
             Touch.Width = DependencyWidth * DependencyTextureSize;
 
-            LayerOne.Source = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+            _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                 DependencyTextures, DependencyMap);
+
+            LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
 
             if (DependencyGrid)
             {
