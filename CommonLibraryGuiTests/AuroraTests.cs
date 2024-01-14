@@ -209,6 +209,8 @@ namespace CommonLibraryGuiTests
             polaris.DependencyAdd = keyValue;
 
             //Todo compare map
+            //TODO Test Remove
+            //TODO test DependencyAddDisplay, DependencyRemoveDisplay, probably does not work right now!
 
             polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
 
