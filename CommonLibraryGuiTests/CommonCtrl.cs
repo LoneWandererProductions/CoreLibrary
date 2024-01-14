@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using CommonControls;
 using InterOp;
@@ -36,7 +37,14 @@ namespace CommonLibraryGuiTests
             var dataList = new DataList();
             var folderControl = new FolderControl();
             var imageZoom = new ImageZoom();
-            var scrollingTextBox = new ScrollingTextBoxes();
+
+            var scrollingTextBox = new ScrollingTextBoxes {Text = "test"};
+            scrollingTextBox.Append("New Line");
+
+            var compare = string.Concat("test", Environment.NewLine, "New Line");
+            var check = string.Equals(compare, scrollingTextBox.Text, StringComparison.Ordinal);
+            Assert.IsTrue(check, string.Concat("String was not correct: ", scrollingTextBox.Text));
+
             var scrollingRichTextBox = new ScrollingRichTextBox();
             var thumbNails = new Thumbnails();
 
