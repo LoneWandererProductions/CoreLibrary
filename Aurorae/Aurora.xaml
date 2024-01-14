@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <!--Hack for testing, until I got a better solution this image will just stay public.-->
-        <Image Name="LayerOne"  />
+        <Image Name="LayerOne" />
         <Image Name="LayerTwo" />
         <Image Name="LayerThree" />
         <Label Name="Touch" MouseDown="Touch_MouseDown" />

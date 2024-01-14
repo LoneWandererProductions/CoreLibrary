@@ -33,7 +33,7 @@ namespace Debugger
             var convert = string.Empty;
             var bld = new StringBuilder(convert);
 
-            foreach (var vector in serializeObject.Select(ConvertObjctXml))
+            foreach (var vector in serializeObject.Select(ConvertObjectToXml))
             {
                 _ = bld.AppendLine(vector);
             }
@@ -55,7 +55,7 @@ namespace Debugger
 
             foreach (var element in serializeObject)
             {
-                var vector = ConvertObjctXml(element.Value);
+                var vector = ConvertObjectToXml(element.Value);
                 bld.Append(element.Key).Append(DebuggerResources.Formating).AppendLine(vector);
             }
 
@@ -68,10 +68,8 @@ namespace Debugger
         /// <param name="element">The Object element.</param>
         /// <returns>The <see cref="string" />.</returns>
         /// <typeparam name="T">Generic Type</typeparam>
-        internal static string ConvertObjctXml<T>(T element)
+        internal static string ConvertObjectToXml<T>(T element)
         {
-            var serializer = new XmlSerializer(element.GetType());
-
             string str;
 
             var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
@@ -84,7 +82,7 @@ namespace Debugger
             {
                 using var stream = new StringWriter();
                 using var writer = XmlWriter.Create(stream, settings);
-                serializer.Serialize(writer, element, xns);
+                new XmlSerializer(element.GetType()).Serialize(writer, element, xns);
                 return stream.ToString();
             }
             catch (ArgumentNullException ex)

@@ -91,7 +91,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="zipPath">The zip path.</param>
         /// <param name="extractPath">The extract path.</param>
-        /// <param name="delete">if set to <c>true</c> [delele].</param>
+        /// <param name="delete">if set to <c>true</c> [delete].</param>
         /// <returns>Operation Success</returns>
         /// <exception cref="FileHandlerException"></exception>
         public static bool OpenZip(string zipPath, string extractPath, bool delete)

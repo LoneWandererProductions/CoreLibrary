@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-
 namespace ExtendedSystemObjects
 {
     /// <summary>
@@ -111,7 +110,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Equals the specified compare.
+        ///     Equals the specified compare.
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="lst">The first list.</param>
@@ -125,7 +124,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Equals the specified compare.
+        ///     Equals the specified compare.
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="lst">The first list.</param>
@@ -143,7 +142,10 @@ namespace ExtendedSystemObjects
                 case EnumerableCompare.IgnoreOrder:
                     return lst.Count == compare.Count && lst.Equal(compare);
                 case EnumerableCompare.AllEqual:
-                    if (lst.Count != compare.Count) return false;
+                    if (lst.Count != compare.Count)
+                    {
+                        return false;
+                    }
 
                     return !lst.Where((t, i) => !t.Equals(compare[i])).Any();
                 default:

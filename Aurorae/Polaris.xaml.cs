@@ -75,15 +75,15 @@ namespace Aurorae
 
         private Cursor _cursor;
 
-        internal Bitmap BitmapLayerThree { get; private set; }
-
-        internal Bitmap BitmapLayerOne { get; private set; }
-
         public Polaris()
         {
             InitializeComponent();
             Initiate();
         }
+
+        internal Bitmap BitmapLayerThree { get; private set; }
+
+        internal Bitmap BitmapLayerOne { get; private set; }
 
         public int DependencyHeight
         {
@@ -247,7 +247,8 @@ namespace Aurorae
                 LayerThree.Source = Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
             }
 
-            BitmapLayerThree = new Bitmap(DependencyWidth * DependencyTextureSize, DependencyHeight * DependencyTextureSize);
+            BitmapLayerThree = new Bitmap(DependencyWidth * DependencyTextureSize,
+                DependencyHeight * DependencyTextureSize);
         }
 
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)

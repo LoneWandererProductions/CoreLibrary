@@ -23,8 +23,8 @@ namespace CommonLibraryGuiTests
     public sealed class CommonCtrl
     {
         /// <summary>
-        /// Creates and initiates all basic custom controls
-        /// It may sound stupid, but some may throw exceptions because of my own stupidity.
+        ///     Creates and initiates all basic custom controls
+        ///     It may sound stupid, but some may throw exceptions because of my own stupidity.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -37,7 +37,7 @@ namespace CommonLibraryGuiTests
             var folderControl = new FolderControl();
             var imageZoom = new ImageZoom();
 
-            var scrollingTextBox = new ScrollingTextBoxes {Text = "test"};
+            var scrollingTextBox = new ScrollingTextBoxes { Text = "test" };
             scrollingTextBox.Append("New Line");
 
             var compare = string.Concat("test", Environment.NewLine, "New Line");

@@ -14,13 +14,12 @@ using System.Linq;
 using System.Threading;
 using Aurorae;
 using ImageCompare;
-using Imaging;
 using NUnit.Framework;
 
 namespace CommonLibraryGuiTests
 {
     /// <summary>
-    /// Some Basic tests for the Aurora Engine and the image Combining
+    ///     Some Basic tests for the Aurora Engine and the image Combining
     /// </summary>
     public sealed class AuroraTests
     {
@@ -46,7 +45,7 @@ namespace CommonLibraryGuiTests
 
 
         /// <summary>
-        /// Test combining bitmaps.
+        ///     Test combining bitmaps.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -55,20 +54,18 @@ namespace CommonLibraryGuiTests
             var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
             var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
 
-            var render = new ImageRender();
             var compare = new ImageAnalysis();
-
 
             //new Test with UI
             //generate texture Dictionary, and all the other data;
             var map = new Dictionary<int, List<int>>
             {
-                {0, new List<int> { 0 } },
-                {1, new List<int> { 0 } },
-                {2, new List<int> { 0 } },
-                {3, new List<int> { 0 } },
-                {4, new List<int> { 0 } },
-                {5, new List<int> { 0 } }
+                { 0, new List<int> { 0 } },
+                { 1, new List<int> { 0 } },
+                { 2, new List<int> { 0 } },
+                { 3, new List<int> { 0 } },
+                { 4, new List<int> { 0 } },
+                { 5, new List<int> { 0 } }
             };
 
             var aurora = new Aurora
@@ -76,23 +73,26 @@ namespace CommonLibraryGuiTests
                 DependencyTextures = new Dictionary<int, Texture>
                 {
                     {
-                        0, new Texture
+                        0,
+                        new Texture
                         {
                             Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
                         }
                     },
                     {
-                        1, new Texture
+                        1,
+                        new Texture
                         {
                             Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
                         }
                     },
                     {
-                        2, new Texture
+                        2,
+                        new Texture
                         {
                             Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
                         }
-                    },
+                    }
                 },
                 DependencyTextureSize = 100,
                 DependencyHeight = 2,
@@ -109,12 +109,12 @@ namespace CommonLibraryGuiTests
 
             map = new Dictionary<int, List<int>>
             {
-                {0, new List<int> { 0 , 1 , 2 } },
-                {1, new List<int> { 0 , 1 } },
-                {2, new List<int> { 0 , 1 } },
-                {3, new List<int> { 0 , 1 } },
-                {4, new List<int> { 0 , 1 } },
-                {5, new List<int> { 0 } }
+                { 0, new List<int> { 0, 1, 2 } },
+                { 1, new List<int> { 0, 1 } },
+                { 2, new List<int> { 0, 1 } },
+                { 3, new List<int> { 0, 1 } },
+                { 4, new List<int> { 0, 1 } },
+                { 5, new List<int> { 0 } }
             };
 
             aurora.DependencyMap = map;
@@ -139,34 +139,38 @@ namespace CommonLibraryGuiTests
 
             aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map remove was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity,
+                string.Concat("Aurora Map remove was not correct: ", data.Similarity));
             //new Test with other UI
             var polaris = new Polaris
             {
                 DependencyTextures = new Dictionary<int, Texture>
                 {
                     {
-                        0, new Texture
+                        0,
+                        new Texture
                         {
                             Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
                         }
                     },
                     {
-                        1, new Texture
+                        1,
+                        new Texture
                         {
                             Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
                         }
                     },
                     {
-                        2, new Texture
+                        2,
+                        new Texture
                         {
                             Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
                         }
-                    },
+                    }
                 },
                 DependencyTextureSize = 100,
                 DependencyHeight = 2,
-                DependencyWidth = 3,
+                DependencyWidth = 3
             };
 
             //way hacky but works for for now....
@@ -175,7 +179,7 @@ namespace CommonLibraryGuiTests
 
             //0
             var keyValue = new KeyValuePair<int, int>(0, 0);
-            polaris.DependencyAdd =keyValue;
+            polaris.DependencyAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(0, 1);
             polaris.DependencyAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(0, 2);
@@ -226,19 +230,22 @@ namespace CommonLibraryGuiTests
             var polarisMap = polaris.DependencyMap;
             map = new Dictionary<int, List<int>>
             {
-                {0, new List<int> { 0 , 1 , 2 } },
-                {1, new List<int> { 0 , 1 } },
-                {2, new List<int> { 0 , 1 } },
-                {3, new List<int> { 0 , 1 } },
-                {4, new List<int> { 0 , 1 } },
-                {5, new List<int> { 0 } }
+                { 0, new List<int> { 0, 1, 2 } },
+                { 1, new List<int> { 0, 1 } },
+                { 2, new List<int> { 0, 1 } },
+                { 3, new List<int> { 0, 1 } },
+                { 4, new List<int> { 0, 1 } },
+                { 5, new List<int> { 0 } }
             };
 
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 var lst = polarisMap[i];
                 var check = lst.SequenceEqual(map[i]);
-                if (!check) Assert.Fail("wrong map");
+                if (!check)
+                {
+                    Assert.Fail("wrong map");
+                }
             }
 
 

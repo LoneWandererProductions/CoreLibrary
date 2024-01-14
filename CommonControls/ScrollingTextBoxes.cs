@@ -72,12 +72,15 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Appends the specified text. With line break;
+        ///     Appends the specified text. With line break;
         /// </summary>
         /// <param name="text">The text.</param>
         public void Append(string text)
         {
-            if (!Text.EndsWith(Environment.NewLine, StringComparison.Ordinal)) Text = string.Concat(Text, Environment.NewLine);
+            if (!Text.EndsWith(Environment.NewLine, StringComparison.Ordinal))
+            {
+                Text = string.Concat(Text, Environment.NewLine);
+            }
 
             Text = string.Concat(Text, text);
         }

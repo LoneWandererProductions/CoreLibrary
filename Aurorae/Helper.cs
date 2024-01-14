@@ -124,7 +124,7 @@ namespace Aurorae
 
             if (!map.ContainsKey(id))
             {
-                var cache = new List<int> {idTexture.Value};
+                var cache = new List<int> { idTexture.Value };
                 map.Add(idTexture.Key, cache);
 
                 return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
@@ -181,7 +181,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Adds the display.
+        ///     Adds the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
@@ -202,7 +202,7 @@ namespace Aurorae
         }
 
         /// <summary>
-        /// Removes the display.
+        ///     Removes the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>

@@ -23,12 +23,12 @@ namespace SQLiteGui
         /// <summary>
         ///     Gets a value indicating whether Element is Selected in Detail view
         /// </summary>
-        internal static bool IsDetailactive { get; private set; }
+        internal static bool IsDetailActive { get; private set; }
 
         /// <summary>
         ///     Name of the Last selected Table
         /// </summary>
-        internal static string Tablealias { get; private set; }
+        internal static string TableAlias { get; private set; }
 
         /// <summary>
         ///     Table Details
@@ -61,8 +61,8 @@ namespace SQLiteGui
         /// </summary>
         internal static void StartNew()
         {
-            Tablealias = string.Empty;
-            IsDetailactive = false;
+            TableAlias = string.Empty;
+            IsDetailActive = false;
             TblItem = null;
             PrimaryKey = string.Empty;
         }
@@ -75,17 +75,17 @@ namespace SQLiteGui
         internal static void SelectedTable(string tablealias, string uniqueIndex)
         {
             PrimaryKey = uniqueIndex;
-            Tablealias = tablealias;
+            TableAlias = tablealias;
         }
 
         /// <summary>
         ///     Get selected Row
         /// </summary>
-        /// <param name="isDetailactive">Is an Row selected</param>
+        /// <param name="isDetailActive">Is an Row selected</param>
         /// <param name="tbi">Selected Row</param>
-        internal static void SelectionChanged(bool isDetailactive, dynamic tbi)
+        internal static void SelectionChanged(bool isDetailActive, dynamic tbi)
         {
-            IsDetailactive = isDetailactive;
+            IsDetailActive = isDetailActive;
             TblItem = tbi;
         }
     }

@@ -9,22 +9,22 @@
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// Compare conditions for lists
+    ///     Compare conditions for lists
     /// </summary>
     public enum EnumerableCompare
     {
         /// <summary>
-        /// Ignore order and count
+        ///     Ignore order and count
         /// </summary>
         IgnoreOrderCount = 0,
 
         /// <summary>
-        /// Ignore order
+        ///     Ignore order
         /// </summary>
         IgnoreOrder = 1,
 
         /// <summary>
-        /// List must be identical
+        ///     List must be identical
         /// </summary>
         AllEqual = 2
     }

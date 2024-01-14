@@ -67,7 +67,7 @@ namespace Debugger
                 return;
             }
 
-            var objectString = ConvertObjectXml.ConvertObjctXml(obj);
+            var objectString = ConvertObjectXml.ConvertObjectToXml(obj);
             var message = CreateLogMessage(error, objectString, lvl, info);
             LogError(message, lvl);
         }

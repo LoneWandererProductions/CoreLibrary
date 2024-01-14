@@ -2,9 +2,9 @@
 {
     public sealed class Texture
     {
-        public string Path { get; set; }
+        public string Path { get; init; }
 
-        public int Layer { get; set; }
+        public int Layer { get; init; }
 
         public int Id { get; set; }
     }

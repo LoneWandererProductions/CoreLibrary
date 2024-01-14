@@ -127,7 +127,7 @@ namespace SQLiteGui
             }
 
             //Remove selected Item
-            var count = _db.DeleteRows(Register.Tablealias, _paramsClause.Where, _paramsClause.Value);
+            var count = _db.DeleteRows(Register.TableAlias, _paramsClause.Where, _paramsClause.Value);
 
             _dbInfo.SetData(SqLiteGuiResource.InfoRows + count);
 
@@ -205,7 +205,7 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool UpdateItem()
         {
-            if (Register.Tablealias.Length == 0)
+            if (Register.TableAlias.Length == 0)
             {
                 _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
                 return false;
@@ -216,7 +216,7 @@ namespace SQLiteGui
                 return false;
             }
 
-            var data = _db.SimpleSelect(Register.Tablealias, _paramsClause.Where,
+            var data = _db.SimpleSelect(Register.TableAlias, _paramsClause.Where,
                 CompareOperator.Equal, _paramsClause.Value);
 
             if (data == null)
@@ -225,7 +225,7 @@ namespace SQLiteGui
                 return false;
             }
 
-            var pragma = _db.Pragma_TableInfo(Register.Tablealias);
+            var pragma = _db.Pragma_TableInfo(Register.TableAlias);
 
             var item = GenerateUpdateItem(data, pragma);
 
@@ -237,7 +237,7 @@ namespace SQLiteGui
                 return false;
             }
 
-            var count = _db.UpdateTable(Register.Tablealias, CompareOperator.Equal, _paramsClause.Where,
+            var count = _db.UpdateTable(Register.TableAlias, CompareOperator.Equal, _paramsClause.Where,
                 _paramsClause.Value, InputUpdateWindow.TableRow.Row);
 
             return count != -1;
@@ -249,13 +249,13 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool AddItem()
         {
-            if (Register.Tablealias.Length == 0)
+            if (Register.TableAlias.Length == 0)
             {
                 _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
                 return false;
             }
 
-            var pragma = _db.Pragma_TableInfo(Register.Tablealias);
+            var pragma = _db.Pragma_TableInfo(Register.TableAlias);
 
             var item = GenerateUpdateItem(pragma);
 
@@ -263,7 +263,7 @@ namespace SQLiteGui
             _ = inputwin.ShowDialog();
 
             return InputUpdateWindow.TableRow != null &&
-                   _db.InsertSingleRow(Register.Tablealias, InputUpdateWindow.TableRow, true);
+                   _db.InsertSingleRow(Register.TableAlias, InputUpdateWindow.TableRow, true);
         }
 
         /// <summary>
@@ -272,9 +272,9 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool TruncateTable()
         {
-            if (Register.Tablealias.Length != 0)
+            if (Register.TableAlias.Length != 0)
             {
-                return _db.TruncateTable(Register.Tablealias);
+                return _db.TruncateTable(Register.TableAlias);
             }
 
             _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
@@ -287,9 +287,9 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool DropTable()
         {
-            if (Register.Tablealias.Length != 0)
+            if (Register.TableAlias.Length != 0)
             {
-                return _db.DropTable(Register.Tablealias);
+                return _db.DropTable(Register.TableAlias);
             }
 
             _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
@@ -308,7 +308,7 @@ namespace SQLiteGui
                 SQLiteGuiStringResource.InputLblDescriptionCopy,
                 SQLiteGuiStringResource.InputLblFirstSourceCopy,
                 SQLiteGuiStringResource.InputLblSecondTargetCopy,
-                Register.Tablealias
+                Register.TableAlias
             );
 
             _ = inputwin.ShowDialog();
@@ -329,7 +329,7 @@ namespace SQLiteGui
                 SQLiteGuiStringResource.InputLblDescriptionRename,
                 SQLiteGuiStringResource.InputLblFirstSourceRename,
                 SQLiteGuiStringResource.InputLblSecondTargetRename,
-                Register.Tablealias
+                Register.TableAlias
             );
 
             _ = inputwin.ShowDialog();
@@ -409,7 +409,7 @@ namespace SQLiteGui
         /// <returns>if something went wrong</returns>
         private static bool GetWhereClause()
         {
-            if (!Register.IsDetailactive)
+            if (!Register.IsDetailActive)
             {
                 return false;
             }

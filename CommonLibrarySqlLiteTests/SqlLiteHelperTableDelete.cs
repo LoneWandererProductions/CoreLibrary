@@ -68,19 +68,19 @@ namespace CommonLibrarySqlLiteTests
 
             //First
             var lst = new List<string> { "2", "1" };
-            var tableone = new TableSet { Row = lst };
+            var tableOne = new TableSet { Row = lst };
 
             //Fill Data into Table
-            check = _target.InsertSingleRow(TableName, tableone, Checking);
+            check = _target.InsertSingleRow(TableName, tableOne, Checking);
 
             Assert.IsTrue(check, "Insert first failed " + _target.LastErrors);
 
             //second
             lst = new List<string> { "4", "3" };
-            tableone = new TableSet { Row = lst };
+            tableOne = new TableSet { Row = lst };
 
             //Fill Data into Table
-            check = _target.InsertSingleRow(TableName, tableone, Checking);
+            check = _target.InsertSingleRow(TableName, tableOne, Checking);
 
             Assert.IsTrue(check, "Insert second failed " + _target.LastErrors);
 

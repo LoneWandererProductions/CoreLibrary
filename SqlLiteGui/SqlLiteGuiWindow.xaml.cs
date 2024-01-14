@@ -117,7 +117,7 @@ namespace SQLiteGui
         private void RefreshTable(object sender, EventArgs e)
         {
             //Refresh the table
-            SqLiteGuiProcessing.SelectTable(Register.Tablealias);
+            SqLiteGuiProcessing.SelectTable(Register.TableAlias);
             TableDetailView.SetData();
         }
 
