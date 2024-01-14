@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Aurorae;
 using ImageCompare;
@@ -221,6 +222,25 @@ namespace CommonLibraryGuiTests
             polaris.DependencyAddDisplay = new KeyValuePair<int, int>(5, 0);
 
             data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
+
+            var polarisMap = polaris.DependencyMap;
+            map = new Dictionary<int, List<int>>
+            {
+                {0, new List<int> { 0 , 1 , 2 } },
+                {1, new List<int> { 0 , 1 } },
+                {2, new List<int> { 0 , 1 } },
+                {3, new List<int> { 0 , 1 } },
+                {4, new List<int> { 0 , 1 } },
+                {5, new List<int> { 0 } }
+            };
+
+            for (int i = 0; i <= 5; i++)
+            {
+                var lst = polarisMap[i];
+                var check = lst.SequenceEqual(map[i]);
+                if (!check) Assert.Fail("wrong map");
+            }
+
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 

@@ -7,11 +7,13 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+
 
 namespace ExtendedSystemObjects
 {
@@ -106,6 +108,47 @@ namespace ExtendedSystemObjects
         public static List<TValue> Clone<TValue>(this IEnumerable<TValue> lst)
         {
             return lst?.ToList();
+        }
+
+        /// <summary>
+        /// Equals the specified compare.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="lst">The first list.</param>
+        /// <param name="compare">The compare.</param>
+        /// <returns>If lists are equal, ignores order and count</returns>
+        public static bool Equal<TValue>(this IEnumerable<TValue> lst, IEnumerable<TValue> compare)
+        {
+            var set1 = new HashSet<TValue>(lst);
+            var set2 = new HashSet<TValue>(compare);
+            return set1.SetEquals(set2);
+        }
+
+        /// <summary>
+        /// Equals the specified compare.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="lst">The first list.</param>
+        /// <param name="compare">The compare.</param>
+        /// <param name="comparer">The compare Operator.</param>
+        /// <returns>If lists are equal,based on the condition</returns>
+        /// <exception cref="ArgumentOutOfRangeException">comparer - null</exception>
+        public static bool Equal<TValue>(this List<TValue> lst, List<TValue> compare, EnumerableCompare comparer)
+        {
+            switch (comparer)
+            {
+                case EnumerableCompare.IgnoreOrderCount:
+                    return lst.Equal(compare);
+
+                case EnumerableCompare.IgnoreOrder:
+                    return lst.Count == compare.Count && lst.Equal(compare);
+                case EnumerableCompare.AllEqual:
+                    if (lst.Count != compare.Count) return false;
+
+                    return !lst.Where((t, i) => !t.Equals(compare[i])).Any();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(comparer), comparer, null);
+            }
         }
 
         /// <summary>
