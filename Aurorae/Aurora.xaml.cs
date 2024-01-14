@@ -172,10 +172,10 @@ namespace Aurorae
             set
             {
                 SetValue(AddDisplay, value);
-                Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
+                var bmp = Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
                     DependencyTextures, _thirdLayer, value);
 
-                LayerThree.Source = _thirdLayer.ToBitmapImage();
+                LayerThree.Source = bmp.ToBitmapImage();
             }
         }
 
@@ -185,9 +185,9 @@ namespace Aurorae
             set
             {
                 SetValue(RemoveDisplay, value);
-                Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, _thirdLayer, value);
+                var bmp = Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, _thirdLayer, value);
 
-                LayerThree.Source = _thirdLayer.ToBitmapImage();
+                LayerThree.Source = bmp.ToBitmapImage();
             }
         }
 

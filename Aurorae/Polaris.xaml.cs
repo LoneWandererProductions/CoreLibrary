@@ -75,15 +75,15 @@ namespace Aurorae
 
         private Cursor _cursor;
 
-        private Bitmap _thirdLayer;
+        internal Bitmap BitmapLayerThree { get; private set; }
+
+        internal Bitmap BitmapLayerOne { get; private set; }
 
         public Polaris()
         {
             InitializeComponent();
             Initiate();
         }
-
-        internal Bitmap BitmapLayerOne { get; private set; }
 
         public int DependencyHeight
         {
@@ -206,10 +206,10 @@ namespace Aurorae
             set
             {
                 SetValue(EditorAddDisplay, value);
-                Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
-                    DependencyTextures, _thirdLayer, value);
+                var bmp = Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
+                    DependencyTextures, BitmapLayerThree, value);
 
-                LayerThree.Source = _thirdLayer.ToBitmapImage();
+                LayerThree.Source = bmp.ToBitmapImage();
             }
         }
 
@@ -219,13 +219,13 @@ namespace Aurorae
             set
             {
                 SetValue(EditorRemoveDisplay, value);
-                Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, _thirdLayer, value);
+                var bmp = Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, BitmapLayerThree, value);
 
-                LayerThree.Source = _thirdLayer.ToBitmapImage();
+                LayerThree.Source = bmp.ToBitmapImage();
             }
         }
 
-        private void Initiate()
+        public void Initiate()
         {
             if (DependencyWidth == 0 || DependencyHeight == 0 || DependencyTextureSize == 0)
             {
@@ -247,7 +247,7 @@ namespace Aurorae
                 LayerThree.Source = Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
             }
 
-            _thirdLayer = new Bitmap(DependencyWidth * DependencyTextureSize, DependencyHeight * DependencyTextureSize);
+            BitmapLayerThree = new Bitmap(DependencyWidth * DependencyTextureSize, DependencyHeight * DependencyTextureSize);
         }
 
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)

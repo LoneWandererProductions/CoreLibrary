@@ -156,20 +156,19 @@ namespace Aurorae
         {
             if (map == null)
             {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
             }
 
             var (id, layer) = idLayer;
 
             if (!map.ContainsKey(id))
             {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
             }
 
             var lst = map[id];
 
-            var cache = new List<int>(lst);
-            cache.AddRange(from tile in lst let compare = textures[tile] where compare.Layer != layer select tile);
+            var cache = lst.Where(tile => textures[tile].Layer != layer).ToList();
 
             if (cache.Count == lst.Count)
             {
@@ -182,14 +181,15 @@ namespace Aurorae
         }
 
         /// <summary>
-        ///     Adds the display.
+        /// Adds the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The id Position and the tile Id.</param>
-        public static void AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
+        /// <returns>Layer three Bitmap</returns>
+        public static Bitmap AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
             KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
@@ -198,24 +198,23 @@ namespace Aurorae
 
             var image = Render.GetBitmapFile(textures[tileId].Path);
 
-            //TODO Test, should work since it references the original Object
-            _ = Render.CombineBitmap(layer, image, x, y);
+            return Render.CombineBitmap(layer, image, x, y);
         }
 
         /// <summary>
-        ///     Removes the display.
+        /// Removes the display.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="position">The position.</param>
-        public static void RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
+        /// <returns>Layer three Bitmap</returns>
+        public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
         {
             var x = IdToX(position, width) * textureSize;
             var y = IdToY(position, width) * textureSize;
 
-            //TODO Test, should work since it references the original Object
-            _ = Render.EraseRectangle(layer, x, y, textureSize, textureSize);
+            return Render.EraseRectangle(layer, x, y, textureSize, textureSize);
         }
 
         /// <summary>

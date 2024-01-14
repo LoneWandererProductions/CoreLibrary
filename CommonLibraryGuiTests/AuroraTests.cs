@@ -51,33 +51,12 @@ namespace CommonLibraryGuiTests
         [Apartment(ApartmentState.STA)]
         public void CombineBitMap()
         {
-            var bmpBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "Tile.png"));
-            var bmpLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "layerOne.png"));
-            var bmpLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png"));
-            var bmResultOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "ResultOne.png"));
-            var bmResultLayerOne = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_one.png"));
-            var bmResultLayerTwo = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_two.png"));
             var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
             var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
 
-            var imageList = new List<Bitmap> { bmpBase , bmpLayerOne, bmpLayerTwo, bmResultOne, bmResultLayerOne, bmResultLayerTwo, bmResultLayerOther, bmResultBase };
-
             var render = new ImageRender();
-
-            var cache = render.CombineBitmap(bmpBase, bmpLayerOne, 0, 0);
-            cache = render.CombineBitmap(cache, bmpLayerTwo, 0, 0);
-
             var compare = new ImageAnalysis();
 
-            //should be near 100%
-            var data = compare.CompareImages(bmResultOne, cache);
-
-            //Todo implement ImageComparer, 2 images
-            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed: ", data.Similarity));
-
-            data = compare.CompareImages(Path.Combine(SampleImagesFolder.FullName, "Tile.png"), Path.Combine(SampleImagesFolder.FullName, "Tile.png"));
-
-            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed Path: ", data.Similarity));
 
             //new Test with UI
             //generate texture Dictionary, and all the other data;
@@ -123,7 +102,7 @@ namespace CommonLibraryGuiTests
             //way hacky but works for for now....
             aurora.Initiate();
 
-            data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
+            var data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
 
@@ -146,8 +125,20 @@ namespace CommonLibraryGuiTests
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map was not correct: ", data.Similarity));
 
-            //TODO add tests and more functions
+            //test remove
+            aurora.DependencyRemove = new KeyValuePair<int, int>(0, 2);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(0, 1);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(1, 1);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(2, 1);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(3, 1);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(4, 1);
+            aurora.DependencyRemove = new KeyValuePair<int, int>(5, 1);
 
+            data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
+
+            aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map remove was not correct: ", data.Similarity));
             //new Test with other UI
             var polaris = new Polaris
             {
@@ -174,8 +165,12 @@ namespace CommonLibraryGuiTests
                 },
                 DependencyTextureSize = 100,
                 DependencyHeight = 2,
-                DependencyWidth = 3
+                DependencyWidth = 3,
             };
+
+            //way hacky but works for for now....
+            polaris.Initiate();
+            var blank = polaris.BitmapLayerThree;
 
             //0
             var keyValue = new KeyValuePair<int, int>(0, 0);
@@ -215,6 +210,28 @@ namespace CommonLibraryGuiTests
             polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
 
             data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(0, 0);
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(1, 0);
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(2, 0);
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(3, 0);
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(4, 0);
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(5, 0);
+
+            data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+
+            polaris.DependencyRemoveDisplay = 0;
+            polaris.DependencyRemoveDisplay = 1;
+            polaris.DependencyRemoveDisplay = 2;
+            polaris.DependencyRemoveDisplay = 3;
+            polaris.DependencyRemoveDisplay = 4;
+            polaris.DependencyRemoveDisplay = 5;
+
+            data = compare.CompareImages(blank, polaris.BitmapLayerThree);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
         }

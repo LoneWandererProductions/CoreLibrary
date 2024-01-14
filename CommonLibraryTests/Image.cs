@@ -43,6 +43,7 @@ namespace CommonLibraryTests
         ///     The sample images folder
         /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Images"));
+        private static readonly DirectoryInfo ImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
 
         /// <summary>
         ///     The output folder
@@ -237,6 +238,35 @@ namespace CommonLibraryTests
             Assert.AreEqual(colOld.R, col.R, "done");
             Assert.AreEqual(colOld.B, col.B, "done");
             Assert.AreEqual(colOld.G, col.G, "done");
+        }
+
+        /// <summary>
+        /// Test combining image.
+        /// </summary>
+        [TestMethod]
+        public void CombineImage()
+        {
+            var bmpBase = new Bitmap(Path.Combine(ImagesFolder.FullName, "Tile.png"));
+            var bmpLayerOne = new Bitmap(Path.Combine(ImagesFolder.FullName, "layerOne.png"));
+            var bmpLayerTwo = new Bitmap(Path.Combine(ImagesFolder.FullName, "LayerTwo.png"));
+            var bmResultOne = new Bitmap(Path.Combine(ImagesFolder.FullName, "ResultOne.png"));
+
+            var render = new ImageRender();
+
+            var cache = render.CombineBitmap(bmpBase, bmpLayerOne, 0, 0);
+            cache = render.CombineBitmap(cache, bmpLayerTwo, 0, 0);
+
+            var compare = new ImageAnalysis();
+
+            //should be near 100%
+            var data = compare.CompareImages(bmResultOne, cache);
+
+            //Todo implement ImageComparer, 2 images
+            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed: ", data.Similarity));
+
+            data = compare.CompareImages(Path.Combine(ImagesFolder.FullName, "Tile.png"), Path.Combine(ImagesFolder.FullName, "Tile.png"));
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed Path: ", data.Similarity));
         }
 
         /// <summary>
