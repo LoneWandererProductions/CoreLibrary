@@ -41,11 +41,9 @@ namespace Aurorae
 
             var tiles = (from tile in map where !tile.Value.IsNullOrEmpty() from texture in tile.Value select new Box() {X = IdToX(tile.Key, width) * textureSize, Y = IdToY(tile.Key, width) * textureSize, Layer = textures[texture].Layer, Image = Render.GetBitmapFile(textures[texture].Path)}).ToList();
 
-            tiles.OrderBy(layer => layer.Layer).ToList();
+            tiles = tiles.OrderBy(layer => layer.Layer).ToList();
 
-            background = tiles.Aggregate(background, (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
-
-            return background;
+            return tiles.Aggregate(background, (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
         }
 
         /// <summary>

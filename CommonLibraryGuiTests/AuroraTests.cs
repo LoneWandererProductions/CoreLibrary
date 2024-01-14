@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using Aurorae;
@@ -122,7 +123,26 @@ namespace CommonLibraryGuiTests
             //way hacky but works for for now....
             aurora.Initiate();
 
-            data = compare.CompareImages(bmResultBase, aurora._bitmapLayerOne);
+            data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
+
+            map = new Dictionary<int, List<int>>
+            {
+                {0, new List<int> { 0 , 1 , 2 } },
+                {1, new List<int> { 0 , 1 } },
+                {2, new List<int> { 0 , 1 } },
+                {3, new List<int> { 0 , 1 } },
+                {4, new List<int> { 0 , 1 } },
+                {5, new List<int> { 0 } }
+            };
+
+            aurora.DependencyMap = map;
+            aurora.Initiate();
+
+            aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
+
+            data = compare.CompareImages(bmResultLayerOther, aurora.BitmapLayerOne);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
 

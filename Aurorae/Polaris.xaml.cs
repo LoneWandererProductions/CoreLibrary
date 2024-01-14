@@ -74,7 +74,7 @@ namespace Aurorae
 
         private Bitmap _thirdLayer;
 
-        internal Bitmap _bitmapLayerOne { get; private set; }
+        internal Bitmap BitmapLayerOne { get; private set; }
 
         public Polaris()
         {
@@ -112,13 +112,13 @@ namespace Aurorae
 
                 SetValue(EditorMap, value);
 
-                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
 
-                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
 
-                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
+                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -164,10 +164,10 @@ namespace Aurorae
                     return;
                 }
 
-                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
 
-                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
+                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
         }
 
@@ -183,10 +183,10 @@ namespace Aurorae
                     return;
                 }
 
-                _bitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
+                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
 
-                LayerOne.Source = _bitmapLayerOne.ToBitmapImage();
+                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
         }
 
