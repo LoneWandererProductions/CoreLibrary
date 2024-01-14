@@ -78,12 +78,12 @@ namespace Aurorae
 
         private Bitmap _thirdLayer;
 
-        internal Bitmap BitmapLayerOne { get; private set; }
-
         public Aurora()
         {
             InitializeComponent();
         }
+
+        internal Bitmap BitmapLayerOne { get; private set; }
 
         public int DependencyHeight
         {
@@ -127,11 +127,14 @@ namespace Aurorae
             set
             {
                 SetValue(Add, value);
-                var check = Helper.AddTile(DependencyMap, value);
+                var (check, dictionary) = Helper.AddTile(DependencyMap, value);
+
                 if (!check)
                 {
                     return;
                 }
+
+                DependencyMap = dictionary;
 
                 BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
@@ -146,11 +149,15 @@ namespace Aurorae
             set
             {
                 SetValue(Remove, value);
-                var check = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+
+                var (check, dictionary) = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+
                 if (!check)
                 {
                     return;
                 }
+
+                DependencyMap = dictionary;
 
                 BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);

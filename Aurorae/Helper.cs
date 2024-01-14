@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ExtendedSystemObjects;
 using Imaging;
+using Brushes = System.Drawing.Brushes;
 
 namespace Aurorae
 {
@@ -39,11 +40,21 @@ namespace Aurorae
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            var tiles = (from tile in map where !tile.Value.IsNullOrEmpty() from texture in tile.Value select new Box() {X = IdToX(tile.Key, width) * textureSize, Y = IdToY(tile.Key, width) * textureSize, Layer = textures[texture].Layer, Image = Render.GetBitmapFile(textures[texture].Path)}).ToList();
+            var tiles = (from tile in map
+                where !tile.Value.IsNullOrEmpty()
+                from texture in tile.Value
+                select new Box
+                {
+                    X = IdToX(tile.Key, width) * textureSize,
+                    Y = IdToY(tile.Key, width) * textureSize,
+                    Layer = textures[texture].Layer,
+                    Image = Render.GetBitmapFile(textures[texture].Path)
+                }).ToList();
 
             tiles = tiles.OrderBy(layer => layer.Layer).ToList();
 
-            return tiles.Aggregate(background, (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
+            return tiles.Aggregate(background,
+                (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
         }
 
         /// <summary>
@@ -91,7 +102,7 @@ namespace Aurorae
                     using var graphics = Graphics.FromImage(background);
                     var rectangle = new RectangleF((x * textureSize) + Padding, (y * textureSize) + Padding,
                         textureSize - Padding, textureSize - Padding);
-                    graphics.DrawString(count.ToString(), new Font("Tahoma", 8), System.Drawing.Brushes.Black, rectangle);
+                    graphics.DrawString(count.ToString(), new Font("Tahoma", 8), Brushes.Black, rectangle);
                 }
             }
 
@@ -104,13 +115,19 @@ namespace Aurorae
         /// <param name="map">The map.</param>
         /// <param name="idTexture">The identifier texture.</param>
         /// <returns>If changes are needed</returns>
-        internal static bool AddTile(Dictionary<int, List<int>> map,
+        internal static KeyValuePair<bool, Dictionary<int, List<int>>> AddTile(Dictionary<int, List<int>> map,
             KeyValuePair<int, int> idTexture)
         {
             var (id, texture) = idTexture;
+
+            map ??= new Dictionary<int, List<int>>();
+
             if (!map.ContainsKey(id))
             {
-                return false;
+                var cache = new List<int> {idTexture.Value};
+                map.Add(idTexture.Key, cache);
+
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
             }
 
             var lst = map[id];
@@ -118,12 +135,12 @@ namespace Aurorae
 
             if (check)
             {
-                return false;
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
             }
 
             map[id] = lst;
 
-            return true;
+            return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
         }
 
         /// <summary>
@@ -133,14 +150,20 @@ namespace Aurorae
         /// <param name="textures">The textures.</param>
         /// <param name="idLayer">The identifier layer.</param>
         /// <returns>If changes are needed</returns>
-        internal static bool RemoveTile(Dictionary<int, List<int>> map,
+        internal static KeyValuePair<bool, Dictionary<int, List<int>>> RemoveTile(Dictionary<int, List<int>> map,
             Dictionary<int, Texture> textures,
             KeyValuePair<int, int> idLayer)
         {
+            if (map == null)
+            {
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            }
+
             var (id, layer) = idLayer;
+
             if (!map.ContainsKey(id))
             {
-                return false;
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
             }
 
             var lst = map[id];
@@ -150,12 +173,12 @@ namespace Aurorae
 
             if (cache.Count == lst.Count)
             {
-                return false;
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
             }
 
             map[id] = cache;
 
-            return true;
+            return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
         }
 
         /// <summary>

@@ -144,12 +144,12 @@ namespace CommonLibraryGuiTests
 
             data = compare.CompareImages(bmResultLayerOther, aurora.BitmapLayerOne);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map was not correct: ", data.Similarity));
 
             //TODO add tests and more functions
 
             //new Test with other UI
-            var polaris = new Polaris()
+            var polaris = new Polaris
             {
                 DependencyTextures = new Dictionary<int, Texture>
                 {
@@ -176,6 +176,45 @@ namespace CommonLibraryGuiTests
                 DependencyHeight = 2,
                 DependencyWidth = 3
             };
+
+            //0
+            var keyValue = new KeyValuePair<int, int>(0, 0);
+            polaris.DependencyAdd =keyValue;
+            keyValue = new KeyValuePair<int, int>(0, 1);
+            polaris.DependencyAdd = keyValue;
+            keyValue = new KeyValuePair<int, int>(0, 2);
+            polaris.DependencyAdd = keyValue;
+            //1
+            keyValue = new KeyValuePair<int, int>(1, 0);
+            polaris.DependencyAdd = keyValue;
+            keyValue = new KeyValuePair<int, int>(1, 1);
+            polaris.DependencyAdd = keyValue;
+            //2
+            keyValue = new KeyValuePair<int, int>(2, 0);
+            polaris.DependencyAdd = keyValue;
+            keyValue = new KeyValuePair<int, int>(2, 1);
+            polaris.DependencyAdd = keyValue;
+            //3
+            keyValue = new KeyValuePair<int, int>(3, 0);
+            polaris.DependencyAdd = keyValue;
+            keyValue = new KeyValuePair<int, int>(3, 1);
+            polaris.DependencyAdd = keyValue;
+            //4
+            keyValue = new KeyValuePair<int, int>(4, 0);
+            polaris.DependencyAdd = keyValue;
+            keyValue = new KeyValuePair<int, int>(4, 1);
+            polaris.DependencyAdd = keyValue;
+            //5
+            keyValue = new KeyValuePair<int, int>(5, 0);
+            polaris.DependencyAdd = keyValue;
+
+            //Todo compare map
+
+            polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
+
+            data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
         }
     }
 }

@@ -34,7 +34,8 @@ namespace Aurorae
             typeof(int),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty EditorTextureSize = DependencyProperty.Register(nameof(EditorTextureSize),
+        public static readonly DependencyProperty EditorTextureSize = DependencyProperty.Register(
+            nameof(EditorTextureSize),
             typeof(int),
             typeof(Aurora), null);
 
@@ -62,11 +63,13 @@ namespace Aurorae
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty EditorAddDisplay = DependencyProperty.Register(nameof(EditorAddDisplay),
+        public static readonly DependencyProperty EditorAddDisplay = DependencyProperty.Register(
+            nameof(EditorAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
-        public static readonly DependencyProperty EditorRemoveDisplay = DependencyProperty.Register(nameof(EditorRemoveDisplay),
+        public static readonly DependencyProperty EditorRemoveDisplay = DependencyProperty.Register(
+            nameof(EditorRemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 
@@ -74,13 +77,13 @@ namespace Aurorae
 
         private Bitmap _thirdLayer;
 
-        internal Bitmap BitmapLayerOne { get; private set; }
-
         public Polaris()
         {
             InitializeComponent();
             Initiate();
         }
+
+        internal Bitmap BitmapLayerOne { get; private set; }
 
         public int DependencyHeight
         {
@@ -158,11 +161,15 @@ namespace Aurorae
             set
             {
                 SetValue(EditorAdd, value);
-                var check = Helper.AddTile(DependencyMap, value);
+
+                var (check, dictionary) = Helper.AddTile(DependencyMap, value);
+
                 if (!check)
                 {
                     return;
                 }
+
+                DependencyMap = dictionary;
 
                 BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
@@ -177,11 +184,14 @@ namespace Aurorae
             set
             {
                 SetValue(EditorRemove, value);
-                var check = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+                var (check, dictionary) = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+
                 if (!check)
                 {
                     return;
                 }
+
+                DependencyMap = dictionary;
 
                 BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
                     DependencyTextures, DependencyMap);
