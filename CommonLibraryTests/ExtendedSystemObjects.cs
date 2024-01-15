@@ -239,7 +239,7 @@ namespace CommonLibraryTests
             Assert.IsFalse(check, string.Concat("IgnoreOrder Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
          
             check = one.Equal(two, EnumerableCompare.AllEqual);
-            Assert.IsFalse(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check))
+            Assert.IsFalse(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
             check = one.Equal(one, EnumerableCompare.AllEqual);
             Assert.IsTrue(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(one)," : ",check)); 
             check = one.Equal(three, EnumerableCompare.AllEqual);
