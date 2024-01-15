@@ -224,26 +224,26 @@ namespace CommonLibraryTests
             var four = new List<int> { 1, 2, 3, 3};
 
             var check = one.Equal(two);
-            Assert.IsFalse(check, string.Concat("Base Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
+            Assert.IsTrue(check, string.Concat("Base Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
             check = one.Equal(four);
-            Assert.IsFalse(check, string.Concat("Base Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
+            Assert.IsTrue(check, string.Concat("Base Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
 
             check = one.Equal(two, EnumerableCompare.IgnoreOrderCount);
-            Assert.IsFalse(check, string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
+            Assert.IsTrue(check, string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
             check = one.Equal(four, EnumerableCompare.IgnoreOrderCount);
-            Assert.IsFalse(check, string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
+            Assert.IsTrue(check, string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
 
             check = one.Equal(two, EnumerableCompare.IgnoreOrder);
-            Assert.IsFalse(check, string.Concat("IgnoreOrder Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
+            Assert.IsTrue(check, string.Concat("IgnoreOrder Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
             check = one.Equal(four, EnumerableCompare.IgnoreOrder);
-            Assert.IsTrue(check, string.Concat("IgnoreOrder Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
+            Assert.IsFalse(check, string.Concat("IgnoreOrder Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
          
             check = one.Equal(two, EnumerableCompare.AllEqual);
-            Assert.IsFalse(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
+            Assert.IsTrue(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(two)," : ",check));
             check = one.Equal(three, EnumerableCompare.AllEqual);
-            Assert.IsTrue(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(three)," : ",check));
+            Assert.IsFalse(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(three)," : ",check));
             check = one.Equal(four, EnumerableCompare.AllEqual);
-            Assert.IsTrue(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
+            Assert.IsFalse(check, string.Concat("AllEqual Compare Test failed: ", nameof(one)," , ", nameof(four)," : ",check));
         }
         
         /// <summary>
