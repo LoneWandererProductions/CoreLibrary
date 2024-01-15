@@ -15,12 +15,12 @@ namespace Mathematics
     internal static class Projection3DConstants
     {
         /// <summary>
-        /// Convert Degree to radial
+        ///     Convert Degree to radial
         /// </summary>
         private const double Rad = Math.PI / 180.0;
 
         /// <summary>
-        /// Rotates x.
+        ///     Rotates x.
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix X</returns>
@@ -39,7 +39,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rotates y.
+        ///     Rotates y.
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix Y</returns>
@@ -58,7 +58,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rotates z.
+        ///     Rotates z.
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix Z</returns>
@@ -77,7 +77,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Scale Matrix.
+        ///     Scale Matrix.
         /// </summary>
         /// <param name="value">The scale value.</param>
         /// <returns>Scale Matrix.</returns>
@@ -89,7 +89,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Scale Matrix.
+        ///     Scale Matrix.
         /// </summary>
         /// <param name="one">The x value.</param>
         /// <param name="two">The y value.</param>
@@ -103,13 +103,16 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Translates the specified vector.
+        ///     Translates the specified vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
         /// <returns>Translation Matrix</returns>
         public static BaseMatrix Translate(Vector3D vector)
         {
-            double[,] translate = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { vector.X, vector.Y, vector.Z, 1 } };
+            double[,] translate =
+            {
+                { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { vector.X, vector.Y, vector.Z, 1 }
+            };
 
             return new BaseMatrix { Matrix = translate };
         }

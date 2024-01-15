@@ -3,7 +3,7 @@
 namespace Solaris
 {
     /// <summary>
-    /// Contains the Image Tile
+    ///     Contains the Image Tile
     /// </summary>
     internal sealed class Box
     {

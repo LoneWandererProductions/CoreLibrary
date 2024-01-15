@@ -10,8 +10,6 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using System;
-
 namespace Mathematics
 {
     /// <summary>
@@ -19,8 +17,6 @@ namespace Mathematics
     /// </summary>
     public static class Projection3D
     {
-        private const double Rad = Math.PI / 180.0;
-
         /// <summary>
         ///     Rotates the x axis.
         ///     Source: https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
