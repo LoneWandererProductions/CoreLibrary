@@ -10,18 +10,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using Aurorae;
+using ExtendedSystemObjects;
 using ImageCompare;
 using NUnit.Framework;
+using Solaris;
 
 namespace CommonLibraryGuiTests
 {
     /// <summary>
     ///     Some Basic tests for the Aurora Engine and the image Combining
     /// </summary>
-    public sealed class AuroraTests
+    public sealed class Solaris
     {
         /// <summary>
         ///     The codebase
@@ -43,13 +43,12 @@ namespace CommonLibraryGuiTests
         /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
 
-
         /// <summary>
-        ///     Test combining bitmaps.
+        ///     Test Aurora.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
-        public void CombineBitMap()
+        public void Aurora()
         {
             var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
             var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
@@ -141,6 +140,20 @@ namespace CommonLibraryGuiTests
 
             Assert.AreEqual(100, data.Similarity,
                 string.Concat("Aurora Map remove was not correct: ", data.Similarity));
+        }
+
+        /// <summary>
+        ///     Test Polaris.
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void Polaris()
+        {
+            var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
+            var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
+
+            var compare = new ImageAnalysis();
+
             //new Test with other UI
             var polaris = new Polaris
             {
@@ -208,13 +221,9 @@ namespace CommonLibraryGuiTests
             keyValue = new KeyValuePair<int, int>(5, 0);
             polaris.DependencyAdd = keyValue;
 
-            //Todo compare map
-            //TODO Test Remove
-            //TODO test DependencyAddDisplay, DependencyRemoveDisplay, probably does not work right now!
-
             polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
 
-            data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
+            var data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 
@@ -228,7 +237,7 @@ namespace CommonLibraryGuiTests
             data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
 
             var polarisMap = polaris.DependencyMap;
-            map = new Dictionary<int, List<int>>
+            var map = new Dictionary<int, List<int>>
             {
                 { 0, new List<int> { 0, 1, 2 } },
                 { 1, new List<int> { 0, 1 } },
@@ -241,13 +250,12 @@ namespace CommonLibraryGuiTests
             for (var i = 0; i <= 5; i++)
             {
                 var lst = polarisMap[i];
-                var check = lst.SequenceEqual(map[i]);
+                var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
                 if (!check)
                 {
                     Assert.Fail("wrong map");
                 }
             }
-
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 
@@ -261,6 +269,19 @@ namespace CommonLibraryGuiTests
             data = compare.CompareImages(blank, polaris.BitmapLayerThree);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+
+            //this is a duplicate so this should not be added
+            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(0, 0);
+
+            for (var i = 0; i <= 5; i++)
+            {
+                var lst = polarisMap[i];
+                var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
+                if (!check)
+                {
+                    Assert.Fail("wrong map");
+                }
+            }
         }
     }
 }

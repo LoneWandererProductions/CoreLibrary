@@ -19,12 +19,12 @@ namespace ExtendedSystemObjects
         IgnoreOrderCount = 0,
 
         /// <summary>
-        ///     Ignore order
+        ///     Ignore order, but not count
         /// </summary>
         IgnoreOrder = 1,
 
         /// <summary>
-        ///     List must be identical
+        ///     List must be identical in order and count
         /// </summary>
         AllEqual = 2
     }

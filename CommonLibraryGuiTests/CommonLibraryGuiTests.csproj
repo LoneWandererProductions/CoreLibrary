@@ -46,7 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aurorae\Aurorae.csproj" />
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
@@ -54,6 +53,7 @@
     <ProjectReference Include="..\LightVector\LightVector.csproj" />
     <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
     <ProjectReference Include="..\Plugin\Plugin.csproj" />
+    <ProjectReference Include="..\Solaris\Solaris.csproj" />
   </ItemGroup>
 
 </Project>
