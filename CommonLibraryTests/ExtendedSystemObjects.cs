@@ -213,6 +213,40 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        ///     Here we Test our List
+        /// </summary>
+        [TestMethod]
+        public void ExtendedListCompare()
+        {
+            var one = new List<int> { 1, 2, 3 };
+            var two = new List<int> { 1, 3, 2 };
+            var three = new List<int> { 1, 3, 2, 4};
+            var four = new List<int> { 1, 2, 3, 3};
+
+            var check = one.Equal(two);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(two)));
+            check = one.Equal(four);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(four)));
+
+            check = one.Equal(two, EnumerableCompare.IgnoreOrderCount);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(two)));
+            check = one.Equal(four, EnumerableCompare.IgnoreOrderCount);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(four)));
+
+            check = one.Equal(two, EnumerableCompare.IgnoreOrder);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(two)));
+            check = one.Equal(four, EnumerableCompare.IgnoreOrder);
+            Assert.IsTrue(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(four)));
+         
+            check = one.Equal(two, EnumerableCompare.AllEqual);
+            Assert.IsFalse(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(two)));
+            check = one.Equal(three, EnumerableCompare.AllEqual);
+            Assert.IsTrue(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(four)));
+            check = one.Equal(four, EnumerableCompare.AllEqual);
+            Assert.IsTrue(check, string.Concat("Compare Test failed:", nameof(one)," , ", nameof(four)));
+        }
+        
+        /// <summary>
         ///     Here we test our IsNullOrEmpty
         /// </summary>
         [TestMethod]
