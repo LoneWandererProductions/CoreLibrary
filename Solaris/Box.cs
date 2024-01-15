@@ -2,6 +2,9 @@
 
 namespace Solaris
 {
+    /// <summary>
+    /// Contains the Image Tile
+    /// </summary>
     internal sealed class Box
     {
         internal Bitmap Image { get; init; }
