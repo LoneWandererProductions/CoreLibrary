@@ -19,6 +19,11 @@ namespace Mathematics
     /// </summary>
     public static class Projection3DCamera
     {
+        //TODO
+        // vector = vector * WorldMatrix
+        // vector = matView * vector;
+        // final = matProj * vector;
+
         /// <summary>
         ///     Converts to 3d.
         ///     TODO Test
@@ -32,12 +37,12 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
-            var m2 = ProjectionTo3DMatrix();
+            var projection = ProjectionTo3DMatrix();
 
-            var result = m1 * m2;
+            var result = m1 * projection;
             var x = result[0, 0];
             var y = result[0, 1];
             var z = result[0, 2];
@@ -57,36 +62,19 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Projections the to3 d matrix.
-        /// </summary>
-        /// <returns>Projection Matrix</returns>
-        public static BaseMatrix ProjectionTo3DMatrix()
-        {
-            double[,] translation =
-            {
-                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 },
-                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
-            };
-
-            //now lacks /w, has to be done at the end!
-            return new BaseMatrix(translation);
-        }
-
-        /// <summary>
         ///     [ModelViewProjectionMatrix] = [View To Projection]x[World To View]x[Model to World]
         ///     Creates a 3D world transformation
-        ///     Todo test
         ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Graphics/Viewport.cs
         ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Vector3.cs#L1043
         /// </summary>
         /// <param name="vector">The vector.</param>
-        /// <param name="camera">The camera.</param>
-        /// <param name="angle">The angle.</param>
         /// <param name="angleX">The angle x.</param>
+        /// <param name="angleY">The angle y.</param>
         /// <param name="angleZ">The angle z.</param>
-        /// <returns>World Transformation</returns>
-        public static BaseMatrix ModelViewProjectionMatrix(Vector3D vector, Vector3D camera, int angle, int angleX,
+        /// <returns>
+        ///     World Transformation
+        /// </returns>
+        public static BaseMatrix WorldMatrix(Vector3D vector, int angleX, int angleY,
             int angleZ)
         {
             // Set up "World Transform"
@@ -98,21 +86,63 @@ namespace Mathematics
             var worldMatrix = MatrixUtility.MatrixIdentity(4);
 
             // Form ModelViewProjectionMatrix
-            // View To Projection, Camera
             // Model to World, Transform by rotation
             // Model to World, Transform by translation
-            var m1 = ViewMatrix(camera, angle);
 
-            worldMatrix = worldMatrix * m1 *
-                          Projection3D.RotateX(vector, angleX) *
-                          Projection3D.RotateZ(vector, angleZ) *
-                          Projection3D.RotateZ(vector, angleZ);
+            worldMatrix = worldMatrix *
+                          Projection3DConstants.RotateX(angleX) *
+                          Projection3DConstants.RotateZ(angleY) *
+                          Projection3DConstants.RotateZ(angleZ) *
+                          vector.To3DMatrix();
 
             return worldMatrix;
         }
 
         /// <summary>
-        ///     Views the matrix.
+        ///     Worlds the matrix.
+        /// </summary>
+        /// <param name="vector">The vector.</param>
+        /// <param name="translation">The translation.</param>
+        /// <param name="angleX">The angle x.</param>
+        /// <param name="angleY">The angle y.</param>
+        /// <param name="angleZ">The angle z.</param>
+        /// <param name="scale">The scale.</param>
+        /// <returns>
+        ///     World Transformation
+        /// </returns>
+        public static BaseMatrix WorldMatrix(Vector3D vector, Vector3D translation, int angleX, int angleY,
+            int angleZ, int scale)
+        {
+            // Set up "World Transform"
+            //var matRotZ = Projection3D.RotateZ(angle);
+            //var matRotX = Projection3D.RotateX(angle);
+            //var matTrans = Projection3D.Translate(0.0f, 0.0f, 5.0f);
+
+            //identity Matrix
+            var worldMatrix = MatrixUtility.MatrixIdentity(4);
+
+            // Form ModelViewProjectionMatrix
+            // Model to World, Transform by rotation
+            // Model to World, Transform by translation
+
+            //https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
+            //TODO check return Value, and Convert to 3d:
+            //identity matrix
+            //ModelViewProjection mvp = Projection * View * Model
+            worldMatrix = worldMatrix *
+                          Projection3DConstants.Translate(translation) *
+                          Projection3DConstants.RotateX(angleX) *
+                          Projection3DConstants.RotateZ(angleY) *
+                          Projection3DConstants.RotateZ(angleZ) *
+                          Projection3DConstants.Scale(scale) *
+                          vector.To3DMatrix();
+
+            return worldMatrix;
+        }
+
+        /// <summary>
+        ///     View matrix.
+        ///     Uses the PointAt matrix
         /// </summary>
         /// <param name="camera">The camera.</param>
         /// <param name="angle">The angle.</param>
@@ -126,7 +156,7 @@ namespace Mathematics
 
             //var lookDir = cameraRotation * target, (matrix * Vector)
             //TODO check, a huge mess, compare with other results
-            var mTarget = new BaseMatrix(1, 4) { [0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1 };
+            var mTarget = new BaseMatrix(1, 4) {[0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1};
 
             mTarget = cameraRotation * mTarget;
             var lookDir = Projection3D.GetVector(mTarget);
@@ -138,16 +168,16 @@ namespace Mathematics
             return matCamera.Inverse();
         }
 
-
         /// <summary>
         ///     Converts Coordinates based on the Camera.
         ///     https://ksimek.github.io/2012/08/22/extrinsic/
         ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
+        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#the-model-view-and-projection-matrices
         ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
         /// <param name="camera">Current Position.</param>
         /// <param name="target">Directional Vector, Point at.</param>
-        /// <param name="up">Directional Vector, Z Axis.</param>
+        /// <param name="up">Directional Vector, Z Axis.(0,1,0), but (0,-1,0) would make you looking upside-down.</param>
         /// <returns>matrix for Transforming the Coordinate</returns>
         public static BaseMatrix PointAt(Vector3D camera, Vector3D target, Vector3D up)
         {
@@ -180,6 +210,21 @@ namespace Mathematics
             };
         }
 
+        /// <summary>
+        ///     Projections the to3 d matrix.
+        /// </summary>
+        /// <returns>Projection Matrix</returns>
+        private static BaseMatrix ProjectionTo3DMatrix()
+        {
+            double[,] translation =
+            {
+                {Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0}, {0, Projection3DRegister.F, 0, 0},
+                {0, 0, Projection3DRegister.Q, 1}, {0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0}
+            };
+
+            //now lacks /w, has to be done at the end!
+            return new BaseMatrix(translation);
+        }
 
         /// <summary>
         ///     Cameras the rotation.
@@ -191,8 +236,8 @@ namespace Mathematics
         {
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
-                { 0, -Math.Sin(angle), 0, Math.Cos(angle) }, { 0, 0, 0, 1 }
+                {Math.Cos(angle), 0, Math.Sin(angle), 0}, {0, 1, 0, 0}, {0, -Math.Sin(angle), 0, Math.Cos(angle)},
+                {0, 0, 0, 1}
             };
 
             return new BaseMatrix(rotation);
