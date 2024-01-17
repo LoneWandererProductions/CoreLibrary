@@ -31,21 +31,21 @@ namespace Imaging
 
             var dbm = DirectBitmap.GetInstance(image);
 
-            for (var y = 0; y < image.Height; y++)
-            for (var x = 0; x < image.Width; x++)
+            var colorMap = dbm.GetColors();
+
+            for (int i = 0; i < image.Height * image.Width; i++)
             {
-                var id = CalculateId(x, y, image.Width);
-                var color = dbm.GetPixel(x, y);
+                var color = colorMap[i];
 
                 //get our new Image format
                 if (imageFormat.ContainsKey(color))
                 {
-                    imageFormat[color].Add(id);
+                    imageFormat[color].Add(i);
                 }
                 else
                 {
                     imageFormat.Add(color, new List<int>());
-                    imageFormat[color].Add(id);
+                    imageFormat[color].Add(i);
                 }
             }
 

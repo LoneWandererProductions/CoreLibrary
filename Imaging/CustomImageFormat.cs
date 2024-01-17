@@ -52,7 +52,7 @@ namespace Imaging
                 Compressed = false,
                 Height = image.Height,
                 Width = image.Width,
-                cifImage = format,
+                CifImage = format,
                 NumberOfColors = format.Count
             };
         }
