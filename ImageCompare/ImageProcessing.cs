@@ -11,12 +11,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Imaging;
-
-[assembly: InternalsVisibleTo("CommonLibraryTests")]
 
 namespace ImageCompare
 {

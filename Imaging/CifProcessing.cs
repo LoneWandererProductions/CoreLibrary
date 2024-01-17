@@ -37,16 +37,7 @@ namespace Imaging
             {
                 var color = colorMap[i];
 
-                //get our new Image format
-                if (imageFormat.ContainsKey(color))
-                {
-                    imageFormat[color].Add(i);
-                }
-                else
-                {
-                    imageFormat.Add(color, new List<int>());
-                    imageFormat[color].Add(i);
-                }
+                imageFormat.Add(color, i);
             }
 
             return imageFormat;
