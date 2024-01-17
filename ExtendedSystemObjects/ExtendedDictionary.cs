@@ -21,6 +21,57 @@ namespace ExtendedSystemObjects
 
     {
         /// <summary>
+        /// Adds the specified key to the Value, that is a list.
+        /// I know it is not recommended to use List and Dictionary together but in case you do,
+        /// this extension should avoid ugly null reference Exceptions and make the code more readable.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="dic">The dictionary we work on.</param>
+        /// <param name="key">The key we like to add.</param>
+        /// <param name="value">The value of the List we like to add.</param>
+        public static void Add<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic,
+            TKey key, TValue value)
+        {
+            if (dic.ContainsKey(key))
+            {
+                dic[key].Add(value);
+            }
+            else
+            {
+                dic.Add(key, new List<TValue>());
+                dic[key].Add(value);
+            }
+        }
+
+        /// <summary>
+        ///     Add or Replace Key Value Pair
+        /// </summary>
+        /// <typeparam name="TKey">Internal Key</typeparam>
+        /// <typeparam name="TValue">Internal Value</typeparam>
+        /// <param name="dic">Internal Target Dictionary</param>
+        /// <param name="key">Unique Key</param>
+        /// <param name="value">Value to add</param>
+        public static bool AddDistinct<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic, TKey key, TValue value)
+        {
+            if (!dic.ContainsKey(key))
+            {
+                var lst = new List<TValue> { value };
+                dic.Add(key, lst);
+                return true;
+            }
+
+            var cache = dic[key];
+
+            if (cache.Contains(value)) return false;
+
+            cache.Add(value);
+            dic[key] = cache;
+
+            return true;
+        }
+
+        /// <summary>
         ///     Add or Replace Key Value Pair
         /// </summary>
         /// <typeparam name="TKey">Internal Key</typeparam>
@@ -58,58 +109,6 @@ namespace ExtendedSystemObjects
 
             dic.Add(key, value);
         }
-
-        /// <summary>
-        /// Adds the specified key to the Value, that is a list.
-        /// I know it is not recommended to use List and Dictionary together but in case you do,
-        /// this extension should avoid ugly null reference Exceptions and make the code more readable.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
-        /// <param name="dic">The dictionary we work on.</param>
-        /// <param name="key">The key we like to add.</param>
-        /// <param name="value">The value of the List we like to add.</param>
-        public static void Add<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic,
-            TKey key, TValue value)
-        {
-            if (dic.ContainsKey(key))
-            {
-                dic[key].Add(value);
-            }
-            else
-            {
-                dic.Add(key, new List<TValue>());
-                dic[key].Add(value);
-            }
-        }
-
-        /// <summary>
-        ///     Add or Replace Key Value Pair
-        /// </summary>
-        /// <typeparam name="TKey">Internal Key</typeparam>
-        /// <typeparam name="TValue">Internal Value</typeparam>
-        /// <param name="dic">Internal Target Dictionary</param>
-        /// <param name="key">Unique Key</param>
-        /// <param name="value">Value to add</param>
-        public static bool AddDistinct<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic, TKey key, TValue value)
-        {
-            if (!dic.ContainsKey(key))
-            {
-                var lst = new List<TValue> {value};
-                dic.Add(key, lst);
-                return true;
-            }
-
-            var cache = dic[key];
-
-            if(cache.Contains(value)) return false;
-
-            cache.Add(value);
-            dic[key] = cache;
-
-            return true;
-        }
-
 
         /// <summary>
         ///     Sort a Generic Dictionary by Key

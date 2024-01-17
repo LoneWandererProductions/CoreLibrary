@@ -462,6 +462,29 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        /// Dictionaries the add list.
+        /// </summary>
+        [TestMethod]
+        public void DictionaryAddDisctinct()
+        {
+            var dct = new Dictionary<int, List<int>> { { 1, 1 }, { 1, 1 } };
+
+            Assert.AreEqual(2, dct[1].Count, "Correct count");
+
+            dct.AddDistinct(0, 0);
+
+            Assert.IsTrue(dct.ContainsKey(0), "key not added");
+
+            dct.AddDistinct(0, 1);
+
+            Assert.AreEqual(2, dct[1].Count, "Correct count");
+
+            dct.AddDistinct(0, 1);
+
+            Assert.AreEqual(2, dct[1].Count, "Correct count");
+        }
+
+        /// <summary>
         ///     Swap Test for Dictionaries
         /// </summary>
         [TestMethod]

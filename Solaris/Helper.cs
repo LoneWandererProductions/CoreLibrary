@@ -120,7 +120,8 @@ namespace Solaris
         {
             map ??= new Dictionary<int, List<int>>();
 
-            var check = map.AddDistinct(idTexture.Key, idTexture.Value);
+            var (id, texture) = idTexture;
+            var check = map.AddDistinct(id, texture);
 
             return new KeyValuePair<bool, Dictionary<int, List<int>>>(check, map);
         }
