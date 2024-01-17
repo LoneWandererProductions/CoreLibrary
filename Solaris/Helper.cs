@@ -118,29 +118,11 @@ namespace Solaris
         internal static KeyValuePair<bool, Dictionary<int, List<int>>> AddTile(Dictionary<int, List<int>> map,
             KeyValuePair<int, int> idTexture)
         {
-            var (id, texture) = idTexture;
-
             map ??= new Dictionary<int, List<int>>();
 
-            if (!map.ContainsKey(id))
-            {
-                var cache = new List<int> { idTexture.Value };
-                map.Add(idTexture.Key, cache);
+            var check = map.AddDistinct(idTexture.Key, idTexture.Value);
 
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
-            }
-
-            var lst = map[id];
-            var check = lst.AddDistinct(texture);
-
-            if (check)
-            {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
-            }
-
-            map[id] = lst;
-
-            return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
+            return new KeyValuePair<bool, Dictionary<int, List<int>>>(check, map);
         }
 
         /// <summary>
