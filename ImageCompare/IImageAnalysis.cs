@@ -71,5 +71,21 @@ namespace ImageCompare
         /// <returns>Data about two images</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         ImageCompareData CompareImages(string first, string second);
+
+        /// <summary>
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Color Dictionary</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        Dictionary<Color, int> GetColors(string path);
+
+        /// <summary>
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Color Dictionary</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        Dictionary<Color, int> GetColors(Bitmap image);
     }
 }

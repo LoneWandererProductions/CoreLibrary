@@ -160,6 +160,32 @@ namespace ImageCompare
         }
 
         /// <summary>
+        ///     Converts the Image into a Dictionary of Colors.
+        /// </summary>
+        /// <param name="image">The color Dictionary.</param>
+        internal static Dictionary<Color, int> GetColors(Bitmap image)
+        {
+            var imageFormat = new Dictionary<Color, int>();
+
+            var dbm = DirectBitmap.GetInstance(image);
+            foreach (var color in dbm.GetColors())
+            {
+                //get our new Image format
+                if (imageFormat.ContainsKey(color))
+                {
+                    var cache = imageFormat[color];
+                    imageFormat[color] = cache + 1;
+                }
+                else
+                {
+                    imageFormat.Add(color, 1);
+                }
+            }
+
+            return imageFormat;
+        }
+
+        /// <summary>
         ///     Gets the image details.
         /// </summary>
         /// <param name="imagePath">The image path.</param>
