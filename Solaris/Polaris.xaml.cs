@@ -30,21 +30,21 @@ namespace Solaris
         /// <summary>
         /// The editor height
         /// </summary>
-        public static readonly DependencyProperty EditorHeightProperty = DependencyProperty.Register(nameof(PolarisHeight),
+        public static readonly DependencyProperty PolarisHeightProperty = DependencyProperty.Register(nameof(PolarisHeight),
             typeof(int),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor width
         /// </summary>
-        public static readonly DependencyProperty EditorWidthProperty = DependencyProperty.Register(nameof(PolarisWidth),
+        public static readonly DependencyProperty PolarisWidthProperty = DependencyProperty.Register(nameof(PolarisWidth),
             typeof(int),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor texture size
         /// </summary>
-        public static readonly DependencyProperty EditorTextureSizeProperty = DependencyProperty.Register(
+        public static readonly DependencyProperty PolarisTextureSizeProperty = DependencyProperty.Register(
             nameof(PolarisTextureSize),
             typeof(int),
             typeof(Polaris), null);
@@ -52,49 +52,49 @@ namespace Solaris
         /// <summary>
         /// The editor map
         /// </summary>
-        public static readonly DependencyProperty EditorMapProperty = DependencyProperty.Register(nameof(PolarisMap),
+        public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(nameof(PolarisMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor textures
         /// </summary>
-        public static readonly DependencyProperty EditorTexturesProperty = DependencyProperty.Register(nameof(PolarisTextures),
+        public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(nameof(PolarisTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor grid
         /// </summary>
-        public static readonly DependencyProperty EditorGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
+        public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
             typeof(bool),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor number
         /// </summary>
-        public static readonly DependencyProperty EditorNumberProperty = DependencyProperty.Register(nameof(PolarisNumber),
+        public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(nameof(PolarisNumber),
             typeof(bool),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor add
         /// </summary>
-        public static readonly DependencyProperty EditorAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
+        public static readonly DependencyProperty PolarisAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor remove
         /// </summary>
-        public static readonly DependencyProperty EditorRemoveProperty = DependencyProperty.Register(nameof(PolarisRemove),
+        public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(nameof(PolarisRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Polaris), null);
 
         /// <summary>
         /// The editor add display
         /// </summary>
-        public static readonly DependencyProperty EditorAddDisplayProperty = DependencyProperty.Register(
+        public static readonly DependencyProperty PolarisAddDisplayProperty = DependencyProperty.Register(
             nameof(PolarisAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Polaris), null);
@@ -102,7 +102,7 @@ namespace Solaris
         /// <summary>
         /// The editor remove display
         /// </summary>
-        public static readonly DependencyProperty EditorRemoveDisplayProperty = DependencyProperty.Register(
+        public static readonly DependencyProperty PolarisRemoveDisplayProperty = DependencyProperty.Register(
             nameof(PolarisRemoveDisplay),
             typeof(int),
             typeof(Polaris), null);
@@ -146,8 +146,8 @@ namespace Solaris
         /// </value>
         public int PolarisHeight
         {
-            get => (int)GetValue(EditorHeightProperty);
-            set => SetValue(EditorHeightProperty, value);
+            get => (int)GetValue(PolarisHeightProperty);
+            set => SetValue(PolarisHeightProperty, value);
         }
 
         /// <summary>
@@ -158,8 +158,8 @@ namespace Solaris
         /// </value>
         public int PolarisWidth
         {
-            get => (int)GetValue(EditorWidthProperty);
-            set => SetValue(EditorWidthProperty, value);
+            get => (int)GetValue(PolarisWidthProperty);
+            set => SetValue(PolarisWidthProperty, value);
         }
 
         /// <summary>
@@ -170,8 +170,8 @@ namespace Solaris
         /// </value>
         public int PolarisTextureSize
         {
-            get => (int)GetValue(EditorTextureSizeProperty);
-            set => SetValue(EditorTextureSizeProperty, value);
+            get => (int)GetValue(PolarisTextureSizeProperty);
+            set => SetValue(PolarisTextureSizeProperty, value);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Solaris
         /// </value>
         public Dictionary<int, List<int>> PolarisMap
         {
-            get => (Dictionary<int, List<int>>)GetValue(EditorMapProperty);
+            get => (Dictionary<int, List<int>>)GetValue(PolarisMapProperty);
             set
             {
                 if (value == null)
@@ -190,7 +190,7 @@ namespace Solaris
                     return;
                 }
 
-                SetValue(EditorMapProperty, value);
+                SetValue(PolarisMapProperty, value);
 
                 BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
                     PolarisTextures, PolarisMap);
@@ -210,8 +210,8 @@ namespace Solaris
         /// </value>
         public Dictionary<int, Texture> PolarisTextures
         {
-            get => (Dictionary<int, Texture>)GetValue(EditorTexturesProperty);
-            set => SetValue(EditorTexturesProperty, value);
+            get => (Dictionary<int, Texture>)GetValue(PolarisTexturesProperty);
+            set => SetValue(PolarisTexturesProperty, value);
         }
 
         /// <summary>
@@ -222,10 +222,10 @@ namespace Solaris
         /// </value>
         public bool PolarisGrid
         {
-            get => (bool)GetValue(EditorGridProperty);
+            get => (bool)GetValue(PolarisGridProperty);
             set
             {
-                SetValue(EditorGridProperty, value);
+                SetValue(PolarisGridProperty, value);
                 LayerTwo.Source = !PolarisGrid
                     ? null
                     : Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
@@ -240,10 +240,10 @@ namespace Solaris
         /// </value>
         public bool PolarisNumber
         {
-            get => (bool)GetValue(EditorNumberProperty);
+            get => (bool)GetValue(PolarisNumberProperty);
             set
             {
-                SetValue(EditorNumberProperty, value);
+                SetValue(PolarisNumberProperty, value);
                 LayerThree.Source = !PolarisNumber
                     ? null
                     : Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
@@ -258,10 +258,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> PolarisAdd
         {
-            get => (KeyValuePair<int, int>)GetValue(EditorAddProperty);
+            get => (KeyValuePair<int, int>)GetValue(PolarisAddProperty);
             set
             {
-                SetValue(EditorAddProperty, value);
+                SetValue(PolarisAddProperty, value);
 
                 var (check, dictionary) = Helper.AddTile(PolarisMap, value);
 
@@ -287,10 +287,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> PolarisRemove
         {
-            get => (KeyValuePair<int, int>)GetValue(EditorRemoveProperty);
+            get => (KeyValuePair<int, int>)GetValue(PolarisRemoveProperty);
             set
             {
-                SetValue(EditorRemoveProperty, value);
+                SetValue(PolarisRemoveProperty, value);
                 var (check, dictionary) = Helper.RemoveTile(PolarisMap, PolarisTextures, value);
 
                 if (!check)
@@ -315,10 +315,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> PolarisAddDisplay
         {
-            get => (KeyValuePair<int, int>)GetValue(EditorAddDisplayProperty);
+            get => (KeyValuePair<int, int>)GetValue(PolarisAddDisplayProperty);
             set
             {
-                SetValue(EditorAddDisplayProperty, value);
+                SetValue(PolarisAddDisplayProperty, value);
                 var bmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize,
                     PolarisTextures, BitmapLayerThree, value);
 
@@ -334,10 +334,10 @@ namespace Solaris
         /// </value>
         public int PolarisRemoveDisplay
         {
-            get => (int)GetValue(EditorRemoveDisplayProperty);
+            get => (int)GetValue(PolarisRemoveDisplayProperty);
             set
             {
-                SetValue(EditorRemoveDisplayProperty, value);
+                SetValue(PolarisRemoveDisplayProperty, value);
                 var bmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, value);
 
                 LayerThree.Source = bmp.ToBitmapImage();

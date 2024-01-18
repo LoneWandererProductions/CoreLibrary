@@ -30,84 +30,84 @@ namespace Solaris
         /// <summary>
         /// The map height
         /// </summary>
-        public static readonly DependencyProperty MapHeightProperty = DependencyProperty.Register(nameof(AuroraHeight),
+        public static readonly DependencyProperty AuroraHeightProperty = DependencyProperty.Register(nameof(AuroraHeight),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
         /// The map width
         /// </summary>
-        public static readonly DependencyProperty MapWidthProperty = DependencyProperty.Register(nameof(AuroraWidth),
+        public static readonly DependencyProperty AuroraWidthProperty = DependencyProperty.Register(nameof(AuroraWidth),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
         /// The texture size
         /// </summary>
-        public static readonly DependencyProperty TextureSizeProperty = DependencyProperty.Register(nameof(AuroraTextureSize),
+        public static readonly DependencyProperty AuroraTextureSizeProperty = DependencyProperty.Register(nameof(AuroraTextureSize),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
         /// The map
         /// </summary>
-        public static readonly DependencyProperty MapProperty = DependencyProperty.Register(nameof(AuroraMap),
+        public static readonly DependencyProperty AuroraMapProperty = DependencyProperty.Register(nameof(AuroraMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The avatar
         /// </summary>
-        public static readonly DependencyProperty AvatarProperty = DependencyProperty.Register(nameof(AuroraAvatar),
+        public static readonly DependencyProperty AuroraAvatarProperty = DependencyProperty.Register(nameof(AuroraAvatar),
             typeof(Bitmap),
             typeof(Aurora), null);
 
         /// <summary>
         /// The movement
         /// </summary>
-        public static readonly DependencyProperty MovementProperty = DependencyProperty.Register(nameof(AuroraMovement),
+        public static readonly DependencyProperty AuroraMovementProperty = DependencyProperty.Register(nameof(AuroraMovement),
             typeof(List<int>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The textures
         /// </summary>
-        public static readonly DependencyProperty TexturesProperty = DependencyProperty.Register(nameof(AuroraTextures),
+        public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(nameof(AuroraTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The grid
         /// </summary>
-        public static readonly DependencyProperty GridProperty = DependencyProperty.Register(nameof(AuroraGrid),
+        public static readonly DependencyProperty AuroraGridProperty = DependencyProperty.Register(nameof(AuroraGrid),
             typeof(bool),
             typeof(Aurora), null);
 
         /// <summary>
         /// The add
         /// </summary>
-        public static readonly DependencyProperty AddProperty = DependencyProperty.Register(nameof(AuroraAdd),
+        public static readonly DependencyProperty AuroraAddProperty = DependencyProperty.Register(nameof(AuroraAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The remove
         /// </summary>
-        public static readonly DependencyProperty Remove = DependencyProperty.Register(nameof(AuroraRemove),
+        public static readonly DependencyProperty AuroraRemoveProperty = DependencyProperty.Register(nameof(AuroraRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The add display
         /// </summary>
-        public static readonly DependencyProperty AddDisplayProperty = DependencyProperty.Register(nameof(AuroraAddDisplay),
+        public static readonly DependencyProperty AuroraAddDisplayProperty = DependencyProperty.Register(nameof(AuroraAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The remove display
         /// </summary>
-        public static readonly DependencyProperty RemoveDisplayProperty = DependencyProperty.Register(nameof(AuroraRemoveDisplay),
+        public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(nameof(AuroraRemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 
@@ -146,8 +146,8 @@ namespace Solaris
         /// </value>
         public int AuroraHeight
         {
-            get => (int)GetValue(MapHeightProperty);
-            set => SetValue(MapHeightProperty, value);
+            get => (int)GetValue(AuroraHeightProperty);
+            set => SetValue(AuroraHeightProperty, value);
         }
 
         /// <summary>
@@ -158,8 +158,8 @@ namespace Solaris
         /// </value>
         public int AuroraWidth
         {
-            get => (int)GetValue(MapWidthProperty);
-            set => SetValue(MapWidthProperty, value);
+            get => (int)GetValue(AuroraWidthProperty);
+            set => SetValue(AuroraWidthProperty, value);
         }
 
         /// <summary>
@@ -170,8 +170,8 @@ namespace Solaris
         /// </value>
         public int AuroraTextureSize
         {
-            get => (int)GetValue(TextureSizeProperty);
-            set => SetValue(TextureSizeProperty, value);
+            get => (int)GetValue(AuroraTextureSizeProperty);
+            set => SetValue(AuroraTextureSizeProperty, value);
         }
 
         /// <summary>
@@ -182,8 +182,8 @@ namespace Solaris
         /// </value>
         public Dictionary<int, List<int>> AuroraMap
         {
-            get => (Dictionary<int, List<int>>)GetValue(MapProperty);
-            set => SetValue(MapProperty, value);
+            get => (Dictionary<int, List<int>>)GetValue(AuroraMapProperty);
+            set => SetValue(AuroraMapProperty, value);
         }
 
         /// <summary>
@@ -194,8 +194,8 @@ namespace Solaris
         /// </value>
         public Bitmap AuroraAvatar
         {
-            get => (Bitmap)GetValue(AvatarProperty);
-            set => SetValue(AvatarProperty, value);
+            get => (Bitmap)GetValue(AuroraAvatarProperty);
+            set => SetValue(AuroraAvatarProperty, value);
         }
 
         /// <summary>
@@ -206,8 +206,8 @@ namespace Solaris
         /// </value>
         public Dictionary<int, Texture> AuroraTextures
         {
-            get => (Dictionary<int, Texture>)GetValue(TexturesProperty);
-            set => SetValue(TexturesProperty, value);
+            get => (Dictionary<int, Texture>)GetValue(AuroraTexturesProperty);
+            set => SetValue(AuroraTexturesProperty, value);
         }
 
         /// <summary>
@@ -218,10 +218,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> AuroraAdd
         {
-            get => (KeyValuePair<int, int>)GetValue(AddProperty);
+            get => (KeyValuePair<int, int>)GetValue(AuroraAddProperty);
             set
             {
-                SetValue(AddProperty, value);
+                SetValue(AuroraAddProperty, value);
                 var (check, dictionary) = Helper.AddTile(AuroraMap, value);
 
                 if (!check)
@@ -246,10 +246,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> AuroraRemove
         {
-            get => (KeyValuePair<int, int>)GetValue(Remove);
+            get => (KeyValuePair<int, int>)GetValue(AuroraRemoveProperty);
             set
             {
-                SetValue(Remove, value);
+                SetValue(AuroraRemoveProperty, value);
 
                 var (check, dictionary) = Helper.RemoveTile(AuroraMap, AuroraTextures, value);
 
@@ -275,10 +275,10 @@ namespace Solaris
         /// </value>
         public KeyValuePair<int, int> AuroraAddDisplay
         {
-            get => (KeyValuePair<int, int>)GetValue(AddDisplayProperty);
+            get => (KeyValuePair<int, int>)GetValue(AuroraAddDisplayProperty);
             set
             {
-                SetValue(AddDisplayProperty, value);
+                SetValue(AuroraAddDisplayProperty, value);
                 var bmp = Helper.AddDisplay(AuroraWidth, AuroraTextureSize,
                     AuroraTextures, _thirdLayer, value);
 
@@ -294,10 +294,10 @@ namespace Solaris
         /// </value>
         public int AuroraRemoveDisplay
         {
-            get => (int)GetValue(RemoveDisplayProperty);
+            get => (int)GetValue(AuroraRemoveDisplayProperty);
             set
             {
-                SetValue(RemoveDisplayProperty, value);
+                SetValue(AuroraRemoveDisplayProperty, value);
                 var bmp = Helper.RemoveDisplay(AuroraWidth, AuroraTextureSize, _thirdLayer, value);
 
                 LayerThree.Source = bmp.ToBitmapImage();
@@ -312,7 +312,7 @@ namespace Solaris
         /// </value>
         public List<int> AuroraMovement
         {
-            get => (List<int>)GetValue(MovementProperty);
+            get => (List<int>)GetValue(AuroraMovementProperty);
             set
             {
                 if (value == null)
@@ -320,7 +320,7 @@ namespace Solaris
                     return;
                 }
 
-                SetValue(MovementProperty, value);
+                SetValue(AuroraMovementProperty, value);
 
                 //display an movement Animation, block the whole control while displaying
                 Helper.DisplayMovement(this, value, AuroraAvatar, AuroraWidth, AuroraHeight,
@@ -336,10 +336,10 @@ namespace Solaris
         /// </value>
         public bool AuroraGrid
         {
-            get => (bool)GetValue(GridProperty);
+            get => (bool)GetValue(AuroraGridProperty);
             set
             {
-                SetValue(GridProperty, value);
+                SetValue(AuroraGridProperty, value);
                 LayerTwo.Source = !AuroraGrid
                     ? null
                     : Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
