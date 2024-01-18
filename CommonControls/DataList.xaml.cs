@@ -39,13 +39,13 @@ namespace CommonControls
         /// <summary>
         /// The data collection (readonly).
         /// </summary>
-        public static readonly DependencyProperty DataCollection =
+        public static readonly DependencyProperty DataCollectionProperty =
             DependencyProperty.Register(nameof(Collection), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         /// The list title Dependency Property
         /// </summary>
-        public static readonly DependencyProperty ListTitle = DependencyProperty.Register(
+        public static readonly DependencyProperty ListTitleProperty = DependencyProperty.Register(
             nameof(Title),
             typeof(string),
             typeof(DataList), null);
@@ -53,7 +53,7 @@ namespace CommonControls
         /// <summary>
         ///     The unique elements
         /// </summary>
-        public static readonly DependencyProperty UniqueElements = DependencyProperty.Register(
+        public static readonly DependencyProperty UniqueElementsProperty = DependencyProperty.Register(
             nameof(Unique),
             typeof(bool),
             typeof(DataList), null);
@@ -61,7 +61,7 @@ namespace CommonControls
         /// <summary>
         ///     The unique elements
         /// </summary>
-        public static readonly DependencyProperty SelectedItem = DependencyProperty.Register(
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
             nameof(Selection),
             typeof(DataItem),
             typeof(DataList), null);
@@ -69,7 +69,7 @@ namespace CommonControls
         /// <summary>
         ///     The selected items
         /// </summary>
-        public static readonly DependencyProperty SelectedItems =
+        public static readonly DependencyProperty SelectedItemsProperty =
             DependencyProperty.Register(nameof(Selections), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace CommonControls
         /// </summary>
         public string Title
         {
-            get => (string)GetValue(ListTitle);
-            set => SetValue(ListTitle, value);
+            get => (string)GetValue(ListTitleProperty);
+            set => SetValue(ListTitleProperty, value);
         }
 
         /// <summary>
@@ -111,8 +111,8 @@ namespace CommonControls
         /// </value>
         public bool Unique
         {
-            get => (bool)GetValue(UniqueElements);
-            set => SetValue(UniqueElements, value);
+            get => (bool)GetValue(UniqueElementsProperty);
+            set => SetValue(UniqueElementsProperty, value);
         }
 
         /// <summary>
@@ -123,8 +123,8 @@ namespace CommonControls
         /// </value>
         public DataItem Selection
         {
-            get => (DataItem)GetValue(SelectedItem);
-            set => SetValue(SelectedItem, value);
+            get => (DataItem)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace CommonControls
         /// </value>
         public List<DataItem> Selections
         {
-            get => (List<DataItem>)GetValue(SelectedItems);
-            set => SetValue(SelectedItems, value);
+            get => (List<DataItem>)GetValue(SelectedItemsProperty);
+            set => SetValue(SelectedItemsProperty, value);
         }
 
         /// <summary>
@@ -144,8 +144,8 @@ namespace CommonControls
         /// </summary>
         public List<DataItem> Collection
         {
-            private get { return (List<DataItem>)GetValue(DataCollection); }
-            set { SetValue(DataCollection, value); }
+            private get { return (List<DataItem>)GetValue(DataCollectionProperty); }
+            set { SetValue(DataCollectionProperty, value); }
         }
 
         /// <summary>

@@ -33,21 +33,21 @@ namespace CommonControls
         /// <summary>
         ///     The h
         /// </summary>
-        public static readonly DependencyProperty H = DependencyProperty.Register(nameof(DepHue),
+        public static readonly DependencyProperty HProperty = DependencyProperty.Register(nameof(DepHue),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The s
         /// </summary>
-        public static readonly DependencyProperty S = DependencyProperty.Register(nameof(DepSat),
+        public static readonly DependencyProperty SProperty = DependencyProperty.Register(nameof(DepSat),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The v
         /// </summary>
-        public static readonly DependencyProperty V = DependencyProperty.Register(nameof(DepVal),
+        public static readonly DependencyProperty VProperty = DependencyProperty.Register(nameof(DepVal),
             typeof(string),
             typeof(ColorPicker), null);
 
@@ -323,8 +323,8 @@ namespace CommonControls
         /// </value>
         public double DepHue
         {
-            get => (double)GetValue(H);
-            set => SetValue(H, value);
+            get => (double)GetValue(HProperty);
+            set => SetValue(HProperty, value);
         }
 
         /// <summary>
@@ -335,8 +335,8 @@ namespace CommonControls
         /// </value>
         public double DepSat
         {
-            get => (double)GetValue(S);
-            set => SetValue(S, value);
+            get => (double)GetValue(SProperty);
+            set => SetValue(SProperty, value);
         }
 
         /// <summary>
@@ -347,8 +347,8 @@ namespace CommonControls
         /// </value>
         public double DepVal
         {
-            get => (double)GetValue(V);
-            set => SetValue(V, value);
+            get => (double)GetValue(VProperty);
+            set => SetValue(VProperty, value);
         }
 
         /// <inheritdoc />

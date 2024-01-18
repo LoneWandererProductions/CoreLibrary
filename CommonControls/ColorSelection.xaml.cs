@@ -30,7 +30,7 @@ namespace CommonControls
         ///     DependencyProperty: DepColor
         ///     The selected Color (readonly). Value: DependencyProperty.Register StartColor
         /// </summary>
-        public readonly DependencyProperty startColor = DependencyProperty.Register(nameof(Color),
+        public readonly DependencyProperty startColorProperty = DependencyProperty.Register(nameof(Color),
             typeof(object),
             typeof(ColorSelection), new UIPropertyMetadata(string.Empty));
 
@@ -66,10 +66,10 @@ namespace CommonControls
         /// </summary>
         public string Color
         {
-            get => (string)GetValue(startColor);
+            get => (string)GetValue(startColorProperty);
             set
             {
-                SetValue(startColor, value);
+                SetValue(startColorProperty, value);
                 SwitchColor();
             }
         }
