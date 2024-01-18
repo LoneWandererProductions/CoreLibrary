@@ -30,14 +30,14 @@ namespace Solaris
         /// <summary>
         /// The editor height
         /// </summary>
-        public static readonly DependencyProperty EditorHeight = DependencyProperty.Register(nameof(DependencyHeight),
+        public static readonly DependencyProperty EditorHeight = DependencyProperty.Register(nameof(PolarisHeight),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor width
         /// </summary>
-        public static readonly DependencyProperty EditorWidth = DependencyProperty.Register(nameof(DependencyWidth),
+        public static readonly DependencyProperty EditorWidth = DependencyProperty.Register(nameof(PolarisWidth),
             typeof(int),
             typeof(Aurora), null);
 
@@ -52,42 +52,42 @@ namespace Solaris
         /// <summary>
         /// The editor map
         /// </summary>
-        public static readonly DependencyProperty EditorMap = DependencyProperty.Register(nameof(DependencyMap),
+        public static readonly DependencyProperty EditorMap = DependencyProperty.Register(nameof(PolarisMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor textures
         /// </summary>
-        public static readonly DependencyProperty EditorTextures = DependencyProperty.Register(nameof(DependencyTextures),
+        public static readonly DependencyProperty EditorTextures = DependencyProperty.Register(nameof(PolarisTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor grid
         /// </summary>
-        public static readonly DependencyProperty EditorGrid = DependencyProperty.Register(nameof(DependencyGrid),
+        public static readonly DependencyProperty EditorGrid = DependencyProperty.Register(nameof(PolarisGrid),
             typeof(bool),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor number
         /// </summary>
-        public static readonly DependencyProperty EditorNumber = DependencyProperty.Register(nameof(DependencyNumber),
+        public static readonly DependencyProperty EditorNumber = DependencyProperty.Register(nameof(PolarisNumber),
             typeof(bool),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor add
         /// </summary>
-        public static readonly DependencyProperty EditorAdd = DependencyProperty.Register(nameof(DependencyAdd),
+        public static readonly DependencyProperty EditorAdd = DependencyProperty.Register(nameof(PolarisAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
         /// The editor remove
         /// </summary>
-        public static readonly DependencyProperty EditorRemove = DependencyProperty.Register(nameof(DependencyRemove),
+        public static readonly DependencyProperty EditorRemove = DependencyProperty.Register(nameof(PolarisRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
@@ -95,7 +95,7 @@ namespace Solaris
         /// The editor add display
         /// </summary>
         public static readonly DependencyProperty EditorAddDisplay = DependencyProperty.Register(
-            nameof(DependencyAddDisplay),
+            nameof(PolarisAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
@@ -103,7 +103,7 @@ namespace Solaris
         /// The editor remove display
         /// </summary>
         public static readonly DependencyProperty EditorRemoveDisplay = DependencyProperty.Register(
-            nameof(DependencyRemoveDisplay),
+            nameof(PolarisRemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 
@@ -130,27 +130,57 @@ namespace Solaris
         /// </value>
         internal Bitmap BitmapLayerThree { get; private set; }
 
+        /// <summary>
+        /// Gets the bitmap layer one.
+        /// </summary>
+        /// <value>
+        /// The bitmap layer one.
+        /// </value>
         internal Bitmap BitmapLayerOne { get; private set; }
 
-        public int DependencyHeight
+        /// <summary>
+        /// Gets or sets the height of the polaris.
+        /// </summary>
+        /// <value>
+        /// The height of the polaris.
+        /// </value>
+        public int PolarisHeight
         {
             get => (int)GetValue(EditorHeight);
             set => SetValue(EditorHeight, value);
         }
 
-        public int DependencyWidth
+        /// <summary>
+        /// Gets or sets the width of the polaris.
+        /// </summary>
+        /// <value>
+        /// The width of the polaris.
+        /// </value>
+        public int PolarisWidth
         {
             get => (int)GetValue(EditorWidth);
             set => SetValue(EditorWidth, value);
         }
 
-        public int DependencyTextureSize
+        /// <summary>
+        /// Gets or sets the size of the polaris texture.
+        /// </summary>
+        /// <value>
+        /// The size of the polaris texture.
+        /// </value>
+        public int PolarisTextureSize
         {
             get => (int)GetValue(EditorTextureSize);
             set => SetValue(EditorTextureSize, value);
         }
 
-        public Dictionary<int, List<int>> DependencyMap
+        /// <summary>
+        /// Gets or sets the polaris map.
+        /// </summary>
+        /// <value>
+        /// The polaris map.
+        /// </value>
+        public Dictionary<int, List<int>> PolarisMap
         {
             get => (Dictionary<int, List<int>>)GetValue(EditorMap);
             set
@@ -162,11 +192,11 @@ namespace Solaris
 
                 SetValue(EditorMap, value);
 
-                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
-                    DependencyTextures, DependencyMap);
+                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                    PolarisTextures, PolarisMap);
 
-                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
-                    DependencyTextures, DependencyMap);
+                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                    PolarisTextures, PolarisMap);
 
                 LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
@@ -178,7 +208,7 @@ namespace Solaris
         /// <value>
         /// The dependency textures.
         /// </value>
-        public Dictionary<int, Texture> DependencyTextures
+        public Dictionary<int, Texture> PolarisTextures
         {
             get => (Dictionary<int, Texture>)GetValue(EditorTextures);
             set => SetValue(EditorTextures, value);
@@ -190,15 +220,15 @@ namespace Solaris
         /// <value>
         ///   <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
         /// </value>
-        public bool DependencyGrid
+        public bool PolarisGrid
         {
             get => (bool)GetValue(EditorGrid);
             set
             {
                 SetValue(EditorGrid, value);
-                LayerTwo.Source = !DependencyGrid
+                LayerTwo.Source = !PolarisGrid
                     ? null
-                    : Helper.GenerateGrid(DependencyWidth, DependencyHeight, DependencyTextureSize);
+                    : Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
             }
         }
 
@@ -208,15 +238,15 @@ namespace Solaris
         /// <value>
         ///   <c>true</c> if [dependency number]; otherwise, <c>false</c>.
         /// </value>
-        public bool DependencyNumber
+        public bool PolarisNumber
         {
             get => (bool)GetValue(EditorNumber);
             set
             {
                 SetValue(EditorNumber, value);
-                LayerThree.Source = !DependencyNumber
+                LayerThree.Source = !PolarisNumber
                     ? null
-                    : Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
+                    : Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
             }
         }
 
@@ -226,24 +256,24 @@ namespace Solaris
         /// <value>
         /// The dependency add.
         /// </value>
-        public KeyValuePair<int, int> DependencyAdd
+        public KeyValuePair<int, int> PolarisAdd
         {
             get => (KeyValuePair<int, int>)GetValue(EditorAdd);
             set
             {
                 SetValue(EditorAdd, value);
 
-                var (check, dictionary) = Helper.AddTile(DependencyMap, value);
+                var (check, dictionary) = Helper.AddTile(PolarisMap, value);
 
                 if (!check)
                 {
                     return;
                 }
 
-                DependencyMap = dictionary;
+                PolarisMap = dictionary;
 
-                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
-                    DependencyTextures, DependencyMap);
+                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                    PolarisTextures, PolarisMap);
 
                 LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
@@ -255,23 +285,23 @@ namespace Solaris
         /// <value>
         /// The dependency remove.
         /// </value>
-        public KeyValuePair<int, int> DependencyRemove
+        public KeyValuePair<int, int> PolarisRemove
         {
             get => (KeyValuePair<int, int>)GetValue(EditorRemove);
             set
             {
                 SetValue(EditorRemove, value);
-                var (check, dictionary) = Helper.RemoveTile(DependencyMap, DependencyTextures, value);
+                var (check, dictionary) = Helper.RemoveTile(PolarisMap, PolarisTextures, value);
 
                 if (!check)
                 {
                     return;
                 }
 
-                DependencyMap = dictionary;
+                PolarisMap = dictionary;
 
-                BitmapLayerOne = Helper.GenerateImage(DependencyWidth, DependencyHeight, DependencyTextureSize,
-                    DependencyTextures, DependencyMap);
+                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                    PolarisTextures, PolarisMap);
 
                 LayerOne.Source = BitmapLayerOne.ToBitmapImage();
             }
@@ -283,14 +313,14 @@ namespace Solaris
         /// <value>
         /// The dependency add display.
         /// </value>
-        public KeyValuePair<int, int> DependencyAddDisplay
+        public KeyValuePair<int, int> PolarisAddDisplay
         {
             get => (KeyValuePair<int, int>)GetValue(EditorAddDisplay);
             set
             {
                 SetValue(EditorAddDisplay, value);
-                var bmp = Helper.AddDisplay(DependencyWidth, DependencyTextureSize,
-                    DependencyTextures, BitmapLayerThree, value);
+                var bmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize,
+                    PolarisTextures, BitmapLayerThree, value);
 
                 LayerThree.Source = bmp.ToBitmapImage();
             }
@@ -302,13 +332,13 @@ namespace Solaris
         /// <value>
         /// The dependency remove display.
         /// </value>
-        public int DependencyRemoveDisplay
+        public int PolarisRemoveDisplay
         {
             get => (int)GetValue(EditorRemoveDisplay);
             set
             {
                 SetValue(EditorRemoveDisplay, value);
-                var bmp = Helper.RemoveDisplay(DependencyWidth, DependencyTextureSize, BitmapLayerThree, value);
+                var bmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, value);
 
                 LayerThree.Source = bmp.ToBitmapImage();
             }
@@ -319,26 +349,26 @@ namespace Solaris
         /// </summary>
         public void Initiate()
         {
-            if (DependencyWidth == 0 || DependencyHeight == 0 || DependencyTextureSize == 0)
+            if (PolarisWidth == 0 || PolarisHeight == 0 || PolarisTextureSize == 0)
             {
                 return;
             }
 
-            Touch.Height = DependencyHeight * DependencyTextureSize;
-            Touch.Width = DependencyWidth * DependencyTextureSize;
+            Touch.Height = PolarisHeight * PolarisTextureSize;
+            Touch.Width = PolarisWidth * PolarisTextureSize;
 
-            if (DependencyGrid)
+            if (PolarisGrid)
             {
-                LayerTwo.Source = Helper.GenerateGrid(DependencyWidth, DependencyHeight, DependencyTextureSize);
+                LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
             }
 
-            if (DependencyNumber)
+            if (PolarisNumber)
             {
-                LayerThree.Source = Helper.GenerateNumbers(DependencyWidth, DependencyHeight, DependencyTextureSize);
+                LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
             }
 
-            BitmapLayerThree = new Bitmap(DependencyWidth * DependencyTextureSize,
-                DependencyHeight * DependencyTextureSize);
+            BitmapLayerThree = new Bitmap(PolarisWidth * PolarisTextureSize,
+                PolarisHeight * PolarisTextureSize);
         }
 
         /// <summary>
@@ -351,22 +381,22 @@ namespace Solaris
             _cursor = new Cursor();
             var position = e.GetPosition(Touch);
 
-            if (position.X < DependencyTextureSize)
+            if (position.X < PolarisTextureSize)
             {
                 _cursor.X = 0;
             }
             else
             {
-                _cursor.X = (int)position.X / DependencyTextureSize;
+                _cursor.X = (int)position.X / PolarisTextureSize;
             }
 
-            if (position.Y < DependencyTextureSize)
+            if (position.Y < PolarisTextureSize)
             {
                 _cursor.Y = 0;
             }
             else
             {
-                _cursor.Y = (int)position.X / DependencyTextureSize;
+                _cursor.Y = (int)position.X / PolarisTextureSize;
             }
         }
     }

@@ -69,7 +69,7 @@ namespace CommonLibraryGuiTests
 
             var aurora = new Aurora
             {
-                DependencyTextures = new Dictionary<int, Texture>
+                AuroraTextures = new Dictionary<int, Texture>
                 {
                     {
                         0,
@@ -93,10 +93,10 @@ namespace CommonLibraryGuiTests
                         }
                     }
                 },
-                DependencyTextureSize = 100,
-                DependencyHeight = 2,
-                DependencyWidth = 3,
-                DependencyMap = map
+                AuroraTextureSize = 100,
+                AuroraHeight = 2,
+                AuroraWidth = 3,
+                AuroraMap = map
             };
 
             //way hacky but works for for now....
@@ -116,7 +116,7 @@ namespace CommonLibraryGuiTests
                 { 5, new List<int> { 0 } }
             };
 
-            aurora.DependencyMap = map;
+            aurora.AuroraMap = map;
             aurora.Initiate();
 
             aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
@@ -126,13 +126,13 @@ namespace CommonLibraryGuiTests
             Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map was not correct: ", data.Similarity));
 
             //test remove
-            aurora.DependencyRemove = new KeyValuePair<int, int>(0, 2);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(0, 1);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(1, 1);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(2, 1);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(3, 1);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(4, 1);
-            aurora.DependencyRemove = new KeyValuePair<int, int>(5, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(0, 2);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(0, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(1, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(2, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(3, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(4, 1);
+            aurora.AuroraRemove = new KeyValuePair<int, int>(5, 1);
 
             data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
@@ -157,7 +157,7 @@ namespace CommonLibraryGuiTests
             //new Test with other UI
             var polaris = new Polaris
             {
-                DependencyTextures = new Dictionary<int, Texture>
+                PolarisTextures = new Dictionary<int, Texture>
                 {
                     {
                         0,
@@ -181,9 +181,9 @@ namespace CommonLibraryGuiTests
                         }
                     }
                 },
-                DependencyTextureSize = 100,
-                DependencyHeight = 2,
-                DependencyWidth = 3
+                PolarisTextureSize = 100,
+                PolarisHeight = 2,
+                PolarisWidth = 3
             };
 
             //way hacky but works for for now....
@@ -192,34 +192,34 @@ namespace CommonLibraryGuiTests
 
             //0
             var keyValue = new KeyValuePair<int, int>(0, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(0, 1);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(0, 2);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             //1
             keyValue = new KeyValuePair<int, int>(1, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(1, 1);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             //2
             keyValue = new KeyValuePair<int, int>(2, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(2, 1);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             //3
             keyValue = new KeyValuePair<int, int>(3, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(3, 1);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             //4
             keyValue = new KeyValuePair<int, int>(4, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             keyValue = new KeyValuePair<int, int>(4, 1);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
             //5
             keyValue = new KeyValuePair<int, int>(5, 0);
-            polaris.DependencyAdd = keyValue;
+            polaris.PolarisAdd = keyValue;
 
             polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
 
@@ -227,16 +227,16 @@ namespace CommonLibraryGuiTests
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(0, 0);
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(1, 0);
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(2, 0);
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(3, 0);
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(4, 0);
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(5, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(1, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(2, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(3, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(4, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(5, 0);
 
             data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
 
-            var polarisMap = polaris.DependencyMap;
+            var polarisMap = polaris.PolarisMap;
             var map = new Dictionary<int, List<int>>
             {
                 { 0, new List<int> { 0, 1, 2 } },
@@ -259,19 +259,19 @@ namespace CommonLibraryGuiTests
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 
-            polaris.DependencyRemoveDisplay = 0;
-            polaris.DependencyRemoveDisplay = 1;
-            polaris.DependencyRemoveDisplay = 2;
-            polaris.DependencyRemoveDisplay = 3;
-            polaris.DependencyRemoveDisplay = 4;
-            polaris.DependencyRemoveDisplay = 5;
+            polaris.PolarisRemoveDisplay = 0;
+            polaris.PolarisRemoveDisplay = 1;
+            polaris.PolarisRemoveDisplay = 2;
+            polaris.PolarisRemoveDisplay = 3;
+            polaris.PolarisRemoveDisplay = 4;
+            polaris.PolarisRemoveDisplay = 5;
 
             data = compare.CompareImages(blank, polaris.BitmapLayerThree);
 
             Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
 
             //this is a duplicate so this should not be added
-            polaris.DependencyAddDisplay = new KeyValuePair<int, int>(0, 0);
+            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);
 
             for (var i = 0; i <= 5; i++)
             {
