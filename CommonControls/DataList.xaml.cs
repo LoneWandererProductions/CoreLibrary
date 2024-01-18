@@ -37,13 +37,13 @@ namespace CommonControls
         public delegate void ItemRemove(DataItem item);
 
         /// <summary>
-        ///     The data collection (readonly). Value: DependencyProperty.Register DataCollection
+        /// The data collection (readonly).
         /// </summary>
-        public static DependencyProperty DataCollection =
-            DependencyProperty.Register(nameof(DataCollection), typeof(List<DataItem>), typeof(DataList), null);
+        public static readonly DependencyProperty DataCollection =
+            DependencyProperty.Register(nameof(Collection), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
-        ///     The list title Dependency Property
+        /// The list title Dependency Property
         /// </summary>
         public static readonly DependencyProperty ListTitle = DependencyProperty.Register(
             nameof(Title),
@@ -62,15 +62,15 @@ namespace CommonControls
         ///     The unique elements
         /// </summary>
         public static readonly DependencyProperty SelectedItem = DependencyProperty.Register(
-            nameof(SelectedItem),
+            nameof(Selection),
             typeof(DataItem),
             typeof(DataList), null);
 
         /// <summary>
         ///     The selected items
         /// </summary>
-        public static DependencyProperty SelectedItems =
-            DependencyProperty.Register(nameof(SelectedItems), typeof(List<DataItem>), typeof(DataList), null);
+        public static readonly DependencyProperty SelectedItems =
+            DependencyProperty.Register(nameof(Selections), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         ///     The view

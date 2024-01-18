@@ -30,9 +30,9 @@ namespace CommonControls
         ///     DependencyProperty: DepColor
         ///     The selected Color (readonly). Value: DependencyProperty.Register StartColor
         /// </summary>
-        public static readonly DependencyProperty DepColor = DependencyProperty.Register(nameof(DepColor),
-            typeof(string),
-            typeof(ColorSelection), null);
+        public readonly DependencyProperty startColor = DependencyProperty.Register(nameof(Color),
+            typeof(object),
+            typeof(ColorSelection), new UIPropertyMetadata(string.Empty));
 
         /// <summary>
         ///     The color Dictionary.
@@ -66,10 +66,10 @@ namespace CommonControls
         /// </summary>
         public string Color
         {
-            get => (string)GetValue(DepColor);
+            get => (string)GetValue(startColor);
             set
             {
-                SetValue(DepColor, value);
+                SetValue(startColor, value);
                 SwitchColor();
             }
         }
@@ -102,10 +102,7 @@ namespace CommonControls
         /// <param name="e">The selection changed event arguments.</param>
         private void CmbColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CmbColor?.SelectedItem is not PropertyInfo property)
-            {
-                return;
-            }
+            if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
             var selectedColor = (Color)property.GetValue(null, null);
             Color = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
@@ -116,10 +113,7 @@ namespace CommonControls
         /// </summary>
         private void SwitchColor()
         {
-            if (Color != null)
-            {
-                CmbColor.SelectedItem = typeof(Colors).GetProperty(Color);
-            }
+            if (Color != null) CmbColor.SelectedItem = typeof(Colors).GetProperty(Color);
         }
 
         /// <summary>
