@@ -33,7 +33,7 @@
                Grid.Row="0" Grid.ColumnSpan="7" Grid.Column="0"
                MouseDown="ImageTwo_MouseDown" />
         <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap"
-                 Text="{Binding Path=Hue, Mode=TwoWay,  StringFormat={}{0:F2}}" />
+                 Text="{Binding Path=H, Mode=TwoWay,  StringFormat={}{0:F2}}" />
         <TextBox Grid.Column="3" Grid.Row="2"
                  Text="{Binding Path=Sat , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:F2}}" />
         <TextBox Grid.Column="5" Grid.Row="2"

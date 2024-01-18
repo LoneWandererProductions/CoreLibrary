@@ -192,12 +192,12 @@ namespace CommonControls
         /// </summary>
         public void UpdateSelectedItem()
         {
-            if (_dataList.Selection == null)
+            if (_dataList.SelectedItem == null)
             {
                 return;
             }
 
-            var item = _dataList.Selection;
+            var item = _dataList.SelectedItem;
 
             //first add Remove command
             ChangeLog.Remove(item.Id);
@@ -415,8 +415,8 @@ namespace CommonControls
                 return;
             }
 
-            _dataList.Selection = items[0];
-            _dataList.Selections = items;
+            _dataList.SelectedItem = items[0];
+            _dataList.SelectedItems = items;
         }
     }
 }

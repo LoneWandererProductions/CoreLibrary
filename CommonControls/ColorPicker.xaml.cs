@@ -33,21 +33,21 @@ namespace CommonControls
         /// <summary>
         ///     The h
         /// </summary>
-        public static readonly DependencyProperty HProperty = DependencyProperty.Register(nameof(DepHue),
+        public static readonly DependencyProperty HProperty = DependencyProperty.Register(nameof(H),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The s
         /// </summary>
-        public static readonly DependencyProperty SProperty = DependencyProperty.Register(nameof(DepSat),
+        public static readonly DependencyProperty SProperty = DependencyProperty.Register(nameof(S),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The v
         /// </summary>
-        public static readonly DependencyProperty VProperty = DependencyProperty.Register(nameof(DepVal),
+        public static readonly DependencyProperty VProperty = DependencyProperty.Register(nameof(V),
             typeof(string),
             typeof(ColorPicker), null);
 
@@ -321,7 +321,7 @@ namespace CommonControls
         /// <value>
         ///     The Dependency hue.
         /// </value>
-        public double DepHue
+        public double H
         {
             get => (double)GetValue(HProperty);
             set => SetValue(HProperty, value);
@@ -333,7 +333,7 @@ namespace CommonControls
         /// <value>
         ///     The Dependency saturation.
         /// </value>
-        public double DepSat
+        public double S
         {
             get => (double)GetValue(SProperty);
             set => SetValue(SProperty, value);
@@ -345,7 +345,7 @@ namespace CommonControls
         /// <value>
         ///     The Dependency value.
         /// </value>
-        public double DepVal
+        public double V
         {
             get => (double)GetValue(VProperty);
             set => SetValue(VProperty, value);

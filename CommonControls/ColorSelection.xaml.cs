@@ -30,7 +30,7 @@ namespace CommonControls
         ///     DependencyProperty: DepColor
         ///     The selected Color (readonly). Value: DependencyProperty.Register StartColor
         /// </summary>
-        public readonly DependencyProperty startColorProperty = DependencyProperty.Register(nameof(Color),
+        public static readonly DependencyProperty StartColorProperty = DependencyProperty.Register(nameof(StartColor),
             typeof(object),
             typeof(ColorSelection), new UIPropertyMetadata(string.Empty));
 
@@ -41,7 +41,7 @@ namespace CommonControls
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.ColorPicker" /> class.
+        ///     Initializes a new instance of the <see cref="ColorPicker" /> class.
         /// </summary>
         public ColorSelection()
         {
@@ -56,7 +56,7 @@ namespace CommonControls
         /// <param name="color">The color.</param>
         public ColorSelection(string color)
         {
-            Color = color;
+            StartColor = color;
             InitializeComponent();
             Initiate();
         }
@@ -64,12 +64,12 @@ namespace CommonControls
         /// <summary>
         ///     Gets or sets the Start color.
         /// </summary>
-        public string Color
+        public string StartColor
         {
-            get => (string)GetValue(startColorProperty);
+            get => (string)GetValue(StartColorProperty);
             set
             {
-                SetValue(startColorProperty, value);
+                SetValue(StartColorProperty, value);
                 SwitchColor();
             }
         }
@@ -105,7 +105,7 @@ namespace CommonControls
             if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
             var selectedColor = (Color)property.GetValue(null, null);
-            Color = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
+            StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace CommonControls
         /// </summary>
         private void SwitchColor()
         {
-            if (Color != null) CmbColor.SelectedItem = typeof(Colors).GetProperty(Color);
+            if (StartColor != null) CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
         }
 
         /// <summary>

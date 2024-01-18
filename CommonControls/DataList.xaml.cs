@@ -40,13 +40,13 @@ namespace CommonControls
         /// The data collection (readonly).
         /// </summary>
         public static readonly DependencyProperty DataCollectionProperty =
-            DependencyProperty.Register(nameof(Collection), typeof(List<DataItem>), typeof(DataList), null);
+            DependencyProperty.Register(nameof(DataCollection), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         /// The list title Dependency Property
         /// </summary>
         public static readonly DependencyProperty ListTitleProperty = DependencyProperty.Register(
-            nameof(Title),
+            nameof(ListTitle),
             typeof(string),
             typeof(DataList), null);
 
@@ -54,7 +54,7 @@ namespace CommonControls
         ///     The unique elements
         /// </summary>
         public static readonly DependencyProperty UniqueElementsProperty = DependencyProperty.Register(
-            nameof(Unique),
+            nameof(UniqueElements),
             typeof(bool),
             typeof(DataList), null);
 
@@ -62,7 +62,7 @@ namespace CommonControls
         ///     The unique elements
         /// </summary>
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
-            nameof(Selection),
+            nameof(SelectedItem),
             typeof(DataItem),
             typeof(DataList), null);
 
@@ -70,7 +70,7 @@ namespace CommonControls
         ///     The selected items
         /// </summary>
         public static readonly DependencyProperty SelectedItemsProperty =
-            DependencyProperty.Register(nameof(Selections), typeof(List<DataItem>), typeof(DataList), null);
+            DependencyProperty.Register(nameof(SelectedItems), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         ///     The view
@@ -97,7 +97,7 @@ namespace CommonControls
         /// <summary>
         ///     Gets or sets the title.
         /// </summary>
-        public string Title
+        public string ListTitle
         {
             get => (string)GetValue(ListTitleProperty);
             set => SetValue(ListTitleProperty, value);
@@ -109,7 +109,7 @@ namespace CommonControls
         /// <value>
         ///     <c>true</c> if unique; otherwise, <c>false</c>.
         /// </value>
-        public bool Unique
+        public bool UniqueElements
         {
             get => (bool)GetValue(UniqueElementsProperty);
             set => SetValue(UniqueElementsProperty, value);
@@ -121,7 +121,7 @@ namespace CommonControls
         /// <value>
         ///     The selection.
         /// </value>
-        public DataItem Selection
+        public DataItem SelectedItem
         {
             get => (DataItem)GetValue(SelectedItemProperty);
             set => SetValue(SelectedItemProperty, value);
@@ -133,7 +133,7 @@ namespace CommonControls
         /// <value>
         ///     The selections.
         /// </value>
-        public List<DataItem> Selections
+        public List<DataItem> SelectedItems
         {
             get => (List<DataItem>)GetValue(SelectedItemsProperty);
             set => SetValue(SelectedItemsProperty, value);
@@ -142,7 +142,7 @@ namespace CommonControls
         /// <summary>
         ///     Gets or sets the collection.
         /// </summary>
-        public List<DataItem> Collection
+        public List<DataItem> DataCollection
         {
             private get { return (List<DataItem>)GetValue(DataCollectionProperty); }
             set { SetValue(DataCollectionProperty, value); }
@@ -181,7 +181,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _view = new DataListView(Collection, this, Unique, List);
+            _view = new DataListView(DataCollection, this, UniqueElements, List);
             DataContext = _view;
         }
 

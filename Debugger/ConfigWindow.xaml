@@ -116,7 +116,7 @@
                                        HorizontalAlignment="Stretch"
                                        Grid.Row="13"
                                        VerticalAlignment="Stretch"
-                                       Color="Black" />
+                                       StartColor="Black" />
         <commonControls:ColorSelection x:Name="CombColorInformation"
                                        Grid.ColumnSpan="6"
                                        Grid.Column="3"
