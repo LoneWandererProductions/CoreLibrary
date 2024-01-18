@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Solaris
+ * FILE:        Solaris/Helper.cs
+ * PURPOSE:     Helper class, here we process everything.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
