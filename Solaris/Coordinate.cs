@@ -12,23 +12,23 @@
 namespace Solaris
 {
     /// <summary>
-    /// Holds the coordinates on the screen
+    ///     Holds the coordinates on the screen
     /// </summary>
     public sealed class Cursor
     {
         /// <summary>
-        /// Gets or sets the x.
+        ///     Gets or sets the x.
         /// </summary>
         /// <value>
-        /// The x.
+        ///     The x.
         /// </value>
         public int X { get; set; }
 
         /// <summary>
-        /// Gets or sets the y.
+        ///     Gets or sets the y.
         /// </summary>
         /// <value>
-        /// The y.
+        ///     The y.
         /// </value>
         public int Y { get; set; }
     }

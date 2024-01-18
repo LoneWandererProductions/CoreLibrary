@@ -249,14 +249,14 @@ namespace CommonLibrarySqlLiteTests
                 "Test failed Create: " + _target.LastErrors);
 
             //add Column with specific Name
-            var elementone = new TableColumns
+            var element = new TableColumns
             {
                 DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
             };
 
             var columns = new DictionaryTableColumns();
 
-            columns.DColumns.Add("Test_Header_one", elementone);
+            columns.DColumns.Add("Test_Header_one", element);
 
             var check = _target.CreateTable(TblNameFirst, columns);
             Assert.IsTrue(check, "Test failed create: " + _target.LastErrors);

@@ -75,10 +75,16 @@ namespace ImageCompare
             lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count) return null;
+            if (lst.Count != imagePaths.Count)
+            {
+                return null;
+            }
 
             var similarity = AnalysisProcessing.GetSimilarity(imagePaths);
-            for (var i = 0; i < lst.Count; i++) lst[i].Similarity = similarity[i];
+            for (var i = 0; i < lst.Count; i++)
+            {
+                lst[i].Similarity = similarity[i];
+            }
 
             return lst;
         }
@@ -94,9 +100,14 @@ namespace ImageCompare
         public ImageCompareData CompareImages(Bitmap first, Bitmap second)
         {
             if (first == null)
+            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
+            }
+
             if (second == null)
+            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
+            }
 
             return ImageHelper.CompareImages(first, second);
         }
@@ -116,7 +127,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Color Dictionary</returns>
@@ -124,7 +135,9 @@ namespace ImageCompare
         public Dictionary<Color, int> GetColors(string path)
         {
             if (!File.Exists(path))
+            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, path));
+            }
 
             var image = new Bitmap(path);
 
@@ -133,7 +146,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>
@@ -141,7 +154,9 @@ namespace ImageCompare
         public Dictionary<Color, int> GetColors(Bitmap image)
         {
             if (image == null)
+            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(image)));
+            }
 
             return AnalysisProcessing.GetColors(image);
         }

@@ -28,102 +28,110 @@ namespace Solaris
     public sealed partial class Aurora
     {
         /// <summary>
-        /// The map height
+        ///     The map height
         /// </summary>
-        public static readonly DependencyProperty AuroraHeightProperty = DependencyProperty.Register(nameof(AuroraHeight),
+        public static readonly DependencyProperty AuroraHeightProperty = DependencyProperty.Register(
+            nameof(AuroraHeight),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The map width
+        ///     The map width
         /// </summary>
         public static readonly DependencyProperty AuroraWidthProperty = DependencyProperty.Register(nameof(AuroraWidth),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The texture size
+        ///     The texture size
         /// </summary>
-        public static readonly DependencyProperty AuroraTextureSizeProperty = DependencyProperty.Register(nameof(AuroraTextureSize),
+        public static readonly DependencyProperty AuroraTextureSizeProperty = DependencyProperty.Register(
+            nameof(AuroraTextureSize),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The map
+        ///     The map
         /// </summary>
         public static readonly DependencyProperty AuroraMapProperty = DependencyProperty.Register(nameof(AuroraMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The avatar
+        ///     The avatar
         /// </summary>
-        public static readonly DependencyProperty AuroraAvatarProperty = DependencyProperty.Register(nameof(AuroraAvatar),
+        public static readonly DependencyProperty AuroraAvatarProperty = DependencyProperty.Register(
+            nameof(AuroraAvatar),
             typeof(Bitmap),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The movement
+        ///     The movement
         /// </summary>
-        public static readonly DependencyProperty AuroraMovementProperty = DependencyProperty.Register(nameof(AuroraMovement),
+        public static readonly DependencyProperty AuroraMovementProperty = DependencyProperty.Register(
+            nameof(AuroraMovement),
             typeof(List<int>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The textures
+        ///     The textures
         /// </summary>
-        public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(nameof(AuroraTextures),
+        public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(
+            nameof(AuroraTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The grid
+        ///     The grid
         /// </summary>
         public static readonly DependencyProperty AuroraGridProperty = DependencyProperty.Register(nameof(AuroraGrid),
             typeof(bool),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The add
+        ///     The add
         /// </summary>
         public static readonly DependencyProperty AuroraAddProperty = DependencyProperty.Register(nameof(AuroraAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The remove
+        ///     The remove
         /// </summary>
-        public static readonly DependencyProperty AuroraRemoveProperty = DependencyProperty.Register(nameof(AuroraRemove),
+        public static readonly DependencyProperty AuroraRemoveProperty = DependencyProperty.Register(
+            nameof(AuroraRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The add display
+        ///     The add display
         /// </summary>
-        public static readonly DependencyProperty AuroraAddDisplayProperty = DependencyProperty.Register(nameof(AuroraAddDisplay),
+        public static readonly DependencyProperty AuroraAddDisplayProperty = DependencyProperty.Register(
+            nameof(AuroraAddDisplay),
             typeof(KeyValuePair<int, int>),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The remove display
+        ///     The remove display
         /// </summary>
-        public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(nameof(AuroraRemoveDisplay),
+        public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(
+            nameof(AuroraRemoveDisplay),
             typeof(int),
             typeof(Aurora), null);
 
         /// <summary>
-        /// The cursor
+        ///     The cursor
         /// </summary>
         private Cursor _cursor;
 
         /// <summary>
-        /// The third layer
+        ///     The third layer
         /// </summary>
         private Bitmap _thirdLayer;
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Aurora" /> class.
+        ///     Initializes a new instance of the <see cref="Aurora" /> class.
         /// </summary>
         public Aurora()
         {
@@ -131,18 +139,18 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets the bitmap layer one.
+        ///     Gets the bitmap layer one.
         /// </summary>
         /// <value>
-        /// The bitmap layer one.
+        ///     The bitmap layer one.
         /// </value>
         internal Bitmap BitmapLayerOne { get; private set; }
 
         /// <summary>
-        /// Gets or sets the height of the dependency.
+        ///     Gets or sets the height of the dependency.
         /// </summary>
         /// <value>
-        /// The height of the dependency.
+        ///     The height of the dependency.
         /// </value>
         public int AuroraHeight
         {
@@ -151,10 +159,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the width of the dependency.
+        ///     Gets or sets the width of the dependency.
         /// </summary>
         /// <value>
-        /// The width of the dependency.
+        ///     The width of the dependency.
         /// </value>
         public int AuroraWidth
         {
@@ -163,10 +171,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the size of the dependency texture.
+        ///     Gets or sets the size of the dependency texture.
         /// </summary>
         /// <value>
-        /// The size of the dependency texture.
+        ///     The size of the dependency texture.
         /// </value>
         public int AuroraTextureSize
         {
@@ -175,10 +183,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency map.
+        ///     Gets or sets the dependency map.
         /// </summary>
         /// <value>
-        /// The dependency map.
+        ///     The dependency map.
         /// </value>
         public Dictionary<int, List<int>> AuroraMap
         {
@@ -187,10 +195,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency avatar.
+        ///     Gets or sets the dependency avatar.
         /// </summary>
         /// <value>
-        /// The dependency avatar.
+        ///     The dependency avatar.
         /// </value>
         public Bitmap AuroraAvatar
         {
@@ -199,10 +207,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency textures.
+        ///     Gets or sets the dependency textures.
         /// </summary>
         /// <value>
-        /// The dependency textures.
+        ///     The dependency textures.
         /// </value>
         public Dictionary<int, Texture> AuroraTextures
         {
@@ -211,10 +219,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency add.
+        ///     Gets or sets the dependency add.
         /// </summary>
         /// <value>
-        /// The dependency add.
+        ///     The dependency add.
         /// </value>
         public KeyValuePair<int, int> AuroraAdd
         {
@@ -239,10 +247,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency remove.
+        ///     Gets or sets the dependency remove.
         /// </summary>
         /// <value>
-        /// The dependency remove.
+        ///     The dependency remove.
         /// </value>
         public KeyValuePair<int, int> AuroraRemove
         {
@@ -268,10 +276,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency add display.
+        ///     Gets or sets the dependency add display.
         /// </summary>
         /// <value>
-        /// The dependency add display.
+        ///     The dependency add display.
         /// </value>
         public KeyValuePair<int, int> AuroraAddDisplay
         {
@@ -287,10 +295,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency remove display.
+        ///     Gets or sets the dependency remove display.
         /// </summary>
         /// <value>
-        /// The dependency remove display.
+        ///     The dependency remove display.
         /// </value>
         public int AuroraRemoveDisplay
         {
@@ -305,10 +313,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency movement.
+        ///     Gets or sets the dependency movement.
         /// </summary>
         /// <value>
-        /// The dependency movement.
+        ///     The dependency movement.
         /// </value>
         public List<int> AuroraMovement
         {
@@ -329,10 +337,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [dependency grid].
+        ///     Gets or sets a value indicating whether [dependency grid].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
         /// </value>
         public bool AuroraGrid
         {
@@ -347,7 +355,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Initiates this instance.
+        ///     Initiates this instance.
         /// </summary>
         public void Initiate()
         {
@@ -373,10 +381,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Handles the MouseDown event of the Touch control.
+        ///     Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _cursor = new Cursor();

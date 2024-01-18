@@ -16,34 +16,34 @@ namespace Solaris
     internal sealed class Box
     {
         /// <summary>
-        /// Gets the image.
+        ///     Gets the image.
         /// </summary>
         /// <value>
-        /// The image.
+        ///     The image.
         /// </value>
         internal Bitmap Image { get; init; }
 
         /// <summary>
-        /// Gets the x.
+        ///     Gets the x.
         /// </summary>
         /// <value>
-        /// The x.
+        ///     The x.
         /// </value>
         internal int X { get; init; }
 
         /// <summary>
-        /// Gets the y.
+        ///     Gets the y.
         /// </summary>
         /// <value>
-        /// The y.
+        ///     The y.
         /// </value>
         internal int Y { get; init; }
 
         /// <summary>
-        /// Gets the layer.
+        ///     Gets the layer.
         /// </summary>
         /// <value>
-        /// The layer.
+        ///     The layer.
         /// </value>
         internal int Layer { get; init; }
     }

@@ -37,13 +37,13 @@ namespace CommonControls
         public delegate void ItemRemove(DataItem item);
 
         /// <summary>
-        /// The data collection (readonly).
+        ///     The data collection (readonly).
         /// </summary>
         public static readonly DependencyProperty DataCollectionProperty =
             DependencyProperty.Register(nameof(DataCollection), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
-        /// The list title Dependency Property
+        ///     The list title Dependency Property
         /// </summary>
         public static readonly DependencyProperty ListTitleProperty = DependencyProperty.Register(
             nameof(ListTitle),

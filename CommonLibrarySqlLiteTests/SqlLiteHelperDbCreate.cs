@@ -180,20 +180,20 @@ namespace CommonLibrarySqlLiteTests
              */
             Assert.IsTrue(_target.LastErrors.Contains("Table does not exist"), "Test did not failed correctly");
 
-            var elementone = new TableColumns
+            var elementOne = new TableColumns
             {
                 DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
             };
 
-            var elementtwo = new TableColumns
+            var elementTwo = new TableColumns
             {
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
             };
 
             var columns = new DictionaryTableColumns();
 
-            columns.DColumns.Add(HeaderFirst, elementone);
-            columns.DColumns.Add(HeaderSecond, elementtwo);
+            columns.DColumns.Add(HeaderFirst, elementOne);
+            columns.DColumns.Add(HeaderSecond, elementTwo);
 
             _target.CreateTable(TableName, columns);
 

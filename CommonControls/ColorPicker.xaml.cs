@@ -153,7 +153,10 @@ namespace CommonControls
             get => _hue;
             set
             {
-                if (_hue.IsEqualTo(value, 10) || value * 180 / Math.PI is > 360 or < 0) return;
+                if (_hue.IsEqualTo(value, 10) || value * 180 / Math.PI is > 360 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -174,7 +177,10 @@ namespace CommonControls
             get => _sat;
             set
             {
-                if (_sat.IsEqualTo(value, 10) || value is > 1 or < 0) return;
+                if (_sat.IsEqualTo(value, 10) || value is > 1 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -195,7 +201,10 @@ namespace CommonControls
             get => _val;
             set
             {
-                if (_val.IsEqualTo(value, 10) || value is > 1 or < 0) return;
+                if (_val.IsEqualTo(value, 10) || value is > 1 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -216,7 +225,10 @@ namespace CommonControls
             get => _r;
             set
             {
-                if (_r == value || value is > 255 or < 0) return;
+                if (_r == value || value is > 255 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -237,7 +249,10 @@ namespace CommonControls
             get => _g;
             set
             {
-                if (_g == value || value is > 255 or < 0) return;
+                if (_g == value || value is > 255 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -258,7 +273,10 @@ namespace CommonControls
             get => _b;
             set
             {
-                if (_b == value || value is > 255 or < 0) return;
+                if (_b == value || value is > 255 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -278,7 +296,10 @@ namespace CommonControls
             get => _alpha;
             set
             {
-                if (_alpha == value || value is > 255 or < 0) return;
+                if (_alpha == value || value is > 255 or < 0)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -306,7 +327,10 @@ namespace CommonControls
             get => _hex;
             set
             {
-                if (_hex == value) return;
+                if (_hex == value)
+                {
+                    return;
+                }
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -436,7 +460,10 @@ namespace CommonControls
 
             _ = CanvasPreview.Children.Add(rectangle);
 
-            if (ColorPickerRegister.ColorChanged) OnColorChanged();
+            if (ColorPickerRegister.ColorChanged)
+            {
+                OnColorChanged();
+            }
         }
 
         /// <summary>

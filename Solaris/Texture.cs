@@ -12,31 +12,31 @@
 namespace Solaris
 {
     /// <summary>
-    /// Texture Container
+    ///     Texture Container
     /// </summary>
     public sealed class Texture
     {
         /// <summary>
-        /// Gets the path.
+        ///     Gets the path.
         /// </summary>
         /// <value>
-        /// The path.
+        ///     The path.
         /// </value>
         public string Path { get; init; }
 
         /// <summary>
-        /// Gets the layer.
+        ///     Gets the layer.
         /// </summary>
         /// <value>
-        /// The layer.
+        ///     The layer.
         /// </value>
         public int Layer { get; init; }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the identifier.
         /// </summary>
         /// <value>
-        /// The identifier.
+        ///     The identifier.
         /// </value>
         public int Id { get; init; }
     }

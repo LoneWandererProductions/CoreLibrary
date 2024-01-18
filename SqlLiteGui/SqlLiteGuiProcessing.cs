@@ -259,8 +259,8 @@ namespace SQLiteGui
 
             var item = GenerateUpdateItem(pragma);
 
-            var inputwin = new InputUpdateWindow(item);
-            _ = inputwin.ShowDialog();
+            var input = new InputUpdateWindow(item);
+            _ = input.ShowDialog();
 
             return InputUpdateWindow.TableRow != null &&
                    _db.InsertSingleRow(Register.TableAlias, InputUpdateWindow.TableRow, true);

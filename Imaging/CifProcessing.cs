@@ -33,7 +33,7 @@ namespace Imaging
 
             var colorMap = dbm.GetColors();
 
-            for (int i = 0; i < image.Height * image.Width; i++)
+            for (var i = 0; i < image.Height * image.Width; i++)
             {
                 var color = colorMap[i];
 

@@ -28,21 +28,23 @@ namespace Solaris
     public sealed partial class Polaris
     {
         /// <summary>
-        /// The editor height
+        ///     The editor height
         /// </summary>
-        public static readonly DependencyProperty PolarisHeightProperty = DependencyProperty.Register(nameof(PolarisHeight),
+        public static readonly DependencyProperty PolarisHeightProperty = DependencyProperty.Register(
+            nameof(PolarisHeight),
             typeof(int),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor width
+        ///     The editor width
         /// </summary>
-        public static readonly DependencyProperty PolarisWidthProperty = DependencyProperty.Register(nameof(PolarisWidth),
+        public static readonly DependencyProperty PolarisWidthProperty = DependencyProperty.Register(
+            nameof(PolarisWidth),
             typeof(int),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor texture size
+        ///     The editor texture size
         /// </summary>
         public static readonly DependencyProperty PolarisTextureSizeProperty = DependencyProperty.Register(
             nameof(PolarisTextureSize),
@@ -50,49 +52,52 @@ namespace Solaris
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor map
+        ///     The editor map
         /// </summary>
         public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(nameof(PolarisMap),
             typeof(Dictionary<int, List<int>>),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor textures
+        ///     The editor textures
         /// </summary>
-        public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(nameof(PolarisTextures),
+        public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(
+            nameof(PolarisTextures),
             typeof(Dictionary<int, Texture>),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor grid
+        ///     The editor grid
         /// </summary>
         public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
             typeof(bool),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor number
+        ///     The editor number
         /// </summary>
-        public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(nameof(PolarisNumber),
+        public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(
+            nameof(PolarisNumber),
             typeof(bool),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor add
+        ///     The editor add
         /// </summary>
         public static readonly DependencyProperty PolarisAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
             typeof(KeyValuePair<int, int>),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor remove
+        ///     The editor remove
         /// </summary>
-        public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(nameof(PolarisRemove),
+        public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(
+            nameof(PolarisRemove),
             typeof(KeyValuePair<int, int>),
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor add display
+        ///     The editor add display
         /// </summary>
         public static readonly DependencyProperty PolarisAddDisplayProperty = DependencyProperty.Register(
             nameof(PolarisAddDisplay),
@@ -100,7 +105,7 @@ namespace Solaris
             typeof(Polaris), null);
 
         /// <summary>
-        /// The editor remove display
+        ///     The editor remove display
         /// </summary>
         public static readonly DependencyProperty PolarisRemoveDisplayProperty = DependencyProperty.Register(
             nameof(PolarisRemoveDisplay),
@@ -108,13 +113,13 @@ namespace Solaris
             typeof(Polaris), null);
 
         /// <summary>
-        /// The cursor
+        ///     The cursor
         /// </summary>
         private Cursor _cursor;
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Polaris" /> class.
+        ///     Initializes a new instance of the <see cref="Polaris" /> class.
         /// </summary>
         public Polaris()
         {
@@ -123,26 +128,26 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets the bitmap layer three.
+        ///     Gets the bitmap layer three.
         /// </summary>
         /// <value>
-        /// The bitmap layer three.
+        ///     The bitmap layer three.
         /// </value>
         internal Bitmap BitmapLayerThree { get; private set; }
 
         /// <summary>
-        /// Gets the bitmap layer one.
+        ///     Gets the bitmap layer one.
         /// </summary>
         /// <value>
-        /// The bitmap layer one.
+        ///     The bitmap layer one.
         /// </value>
         internal Bitmap BitmapLayerOne { get; private set; }
 
         /// <summary>
-        /// Gets or sets the height of the polaris.
+        ///     Gets or sets the height of the polaris.
         /// </summary>
         /// <value>
-        /// The height of the polaris.
+        ///     The height of the polaris.
         /// </value>
         public int PolarisHeight
         {
@@ -151,10 +156,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the width of the polaris.
+        ///     Gets or sets the width of the polaris.
         /// </summary>
         /// <value>
-        /// The width of the polaris.
+        ///     The width of the polaris.
         /// </value>
         public int PolarisWidth
         {
@@ -163,10 +168,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the size of the polaris texture.
+        ///     Gets or sets the size of the polaris texture.
         /// </summary>
         /// <value>
-        /// The size of the polaris texture.
+        ///     The size of the polaris texture.
         /// </value>
         public int PolarisTextureSize
         {
@@ -175,10 +180,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the polaris map.
+        ///     Gets or sets the polaris map.
         /// </summary>
         /// <value>
-        /// The polaris map.
+        ///     The polaris map.
         /// </value>
         public Dictionary<int, List<int>> PolarisMap
         {
@@ -203,10 +208,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency textures.
+        ///     Gets or sets the dependency textures.
         /// </summary>
         /// <value>
-        /// The dependency textures.
+        ///     The dependency textures.
         /// </value>
         public Dictionary<int, Texture> PolarisTextures
         {
@@ -215,10 +220,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [dependency grid].
+        ///     Gets or sets a value indicating whether [dependency grid].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
         /// </value>
         public bool PolarisGrid
         {
@@ -233,10 +238,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [dependency number].
+        ///     Gets or sets a value indicating whether [dependency number].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [dependency number]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [dependency number]; otherwise, <c>false</c>.
         /// </value>
         public bool PolarisNumber
         {
@@ -251,10 +256,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency add.
+        ///     Gets or sets the dependency add.
         /// </summary>
         /// <value>
-        /// The dependency add.
+        ///     The dependency add.
         /// </value>
         public KeyValuePair<int, int> PolarisAdd
         {
@@ -280,10 +285,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency remove.
+        ///     Gets or sets the dependency remove.
         /// </summary>
         /// <value>
-        /// The dependency remove.
+        ///     The dependency remove.
         /// </value>
         public KeyValuePair<int, int> PolarisRemove
         {
@@ -308,10 +313,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency add display.
+        ///     Gets or sets the dependency add display.
         /// </summary>
         /// <value>
-        /// The dependency add display.
+        ///     The dependency add display.
         /// </value>
         public KeyValuePair<int, int> PolarisAddDisplay
         {
@@ -327,10 +332,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Gets or sets the dependency remove display.
+        ///     Gets or sets the dependency remove display.
         /// </summary>
         /// <value>
-        /// The dependency remove display.
+        ///     The dependency remove display.
         /// </value>
         public int PolarisRemoveDisplay
         {
@@ -345,7 +350,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Initiates this instance.
+        ///     Initiates this instance.
         /// </summary>
         public void Initiate()
         {
@@ -372,10 +377,10 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Handles the MouseDown event of the Touch control.
+        ///     Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _cursor = new Cursor();

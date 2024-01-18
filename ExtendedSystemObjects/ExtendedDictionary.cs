@@ -21,9 +21,9 @@ namespace ExtendedSystemObjects
 
     {
         /// <summary>
-        /// Adds the specified key to the Value, that is a list.
-        /// I know it is not recommended to use List and Dictionary together but in case you do,
-        /// this extension should avoid ugly null reference Exceptions and make the code more readable.
+        ///     Adds the specified key to the Value, that is a list.
+        ///     I know it is not recommended to use List and Dictionary together but in case you do,
+        ///     this extension should avoid ugly null reference Exceptions and make the code more readable.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -63,7 +63,10 @@ namespace ExtendedSystemObjects
 
             var cache = dic[key];
 
-            if (cache.Contains(value)) return false;
+            if (cache.Contains(value))
+            {
+                return false;
+            }
 
             cache.Add(value);
             dic[key] = cache;
