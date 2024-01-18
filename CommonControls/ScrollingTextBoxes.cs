@@ -14,6 +14,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace CommonControls
 {
@@ -69,20 +70,6 @@ namespace CommonControls
             base.OnTextChanged(e);
             CaretIndex = Text.Length;
             ScrollToEnd();
-        }
-
-        /// <summary>
-        ///     Appends the specified text. With line break;
-        /// </summary>
-        /// <param name="text">The text.</param>
-        public void Append(string text)
-        {
-            if (!Text.EndsWith(Environment.NewLine, StringComparison.Ordinal))
-            {
-                Text = string.Concat(Text, Environment.NewLine);
-            }
-
-            Text = string.Concat(Text, text);
         }
     }
 
