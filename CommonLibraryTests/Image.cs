@@ -70,15 +70,11 @@ namespace CommonLibraryTests
         ///     Test the custom DirectBitmap and how it works
         /// </summary>
         [TestMethod]
-        public void BitLock()
+        public void DirectBitmaps()
         {
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
-            var btm = image.ToBitmap();
-
-            Assert.AreNotEqual(null, image, "done");
-
+            var btm = new Bitmap(imagePath);
             var dbm = new DirectBitmap(100, 100);
 
             using (var graph = Graphics.FromImage(dbm.Bitmap))
@@ -172,6 +168,15 @@ namespace CommonLibraryTests
             Assert.AreEqual(col2.R, replacementColor.R, "done");
             Assert.AreEqual(col2.B, replacementColor.B, "done");
             Assert.AreEqual(col2.G, replacementColor.G, "done");
+
+            btm = new Bitmap(imagePath);
+
+            dbm = new DirectBitmap(btm);
+
+            var compare = new ImageAnalysis();
+            var data = compare.CompareImages(btm, dbm.Bitmap);
+
+            Assert.AreEqual(100, data.Similarity, string.Concat("Image was not equal: ", data.Similarity));
 
             dbm.Dispose();
         }
@@ -342,10 +347,10 @@ namespace CommonLibraryTests
             var bmp = new Bitmap(1000, 1000);
             var blackPen = new Pen(Color.Black, 1);
 
-            var x1 = 0;
-            var y1 = 0;
-            var x2 = 0;
-            var y2 = 1000;
+            const int x1 = 0;
+            const int y1 = 0;
+            const int x2 = 0;
+            const int y2 = 1000;
 
             var watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
@@ -382,7 +387,6 @@ namespace CommonLibraryTests
             Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo, " DrawLine: ", elapsedOne));
             //Assert.IsTrue(elapsedOne > elapsedTwo, "Was faster");
 
-
             watch = Stopwatch.StartNew();
 
             for (var i = 0; i < 100; i++)
@@ -396,7 +400,6 @@ namespace CommonLibraryTests
             var elapsed = watch.ElapsedMilliseconds;
 
             Trace.WriteLine(string.Concat("Rectangle draw Line: ", elapsed));
-
 
             watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
