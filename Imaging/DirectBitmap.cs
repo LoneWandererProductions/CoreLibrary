@@ -32,7 +32,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        private readonly int[] _bits;
+        private int[] _bits;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
@@ -47,9 +47,38 @@ namespace Imaging
         {
             Width = width;
             Height = height;
-            _bits = new int[width * height];
+
+            Initiate();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DirectBitmap"/> class.
+        ///     Bitmap which references pixel data directly
+        ///     PixelFormat, Specifies the format of the color data for each pixel in the image.
+        ///     AddrOfPinnedObject, reference to address of pinned object
+        ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
+        /// </summary>
+        /// <param name="btm">The in question.</param>
+        public DirectBitmap(Image btm)
+        {
+            Width = btm.Width;
+            Height = btm.Height;
+
+            Initiate();
+
+            using var graph = Graphics.FromImage(Bitmap);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
+                GraphicsUnit.Pixel);
+        }
+
+        /// <summary>
+        /// Initiates this instance and sets all Helper Variables.
+        /// </summary>
+        private void Initiate()
+        {
+            _bits = new int[Width * Height];
             BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb,
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
                 BitsHandle.AddrOfPinnedObject());
         }
 
@@ -59,7 +88,7 @@ namespace Imaging
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap Bitmap { get; }
+        public Bitmap Bitmap { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
@@ -91,7 +120,7 @@ namespace Imaging
         /// <value>
         ///     The bits handle.
         /// </value>
-        private GCHandle BitsHandle { get; }
+        private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
         /// <summary>
