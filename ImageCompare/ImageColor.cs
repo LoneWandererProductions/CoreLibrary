@@ -106,7 +106,6 @@ namespace ImageCompare
                 return 0;
             }
 
-
             return 1;
         }
 
@@ -135,7 +134,6 @@ namespace ImageCompare
             {
                 return false;
             }
-
 
             return true;
         }

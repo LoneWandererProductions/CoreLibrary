@@ -230,7 +230,6 @@ namespace Imaging
             return Color.FromArgb(col);
         }
 
-
         /// <summary>
         ///     Gets the color list.
         /// </summary>

@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -87,5 +88,17 @@ namespace ImageCompare
         /// <returns>Color Dictionary</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         Dictionary<Color, int> GetColors(Bitmap image);
+
+        /// <summary>
+        /// Generates a differences bitmap.
+        /// </summary>
+        /// <param name="first">The first bitmap.</param>
+        /// <param name="second">The second bitmap.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>
+        /// The difference Bitmap
+        /// </returns>
+        /// <exception cref="T:System.ArgumentException"></exception>
+        Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color);
     }
 }
