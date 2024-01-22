@@ -138,9 +138,9 @@ namespace Mathematics
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>Vector from Matrix</returns>
-        public static Vector3D GetVector(BaseMatrix matrix)
-        {
-            return new Vector3D(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
-        }
+        //public static Vector3D GetVector(BaseMatrix matrix)
+        //{
+        //    return new Vector3D(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
+        //}
     }
 }

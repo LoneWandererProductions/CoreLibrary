@@ -162,6 +162,15 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Matrixes the to3 d vector.
+        /// </summary>
+        /// <returns></returns>
+        public Vector3D MatrixTo3DVector()
+        {
+            return new Vector3D(Matrix[0, 0], Matrix[0, 1], Matrix[0, 2]);
+        }
+
+        /// <summary>
         ///     Determinants this instance.
         /// </summary>
         /// <returns>Calculate the Determinant</returns>
@@ -181,6 +190,11 @@ namespace Mathematics
         /// </returns>
         public static BaseMatrix operator *(BaseMatrix first, BaseMatrix second)
         {
+            if(first.Width != second.Height)
+            {
+                throw new ArithmeticException(MathResources.MatrixErrorColumns);
+            }
+
             return MatrixUtility.UnsafeMultiplication(first, second);
         }
 

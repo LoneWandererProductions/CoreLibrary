@@ -81,12 +81,12 @@ namespace Mathematics
             //ModelViewProjection mvp = Projection * View * Model
 
             // Model to World, Transform by rotation
-            vector = Projection3D.GetVector(Projection3D.RotateZ(vector, angleZ));
-            vector = Projection3D.GetVector(Projection3D.RotateY(vector, angleY));
-            vector = Projection3D.GetVector(Projection3D.RotateX(vector, angleX));
+            vector = Projection3D.RotateZ(vector, angleZ).MatrixTo3DVector();
+            vector = Projection3D.RotateY(vector, angleY).MatrixTo3DVector();
+            vector = Projection3D.RotateX(vector, angleX).MatrixTo3DVector();
             // Model to World, Transform by translation
-            if (translation != null) vector = Projection3D.GetVector(Projection3D.Translate(vector, translation));
-            if (scale == 0) vector = Projection3D.GetVector(Projection3D.Scale(vector, scale));
+            if (translation != null) vector = Projection3D.Translate(vector, translation).MatrixTo3DVector();
+            if (scale == 0) vector = Projection3D.Scale(vector, scale).MatrixTo3DVector();
 
             // Form ModelViewProjectionMatrix
 
@@ -112,7 +112,7 @@ namespace Mathematics
             var mTarget = new BaseMatrix(1, 4) { [0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1 };
 
             mTarget = cameraRotation * mTarget;
-            var lookDir = Projection3D.GetVector(mTarget);
+            var lookDir =mTarget.MatrixTo3DVector();
             var vTarget = camera + lookDir;
 
             var matCamera = PointAt(camera, vTarget, up);

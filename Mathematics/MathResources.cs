@@ -30,5 +30,15 @@ namespace Mathematics
         ///     The matrix error Doolittle (const). Value: "Cannot use Doolittle's method.".
         /// </summary>
         internal const string MatrixErrorDoolittle = "Cannot use Doolittle's method.";
+
+        /// <summary>
+        ///     The matrix error Doolittle (const). Value: "Number of rows of first are not equal to the number of rows in the second Matrix.".
+        /// </summary>
+        internal const string MatrixErrorRows= "Number of rows of first are not equal to the number of rows in the second Matrix.";
+
+        /// <summary>
+        ///     The matrix error Doolittle (const). Value: "Number of Columns of first are not equal to the number of rows in the second Matrix.".
+        /// </summary>
+        internal const string MatrixErrorColumns = "Number of Columns of first are not equal to the number of rows in the second Matrix.";
     }
 }
