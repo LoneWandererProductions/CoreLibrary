@@ -181,11 +181,6 @@ namespace Mathematics
         /// </returns>
         public static BaseMatrix operator *(BaseMatrix first, BaseMatrix second)
         {
-            if (first.Width != second.Height)
-            {
-                throw new ArithmeticException();
-            }
-
             return MatrixUtility.UnsafeMultiplication(first, second);
         }
 

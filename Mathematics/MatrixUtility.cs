@@ -51,6 +51,7 @@ namespace Mathematics
             var h = mOne.Height;
             var w = mTwo.Width;
             var l = mOne.Width;
+
             var result = new BaseMatrix(h, w);
 
             fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)

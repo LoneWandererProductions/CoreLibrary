@@ -10,9 +10,11 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Shapes;
-using Debugger;
+using DataFormatter;
+using Mathematics;
 
 namespace LightVector
 {
@@ -32,9 +34,16 @@ namespace LightVector
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Vectors"/> class.
+        /// </summary>
+        public Vectors()
+        {
+        }
+
+        /// <summary>
         ///     Gets the lines.
         /// </summary>
-        internal List<LineObject> Lines { get; private set; }
+        public List<LineObject> Lines { get; private set; }
 
         /// <summary>
         ///     Gets the curves.
@@ -55,7 +64,7 @@ namespace LightVector
         {
             if (string.IsNullOrEmpty(path))
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorPath, 0);
+                Trace.WriteLine(WvgResources.ErrorPath);
                 return;
             }
 
@@ -80,7 +89,6 @@ namespace LightVector
                 }
             }
 
-
             var saveObject = new SaveContainer { Objects = saveList, Width = Width };
 
             SaveHelper.XmlSerializerObject(saveObject, path);
@@ -96,7 +104,7 @@ namespace LightVector
         {
             if (string.IsNullOrEmpty(path))
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorPath, 0);
+                Trace.WriteLine(WvgResources.ErrorPath);
                 return null;
             }
 
@@ -156,6 +164,12 @@ namespace LightVector
             Curves.Add(crv);
 
             return path;
+        }
+
+        public Polygons LoadObjectFile(ObjFile obj, Vector3D translation, int angleX, int angleY,
+            int angleZ, int scale)
+        {
+            return VgProcessing.CreatePolygon(obj, translation, angleX, angleY, angleZ, scale);
         }
 
         /// <inheritdoc />

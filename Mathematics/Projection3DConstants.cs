@@ -24,7 +24,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix X</returns>
-        public static BaseMatrix RotateX(int angleD)
+        public static BaseMatrix RotateX(double angleD)
         {
             //convert to Rad
             var angle = angleD * Rad;
@@ -43,7 +43,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix Y</returns>
-        public static BaseMatrix RotateY(int angleD)
+        public static BaseMatrix RotateY(double angleD)
         {
             //convert to Rad
             var angle = angleD * Rad;
@@ -62,7 +62,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Rotation Matrix Z</returns>
-        public static BaseMatrix RotateZ(int angleD)
+        public static BaseMatrix RotateZ(double angleD)
         {
             //convert to Rad
             var angle = angleD * Rad;

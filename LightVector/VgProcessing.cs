@@ -8,9 +8,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using Debugger;
+using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
 
@@ -38,7 +39,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return null;
@@ -62,7 +63,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return null;
@@ -85,7 +86,7 @@ namespace LightVector
 
             if (lines.IsNullOrEmpty())
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorEmptyVectorList, 0);
+                Trace.WriteLine(WvgResources.ErrorEmptyVectorList);
                 return null;
             }
 
@@ -97,7 +98,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return null;
@@ -120,7 +121,7 @@ namespace LightVector
 
             if (curves.IsNullOrEmpty())
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorEmptyVectorList, 0);
+                Trace.WriteLine(WvgResources.ErrorEmptyVectorList);
                 return curves;
             }
 
@@ -132,7 +133,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return curves;
@@ -156,7 +157,7 @@ namespace LightVector
 
             if (lines.IsNullOrEmpty())
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorEmptyVectorList, 0);
+                Trace.WriteLine(WvgResources.ErrorEmptyVectorList);
                 return lines;
             }
 
@@ -168,7 +169,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return lines;
@@ -191,7 +192,7 @@ namespace LightVector
 
             if (curves.IsNullOrEmpty())
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorEmptyVectorList, 0);
+                Trace.WriteLine(WvgResources.ErrorEmptyVectorList);
                 return null;
             }
 
@@ -203,7 +204,7 @@ namespace LightVector
             {
                 foreach (var ex in aex.InnerExceptions)
                 {
-                    DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorParallelThreading, ex.Message), 0);
+                    Trace.WriteLine(string.Concat(WvgResources.ErrorParallelThreading, ex.Message));
                 }
 
                 return null;
@@ -340,6 +341,26 @@ namespace LightVector
             return curve;
         }
 
+        internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY, int angleZ, int scale)
+        {
+            var tertiary = objFile.Vectors.ConvertAll(triangle => Convert(triangle, translation, angleX, angleY, angleZ, scale));
+
+            if (tertiary.IsNullOrEmpty()) return null;
+
+            var points = tertiary.Select(coordinate => new Point { X = coordinate.X, Y = coordinate.Y }).ToList();
+
+            if (points.IsNullOrEmpty()) return null;
+
+            return new Polygons {Points = points};
+        }
+
+        private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY, int angleZ, int scale)
+        {
+            var start = new Vector3D { X = triangle.X, Y = triangle.Y, Z = triangle.Z };
+
+            return Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
+        }
+
         /// <summary>
         ///     The generate line.
         /// </summary>
@@ -411,7 +432,7 @@ namespace LightVector
         {
             if (width == 0)
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorZeroDivision, 0);
+                Trace.WriteLine(WvgResources.ErrorZeroDivision);
                 return new Point();
             }
 

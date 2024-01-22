@@ -26,7 +26,7 @@ namespace Mathematics
         /// <param name="vector">The start vector.</param>
         /// <param name="angleD">The Angle degree.</param>
         /// <returns>Rotated Vector</returns>
-        public static BaseMatrix RotateX(Vector3D vector, int angleD)
+        public static BaseMatrix RotateX(Vector3D vector, double angleD)
         {
             double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 
@@ -46,7 +46,7 @@ namespace Mathematics
         /// <param name="vector">The start vector.</param>
         /// <param name="angleD">The Angle degree.</param>
         /// <returns>Rotated Vector</returns>
-        public static BaseMatrix RotateY(Vector3D vector, int angleD)
+        public static BaseMatrix RotateY(Vector3D vector, double angleD)
         {
             double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 
@@ -67,7 +67,7 @@ namespace Mathematics
         /// <param name="vector">The start vector.</param>
         /// <param name="angleD">The Angle degree.</param>
         /// <returns>Rotated Vector</returns>
-        public static BaseMatrix RotateZ(Vector3D vector, int angleD)
+        public static BaseMatrix RotateZ(Vector3D vector, double angleD)
         {
             double[,] matrix = { { vector.X, vector.Y, vector.Z, 1 } };
 

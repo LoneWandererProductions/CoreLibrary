@@ -101,6 +101,18 @@ namespace LightVector
     }
 
     /// <summary>
+    ///     The curve object class.
+    /// </summary>
+    [Serializable]
+    public sealed class Polygons
+    {
+        /// <summary>
+        ///     Gets or sets the points.
+        /// </summary>
+        public List<Point> Points { get; set; }
+    }
+
+    /// <summary>
     ///     Save Container
     /// </summary>
     [XmlRoot(ElementName = "Element")]

@@ -7,9 +7,9 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
-using Debugger;
 
 namespace LightVector
 {
@@ -34,7 +34,7 @@ namespace LightVector
             //check if file is empty, if empty return
             if (serializeObject.Equals(null))
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorSerializerEmpty + path, 0);
+                Trace.WriteLine(WvgResources.ErrorSerializerEmpty + path);
                 File.Delete(path);
                 return;
             }
@@ -48,7 +48,7 @@ namespace LightVector
             }
             catch (Exception error)
             {
-                DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorSerializer, error), 0);
+                Trace.WriteLine(string.Concat(WvgResources.ErrorSerializer, error));
             }
         }
 
@@ -60,14 +60,14 @@ namespace LightVector
         {
             if (!File.Exists(path))
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorPath, 0);
+                Trace.WriteLine(WvgResources.ErrorPath);
                 return new SaveContainer();
             }
 
             //check if file is empty, if empty return a new empty one
             if (new FileInfo(path).Length == 0)
             {
-                DebugLog.CreateLogFile(WvgResources.ErrorFileEmpty + path, 0);
+                Trace.WriteLine(WvgResources.ErrorFileEmpty + path);
                 return new SaveContainer();
             }
 
@@ -79,7 +79,7 @@ namespace LightVector
             }
             catch (Exception error)
             {
-                DebugLog.CreateLogFile(string.Concat(WvgResources.ErrorDeSerializer, error), 0);
+                Trace.WriteLine(string.Concat(WvgResources.ErrorDeSerializer, error));
                 return new SaveContainer();
             }
         }

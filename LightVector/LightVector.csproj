@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Debugger\Debugger.csproj" />
+    <ProjectReference Include="..\DataFormatter\DataFormatter.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
   </ItemGroup>

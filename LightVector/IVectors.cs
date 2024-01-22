@@ -13,6 +13,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Shapes;
+using DataFormatter;
+using Mathematics;
 
 namespace LightVector
 {
@@ -111,5 +113,8 @@ namespace LightVector
         /// </summary>
         /// <param name="path">The path.</param>
         void SaveContainer(string path);
+
+        Polygons LoadObjectFile(ObjFile obj, Vector3D translation, int angleX, int angleY, int angleZ,
+            int scale);
     }
 }

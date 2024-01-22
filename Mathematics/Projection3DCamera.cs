@@ -62,46 +62,9 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     [ModelViewProjectionMatrix] = [View To Projection]x[World To View]x[Model to World]
-        ///     Creates a 3D world transformation
-        ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Graphics/Viewport.cs
-        ///     https://github.com/MonoGame/MonoGame/blob/develop/MonoGame.Framework/Vector3.cs#L1043
-        /// </summary>
-        /// <param name="vector">The vector.</param>
-        /// <param name="angleX">The angle x.</param>
-        /// <param name="angleY">The angle y.</param>
-        /// <param name="angleZ">The angle z.</param>
-        /// <returns>
-        ///     World Transformation
-        /// </returns>
-        public static BaseMatrix WorldMatrix(Vector3D vector, int angleX, int angleY,
-            int angleZ)
-        {
-            // Set up "World Transform"
-            //var matRotZ = Projection3D.RotateZ(angle);
-            //var matRotX = Projection3D.RotateX(angle);
-            //var matTrans = Projection3D.Translate(0.0f, 0.0f, 5.0f);
-
-            //identity Matrix
-            var worldMatrix = MatrixUtility.MatrixIdentity(4);
-
-            // Form ModelViewProjectionMatrix
-            // Model to World, Transform by rotation
-            // Model to World, Transform by translation
-
-            worldMatrix = worldMatrix *
-                          Projection3DConstants.RotateX(angleX) *
-                          Projection3DConstants.RotateZ(angleY) *
-                          Projection3DConstants.RotateZ(angleZ) *
-                          vector.To3DMatrix();
-
-            return worldMatrix;
-        }
-
-        /// <summary>
         ///     Worlds the matrix.
         /// </summary>
-        /// <param name="vector">The vector.</param>
+        /// <param name="vector">Vector to be transformed</param>
         /// <param name="translation">The translation.</param>
         /// <param name="angleX">The angle x.</param>
         /// <param name="angleY">The angle y.</param>
@@ -110,34 +73,24 @@ namespace Mathematics
         /// <returns>
         ///     World Transformation
         /// </returns>
-        public static BaseMatrix WorldMatrix(Vector3D vector, Vector3D translation, int angleX, int angleY,
-            int angleZ, int scale)
+        public static Vector3D WorldMatrix(Vector3D vector, Vector3D translation, double angleX, double angleY,
+            double angleZ, int scale)
         {
             // Set up "World Transform"
-            //var matRotZ = Projection3D.RotateZ(angle);
-            //var matRotX = Projection3D.RotateX(angle);
-            //var matTrans = Projection3D.Translate(0.0f, 0.0f, 5.0f);
+            //https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
+            //ModelViewProjection mvp = Projection * View * Model
 
-            //identity Matrix
-            var worldMatrix = MatrixUtility.MatrixIdentity(4);
+            // Model to World, Transform by rotation
+            vector = Projection3D.GetVector(Projection3D.RotateZ(vector, angleZ));
+            vector = Projection3D.GetVector(Projection3D.RotateY(vector, angleY));
+            vector = Projection3D.GetVector(Projection3D.RotateX(vector, angleX));
+            // Model to World, Transform by translation
+            if (translation != null) vector = Projection3D.GetVector(Projection3D.Translate(vector, translation));
+            if (scale == 0) vector = Projection3D.GetVector(Projection3D.Scale(vector, scale));
 
             // Form ModelViewProjectionMatrix
-            // Model to World, Transform by rotation
-            // Model to World, Transform by translation
 
-            //https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
-            //TODO check return Value, and Convert to 3d:
-            //identity matrix
-            //ModelViewProjection mvp = Projection * View * Model
-            worldMatrix = worldMatrix *
-                          Projection3DConstants.Translate(translation) *
-                          Projection3DConstants.RotateX(angleX) *
-                          Projection3DConstants.RotateZ(angleY) *
-                          Projection3DConstants.RotateZ(angleZ) *
-                          Projection3DConstants.Scale(scale) *
-                          vector.To3DMatrix();
-
-            return worldMatrix;
+            return ProjectionTo3D(vector);
         }
 
         /// <summary>

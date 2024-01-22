@@ -218,21 +218,17 @@ namespace Mathematics
 
         /// <summary>
         ///     Converts to matrix.
-        /// </summary>
-        /// <returns>Vector transformed to Matrix</returns>
-        public BaseMatrix ToMatrix()
-        {
-            return new BaseMatrix { [0, 0] = X, [0, 1] = Y, [0, 2] = Z };
-        }
-
-        /// <summary>
-        ///     Converts to matrix.
         ///     In this case especially for 3D Projection
         /// </summary>
         /// <returns>Vector transformed to Matrix</returns>
         public BaseMatrix To3DMatrix()
         {
-            return new BaseMatrix { [0, 0] = X, [0, 1] = Y, [0, 2] = Z, [0, 3] = 1 };
+            var matrix = new double[4, 4];
+            matrix[0, 0] = X;
+            matrix[0, 1] = X;
+            matrix[0, 2] = X;
+            matrix[0, 3] = 1;
+            return new BaseMatrix(matrix);
         }
     }
 }
