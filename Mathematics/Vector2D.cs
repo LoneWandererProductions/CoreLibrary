@@ -72,7 +72,6 @@ namespace Mathematics
         /// </value>
         public int RoundedY => (int)Math.Round(Y, 0);
 
-
         /// <summary>
         ///     Equals the specified other.
         /// </summary>
