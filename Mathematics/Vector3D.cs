@@ -312,12 +312,12 @@ namespace Mathematics
         ///     In this case especially for 3D Projection
         /// </summary>
         /// <returns>Vector transformed to Matrix</returns>
-        public BaseMatrix To3DMatrix()
+        public static explicit operator BaseMatrix(Vector3D first)
         {
             var matrix = new double[4, 4];
-            matrix[0, 0] = X;
-            matrix[0, 1] = X;
-            matrix[0, 2] = X;
+            matrix[0, 0] = first.X;
+            matrix[0, 1] = first.Y;
+            matrix[0, 2] = first.Z;
             matrix[0, 3] = 1;
             return new BaseMatrix(matrix);
         }

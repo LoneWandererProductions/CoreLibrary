@@ -162,15 +162,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Matrixes the to3 d vector.
-        /// </summary>
-        /// <returns></returns>
-        public Vector3D MatrixTo3DVector()
-        {
-            return new Vector3D(Matrix[0, 0], Matrix[0, 1], Matrix[0, 2]);
-        }
-
-        /// <summary>
         ///     Determinants this instance.
         /// </summary>
         /// <returns>Calculate the Determinant</returns>
@@ -242,6 +233,18 @@ namespace Mathematics
             }
 
             return MatrixUtility.UnsafeSubtraction(first, second);
+        }
+
+        /// <summary>
+        /// Performs an explicit conversion from <see cref="BaseMatrix"/> to <see cref="Vector3D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector3D(BaseMatrix first)
+        {
+            return new Vector3D(first[0, 0], first[0, 1], first[0, 2]);
         }
     }
 }

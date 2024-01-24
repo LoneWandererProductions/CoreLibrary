@@ -325,14 +325,14 @@ namespace CommonLibraryTests
 
             //scale Test
             var result = Projection3D.Scale(vector, 2);
-            var v1 = result.MatrixTo3DVector();
+            var v1 = (Vector3D)result;
 
             Assert.IsTrue(v1.X.Equals(2), "X");
             Assert.IsTrue(v1.Y.Equals(2), "Y");
             Assert.IsTrue(v1.Z.Equals(2), "Z");
 
             result = Projection3D.Scale(vector, 2, 2, 2);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             Assert.IsTrue(v1.X.Equals(2), "X");
             Assert.IsTrue(v1.Y.Equals(2), "Y");
@@ -341,7 +341,7 @@ namespace CommonLibraryTests
             vector = new Vector3D(2, 4, 5);
 
             result = Projection3D.Scale(vector, 4, 2.5, 6);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             Assert.IsTrue(v1.X.Equals(8), "X");
             Assert.IsTrue(v1.Y.Equals(10), "Y");
@@ -352,7 +352,7 @@ namespace CommonLibraryTests
             var target = new Vector3D(2, 2, 2);
 
             result = Projection3D.Translate(vector, target);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             Assert.IsTrue(v1.X.Equals(3), "X");
             Assert.IsTrue(v1.Y.Equals(3), "Y");
@@ -362,7 +362,7 @@ namespace CommonLibraryTests
 
             //https://en.wikipedia.org/wiki/Rotation_matrix
             result = Projection3D.RotateZ(vector, 90);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             var inputValue = Math.Round(v1.X, 2);
             Assert.AreEqual(inputValue, 0, "X");
@@ -371,7 +371,7 @@ namespace CommonLibraryTests
 
             vector = new Vector3D(1, 1, 1);
             result = Projection3D.RotateX(vector, 90);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             inputValue = Math.Round(v1.Y, 2);
 
@@ -381,7 +381,7 @@ namespace CommonLibraryTests
 
             vector = new Vector3D(1, 1, 1);
             result = Projection3D.RotateY(vector, 90);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             inputValue = Math.Round(v1.Z, 2);
 
@@ -391,7 +391,7 @@ namespace CommonLibraryTests
 
             vector = new Vector3D(1, 1, 1);
             result = Projection3D.RotateZ(vector, 90);
-            v1 = result.MatrixTo3DVector();
+            v1 = (Vector3D)result;
 
             inputValue = Math.Round(v1.X, 2);
 
