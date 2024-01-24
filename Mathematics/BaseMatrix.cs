@@ -246,5 +246,16 @@ namespace Mathematics
         {
             return new Vector3D(first[0, 0], first[0, 1], first[0, 2]);
         }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return Matrix.ToString();
+        }
     }
 }

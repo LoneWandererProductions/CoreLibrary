@@ -161,7 +161,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
-        /// <returns></returns>
+        /// <returns>From id to X Coordinate</returns>
         private static int IdToX(int masterId, int width)
         {
             return masterId % width;
@@ -172,10 +172,21 @@ namespace Mathematics
         /// </summary>
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
-        /// <returns></returns>
+        /// <returns>From id to Y Coordinate</returns>
         private static int IdToY(int masterId, int width)
         {
             return masterId / width;
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat("X: ", X, " Y: ", Y, " Id: ", Id);
         }
     }
 }

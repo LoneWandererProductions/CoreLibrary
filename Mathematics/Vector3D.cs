@@ -153,7 +153,7 @@ namespace Mathematics
         /// Converts the Vector to string.
         /// </summary>
         /// <returns>
-        /// string representation of the Vector
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
