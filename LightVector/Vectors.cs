@@ -34,7 +34,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Vectors"/> class.
+        ///     Initializes a new instance of the <see cref="Vectors" /> class.
         /// </summary>
         public Vectors()
         {

@@ -11,16 +11,15 @@
 
 using System;
 
-
 namespace Mathematics
 {
     /// <summary>
-    /// Coordinate 2d Helper Class
+    ///     Coordinate 2d Helper Class
     /// </summary>
     public sealed class Coordinate2D
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Coordinate2D"/> class.
+        ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -31,7 +30,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Coordinate2D"/> class.
+        ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -44,21 +43,45 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Coordinate2D"/> class.
+        ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         public Coordinate2D()
         {
         }
 
         /// <summary>
-        /// Gets the instance.
+        ///     Gets the identifier of the Coordinate in the 2D System.
+        /// </summary>
+        /// <value>
+        ///     The identifier.
+        /// </value>
+        public int Id { get; }
+
+        /// <summary>
+        ///     Gets or sets the y.
+        /// </summary>
+        /// <value>
+        ///     The y.
+        /// </value>
+        public int Y { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the x.
+        /// </summary>
+        /// <value>
+        ///     The x.
+        /// </value>
+        public int X { get; set; }
+
+        /// <summary>
+        ///     Gets the instance.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="width">The width.</param>
         /// <returns></returns>
         public static Coordinate2D GetInstance(int id, int width)
         {
-            return new Coordinate2D {X = IdToX(id, width), Y = IdToY(id, width)};
+            return new Coordinate2D { X = IdToX(id, width), Y = IdToY(id, width) };
         }
 
         /// <summary>
@@ -84,12 +107,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator ==.
+        ///     Implements the operator ==.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator ==(Coordinate2D first, Coordinate2D second)
         {
@@ -97,12 +120,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator !=.
+        ///     Implements the operator !=.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator !=(Coordinate2D first, Coordinate2D second)
         {
@@ -121,31 +144,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Gets the identifier of the Coordinate in the 2D System.
-        /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
-        public int Id { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the y.
-        /// </summary>
-        /// <value>
-        /// The y.
-        /// </value>
-        public int Y { get; set; }
-
-        /// <summary>
-        /// Gets or sets the x.
-        /// </summary>
-        /// <value>
-        /// The x.
-        /// </value>
-        public int X { get; set; }
-
-        /// <summary>
-        /// Calculates the identifier.
+        ///     Calculates the identifier.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -157,7 +156,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Identifiers to x.
+        ///     Identifiers to x.
         /// </summary>
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
@@ -168,7 +167,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Identifiers to y.
+        ///     Identifiers to y.
         /// </summary>
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
@@ -179,10 +178,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="String" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

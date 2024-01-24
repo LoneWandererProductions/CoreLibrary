@@ -95,10 +95,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts to text.
+        ///     Converts to text.
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -117,29 +117,31 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator ==.
+        ///     Implements the operator ==.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator ==(Vector2D first, Vector2D second)
         {
-            return second is not null && first is not null && ((Math.Abs(first.X - second.X) < MathResources.Tolerance) && (Math.Abs(first.Y - second.Y) < MathResources.Tolerance));
+            return second is not null && first is not null && Math.Abs(first.X - second.X) < MathResources.Tolerance &&
+                   Math.Abs(first.Y - second.Y) < MathResources.Tolerance;
         }
 
         /// <summary>
-        /// Implements the operator !=.
+        ///     Implements the operator !=.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator !=(Vector2D first, Vector2D second)
         {
-            return second is not null && first is not null && ((Math.Abs(first.X - second.X) > MathResources.Tolerance) || (Math.Abs(first.Y - second.Y) > MathResources.Tolerance));
+            return second is not null && first is not null && (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
+                                                               Math.Abs(first.Y - second.Y) > MathResources.Tolerance);
         }
 
         /// <summary>
@@ -182,11 +184,11 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="Vector2D"/> to <see cref="Coordinate2D"/>.
+        ///     Performs an explicit conversion from <see cref="Vector2D" /> to <see cref="Coordinate2D" />.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static explicit operator Coordinate2D(Vector2D first)
         {

@@ -37,8 +37,10 @@ namespace Mathematics
         internal const string MatrixErrorDoolittle = "Cannot use Doolittle's method.";
 
         /// <summary>
-        ///     The matrix error Doolittle (const). Value: "Number of Columns of first are not equal to the number of rows in the second Matrix.".
+        ///     The matrix error Doolittle (const). Value: "Number of Columns of first are not equal to the number of rows in the
+        ///     second Matrix.".
         /// </summary>
-        internal const string MatrixErrorColumns = "Number of Columns of first are not equal to the number of rows in the second Matrix.";
+        internal const string MatrixErrorColumns =
+            "Number of Columns of first are not equal to the number of rows in the second Matrix.";
     }
 }

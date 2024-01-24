@@ -85,8 +85,15 @@ namespace Mathematics
             vector = (Vector3D)Projection3D.RotateY(vector, angleY);
             vector = (Vector3D)Projection3D.RotateX(vector, angleX);
             // Model to World, Transform by translation
-            if (translation != null) vector = (Vector3D)Projection3D.Translate(vector, translation);
-            if (scale == 0) vector = (Vector3D)Projection3D.Scale(vector, scale);
+            if (translation != null)
+            {
+                vector = (Vector3D)Projection3D.Translate(vector, translation);
+            }
+
+            if (scale == 0)
+            {
+                vector = (Vector3D)Projection3D.Scale(vector, scale);
+            }
 
             // Form ModelViewProjectionMatrix
 

@@ -113,29 +113,33 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator ==.
+        ///     Implements the operator ==.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator ==(Vector3D first, Vector3D second)
         {
-            return second is not null && first is not null && ((Math.Abs(first.X - second.X) < MathResources.Tolerance) && (Math.Abs(first.Y - second.Y) < MathResources.Tolerance) && (Math.Abs(first.Z - second.Z) < MathResources.Tolerance));
+            return second is not null && first is not null && Math.Abs(first.X - second.X) < MathResources.Tolerance &&
+                   Math.Abs(first.Y - second.Y) < MathResources.Tolerance &&
+                   Math.Abs(first.Z - second.Z) < MathResources.Tolerance;
         }
 
         /// <summary>
-        /// Implements the operator !=.
+        ///     Implements the operator !=.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator !=(Vector3D first, Vector3D second)
         {
-            return second is not null && first is not null && ((Math.Abs(first.X - second.X) > MathResources.Tolerance) || (Math.Abs(first.Y - second.Y) > MathResources.Tolerance) || (Math.Abs(first.Z - second.Z) > MathResources.Tolerance));
+            return second is not null && first is not null && (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
+                                                               Math.Abs(first.Y - second.Y) > MathResources.Tolerance ||
+                                                               Math.Abs(first.Z - second.Z) > MathResources.Tolerance);
         }
 
         /// <summary>
@@ -150,10 +154,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts the Vector to string.
+        ///     Converts the Vector to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -174,11 +178,11 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator -.
+        ///     Implements the operator -.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator -(Vector3D first)
         {
@@ -212,12 +216,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator *.
+        ///     Implements the operator *.
         /// </summary>
         /// <param name="v">The v.</param>
         /// <param name="scalar">The scalar.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator *(Vector3D v, double scalar)
         {
@@ -225,12 +229,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator /.
+        ///     Implements the operator /.
         /// </summary>
         /// <param name="v">The v.</param>
         /// <param name="scalar">The scalar.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator /(Vector3D v, double scalar)
         {
@@ -285,7 +289,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Dots the product.
+        ///     Dots the product.
         /// </summary>
         /// <param name="first">The first Vector.</param>
         /// <param name="second">The second Vector.</param>
@@ -296,11 +300,11 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="Vector3D"/> to <see cref="Coordinate2D"/>.
+        ///     Performs an explicit conversion from <see cref="Vector3D" /> to <see cref="Coordinate2D" />.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static explicit operator Coordinate2D(Vector3D first)
         {

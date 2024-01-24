@@ -238,7 +238,7 @@ namespace ImageCompare
         }
 
         /// <summary>
-        /// Generates a differences bitmap.
+        ///     Generates a differences bitmap.
         /// </summary>
         /// <param name="first">The first bitmap.</param>
         /// <param name="second">The second bitmap.</param>
@@ -259,7 +259,9 @@ namespace ImageCompare
                 for (var y = 0; y < height; y++)
                 {
                     if (dbmCanvas.GetPixel(x, y) != dbmCompare.GetPixel(x, y))
+                    {
                         dbmCanvas.SetPixel(x, y, color);
+                    }
                 }
             }
 

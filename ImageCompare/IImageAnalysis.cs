@@ -90,13 +90,13 @@ namespace ImageCompare
         Dictionary<Color, int> GetColors(Bitmap image);
 
         /// <summary>
-        /// Generates a differences bitmap.
+        ///     Generates a differences bitmap.
         /// </summary>
         /// <param name="first">The first bitmap.</param>
         /// <param name="second">The second bitmap.</param>
         /// <param name="color">The color.</param>
         /// <returns>
-        /// The difference Bitmap
+        ///     The difference Bitmap
         /// </returns>
         /// <exception cref="T:System.ArgumentException"></exception>
         Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color);

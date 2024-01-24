@@ -703,7 +703,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Test our Line Algorithm.
+        ///     Test our Line Algorithm.
         /// </summary>
         [TestMethod]
         public void Lines()
@@ -714,9 +714,9 @@ namespace CommonLibraryTests
             //just test the Bresenham
             var lst = Bresenham.PlotLine(one, two);
 
-            for (int x = 0; x < 10; x++)
+            for (var x = 0; x < 10; x++)
             {
-                var y = 3 * x + 1;
+                var y = (3 * x) + 1;
 
                 Assert.AreNotEqual(lst[x], y, "not equal");
             }

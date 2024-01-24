@@ -341,20 +341,29 @@ namespace LightVector
             return curve;
         }
 
-        internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY, int angleZ, int scale)
+        internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
+            int angleZ, int scale)
         {
-            var tertiary = objFile.Vectors.ConvertAll(triangle => Convert(triangle, translation, angleX, angleY, angleZ, scale));
+            var tertiary =
+                objFile.Vectors.ConvertAll(triangle => Convert(triangle, translation, angleX, angleY, angleZ, scale));
 
-            if (tertiary.IsNullOrEmpty()) return null;
+            if (tertiary.IsNullOrEmpty())
+            {
+                return null;
+            }
 
             var points = tertiary.Select(coordinate => new Point { X = coordinate.X, Y = coordinate.Y }).ToList();
 
-            if (points.IsNullOrEmpty()) return null;
+            if (points.IsNullOrEmpty())
+            {
+                return null;
+            }
 
-            return new Polygons {Points = points};
+            return new Polygons { Points = points };
         }
 
-        private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY, int angleZ, int scale)
+        private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY,
+            int angleZ, int scale)
         {
             var start = new Vector3D { X = triangle.X, Y = triangle.Y, Z = triangle.Z };
 
