@@ -114,6 +114,24 @@ namespace Mathematics
             return HashCode.Combine(X, Y);
         }
 
+        public static bool operator ==(Vector2D first, Vector2D second)
+        {
+            return second is not null && first is not null && ((Math.Abs(first.X - second.X) < MathResources.Tolerance) && (Math.Abs(first.Y - second.Y) < MathResources.Tolerance));
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Vector2D first, Vector2D second)
+        {
+            return second is not null && first is not null && ((Math.Abs(first.X - second.X) > MathResources.Tolerance) || (Math.Abs(first.Y - second.Y) > MathResources.Tolerance));
+        }
+
         /// <summary>
         ///     Implements the operator +.
         /// </summary>

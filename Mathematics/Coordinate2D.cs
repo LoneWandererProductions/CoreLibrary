@@ -106,7 +106,7 @@ namespace Mathematics
         /// </returns>
         public static bool operator !=(Coordinate2D first, Coordinate2D second)
         {
-            return second is not null && first is not null && first.X != second.X && first.Y != second.Y;
+            return second is not null && first is not null && (first.X != second.X || first.Y != second.Y);
         }
 
         /// <summary>
