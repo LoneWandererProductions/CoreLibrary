@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Imaging;
+using Mathematics;
 
 namespace Solaris
 {
@@ -122,7 +123,7 @@ namespace Solaris
         /// <summary>
         ///     The cursor
         /// </summary>
-        private Cursor _cursor;
+        private Coordinate2D _cursor;
 
         /// <summary>
         ///     The third layer
@@ -387,7 +388,8 @@ namespace Solaris
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _cursor = new Cursor();
+            _cursor = new Coordinate2D();
+
             var position = e.GetPosition(Touch);
 
             if (position.X < AuroraTextureSize)
