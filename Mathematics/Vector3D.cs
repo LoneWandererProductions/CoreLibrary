@@ -11,6 +11,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable NonReadonlyMemberInGetHashCode
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable ClassCanBeSealed.Global
 
 using System;
 
@@ -19,7 +20,7 @@ namespace Mathematics
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public sealed class Vector3D
+    public class Vector3D
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector3D" /> class.
@@ -112,6 +113,32 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Vector3D first, Vector3D second)
+        {
+            return second is not null && first is not null && ((Math.Abs(first.X - second.X) < MathResources.Tolerance) && (Math.Abs(first.Y - second.Y) < MathResources.Tolerance) && (Math.Abs(first.Z - second.Z) < MathResources.Tolerance));
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Vector3D first, Vector3D second)
+        {
+            return second is not null && first is not null && ((Math.Abs(first.X - second.X) > MathResources.Tolerance) || (Math.Abs(first.Y - second.Y) > MathResources.Tolerance) || (Math.Abs(first.Z - second.Z) > MathResources.Tolerance));
+        }
+
+        /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
@@ -123,10 +150,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Converts to text.
+        /// Converts the Vector to string.
         /// </summary>
-        /// <returns>string representation of the Vector</returns>
-        public string ToText()
+        /// <returns>
+        /// string representation of the Vector
+        /// </returns>
+        public override string ToString()
         {
             return string.Concat("X: ", X, " Y: ", Y, " Z: ", Z);
         }
@@ -142,6 +171,18 @@ namespace Mathematics
         public static Vector3D operator +(Vector3D first, Vector3D second)
         {
             return new Vector3D(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
+        }
+
+        /// <summary>
+        /// Implements the operator -.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static Vector3D operator -(Vector3D first)
+        {
+            return new Vector3D(-first.X, -first.Y, -first.Z);
         }
 
         /// <summary>
@@ -168,6 +209,32 @@ namespace Mathematics
         public static double operator *(Vector3D first, Vector3D second)
         {
             return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
+        }
+
+        /// <summary>
+        /// Implements the operator *.
+        /// </summary>
+        /// <param name="v">The v.</param>
+        /// <param name="scalar">The scalar.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static Vector3D operator *(Vector3D v, double scalar)
+        {
+            return new Vector3D(v.X * scalar, v.Y * scalar, v.Z * scalar);
+        }
+
+        /// <summary>
+        /// Implements the operator /.
+        /// </summary>
+        /// <param name="v">The v.</param>
+        /// <param name="scalar">The scalar.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static Vector3D operator /(Vector3D v, double scalar)
+        {
+            return new Vector3D(v.X / scalar, v.Y / scalar, v.Z / scalar);
         }
 
         /// <summary>
@@ -198,7 +265,8 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Vectors the length.
+        ///     Get the Vector length.
+        ///     (or Magnitude)
         /// </summary>
         /// <returns>Length of the Vector</returns>
         public double VectorLength()
@@ -214,6 +282,29 @@ namespace Mathematics
         {
             var l = VectorLength();
             return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
+        }
+
+        /// <summary>
+        /// Dots the product.
+        /// </summary>
+        /// <param name="first">The first Vector.</param>
+        /// <param name="second">The second Vector.</param>
+        /// <returns>The dot Product</returns>
+        public double DotProduct(Vector3D first, Vector3D second)
+        {
+            return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
+        }
+
+        /// <summary>
+        /// Performs an explicit conversion from <see cref="Vector3D"/> to <see cref="Coordinate2D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Coordinate2D(Vector3D first)
+        {
+            return new Coordinate2D(first.RoundedX, first.RoundedY);
         }
 
         /// <summary>

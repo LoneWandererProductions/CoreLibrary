@@ -155,6 +155,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Performs an explicit conversion from <see cref="Vector2D"/> to <see cref="Coordinate2D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Coordinate2D(Vector2D first)
+        {
+            return new Coordinate2D(first.RoundedX, first.RoundedY);
+        }
+
+        /// <summary>
         ///     Implements the operator *. Cross Product
         /// </summary>
         /// <param name="second">The second.</param>

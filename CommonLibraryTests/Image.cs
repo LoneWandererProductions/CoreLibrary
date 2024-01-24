@@ -6,6 +6,7 @@ using System.IO;
 using FileHandler;
 using ImageCompare;
 using Imaging;
+using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /*
@@ -698,6 +699,27 @@ namespace CommonLibraryTests
             Assert.AreEqual(40, converter.R, "done");
             Assert.AreEqual(40, converter.B, "done");
             Assert.AreEqual(40, converter.G, "done");
+        }
+
+
+        /// <summary>
+        /// Test our Line Algorithm.
+        /// </summary>
+        [TestMethod]
+        public void Lines()
+        {
+            var one = new Coordinate2D(1, 0);
+            var two = new Coordinate2D(31, 10);
+
+            //just test the Bresenham
+            var lst = Bresenham.PlotLine(one, two);
+
+            for (int x = 0; x < 10; x++)
+            {
+                var y = 3 * x + 1;
+
+                Assert.AreNotEqual(lst[x], y, "not equal");
+            }
         }
     }
 }

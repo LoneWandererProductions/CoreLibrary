@@ -1,5 +1,4 @@
-﻿using System;
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
  * FILE:        Mathematics/Constants.cs
@@ -8,6 +7,8 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections.Generic;
 
 namespace Mathematics
