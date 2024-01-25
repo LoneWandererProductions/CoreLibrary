@@ -329,7 +329,7 @@ namespace CommonLibraryTests
 
             //magnitude (vector length)
             scalar = one.VectorLength(); //10.247
-            Assert.AreEqual(Math.Round(scalar3), 10.247, "Vector length");
+            Assert.AreEqual(Math.Round(scalar,3), 10.247, "Vector length");
 
             //Vector Addition
             vector = one +  two;
