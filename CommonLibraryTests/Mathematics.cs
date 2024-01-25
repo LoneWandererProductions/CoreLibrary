@@ -369,8 +369,8 @@ namespace CommonLibraryTests
             //inequality
             Assert.IsTrue(one != two, "Inequality");
             //inequality
-            Assert.IsFalse(one == one, "Equality, first");
-            Assert.IsFalse(one.Equals(one), "Equality, second");
+            Assert.IsTrue(one == one, "Equality, first");
+            Assert.IsTrue(one.Equals(one), "Equality, second");
         }
 
         /// <summary>
