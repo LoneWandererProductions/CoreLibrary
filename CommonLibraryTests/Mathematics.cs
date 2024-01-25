@@ -379,8 +379,8 @@ namespace CommonLibraryTests
         public void Vector2D()
         {
             //dot product
-            var one = new Vector3D(8, 4);
-            var two = new Vector3D(1, 2);
+            var one = new Vector2D(8, 4);
+            var two = new Vector2D(1, 2);
             var scalar = one * two; //36
             Assert.AreEqual(scalar, 16, "Dot Product");
 
