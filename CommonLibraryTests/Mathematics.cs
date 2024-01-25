@@ -344,7 +344,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(vector.Z, 1, "Z Subtraction");
 
             //Vector Cross Product
-            vector = oneCrossProduct(two);
+            vector = one.CrossProduct(two);
             Assert.AreEqual(vector.X, 6, "X Cross Product");
             Assert.AreEqual(vector.Y, -27, "Y Cross Product");
             Assert.AreEqual(vector.Z, 12, "Z Cross Product");
@@ -356,7 +356,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(vector.Z, -5, "Z Negation");
 
             //Angle between Vector
-            scalar = one.Degree(two); //39.946
+            scalar = one.Angle(two); //39.946
             Assert.AreEqual(scalar, 39.946, "Vector Angle");
 
             //normalize Vector, Unit Vector
