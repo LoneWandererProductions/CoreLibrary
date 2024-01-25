@@ -286,7 +286,7 @@ namespace Mathematics
         /// <returns>Angle between both Vectors in rad</returns>
         public double Angle(Vector3D second)
         {
-            return Math.Acos((this * second) / (this.VectorLength() * second.VectorLength()));
+            return Math.Acos(this * second / (VectorLength() * second.VectorLength()));
         }
 
         /// <summary>
