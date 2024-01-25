@@ -181,17 +181,24 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The id Position and the tile Id.</param>
         /// <returns>Layer three Bitmap</returns>
-        public static Bitmap AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
-            KeyValuePair<int, int> idTile)
         {
-            var (position, tileId) = idTile;
-            var coordinate = Coordinate2D.GetInstance(position, width);
-            var x = coordinate.X * textureSize;
-            var y = coordinate.Y * textureSize;
+            var background = new Bitmap(width * textureSize, height * textureSize);
 
-            var image = Render.GetBitmapFile(textures[tileId].Path);
+            var tiles = (from tile in map
+                where !tile.Value.IsNullOrEmpty()
+                from texture in tile.Value
+                select new Box
+                {
+                    X = IdToX(tile.Key, width) * textureSize,
+                    Y = IdToY(tile.Key, width) * textureSize,
+                    Layer = textures[texture].Layer,
+                    Image = Render.GetBitmapFile(textures[texture].Path)
+                }).ToList();
 
-            return Render.CombineBitmap(layer, image, x, y);
+            tiles = tiles.OrderBy(layer => layer.Layer).ToList();
+
+            return tiles.Aggregate(background,
+                (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
         }
 
         /// <summary>
@@ -257,5 +264,28 @@ namespace Solaris
             Thread.Sleep(sleep);
             return true;
         }
+        
+        /// <summary>
+        ///     Identifiers to x.
+        /// </summary>
+        /// <param name="masterId">The master identifier.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>x coordinate</returns>
+        private static int IdToX(int masterId, int width)
+        {
+            return masterId % width;
+        }
+
+        /// <summary>
+        ///     Identifiers to y.
+        /// </summary>
+        /// <param name="masterId">The master identifier.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>y coordinate</returns>
+        private static int IdToY(int masterId, int width)
+        {
+            return masterId / width;
+        }
+
     }
 }
