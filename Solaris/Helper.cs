@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        Solaris/Helper.cs
@@ -53,9 +53,8 @@ namespace Solaris
                 from texture in tile.Value
                 select new Box
                 {
-                    var coordinate = Coordinate2D.GetInstance(tile.Key, width);
-                    X = coordinate.X * textureSize,
-                    Y = coordinate.Y * textureSize,
+                    X = IdToX(tile.Key, width) * textureSize,
+                    Y = IdToY(tile.Key, width) * textureSize,
                     Layer = textures[texture].Layer,
                     Image = Render.GetBitmapFile(textures[texture].Path)
                 }).ToList();
@@ -181,24 +180,16 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The id Position and the tile Id.</param>
         /// <returns>Layer three Bitmap</returns>
+        public static Bitmap AddDisplay(int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
+            KeyValuePair<int, int> idTile)
         {
-            var background = new Bitmap(width * textureSize, height * textureSize);
+            var (position, tileId) = idTile;
+            var x = IdToX(position, width) * textureSize;
+            var y = IdToY(position, width) * textureSize;
 
-            var tiles = (from tile in map
-                where !tile.Value.IsNullOrEmpty()
-                from texture in tile.Value
-                select new Box
-                {
-                    X = IdToX(tile.Key, width) * textureSize,
-                    Y = IdToY(tile.Key, width) * textureSize,
-                    Layer = textures[texture].Layer,
-                    Image = Render.GetBitmapFile(textures[texture].Path)
-                }).ToList();
+            var image = Render.GetBitmapFile(textures[tileId].Path);
 
-            tiles = tiles.OrderBy(layer => layer.Layer).ToList();
-
-            return tiles.Aggregate(background,
-                (current, slice) => Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
+            return Render.CombineBitmap(layer, image, x, y);
         }
 
         /// <summary>
@@ -211,9 +202,8 @@ namespace Solaris
         /// <returns>Layer three Bitmap</returns>
         public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
         {
-            var coordinate = Coordinate2D.GetInstance(position, width);
-            var x = coordinate.X * textureSize;
-            var y = coordinate.Y * textureSize;
+            var x = IdToX(position, width) * textureSize;
+            var y = IdToY(position, width) * textureSize;
 
             return Render.EraseRectangle(layer, x, y, textureSize, textureSize);
         }
@@ -238,9 +228,8 @@ namespace Solaris
 
             foreach (var step in steps)
             {
-                var coordinate = Coordinate2D.GetInstance(step, width);
-                var x = coordinate.X * textureSize;
-                var y = coordinate.Y * textureSize;
+                var x = IdToX(step, width) * textureSize;
+                var y = IdToY(step, width) * textureSize;
 
                 _ = await Task.Run(() => SwitchPosition(x, y, background, avatar, 100));
             }
@@ -264,7 +253,7 @@ namespace Solaris
             Thread.Sleep(sleep);
             return true;
         }
-        
+
         /// <summary>
         ///     Identifiers to x.
         /// </summary>
@@ -286,6 +275,5 @@ namespace Solaris
         {
             return masterId / width;
         }
-
     }
 }
