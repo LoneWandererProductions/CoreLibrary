@@ -184,6 +184,32 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     Implements the operator *.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <param name="scalar">The scalar.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static Vector2D operator *(Vector2D v, double scalar)
+        {
+            return new Vector2D(v.X * scalar, v.Y * scalar);
+        }
+
+        /// <summary>
+        ///     Implements the operator /.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <param name="scalar">The scalar.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static Vector2D operator /(Vector2D v, double scalar)
+        {
+            return new Vector2D(v.X / scalar, v.Y / scalar);
+        }
+
+        /// <summary>
         ///     Performs an explicit conversion from <see cref="Vector2D" /> to <see cref="Coordinate2D" />.
         /// </summary>
         /// <param name="first">The first.</param>
@@ -194,6 +220,8 @@ namespace Mathematics
         {
             return new Coordinate2D(first.RoundedX, first.RoundedY);
         }
+
+
 
         /// <summary>
         ///     Implements the operator *. Cross Product
@@ -207,18 +235,9 @@ namespace Mathematics
             return (X * second.Y) - (Y * second.X);
         }
 
-
-        /// <summary>
-        ///     Multiplies the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        public Vector2D Multiply(double value)
-        {
-            return new Vector2D { X = X * value, Y = Y * value };
-        }
-
         /// <summary>
         ///     Vectors the length.
+        ///     Magnitude
         /// </summary>
         /// <returns>Length of the Vector</returns>
         public double VectorLength()
