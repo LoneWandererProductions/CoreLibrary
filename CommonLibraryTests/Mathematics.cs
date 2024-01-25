@@ -357,7 +357,6 @@ namespace CommonLibraryTests
 
             //Angle between Vector
             scalar = one.Angle(two); //39.946
-            scalar = (scalar  *  Math.PI) / 180;
             Assert.AreEqual(Math.Round(scalar,3), 39.946, "Vector Angle");
 
             //normalize Vector, Unit Vector
