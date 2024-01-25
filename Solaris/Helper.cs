@@ -53,8 +53,9 @@ namespace Solaris
                 from texture in tile.Value
                 select new Box
                 {
-                    X = IdToX(tile.Key, width) * textureSize,
-                    Y = IdToY(tile.Key, width) * textureSize,
+                    var coordinate = Coordinate2D.GetInstance(tile.Key, width);
+                    X = coordinate.X * textureSize,
+                    Y = coordinate.Y * textureSize,
                     Layer = textures[texture].Layer,
                     Image = Render.GetBitmapFile(textures[texture].Path)
                 }).ToList();
@@ -184,8 +185,9 @@ namespace Solaris
             KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
-            var x = IdToX(position, width) * textureSize;
-            var y = IdToY(position, width) * textureSize;
+            var coordinate = Coordinate2D.GetInstance(position, width);
+            var x = coordinate.X * textureSize;
+            var y = coordinate.Y * textureSize;
 
             var image = Render.GetBitmapFile(textures[tileId].Path);
 
@@ -202,8 +204,9 @@ namespace Solaris
         /// <returns>Layer three Bitmap</returns>
         public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
         {
-            var x = IdToX(position, width) * textureSize;
-            var y = IdToY(position, width) * textureSize;
+            var coordinate = Coordinate2D.GetInstance(position, width);
+            var x = coordinate.X * textureSize;
+            var y = coordinate.Y * textureSize;
 
             return Render.EraseRectangle(layer, x, y, textureSize, textureSize);
         }
@@ -228,8 +231,9 @@ namespace Solaris
 
             foreach (var step in steps)
             {
-                var x = IdToX(step, width) * textureSize;
-                var y = IdToY(step, width) * textureSize;
+                var coordinate = Coordinate2D.GetInstance(step, width);
+                var x = coordinate.X * textureSize;
+                var y = coordinate.Y * textureSize;
 
                 _ = await Task.Run(() => SwitchPosition(x, y, background, avatar, 100));
             }
@@ -252,28 +256,6 @@ namespace Solaris
             Render.CombineBitmap(background, avatar, x, y);
             Thread.Sleep(sleep);
             return true;
-        }
-
-        /// <summary>
-        ///     Identifiers to x.
-        /// </summary>
-        /// <param name="masterId">The master identifier.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>x coordinate</returns>
-        private static int IdToX(int masterId, int width)
-        {
-            return masterId % width;
-        }
-
-        /// <summary>
-        ///     Identifiers to y.
-        /// </summary>
-        /// <param name="masterId">The master identifier.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>y coordinate</returns>
-        private static int IdToY(int masterId, int width)
-        {
-            return masterId / width;
         }
     }
 }
