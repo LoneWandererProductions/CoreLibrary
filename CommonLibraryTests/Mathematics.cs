@@ -329,7 +329,7 @@ namespace CommonLibraryTests
 
             //magnitude (vector length)
             scalar = one.VectorLength(); //10.247
-            Assert.AreEqual(scalar, 10.247, "Vector length");
+            Assert.AreEqual(Math.Round(scalar3), 10.247, "Vector length");
 
             //Vector Addition
             vector = one +  two;
@@ -357,13 +357,13 @@ namespace CommonLibraryTests
 
             //Angle between Vector
             scalar = one.Angle(two); //39.946
-            Assert.AreEqual(scalar, 39.946, "Vector Angle");
+            Assert.AreEqual(Math.Round(scalar,3), 39.946, "Vector Angle");
 
             //normalize Vector, Unit Vector
             vector = one.Normalize();
-            Assert.AreEqual(vector.X, 0.78072, "X Unit Vector");
-            Assert.AreEqual(vector.Y, 0.39036, "Y Unit Vector");
-            Assert.AreEqual(vector.Z, 0.48795, "Z Unit Vector");
+            Assert.AreEqual(Math.Round(vector.X,5), 0.78072, "X Unit Vector");
+            Assert.AreEqual(Math.Round(vector.Y,5), 0.39036, "Y Unit Vector");
+            Assert.AreEqual(Math.Round(vector.Z,5), 0.48795, "Z Unit Vector");
 
             //inequality
             Assert.IsTrue(one != two, "Inequality");
