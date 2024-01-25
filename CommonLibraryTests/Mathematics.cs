@@ -309,10 +309,67 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Vector3D()
         {
-            //TODO extend!
-            var vector = new Vector3D(8, 4, 5);
+            //dot product
+            var one = new Vector3D(8, 4, 5);
+            var two = new Vector3D(1, 2, 4);
+            var scalar = one * two; //36
+            Assert.AreEqual(scalar, 36, "Dot Product");
 
-            Assert.Inconclusive();
+            //scalar product
+            var vector = one * 3;
+            Assert.AreEqual(vector.X, 24, "X scalar Product");
+            Assert.AreEqual(vector.Y, 12, "Y scalar Product");
+            Assert.AreEqual(vector.Z, 15, "Z scalar Product");
+
+            //scalar division
+            vector = two / 2;
+            Assert.AreEqual(vector.X, 0.5, "X scalar Division");
+            Assert.AreEqual(vector.Y, 1, "Y scalar Division");
+            Assert.AreEqual(vector.Z, 2, "Z scalar Division");
+
+            //magnitude (vector length)
+            scalar = one.VectorLength(); //10.247
+            Assert.AreEqual(scalar, 10.247, "Vector length");
+
+            //Vector Addition
+            vector = one +  two;
+            Assert.AreEqual(vector.X, 9, "X Addition");
+            Assert.AreEqual(vector.Y, 6, "Y Addition");
+            Assert.AreEqual(vector.Z, 9, "Z Addition");
+
+            //Vector subtraction
+            vector = one -  two;
+            Assert.AreEqual(vector.X, 7, "X Subtraction");
+            Assert.AreEqual(vector.Y, 2, "Y Subtraction");
+            Assert.AreEqual(vector.Z, 1, "Z Subtraction");
+
+            //Vector Cross Product
+            vector = oneCrossProduct(two);
+            Assert.AreEqual(vector.X, 6, "X Cross Product");
+            Assert.AreEqual(vector.Y, -27, "Y Cross Product");
+            Assert.AreEqual(vector.Z, 12, "Z Cross Product");
+
+            //negation
+            vector = -one;
+            Assert.AreEqual(vector.X, -8, "X Negation");
+            Assert.AreEqual(vector.Y, -4, "Y Negation");
+            Assert.AreEqual(vector.Z, -5, "Z Negation");
+
+            //Angle between Vector
+            scalar = one.Degree(two); //39.946
+            Assert.AreEqual(scalar, 39.946, "Vector Angle");
+
+            //normalize Vector, Unit Vector
+            vector = one.Normalize();
+            Assert.AreEqual(vector.X, 0.78072, "X Unit Vector");
+            Assert.AreEqual(vector.Y, 0.39036, "Y Unit Vector");
+            Assert.AreEqual(vector.Z, 0.48795, "Z Unit Vector");
+
+            //inequality
+            Assert.IsTrue(one != two, "Inequality");
+            //inequality
+            Assert.IsFalse(one == one, "Equality, first");
+            Assert.IsFalse(one.Equals(one), "Equality, second");
         }
 
         /// <summary>
