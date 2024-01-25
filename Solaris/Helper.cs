@@ -1,8 +1,8 @@
-﻿﻿/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        Solaris/Helper.cs
- * PURPOSE:     Helper class, here we process everything.
+ * PURPOSE:     Helper class, here we process everything. For the Coordinate Id it uses the same principles as Coordinate2D.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -53,8 +53,8 @@ namespace Solaris
                 from texture in tile.Value
                 select new Box
                 {
-                    X = IdToX(tile.Key, width) * textureSize,
-                    Y = IdToY(tile.Key, width) * textureSize,
+                    X = (tile.Key % width) * textureSize,
+                    Y = (tile.Key / width)  * textureSize,
                     Layer = textures[texture].Layer,
                     Image = Render.GetBitmapFile(textures[texture].Path)
                 }).ToList();
@@ -184,8 +184,8 @@ namespace Solaris
             KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
-            var x = IdToX(position, width) * textureSize;
-            var y = IdToY(position, width) * textureSize;
+            var x = (position % width) * textureSize;
+            var y = (position / width) * textureSize;
 
             var image = Render.GetBitmapFile(textures[tileId].Path);
 
@@ -202,8 +202,8 @@ namespace Solaris
         /// <returns>Layer three Bitmap</returns>
         public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
         {
-            var x = IdToX(position, width) * textureSize;
-            var y = IdToY(position, width) * textureSize;
+            var x = (position % width) * textureSize;
+            var y = (position / width) * textureSize;
 
             return Render.EraseRectangle(layer, x, y, textureSize, textureSize);
         }
@@ -228,8 +228,8 @@ namespace Solaris
 
             foreach (var step in steps)
             {
-                var x = IdToX(step, width) * textureSize;
-                var y = IdToY(step, width) * textureSize;
+                var x = (step % width) * textureSize;
+                var y = (step / width) * textureSize;
 
                 _ = await Task.Run(() => SwitchPosition(x, y, background, avatar, 100));
             }
@@ -252,28 +252,6 @@ namespace Solaris
             Render.CombineBitmap(background, avatar, x, y);
             Thread.Sleep(sleep);
             return true;
-        }
-
-        /// <summary>
-        ///     Identifiers to x.
-        /// </summary>
-        /// <param name="masterId">The master identifier.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>x coordinate</returns>
-        private static int IdToX(int masterId, int width)
-        {
-            return masterId % width;
-        }
-
-        /// <summary>
-        ///     Identifiers to y.
-        /// </summary>
-        /// <param name="masterId">The master identifier.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>y coordinate</returns>
-        private static int IdToY(int masterId, int width)
-        {
-            return masterId / width;
         }
     }
 }
