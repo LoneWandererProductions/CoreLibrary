@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
  * FILE:        Mathematics/Vector3D.cs
@@ -204,6 +204,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Implements the operator *.
+        ///     The Dot product.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
@@ -258,16 +259,6 @@ namespace Mathematics
             };
         }
 
-
-        /// <summary>
-        ///     Multiplies the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        public Vector3D Multiply(double value)
-        {
-            return new Vector3D { X = X * value, Y = Y * value, Z = Z * value };
-        }
-
         /// <summary>
         ///     Get the Vector length.
         ///     (or Magnitude)
@@ -280,6 +271,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Normalizes this instance.
+        ///     Unit Vector
         /// </summary>
         /// <returns>Normalized Vector</returns>
         public Vector3D Normalize()
@@ -289,14 +281,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Dots the product.
+        ///     Angle between this and the other Vector
         /// </summary>
-        /// <param name="first">The first Vector.</param>
-        /// <param name="second">The second Vector.</param>
-        /// <returns>The dot Product</returns>
-        public double DotProduct(Vector3D first, Vector3D second)
+        /// <returns>Angle between both Vectors</returns>
+        public double Angle(Vector3D second)
         {
-            return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
+            return Math.Asin( (this * second) / (this.VectorLength() * second.VectorLength()));
         }
 
         /// <summary>
