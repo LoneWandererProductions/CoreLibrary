@@ -367,8 +367,6 @@ namespace CommonLibraryTests
 
             var elapsedOne = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("First, DrawLine: ", elapsedOne));
-
             var dbm = DirectBitmap.GetInstance(bmp);
 
             watch = Stopwatch.StartNew();
@@ -381,12 +379,15 @@ namespace CommonLibraryTests
 
             watch.Stop();
 
+            Trace.WriteLine(string.Concat("First, DrawLine: ", elapsedOne));
+
             var elapsedTwo = watch.ElapsedMilliseconds;
 
             Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo));
 
             Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo, " DrawLine: ", elapsedOne));
-            //Assert.IsTrue(elapsedOne > elapsedTwo, "Was faster");
+            //for now sadly slower if we fail this assert I made progress
+            Trace.WriteLine(elapsedOne > elapsedTwo, "Was faster, I made an breakthrough.");
 
             watch = Stopwatch.StartNew();
 
@@ -434,7 +435,7 @@ namespace CommonLibraryTests
 
             Trace.WriteLine(string.Concat("Four DirectBitmap: ", elapsedFour));
 
-            Assert.Inconclusive(string.Concat("Results: ", elapsedThree, "Rectangle Microsoft: ", elapsedFour));
+            Assert.IsTrue(elapsedThree < elapsedFour,string.Concat("Results: ", elapsedThree, "Rectangle Microsoft: ", elapsedFour));
         }
 
         /// <summary>
