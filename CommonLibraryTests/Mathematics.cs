@@ -372,6 +372,23 @@ namespace CommonLibraryTests
             Assert.IsTrue(one == one, "Equality, first");
             Assert.IsTrue(one.Equals(one), "Equality, second");
         }
+        /// <summary>
+        ///     Vector2D Test.
+        /// </summary>
+        [TestMethod]
+        public void Vector2D()
+        {
+            //dot product
+            var one = new Vector3D(8, 4);
+            var two = new Vector3D(1, 2);
+            var scalar = one * two; //36
+            Assert.AreEqual(scalar, 16, "Dot Product");
+
+            //scalar multiplication
+            var vector = two * 2;
+            Assert.AreEqual(vector.X, 2, "X scalar Multiplication.");
+            Assert.AreEqual(vector.Y, 4, "Y scalar Multiplication.");
+        }
 
         /// <summary>
         ///     Vector transformations.

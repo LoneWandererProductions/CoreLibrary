@@ -221,8 +221,6 @@ namespace Mathematics
             return new Coordinate2D(first.RoundedX, first.RoundedY);
         }
 
-
-
         /// <summary>
         ///     Implements the operator *. Cross Product
         /// </summary>
