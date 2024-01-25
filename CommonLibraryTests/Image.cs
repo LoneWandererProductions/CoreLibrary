@@ -356,7 +356,7 @@ namespace CommonLibraryTests
             var watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 // Draw line to screen.
                 using var graphics = Graphics.FromImage(bmp);
@@ -364,34 +364,34 @@ namespace CommonLibraryTests
             }
 
             watch.Stop();
-
+            //microsoft way
             var elapsedOne = watch.ElapsedMilliseconds;
+            Trace.WriteLine(string.Concat("First, DrawLine: ", elapsedOne));
 
             var dbm = DirectBitmap.GetInstance(bmp);
 
             watch = Stopwatch.StartNew();
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 // Draw line to screen.
                 dbm.DrawVerticalLine(x1, y1, 1000, Color.Black);
             }
 
             watch.Stop();
-
-            Trace.WriteLine(string.Concat("First, DrawLine: ", elapsedOne));
-
             var elapsedTwo = watch.ElapsedMilliseconds;
+            //new way
+            Trace.WriteLine(string.Concat("Second, DrawVerticalLine: ", elapsedTwo));
 
-            Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo));
 
-            Trace.WriteLine(string.Concat("Second DirectBitmap: ", elapsedTwo, " DrawLine: ", elapsedOne));
+            Trace.WriteLine(string.Concat("Second DrawVerticalLine: ", elapsedTwo, " First DrawLine: ", elapsedOne));
             //for now sadly slower if we fail this assert I made progress
-            Trace.WriteLine(elapsedOne > elapsedTwo, "Was faster, I made an breakthrough.");
+
+            Assert.IsTrue(elapsedOne < elapsedTwo, "Was faster, I made an breakthrough. ");
 
             watch = Stopwatch.StartNew();
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 // Draw line to screen.
                 dbm.DrawRectangle(x1, y1, 1, 1000, Color.Black);
@@ -399,14 +399,10 @@ namespace CommonLibraryTests
 
             watch.Stop();
 
-            var elapsed = watch.ElapsedMilliseconds;
-
-            Trace.WriteLine(string.Concat("Rectangle draw Line: ", elapsed));
-
             watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 // Draw line to screen.
                 using var graphics = Graphics.FromImage(bmp);
@@ -414,14 +410,14 @@ namespace CommonLibraryTests
             }
 
             watch.Stop();
+            //generic Microsoft way
+            var elapsed = watch.ElapsedMilliseconds;
 
-            var elapsedThree = watch.ElapsedMilliseconds;
-
-            Trace.WriteLine(string.Concat("Three Rectangle: ", elapsedThree));
-
-            dbm = DirectBitmap.GetInstance(bmp);
+            Trace.WriteLine(string.Concat("Rectangle draw Line: ", elapsed));
 
             watch = Stopwatch.StartNew();
+
+            dbm = DirectBitmap.GetInstance(bmp);
 
             for (var i = 0; i < 100; i++)
             {
@@ -431,11 +427,12 @@ namespace CommonLibraryTests
 
             watch.Stop();
 
-            var elapsedFour = watch.ElapsedMilliseconds;
+            //new way
+            var elapsedThree = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("Four DirectBitmap: ", elapsedFour));
+            Trace.WriteLine(string.Concat("Three Rectangle: ", elapsedThree));
 
-            Assert.IsTrue(elapsedThree < elapsedFour,string.Concat("Results: ", elapsedThree, "Rectangle Microsoft: ", elapsedFour));
+            Assert.IsTrue(elapsed < elapsedThree, string.Concat("Results: ", elapsed, "Rectangle Microsoft: ", elapsedThree));
         }
 
         /// <summary>
