@@ -286,9 +286,7 @@ namespace Mathematics
         /// <returns>Angle between both Vectors</returns>
         public double Angle(Vector3D second)
         {
-            var cross = this.CrossProduct(second);
-            var l = cross.VectorLength();
-            return Math.Asin( l / (this.VectorLength() * second.VectorLength()));
+            return Math.Acos( (this * second))/ (this.VectorLength() * second.VectorLength()));
         }
 
         /// <summary>
