@@ -142,7 +142,8 @@ namespace Mathematics
         public static BaseMatrix PointAt(Vector3D camera, Vector3D target, Vector3D up)
         {
             var newForward = target - camera;
-            var a = newForward.Multiply(up * newForward);
+            //TODO check
+            var a = newForward * (up * newForward);
             var newUp = up - a;
             var newRight = newUp.CrossProduct(newForward);
 
