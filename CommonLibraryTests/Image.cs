@@ -424,8 +424,10 @@ namespace CommonLibraryTests
             //new way
             var elapsedThree = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("First Rectangle draw Line: ", elapsed, " Second DrawRectangle dbm: ", elapsedThree));
-            Assert.IsTrue(elapsed < elapsedThree, string.Concat("Results: ", elapsed, "Rectangle Microsoft: ", elapsedThree));
+            Trace.WriteLine(string.Concat("First Rectangle draw Line: ", elapsed, " Second DrawRectangle dbm: ",
+                elapsedThree));
+            Assert.IsTrue(elapsed < elapsedThree,
+                string.Concat("Results: ", elapsed, "Rectangle Microsoft: ", elapsedThree));
         }
 
         /// <summary>

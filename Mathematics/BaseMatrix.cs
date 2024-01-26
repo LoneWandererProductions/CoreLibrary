@@ -190,12 +190,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator *.
+        ///     Implements the operator *.
         /// </summary>
         /// <param name="v">The v.</param>
         /// <param name="first">The first Matrix.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator *(Vector3D v, BaseMatrix first)
         {
@@ -260,7 +260,10 @@ namespace Mathematics
         /// </returns>
         public static explicit operator Vector3D(BaseMatrix first)
         {
-            if (first.Height != 4 && first.Width != 4) return null;
+            if (first.Height != 4 && first.Width != 4)
+            {
+                return null;
+            }
 
             var v = new Vector3D(first[0, 0], first[0, 1], first[0, 2]);
             v.SetW(first[0, 3]);
@@ -268,15 +271,15 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Performs an implicit conversion from jagged array double to <see cref="BaseMatrix"/>.
+        ///     Performs an implicit conversion from jagged array double to <see cref="BaseMatrix" />.
         /// </summary>
         /// <param name="m">The m.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static implicit operator BaseMatrix(double[,] m)
         {
-            return new() { Matrix = m };
+            return new BaseMatrix { Matrix = m };
         }
 
         /// <summary>

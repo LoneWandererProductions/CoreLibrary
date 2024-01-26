@@ -132,15 +132,5 @@ namespace Mathematics
 
             return m1 * m2;
         }
-
-        /// <summary>
-        ///     Gets the vector.
-        /// </summary>
-        /// <param name="matrix">The matrix.</param>
-        /// <returns>Vector from Matrix</returns>
-        //public static Vector3D GetVector(BaseMatrix matrix)
-        //{
-        //    return new Vector3D(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
-        //}
     }
 }

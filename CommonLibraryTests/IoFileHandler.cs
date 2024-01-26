@@ -79,10 +79,20 @@ namespace CommonLibraryTests
             var list =
                 FileHandleSearch.GetFilesByExtensionFullPath(_path, ResourcesGeneral.TstExt, false);
 
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(1, list.Count, "Got the Files Folder by single Extension");
 
             var ext = new List<string> { ResourcesGeneral.TstExt };
             list = FileHandleSearch.GetFilesByExtensionFullPath(_path, ext, false);
+
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.AreEqual(1, list.Count, "Did not get the Files Folder by multiple Extension");
 
@@ -122,6 +132,11 @@ namespace CommonLibraryTests
             var list =
                 FileHandleSearch.GetFileByExtensionWithoutExtension(_path, ResourcesGeneral.TstExt, false);
 
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             var check = list.Count == 1;
 
             Assert.IsTrue(check, "Correct Number of files");
@@ -134,12 +149,22 @@ namespace CommonLibraryTests
             list =
                 FileHandleSearch.GetFilesWithSubString(_path, ext, false, "IO", false);
 
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             check = list.Count == 1;
 
             Assert.IsTrue(check, "Correct Number of files");
 
             list =
                 FileHandleSearch.GetFilesWithSubString(_path, ext, false, "IO", true);
+
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             check = list.Count == 0;
 
@@ -148,7 +173,17 @@ namespace CommonLibraryTests
             list =
                 FileHandleSearch.GetFilesWithSubString(_path, ResourcesGeneral.FileExtList, false, "1", true);
 
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             check = list.Count == 5;
+
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.IsTrue(check, "Correct Number of files");
 
@@ -172,6 +207,12 @@ namespace CommonLibraryTests
 
             var list =
                 FileHandleSearch.GetFileByExtensionWithExtension(_path, ResourcesGeneral.TstExt, false);
+
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             if (list.Count == 1)
             {
                 check = true;
@@ -194,6 +235,11 @@ namespace CommonLibraryTests
         {
             var check = false;
             var list = FileHandleSearch.GetAllSubfolders(Directory.GetCurrentDirectory());
+
+            if (list == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             if (list.Count > 0)
             {
@@ -249,12 +295,22 @@ namespace CommonLibraryTests
             var info = FileUtility.GetNewFileName(fileOne);
             HelperMethods.CreateFile(info);
 
+            if (info == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.IsTrue(
                 info.EndsWith(
                     "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
             info = FileUtility.GetNewFileName(fileOne);
+
+            if (info == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.IsTrue(
                 info.EndsWith(
@@ -342,6 +398,12 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(subPathOne);
             FileHandleCreate.CreateFolder(subPathTwo);
             var lst = FileHandleSearch.GetAllSubfolders(path);
+
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //delete File
@@ -484,6 +546,12 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(subPathOne);
             FileHandleCreate.CreateFolder(subPathTwo);
             var lst = FileHandleSearch.GetAllSubfolders(path);
+
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
@@ -522,6 +590,12 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(subPathTwo);
             FileHandleCreate.CreateFolder(subPathTwoExtended);
             var lst = FileHandleSearch.GetAllSubfolders(path);
+
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
@@ -537,10 +611,24 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(isDone, "File were not moved");
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathOne, ".*", true);
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not enough Files were moved");
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathTwo, ".*", true);
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Files are still there");
             var result = FileHandleCopy.CopyFiles(subPathOne, subPathTwo);
+            if (result == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
         }
@@ -562,6 +650,11 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(subPathTwo);
             FileHandleCreate.CreateFolder(subPathTwoExtended);
             var lst = FileHandleSearch.GetAllSubfolders(path);
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
@@ -577,10 +670,25 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(isDone, "File were not moved");
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathOne, ".*", true);
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(2, lst.Count, "Not enough Files were moved");
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathTwo, ".*", true);
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
             Assert.AreEqual(0, lst.Count, "Files were not deleted");
+
             var result = FileHandleCopy.CopyFiles(subPathOne, subPathTwo);
+            if (result == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
         }
@@ -607,6 +715,11 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Could not compress");
 
             var files = FileHandleSearch.GetAllFiles(path, false);
+
+            if (files == null)
+            {
+                Assert.Fail("Null Reference");
+            }
 
             Assert.AreEqual(1, files.Count, "Compressed File created and or files were not deleted");
 

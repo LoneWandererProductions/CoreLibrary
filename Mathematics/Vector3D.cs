@@ -36,7 +36,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Vector3D"/> class.
+        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -79,28 +79,19 @@ namespace Mathematics
         public double Z { get; set; }
 
         /// <summary>
-        /// Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
-        /// This has no relevance, whatsoever for the other calculations.
+        ///     Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
+        ///     This has no relevance, whatsoever for the other calculations.
         /// </summary>
         /// <value>
-        /// The w.
+        ///     The w.
         /// </value>
         public double W { get; private set; }
 
         /// <summary>
-        /// Sets the w.
-        /// </summary>
-        /// <param name="w">The w.</param>
-        public void SetW(double w)
-        {
-            W = w;
-        }
-
-        /// <summary>
-        /// Gets the zero Vector.
+        ///     Gets the zero Vector.
         /// </summary>
         /// <value>
-        /// The zero Vector.
+        ///     The zero Vector.
         /// </value>
         public static Vector3D ZeroVector
         {
@@ -108,10 +99,10 @@ namespace Mathematics
         } = new(0d, 0d, 0d);
 
         /// <summary>
-        /// Gets the Unit vector.
+        ///     Gets the Unit vector.
         /// </summary>
         /// <value>
-        /// The Unit vector.
+        ///     The Unit vector.
         /// </value>
         public static Vector3D UnitVector
         {
@@ -141,6 +132,15 @@ namespace Mathematics
         ///     The rounded z.
         /// </value>
         public int RoundedZ => (int)Math.Round(Z, 0);
+
+        /// <summary>
+        ///     Sets the w.
+        /// </summary>
+        /// <param name="w">The w.</param>
+        public void SetW(double w)
+        {
+            W = w;
+        }
 
         /// <summary>
         ///     Equals the specified other.
@@ -289,7 +289,7 @@ namespace Mathematics
         /// <param name="scalar">The scalar.</param>
         /// <param name="first">The v.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator *(double scalar, Vector3D first)
         {

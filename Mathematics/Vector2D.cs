@@ -57,10 +57,10 @@ namespace Mathematics
         public double Y { get; set; }
 
         /// <summary>
-        /// Gets the zero Vector.
+        ///     Gets the zero Vector.
         /// </summary>
         /// <value>
-        /// The zero Vector.
+        ///     The zero Vector.
         /// </value>
         public static Vector2D ZeroVector
         {
@@ -68,10 +68,10 @@ namespace Mathematics
         } = new(0d, 0d);
 
         /// <summary>
-        /// Gets the Unit vector.
+        ///     Gets the Unit vector.
         /// </summary>
         /// <value>
-        /// The Unit vector.
+        ///     The Unit vector.
         /// </value>
         public static Vector2D UnitVector
         {
@@ -317,15 +317,15 @@ namespace Mathematics
         /// <returns>Angle between both Vectors in rad.</returns>
         public double Angle(Vector2D second)
         {
-            return Math.Acos((this * second) / (VectorLength() * second.VectorLength()));
+            return Math.Acos(this * second / (VectorLength() * second.VectorLength()));
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="Vector2D"/> to <see cref="Vector3D"/>.
+        ///     Performs an explicit conversion from <see cref="Vector2D" /> to <see cref="Vector3D" />.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static explicit operator Vector3D(Vector2D first)
         {
