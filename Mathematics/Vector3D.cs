@@ -12,6 +12,7 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable ClassCanBeSealed.Global
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 using System;
 
@@ -137,7 +138,7 @@ namespace Mathematics
         ///     Sets the w.
         /// </summary>
         /// <param name="w">The w.</param>
-        public void SetW(double w)
+        internal void SetW(double w)
         {
             W = w;
         }
