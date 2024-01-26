@@ -79,6 +79,24 @@ namespace Mathematics
         public double Z { get; set; }
 
         /// <summary>
+        /// Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
+        /// This has no relevance, whatsoever for the other calculations.
+        /// </summary>
+        /// <value>
+        /// The w.
+        /// </value>
+        public double W { get; private set; }
+
+        /// <summary>
+        /// Sets the w.
+        /// </summary>
+        /// <param name="w">The w.</param>
+        public void SetW(double w)
+        {
+            W = w;
+        }
+
+        /// <summary>
         /// Gets the zero Vector.
         /// </summary>
         /// <value>
@@ -357,11 +375,12 @@ namespace Mathematics
         /// <returns>Vector transformed to Matrix</returns>
         public static explicit operator BaseMatrix(Vector3D first)
         {
-            var matrix = new double[4, 4];
+            var matrix = new double[1, 4];
             matrix[0, 0] = first.X;
             matrix[0, 1] = first.Y;
             matrix[0, 2] = first.Z;
-            matrix[0, 3] = 1;
+            //special case only for 3D Stuff
+            matrix[0, 3] = first.W;
             return new BaseMatrix(matrix);
         }
     }
