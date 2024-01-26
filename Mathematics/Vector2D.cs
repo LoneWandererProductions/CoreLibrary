@@ -193,6 +193,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     Implements the operator -.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static Vector2D operator -(Vector2D first)
+        {
+            return new Vector2D(-first.X, -first.Y);
+        }
+
+        /// <summary>
         ///     Implements the operator *.
         /// </summary>
         /// <param name="first">The first.</param>
@@ -209,14 +221,14 @@ namespace Mathematics
         ///     Implements the operator *.
         ///     Multiplication Factors can be switched.
         /// </summary>
-        /// <param name="v">The vector.</param>
+        /// <param name="first">The vector.</param>
         /// <param name="scalar">The scalar.</param>
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static Vector2D operator *(Vector2D v, double scalar)
+        public static Vector2D operator *(Vector2D first, double scalar)
         {
-            return new Vector2D(v.X * scalar, v.Y * scalar);
+            return new Vector2D(first.X * scalar, first.Y * scalar);
         }
 
         /// <summary>
@@ -293,10 +305,19 @@ namespace Mathematics
         /// <summary>
         ///     Returns the Vector Angle
         /// </summary>
-        /// <returns>The Vectors angle</returns>
+        /// <returns>The Vectors angle based on the X- Axis in rad.</returns>
         public double Angle()
         {
-            return Math.Atan(Y / X) * 180 / Math.PI;
+            return Math.Atan(Y / X);
+        }
+
+        /// <summary>
+        ///     Angle between this and the other Vector
+        /// </summary>
+        /// <returns>Angle between both Vectors in rad.</returns>
+        public double Angle(Vector2D second)
+        {
+            return Math.Acos((this * second) / (VectorLength() * second.VectorLength()));
         }
 
         /// <summary>

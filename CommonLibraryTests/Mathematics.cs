@@ -401,7 +401,7 @@ namespace CommonLibraryTests
             //dot product
             var one = new Vector2D(8, 4);
             var two = new Vector2D(1, 2);
-            var scalar = one * two; //36
+            var scalar = one * two;
             Assert.AreEqual(scalar, 16, "Dot Product");
 
             //scalar multiplication
@@ -410,9 +410,43 @@ namespace CommonLibraryTests
             Assert.AreEqual(vector.Y, 4, "Y scalar Multiplication.");
 
             //scalar multiplication
-            vector = 2* two;
+            vector = 2 * two;
             Assert.AreEqual(vector.X, 2, "X scalar Multiplication.");
             Assert.AreEqual(vector.Y, 4, "Y scalar Multiplication.");
+
+            //scalar division
+            vector = one / 2;
+            Assert.AreEqual(vector.X, 4, "X scalar Division.");
+            Assert.AreEqual(vector.Y, 2, "Y scalar Division.");
+
+            //negation
+            vector = -one;
+            Assert.AreEqual(vector.X, -8, "X Negation");
+            Assert.AreEqual(vector.Y, -4, "Y Negation");
+
+            //Vector Addition
+            vector = one + two;
+            Assert.AreEqual(vector.X, 9, "X Addition");
+            Assert.AreEqual(vector.Y, 6, "Y Addition");
+
+            //normalize Vector, Unit Vector
+            vector = one.Normalize();
+            Assert.AreEqual(Math.Round(vector.X, 5), 0, 89443, "X Unit Vector");
+            Assert.AreEqual(Math.Round(vector.Y, 5), 0, 44721, "Y Unit Vector");
+
+            //Angle between Vector
+            scalar = one.Angle(two);
+            scalar = scalar * 180 / Math.PI;
+            Assert.AreEqual(Math.Round(scalar, 3), 36.87, "Vector Angle");
+
+            //inequality
+            Assert.IsTrue(one != two, "Inequality");
+            //inequality
+            // ReSharper disable once EqualExpressionComparison
+#pragma warning disable CS1718 // Vergleich erfolgte mit derselben Variable
+            Assert.IsTrue(one == one, "Equality, first");
+#pragma warning restore CS1718 // Vergleich erfolgte mit derselben Variable
+            Assert.IsTrue(one.Equals(one), "Equality, second");
         }
 
         /// <summary>
