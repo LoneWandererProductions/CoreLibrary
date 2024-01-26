@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using ExtendedSystemObjects;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -307,7 +308,7 @@ namespace CommonLibraryTests
         ///     Vector3D Test.
         /// </summary>
         [TestMethod]
-        public void Vector3D()
+        public void Vector3DTest()
         {
             //dot product
             var one = new Vector3D(8, 4, 5);
@@ -374,13 +375,23 @@ namespace CommonLibraryTests
             Assert.IsTrue(one == one, "Equality, first");
 #pragma warning restore CS1718 // Vergleich erfolgte mit derselben Variable
             Assert.IsTrue(one.Equals(one), "Equality, second");
+
+            var nullVector = Vector3D.ZeroVector;
+            Assert.AreEqual(nullVector.X, 0, "X Addition");
+            Assert.AreEqual(nullVector.Y, 0, "Y Addition");
+            Assert.AreEqual(nullVector.Z, 0, "Z Addition");
+
+            var unitVector = Vector3D.UnitVector;
+            Assert.AreEqual(unitVector.X, 1, "X Addition");
+            Assert.AreEqual(unitVector.Y, 1, "Y Addition");
+            Assert.AreEqual(unitVector.Z, 1, "Z Addition");
         }
 
         /// <summary>
         ///     Vector2D Test.
         /// </summary>
         [TestMethod]
-        public void Vector2D()
+        public void Vector2DTest()
         {
             //dot product
             var one = new Vector2D(8, 4);

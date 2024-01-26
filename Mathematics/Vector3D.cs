@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
  * FILE:        Mathematics/Vector3D.cs
@@ -36,6 +36,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Vector3D"/> class.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        public Vector3D(double x, double y)
+        {
+            X = x;
+            Y = y;
+            Z = 0;
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Vector3D" /> class.
         /// </summary>
         public Vector3D()
@@ -65,6 +77,28 @@ namespace Mathematics
         ///     The z.
         /// </value>
         public double Z { get; set; }
+
+        /// <summary>
+        /// Gets the zero Vector.
+        /// </summary>
+        /// <value>
+        /// The zero Vector.
+        /// </value>
+        public static Vector3D ZeroVector
+        {
+            get;
+        } = new(0d, 0d);
+
+        /// <summary>
+        /// Gets the Unit vector.
+        /// </summary>
+        /// <value>
+        /// The Unit vector.
+        /// </value>
+        public static Vector3D UnitVector
+        {
+            get;
+        } = new(1d, 1d, 1d);
 
         /// <summary>
         ///     Gets the rounded x.
@@ -209,7 +243,7 @@ namespace Mathematics
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        ///     The result of the operator.
+        ///     The result of the operator, the dot product
         /// </returns>
         public static double operator *(Vector3D first, Vector3D second)
         {

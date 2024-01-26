@@ -263,6 +263,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Performs an explicit conversion from <see cref="Vector2D"/> to <see cref="Vector3D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector3D(Vector2D first)
+        {
+            return new Vector3D(first.RoundedX, first.RoundedY);
+        }
+
+        /// <summary>
         ///     Converts to matrix.
         /// </summary>
         /// <returns>Vector transformed to Matrix</returns>
