@@ -87,7 +87,7 @@ namespace Mathematics
         public static Vector3D ZeroVector
         {
             get;
-        } = new(0d, 0d);
+        } = new(0d, 0d, 0d);
 
         /// <summary>
         /// Gets the Unit vector.
@@ -251,16 +251,31 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Implements the operator *.
+        ///     Implements the operator *. Left Hand
+        ///     Multiplication Factors can be switched.
         /// </summary>
-        /// <param name="v">The v.</param>
+        /// <param name="first">The v.</param>
         /// <param name="scalar">The scalar.</param>
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static Vector3D operator *(Vector3D v, double scalar)
+        public static Vector3D operator *(Vector3D first, double scalar)
         {
-            return new Vector3D(v.X * scalar, v.Y * scalar, v.Z * scalar);
+            return new Vector3D(first.X * scalar, first.Y * scalar, first.Z * scalar);
+        }
+
+        /// <summary>
+        ///     Implements the operator *. Right Hand.
+        ///     Multiplication Factors can be switched.
+        /// </summary>
+        /// <param name="scalar">The scalar.</param>
+        /// <param name="first">The v.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static Vector3D operator *(double scalar, Vector3D first)
+        {
+            return first * scalar;
         }
 
         /// <summary>

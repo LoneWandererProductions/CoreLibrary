@@ -322,6 +322,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(vector.Y, 12, "Y scalar Product");
             Assert.AreEqual(vector.Z, 15, "Z scalar Product");
 
+            vector = 3 * one;
+            Assert.AreEqual(vector.X, 24, "X scalar Product");
+            Assert.AreEqual(vector.Y, 12, "Y scalar Product");
+            Assert.AreEqual(vector.Z, 15, "Z scalar Product");
+
             //scalar division
             vector = two / 2;
             Assert.AreEqual(vector.X, 0.5, "X scalar Division");
@@ -401,6 +406,11 @@ namespace CommonLibraryTests
 
             //scalar multiplication
             var vector = two * 2;
+            Assert.AreEqual(vector.X, 2, "X scalar Multiplication.");
+            Assert.AreEqual(vector.Y, 4, "Y scalar Multiplication.");
+
+            //scalar multiplication
+            vector = 2* two;
             Assert.AreEqual(vector.X, 2, "X scalar Multiplication.");
             Assert.AreEqual(vector.Y, 4, "Y scalar Multiplication.");
         }

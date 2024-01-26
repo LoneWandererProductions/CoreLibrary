@@ -57,6 +57,28 @@ namespace Mathematics
         public double Y { get; set; }
 
         /// <summary>
+        /// Gets the zero Vector.
+        /// </summary>
+        /// <value>
+        /// The zero Vector.
+        /// </value>
+        public static Vector2D ZeroVector
+        {
+            get;
+        } = new(0d, 0d);
+
+        /// <summary>
+        /// Gets the Unit vector.
+        /// </summary>
+        /// <value>
+        /// The Unit vector.
+        /// </value>
+        public static Vector2D UnitVector
+        {
+            get;
+        } = new(1d, 1d);
+
+        /// <summary>
         ///     Gets the rounded x.
         /// </summary>
         /// <value>
@@ -185,6 +207,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Implements the operator *.
+        ///     Multiplication Factors can be switched.
         /// </summary>
         /// <param name="v">The vector.</param>
         /// <param name="scalar">The scalar.</param>
@@ -194,6 +217,20 @@ namespace Mathematics
         public static Vector2D operator *(Vector2D v, double scalar)
         {
             return new Vector2D(v.X * scalar, v.Y * scalar);
+        }
+
+        /// <summary>
+        ///     Implements the operator *.
+        ///     Multiplication Factors can be switched.
+        /// </summary>
+        /// <param name="scalar">The scalar.</param>
+        /// <param name="first">The vector.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static Vector2D operator *(double scalar, Vector2D first)
+        {
+            return first * scalar;
         }
 
         /// <summary>
