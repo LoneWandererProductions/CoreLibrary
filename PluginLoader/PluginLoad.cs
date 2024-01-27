@@ -98,6 +98,25 @@ namespace PluginLoader
         }
 
         /// <summary>
+        ///     Loads all.
+        /// </summary>
+        /// <param name="store">
+        ///     Sets the environment variables of the base module
+        ///     The idea is, the main module has documented Environment Variables, that the plugins can use.
+        ///     / This method sets the these Variables.
+        /// </param>
+        /// <returns>Success Status</returns>
+        public static bool SetEnvironmentVariables(Dictionary<int, object> store)
+        {
+            if (store == null) return false;
+
+            //key, here we define the access able Environment for the plugins
+            DataRegister.Store = store;
+
+            return true;
+        }
+
+        /// <summary>
         ///     Gets the files by extension full path.
         ///     Adopted from FileHandler to decrease dependencies
         /// </summary>
