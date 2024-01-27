@@ -41,7 +41,7 @@ namespace DataFormatter
             var other = new List<string>();
 
             foreach (var trim in lst.Select(line => line.Trim())
-                         .Where(trim => !trim.StartsWith(DataFormatterResources.Comment)))
+                .Where(trim => !trim.StartsWith(DataFormatterResources.Comment)))
             {
                 if (trim.StartsWith(DataFormatterResources.Vector))
                 {

@@ -15,6 +15,7 @@
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 
 using System;
+using DataFormatter;
 
 namespace Mathematics
 {
@@ -358,18 +359,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Performs an explicit conversion from <see cref="Vector3D" /> to <see cref="Coordinate2D" />.
-        /// </summary>
-        /// <param name="first">The first.</param>
-        /// <returns>
-        ///     The result of the conversion.
-        /// </returns>
-        public static explicit operator Coordinate2D(Vector3D first)
-        {
-            return new Coordinate2D(first.RoundedX, first.RoundedY);
-        }
-
-        /// <summary>
         ///     Converts to matrix.
         ///     In this case especially for 3D Projection
         /// </summary>
@@ -383,6 +372,30 @@ namespace Mathematics
             //special case only for 3D Stuff
             matrix[0, 3] = first.W;
             return new BaseMatrix(matrix);
+        }
+
+        /// <summary>
+        /// Performs an explicit conversion from <see cref="TertiaryVector" /> to <see cref="Vector3D" />.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector3D(TertiaryVector first)
+        {
+            return new Vector3D(first.X, first.Y, first.Z);
+        }
+
+        /// <summary>
+        /// Performs an explicit conversion from <see cref="TertiaryFace"/> to <see cref="Vector3D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector3D(TertiaryFace first)
+        {
+            return new Vector3D(first.X, first.Y, first.Z);
         }
     }
 }

@@ -8,6 +8,9 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable BadBracesSpaces
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
+// ReSharper disable UnusedMember.Global
 
 using System;
 
@@ -78,7 +81,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="width">The width.</param>
-        /// <returns></returns>
+        /// <returns>Instance of Coordinate 2D with the help of the Id</returns>
         public static Coordinate2D GetInstance(int id, int width)
         {
             return new Coordinate2D { X = IdToX(id, width), Y = IdToY(id, width) };
@@ -176,6 +179,19 @@ namespace Mathematics
         {
             return masterId / width;
         }
+
+        /// <summary>
+        ///     Performs an explicit conversion from <see cref="Vector3D" /> to <see cref="Coordinate2D" />.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        ///     The result of the conversion.
+        /// </returns>
+        public static explicit operator Coordinate2D(Vector3D first)
+        {
+            return new Coordinate2D(first.RoundedX, first.RoundedY);
+        }
+
 
         /// <summary>
         ///     Converts to string.
