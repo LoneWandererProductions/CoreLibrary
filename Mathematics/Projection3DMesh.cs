@@ -17,7 +17,7 @@ namespace Mathematics
         // Triangles need to be supplied on a CLOCKWISE order
         public static void CreateTri(List<TertiaryVector> triangles)
         {
-            for (int i = 0; i < triangles.Count - 3; i += 3)
+            for (int i = 0; i <= triangles.Count - 3; i += 3)
             {
                 var v1 = triangles[i];
                 var v2 = triangles[i+1];

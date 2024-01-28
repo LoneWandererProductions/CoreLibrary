@@ -14,7 +14,7 @@ namespace CommonLibraryTests
             var obj = ResourceObjects.GetCube();
             Projection3DMesh.CreateTri(obj);
 
-            Assert.IsTrue(true," Passed");
+            Assert.AreEqual(12, Projection3DMesh.Polygons.Count, "Not the correct Count");
         }
     }
 

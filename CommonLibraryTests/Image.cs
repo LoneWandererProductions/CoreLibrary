@@ -703,15 +703,18 @@ namespace CommonLibraryTests
         {
             var one = new Coordinate2D(1, 0);
             var two = new Coordinate2D(31, 10);
+            //y = 3x +1;
 
             //just test the Bresenham
-            var lst = Bresenham.PlotLine(one, two);
+            var lstOne = Bresenham.PlotLine(one, two);
+            var lstTwo = Bresenham.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
             {
                 var y = (3 * x) + 1;
 
-                Assert.AreNotEqual(lst[x], y, "not equal");
+                Assert.AreNotEqual(lstOne[x], y, "not equal");
+                Assert.AreNotEqual(lstTwo[x], y, "not equal");
             }
         }
     }
