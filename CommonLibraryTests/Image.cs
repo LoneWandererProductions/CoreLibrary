@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -443,7 +444,7 @@ namespace CommonLibraryTests
             var imageData = ImageProcessing.GenerateData(btm, 0);
 
             var color = Analysis.FindImagesInColorRange(imageData.R, imageData.G, imageData.B, 4,
-                SampleImagesFolder.FullName, false, ResourcesGeneral.Appendix);
+                SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
             Assert.AreEqual(2, color.Count, "Done");
 
@@ -453,7 +454,7 @@ namespace CommonLibraryTests
 
             //compare and Similar Images
 
-            var images = Compare.GetDuplicateImages(SampleImagesFolder.FullName, false, ResourcesGeneral.Appendix);
+            var images = Compare.GetDuplicateImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(2, images[0].Count, "Done");
@@ -464,7 +465,7 @@ namespace CommonLibraryTests
             imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareCopy.png");
             Assert.AreEqual(imagePath, cache[1], "Done");
 
-            images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ResourcesGeneral.Appendix, 80);
+            images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(3, images[0].Count, "Done");
@@ -706,16 +707,81 @@ namespace CommonLibraryTests
             //y = 3x +1;
 
             //just test the Bresenham
-            var lstOne = Bresenham.PlotLine(one, two);
-            var lstTwo = Bresenham.LinearLine(one, two);
+            var lstOne = MathSpeedTests.BresenhamPlotLine(one, two);
+            var lstTwo = LineVector.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
             {
                 var y = (3 * x) + 1;
 
-                Assert.AreNotEqual(lstOne[x], y, "not equal");
-                Assert.AreNotEqual(lstTwo[x], y, "not equal");
+                Assert.AreNotEqual(lstOne[x].Y, y, "not equal");
+                Assert.AreNotEqual(lstTwo[x].Y, y, "not equal");
             }
+
+            //horizontal
+
+            one = new Coordinate2D(1, 0);
+            two = new Coordinate2D(1, 50);
+
+            lstTwo = LineVector.LinearLine(one, two);
+
+            Assert.AreEqual(lstTwo[25].Y, 25, "not equal");
+            Assert.AreEqual(lstTwo[25].X, 1, "not equal");
+
+            //vertical
+
+            one = new Coordinate2D(0, 0);
+            two = new Coordinate2D(50, 0);
+
+            lstTwo = LineVector.LinearLine(one, two);
+
+            Assert.AreEqual(lstTwo[25].Y, 0, "not equal");
+            Assert.AreEqual(lstTwo[25].X, 25, "not equal");
+
+            //speed test
+            //Garbage Collector
+            GC.WaitForPendingFinalizers();
+            //single Core
+            Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(1);
+
+            one = new Coordinate2D(1, 0);
+            two = new Coordinate2D(30001, 10000);
+
+            long elapsedOne =0, elapsedTwo = 0;
+
+            for (int i = 0; i < 7; i++)
+            {
+                elapsedOne += CalcOne(one, two);
+                elapsedTwo += CalcTwo(one, two);
+            }
+
+
+            var message = string.Concat("Mine was somehow faster, mine: ", elapsedOne, " Bresenham: ", elapsedTwo);
+            Trace.WriteLine(message);
+
+            Assert.IsTrue(elapsedTwo <= elapsedOne, message);
+        }
+
+        private static long CalcOne(Coordinate2D one, Coordinate2D two)
+        {
+            var watch = Stopwatch.StartNew();
+            //test my stuff
+            _ = LineVector.LinearLine(one, two);
+
+            watch.Stop();
+
+            return watch.ElapsedMilliseconds;
+        }
+
+        private static long CalcTwo(Coordinate2D one, Coordinate2D two)
+        {
+            var watch = Stopwatch.StartNew();
+            //test my stuff
+            _ = MathSpeedTests.BresenhamPlotLine(one, two);
+
+            watch.Stop();
+
+            return watch.ElapsedMilliseconds;
         }
     }
 }

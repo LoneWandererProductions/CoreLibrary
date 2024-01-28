@@ -16,31 +16,6 @@ namespace CommonLibraryTests
     internal static class ResourcesGeneral
     {
         /// <summary>
-        ///     The jpg Extension (const). Value: ".jpg"
-        /// </summary>
-        private const string JpgExt = ".jpg";
-
-        /// <summary>
-        ///     The png Extension (const). Value: ".png"
-        /// </summary>
-        private const string PngExt = ".png";
-
-        /// <summary>
-        ///     The Bmp Extension (const). Value: ".Bmp"
-        /// </summary>
-        private const string BmpExt = ".Bmp";
-
-        /// <summary>
-        ///     The Gif Extension (const). Value: ".gif"
-        /// </summary>
-        private const string GifExt = ".gif";
-
-        /// <summary>
-        ///     The Tif Extension (const). Value: ".tif"
-        /// </summary>
-        private const string TifExt = ".tif";
-
-        /// <summary>
         ///     Extension (const). Value: ".anp".
         /// </summary>
         private const string Anp = ".anp";
@@ -74,18 +49,6 @@ namespace CommonLibraryTests
         ///     Extension (const). Value: ".txt".
         /// </summary>
         internal const string TstExt = ".txt";
-
-        /// <summary>
-        ///     The File Appendix
-        /// </summary>
-        internal static readonly List<string> Appendix = new()
-        {
-            JpgExt,
-            PngExt,
-            BmpExt,
-            GifExt,
-            TifExt
-        };
 
         /// <summary>
         ///     Collection of Extensions
