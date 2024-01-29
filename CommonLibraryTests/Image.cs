@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -747,9 +746,9 @@ namespace CommonLibraryTests
             one = new Coordinate2D(1, 0);
             two = new Coordinate2D(30001, 10000);
 
-            long elapsedOne =0, elapsedTwo = 0;
+            long elapsedOne = 0, elapsedTwo = 0;
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
                 elapsedOne += CalcOne(one, two);
                 elapsedTwo += CalcTwo(one, two);

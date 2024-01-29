@@ -9,7 +9,6 @@
  *              https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace Mathematics
@@ -20,16 +19,19 @@ namespace Mathematics
     public static class LineVector
     {
         /// <summary>
-        ///  Create Coordinates for a line.
+        ///     Create Coordinates for a line.
         /// </summary>
         /// <param name="from">From.</param>
         /// <param name="to">To.</param>
         /// <returns></returns>
         public static List<Coordinate2D> LinearLine(Coordinate2D from, Coordinate2D to)
         {
-            if (from.Equals(to)) return null;
+            if (from.Equals(to))
+            {
+                return null;
+            }
 
-            List<Coordinate2D> lst = new List<Coordinate2D>();
+            var lst = new List<Coordinate2D>();
 
             if (to.Y == from.Y)
             {
@@ -48,7 +50,7 @@ namespace Mathematics
 
                 for (var y = from.Y; y <= to.Y; y++)
                 {
-                    var point = new Coordinate2D { X = from.X, Y = y};
+                    var point = new Coordinate2D { X = from.X, Y = y };
                     lst.Add(point);
                 }
 
@@ -71,7 +73,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///  Create Coordinates for a line.
+        ///     Create Coordinates for a line.
         /// </summary>
         /// <param name="from">From.</param>
         /// <param name="to">To.</param>
@@ -80,7 +82,10 @@ namespace Mathematics
         {
             var lst = new List<Vector3D>();
 
-            if (from.Equals(to)) return null;
+            if (from.Equals(to))
+            {
+                return null;
+            }
 
             if (to.Y == from.Y)
             {
@@ -109,7 +114,7 @@ namespace Mathematics
 
             for (var x = from.X; x <= to.X; x++)
             {
-                var y = m * x + n;
+                var y = (m * x) + n;
                 var point = new Vector3D { X = x, Y = y };
                 lst.Add(point);
             }

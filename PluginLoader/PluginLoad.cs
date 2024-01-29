@@ -108,7 +108,10 @@ namespace PluginLoader
         /// <returns>Success Status</returns>
         public static bool SetEnvironmentVariables(Dictionary<int, object> store)
         {
-            if (store == null) return false;
+            if (store == null)
+            {
+                return false;
+            }
 
             //key, here we define the access able Environment for the plugins
             DataRegister.Store = store;

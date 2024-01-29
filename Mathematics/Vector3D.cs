@@ -375,11 +375,11 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="TertiaryVector" /> to <see cref="Vector3D" />.
+        ///     Performs an explicit conversion from <see cref="TertiaryVector" /> to <see cref="Vector3D" />.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static explicit operator Vector3D(TertiaryVector first)
         {
@@ -387,11 +387,11 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="TertiaryFace"/> to <see cref="Vector3D"/>.
+        ///     Performs an explicit conversion from <see cref="TertiaryFace" /> to <see cref="Vector3D" />.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
-        /// The result of the conversion.
+        ///     The result of the conversion.
         /// </returns>
         public static explicit operator Vector3D(TertiaryFace first)
         {
