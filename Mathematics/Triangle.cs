@@ -6,7 +6,12 @@ namespace Mathematics
 {
     public class Triangle
     {
-        // Triangles need to be supplied on a CLOCKWISE order
+        /// <summary>
+        /// Creates the triangle set.
+        /// Triangles need to be supplied on a CLOCKWISE order
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <returns>A list with Triangles, three Vectors in one Object</returns>
         public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
         {
             List<Triangle> polygons = new List<Triangle>();

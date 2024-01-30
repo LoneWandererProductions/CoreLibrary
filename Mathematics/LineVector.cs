@@ -9,6 +9,7 @@
  *              https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace Mathematics
