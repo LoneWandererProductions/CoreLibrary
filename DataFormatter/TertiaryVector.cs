@@ -16,6 +16,26 @@ namespace DataFormatter
     public sealed class TertiaryVector
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TertiaryVector"/> class.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="z">The z.</param>
+        public TertiaryVector(double x, double y, double z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TertiaryVector"/> class.
+        /// </summary>
+        public TertiaryVector()
+        {
+        }
+
+        /// <summary>
         ///     Gets the x.
         /// </summary>
         /// <value>

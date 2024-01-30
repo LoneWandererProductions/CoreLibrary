@@ -12,9 +12,9 @@ namespace CommonLibraryTests
         public void MeshLoader()
         {
             var obj = ResourceObjects.GetCube();
-            Projection3DMesh.CreateTri(obj);
+            var poly = Triangle.CreateTri(obj);
 
-            Assert.AreEqual(12, Projection3DMesh.Polygons.Count, "Not the correct Count");
+            Assert.AreEqual(12, poly.Count, "Not the correct Count");
         }
     }
 

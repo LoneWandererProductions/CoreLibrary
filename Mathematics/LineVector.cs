@@ -87,7 +87,7 @@ namespace Mathematics
                 return null;
             }
 
-            if (to.Y == from.Y)
+            if (Math.Abs(to.Y - from.Y) < MathResources.Tolerance)
             {
                 for (var x = from.X; x <= to.X; x++)
                 {
@@ -98,7 +98,7 @@ namespace Mathematics
                 return lst;
             }
 
-            if (to.X == from.X)
+            if (Math.Abs(to.X - from.X) < MathResources.Tolerance)
             {
                 for (var y = from.Y; y <= from.Y; y++)
                 {

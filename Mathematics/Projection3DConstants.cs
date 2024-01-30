@@ -89,6 +89,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Scales the specified vector.
+        /// </summary>
+        /// <param name="vector">The vector.</param>
+        /// <returns>Scale Matrix.</returns>
+        public static BaseMatrix Scale(Vector3D vector)
+        {
+            double[,] scale = { { vector.X, 0, 0, 0 }, { 0, vector.Y, 0, 0 }, { 0, 0, vector.Z, 0 }, { 0, 0, 0, 1 } };
+
+            return new BaseMatrix { Matrix = scale };
+        }
+
+        /// <summary>
         ///     Scale Matrix.
         /// </summary>
         /// <param name="one">The x value.</param>

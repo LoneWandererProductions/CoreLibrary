@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -746,19 +747,27 @@ namespace CommonLibraryTests
             one = new Coordinate2D(1, 0);
             two = new Coordinate2D(30001, 10000);
 
-            long elapsedOne = 0, elapsedTwo = 0;
+            long mine = 0, bresenham = 0;
 
-            for (var i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
-                elapsedOne += CalcOne(one, two);
-                elapsedTwo += CalcTwo(one, two);
+                bresenham += CalcTwo(one, two);
+                mine += CalcOne(one, two);
             }
 
+            one = new Coordinate2D(30001, 10000);
+            two = new Coordinate2D(1, 0);
 
-            var message = string.Concat("Mine was somehow faster, mine: ", elapsedOne, " Bresenham: ", elapsedTwo);
+            for (int i = 0; i < 7; i++)
+            {
+                mine += CalcOne(one, two);
+                bresenham += CalcTwo(one, two);
+            }
+
+            var message = string.Concat("Mine was : ", mine, " Bresenham: ", bresenham);
             Trace.WriteLine(message);
 
-            Assert.IsTrue(elapsedTwo <= elapsedOne, message);
+            Assert.IsTrue(bresenham >= mine, message);
         }
 
         private static long CalcOne(Coordinate2D one, Coordinate2D two)
@@ -775,7 +784,7 @@ namespace CommonLibraryTests
         private static long CalcTwo(Coordinate2D one, Coordinate2D two)
         {
             var watch = Stopwatch.StartNew();
-            //test my stuff
+            //test Bresenham
             _ = MathSpeedTests.BresenhamPlotLine(one, two);
 
             watch.Stop();

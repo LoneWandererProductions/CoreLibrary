@@ -1,24 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DataFormatter;
 
 namespace Mathematics
 {
-    public static class Projection3DMesh
+    public class Triangle
     {
-        /// <summary>
-        ///     Gets or sets the polygons.
-        ///     Collection of polygons, which is a collection of vertices (tris or quads), for future reference we can use any
-        ///     geometry in the future
-        /// </summary>
-        /// <value>
-        ///     The polygons.
-        /// </value>
-        public static List<Triangle> Polygons { get; set; } = new();
-
         // Triangles need to be supplied on a CLOCKWISE order
-        public static void CreateTri(List<TertiaryVector> triangles)
+        public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
         {
-            for (var i = 0; i <= triangles.Count - 3; i += 3)
+            List<Triangle> polygons = new List<Triangle>();
+            for (int i = 0; i <= triangles.Count - 3; i += 3)
             {
                 var v1 = triangles[i];
                 var v2 = triangles[i + 1];
@@ -26,13 +18,19 @@ namespace Mathematics
 
                 var triangle = new Triangle((Vector3D)v1, (Vector3D)v2, (Vector3D)v3);
 
-                Polygons.Add(triangle);
+                polygons.Add(triangle);
             }
-        }
-    }
 
-    public sealed class Triangle
-    {
+            return polygons;
+        }
+
+        public Triangle(Vector3D[] vertices)
+        {
+            Array.Resize(ref vertices, 3);
+
+            Vertices = vertices;
+        }
+
         public Triangle(Vector3D v1, Vector3D v2, Vector3D v3)
         {
             Vertices = new Vector3D[3];
@@ -40,6 +38,13 @@ namespace Mathematics
             Vertices[0] = v1;
             Vertices[1] = v2;
             Vertices[2] = v3;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Triangle"/> class.
+        /// </summary>
+        protected Triangle()
+        {
         }
 
         public Vector3D Normal
@@ -55,7 +60,7 @@ namespace Mathematics
 
         public int VertexCount => Vertices.Length;
 
-        public Vector3D[] Vertices { get; }
+        public Vector3D[] Vertices { get; set; }
 
         public Vector3D this[int i]
         {

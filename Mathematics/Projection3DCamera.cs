@@ -97,8 +97,37 @@ namespace Mathematics
 
             // Form ModelViewProjectionMatrix
 
+            // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
+
             return ProjectionTo3D(vector);
         }
+
+        /// <summary>
+        /// Gets the model matrix.
+        /// </summary>
+        /// <param name="transform">The transform.</param>
+        /// <returns>The Model Matrix</returns>
+        public static BaseMatrix GetModelMatrix(Transform transform)
+        {
+            // Use LEFT-Handed rotation matrices (as seen in DirectX)
+            // https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
+
+            BaseMatrix rotationX = Projection3DConstants.RotateX(transform.Rotation.X);
+            BaseMatrix rotationY = Projection3DConstants.RotateX(transform.Rotation.Y);
+            BaseMatrix rotationZ = Projection3DConstants.RotateX(transform.Rotation.Z);
+
+            // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
+            var rotation = (rotationZ * rotationY);
+            rotation *= rotationX;
+
+            BaseMatrix translation = Projection3DConstants.Translate(transform.Position);
+
+            BaseMatrix scaling = Projection3DConstants.Scale(transform.Scale);
+
+            // Model Matrix = T × R × S (right to left order)
+            return ((scaling * rotation) * translation);
+        }
+
 
         /// <summary>
         ///     View matrix.
