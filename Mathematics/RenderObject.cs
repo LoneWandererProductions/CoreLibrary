@@ -2,18 +2,18 @@
 
 namespace Mathematics
 {
-    public sealed class RenderObject
+    public sealed class RenderObjects
     {
         public Transform Transform { get; set; }
 
         public static List<Triangle> Polygons { get; set; }
 
-        public BaseMatrix ModelMatrix => Projection3DCamera.GetModelMatrix(Transform);
+        public BaseMatrix ModelMatrix => Projection3DConstants.GetModelMatrix(Transform);
 
-        public static RenderObject Create(List<Triangle> polygons)
+        public static RenderObjects Create(List<Triangle> polygons)
         {
             Polygons = polygons;
-            return new RenderObject();
+            return new RenderObjects();
         }
     }
 }

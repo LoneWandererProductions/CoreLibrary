@@ -27,12 +27,13 @@ namespace Mathematics
         /// <returns></returns>
         public static List<Coordinate2D> LinearLine(Coordinate2D from, Coordinate2D to)
         {
+            var lst = new List<Coordinate2D>();
+
             if (from.Equals(to))
             {
-                return null;
+                lst.Add(from);
+                return lst;
             }
-
-            var lst = new List<Coordinate2D>();
 
             if (to.Y == from.Y)
             {
@@ -85,7 +86,8 @@ namespace Mathematics
 
             if (from.Equals(to))
             {
-                return null;
+                lst.Add(from);
+                return lst;
             }
 
             if (Math.Abs(to.Y - from.Y) < MathResources.Tolerance)

@@ -62,6 +62,26 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Orthographic projection to3 d.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <returns>Transformed Coordinates</returns>
+        public static Vector3D OrthographicProjectionTo3D(Vector3D start)
+        {
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+
+            var m1 = new BaseMatrix(matrix);
+            var projection = OrthographicProjectionTo3DMatrix();
+
+            var result = m1 * projection;
+            var x = result[0, 0];
+            var y = result[0, 1];
+            var z = result[0, 2];
+
+            return new Vector3D(x, y, z);
+        }
+
+        /// <summary>
         ///     Worlds the matrix.
         /// </summary>
         /// <param name="vector">Vector to be transformed</param>
@@ -100,32 +120,6 @@ namespace Mathematics
             // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
 
             return ProjectionTo3D(vector);
-        }
-
-        /// <summary>
-        /// Gets the model matrix.
-        /// </summary>
-        /// <param name="transform">The transform.</param>
-        /// <returns>The Model Matrix</returns>
-        public static BaseMatrix GetModelMatrix(Transform transform)
-        {
-            // Use LEFT-Handed rotation matrices (as seen in DirectX)
-            // https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
-
-            BaseMatrix rotationX = Projection3DConstants.RotateX(transform.Rotation.X);
-            BaseMatrix rotationY = Projection3DConstants.RotateX(transform.Rotation.Y);
-            BaseMatrix rotationZ = Projection3DConstants.RotateX(transform.Rotation.Z);
-
-            // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
-            var rotation = (rotationZ * rotationY);
-            rotation *= rotationX;
-
-            BaseMatrix translation = Projection3DConstants.Translate(transform.Position);
-
-            BaseMatrix scaling = Projection3DConstants.Scale(transform.Scale);
-
-            // Model Matrix = T × R × S (right to left order)
-            return ((scaling * rotation) * translation);
         }
 
 
@@ -214,6 +208,22 @@ namespace Mathematics
             };
 
             //now lacks /w, has to be done at the end!
+            return new BaseMatrix(translation);
+        }
+
+        /// <summary>
+        /// Orthographic projection to3 d matrix.
+        /// </summary>
+        /// <returns>Projection Matrix</returns>
+        private static BaseMatrix OrthographicProjectionTo3DMatrix()
+        {
+            double[,] translation =
+            {
+                {Projection3DRegister.A, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 1}
+            };
             return new BaseMatrix(translation);
         }
 

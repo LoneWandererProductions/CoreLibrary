@@ -72,5 +72,10 @@ namespace Mathematics
             get => Vertices[i];
             set => Vertices[i] = value;
         }
+
+        public override string ToString()
+        {
+            return string.Concat("1: ", Vertices[0].ToString(), " 2: ", Vertices[1].ToString(), " 3: ", Vertices[2].ToString());
+        }
     }
 }
