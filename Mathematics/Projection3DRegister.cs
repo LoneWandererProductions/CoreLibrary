@@ -83,6 +83,6 @@ namespace Mathematics
         /// <value>
         ///     The distance distortion, based on zNear and zFar
         /// </value>
-        internal static double Q => ZFar / (ZFar - ZNear);
+        internal static double Q => -ZFar / (ZFar - ZNear);
     }
 }
