@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using Mathematics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace Test
+namespace Mathematics
 {
-    public class Rasterizer
+    public sealed class Rasterizer
     {
         private readonly int _width, _height;
 
-        public void Render(RenderObject rObject, bool IsOrthographic)
+        public IEnumerable<Triangle> Render(RenderObject rObject, bool IsOrthographic)
         {
             // Precompute all necessary matrices (MVP)
             // (((v * M) * V) * P) -> Row Major ('v' on the right)
@@ -21,7 +21,7 @@ namespace Test
             {
                 //TODO error here
                 updatedTri[i] = new Triangle(new Vector3D[rObject.Polygons[i].VertexCount]);
-                Trace.WriteLine("1:" + updatedTri[i]);
+                //Trace.WriteLine("1:" + updatedTri[i]);
 
                 for (var j = 0;
                     j < rObject.Polygons[i].VertexCount;
@@ -54,7 +54,9 @@ namespace Test
                 }
             }
 
-            PlotMesh(updatedTri);
+            return updatedTri;
+
+            //PlotMesh(updatedTri);
         }
 
         private void ShadeTri(ref Triangle tri, double dotProduct)

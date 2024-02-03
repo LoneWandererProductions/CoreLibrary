@@ -344,22 +344,17 @@ namespace LightVector
         internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
             int angleZ, int scale)
         {
-            var tertiary =
-                objFile.Vectors.ConvertAll(triangle => Convert(triangle, translation, angleX, angleY, angleZ, scale));
+            var poly = Triangle.CreateTri(objFile.Vectors);
+            var transform = new Transform();
+            var renderObj = new RenderObject(poly, transform);
+            var raster = new Rasterizer();
+            var render = raster.Render(renderObj, false);
 
-            if (tertiary.IsNullOrEmpty())
-            {
-                return null;
-            }
+            var lst = Triangle.GetCoordinates(render);
 
-            var points = tertiary.Select(coordinate => new Point { X = coordinate.X, Y = coordinate.Y }).ToList();
+            var points = lst.Select(item => item.ToPoint()).ToList();
 
-            if (points.IsNullOrEmpty())
-            {
-                return null;
-            }
-
-            return new Polygons { Points = points };
+            return new Polygons {Points = points};
         }
 
         private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY,

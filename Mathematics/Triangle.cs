@@ -14,7 +14,8 @@ namespace Mathematics
         /// <returns>A list with Triangles, three Vectors in one Object</returns>
         public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
         {
-            List<Triangle> polygons = new List<Triangle>();
+            var polygons = new List<Triangle>();
+
             for (int i = 0; i <= triangles.Count - 3; i += 3)
             {
                 var v1 = triangles[i];
@@ -27,6 +28,18 @@ namespace Mathematics
             }
 
             return polygons;
+        }
+
+        public static IEnumerable<Vector3D> GetCoordinates(IEnumerable<Triangle> render)
+        {
+            var lst = new List<Vector3D>();
+
+            foreach (var triangle in render)
+            {
+                lst.AddRange(triangle.Vertices);
+            }
+
+            return lst;
         }
 
         public Triangle(Vector3D[] vertices)

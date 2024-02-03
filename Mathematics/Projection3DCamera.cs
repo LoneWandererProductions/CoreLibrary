@@ -139,7 +139,16 @@ namespace Mathematics
 
             //var lookDir = cameraRotation * target, (matrix * Vector)
             //TODO check, a huge mess, compare with other results
-            var mTarget = new BaseMatrix(1, 4) { [0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1 };
+
+            double[,] matrix =
+            {
+                { 0},
+                { 0},
+                { 1},
+                { 1 }
+            };
+
+            var mTarget = new BaseMatrix(matrix);
 
             mTarget = cameraRotation * mTarget;
             var lookDir = (Vector3D)mTarget;
@@ -169,28 +178,28 @@ namespace Mathematics
             var a = newForward * (up * newForward);
             var newUp = up - a;
             var newRight = newUp.CrossProduct(newForward);
+            var matrix = new double[4, 4];
+            matrix[0, 0] = newRight.X;
+            matrix[0, 0] = newRight.X;
+            matrix[0, 1] = newRight.Y;
+            matrix[0, 2] = newRight.Z;
+            matrix[0, 3] = 0.0f;
+            matrix[1, 0] = newUp.X;
+            matrix[1, 1] = newUp.Y;
+            matrix[1, 2] = newUp.Z;
+            matrix[1, 3] = 0.0f;
+            matrix[2, 0] = newForward.X;
+            matrix[2, 1] = newForward.Y;
+            matrix[2, 2] = newForward.Z;
+            matrix[2, 3] = 0.0f;
+            matrix[3, 0] = camera.X;
+            matrix[3, 1] = camera.Y;
+            matrix[3, 2] = camera.Z;
+            matrix[3, 3] = 1.0f;
 
             return new BaseMatrix
             {
-                Matrix =
-                {
-                    [0, 0] = newRight.X,
-                    [0, 1] = newRight.Y,
-                    [0, 2] = newRight.Z,
-                    [0, 3] = 0.0f,
-                    [1, 0] = newUp.X,
-                    [1, 1] = newUp.Y,
-                    [1, 2] = newUp.Z,
-                    [1, 3] = 0.0f,
-                    [2, 0] = newForward.X,
-                    [2, 1] = newForward.Y,
-                    [2, 2] = newForward.Z,
-                    [2, 3] = 0.0f,
-                    [3, 0] = camera.X,
-                    [3, 1] = camera.Y,
-                    [3, 2] = camera.Z,
-                    [3, 3] = 1.0f
-                }
+                Matrix = matrix
             };
         }
 
