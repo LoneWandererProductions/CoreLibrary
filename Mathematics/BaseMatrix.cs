@@ -265,8 +265,8 @@ namespace Mathematics
                 return null;
             }
 
-            var v = new Vector3D(first[0, 0], first[1, 0], first[2, 0]);
-            v.SetW(first[3, 0]);
+            var v = new Vector3D(first[0, 0], first[0, 1], first[0, 2]);
+            v.SetW(first[0, 3]);
             return v;
         }
 
