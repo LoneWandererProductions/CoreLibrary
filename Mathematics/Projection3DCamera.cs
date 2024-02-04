@@ -19,6 +19,8 @@ namespace Mathematics
     /// </summary>
     public static class Projection3DCamera
     {
+        private const double Rad = Math.PI / 180.0;
+
         //TODO
         // vector = vector * WorldMatrix
         // vector = matView * vector;
@@ -126,17 +128,16 @@ namespace Mathematics
         /// <summary>
         ///     View matrix.
         ///     Uses the PointAt matrix
+        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
         /// </summary>
         /// <returns>The View Matrix, aka the Camera</returns>
         public static BaseMatrix ViewMatrix(Transform transform)
         {
-            var toRad = (float)(Math.PI / 180.0f);
+            var cosPitch = Math.Cos(transform.Pitch * Rad);
+            var sinPitch = Math.Sin(transform.Pitch * Rad);
 
-            var cosPitch = (float)Math.Cos(transform.Pitch * toRad);
-            var sinPitch = (float)Math.Sin(transform.Pitch * toRad);
-
-            var cosYaw = (float)Math.Cos(transform.Yaw * toRad);
-            var sinYaw = (float)Math.Sin(transform.Yaw * toRad);
+            var cosYaw = Math.Cos(transform.Yaw * Rad);
+            var sinYaw = Math.Sin(transform.Yaw * Rad);
 
             transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
 
@@ -155,7 +156,8 @@ namespace Mathematics
             {
                 {transform.Right.X, transform.Up.X, transform.Forward.X, 0},
                 {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
-                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0}, {transl.X, transl.Y, transl.Z, 1}
+                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0},
+                {transl.X, transl.Y, transl.Z, 1}
             };
 
             return new BaseMatrix {Matrix = viewMatrix};

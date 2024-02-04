@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DataFormatter;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

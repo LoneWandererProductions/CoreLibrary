@@ -54,6 +54,8 @@ namespace Mathematics
                 }
             }
 
+            PlotMesh(updatedTri);
+
             return updatedTri;
 
             //PlotMesh(updatedTri);
