@@ -12,7 +12,7 @@ namespace Mathematics
             // Precompute all necessary matrices (MVP)
             // (((v * M) * V) * P) -> Row Major ('v' on the right)
             var modelMatrix = rObject.ModelMatrix;
-            var viewMatrix = Projection3DCamera.ViewMatrix(new Vector3D(), 90); //TODO _camera.ViewMatrix;
+            var viewMatrix = Projection3DCamera.ViewMatrix(rObject.Transform); //TODO _camera.ViewMatrix;
 
             // Create array to store transformed triangles
             var updatedTri = new Triangle[rObject.Polygons.Count];

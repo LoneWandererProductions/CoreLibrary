@@ -37,7 +37,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
             var projection = ProjectionTo3DMatrix();
@@ -62,13 +62,13 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Orthographic projection to3 d.
+        ///     Orthographic projection to3 d.
         /// </summary>
         /// <param name="start">The start.</param>
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D OrthographicProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
             var projection = OrthographicProjectionTo3DMatrix();
@@ -127,37 +127,38 @@ namespace Mathematics
         ///     View matrix.
         ///     Uses the PointAt matrix
         /// </summary>
-        /// <param name="camera">The camera.</param>
-        /// <param name="angle">The angle.</param>
         /// <returns>The View Matrix, aka the Camera</returns>
-        public static BaseMatrix ViewMatrix(Vector3D camera, double angle)
+        public static BaseMatrix ViewMatrix(Transform transform)
         {
-            var up = new Vector3D(0, 1, 0);
+            var toRad = (float)(Math.PI / 180.0f);
 
-            //rotate into new Position
-            var cameraRotation = CameraRotation(angle);
+            var cosPitch = (float)Math.Cos(transform.Pitch * toRad);
+            var sinPitch = (float)Math.Sin(transform.Pitch * toRad);
 
-            //var lookDir = cameraRotation * target, (matrix * Vector)
-            //TODO check, a huge mess, compare with other results
+            var cosYaw = (float)Math.Cos(transform.Yaw * toRad);
+            var sinYaw = (float)Math.Sin(transform.Yaw * toRad);
 
-            double[,] matrix =
+            transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
+
+            transform.Up = new Vector3D(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
+
+            transform.Forward = new Vector3D(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
+
+            // The inverse camera's translation
+            var transl = new Vector3D(-(transform.Right * transform.Position),
+                -(transform.Up * transform.Position),
+                -(transform.Forward * transform.Position));
+
+            // Join rotation and translation in a single matrix
+            // instead of calculating their multiplication
+            var viewMatrix = new[,]
             {
-                { 0},
-                { 0},
-                { 1},
-                { 1 }
+                {transform.Right.X, transform.Up.X, transform.Forward.X, 0},
+                {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
+                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0}, {transl.X, transl.Y, transl.Z, 1}
             };
 
-            var mTarget = new BaseMatrix(matrix);
-
-            mTarget = cameraRotation * mTarget;
-            var lookDir = (Vector3D)mTarget;
-            var vTarget = camera + lookDir;
-
-            var matCamera = PointAt(camera, vTarget, up);
-
-            // Make view matrix from camera
-            return matCamera.Inverse();
+            return new BaseMatrix {Matrix = viewMatrix};
         }
 
         /// <summary>
@@ -197,10 +198,7 @@ namespace Mathematics
             matrix[3, 2] = camera.Z;
             matrix[3, 3] = 1.0f;
 
-            return new BaseMatrix
-            {
-                Matrix = matrix
-            };
+            return new BaseMatrix {Matrix = matrix};
         }
 
         /// <summary>
@@ -211,10 +209,8 @@ namespace Mathematics
         {
             double[,] translation =
             {
-                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, 
-                { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 },
-                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
+                {Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0}, {0, Projection3DRegister.F, 0, 0},
+                {0, 0, Projection3DRegister.Q, 1}, {0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0}
             };
 
             //now lacks /w, has to be done at the end!
@@ -222,18 +218,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Orthographic projection to3 d matrix.
+        ///     Orthographic projection to3 d matrix.
         /// </summary>
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation =
-            {
-                {Projection3DRegister.A, 0, 0, 0},
-                {0, 1, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 1}
-            };
+            double[,] translation = {{Projection3DRegister.A, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
             return new BaseMatrix(translation);
         }
 
@@ -247,8 +237,8 @@ namespace Mathematics
         {
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
-                { 0, -Math.Sin(angle), 0, Math.Cos(angle) }, { 0, 0, 0, 1 }
+                {Math.Cos(angle), 0, Math.Sin(angle), 0}, {0, 1, 0, 0}, {0, -Math.Sin(angle), 0, Math.Cos(angle)},
+                {0, 0, 0, 1}
             };
 
             return new BaseMatrix(rotation);

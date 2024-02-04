@@ -276,16 +276,6 @@ namespace CommonLibraryTests
             Assert.AreEqual(result[1, 1], 0, "0");
         }
 
-        [TestMethod]
-        public void MatrixConversions()
-        {
-            double[,] x = { { 8, 4, 1, 1 }, { 3, 2 ,1, 1 }, { 3, 2, 1, 1 }, { 1, 1, 1, 1 } };
-
-            var m1 = new BaseMatrix { Matrix = x };
-
-
-        }
-
         /// <summary>
         ///     Matrix inversion.
         /// </summary>

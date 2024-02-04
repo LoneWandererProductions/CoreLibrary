@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DataFormatter;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,6 +9,9 @@ namespace CommonLibraryTests
     [TestClass]
     public class Projections
     {
+        /// <summary>
+        /// Test the Obj Loader
+        /// </summary>
         [TestMethod]
         public void MeshLoader()
         {
@@ -16,8 +20,24 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(12, poly.Count, "Not the correct Count");
         }
+
+        [TestMethod]
+        public void BasicStructure()
+        {
+            var objFile = ResourceObjects.GetCube();
+            var poly = Triangle.CreateTri(objFile);
+            var transform = new Transform();
+            var renderObj = new RenderObject(poly, transform);
+            var raster = new Rasterizer();
+            var render = raster.Render(renderObj, false);
+
+            var lst = Triangle.GetCoordinates(render);
+        }
     }
 
+    /// <summary>
+    /// Load a cube
+    /// </summary>
     internal static class ResourceObjects
     {
         /// <summary>
