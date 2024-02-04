@@ -129,6 +129,10 @@ namespace Mathematics
         ///     View matrix.
         ///     Uses the PointAt matrix
         ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
+        ///     https://ksimek.github.io/2012/08/22/extrinsic/
+        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
+        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#the-model-view-and-projection-matrices
+        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
         /// <returns>The View Matrix, aka the Camera</returns>
         public static BaseMatrix ViewMatrix(Transform transform)
@@ -164,46 +168,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Converts Coordinates based on the Camera.
-        ///     https://ksimek.github.io/2012/08/22/extrinsic/
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
-        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#the-model-view-and-projection-matrices
-        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
-        /// </summary>
-        /// <param name="camera">Current Position.</param>
-        /// <param name="target">Directional Vector, Point at.</param>
-        /// <param name="up">Directional Vector, Z Axis.(0,1,0), but (0,-1,0) would make you looking upside-down.</param>
-        /// <returns>matrix for Transforming the Coordinate</returns>
-        public static BaseMatrix PointAt(Vector3D camera, Vector3D target, Vector3D up)
-        {
-            var newForward = target - camera;
-            //TODO check
-            var a = newForward * (up * newForward);
-            var newUp = up - a;
-            var newRight = newUp.CrossProduct(newForward);
-            var matrix = new double[4, 4];
-            matrix[0, 0] = newRight.X;
-            matrix[0, 0] = newRight.X;
-            matrix[0, 1] = newRight.Y;
-            matrix[0, 2] = newRight.Z;
-            matrix[0, 3] = 0.0f;
-            matrix[1, 0] = newUp.X;
-            matrix[1, 1] = newUp.Y;
-            matrix[1, 2] = newUp.Z;
-            matrix[1, 3] = 0.0f;
-            matrix[2, 0] = newForward.X;
-            matrix[2, 1] = newForward.Y;
-            matrix[2, 2] = newForward.Z;
-            matrix[2, 3] = 0.0f;
-            matrix[3, 0] = camera.X;
-            matrix[3, 1] = camera.Y;
-            matrix[3, 2] = camera.Z;
-            matrix[3, 3] = 1.0f;
-
-            return new BaseMatrix {Matrix = matrix};
-        }
-
-        /// <summary>
         ///     Projections the to3 d matrix.
         /// </summary>
         /// <returns>Projection Matrix</returns>
@@ -227,23 +191,6 @@ namespace Mathematics
         {
             double[,] translation = {{Projection3DRegister.A, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
             return new BaseMatrix(translation);
-        }
-
-        /// <summary>
-        ///     Cameras the rotation.
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part4.cpp
-        /// </summary>
-        /// <param name="angle">The angle.</param>
-        /// <returns>The Rotation Matrix for our Camera</returns>
-        private static BaseMatrix CameraRotation(double angle)
-        {
-            double[,] rotation =
-            {
-                {Math.Cos(angle), 0, Math.Sin(angle), 0}, {0, 1, 0, 0}, {0, -Math.Sin(angle), 0, Math.Cos(angle)},
-                {0, 0, 0, 1}
-            };
-
-            return new BaseMatrix(rotation);
         }
     }
 }

@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Mathematics
 {
-    public sealed class Rasterizer
+    internal sealed class Rasterize
     {
-        private readonly int _width, _height;
+        internal int Width { get; init; }
+        internal int Height { get; init; }
 
-        public IEnumerable<Triangle> Render(RenderObject rObject, bool IsOrthographic)
+        internal IList<Triangle> Render(RenderObject rObject, bool isOrthographic)
         {
             // Precompute all necessary matrices (MVP)
             // (((v * M) * V) * P) -> Row Major ('v' on the right)
             var modelMatrix = rObject.ModelMatrix;
-            var viewMatrix = Projection3DCamera.ViewMatrix(rObject.Transform); //TODO _camera.ViewMatrix;
+            var viewMatrix = Projection3DCamera.ViewMatrix(rObject.Transform);
 
             // Create array to store transformed triangles
             var updatedTri = new Triangle[rObject.Polygons.Count];
@@ -21,7 +23,7 @@ namespace Mathematics
             {
                 //TODO error here
                 updatedTri[i] = new Triangle(new Vector3D[rObject.Polygons[i].VertexCount]);
-                //Trace.WriteLine("1:" + updatedTri[i]);
+                Trace.WriteLine("1:" + updatedTri[i]);
 
                 for (var j = 0;
                     j < rObject.Polygons[i].VertexCount;
@@ -50,15 +52,11 @@ namespace Mathematics
 
                     // Perspective Division
                     //updatedTri[i][j] = _camera.IsOrthographic() ? worldView : worldView / worldView.W;
-                    updatedTri[i][j] = IsOrthographic ? v2 : v1;
+                    updatedTri[i][j] = isOrthographic ? v2 : v1;
                 }
             }
 
-            PlotMesh(updatedTri);
-
             return updatedTri;
-
-            //PlotMesh(updatedTri);
         }
 
         private void ShadeTri(ref Triangle tri, double dotProduct)
@@ -77,28 +75,28 @@ namespace Mathematics
         }
 
         // Draws Mesh
-        public void PlotMesh(Triangle[] projected)
+        public List<Vector3D> PlotMesh(IList<Triangle> projected)
         {
-            for (var i = 0; i < projected.Length; i++)
-            {
-                if (BackFaceCulled(projected[i]))
-                {
-                    continue;
-                }
+            var lst = new List<Vector3D>();
 
-                for (var j = 0; j < projected[i].VertexCount; j++)
+            foreach (var tri in projected.Where(tri => !BackFaceCulled(tri)))
+            {
+                for (var j = 0; j < tri.VertexCount; j++)
                 {
-                    projected[i][j] = ConvertToRaster(projected[i][j]);
+                    tri[j] = ConvertToRaster(tri[j]);
                 }
 
                 for (var j = 0;
-                        j < projected[i].VertexCount;
-                        j++)
-                    // TODO Fills every possible spot between two given points to form a line
+                    j < tri.VertexCount;
+                    j++)
                 {
-                    LineVector.LinearLine(projected[i][j], projected[i][(j + 1) % projected[i].VertexCount]);
+                    lst.Add(tri[j]);
+
+                    lst.Add(tri[(j + 1) % tri.VertexCount]);
                 }
             }
+
+            return lst;
         }
 
         // Does not reverse 'Y' value (actual console Y)
@@ -107,13 +105,13 @@ namespace Mathematics
             /* Inverting the Y value 'fixes' a bug 
              * in which some triangles are not rendered;
              * Y gets inverted again at 'PlotPoint' */
-            return new((int)((v.X + 1) * 0.5f * _width),
-                -(int)((1 - ((v.Y + 1) * 0.5f)) * _height),
+            return new((int)((v.X + 1) * 0.5f * Width),
+                -(int)((1 - ((v.Y + 1) * 0.5f)) * Height),
                 -v.Z);
         }
 
         // Check if triangle is turning away from the camera
-        private bool BackFaceCulled(Triangle polygon)
+        private static bool BackFaceCulled(Triangle polygon)
         {
             // Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
             // Division by 2 is not necessary, since all we care about is if the value is positive/negative

@@ -8,9 +8,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Shapes;
 using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
@@ -342,17 +344,25 @@ namespace LightVector
         }
 
         internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
-            int angleZ, int scale)
+            int angleZ, int scale, int width, int height)
         {
-            var poly = Triangle.CreateTri(objFile.Vectors);
+            var projection = new Projection();
             var transform = new Transform();
-            var renderObj = new RenderObject(poly, transform);
-            var raster = new Rasterizer();
-            var render = raster.Render(renderObj, false);
+            var lst = projection.GenerateMesh(objFile, transform, height, width);
 
-            var lst = Triangle.GetCoordinates(render);
+            var cache = new List<Vector3D>();
 
-            var points = lst.Select(item => item.ToPoint()).ToList();
+            for (int i = 0; i < lst.Count; i += 2)
+            {
+                var one = lst[i];
+                var two = lst[i+1];
+
+                var line = Lines.LinearLine(one, two);
+
+                cache.AddRange(line);
+            }
+
+            var points = cache.ConvertAll(point => point.ToPoint());
 
             return new Polygons {Points = points};
         }

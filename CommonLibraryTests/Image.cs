@@ -708,7 +708,7 @@ namespace CommonLibraryTests
 
             //just test the Bresenham
             var lstOne = MathSpeedTests.BresenhamPlotLine(one, two);
-            var lstTwo = LineVector.LinearLine(one, two);
+            var lstTwo = global::Mathematics.Lines.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
             {
@@ -723,7 +723,7 @@ namespace CommonLibraryTests
             one = new Coordinate2D(1, 0);
             two = new Coordinate2D(1, 50);
 
-            lstTwo = LineVector.LinearLine(one, two);
+            lstTwo = global::Mathematics.Lines.LinearLine(one, two);
 
             Assert.AreEqual(lstTwo[25].Y, 25, "not equal");
             Assert.AreEqual(lstTwo[25].X, 1, "not equal");
@@ -733,7 +733,7 @@ namespace CommonLibraryTests
             one = new Coordinate2D(0, 0);
             two = new Coordinate2D(50, 0);
 
-            lstTwo = LineVector.LinearLine(one, two);
+            lstTwo = global::Mathematics.Lines.LinearLine(one, two);
 
             Assert.AreEqual(lstTwo[25].Y, 0, "not equal");
             Assert.AreEqual(lstTwo[25].X, 25, "not equal");
@@ -774,7 +774,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test my stuff
-            _ = LineVector.LinearLine(one, two);
+            _ = global::Mathematics.Lines.LinearLine(one, two);
 
             watch.Stop();
 

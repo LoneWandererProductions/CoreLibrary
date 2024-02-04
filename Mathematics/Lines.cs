@@ -17,7 +17,7 @@ namespace Mathematics
     /// <summary>
     ///     Bresenham Implementation
     /// </summary>
-    public static class LineVector
+    public static class Lines
     {
         /// <summary>
         ///     Create Coordinates for a line.

@@ -26,6 +26,9 @@ namespace CommonLibraryGuiTests
         /// </summary>
         private const int Width = 100;
 
+        private const int Height = 100;
+
+
         /// <summary>
         ///     The Vector Interface.
         /// </summary>
@@ -42,7 +45,7 @@ namespace CommonLibraryGuiTests
         [Test]
         public void InterfaceRotate()
         {
-            _vector = new Vectors(Width);
+            _vector = new Vectors(Height, Width);
 
             var startPoint = new Point { X = 0, Y = 0 };
 
@@ -251,7 +254,7 @@ namespace CommonLibraryGuiTests
         {
             File.Delete(Path);
 
-            var vct = new Vectors(100);
+            var vct = new Vectors(100, 100);
 
             var startPoint = new Point { X = 0, Y = 0 };
 

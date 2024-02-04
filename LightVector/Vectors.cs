@@ -27,10 +27,12 @@ namespace LightVector
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vectors" /> class.
         /// </summary>
+        /// <param name="height"></param>
         /// <param name="width">The width.</param>
-        public Vectors(int width)
+        public Vectors(int height, int width)
         {
             Width = width;
+            Height = height;
         }
 
         /// <summary>
@@ -51,9 +53,20 @@ namespace LightVector
         private List<CurveObject> Curves { get; set; }
 
         /// <summary>
-        ///     length of the Picture
+        /// Gets or sets the width of the Picture.
         /// </summary>
+        /// <value>
+        /// The width.
+        /// </value>
         private int Width { get; set; }
+
+        /// <summary>
+        /// Gets or sets the height of the Picture.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
+        private int Height { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -169,7 +182,7 @@ namespace LightVector
         public Polygons LoadObjectFile(ObjFile obj, Vector3D translation, int angleX, int angleY,
             int angleZ, int scale)
         {
-            return VgProcessing.CreatePolygon(obj, translation, angleX, angleY, angleZ, scale);
+            return VgProcessing.CreatePolygon(obj, translation, angleX, angleY, angleZ, scale, Width, Height);
         }
 
         /// <inheritdoc />
