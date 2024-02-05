@@ -372,7 +372,7 @@ namespace LightVector
         {
             var start = new Vector3D { X = triangle.X, Y = triangle.Y, Z = triangle.Z };
 
-            return Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
+            return null;//Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
         }
 
         /// <summary>

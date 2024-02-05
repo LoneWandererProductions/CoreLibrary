@@ -57,8 +57,6 @@ namespace ExtendedSystemObjects
                 {
                     var tmp = one[i];
                     _ = str.Append(tmp);
-                    Trace.WriteLine(i);
-                    Trace.WriteLine(i % row);
 
                     if ((i + 1) % row == 0 && i + 1 >= row)
                     {

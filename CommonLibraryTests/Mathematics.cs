@@ -303,6 +303,24 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Inverse Matrix");
         }
 
+
+        /// <summary>
+        ///     Matrix additions.
+        /// </summary>
+        [TestMethod]
+        public void MatrixToString()
+        {
+            double[,] x = { { 8, 4 }, { 3, 2 } };
+            var m1 = new BaseMatrix { Matrix = x };
+
+            var cache = m1.ToString();
+
+            var str = string.Concat("8 , 4", Environment.NewLine, "3 , 2", Environment.NewLine);
+            var check = string.Equals(cache, str);
+
+            Assert.IsTrue(check, "Done");
+        }
+
         /// <summary>
         ///     Vector3D Test.
         /// </summary>
