@@ -21,9 +21,72 @@ namespace CommonLibraryTests
             Assert.AreEqual(12, poly.Count, "Not the correct Count");
         }
 
+
+        /// <summary>
+        ///     Projections from 3d to 2d.
+        /// </summary>
+        [TestMethod]
+        public void ProjectionTo2D()
+        {
+            var vector = new Vector3D(8, 4, 5);
+
+            const int screenHeight = 240;
+            const int screenWidth = 256;
+
+            // Projection Matrix
+            const float fNear = 0.1f;
+            const float fFar = 1000.0f;
+            const float fFov = 90.0f;
+            const double fAspectRatio = (double)screenHeight / screenWidth;
+            var fFovRad = 1.0f / Math.Tan(fFov * 0.5f / 180.0f * 3.14159f);
+
+            Projection3DRegister.Width = screenWidth;
+            Projection3DRegister.Height = screenHeight;
+            Projection3DRegister.Angle = fFov;
+
+            var matProj = new BaseMatrix();
+
+            var m1 = new double[4, 4];
+
+            m1[0, 0] = fAspectRatio * fFovRad;
+            m1[1, 1] = fFovRad;
+            m1[2, 2] = fFar / (fFar - fNear);
+            m1[3, 2] = -fFar * fNear / (fFar - fNear);
+            m1[2, 3] = 1.0f;
+            m1[3, 3] = 0.0f;
+            matProj.Matrix = m1;
+
+            var vec = MultiplyMatrixVector(vector, matProj);
+
+            var comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            //known values: 1,1,3 expected: 1/3, 1/3, 1
+
+            vector = new Vector3D(1, 1, 3);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+        }
+
         [TestMethod]
         public void BasicStructure()
         {
+            const int screenHeight = 480;
+            const int screenWidth = 640;
+
+
+            Projection3DRegister.Width = screenWidth;
+            Projection3DRegister.Height = screenHeight;
+
             var objFile = ResourceObjects.GetCube();
             var poly = Triangle.CreateTri(objFile);
             var transform = new Transform();
@@ -60,7 +123,43 @@ namespace CommonLibraryTests
 
             var lst = Triangle.GetCoordinates(render);
         }
+
+        /// <summary>
+        ///     Multiplies the matrix vector.
+        /// </summary>
+        /// <param name="i">The i.</param>
+        /// <param name="matProj">The mat proj.</param>
+        /// <returns>The Projection Vecctor</returns>
+        private static Vector3D MultiplyMatrixVector(Vector3D i, BaseMatrix matProj)
+        {
+            var o = new Vector3D
+            {
+                X = (i.X * matProj.Matrix[0, 0]) + (i.Y * matProj.Matrix[1, 0]) + (i.Z * matProj.Matrix[2, 0]) +
+                    matProj.Matrix[3, 0],
+                Y = (i.X * matProj.Matrix[0, 1]) + (i.Y * matProj.Matrix[1, 1]) + (i.Z * matProj.Matrix[2, 1]) +
+                    matProj.Matrix[3, 1],
+                Z = (i.X * matProj.Matrix[0, 2]) + (i.Y * matProj.Matrix[1, 2]) + (i.Z * matProj.Matrix[2, 2]) +
+                    matProj.Matrix[3, 2]
+            };
+
+            var w = (i.X * matProj.Matrix[0, 3]) + (i.Y * matProj.Matrix[1, 3]) + (i.Z * matProj.Matrix[2, 3]) +
+                    matProj.Matrix[3, 3];
+
+            w = Math.Round(w, 2);
+
+            if (w == 0.0f)
+            {
+                return o;
+            }
+
+            o.X /= w;
+            o.Y /= w;
+            o.Z /= w;
+
+            return o;
+        }
     }
+
 
     /// <summary>
     /// Load a cube
