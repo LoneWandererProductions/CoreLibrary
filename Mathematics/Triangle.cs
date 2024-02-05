@@ -63,6 +63,11 @@ namespace Mathematics
         /// </summary>
         protected Triangle()
         {
+            Vertices = new Vector3D[3];
+
+            Vertices[0] = new Vector3D();
+            Vertices[1] = new Vector3D();
+            Vertices[2] = new Vector3D();
         }
 
         public Vector3D Normal
@@ -84,6 +89,13 @@ namespace Mathematics
         {
             get => Vertices[i];
             set => Vertices[i] = value;
+        }
+
+        public void Set(Vector3D one, Vector3D two, Vector3D three)
+        {
+            Vertices[0] = one;
+            Vertices[1] = two;
+            Vertices[2] = three;
         }
 
         public override string ToString()

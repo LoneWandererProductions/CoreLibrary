@@ -23,7 +23,7 @@ namespace Mathematics
             {
                 //TODO error here
                 updatedTri[i] = new Triangle(new Vector3D[rObject.Polygons[i].VertexCount]);
-                Trace.WriteLine("1:" + updatedTri[i]);
+                //Trace.WriteLine("1:" + updatedTri[i]);
 
                 for (var j = 0;
                     j < rObject.Polygons[i].VertexCount;
