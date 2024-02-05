@@ -389,6 +389,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(unitVector.X, 1, "X Addition");
             Assert.AreEqual(unitVector.Y, 1, "Y Addition");
             Assert.AreEqual(unitVector.Z, 1, "Z Addition");
+
+
+            var mat = (BaseMatrix)one;
         }
 
         /// <summary>

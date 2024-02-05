@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Mathematics
 {
@@ -98,7 +99,15 @@ namespace Mathematics
             var scaling = Projection3DConstants.Scale(transform.Scale);
 
             // Model Matrix = T × R × S (right to left order)
-            return (scaling * rotation) * translation;
+            //TransformedVector = TranslationMatrix * RotationMatrix * ScaleMatrix * OriginalVector;
+            // Model Matrix = T × R × S (right to left order)
+            //translation* rotation *scaling;
+            //scaling * rotation * translation
+            //scaling *translation* rotation;
+
+            var cache = rotation * translation;
+            Trace.WriteLine(cache.ToString());
+            return  rotation * translation;
         }
 
         /// <summary>

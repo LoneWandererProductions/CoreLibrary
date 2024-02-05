@@ -12,6 +12,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects;
 
 namespace Mathematics
 {
@@ -73,18 +74,18 @@ namespace Mathematics
         public double[,] Matrix { get; set; }
 
         /// <summary>
-        ///     Gets the height.
+        ///     Gets the height. Y
         /// </summary>
         /// <value>
-        ///     The height.
+        ///     The height. Y
         /// </value>
         public int Height => Matrix.GetLength(0);
 
         /// <summary>
-        ///     Gets the width.
+        ///     Gets the width. X
         /// </summary>
         /// <value>
-        ///     The width.
+        ///     The width. X
         /// </value>
         public int Width => Matrix.GetLength(1);
 
@@ -204,6 +205,21 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Implements the operator *.
+        /// </summary>
+        /// <param name="first">The first Matrix.</param>
+        /// <param name="v">The v.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static Vector3D operator *(BaseMatrix first, Vector3D v)
+        {
+            var mat = (BaseMatrix)v;
+            return (Vector3D)(first * mat);
+        }
+
+
+        /// <summary>
         ///     Implements the operator +.
         /// </summary>
         /// <param name="first">The first.</param>
@@ -290,7 +306,7 @@ namespace Mathematics
         /// </returns>
         public override string ToString()
         {
-            return Matrix.ToString();
+            return Matrix.ToText();
         }
     }
 }

@@ -63,7 +63,6 @@ namespace ExtendedSystemObjects
                     if ((i + 1) % row == 0 && i + 1 >= row)
                     {
                         _ = str.Append(Environment.NewLine);
-                        Trace.WriteLine("here");
                     }
                     else
                     {
