@@ -91,8 +91,9 @@ namespace Mathematics
             var rotationZ = Projection3DConstants.RotateX(transform.Rotation.Z);
 
             // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
-            var rotation = rotationZ * rotationY;
-            rotation *= rotationX;
+            var rotation = rotationZ * rotationY * rotationX;
+
+            Trace.WriteLine(rotation.ToString());
 
             var translation = Projection3DConstants.Translate(transform.Position);
 
@@ -105,9 +106,27 @@ namespace Mathematics
             //scaling * rotation * translation
             //scaling *translation* rotation;
 
-            var cache = rotation * translation;
+            Trace.WriteLine(translation.ToString());
+            Trace.WriteLine(rotation.ToString());
+            var cache = translation * rotation;
             Trace.WriteLine(cache.ToString());
-            return  rotation * translation;
+
+            //sample
+            //transform. Scale 1,1,1, Rotation, 0,0,0, Position, 0,0,3
+            //
+            //  1 0 0 0
+            //  0 1 -0 0
+            //  -0 0 1 0
+            //  -0 -0 -0 1
+            //  before:
+            //  [0] = {1: (-1; -1; -1) 2: (-1; 1; -1) 3: (1; 1; -1)}
+            //  [1] = {1: (-1; -1; -1) 2: (1; 1; -1) 3: (1; -1; -1)}
+            //  after:
+            //  [0] = {1: (-1; -1; 2) 2: (-1; 1; 2) 3: (1; 1; 2)}
+            //  [1] = {1: (-1; -1; 2) 2: (1; 1; 2) 3: (1; -1; 2)}
+
+
+            return scaling * rotation * translation;
         }
 
         /// <summary>
