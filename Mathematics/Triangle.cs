@@ -61,7 +61,7 @@ namespace Mathematics
         /// <summary>
         /// Initializes a new instance of the <see cref="Triangle"/> class.
         /// </summary>
-        protected Triangle()
+        public Triangle()
         {
             Vertices = new Vector3D[3];
 

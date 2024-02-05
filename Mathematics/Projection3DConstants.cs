@@ -128,31 +128,5 @@ namespace Mathematics
 
             return new BaseMatrix { Matrix = translate };
         }
-
-        /// <summary>
-        /// Gets the model matrix.
-        /// </summary>
-        /// <param name="transform">The transform.</param>
-        /// <returns>The Model Matrix</returns>
-        public static BaseMatrix GetModelMatrix(Transform transform)
-        {
-            // Use LEFT-Handed rotation matrices (as seen in DirectX)
-            // https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
-
-            BaseMatrix rotationX = RotateX(transform.Rotation.X);
-            BaseMatrix rotationY = RotateX(transform.Rotation.Y);
-            BaseMatrix rotationZ = RotateX(transform.Rotation.Z);
-
-            // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
-            var rotation = (rotationZ * rotationY);
-            rotation *= rotationX;
-
-            BaseMatrix translation = Translate(transform.Position);
-
-            BaseMatrix scaling = Scale(transform.Scale);
-
-            // Model Matrix = T × R × S (right to left order)
-            return ((scaling * rotation) * translation);
-        }
     }
 }

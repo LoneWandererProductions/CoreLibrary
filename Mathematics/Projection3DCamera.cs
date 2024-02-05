@@ -1,16 +1,4 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3DCamera.cs
- * PURPOSE:     Some basics for 3D displays. mostly the camera
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedMember.Global
-
-using System;
+﻿using System;
 
 namespace Mathematics
 {
@@ -39,7 +27,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = ProjectionTo3DMatrix();
@@ -70,7 +58,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D OrthographicProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = OrthographicProjectionTo3DMatrix();
@@ -83,47 +71,35 @@ namespace Mathematics
             return new Vector3D(x, y, z);
         }
 
-        /// <summary>
-        ///     Worlds the matrix.
-        /// </summary>
-        /// <param name="vector">Vector to be transformed</param>
-        /// <param name="translation">The translation.</param>
-        /// <param name="angleX">The angle x.</param>
-        /// <param name="angleY">The angle y.</param>
-        /// <param name="angleZ">The angle z.</param>
-        /// <param name="scale">The scale.</param>
         /// <returns>
         ///     World Transformation
+        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
+        ///     ModelViewProjection mvp = Projection * View * Model
+        ///     Use LEFT-Handed rotation matrices (as seen in DirectX)
+        ///     https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
         /// </returns>
-        public static Vector3D WorldMatrix(Vector3D vector, Vector3D translation, double angleX, double angleY,
-            double angleZ, int scale)
+        /// <summary>
+        /// Gets the model matrix.
+        /// </summary>
+        /// <param name="transform">The transform.</param>
+        /// <returns>The Model Matrix</returns>
+        public static BaseMatrix ModelMatrix(Transform transform)
         {
-            // Set up "World Transform"
-            //https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
-            //ModelViewProjection mvp = Projection * View * Model
-
-            // Model to World, Transform by rotation
-            vector = (Vector3D)Projection3D.RotateZ(vector, angleZ);
-            vector = (Vector3D)Projection3D.RotateY(vector, angleY);
-            vector = (Vector3D)Projection3D.RotateX(vector, angleX);
-            // Model to World, Transform by translation
-            if (translation != null)
-            {
-                vector = (Vector3D)Projection3D.Translate(vector, translation);
-            }
-
-            if (scale == 0)
-            {
-                vector = (Vector3D)Projection3D.Scale(vector, scale);
-            }
-
-            // Form ModelViewProjectionMatrix
+            var rotationX = Projection3DConstants.RotateX(transform.Rotation.X);
+            var rotationY = Projection3DConstants.RotateX(transform.Rotation.Y);
+            var rotationZ = Projection3DConstants.RotateX(transform.Rotation.Z);
 
             // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
+            var rotation = rotationZ * rotationY;
+            rotation *= rotationX;
 
-            return ProjectionTo3D(vector);
+            var translation = Projection3DConstants.Translate(transform.Position);
+
+            var scaling = Projection3DConstants.Scale(transform.Scale);
+
+            // Model Matrix = T × R × S (right to left order)
+            return (scaling * rotation) * translation;
         }
-
 
         /// <summary>
         ///     View matrix.
@@ -164,7 +140,7 @@ namespace Mathematics
                 {transl.X, transl.Y, transl.Z, 1}
             };
 
-            return new BaseMatrix {Matrix = viewMatrix};
+            return new BaseMatrix { Matrix = viewMatrix };
         }
 
         /// <summary>
@@ -189,8 +165,56 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation = {{Projection3DRegister.A, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+            double[,] translation = { { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
             return new BaseMatrix(translation);
+        }
+
+        public static BaseMatrix ViewCamera(int angle, Vector3D position, Vector3D target, Vector3D up)
+        {
+            var matCamera = PointAt(position, target, up);
+
+            return matCamera.Inverse();
+        }
+
+        /// <summary>
+        ///     Converts Coordinates based on the Camera.
+        ///     https://ksimek.github.io/2012/08/22/extrinsic/
+        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
+        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
+        /// </summary>
+        /// <param name="position">Current Position.</param>
+        /// <param name="target">Directional Vector, Point at.</param>
+        /// <param name="up">Directional Vector, Z Axis.</param>
+        /// <returns>matrix for Transforming the Coordinate</returns>
+        public static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
+        {
+            var newForward = target - position;
+            var a = newForward *(up * newForward);
+            var newUp = up - a;
+            var newRight = newUp.CrossProduct(newForward);
+
+            return new BaseMatrix
+            {
+                Matrix =
+                {
+                    [0, 0] = newRight.X,
+                    [0, 1] = newRight.Y,
+                    [0, 2] = newRight.Z,
+                    [0, 3] = 0.0f,
+                    [1, 0] = newUp.X,
+                    [1, 1] = newUp.Y,
+                    [1, 2] = newUp.Z,
+                    [1, 3] = 0.0f,
+                    [2, 0] = newForward.X,
+                    [2, 1] = newForward.Y,
+                    [2, 2] = newForward.Z,
+                    [2, 3] = 0.0f,
+                    [3, 0] = position.X,
+                    [3, 1] = position.Y,
+                    [3, 2] = position.Z,
+                    [3, 3] = 1.0f
+                }
+            };
         }
     }
 }
