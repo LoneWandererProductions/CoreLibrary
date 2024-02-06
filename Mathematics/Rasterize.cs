@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Mathematics
 {
-    internal sealed class Rasterize
+    public sealed class Rasterize
     {
-        internal int Width { get; init; }
-        internal int Height { get; init; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
         internal IList<Triangle> Render(RenderObject rObject, bool isOrthographic)
         {
@@ -74,21 +73,50 @@ namespace Mathematics
             }
         }
 
-        // Draws Mesh
-        public List<Vector3D> PlotMesh(IList<Triangle> projected)
+        /// <summary>
+        /// Backs the face culled.
+        /// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
+        /// Division by 2 is not necessary, since all we care about is if the value is positive/negative
+        /// </summary>
+        /// <param name="projected">The projected.</param>
+        /// <returns>List of visible Triangles</returns>
+        public List<Triangle> BackFaceCulled(List<Triangle> projected)
+        {
+            var culled = new List<Triangle>();
+
+            foreach (var triangle in projected)
+            {
+                double sum = 0.0f;
+
+                for (var i = 0; i < triangle.VertexCount; i++)
+                {
+                    sum += (triangle[i].X * triangle[(i + 1) % triangle.VertexCount].Y) -
+                           (triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X);
+                }
+
+                if(sum < 0) culled.Add(triangle);
+            }
+
+            return culled;
+        }
+
+        /// <summary>
+        /// Converts the into view.
+        /// </summary>
+        /// <param name="projected">The projected.</param>
+        /// <returns></returns>
+        public List<Vector3D> ConvertIntoView(IEnumerable<Triangle> projected)
         {
             var lst = new List<Vector3D>();
 
-            foreach (var tri in projected.Where(tri => !BackFaceCulled(tri)))
+            foreach (var tri in projected)
             {
                 for (var j = 0; j < tri.VertexCount; j++)
                 {
                     tri[j] = ConvertToRaster(tri[j]);
                 }
 
-                for (var j = 0;
-                    j < tri.VertexCount;
-                    j++)
+                for (var j = 0; j < tri.VertexCount; j++)
                 {
                     lst.Add(tri[j]);
 
@@ -99,32 +127,17 @@ namespace Mathematics
             return lst;
         }
 
-        // Does not reverse 'Y' value (actual console Y)
-        private Vector3D ConvertToRaster(Vector3D v)
+
+        /// <summary>
+        /// Converts to raster.
+        /// </summary>
+        /// <param name="v">The v.</param>
+        /// <returns>New Coordinates to center the View into the Image</returns>
+        public Vector3D ConvertToRaster(Vector3D v)
         {
-            /* Inverting the Y value 'fixes' a bug 
-             * in which some triangles are not rendered;
-             * Y gets inverted again at 'PlotPoint' */
-            return new((int)((v.X + 1) * 0.5f * Width),
-                -(int)((1 - ((v.Y + 1) * 0.5f)) * Height),
+            return new((int)((v.X + 1) * 0.5d * Width),
+                (int)((1 - ((v.Y + 1) * 0.5d)) * Height),
                 -v.Z);
-        }
-
-        // Check if triangle is turning away from the camera
-        private static bool BackFaceCulled(Triangle polygon)
-        {
-            // Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
-            // Division by 2 is not necessary, since all we care about is if the value is positive/negative
-
-            double sum = 0.0f;
-
-            for (var i = 0; i < polygon.VertexCount; i++)
-            {
-                sum += (polygon[i].X * polygon[(i + 1) % polygon.VertexCount].Y) -
-                       (polygon[i].Y * polygon[(i + 1) % polygon.VertexCount].X);
-            }
-
-            return sum >= 0;
         }
     }
 }

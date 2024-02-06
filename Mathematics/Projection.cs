@@ -10,10 +10,12 @@ namespace Mathematics
             var poly = Triangle.CreateTri(obj.Vectors);
             var renderObj = new RenderObject(poly, transform);
             var raster = new Rasterize {Height = height, Width = width};
-
+            //generate 3D View
             var updatedTri = raster.Render(renderObj, false);
-            var tri = raster.PlotMesh(updatedTri);
-            return tri;
+            //Back Face Culling
+            updatedTri = raster.BackFaceCulled(updatedTri);
+            //Move into View
+            return raster.ConvertIntoView(updatedTri);
         }
     }
 }
