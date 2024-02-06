@@ -160,7 +160,6 @@ namespace CommonLibraryTests
             var v3 = new Vector3D(1, 1, -1);
 
             var target = v1 * model;
-
         }
 
 

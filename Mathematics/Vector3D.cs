@@ -81,13 +81,13 @@ namespace Mathematics
         public double Z { get; set; }
 
         /// <summary>
-        ///     Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
-        ///     This has no relevance, whatsoever for the other calculations.
+        /// Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
+        /// This has no relevance, whatsoever for the other calculations.
         /// </summary>
         /// <value>
-        ///     The w.
+        /// The w  Value, which is 1 when initialized.
         /// </value>
-        public double W { get; private set; }
+        public double W { get; private set; } = 1;
 
         /// <summary>
         ///     Gets the zero Vector.
