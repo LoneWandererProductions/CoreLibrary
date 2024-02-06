@@ -87,8 +87,8 @@ namespace Mathematics
         public static BaseMatrix ModelMatrix(Transform transform)
         {
             var rotationX = Projection3DConstants.RotateX(transform.Rotation.X);
-            var rotationY = Projection3DConstants.RotateX(transform.Rotation.Y);
-            var rotationZ = Projection3DConstants.RotateX(transform.Rotation.Z);
+            var rotationY = Projection3DConstants.RotateY(transform.Rotation.Y);
+            var rotationZ = Projection3DConstants.RotateZ(transform.Rotation.Z);
 
             // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
             var rotation = rotationZ * rotationY * rotationX;
@@ -117,7 +117,6 @@ namespace Mathematics
             //  after:
             //  [0] = {1: (-1; -1; 2) 2: (-1; 1; 2) 3: (1; 1; 2)}
             //  [1] = {1: (-1; -1; 2) 2: (1; 1; 2) 3: (1; -1; 2)}
-
 
             return scaling * rotation * translation;
         }
