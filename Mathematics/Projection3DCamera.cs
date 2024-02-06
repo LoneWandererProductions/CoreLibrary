@@ -100,24 +100,6 @@ namespace Mathematics
             var scaling = Projection3DConstants.Scale(transform.Scale);
 
             // Model Matrix = T × R × S (right to left order)
-            //TransformedVector = TranslationMatrix * RotationMatrix * ScaleMatrix * OriginalVector;
-            // Model Matrix = T × R × S (right to left order)
-            //translation* rotation *scaling;
-            //scaling * rotation * translation
-            //scaling *translation* rotation;
-
-            Trace.WriteLine(translation.ToString());
-            Trace.WriteLine(rotation.ToString());
-            var cache = translation * rotation;
-            Trace.WriteLine(cache.ToString());
-
-            //  before:
-            //  [0] = {1: (-1; -1; -1) 2: (-1; 1; -1) 3: (1; 1; -1)}
-            //  [1] = {1: (-1; -1; -1) 2: (1; 1; -1) 3: (1; -1; -1)}
-            //  after:
-            //  [0] = {1: (-1; -1; 2) 2: (-1; 1; 2) 3: (1; 1; 2)}
-            //  [1] = {1: (-1; -1; 2) 2: (1; 1; 2) 3: (1; -1; 2)}
-
             return scaling * rotation * translation;
         }
 

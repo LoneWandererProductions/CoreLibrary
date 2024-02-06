@@ -155,11 +155,49 @@ namespace CommonLibraryTests
             check = model == cache;
             Assert.IsTrue(check, "Equal check failed");
 
+            //before
+            //  [0] = {1: (-1; -1; -1) 2: (-1; 1; -1) 3: (1; 1; -1)}
+            //after
+            //  [0] = {1: (-1; -1; 2) 2: (-1; 1; 2) 3: (1; 1; 2)}
             var v1 = new Vector3D(-1, -1, -1);
+            var tv1 = new Vector3D(-1, -1, 2);
             var v2 = new Vector3D(-1, 1, -1);
+            var tv2 = new Vector3D(-1, 1, 2);
             var v3 = new Vector3D(1, 1, -1);
+            var tv3 = new Vector3D(1, 1, 2);
 
-            var target = v1 * model;
+            var target1 = v1 * model;
+            var target2 = v2 * model;
+            var target3 = v3 * model;
+
+            check = target1 == tv1;
+            Assert.IsTrue(check, "Vector not converted");
+            check = target2 == tv2;
+            Assert.IsTrue(check, "Vector not converted");
+            check = target3 == tv3;
+            Assert.IsTrue(check, "Vector not converted");
+
+            //before
+            //  [1] = {1: (-1; -1; -1) 2: (1; 1; -1) 3: (1; -1; -1)}
+            //after
+            //  [1] = {1: (-1; -1; 2) 2: (1; 1; 2) 3: (1; -1; 2)}
+            v1 = new Vector3D(-1, -1, -1);
+             tv1 = new Vector3D(-1, -1, 2);
+             v2 = new Vector3D(1, 1, -1);
+             tv2 = new Vector3D(1, 1, 2);
+             v3 = new Vector3D(1, -1, -1);
+             tv3 = new Vector3D(1, -1, 2);
+
+             target1 = v1 * model;
+             target2 = v2 * model;
+             target3 = v3 * model;
+
+            check = target1 == tv1;
+            Assert.IsTrue(check, "Vector not converted");
+            check = target2 == tv2;
+            Assert.IsTrue(check, "Vector not converted");
+            check = target3 == tv3;
+            Assert.IsTrue(check, "Vector not converted");
         }
 
 
