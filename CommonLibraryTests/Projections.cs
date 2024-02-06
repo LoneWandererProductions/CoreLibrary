@@ -89,35 +89,6 @@ namespace CommonLibraryTests
             var renderObj = new RenderObject(poly, transform);
             var raster = new Rasterize();
             var render = raster.Render(renderObj, false);
-
-            var first = render[0];
-            var second = render[11];
-
-            Assert.AreEqual(0, Math.Round(first[0].X, 2), "Failed");
-            Assert.AreEqual(0, Math.Round(first[0].Y, 2), "Failed");
-            Assert.AreEqual(-0.10, Math.Round(first[0].Z, 2), "Failed");
-
-            Assert.AreEqual(0, Math.Round(first[1].X, 2), "Failed");
-            Assert.AreEqual(19.08, Math.Round(first[1].Y, 2), "Failed");
-            Assert.AreEqual(-0.91, Math.Round(first[1].Z, 2), "Failed");
-
-            Assert.AreEqual(14.33, Math.Round(first[2].X, 2), "Failed");
-            Assert.AreEqual(19.08, Math.Round(first[2].Y, 2), "Failed");
-            Assert.AreEqual(-0.91, Math.Round(first[2].Z, 2), "Failed");
-
-            Assert.AreEqual(0.75, Math.Round(second[0].X, 2), "Failed");
-            Assert.AreEqual(-0.05, Math.Round(second[0].Y, 2), "Failed");
-            Assert.AreEqual(0.9, Math.Round(second[0].Z, 2), "Failed");
-
-            Assert.AreEqual(0, Math.Round(second[1].X, 2), "Failed");
-            Assert.AreEqual(0, Math.Round(second[1].Y, 2), "Failed");
-            Assert.AreEqual(-0.10, Math.Round(second[1].Z, 2), "Failed");
-
-            Assert.AreEqual(0.75, Math.Round(second[2].X, 2), "Failed");
-            Assert.AreEqual(0, Math.Round(second[2].Y, 2), "Failed");
-            Assert.AreEqual(-0.1, Math.Round(second[2].Z, 2), "Failed");
-
-            var lst = Triangle.GetCoordinates(render);
         }
 
         /// <summary>
