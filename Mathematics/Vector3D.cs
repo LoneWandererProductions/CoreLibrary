@@ -365,12 +365,11 @@ namespace Mathematics
         /// <returns>Vector transformed to Matrix</returns>
         public static explicit operator BaseMatrix(Vector3D first)
         {
-            var matrix = new double[1, 4];
-            matrix[0, 0] = first.X;
-            matrix[0, 1] = first.Y;
-            matrix[0, 2] = first.Z;
-            //special case only for 3D Stuff
-            matrix[0, 3] = first.W;
+            var matrix = new double[,]
+            {
+                {first.X,first.Y, first.Z,first.W}
+            };
+
             return new BaseMatrix(matrix);
         }
 

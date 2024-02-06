@@ -165,5 +165,23 @@ namespace CommonLibraryTests
 
             return lst;
         }
+
+        public static BaseMatrix TestTwo(double[,] m1, double[,] m2)
+        {
+            var newMatrix = new double[m1.GetLength(0), m2.GetLength(1)];
+
+            for (var i = 0; i < m1.GetLength(0); i++)
+            for (var j = 0; j < m2.GetLength(1); j++)
+            {
+                double sum = 0;
+
+                for (var k = 0; k < m1.GetLength(1); k++) sum += m1[i, k] * m2[k, j];
+
+                newMatrix[i, j] = sum;
+            }
+
+            return newMatrix;
+        }
+
     }
 }

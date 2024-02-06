@@ -234,6 +234,18 @@ namespace CommonLibraryTests
             var check = compare.Equal(result.Matrix);
 
             Assert.IsTrue(check, "4*4");
+
+            //modelMatrix={1 0 0 0  0 1 0 0  0 0 1 0  0 0 3 1  }
+            matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
+            m1 = new BaseMatrix {Matrix = matrix};
+            var v = new double[,] {{-1, -1, -1,0}};
+            m2 = new BaseMatrix { Matrix = v };
+
+            var oldM = MathSpeedTests.TestTwo(v, matrix);
+            var newM = m2 * m1;
+
+            check = oldM.Equals(newM);
+            Assert.IsTrue(check, "Something is horrible wrong");
         }
 
         /// <summary>
@@ -407,9 +419,6 @@ namespace CommonLibraryTests
             Assert.AreEqual(unitVector.X, 1, "X Addition");
             Assert.AreEqual(unitVector.Y, 1, "Y Addition");
             Assert.AreEqual(unitVector.Z, 1, "Z Addition");
-
-
-            var mat = (BaseMatrix)one;
         }
 
         /// <summary>

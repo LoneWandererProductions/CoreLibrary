@@ -266,6 +266,57 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     Equals the specified other.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns>Equal or not</returns>
+        public bool Equals(BaseMatrix other)
+        {
+            var m1 = this.Matrix;
+            var m2 = other.Matrix;
+
+            return m1.Equal(m2);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is BaseMatrix other && Equals(other);
+        }
+
+        /// <summary>
+        ///     Implements the operator ==.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static bool operator ==(BaseMatrix first, BaseMatrix second)
+        {
+            return first?.Equals(second) == true;
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(BaseMatrix first, BaseMatrix second)
+        {
+            return !(first == second);
+        }
+
+        /// <summary>
         ///     Performs an explicit conversion from <see cref="BaseMatrix" /> to <see cref="Vector3D" />.
         ///     Here is the only case where w will be set!
         ///     Only usable for 3D stuff.
