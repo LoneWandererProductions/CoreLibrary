@@ -80,7 +80,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="projected">The projected.</param>
         /// <returns>List of visible Triangles</returns>
-        public List<Triangle> BackFaceCulled(List<Triangle> projected)
+        public List<Triangle> BackFaceCulled(IEnumerable<Triangle> projected)
         {
             var culled = new List<Triangle>();
 
