@@ -8,11 +8,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Shapes;
 using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
@@ -352,10 +350,10 @@ namespace LightVector
 
             var cache = new List<Vector3D>();
 
-            for (int i = 0; i < lst.Count; i += 2)
+            for (var i = 0; i < lst.Count; i += 2)
             {
                 var one = lst[i];
-                var two = lst[i+1];
+                var two = lst[i + 1];
 
                 var line = Lines.LinearLine(one, two);
 
@@ -364,7 +362,7 @@ namespace LightVector
 
             var points = cache.ConvertAll(point => point.ToPoint());
 
-            return new Polygons {Points = points};
+            return new Polygons { Points = points };
         }
 
         private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY,
@@ -372,7 +370,7 @@ namespace LightVector
         {
             var start = new Vector3D { X = triangle.X, Y = triangle.Y, Z = triangle.Z };
 
-            return null;//Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
+            return null; //Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
         }
 
         /// <summary>

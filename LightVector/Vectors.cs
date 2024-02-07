@@ -53,20 +53,20 @@ namespace LightVector
         private List<CurveObject> Curves { get; set; }
 
         /// <summary>
-        /// Gets or sets the width of the Picture.
+        ///     Gets or sets the width of the Picture.
         /// </summary>
         /// <value>
-        /// The width.
+        ///     The width.
         /// </value>
         private int Width { get; set; }
 
         /// <summary>
-        /// Gets or sets the height of the Picture.
+        ///     Gets or sets the height of the Picture.
         /// </summary>
         /// <value>
-        /// The height.
+        ///     The height.
         /// </value>
-        private int Height { get; set; }
+        private int Height { get; }
 
         /// <inheritdoc />
         /// <summary>

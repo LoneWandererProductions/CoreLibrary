@@ -81,11 +81,11 @@ namespace Mathematics
         public double Z { get; set; }
 
         /// <summary>
-        /// Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
-        /// This has no relevance, whatsoever for the other calculations.
+        ///     Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
+        ///     This has no relevance, whatsoever for the other calculations.
         /// </summary>
         /// <value>
-        /// The w  Value, which is 1 when initialized.
+        ///     The w  Value, which is 1 when initialized.
         /// </value>
         public double W { get; private set; } = 1;
 
@@ -365,10 +365,7 @@ namespace Mathematics
         /// <returns>Vector transformed to Matrix</returns>
         public static explicit operator BaseMatrix(Vector3D first)
         {
-            var matrix = new double[,]
-            {
-                {first.X,first.Y, first.Z,first.W}
-            };
+            var matrix = new[,] { { first.X, first.Y, first.Z, first.W } };
 
             return new BaseMatrix(matrix);
         }

@@ -16,7 +16,7 @@ namespace DataFormatter
     public sealed class TertiaryVector
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TertiaryVector"/> class.
+        ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -29,7 +29,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TertiaryVector"/> class.
+        ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.
         /// </summary>
         public TertiaryVector()
         {

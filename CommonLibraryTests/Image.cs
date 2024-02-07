@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -749,7 +748,7 @@ namespace CommonLibraryTests
 
             long mine = 0, bresenham = 0;
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
                 bresenham += CalcTwo(one, two);
                 mine += CalcOne(one, two);
@@ -758,7 +757,7 @@ namespace CommonLibraryTests
             one = new Coordinate2D(30001, 10000);
             two = new Coordinate2D(1, 0);
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
                 mine += CalcOne(one, two);
                 bresenham += CalcTwo(one, two);

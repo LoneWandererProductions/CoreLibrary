@@ -6,42 +6,6 @@ namespace Mathematics
 {
     public class Triangle
     {
-        /// <summary>
-        /// Creates the triangle set.
-        /// Triangles need to be supplied on a CLOCKWISE order
-        /// </summary>
-        /// <param name="triangles">The triangles.</param>
-        /// <returns>A list with Triangles, three Vectors in one Object</returns>
-        public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
-        {
-            var polygons = new List<Triangle>();
-
-            for (int i = 0; i <= triangles.Count - 3; i += 3)
-            {
-                var v1 = triangles[i];
-                var v2 = triangles[i + 1];
-                var v3 = triangles[i + 2];
-
-                var triangle = new Triangle((Vector3D)v1, (Vector3D)v2, (Vector3D)v3);
-
-                polygons.Add(triangle);
-            }
-
-            return polygons;
-        }
-
-        public static IEnumerable<Vector3D> GetCoordinates(IEnumerable<Triangle> render)
-        {
-            var lst = new List<Vector3D>();
-
-            foreach (var triangle in render)
-            {
-                lst.AddRange(triangle.Vertices);
-            }
-
-            return lst;
-        }
-
         public Triangle(Vector3D[] vertices)
         {
             Array.Resize(ref vertices, 3);
@@ -59,7 +23,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Triangle"/> class.
+        ///     Initializes a new instance of the <see cref="Triangle" /> class.
         /// </summary>
         public Triangle()
         {
@@ -91,6 +55,42 @@ namespace Mathematics
             set => Vertices[i] = value;
         }
 
+        /// <summary>
+        ///     Creates the triangle set.
+        ///     Triangles need to be supplied on a CLOCKWISE order
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <returns>A list with Triangles, three Vectors in one Object</returns>
+        public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
+        {
+            var polygons = new List<Triangle>();
+
+            for (var i = 0; i <= triangles.Count - 3; i += 3)
+            {
+                var v1 = triangles[i];
+                var v2 = triangles[i + 1];
+                var v3 = triangles[i + 2];
+
+                var triangle = new Triangle((Vector3D)v1, (Vector3D)v2, (Vector3D)v3);
+
+                polygons.Add(triangle);
+            }
+
+            return polygons;
+        }
+
+        public static IEnumerable<Vector3D> GetCoordinates(IEnumerable<Triangle> render)
+        {
+            var lst = new List<Vector3D>();
+
+            foreach (var triangle in render)
+            {
+                lst.AddRange(triangle.Vertices);
+            }
+
+            return lst;
+        }
+
         public void Set(Vector3D one, Vector3D two, Vector3D three)
         {
             Vertices[0] = one;
@@ -100,7 +100,8 @@ namespace Mathematics
 
         public override string ToString()
         {
-            return string.Concat("1: ", Vertices[0].ToString(), " 2: ", Vertices[1].ToString(), " 3: ", Vertices[2].ToString());
+            return string.Concat("1: ", Vertices[0].ToString(), " 2: ", Vertices[1].ToString(), " 3: ",
+                Vertices[2].ToString());
         }
     }
 }

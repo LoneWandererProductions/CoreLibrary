@@ -25,10 +25,10 @@ namespace Mathematics
                 //Trace.WriteLine("1:" + updatedTri[i]);
 
                 for (var j = 0;
-                    j < rObject.Polygons[i].VertexCount;
-                    j++) // Object to World space (Local to World coords)
+                     j < rObject.Polygons[i].VertexCount;
+                     j++) // Object to World space (Local to World coords)
                 {
-                    updatedTri[i][j] = (rObject.Polygons[i][j] * modelMatrix);
+                    updatedTri[i][j] = rObject.Polygons[i][j] * modelMatrix;
                 }
 
                 Trace.WriteLine("2:" + updatedTri[i]);
@@ -40,7 +40,7 @@ namespace Mathematics
                 for (var j = 0; j < updatedTri[i].VertexCount; j++)
                 {
                     // World to View
-                    var worldView = (updatedTri[i][j] * viewMatrix);
+                    var worldView = updatedTri[i][j] * viewMatrix;
 
                     // View to Projection
                     //Convert 3D to 2D
@@ -74,9 +74,9 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Backs the face culled.
-        /// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
-        /// Division by 2 is not necessary, since all we care about is if the value is positive/negative
+        ///     Backs the face culled.
+        ///     Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
+        ///     Division by 2 is not necessary, since all we care about is if the value is positive/negative
         /// </summary>
         /// <param name="projected">The projected.</param>
         /// <returns>List of visible Triangles</returns>
@@ -94,14 +94,17 @@ namespace Mathematics
                            (triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X);
                 }
 
-                if(sum < 0) culled.Add(triangle);
+                if (sum < 0)
+                {
+                    culled.Add(triangle);
+                }
             }
 
             return culled;
         }
 
         /// <summary>
-        /// Converts the into view.
+        ///     Converts the into view.
         /// </summary>
         /// <param name="projected">The projected.</param>
         /// <returns></returns>
@@ -129,13 +132,13 @@ namespace Mathematics
 
 
         /// <summary>
-        /// Converts to raster.
+        ///     Converts to raster.
         /// </summary>
         /// <param name="v">The v.</param>
         /// <returns>New Coordinates to center the View into the Image</returns>
         public Vector3D ConvertToRaster(Vector3D v)
         {
-            return new((int)((v.X + 1) * 0.5d * Width),
+            return new Vector3D((int)((v.X + 1) * 0.5d * Width),
                 (int)((1 - ((v.Y + 1) * 0.5d)) * Height),
                 -v.Z);
         }

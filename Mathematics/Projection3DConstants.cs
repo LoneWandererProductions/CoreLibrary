@@ -89,7 +89,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Scales the specified vector.
+        ///     Scales the specified vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
         /// <returns>Scale Matrix.</returns>

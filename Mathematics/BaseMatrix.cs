@@ -205,12 +205,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator *.
+        ///     Implements the operator *.
         /// </summary>
         /// <param name="first">The first Matrix.</param>
         /// <param name="v">The v.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static Vector3D operator *(BaseMatrix first, Vector3D v)
         {
@@ -272,18 +272,18 @@ namespace Mathematics
         /// <returns>Equal or not</returns>
         public bool Equals(BaseMatrix other)
         {
-            var m1 = this.Matrix;
+            var m1 = Matrix;
             var m2 = other.Matrix;
 
             return m1.Equal(m2);
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -304,12 +304,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Implements the operator !=.
+        ///     Implements the operator !=.
         /// </summary>
         /// <param name="first">The first.</param>
         /// <param name="second">The second.</param>
         /// <returns>
-        /// The result of the operator.
+        ///     The result of the operator.
         /// </returns>
         public static bool operator !=(BaseMatrix first, BaseMatrix second)
         {

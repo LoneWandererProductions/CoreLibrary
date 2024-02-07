@@ -7,7 +7,7 @@ namespace LightVector
     {
         internal static Point ToPoint(this Vector3D vector)
         {
-            return new Point {X = vector.X, Y = vector.Y};
+            return new Point { X = vector.X, Y = vector.Y };
         }
 
         internal static Point ToPointR(this Vector3D vector)

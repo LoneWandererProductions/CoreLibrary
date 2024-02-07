@@ -9,7 +9,7 @@ namespace Mathematics
         {
             var poly = Triangle.CreateTri(obj.Vectors);
             var renderObj = new RenderObject(poly, transform);
-            var raster = new Rasterize {Height = height, Width = width};
+            var raster = new Rasterize { Height = height, Width = width };
             //generate 3D View
             var updatedTri = raster.Render(renderObj, false);
             //Back Face Culling

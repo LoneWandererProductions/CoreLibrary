@@ -80,7 +80,7 @@ namespace Mathematics
         ///     https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
         /// </returns>
         /// <summary>
-        /// Gets the model matrix.
+        ///     Gets the model matrix.
         /// </summary>
         /// <param name="transform">The transform.</param>
         /// <returns>The Model Matrix</returns>
@@ -136,10 +136,9 @@ namespace Mathematics
             // instead of calculating their multiplication
             var viewMatrix = new[,]
             {
-                {transform.Right.X, transform.Up.X, transform.Forward.X, 0},
-                {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
-                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0},
-                {transl.X, transl.Y, transl.Z, 1}
+                { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
+                { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
+                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
             return new BaseMatrix { Matrix = viewMatrix };
@@ -153,8 +152,9 @@ namespace Mathematics
         {
             double[,] translation =
             {
-                {Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0}, {0, Projection3DRegister.F, 0, 0},
-                {0, 0, Projection3DRegister.Q, 1}, {0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0}
+                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
+                { 0, 0, Projection3DRegister.Q, 1 },
+                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
             };
 
             //now lacks /w, has to be done at the end!
@@ -167,7 +167,10 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation = { { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+            double[,] translation =
+            {
+                { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 }
+            };
             return new BaseMatrix(translation);
         }
 
@@ -191,7 +194,7 @@ namespace Mathematics
         public static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
         {
             var newForward = target - position;
-            var a = newForward *(up * newForward);
+            var a = newForward * (up * newForward);
             var newUp = up - a;
             var newRight = newUp.CrossProduct(newForward);
 

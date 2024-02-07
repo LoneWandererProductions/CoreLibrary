@@ -175,13 +175,15 @@ namespace CommonLibraryTests
             {
                 double sum = 0;
 
-                for (var k = 0; k < m1.GetLength(1); k++) sum += m1[i, k] * m2[k, j];
+                for (var k = 0; k < m1.GetLength(1); k++)
+                {
+                    sum += m1[i, k] * m2[k, j];
+                }
 
                 newMatrix[i, j] = sum;
             }
 
             return newMatrix;
         }
-
     }
 }
