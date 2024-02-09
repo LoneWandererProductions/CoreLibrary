@@ -15,20 +15,50 @@ using System.Linq;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Generic extended Dictionary
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <seealso cref="T:System.Collections.IEnumerable" />
     public sealed class ExDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
+        /// <summary>
+        /// The values
+        /// </summary>
         private LinkedList<KeyValuePair<TKey, TValue>>[] _values;
 
+        /// <summary>
+        /// The capacity
+        /// </summary>
         private int _capacity;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExDictionary{TKey, TValue}"/> class.
+        /// </summary>
         public ExDictionary()
         {
             _values = new LinkedList<KeyValuePair<TKey, TValue>>[15];
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExDictionary{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="count">The count.</param>
         public ExDictionary(int count)
         {
             _values = new LinkedList<KeyValuePair<TKey, TValue>>[count];
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExDictionary{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="exDct">The extended Dictionary.</param>
+        public ExDictionary(ExDictionary<TKey, TValue> exDct)
+        {
+            ResizeCollection(exDct.Count);
+            _values = exDct._values;
         }
 
         /// <summary>
@@ -38,12 +68,6 @@ namespace ExtendedSystemObjects
         /// The count.
         /// </value>
         public int Count => _values.Length;
-
-        //public LinkedList<KeyValuePair<TKey, TValue>> this[int index]
-        //{
-        //    get => _values.ElementAt(index);
-        //    set => _values.SetValue(value, index);
-        //}
 
         /// <summary>
         /// Gets or sets the <see cref="TValue"/> with the specified key.
@@ -146,12 +170,19 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Resizes the collection.
+        /// </summary>
         private void ResizeCollection()
         {
             //add one Element, expensive
             _values = new LinkedList<KeyValuePair<TKey, TValue>>[Count + 1];
         }
 
+        /// <summary>
+        /// Resizes the collection.
+        /// </summary>
+        /// <param name="amount">The amount.</param>
         private void ResizeCollection(int amount)
         {
             //amount of Elements, expensive
@@ -175,6 +206,11 @@ namespace ExtendedSystemObjects
         {
             var hash = GetHashValue(key);
             return _values[hash] == null ? default : _values[hash].First(m => m.Key.Equals(key)).Value;
+        }
+
+        public void Clear()
+        {
+            _values = new LinkedList<KeyValuePair<TKey, TValue>>[15];
         }
 
         private int GetHashValue(TKey key)

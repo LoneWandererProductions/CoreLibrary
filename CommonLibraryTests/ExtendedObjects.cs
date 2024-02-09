@@ -10,18 +10,23 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ExtendedDictionary()
         {
-            ExDictionary<int, int> dict = new ExDictionary<int, int>();
-            dict.Add(-1, -1);
-            dict.Add(1, -1);
-            dict.Add(9, -1);
-            dict.ContainsKey(9);
-            dict.GetValue(9);
+            ExDictionary<int, int> dict = new ExDictionary<int, int> {{-1, -1}, {1, -1}, {9, -1}};
+            var check =dict.ContainsKey(9);
+            if(check)
+            {
+                var value = dict.GetValue(9);
+                Assert.AreEqual(-1, value, "Wrong Value");
+            }
+
             dict[10] = 10;
 
-            foreach (var item in dict)
+            //Assert.AreEqual(4, dict.Count, "Wrong Count");
+
+            foreach (var (key, value) in dict)
             {
-                Trace.WriteLine(item.Key);
-                Trace.WriteLine(item.Value);
+                Trace.Write(key);
+                Trace.Write(", ");
+                Trace.WriteLine(value);
             }
             Trace.WriteLine(dict[10]);
         }
