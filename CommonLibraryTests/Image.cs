@@ -45,6 +45,9 @@ namespace CommonLibraryTests
         /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Images"));
 
+        /// <summary>
+        /// The images folder
+        /// </summary>
         private static readonly DirectoryInfo ImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
 
         /// <summary>
@@ -769,6 +772,12 @@ namespace CommonLibraryTests
             Assert.IsTrue(bresenham >= mine, message);
         }
 
+        /// <summary>
+        /// Calculates the one.
+        /// </summary>
+        /// <param name="one">The one.</param>
+        /// <param name="two">The two.</param>
+        /// <returns></returns>
         private static long CalcOne(Coordinate2D one, Coordinate2D two)
         {
             var watch = Stopwatch.StartNew();
@@ -780,6 +789,12 @@ namespace CommonLibraryTests
             return watch.ElapsedMilliseconds;
         }
 
+        /// <summary>
+        /// Calculates the two.
+        /// </summary>
+        /// <param name="one">The one.</param>
+        /// <param name="two">The two.</param>
+        /// <returns></returns>
         private static long CalcTwo(Coordinate2D one, Coordinate2D two)
         {
             var watch = Stopwatch.StartNew();
