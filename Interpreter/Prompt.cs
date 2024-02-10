@@ -108,8 +108,8 @@ namespace Interpreter
 
             _interpret = new IrtPrompt();
             _interpret.Initiate(use);
-            _interpret.SendLog += SendLog;
-            _interpret.SendCommand += SendCommand;
+            _interpret.sendLog += SendLog;
+            _interpret.sendCommand += SendCommand;
         }
 
         /// <inheritdoc />
@@ -118,11 +118,11 @@ namespace Interpreter
         /// <param name="userSpace">Userspace of the register</param>
         public void AddCommands(Dictionary<int, InCommand> com, string userSpace)
         {
-            _interpret.SendLog += SendLog;
+            _interpret.sendLog += SendLog;
 
             if (CollectedSpaces.IsNullOrEmpty())
             {
-                _interpret.SendLog?.Invoke(this, IrtConst.ErrorNotInitialized);
+                _interpret.sendLog?.Invoke(this, IrtConst.ErrorNotInitialized);
                 return;
             }
 
@@ -246,27 +246,6 @@ namespace Interpreter
             // Finalizer calls Dispose(false)
             Dispose(false);
         }
-    }
-
-    /// <summary>
-    ///     Simple Element of the Register
-    /// </summary>
-    public sealed class InCommand
-    {
-        /// <summary>
-        ///     Gets or sets the command.
-        /// </summary>
-        public string Command { internal get; init; }
-
-        /// <summary>
-        ///     Gets or sets the description.
-        /// </summary>
-        public string Description { internal get; init; }
-
-        /// <summary>
-        ///     Gets or sets the Parameter count.
-        /// </summary>
-        public int ParameterCount { internal get; init; }
     }
 
     /// <summary>

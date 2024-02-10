@@ -60,11 +60,11 @@ namespace Interpreter
         /// <summary>
         ///     Fire it up
         /// </summary>
-        /// <param name="interprete">Our Interpreter</param>
-        internal WindowPrompt(IrtPrompt interprete)
+        /// <param name="interpret">Our Interpreter</param>
+        internal WindowPrompt(IrtPrompt interpret)
         {
-            _interpret = interprete;
-            _interpret.SendLog += SendLogs;
+            _interpret = interpret;
+            _interpret.sendLog += SendLogs;
             InitializeComponent();
         }
 

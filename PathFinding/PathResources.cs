@@ -19,5 +19,10 @@ namespace PathFinding
         ///     The error length  (const). Value: "Length was higher than allowed".
         /// </summary>
         internal const string ErrorLength = "Length was higher than allowed";
+
+        /// <summary>
+        ///     Separator (const). Value: " , ".
+        /// </summary>
+        internal const string Separator = " , ";
     }
 }

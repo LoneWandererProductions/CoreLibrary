@@ -72,5 +72,10 @@ namespace ImageCompare
         ///     The Error File not found (const). Value: "Error file not found: "
         /// </summary>
         internal const string ErrorFileNotFound = "Error file not found: ";
+
+        /// <summary>
+        ///     Separator (const). Value: " , ".
+        /// </summary>
+        internal const string Separator = " , ";
     }
 }

@@ -7,6 +7,9 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+
+using System;
 
 namespace DataFormatter
 {
@@ -58,5 +61,27 @@ namespace DataFormatter
         ///     The z.
         /// </value>
         public double Z { get; init; }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat(DataFormatterResources.StrX, X, DataFormatterResources.StrY, Y, DataFormatterResources.StrZ, Z);
+        }
     }
 }

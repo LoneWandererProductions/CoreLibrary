@@ -110,7 +110,7 @@ namespace Solaris
                     using var graphics = Graphics.FromImage(background);
                     var rectangle = new RectangleF((x * textureSize) + Padding, (y * textureSize) + Padding,
                         textureSize - Padding, textureSize - Padding);
-                    graphics.DrawString(count.ToString(), new Font("Tahoma", 8), Brushes.Black, rectangle);
+                    graphics.DrawString(count.ToString(), new Font(Resources.Font, 8), Brushes.Black, rectangle);
                 }
             }
 

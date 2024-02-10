@@ -14,6 +14,11 @@ namespace Serializer
     internal static class SerialResources
     {
         /// <summary>
+        ///     Separator (const). Value: " , ".
+        /// </summary>
+        internal const string Separator = " , ";
+
+        /// <summary>
         ///     Error property was not found (const). Value: "Could not find Property".
         /// </summary>
         internal const string ErrorPropertyNotFound = "Could not find Property";

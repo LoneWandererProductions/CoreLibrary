@@ -259,6 +259,35 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var info = string.Empty;
+
+            for (int i = 0; i < _bits.Length - 1; i++)
+            {
+                info = string.Concat(info, _bits[i], ImagingResources.Indexer);
+            }
+
+            return string.Concat(info, _bits[_bits.Length]);
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Height, Width);
+        }
+
+        /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing">

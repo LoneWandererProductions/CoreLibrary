@@ -201,7 +201,7 @@ namespace Mathematics
         /// </returns>
         public override string ToString()
         {
-            return string.Concat("X: ", X, " Y: ", Y, " Id: ", Id);
+            return string.Concat(MathResources.StrX, X, MathResources.StrY, Y,MathResources.StrId, Id);
         }
     }
 }

@@ -98,7 +98,6 @@ namespace CommonControls
         /// </summary>
         internal const string ContextDeselectAll = "Deselect All";
 
-
         /// <summary>
         ///     New Item (const). Value: "NewItem".
         /// </summary>
@@ -108,5 +107,10 @@ namespace CommonControls
         ///     Information about Plugin Status (const). Value: "No Plugins found.".
         /// </summary>
         internal const string InformationPlugin = "No Plugins found.";
+
+        /// <summary>
+        ///     Separator (const). Value: " , ".
+        /// </summary>
+        internal const string Separator = " , ";
     }
 }

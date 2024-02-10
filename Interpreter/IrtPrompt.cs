@@ -30,12 +30,12 @@ namespace Interpreter
         /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<OutCommand> SendCommand;
+        internal EventHandler<OutCommand> sendCommand;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<string> SendLog;
+        internal EventHandler<string> sendLog;
 
         /// <summary>Get the Engine Running</summary>
         /// <param name="use">The Command Structure</param>
@@ -331,7 +331,7 @@ namespace Interpreter
         /// <param name="sendLog">Debug and Status Messages</param>
         private void OnStatus(string sendLog)
         {
-            SendLog?.Invoke(this, sendLog);
+            this.sendLog?.Invoke(this, sendLog);
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace Interpreter
         /// <param name="outCommand">Selected User Command</param>
         private void OnCommand(OutCommand outCommand)
         {
-            SendCommand?.Invoke(this, outCommand);
+            sendCommand?.Invoke(this, outCommand);
         }
     }
 }

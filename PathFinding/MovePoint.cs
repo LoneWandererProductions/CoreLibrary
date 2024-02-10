@@ -9,6 +9,8 @@
 
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
+using System;
+
 namespace PathFinding
 {
     /// <summary>
@@ -26,23 +28,23 @@ namespace PathFinding
         /// <summary>
         ///     Initializes a new instance of the <see cref="MovePoint" /> class.
         /// </summary>
-        /// <param name="xrow">Row as X</param>
-        /// <param name="ycolumn"> Column as Y</param>
-        internal MovePoint(int xrow, int ycolumn)
+        /// <param name="xRow">Row as X</param>
+        /// <param name="yColumn"> Column as Y</param>
+        internal MovePoint(int xRow, int yColumn)
         {
-            Xrow = xrow;
-            Ycolumn = ycolumn;
+            XRow = xRow;
+            YColumn = yColumn;
         }
 
         /// <summary>
         ///     Row as X
         /// </summary>
-        internal int Xrow { get; set; }
+        internal int XRow { get; set; }
 
         /// <summary>
         ///     Column as Y
         /// </summary>
-        internal int Ycolumn { get; set; }
+        internal int YColumn { get; set; }
 
         /// <summary>
         ///     Compares If a Coordinate is equal to other Coordinate
@@ -51,16 +53,29 @@ namespace PathFinding
         /// <returns>If MovePoint is equal</returns>
         internal bool Equals(MovePoint other)
         {
-            return Xrow == other?.Xrow && Ycolumn == other.Ycolumn;
+            return XRow == other?.XRow && YColumn == other.YColumn;
         }
 
         /// <summary>
-        ///     Generate Hash Code just for the Three Attributes, we don't need More
+        /// Converts to string.
         /// </summary>
-        /// <returns>Hash Value</returns>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat(XRow, PathResources.Separator, YColumn);
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
         public override int GetHashCode()
         {
-            return Xrow ^ Ycolumn;
+            return HashCode.Combine(XRow, YColumn);
         }
 
         /// <summary>

@@ -42,6 +42,17 @@ namespace ImageCompare
         }
 
         /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat(R, ImageResources.Separator, G, ImageResources.Separator, G);
+        }
+
+        /// <summary>
         ///     Gets the average Red Values.
         /// </summary>
         /// <value>

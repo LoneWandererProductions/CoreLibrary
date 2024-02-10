@@ -215,7 +215,7 @@ namespace Mathematics
         /// </returns>
         public override string ToString()
         {
-            return string.Concat("X: ", X, " Y: ", Y, " Z: ", Z);
+            return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrZ, Z);
         }
 
         /// <summary>

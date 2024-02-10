@@ -100,7 +100,7 @@ namespace Mathematics
 
         public override string ToString()
         {
-            return string.Concat("1: ", Vertices[0].ToString(), " 2: ", Vertices[1].ToString(), " 3: ",
+            return string.Concat(MathResources.StrOne, Vertices[0].ToString(), MathResources.StrTwo, Vertices[1].ToString(), MathResources.StrThree,
                 Vertices[2].ToString());
         }
     }

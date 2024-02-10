@@ -27,20 +27,20 @@ namespace PathFinding
             var point = new MovePoint();
             var playerYColumn = 1;
 
-            if (newPoint.Ycolumn != 0)
+            if (newPoint.YColumn != 0)
             {
-                playerYColumn = (newPoint.Ycolumn * 3) + 1;
+                playerYColumn = (newPoint.YColumn * 3) + 1;
             }
 
             var playerXRow = 1;
 
-            if (newPoint.Xrow != 0)
+            if (newPoint.XRow != 0)
             {
-                playerXRow = (newPoint.Xrow * 3) + 1;
+                playerXRow = (newPoint.XRow * 3) + 1;
             }
 
-            point.Xrow = playerXRow;
-            point.Ycolumn = playerYColumn;
+            point.XRow = playerXRow;
+            point.YColumn = playerYColumn;
             return point;
         }
 
@@ -141,7 +141,7 @@ namespace PathFinding
             var modulo = masterId % length;
             var yColumn = masterId / length;
 
-            return new MovePoint { Xrow = modulo, Ycolumn = yColumn };
+            return new MovePoint { XRow = modulo, YColumn = yColumn };
         }
     }
 }

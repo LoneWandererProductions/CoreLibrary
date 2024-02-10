@@ -17,6 +17,11 @@ namespace Interpreter
     internal static class IrtConst
     {
         /// <summary>
+        ///     Separator (const). Value: " , ".
+        /// </summary>
+        internal const string Separator = " , ";
+
+        /// <summary>
         ///     The internal command container (const). Value: "CONTAINER".
         /// </summary>
         internal const string InternalCommandContainer = "CONTAINER";

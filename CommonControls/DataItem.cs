@@ -101,5 +101,16 @@ namespace CommonControls
         {
             return HashCode.Combine(_id, _name);
         }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat(_id, ComCtlResources.Separator, _name);
+        }
     }
 }
