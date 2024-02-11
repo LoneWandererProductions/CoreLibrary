@@ -7,15 +7,25 @@ namespace Mathematics
     {
         public List<Vector3D> GenerateMesh(ObjFile obj, Transform transform, int height, int width)
         {
-            var poly = Triangle.CreateTri(obj.Vectors);
-            var renderObj = new RenderObject(poly, transform);
-            var raster = new Rasterize { Height = height, Width = width };
-            //generate 3D View
-            var updatedTri = raster.Render(renderObj, false);
-            //Back Face Culling
-            updatedTri = raster.BackFaceCulled(updatedTri);
-            //Move into View
-            return raster.ConvertIntoView(updatedTri);
+            return null;
+        }
+
+
+        public List<Triangle> Generate(IEnumerable<Triangle> triangles, Transform transform, Vector3D vCamera,
+            bool? orthogonal)
+        {
+            var cache = Rasterize.WorldMatrix(triangles, transform);
+            cache = Rasterize.ViewPort(cache, vCamera);
+
+            cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
+
+            return cache;
+        }
+
+
+        public List<Triangle> MoveIntoView(List<Triangle> triangles, int width, int height)
+        {
+            return Rasterize.MoveIntoView(triangles, width, height);
         }
     }
 }

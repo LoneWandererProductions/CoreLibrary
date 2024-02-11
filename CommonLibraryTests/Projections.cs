@@ -87,7 +87,6 @@ namespace CommonLibraryTests
             var transform = new Transform();
             var renderObj = new RenderObject(poly, transform);
             var raster = new Rasterize();
-            var render = raster.Render(renderObj, false);
         }
 
         /// <summary>
