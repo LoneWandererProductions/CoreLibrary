@@ -49,6 +49,11 @@ namespace Imaging
         internal const string Indexer = " , ";
 
         /// <summary>
+        ///     Color string (const). Value: "Color: ".
+        /// </summary>
+        internal const string Color = "Color: ";
+
+        /// <summary>
         ///     The flag that indicates that image is not compressed (const). Value:  "0".
         /// </summary>
         internal const string CifUnCompressed = "0";

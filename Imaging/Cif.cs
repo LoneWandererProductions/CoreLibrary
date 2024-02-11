@@ -11,6 +11,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -166,6 +167,42 @@ namespace Imaging
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var info = string.Empty;
+
+            foreach (var (color, value) in CifImage)
+            {
+                info = string.Concat(info, ImagingResources.Color, color, ImagingResources.Spacing);
+
+                for (int i = 0; i < value.Count - 1; i++)
+                {
+                    info = string.Concat(info, value[i], ImagingResources.Indexer);
+                }
+
+                info = string.Concat(info, value[value.Count], Environment.NewLine);
+            }
+
+            return info;
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Height, Width, NumberOfColors);
         }
     }
 }
