@@ -46,7 +46,7 @@ namespace CommonLibraryTests
         private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Images"));
 
         /// <summary>
-        /// The images folder
+        ///     The images folder
         /// </summary>
         private static readonly DirectoryInfo ImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
 
@@ -773,7 +773,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Calculates the one.
+        ///     Calculates the one.
         /// </summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>
@@ -790,7 +790,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Calculates the two.
+        ///     Calculates the two.
         /// </summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>

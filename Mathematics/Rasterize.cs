@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Mathematics
 {
@@ -18,7 +17,7 @@ namespace Mathematics
                 {
                     [0] = triangle[0] * Projection3DCamera.ModelMatrix(transform),
                     [1] = triangle[1] * Projection3DCamera.ModelMatrix(transform),
-                    [2] = triangle[2] * Projection3DCamera.ModelMatrix(transform),
+                    [2] = triangle[2] * Projection3DCamera.ModelMatrix(transform)
                 };
                 lst.Add(triScaled);
             }
@@ -42,7 +41,10 @@ namespace Mathematics
 
                 var comparer = triangle[0] - vCamera;
 
-                if (normal * comparer > 0) continue;
+                if (normal * comparer > 0)
+                {
+                    continue;
+                }
 
                 lst.Add(triangle);
             }

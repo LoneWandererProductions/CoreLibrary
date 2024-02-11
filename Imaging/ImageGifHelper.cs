@@ -40,13 +40,12 @@ namespace Imaging
         /// <returns>Logical Screen Descriptor</returns>
         internal static List<byte> WriteLogicalScreenDescriptor(int width, int height)
         {
-            var lst = new List<byte>();
-
-            // The first 2 bytes are the width of the canvas (the entire .GIF)
-            // The second 2 bytes are the height of the canvas
-
-            lst.Add((byte)width);
-            lst.Add((byte)height);
+            var lst = new List<byte>
+            {
+                // The second 2 bytes are the height of the canvas
+                // The first 2 bytes are the width of the canvas (the entire .GIF)
+                (byte)width, (byte)height
+            };
 
             // The first 2 bytes are the width of the canvas (the entire .GIF)
             // The second 2 bytes are the height of the canvas
@@ -56,29 +55,26 @@ namespace Imaging
             //          (aka. if these 3 bits equal "1" in binary, we can use a total of 4 colors in our .GIF)
             //      The next bit is if the colors in the global color table are sorted in decreasing frequency in the image
             //          (this helps speed up decoding the .GIF; can stay at "0")
-            //      The next 3 bits are the color resolution of the image 
+            //      The next 3 bits are the color resolution of the image
             //          (color resolution == number of bits per primary color available to the original image, minus 1)
             //      The last bit is if we have a global color table (1 = yes, 0 = no)
 
             // Packed field
             var array = new BitArray(new byte[1]);
-            var GCTS = LogicalScreenDescriptorGlobalColorTableSize();
-            array[2] = GCTS[2];
-            array[1] = GCTS[1];
-            array[0] = GCTS[0]; // Global color table size
+            var gcts = LogicalScreenDescriptorGlobalColorTableSize();
+            array[2] = gcts[2];
+            array[1] = gcts[1];
+            array[0] = gcts[0]; // Global color table size
             array[3] = false; // Sort flag
             array[6] = true;
             array[5] = true;
-            array[4] = true; // Color resolution (64 colors)            
+            array[4] = true; // Color resolution (64 colors)
             array[7] = true; // Global color table flag ("1" since we are using a global color table)
 
             var bytes = new byte[1];
             array.CopyTo(bytes, 0);
 
-            foreach (var bit in bytes)
-            {
-                lst.Add(bit);
-            }
+            lst.AddRange(bytes);
 
             // The next byte is the background color index (the index of the color from the global color table)
             // The last byte is the pixel aspect ratio
@@ -96,8 +92,8 @@ namespace Imaging
 
             // The global color table includes all colors the .GIF
             // will use, in this format (where "C" means color):
-            //      C1 red value, C1 green value, C1 blue value, 
-            //      C2 red value, C2 green value, C2 blue value, 
+            //      C1 red value, C1 green value, C1 blue value,
+            //      C2 red value, C2 green value, C2 blue value,
             //      ...
 
             for (var i = 0; i < ColorTable.Count; i++)
@@ -113,14 +109,14 @@ namespace Imaging
             // Please see the LogicalScreenDescriptorGlobalColorTableSize
             // to see the number of colors we require for a given GCTS
 
-            var GCTS = LogicalScreenDescriptorGlobalColorTableSize();
+            var gcts = LogicalScreenDescriptorGlobalColorTableSize();
             var bytes = new byte[1];
-            GCTS.CopyTo(bytes, 0);
+            gcts.CopyTo(bytes, 0);
 
             //todo error here
             var placeholder = new Color();
 
-            for (var i = ColorTable.Count; i < (int)Math.Pow(2.0, (bytes[0] + 1)); i++)
+            for (var i = ColorTable.Count; i < (int)Math.Pow(2.0, bytes[0] + 1); i++)
             {
                 lst.Add(Color.Red);
                 lst.Add(Color.Green);
@@ -133,7 +129,8 @@ namespace Imaging
         /// <summary>
         ///     Writes the application extension section for the .GIF file.
         /// </summary>
-        /// <param name="output"></param>
+        /// <param name="shouldRepeat">if set to <c>true</c> [should repeat].</param>
+        /// <returns></returns>
         internal static List<byte> WriteApplicationExtension(bool shouldRepeat)
         {
             // This section allows us to animate our .GIF file.
@@ -198,8 +195,8 @@ namespace Imaging
         ///     This section is optional for each frame of your .GIF file if you
         ///     are not animating your .GIF file with multiple frames.
         /// </summary>
-        /// <param name="output"></param>
-        /// <param name="delay"></param>
+        /// <param name="delay">The delay.</param>
+        /// <returns></returns>
         internal static List<byte> WriteGraphicControlExtension(ushort delay)
         {
             // The graphic control extension allows us to control
@@ -280,7 +277,7 @@ namespace Imaging
             // log2(total colors) - 1
             var ret = (byte)Math.Ceiling(Math.Log(total, 2.0) - 1.0);
 
-            return new BitArray(new byte[1] {ret});
+            return new BitArray(new byte[] { ret });
         }
     }
 }

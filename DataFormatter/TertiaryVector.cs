@@ -74,14 +74,15 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(DataFormatterResources.StrX, X, DataFormatterResources.StrY, Y, DataFormatterResources.StrZ, Z);
+            return string.Concat(DataFormatterResources.StrX, X, DataFormatterResources.StrY, Y,
+                DataFormatterResources.StrZ, Z);
         }
     }
 }

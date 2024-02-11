@@ -259,16 +259,16 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             var info = string.Empty;
 
-            for (int i = 0; i < _bits.Length - 1; i++)
+            for (var i = 0; i < _bits.Length - 1; i++)
             {
                 info = string.Concat(info, _bits[i], ImagingResources.Indexer);
             }

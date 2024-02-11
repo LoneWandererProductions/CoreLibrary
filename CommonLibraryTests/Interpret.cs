@@ -59,7 +59,8 @@ namespace CommonLibraryTests
             { 0, new InCommand { Command = "First", ParameterCount = 2, Description = "Help First" } },
             { 1, new InCommand { Command = "Second", ParameterCount = 3, Description = "Help Second" } },
             {
-                2, new InCommand { Command = "Third", ParameterCount = 0, Description = "Special case no Parameter" }
+                2,
+                new InCommand { Command = "Third", ParameterCount = 0, Description = "Special case no Parameter" }
             }
         };
 
