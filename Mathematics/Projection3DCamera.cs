@@ -197,28 +197,24 @@ namespace Mathematics
             var a = newForward * (up * newForward);
             var newUp = up - a;
             var newRight = newUp.CrossProduct(newForward);
-
-            return new BaseMatrix
+            return new BaseMatrix(4, 4)
             {
-                Matrix =
-                {
-                    [0, 0] = newRight.X,
-                    [0, 1] = newRight.Y,
-                    [0, 2] = newRight.Z,
-                    [0, 3] = 0.0f,
-                    [1, 0] = newUp.X,
-                    [1, 1] = newUp.Y,
-                    [1, 2] = newUp.Z,
-                    [1, 3] = 0.0f,
-                    [2, 0] = newForward.X,
-                    [2, 1] = newForward.Y,
-                    [2, 2] = newForward.Z,
-                    [2, 3] = 0.0f,
-                    [3, 0] = position.X,
-                    [3, 1] = position.Y,
-                    [3, 2] = position.Z,
-                    [3, 3] = 1.0f
-                }
+                [0, 0] = newRight.X,
+                [0, 1] = newRight.Y,
+                [0, 2] = newRight.Z,
+                [0, 3] = 0.0d,
+                [1, 0] = newUp.X,
+                [1, 1] = newUp.Y,
+                [1, 2] = newUp.Z,
+                [1, 3] = 0.0d,
+                [2, 0] = newForward.X,
+                [2, 1] = newForward.Y,
+                [2, 2] = newForward.Z,
+                [2, 3] = 0.0d,
+                [3, 0] = position.X,
+                [3, 1] = position.Y,
+                [3, 2] = position.Z,
+                [3, 3] = 1.0d
             };
         }
     }

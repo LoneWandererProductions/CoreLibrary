@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http.Headers;
 
 namespace Mathematics
 {
@@ -7,9 +8,15 @@ namespace Mathematics
         public int Width { get; set; }
         public int Height { get; set; }
 
-        internal static List<Triangle> WorldMatrix(IEnumerable<Triangle> triangles, Transform transform)
+        /// <summary>
+        /// Worlds the matrix.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="transform">The transform.</param>
+        /// <returns>Do all Transformations for the 3D Model</returns>
+        internal static List<Triangle> WorldMatrix(List<Triangle> triangles, Transform transform)
         {
-            var lst = new List<Triangle>();
+            var lst = new List<Triangle>(triangles.Count);
 
             foreach (var triangle in triangles)
             {
@@ -25,6 +32,12 @@ namespace Mathematics
             return lst;
         }
 
+        /// <summary>
+        /// Views the port.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="vCamera">The v camera.</param>
+        /// <returns>Visible Vector Planes</returns>
         internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, Vector3D vCamera)
         {
             var lst = new List<Triangle>();
@@ -46,38 +59,97 @@ namespace Mathematics
                     continue;
                 }
 
+                //Todo here we would add some shading and textures
+
                 lst.Add(triangle);
             }
 
             return lst;
         }
 
+        /// <summary>
+        /// Cameras the point at.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="vCamera">The v camera.</param>
+        /// <param name="vTarget">The v target.</param>
+        /// <param name="vUp">The v up.</param>
+        /// <returns>Object from the Camera Lens</returns>
+        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, Vector3D vCamera, Vector3D vTarget,
+            Vector3D vUp)
+        {
+            var matCamera = Projection3DCamera.PointAt(vCamera, vTarget, vUp);
+
+            var lst = new List<Triangle>(triangles.Count);
+
+            foreach (var triangle in triangles)
+            {
+                var triPointed = new Triangle
+                {
+                    [0] = triangle[0] * matCamera,
+                    [1] = triangle[1] * matCamera,
+                    [2] = triangle[2] * matCamera
+                };
+                lst.Add(triPointed);
+            }
+
+            return lst;
+        }
+
+
+        /// <summary>
+        /// Convert2s the d to3 d.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <returns>Coordinates converted into 3D Space</returns>
         internal static List<Triangle> Convert2DTo3D(List<Triangle> triangles)
         {
+            var lst = new List<Triangle>(triangles.Count);
+
             foreach (var triangle in triangles)
             {
-                var one = Projection3DCamera.ProjectionTo3D(triangle[0]);
-                var two = Projection3DCamera.ProjectionTo3D(triangle[1]);
-                var three = Projection3DCamera.ProjectionTo3D(triangle[2]);
-                triangle.Set(one, two, three);
+                var tri3D = new Triangle
+                {
+                    [0] = Projection3DCamera.ProjectionTo3D(triangle[0]),
+                    [1] = Projection3DCamera.ProjectionTo3D(triangle[1]),
+                    [2] = Projection3DCamera.ProjectionTo3D(triangle[2])
+                };
+                lst.Add(tri3D);
             }
 
-            return triangles;
+            return lst;
         }
 
+        /// <summary>
+        /// Convert2s the d to3 d orthographic.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <returns>Coordinates converted into 3D Space</returns>
         internal static List<Triangle> Convert2DTo3DOrthographic(List<Triangle> triangles)
         {
+            var lst = new List<Triangle>(triangles.Count);
+
             foreach (var triangle in triangles)
             {
-                var one = Projection3DCamera.OrthographicProjectionTo3D(triangle[0]);
-                var two = Projection3DCamera.OrthographicProjectionTo3D(triangle[1]);
-                var three = Projection3DCamera.OrthographicProjectionTo3D(triangle[2]);
-                triangle.Set(one, two, three);
+                var tri3D = new Triangle
+                {
+                    [0] = Projection3DCamera.OrthographicProjectionTo3D(triangle[0]),
+                    [1] = Projection3DCamera.OrthographicProjectionTo3D(triangle[1]),
+                    [2] = Projection3DCamera.OrthographicProjectionTo3D(triangle[2])
+                };
+                lst.Add(tri3D);
             }
 
-            return triangles;
+            return lst;
         }
 
+        /// <summary>
+        /// Moves the into view.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="Width">The width.</param>
+        /// <param name="Height">The height.</param>
+        /// <returns>Center on Screen</returns>
         internal static List<Triangle> MoveIntoView(List<Triangle> triangles, int Width, int Height)
         {
             var lst = new List<Triangle>();
@@ -108,7 +180,7 @@ namespace Mathematics
         /// <returns>New Coordinates to center the View into the Image</returns>
         public Vector3D ConvertToRaster(Vector3D v)
         {
-            return new Vector3D((int)((v.X + 1) * 0.5d * Width),
+            return new((int)((v.X + 1) * 0.5d * Width),
                 (int)((1 - ((v.Y + 1) * 0.5d)) * Height),
                 -v.Z);
         }
