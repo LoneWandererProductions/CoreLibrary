@@ -83,10 +83,36 @@ namespace CommonLibraryTests
             Projection3DRegister.Height = 480;
 
             var objFile = ResourceObjects.GetCube();
-            var poly = Triangle.CreateTri(objFile);
-            var transform = new Transform();
-            var renderObj = new RenderObject(poly, transform);
-            var raster = new Rasterize();
+            var triangles = Triangle.CreateTri(objFile);
+            var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
+            var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
+
+            var transform = new Transform {Rotation = rotation, Position = translation};
+
+            var cache = Rasterize.WorldMatrix(triangles, transform);
+            Vector3D vCamera = new Vector3D { X = 0, Y = 0, Z = 0};
+            Vector3D vTarget = new Vector3D { X= 0, Y= 0, Z = 1 };
+            Vector3D vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
+
+            cache = Rasterize.ViewPort(cache, vCamera);
+
+            var expected = new BaseMatrix(4, 4)
+            {
+                [0, 0] = 1,
+                [1, 1] = 1,
+                [2, 2] = 1,
+                [3, 3] = 1
+            };
+
+            var matrix = Projection3DCamera.PointAt(vCamera, vTarget, vUp);
+
+            var check = expected == matrix;
+
+            Assert.IsTrue(check, "Wrong Point At Matrix");
+
+            cache = Rasterize.CameraPointAt(cache, vCamera, vTarget, vUp);
+
+            cache =  Rasterize.Convert2DTo3D(cache);
         }
 
         /// <summary>
