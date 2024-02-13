@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http.Headers;
 
 namespace Mathematics
 {
@@ -75,10 +74,9 @@ namespace Mathematics
         /// <param name="vTarget">The v target.</param>
         /// <param name="vUp">The v up.</param>
         /// <returns>Object from the Camera Lens</returns>
-        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, Vector3D vCamera, Vector3D vTarget,
-            Vector3D vUp)
+        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, Vector3D vCamera, Vector3D vUp)
         {
-            var matCamera = Projection3DCamera.PointAt(vCamera, vTarget, vUp);
+            var matCamera = Projection3DCamera.ViewCamera(0, vCamera, vUp);
 
             var lst = new List<Triangle>(triangles.Count);
 

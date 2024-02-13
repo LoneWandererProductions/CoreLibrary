@@ -21,13 +21,11 @@ namespace Mathematics
         /// <param name="vUp">The v up.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>Converted 3d View</returns>
-        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, Vector3D vTarget, Vector3D vUp,
+        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, Vector3D vUp,
             bool? orthogonal)
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
             cache = Rasterize.ViewPort(cache, vCamera);
-
-            cache = Rasterize.CameraPointAt(cache, vCamera, vTarget, vUp);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
 

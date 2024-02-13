@@ -174,11 +174,28 @@ namespace Mathematics
             return new BaseMatrix(translation);
         }
 
-        public static BaseMatrix ViewCamera(int angle, Vector3D position, Vector3D target, Vector3D up)
+        public static BaseMatrix ViewCamera(int angle, Vector3D vCamera, Vector3D up)
         {
-            var matCamera = PointAt(position, target, up);
+            //vec3d vTarget = { 1,2,3 };//{ 0,0,1 };
+            var vTarget = new Vector3D(1, 2, 3);
+            var vLookDir = vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget);
+            //1,2,3,1
+            vTarget = vCamera + vLookDir;
+            //1,2,3,1
 
-            return matCamera.Inverse();
+            // 0.408248246, 0.872871578, 0.267261237, 0
+            // -0.816496491, 0.218217969, 0.534522474, 0
+            // 0.408248276, -0.436435580, 0.801783681, 0
+            // 0, 0, 0, 1
+            var matCamera = PointAt(vCamera, vTarget, up);
+
+            //  0.4082483712994080081   0.87287152407673441941  0.26726118804963879546  0
+            //- 0.8164966364025321768  0.21821790785151009976  0.53452250693063268021  0
+            //  0.40824829299803304429 - 0.43643577190462942966 0.80178373647505295823  0
+            //   0   0   0   1
+
+            var matView = matCamera.Inverse();
+            return matView;
         }
 
         /// <summary>
@@ -187,16 +204,17 @@ namespace Mathematics
         ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
         ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
-        /// <param name="position">Current Position.</param>
+        /// <param name="position">Current Position, also known as vCamera.</param>
         /// <param name="target">Directional Vector, Point at.</param>
         /// <param name="up">Directional Vector, Z Axis.</param>
         /// <returns>matrix for Transforming the Coordinate</returns>
-        public static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
+        private static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
         {
-            var newForward = target - position;
+            var newForward = (target - position).Normalize();
             var a = newForward * (up * newForward);
-            var newUp = up - a;
+            var newUp = (up - a).Normalize();
             var newRight = newUp.CrossProduct(newForward);
+
             return new BaseMatrix(4, 4)
             {
                 [0, 0] = newRight.X,
@@ -214,7 +232,7 @@ namespace Mathematics
                 [3, 0] = position.X,
                 [3, 1] = position.Y,
                 [3, 2] = position.Z,
-                [3, 3] = 1.0d
+                [3, 3] = position.W
             };
         }
     }

@@ -313,6 +313,31 @@ namespace CommonLibraryTests
             //check compare of arrays
             var check = cache.Equal(i.Matrix);
             Assert.IsTrue(check, "Inverse Matrix");
+
+            // 0.408248246, 0.872871578, 0.267261237, 0
+            // -0.816496491, 0.218217969, 0.534522474, 0
+            // 0.408248276, -0.436435580, 0.801783681, 0
+            // 0, 0, 0, 1
+            x = new double[,]
+            {
+                    { 1, 2, 3,0 }, 
+                    { -4, 2,2,0 }, 
+                    { 1, 1,1,0 }, 
+                    { 2, 1,-1,1 }
+            };
+
+            //   0 -1 / 6    1 / 3   0
+            //   1  1 / 3    7 / 3   0
+            //   1 -1 / 6   -5 / 3   0
+            //   2 -1 / 6  -14 / 3   1
+
+            m1 = new BaseMatrix { Matrix = x };
+            m2 = m1.Inverse();
+            i = MatrixUtility.MatrixIdentity(4);
+
+            check = m1 * m2 == i;
+
+            Assert.IsTrue(check, "Not Inverse");
         }
 
 
