@@ -15,55 +15,206 @@ namespace Mathematics
 {
     internal static class MatrixInverse
     {
-        /// <summary>
-        ///     Calculate the Inverse Matrix
-        ///     Source:
-        ///     https://jamesmccaffrey.wordpress.com/2015/03/06/inverting-a-matrix-using-c/
-        /// </summary>
-        /// <param name="matrix">The matrix.</param>
-        /// <returns>Inverse Matrix</returns>
-        /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
-        internal static double[,] Inverse(double[,] matrix)
+
+        internal static double[,] Inverse(double[,] m)
         {
-            var n = matrix.GetLength(0);
+            // inverse using QR decomp (Householder algorithm)
+            double[,] q;
+            double[,] r;
+            MatDecomposeQr(m, out q, out r);
 
-            var result = matrix.Duplicate();
+            // TODO: check if determinant is zero (no inverse)
+            // double absDet = 1.0;
+            // for (int i = 0; i < M.Length; ++i)
+            //   absDet *= R[i,i];
 
-            var lum = MatrixDecompose(matrix, out var perm, out _);
+            var rinv = MatInverseUpperTri(r); // std algo
+            var qtrans = MatTranspose(q); // is inv(Q)
+            return MatProduct(rinv, qtrans);
 
-            if (lum == null)
+            // ----------------------------------------------------
+            // helpers: MatDecomposeQR, MatMake, MatTranspose,
+            // MatInverseUpperTri, MatIdentity, MatCopy, VecNorm,
+            // VecDot, VecToMat, MatProduct
+            // ----------------------------------------------------
+
+            static void MatDecomposeQr(double[,] mat,
+                out double[,] unitaryQ, out double[,] triangularR)
             {
-                throw new ArithmeticException(MathResources.MatrixErrorInverse);
-            }
+                // QR decomposition, Householder algorithm.
+                // https://rosettacode.org/wiki/QR_decomposition
+                var row = mat.GetLength(0); // assumes mat is nxn
+                var column = mat.GetLength(1);// check m == n
 
-            //var b = new double[n];
-            //constant vector
-            var b = new double[n];
+                var q = MatIdentity(row);
+                var r = mat.Duplicate();
+                var end = column - 1;
+                // if (m == n) end = n - 1; else end = n;
 
-            for (var i = 0; i < n; ++i)
-            {
-                for (var j = 0; j < n; ++j)
+                for (var i = 0; i < end; ++i)
                 {
-                    if (i == perm[j])
+                    var h = MatIdentity(row);
+                    var a = new double[column - i];
+                    var k = 0;
+                    for (var ii = i; ii < column; ++ii)
                     {
-                        b[j] = 1.0;
+                        a[k++] = r[ii, i];
                     }
-                    else
+
+                    var normA = VecNorm(a);
+                    if (a[0] < 0.0) { normA = -normA; }
+
+                    var v = new double[a.Length];
+                    for (var j = 0; j < v.Length; ++j)
                     {
-                        b[j] = 0.0;
+                        v[j] = a[j] / (a[0] + normA);
+                    }
+
+                    v[0] = 1.0;
+
+                    var identityH = MatIdentity(a.Length);
+                    var vvDot = VecDot(v, v);
+                    var alpha = VecToMat(v, v.Length, 1);
+                    var beta = VecToMat(v, 1, v.Length);
+                    var aMultB = MatProduct(alpha, beta);
+
+                    for (var ii = 0; ii < identityH.GetLength(0); ++ii)
+                        for (var jj = 0; jj < identityH.GetLength(1); ++jj)
+                        {
+                            identityH[ii, jj] -= (2.0 / vvDot) * aMultB[ii, jj];
+                        }
+
+                    // copy h into lower right of H
+                    var d = column - identityH.GetLength(0);
+                    for (var ii = 0; ii < identityH.GetLength(0); ++ii)
+                        for (var jj = 0; jj < identityH.GetLength(1); ++jj)
+                        {
+                            h[ii + d, jj + d] = identityH[ii, jj];
+                        }
+
+                    q = MatProduct(q, h);
+                    r = MatProduct(h, r);
+                } // i
+
+                unitaryQ = q;
+                triangularR = r;
+            } // QR decomposition 
+
+            static double[,] MatInverseUpperTri(double[,] u)
+            {
+                var n = u.GetLength(0); // must be square matrix
+
+                var result = MatIdentity(n);
+
+                for (var k = 0; k < n; ++k)
+                {
+                    for (var j = 0; j < n; ++j)
+                    {
+                        for (var i = 0; i < k; ++i)
+                        {
+                            result[j, k] -= result[j, i] * u[i, k];
+                        }
+
+                        result[j, k] /= u[k, k];
                     }
                 }
 
-                var x = HelperSolve(lum, b); // 
-
-                for (var j = 0; j < n; ++j)
-                {
-                    result[j, i] = x[j];
-                }
+                return result;
             }
 
-            return result;
-        }
+            static double[,] MatTranspose(double[,] m)
+            {
+                var nr = m.GetLength(0);
+                var nc = m.GetLength(1);
+                var result = MatMake(nc, nr); // note
+                for (var i = 0; i < nr; ++i)
+                    for (var j = 0; j < nc; ++j)
+                    {
+                        result[j, i] = m[i, j];
+                    }
+
+                return result;
+            }
+
+            static double[,] MatMake(int nRows, int nCols)
+            {
+                return new double[nRows, nCols];
+            }
+
+            static double[,] MatIdentity(int n)
+            {
+                var result = MatMake(n, n);
+                for (var i = 0; i < n; ++i)
+                {
+                    result[i, i] = 1.0;
+                }
+
+                return result;
+            }
+
+
+            static double[,] MatProduct(double[,] matA,
+                double[,] matB)
+            {
+                var aRows = matA.GetLength(0);
+                var aCols = matA.GetLength(1);
+                var bRows = matB.GetLength(0);
+                var bCols = matB.GetLength(1);
+                if (aCols != bRows)
+                {
+                    throw new Exception("Non-conformable matrices");
+                }
+
+                var result = MatMake(aRows, bCols);
+
+                for (var i = 0; i < aRows; ++i) // each row of A
+                    for (var j = 0; j < bCols; ++j) // each col of B
+                        for (var k = 0; k < aCols; ++k)
+                        {
+                            result[i, j] += matA[i, k] * matB[k, j];
+                        }
+
+                return result;
+            }
+
+            static double VecDot(double[] v1, double[] v2)
+            {
+                var result = 0.0;
+                var n = v1.Length;
+                for (var i = 0; i < n; ++i)
+                {
+                    result += v1[i] * v2[i];
+                }
+
+                return result;
+            }
+
+            static double VecNorm(double[] vec)
+            {
+                var n = vec.Length;
+                var sum = 0.0;
+                for (var i = 0; i < n; ++i)
+                {
+                    sum += vec[i] * vec[i];
+                }
+
+                return Math.Sqrt(sum);
+            }
+
+            static double[,] VecToMat(double[] vec,
+                int nRows, int nCols)
+            {
+                var result = MatMake(nRows, nCols);
+                var k = 0;
+                for (var i = 0; i < nRows; ++i)
+                    for (var j = 0; j < nCols; ++j)
+                    {
+                        result[i, j] = vec[k++];
+                    }
+
+                return result;
+            }
+        } // MatInverseQR
 
         /// <summary>
         ///     Calculate the determinant of the matrix.
@@ -205,47 +356,6 @@ namespace Mathematics
             } // main j column loop
 
             return result;
-        }
-
-        /// <summary>
-        ///     Helper solve.
-        /// </summary>
-        /// <param name="luMatrix">The lu matrix.</param>
-        /// <param name="b">The b.</param>
-        /// <returns>Changed matrix</returns>
-        private static double[] HelperSolve(double[,] luMatrix, double[] b)
-        {
-            // before calling this helper, permute b using the perm array
-            // from MatrixDecompose that generated luMatrix
-            //      Columns
-            var n = luMatrix.GetLength(0);
-            var x = new double[n];
-            b.CopyTo(x, 0);
-
-            for (var i = 1; i < n; ++i)
-            {
-                var sum = x[i];
-                for (var j = 0; j < i; ++j)
-                {
-                    sum -= luMatrix[i, j] * x[j];
-                }
-
-                x[i] = sum;
-            }
-
-            x[n - 1] /= luMatrix[n - 1, n - 1];
-            for (var i = n - 2; i >= 0; --i)
-            {
-                var sum = x[i];
-
-                for (var j = i + 1; j < n; ++j)
-                {
-                    sum -= luMatrix[i, j] * x[j];
-                    x[i] = sum / luMatrix[i, i];
-                }
-            }
-
-            return x;
         }
     }
 }

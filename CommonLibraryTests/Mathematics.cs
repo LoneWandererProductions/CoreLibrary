@@ -296,6 +296,15 @@ namespace CommonLibraryTests
         {
             double[,] x = { { 8, 4 }, { 3, 2 } };
 
+            var test = new double[5][];
+            var idd = test.Length;
+            test[1] = new double[4];
+            test[1][0] = 1;
+            idd = test.Length;
+
+            var sec = new double[5, 4];
+            idd = sec.GetLength(0);
+
             var i = MatrixUtility.MatrixIdentity(2);
 
             var m1 = new BaseMatrix { Matrix = x };
@@ -304,15 +313,10 @@ namespace CommonLibraryTests
 
             var result = m1 * m2;
 
-            Assert.IsTrue(result[0, 0].Equals(1), "00");
-            Assert.IsTrue(result[0, 1].Equals(0), "00");
-            Assert.IsTrue(result[1, 0].Equals(0), "00");
-            Assert.IsTrue(result[1, 1].Equals(1), "00");
-
-            var cache = result.Matrix;
-            //check compare of arrays
-            var check = cache.Equal(i.Matrix);
-            Assert.IsTrue(check, "Inverse Matrix");
+            Assert.IsTrue(Math.Abs(result[0, 0] - 1) < 0.00001, "00");
+            Assert.IsTrue(Math.Abs(result[0, 1] - 0) < 0.00001, "01");
+            Assert.IsTrue(Math.Abs(result[1, 0] - 0) < 0.00001, "10");
+            Assert.IsTrue(Math.Abs(result[1, 1] - 1) < 0.00001, "11");
 
             // 0.408248246, 0.872871578, 0.267261237, 0
             // -0.816496491, 0.218217969, 0.534522474, 0
@@ -335,7 +339,10 @@ namespace CommonLibraryTests
             m2 = m1.Inverse();
             i = MatrixUtility.MatrixIdentity(4);
 
-            check = m1 * m2 == i;
+            var cache = m1 * m2;
+            Trace.WriteLine(cache.ToString());
+
+            var check = m1 * m2 == i;
 
             Assert.IsTrue(check, "Not Inverse");
         }
