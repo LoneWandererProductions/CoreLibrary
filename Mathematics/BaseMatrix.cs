@@ -158,7 +158,7 @@ namespace Mathematics
         /// <returns>The Inverse Matrix</returns>
         public BaseMatrix Inverse()
         {
-            var result = MatrixUtility.MatrixInverse(Matrix);
+            var result = MatrixInverse.Inverse(Matrix);
             return new BaseMatrix(result);
         }
 
@@ -168,7 +168,7 @@ namespace Mathematics
         /// <returns>Calculate the Determinant</returns>
         public double Determinant()
         {
-            return MatrixUtility.MatrixDeterminant(Matrix);
+            return MatrixInverse.MatrixDeterminant(Matrix);
         }
 
         /// <summary>

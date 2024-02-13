@@ -340,6 +340,35 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Not Inverse");
         }
 
+        /// <summary>
+        /// Matrix Determinant.
+        /// </summary>
+        [TestMethod]
+        public void MatrixDeterminant()
+        {
+            var x = new double[,]
+            {
+                { 1, 2, 3,0 },
+                { -4, 2,2,0 },
+                { 1, 1,1,0 },
+                { 2, 1,-1,1 }
+            };
+
+            var m1 = new BaseMatrix { Matrix = x };
+            var determinant = m1.Determinant();
+            Assert.AreEqual(-6, determinant, "Wrong Determinant");
+
+            x = new double[,]
+            {
+                { 1, 2 },
+                { -4, 2},
+            };
+
+            m1 = new BaseMatrix { Matrix = x };
+            determinant = m1.Determinant();
+
+            Assert.AreEqual(10, determinant, "Wrong Determinant");
+        }
 
         /// <summary>
         ///     Matrix additions.
