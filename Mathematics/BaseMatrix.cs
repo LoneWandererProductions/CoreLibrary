@@ -158,7 +158,10 @@ namespace Mathematics
         /// <returns>The Inverse Matrix</returns>
         public BaseMatrix Inverse()
         {
-            if (Height != Width) throw new NotImplementedException(MathResources.MatrixErrorInverseNotCubic);
+            if (Height != Width)
+            {
+                throw new NotImplementedException(MathResources.MatrixErrorInverseNotCubic);
+            }
 
             var result = MatrixInverse.Inverse(Matrix);
             return new BaseMatrix(result);
@@ -293,10 +296,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {

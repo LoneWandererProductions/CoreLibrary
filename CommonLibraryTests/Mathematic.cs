@@ -316,13 +316,7 @@ namespace CommonLibraryTests
             // -0.816496491, 0.218217969, 0.534522474, 0
             // 0.408248276, -0.436435580, 0.801783681, 0
             // 0, 0, 0, 1
-            x = new double[,]
-            {
-                { 1, 2, 3,0 }, 
-                { -4, 2,2,0 }, 
-                { 1, 1,1,0 }, 
-                { 2, 1,-1,1 }
-            };
+            x = new double[,] { { 1, 2, 3, 0 }, { -4, 2, 2, 0 }, { 1, 1, 1, 0 }, { 2, 1, -1, 1 } };
 
             //   0 -1 / 6    1 / 3   0
             //   1  1 / 3    7 / 3   0
@@ -339,8 +333,8 @@ namespace CommonLibraryTests
             Assert.IsTrue(Math.Abs(data[2, 2] - 1) < 0.00001, "22");
             Assert.IsTrue(Math.Abs(data[3, 3] - 1) < 0.00001, "33");
 
-            Assert.IsTrue(Math.Abs(data[0, 1] ) < 0.00001, "01");
-            Assert.IsTrue(Math.Abs(data[0, 2] ) < 0.00001, "02");
+            Assert.IsTrue(Math.Abs(data[0, 1]) < 0.00001, "01");
+            Assert.IsTrue(Math.Abs(data[0, 2]) < 0.00001, "02");
             Assert.IsTrue(Math.Abs(data[0, 3]) < 0.00001, "03");
 
             Assert.IsTrue(Math.Abs(data[1, 0]) < 0.00001, "10");
@@ -357,28 +351,18 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Matrix Determinant.
+        ///     Matrix Determinant.
         /// </summary>
         [TestMethod]
         public void MatrixDeterminant()
         {
-            var x = new double[,]
-            {
-                { 1, 2, 3,0 },
-                { -4, 2,2,0 },
-                { 1, 1,1,0 },
-                { 2, 1,-1,1 }
-            };
+            var x = new double[,] { { 1, 2, 3, 0 }, { -4, 2, 2, 0 }, { 1, 1, 1, 0 }, { 2, 1, -1, 1 } };
 
             var m1 = new BaseMatrix { Matrix = x };
             var determinant = m1.Determinant();
-            Assert.AreEqual(-6, Math.Round(determinant,1), "Wrong Determinant");
+            Assert.AreEqual(-6, Math.Round(determinant, 1), "Wrong Determinant");
 
-            x = new double[,]
-            {
-                { 1, 2 },
-                { -4, 2},
-            };
+            x = new double[,] { { 1, 2 }, { -4, 2 } };
 
             m1 = new BaseMatrix { Matrix = x };
             determinant = m1.Determinant();
@@ -387,31 +371,22 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Matrix Decompose.
+        ///     Matrix Decompose.
         /// </summary>
         [TestMethod]
         public void MatrixDecompose()
         {
-            double[,] matrix =
-            {
-                {2, -1, -2}, {-4, 6, 3}, {-4, -2, 8}
-            };
+            double[,] matrix = { { 2, -1, -2 }, { -4, 6, 3 }, { -4, -2, 8 } };
 
-            var cache = Mathematics.MatrixInverse.LuDecomposition(matrix);
+            var cache = MatrixInverse.LuDecomposition(matrix);
 
-            double[,] upper =
-            {
-                {1, 0, 0}, {-2, 1, 0}, {-2, -1, 1}
-            };
+            double[,] upper = { { 1, 0, 0 }, { -2, 1, 0 }, { -2, -1, 1 } };
 
             var check = upper.Equal(cache.Key);
 
             Assert.IsTrue(check, "Upper not correct");
 
-            double[,] lower =
-            {
-                {2, -1, -2}, {0, 4, -1}, {0, 0, 3}
-            };
+            double[,] lower = { { 2, -1, -2 }, { 0, 4, -1 }, { 0, 0, 3 } };
 
             check = lower.Equal(cache.Value);
 

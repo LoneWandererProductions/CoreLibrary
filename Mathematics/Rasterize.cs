@@ -8,7 +8,7 @@ namespace Mathematics
         public int Height { get; set; }
 
         /// <summary>
-        /// Worlds the matrix.
+        ///     Worlds the matrix.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>
@@ -32,7 +32,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Views the port.
+        ///     Views the port.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="vCamera">The v camera.</param>
@@ -67,11 +67,10 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Cameras the point at.
+        ///     Cameras the point at.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="vCamera">The v camera.</param>
-        /// <param name="vTarget">The v target.</param>
         /// <param name="vUp">The v up.</param>
         /// <returns>Object from the Camera Lens</returns>
         internal static List<Triangle> CameraPointAt(List<Triangle> triangles, Vector3D vCamera, Vector3D vUp)
@@ -84,9 +83,7 @@ namespace Mathematics
             {
                 var triPointed = new Triangle
                 {
-                    [0] = triangle[0] * matCamera,
-                    [1] = triangle[1] * matCamera,
-                    [2] = triangle[2] * matCamera
+                    [0] = triangle[0] * matCamera, [1] = triangle[1] * matCamera, [2] = triangle[2] * matCamera
                 };
                 lst.Add(triPointed);
             }
@@ -96,7 +93,7 @@ namespace Mathematics
 
 
         /// <summary>
-        /// Convert2s the d to3 d.
+        ///     Convert2s the d to3 d.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>Coordinates converted into 3D Space</returns>
@@ -119,7 +116,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Convert2s the d to3 d orthographic.
+        ///     Convert2s the d to3 d orthographic.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>Coordinates converted into 3D Space</returns>
@@ -142,16 +139,16 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Moves the into view.
+        ///     Moves the into view.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
-        /// <param name="Width">The width.</param>
-        /// <param name="Height">The height.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <returns>Center on Screen</returns>
-        internal static List<Triangle> MoveIntoView(List<Triangle> triangles, int Width, int Height)
+        internal static List<Triangle> MoveIntoView(List<Triangle> triangles, int width, int height)
         {
             var lst = new List<Triangle>();
-            var raster = new Rasterize { Width = Width, Height = Height };
+            var raster = new Rasterize { Width = width, Height = height };
 
             foreach (var triangle in triangles)
             {
@@ -178,7 +175,7 @@ namespace Mathematics
         /// <returns>New Coordinates to center the View into the Image</returns>
         public Vector3D ConvertToRaster(Vector3D v)
         {
-            return new((int)((v.X + 1) * 0.5d * Width),
+            return new Vector3D((int)((v.X + 1) * 0.5d * Width),
                 (int)((1 - ((v.Y + 1) * 0.5d)) * Height),
                 -v.Z);
         }

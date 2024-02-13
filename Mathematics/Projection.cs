@@ -12,7 +12,7 @@ namespace Mathematics
 
 
         /// <summary>
-        /// Generates the specified triangles.
+        ///     Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>

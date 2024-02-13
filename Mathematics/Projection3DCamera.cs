@@ -178,7 +178,8 @@ namespace Mathematics
         {
             //vec3d vTarget = { 1,2,3 };//{ 0,0,1 };
             var vTarget = new Vector3D(1, 2, 3);
-            var vLookDir = vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget);
+            var vLookDir =
+                vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget);
             //1,2,3,1
             vTarget = vCamera + vLookDir;
             //1,2,3,1

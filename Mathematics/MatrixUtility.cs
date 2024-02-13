@@ -10,9 +10,6 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using ExtendedSystemObjects;
-
 namespace Mathematics
 {
     /// <summary>

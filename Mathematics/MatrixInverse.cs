@@ -15,7 +15,7 @@ using ExtendedSystemObjects;
 namespace Mathematics
 {
     /// <summary>
-    /// Calculate Inverse and all the other stuff around
+    ///     Calculate Inverse and all the other stuff around
     /// </summary>
     internal static class MatrixInverse
     {
@@ -98,9 +98,7 @@ namespace Mathematics
                 {
                     result.SwapColumn(pRow, j);
 
-                    var tmp = perm[pRow]; // and swap perm info
-                    perm[pRow] = perm[j];
-                    perm[j] = tmp;
+                    (perm[pRow], perm[j]) = (perm[j], perm[pRow]);
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
@@ -132,15 +130,13 @@ namespace Mathematics
 
                     result.SwapColumn(goodRow, j);
 
-                    var tmp = perm[goodRow]; // and swap perm info
-                    perm[goodRow] = perm[j];
-                    perm[j] = tmp;
+                    (perm[goodRow], perm[j]) = (perm[j], perm[goodRow]);
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
                 // --------------------------------------------------
                 // if diagonal after swap is zero . .
-                //if (Math.Abs(result[j,j]) less-than 1.0E-20) 
+                //if (Math.Abs(result[j,j]) less-than 1.0E-20)
                 //  return null; // consider a throw
 
                 for (var i = j + 1; i < rows; ++i)
@@ -158,42 +154,50 @@ namespace Mathematics
 
 
         /// <summary>
-        /// Inverses the specified matrix.
+        ///     Inverses the specified matrix.
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns></returns>
         /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
         internal static double[,] Inverse(double[,] matrix)
         {
-            int n = matrix.GetLength(0);
-            double[,] result = matrix.Duplicate();
-            double[,] lum = MatrixDecompose(matrix, out var perm,
+            var n = matrix.GetLength(0);
+            var result = matrix.Duplicate();
+            var lum = MatrixDecompose(matrix, out var perm,
                 out _);
             if (lum == null)
-                throw new ArithmeticException(MathResources.MatrixErrorInverse);
-
-            double[] b = new double[n];
-            for (int i = 0; i< n; ++i)
             {
-                for (int j = 0; j <n; ++j)
+                throw new ArithmeticException(MathResources.MatrixErrorInverse);
+            }
+
+            var b = new double[n];
+            for (var i = 0; i < n; ++i)
+            {
+                for (var j = 0; j < n; ++j)
                 {
                     if (i == perm[j])
+                    {
                         b[j] = 1.0;
+                    }
                     else
+                    {
                         b[j] = 0.0;
+                    }
                 }
 
-                double[] x = HelperSolve(lum, b); // 
+                var x = HelperSolve(lum, b); // 
 
-                for (int j = 0; j < n; ++j)
-                    result[j,i] = x[j];
+                for (var j = 0; j < n; ++j)
+                {
+                    result[j, i] = x[j];
+                }
             }
 
             return result;
         }
 
         /// <summary>
-        /// Helpers the solve.
+        ///     Helpers the solve.
         /// </summary>
         /// <param name="luMatrix">The lu matrix.</param>
         /// <param name="b">The b.</param>
@@ -251,7 +255,7 @@ namespace Mathematics
                     double sum = 0;
                     for (var j = 0; j < i; j++)
                     {
-                        sum += (lower[i, j] * upper[j, k]);
+                        sum += lower[i, j] * upper[j, k];
                     }
 
                     // Evaluating U(i, k)
@@ -271,7 +275,7 @@ namespace Mathematics
                         double sum = 0;
                         for (var j = 0; j < i; j++)
                         {
-                            sum += (lower[k, j] * upper[j, i]);
+                            sum += lower[k, j] * upper[j, i];
                         }
 
                         // Evaluating L(k, i)

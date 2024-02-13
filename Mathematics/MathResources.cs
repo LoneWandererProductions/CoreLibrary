@@ -10,7 +10,7 @@
 namespace Mathematics
 {
     /// <summary>
-    /// Some basic strings
+    ///     Some basic strings
     /// </summary>
     internal static class MathResources
     {

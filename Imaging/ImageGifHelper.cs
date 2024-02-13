@@ -277,7 +277,7 @@ namespace Imaging
             // log2(total colors) - 1
             var ret = (byte)Math.Ceiling(Math.Log(total, 2.0) - 1.0);
 
-            return new BitArray(new byte[] { ret });
+            return new BitArray(new[] { ret });
         }
     }
 }

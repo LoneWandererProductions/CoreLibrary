@@ -448,6 +448,8 @@ namespace CommonLibraryTests
             var color = Analysis.FindImagesInColorRange(imageData.R, imageData.G, imageData.B, 4,
                 SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
+            if (color == null) Assert.Fail("color was null");
+
             Assert.AreEqual(2, color.Count, "Done");
 
             Assert.AreEqual(imagePath, color[0], "Done");
@@ -457,6 +459,8 @@ namespace CommonLibraryTests
             //compare and Similar Images
 
             var images = Compare.GetDuplicateImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix);
+
+            if (images == null) Assert.Fail("images was null");
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(2, images[0].Count, "Done");
@@ -468,6 +472,8 @@ namespace CommonLibraryTests
             Assert.AreEqual(imagePath, cache[1], "Done");
 
             images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
+
+            if (images == null) Assert.Fail("image was null");
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(3, images[0].Count, "Done");
@@ -482,6 +488,8 @@ namespace CommonLibraryTests
 
             //Check Content
             var data = Analysis.GetImageDetails(imagePath);
+
+            if (data == null) Assert.Fail("data was null");
 
             Assert.AreEqual(26, data.R, "Done");
 
@@ -498,6 +506,8 @@ namespace CommonLibraryTests
             Assert.AreEqual(".png", data.Extension, "Done");
 
             var dataList = Analysis.GetImageDetails(images[0]);
+
+            if (dataList == null) Assert.Fail("dataList was null");
 
             Assert.AreEqual(26, dataList[0].R, "Done");
 
@@ -710,7 +720,7 @@ namespace CommonLibraryTests
 
             //just test the Bresenham
             var lstOne = MathSpeedTests.BresenhamPlotLine(one, two);
-            var lstTwo = global::Mathematics.Lines.LinearLine(one, two);
+            var lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
             {
@@ -725,7 +735,7 @@ namespace CommonLibraryTests
             one = new Coordinate2D(1, 0);
             two = new Coordinate2D(1, 50);
 
-            lstTwo = global::Mathematics.Lines.LinearLine(one, two);
+            lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             Assert.AreEqual(lstTwo[25].Y, 25, "not equal");
             Assert.AreEqual(lstTwo[25].X, 1, "not equal");
@@ -735,7 +745,7 @@ namespace CommonLibraryTests
             one = new Coordinate2D(0, 0);
             two = new Coordinate2D(50, 0);
 
-            lstTwo = global::Mathematics.Lines.LinearLine(one, two);
+            lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             Assert.AreEqual(lstTwo[25].Y, 0, "not equal");
             Assert.AreEqual(lstTwo[25].X, 25, "not equal");
@@ -782,7 +792,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test my stuff
-            _ = global::Mathematics.Lines.LinearLine(one, two);
+            _ = Mathematics.Lines.LinearLine(one, two);
 
             watch.Stop();
 

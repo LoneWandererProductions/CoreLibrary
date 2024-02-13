@@ -82,11 +82,11 @@ namespace CommonLibraryTests
         [TestMethod]
         public void PointAt()
         {
-            var vCamera = new Vector3D {X = 0, Y = 0, Z = 0};
-            var vUp = new Vector3D {X = 0, Y = 1, Z = 0};
+            var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
+            var vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
 
 
-            var expected = new BaseMatrix(4, 4) {[0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1};
+            var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
             var matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp);
 
@@ -94,7 +94,7 @@ namespace CommonLibraryTests
 
             //Assert.IsTrue(check, "Wrong Point At Matrix");
 
-            vUp = new Vector3D {X = 1, Y = 1, Z = 1};
+            vUp = new Vector3D { X = 1, Y = 1, Z = 1 };
             // 0.408248246, 0.872871578, 0.267261237, 0
             // -0.816496491, 0.218217969, 0.534522474, 0
             // 0.408248276, -0.436435580, 0.801783681, 0
@@ -102,10 +102,8 @@ namespace CommonLibraryTests
 
             var m = new[,]
             {
-                {0.408248246, 0.872871578, 0.267261237, 0}, 
-                {-0.816496491, 0.218217969, 0.534522474, 0},
-                {0.408248276, -0.436435580, 0.801783681, 0}, 
-                {0, 0, 0, 1}
+                { 0.408248246, 0.872871578, 0.267261237, 0 }, { -0.816496491, 0.218217969, 0.534522474, 0 },
+                { 0.408248276, -0.436435580, 0.801783681, 0 }, { 0, 0, 0, 1 }
             };
 
             //  0.4082483712994080081   0.87287152407673441941  0.26726118804963879546  0
@@ -113,7 +111,7 @@ namespace CommonLibraryTests
             //  0.40824829299803304429 - 0.43643577190462942966 0.80178373647505295823  0
             //   0   0   0   1
 
-            expected = new BaseMatrix {Matrix = m};
+            expected = new BaseMatrix { Matrix = m };
 
             matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp);
 
@@ -132,14 +130,14 @@ namespace CommonLibraryTests
 
             var objFile = ResourceObjects.GetCube();
             var triangles = Triangle.CreateTri(objFile);
-            var rotation = new Vector3D {X = 0, Y = 0, Z = 0};
-            var translation = new Vector3D {X = 0, Y = 0, Z = 5};
+            var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
+            var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
 
-            var transform = new Transform {Rotation = rotation, Position = translation};
+            var transform = new Transform { Rotation = rotation, Position = translation };
 
             var cache = Rasterize.WorldMatrix(triangles, transform);
-            var vCamera = new Vector3D {X = 0, Y = 0, Z = 0};
-            var vUp = new Vector3D {X = 0, Y = 1, Z = 0};
+            var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
+            var vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
 
             cache = Rasterize.ViewPort(cache, vCamera);
 
@@ -172,9 +170,9 @@ namespace CommonLibraryTests
             };
 
             //modelMatrix={1 0 0 0  0 1 0 0  0 0 1 0  0 0 3 1  }
-            var matrix = new double[,] {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 3, 1}};
+            var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
 
-            var model = new BaseMatrix {Matrix = matrix};
+            var model = new BaseMatrix { Matrix = matrix };
 
             var cache = Projection3DCamera.ModelMatrix(transform);
 
@@ -278,72 +276,72 @@ namespace CommonLibraryTests
         internal static List<TertiaryVector> GetCube()
         {
             //south two Triangles
-            var southOne = new TertiaryVector {X = 0, Y = 0, Z = 0};
-            var southTwo = new TertiaryVector {X = 0, Y = 1, Z = 0};
-            var southThree = new TertiaryVector {X = 1, Y = 1, Z = 0};
+            var southOne = new TertiaryVector { X = 0, Y = 0, Z = 0 };
+            var southTwo = new TertiaryVector { X = 0, Y = 1, Z = 0 };
+            var southThree = new TertiaryVector { X = 1, Y = 1, Z = 0 };
 
             //south two Triangles
-            var southFour = new TertiaryVector {X = 0, Y = 0, Z = 0};
-            var southFive = new TertiaryVector {X = 1, Y = 1, Z = 0};
+            var southFour = new TertiaryVector { X = 0, Y = 0, Z = 0 };
+            var southFive = new TertiaryVector { X = 1, Y = 1, Z = 0 };
 
-            var southSix = new TertiaryVector {X = 1, Y = 0, Z = 0};
-
-            //east two Triangles
-            var eastOne = new TertiaryVector {X = 1, Y = 0, Z = 0};
-            var eastTwo = new TertiaryVector {X = 1, Y = 1, Z = 0};
-
-            var eastThree = new TertiaryVector {X = 1, Y = 1, Z = 1};
+            var southSix = new TertiaryVector { X = 1, Y = 0, Z = 0 };
 
             //east two Triangles
-            var eastFour = new TertiaryVector {X = 1, Y = 0, Z = 0};
-            var eastFive = new TertiaryVector {X = 1, Y = 1, Z = 1};
+            var eastOne = new TertiaryVector { X = 1, Y = 0, Z = 0 };
+            var eastTwo = new TertiaryVector { X = 1, Y = 1, Z = 0 };
 
-            var eastSix = new TertiaryVector {X = 1, Y = 0, Z = 1};
+            var eastThree = new TertiaryVector { X = 1, Y = 1, Z = 1 };
+
+            //east two Triangles
+            var eastFour = new TertiaryVector { X = 1, Y = 0, Z = 0 };
+            var eastFive = new TertiaryVector { X = 1, Y = 1, Z = 1 };
+
+            var eastSix = new TertiaryVector { X = 1, Y = 0, Z = 1 };
 
             //north two Triangles
-            var northOne = new TertiaryVector {X = 1, Y = 0, Z = 1};
-            var northTwo = new TertiaryVector {X = 1, Y = 1, Z = 1};
+            var northOne = new TertiaryVector { X = 1, Y = 0, Z = 1 };
+            var northTwo = new TertiaryVector { X = 1, Y = 1, Z = 1 };
 
-            var northThree = new TertiaryVector {X = 0, Y = 1, Z = 1};
+            var northThree = new TertiaryVector { X = 0, Y = 1, Z = 1 };
 
-            var northFour = new TertiaryVector {X = 1, Y = 0, Z = 1};
-            var northFive = new TertiaryVector {X = 0, Y = 1, Z = 1};
+            var northFour = new TertiaryVector { X = 1, Y = 0, Z = 1 };
+            var northFive = new TertiaryVector { X = 0, Y = 1, Z = 1 };
 
-            var northSix = new TertiaryVector {X = 0, Y = 0, Z = 1};
+            var northSix = new TertiaryVector { X = 0, Y = 0, Z = 1 };
 
 
             //west two Triangles
-            var westOne = new TertiaryVector {X = 0, Y = 0, Z = 1};
-            var westTwo = new TertiaryVector {X = 0, Y = 1, Z = 1};
+            var westOne = new TertiaryVector { X = 0, Y = 0, Z = 1 };
+            var westTwo = new TertiaryVector { X = 0, Y = 1, Z = 1 };
 
-            var westThree = new TertiaryVector {X = 0, Y = 1, Z = 0};
+            var westThree = new TertiaryVector { X = 0, Y = 1, Z = 0 };
 
-            var westFour = new TertiaryVector {X = 0, Y = 0, Z = 1};
-            var westFive = new TertiaryVector {X = 0, Y = 1, Z = 0};
+            var westFour = new TertiaryVector { X = 0, Y = 0, Z = 1 };
+            var westFive = new TertiaryVector { X = 0, Y = 1, Z = 0 };
 
-            var westSix = new TertiaryVector {X = 0, Y = 0, Z = 0};
+            var westSix = new TertiaryVector { X = 0, Y = 0, Z = 0 };
 
             //top two Triangles
-            var topOne = new TertiaryVector {X = 0, Y = 1, Z = 0};
-            var topTwo = new TertiaryVector {X = 0, Y = 1, Z = 1};
+            var topOne = new TertiaryVector { X = 0, Y = 1, Z = 0 };
+            var topTwo = new TertiaryVector { X = 0, Y = 1, Z = 1 };
 
-            var topThree = new TertiaryVector {X = 1, Y = 1, Z = 1};
+            var topThree = new TertiaryVector { X = 1, Y = 1, Z = 1 };
 
-            var topFour = new TertiaryVector {X = 0, Y = 1, Z = 0};
-            var topFive = new TertiaryVector {X = 1, Y = 1, Z = 1};
+            var topFour = new TertiaryVector { X = 0, Y = 1, Z = 0 };
+            var topFive = new TertiaryVector { X = 1, Y = 1, Z = 1 };
 
-            var topSix = new TertiaryVector {X = 1, Y = 1, Z = 0};
+            var topSix = new TertiaryVector { X = 1, Y = 1, Z = 0 };
 
             //bottom two Triangles
-            var bottomOne = new TertiaryVector {X = 1, Y = 0, Z = 1};
-            var bottomTwo = new TertiaryVector {X = 0, Y = 0, Z = 1};
+            var bottomOne = new TertiaryVector { X = 1, Y = 0, Z = 1 };
+            var bottomTwo = new TertiaryVector { X = 0, Y = 0, Z = 1 };
 
-            var bottomThree = new TertiaryVector {X = 0, Y = 0, Z = 0};
+            var bottomThree = new TertiaryVector { X = 0, Y = 0, Z = 0 };
 
-            var bottomFour = new TertiaryVector {X = 1, Y = 0, Z = 1};
-            var bottomFive = new TertiaryVector {X = 0, Y = 0, Z = 0};
+            var bottomFour = new TertiaryVector { X = 1, Y = 0, Z = 1 };
+            var bottomFive = new TertiaryVector { X = 0, Y = 0, Z = 0 };
 
-            var bottomSix = new TertiaryVector {X = 1, Y = 0, Z = 0};
+            var bottomSix = new TertiaryVector { X = 1, Y = 0, Z = 0 };
 
             return new List<TertiaryVector>
             {
