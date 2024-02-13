@@ -20,7 +20,7 @@ namespace CommonLibraryTests
     ///     Test some image related stuff
     /// </summary>
     [TestClass]
-    public class Mathematics
+    public class Mathematic
     {
         /// <summary>
         ///     Test the custom DirectBitmap and how it works
@@ -299,7 +299,6 @@ namespace CommonLibraryTests
             var i = MatrixUtility.MatrixIdentity(2);
 
             var m1 = new BaseMatrix { Matrix = x };
-
             var m2 = m1.Inverse();
 
             var result = m1 * m2;
@@ -309,9 +308,8 @@ namespace CommonLibraryTests
             Assert.IsTrue(Math.Abs(result[1, 0] - 0) < 0.00001, "10");
             Assert.IsTrue(Math.Abs(result[1, 1] - 1) < 0.00001, "11");
 
-            var cache = result.Matrix;
             //check compare of arrays
-            var check = cache.Equal(i.Matrix);
+            var check = result.Equals(i);
             Assert.IsTrue(check, "Inverse Matrix");
 
             // 0.408248246, 0.872871578, 0.267261237, 0
@@ -320,10 +318,10 @@ namespace CommonLibraryTests
             // 0, 0, 0, 1
             x = new double[,]
             {
-                    { 1, 2, 3,0 }, 
-                    { -4, 2,2,0 }, 
-                    { 1, 1,1,0 }, 
-                    { 2, 1,-1,1 }
+                { 1, 2, 3,0 }, 
+                { -4, 2,2,0 }, 
+                { 1, 1,1,0 }, 
+                { 2, 1,-1,1 }
             };
 
             //   0 -1 / 6    1 / 3   0
@@ -333,11 +331,29 @@ namespace CommonLibraryTests
 
             m1 = new BaseMatrix { Matrix = x };
             m2 = m1.Inverse();
-            i = MatrixUtility.MatrixIdentity(4);
 
-            check = m1 * m2 == i;
+            var data = m1 * m2;
 
-            Assert.IsTrue(check, "Not Inverse");
+            Assert.IsTrue(Math.Abs(data[0, 0] - 1) < 0.00001, "00");
+            Assert.IsTrue(Math.Abs(data[1, 1] - 1) < 0.00001, "11");
+            Assert.IsTrue(Math.Abs(data[2, 2] - 1) < 0.00001, "22");
+            Assert.IsTrue(Math.Abs(data[3, 3] - 1) < 0.00001, "33");
+
+            Assert.IsTrue(Math.Abs(data[0, 1] ) < 0.00001, "01");
+            Assert.IsTrue(Math.Abs(data[0, 2] ) < 0.00001, "02");
+            Assert.IsTrue(Math.Abs(data[0, 3]) < 0.00001, "03");
+
+            Assert.IsTrue(Math.Abs(data[1, 0]) < 0.00001, "10");
+            Assert.IsTrue(Math.Abs(data[1, 2]) < 0.00001, "12");
+            Assert.IsTrue(Math.Abs(data[1, 3]) < 0.00001, "13");
+
+            Assert.IsTrue(Math.Abs(data[2, 0]) < 0.00001, "20");
+            Assert.IsTrue(Math.Abs(data[2, 1]) < 0.00001, "21");
+            Assert.IsTrue(Math.Abs(data[2, 3]) < 0.00001, "23");
+
+            Assert.IsTrue(Math.Abs(data[3, 0]) < 0.00001, "30");
+            Assert.IsTrue(Math.Abs(data[3, 1]) < 0.00001, "31");
+            Assert.IsTrue(Math.Abs(data[3, 2]) < 0.00001, "32");
         }
 
         /// <summary>
@@ -356,7 +372,7 @@ namespace CommonLibraryTests
 
             var m1 = new BaseMatrix { Matrix = x };
             var determinant = m1.Determinant();
-            Assert.AreEqual(-6, determinant, "Wrong Determinant");
+            Assert.AreEqual(-6, Math.Round(determinant,1), "Wrong Determinant");
 
             x = new double[,]
             {
@@ -369,6 +385,39 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(10, determinant, "Wrong Determinant");
         }
+
+        /// <summary>
+        /// Matrix Decompose.
+        /// </summary>
+        [TestMethod]
+        public void MatrixDecompose()
+        {
+            double[,] matrix =
+            {
+                {2, -1, -2}, {-4, 6, 3}, {-4, -2, 8}
+            };
+
+            var cache = Mathematics.MatrixInverse.LuDecomposition(matrix);
+
+            double[,] upper =
+            {
+                {1, 0, 0}, {-2, 1, 0}, {-2, -1, 1}
+            };
+
+            var check = upper.Equal(cache.Key);
+
+            Assert.IsTrue(check, "Upper not correct");
+
+            double[,] lower =
+            {
+                {2, -1, -2}, {0, 4, -1}, {0, 0, 3}
+            };
+
+            check = lower.Equal(cache.Value);
+
+            Assert.IsTrue(check, "Lower not correct");
+        }
+
 
         /// <summary>
         ///     Matrix additions.

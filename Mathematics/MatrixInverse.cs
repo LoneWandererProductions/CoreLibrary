@@ -2,220 +2,23 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
  * FILE:        Mathematics/MatrixInverse.cs
- * PURPOSE:     Helper class that does some basic Matrix operations
+ * PURPOSE:     Helper class that does some basic Matrix operations, Determinant, Solve, Inverse
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix
  *              https://jamesmccaffrey.wordpress.com/2015/03/06/inverting-a-matrix-using-c/
  */
 
 using System;
+using System.Collections.Generic;
 using ExtendedSystemObjects;
 
 namespace Mathematics
 {
+    /// <summary>
+    /// Calculate Inverse and all the other stuff around
+    /// </summary>
     internal static class MatrixInverse
     {
-
-        internal static double[,] Inverse(double[,] m)
-        {
-            // inverse using QR decomp (Householder algorithm)
-            double[,] q;
-            double[,] r;
-            MatDecomposeQr(m, out q, out r);
-
-            // TODO: check if determinant is zero (no inverse)
-            // double absDet = 1.0;
-            // for (int i = 0; i < M.Length; ++i)
-            //   absDet *= R[i,i];
-
-            var rinv = MatInverseUpperTri(r); // std algo
-            var qtrans = MatTranspose(q); // is inv(Q)
-            return MatProduct(rinv, qtrans);
-
-            // ----------------------------------------------------
-            // helpers: MatDecomposeQR, MatMake, MatTranspose,
-            // MatInverseUpperTri, MatIdentity, MatCopy, VecNorm,
-            // VecDot, VecToMat, MatProduct
-            // ----------------------------------------------------
-
-            static void MatDecomposeQr(double[,] mat,
-                out double[,] unitaryQ, out double[,] triangularR)
-            {
-                // QR decomposition, Householder algorithm.
-                // https://rosettacode.org/wiki/QR_decomposition
-                var row = mat.GetLength(0); // assumes mat is nxn
-                var column = mat.GetLength(1);// check m == n
-
-                var q = MatIdentity(row);
-                var r = mat.Duplicate();
-                var end = column - 1;
-                // if (m == n) end = n - 1; else end = n;
-
-                for (var i = 0; i < end; ++i)
-                {
-                    var h = MatIdentity(row);
-                    var a = new double[column - i];
-                    var k = 0;
-                    for (var ii = i; ii < column; ++ii)
-                    {
-                        a[k++] = r[ii, i];
-                    }
-
-                    var normA = VecNorm(a);
-                    if (a[0] < 0.0) { normA = -normA; }
-
-                    var v = new double[a.Length];
-                    for (var j = 0; j < v.Length; ++j)
-                    {
-                        v[j] = a[j] / (a[0] + normA);
-                    }
-
-                    v[0] = 1.0;
-
-                    var identityH = MatIdentity(a.Length);
-                    var vvDot = VecDot(v, v);
-                    var alpha = VecToMat(v, v.Length, 1);
-                    var beta = VecToMat(v, 1, v.Length);
-                    var aMultB = MatProduct(alpha, beta);
-
-                    for (var ii = 0; ii < identityH.GetLength(0); ++ii)
-                        for (var jj = 0; jj < identityH.GetLength(1); ++jj)
-                        {
-                            identityH[ii, jj] -= (2.0 / vvDot) * aMultB[ii, jj];
-                        }
-
-                    // copy h into lower right of H
-                    var d = column - identityH.GetLength(0);
-                    for (var ii = 0; ii < identityH.GetLength(0); ++ii)
-                        for (var jj = 0; jj < identityH.GetLength(1); ++jj)
-                        {
-                            h[ii + d, jj + d] = identityH[ii, jj];
-                        }
-
-                    q = MatProduct(q, h);
-                    r = MatProduct(h, r);
-                } // i
-
-                unitaryQ = q;
-                triangularR = r;
-            } // QR decomposition 
-
-            static double[,] MatInverseUpperTri(double[,] u)
-            {
-                var n = u.GetLength(0); // must be square matrix
-
-                var result = MatIdentity(n);
-
-                for (var k = 0; k < n; ++k)
-                {
-                    for (var j = 0; j < n; ++j)
-                    {
-                        for (var i = 0; i < k; ++i)
-                        {
-                            result[j, k] -= result[j, i] * u[i, k];
-                        }
-
-                        result[j, k] /= u[k, k];
-                    }
-                }
-
-                return result;
-            }
-
-            static double[,] MatTranspose(double[,] m)
-            {
-                var nr = m.GetLength(0);
-                var nc = m.GetLength(1);
-                var result = MatMake(nc, nr); // note
-                for (var i = 0; i < nr; ++i)
-                    for (var j = 0; j < nc; ++j)
-                    {
-                        result[j, i] = m[i, j];
-                    }
-
-                return result;
-            }
-
-            static double[,] MatMake(int nRows, int nCols)
-            {
-                return new double[nRows, nCols];
-            }
-
-            static double[,] MatIdentity(int n)
-            {
-                var result = MatMake(n, n);
-                for (var i = 0; i < n; ++i)
-                {
-                    result[i, i] = 1.0;
-                }
-
-                return result;
-            }
-
-
-            static double[,] MatProduct(double[,] matA,
-                double[,] matB)
-            {
-                var aRows = matA.GetLength(0);
-                var aCols = matA.GetLength(1);
-                var bRows = matB.GetLength(0);
-                var bCols = matB.GetLength(1);
-                if (aCols != bRows)
-                {
-                    throw new Exception("Non-conformable matrices");
-                }
-
-                var result = MatMake(aRows, bCols);
-
-                for (var i = 0; i < aRows; ++i) // each row of A
-                    for (var j = 0; j < bCols; ++j) // each col of B
-                        for (var k = 0; k < aCols; ++k)
-                        {
-                            result[i, j] += matA[i, k] * matB[k, j];
-                        }
-
-                return result;
-            }
-
-            static double VecDot(double[] v1, double[] v2)
-            {
-                var result = 0.0;
-                var n = v1.Length;
-                for (var i = 0; i < n; ++i)
-                {
-                    result += v1[i] * v2[i];
-                }
-
-                return result;
-            }
-
-            static double VecNorm(double[] vec)
-            {
-                var n = vec.Length;
-                var sum = 0.0;
-                for (var i = 0; i < n; ++i)
-                {
-                    sum += vec[i] * vec[i];
-                }
-
-                return Math.Sqrt(sum);
-            }
-
-            static double[,] VecToMat(double[] vec,
-                int nRows, int nCols)
-            {
-                var result = MatMake(nRows, nCols);
-                var k = 0;
-                for (var i = 0; i < nRows; ++i)
-                    for (var j = 0; j < nCols; ++j)
-                    {
-                        result[i, j] = vec[k++];
-                    }
-
-                return result;
-            }
-        } // MatInverseQR
-
         /// <summary>
         ///     Calculate the determinant of the matrix.
         /// </summary>
@@ -253,55 +56,51 @@ namespace Mathematics
         ///     or
         ///     Cannot use Doolittle's method
         /// </exception>
-        private static double[,] MatrixDecompose(double[,] matrix, out int[] perm, out int toggle)
+        internal static double[,] MatrixDecompose(double[,] matrix, out int[] perm,
+            out int toggle)
         {
             // Doolittle LUP decomposition with partial pivoting.
-            // returns: result is L (with 1s on diagonal) and U;
+            // rerturns: result is L (with 1s on diagonal) and U;
             // perm holds row permutations; toggle is +1 or -1 (even or odd)
             var rows = matrix.GetLength(0);
-            var cols = matrix.GetLength(1); // assume square, Column
+            var cols = matrix.GetLength(1); // assume square
 
             if (rows != cols)
             {
-                throw new ArithmeticException(MathResources.MatrixErrorDecompose);
+                throw new ArithmeticException(MathResources.MatrixErrorInverseNotCubic);
             }
 
-            var n = rows; // convenience
+            var result = matrix.Duplicate();
 
-            var result = matrix.Duplicate(); // MatrixDuplicate(matrix);
-
-            perm = new int[n]; // set up row permutation result
-            for (var i = 0; i < n; ++i)
-            {
-                perm[i] = i;
-            }
+            perm = new int[rows]; // set up row permutation result
+            for (var i = 0; i < rows; ++i) { perm[i] = i; }
 
             toggle = 1; // toggle tracks row swaps.
             // +1 -greater-than even, -1 -greater-than odd. used by MatrixDeterminant
 
-            for (var j = 0; j < n - 1; ++j) // each column
+            for (var j = 0; j < rows - 1; ++j) // each column
             {
                 var colMax = Math.Abs(result[j, j]); // find largest val in col
                 var pRow = j;
 
                 // reader Matt V needed this:
-                for (var i = j + 1; i < n; ++i)
+                for (var i = j + 1; i < rows; ++i)
                 {
-                    if (!(Math.Abs(result[i, j]) > colMax))
+                    if (Math.Abs(result[i, j]) > colMax)
                     {
-                        continue;
+                        colMax = Math.Abs(result[i, j]);
+                        pRow = i;
                     }
-
-                    colMax = Math.Abs(result[i, j]);
-                    pRow = i;
                 }
                 // Not sure if this approach is needed always, or not.
 
                 if (pRow != j) // if largest value not on pivot, swap rows
                 {
-                    result.SwapRow(pRow, j);
+                    result.SwapColumn(pRow, j);
 
-                    (perm[pRow], perm[j]) = (perm[j], perm[pRow]);
+                    var tmp = perm[pRow]; // and swap perm info
+                    perm[pRow] = perm[j];
+                    perm[j] = tmp;
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
@@ -318,8 +117,7 @@ namespace Mathematics
                 {
                     // find a good row to swap
                     var goodRow = -1;
-
-                    for (var row = j + 1; row < n; ++row)
+                    for (var row = j + 1; row < rows; ++row)
                     {
                         if (result[row, j] != 0.0)
                         {
@@ -329,26 +127,26 @@ namespace Mathematics
 
                     if (goodRow == -1)
                     {
-                        throw new ArithmeticException(MathResources.MatrixErrorDoolittle);
+                        throw new Exception(MathResources.MatrixErrorDoolittle);
                     }
 
-                    // swap rows so 0.0 no longer on diagonal
-                    result.SwapRow(goodRow, j);
+                    result.SwapColumn(goodRow, j);
 
-                    (perm[goodRow], perm[j]) = (perm[j], perm[goodRow]);
+                    var tmp = perm[goodRow]; // and swap perm info
+                    perm[goodRow] = perm[j];
+                    perm[j] = tmp;
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
                 // --------------------------------------------------
                 // if diagonal after swap is zero . .
-                //if (Math.Abs(result[j,j]) < 1.0E-20)
+                //if (Math.Abs(result[j,j]) less-than 1.0E-20) 
                 //  return null; // consider a throw
 
-                for (var i = j + 1; i < n; ++i)
+                for (var i = j + 1; i < rows; ++i)
                 {
                     result[i, j] /= result[j, j];
-
-                    for (var k = j + 1; k < n; ++k)
+                    for (var k = j + 1; k < rows; ++k)
                     {
                         result[i, k] -= result[i, j] * result[j, k];
                     }
@@ -356,6 +154,134 @@ namespace Mathematics
             } // main j column loop
 
             return result;
+        }
+
+
+        /// <summary>
+        /// Inverses the specified matrix.
+        /// </summary>
+        /// <param name="matrix">The matrix.</param>
+        /// <returns></returns>
+        /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
+        internal static double[,] Inverse(double[,] matrix)
+        {
+            int n = matrix.GetLength(0);
+            double[,] result = matrix.Duplicate();
+            double[,] lum = MatrixDecompose(matrix, out var perm,
+                out _);
+            if (lum == null)
+                throw new ArithmeticException(MathResources.MatrixErrorInverse);
+
+            double[] b = new double[n];
+            for (int i = 0; i< n; ++i)
+            {
+                for (int j = 0; j <n; ++j)
+                {
+                    if (i == perm[j])
+                        b[j] = 1.0;
+                    else
+                        b[j] = 0.0;
+                }
+
+                double[] x = HelperSolve(lum, b); // 
+
+                for (int j = 0; j < n; ++j)
+                    result[j,i] = x[j];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Helpers the solve.
+        /// </summary>
+        /// <param name="luMatrix">The lu matrix.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>Solved equation and results</returns>
+        internal static double[] HelperSolve(double[,] luMatrix, double[] b)
+        {
+            // before calling this helper, permute b using the perm array
+            // from MatrixDecompose that generated luMatrix
+            var n = luMatrix.GetLength(0);
+            var x = new double[n];
+            b.CopyTo(x, 0);
+
+            for (var i = 1; i < n; ++i)
+            {
+                var sum = x[i];
+                for (var j = 0; j < i; ++j)
+                {
+                    sum -= luMatrix[i, j] * x[j];
+                }
+
+                x[i] = sum;
+            }
+
+            x[n - 1] /= luMatrix[n - 1, n - 1];
+            for (var i = n - 2; i >= 0; --i)
+            {
+                var sum = x[i];
+                for (var j = i + 1; j < n; ++j)
+                {
+                    sum -= luMatrix[i, j] * x[j];
+                }
+
+                x[i] = sum / luMatrix[i, i];
+            }
+
+            return x;
+        }
+
+        internal static KeyValuePair<double[,], double[,]> LuDecomposition(double[,] matrix)
+        {
+            var width = matrix.GetLength(0);
+            var height = matrix.GetLength(1);
+
+            var lower = new double[width, height];
+            var upper = new double[width, height];
+
+            // Decomposing matrix into Upper and Lower
+            // triangular matrix
+            for (var i = 0; i < width; i++)
+            {
+                // Upper Triangular
+                for (var k = i; k < width; k++)
+                {
+                    // Summation of L(i, j) * U(j, k)
+                    double sum = 0;
+                    for (var j = 0; j < i; j++)
+                    {
+                        sum += (lower[i, j] * upper[j, k]);
+                    }
+
+                    // Evaluating U(i, k)
+                    upper[i, k] = matrix[i, k] - sum;
+                }
+
+                // Lower Triangular
+                for (var k = i; k < width; k++)
+                {
+                    if (i == k)
+                    {
+                        lower[i, i] = 1; // Diagonal as 1
+                    }
+                    else
+                    {
+                        // Summation of L(k, j) * U(j, i)
+                        double sum = 0;
+                        for (var j = 0; j < i; j++)
+                        {
+                            sum += (lower[k, j] * upper[j, i]);
+                        }
+
+                        // Evaluating L(k, i)
+                        lower[k, i]
+                            = (matrix[k, i] - sum) / upper[i, i];
+                    }
+                }
+            }
+
+            return new KeyValuePair<double[,], double[,]>(lower, upper);
         }
     }
 }
