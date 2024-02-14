@@ -36,7 +36,6 @@ namespace Mathematics
             return new BaseMatrix(result);
         }
 
-
         /// <summary>
         ///     Unsafe Matrix  multiplication.
         ///     Source:

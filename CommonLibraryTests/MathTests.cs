@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Mathematics.cs
+ * FILE:        CommonLibraryTests/MathTests.cs
  * PURPOSE:     Tests for the Math Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -20,7 +20,7 @@ namespace CommonLibraryTests
     ///     Test some image related stuff
     /// </summary>
     [TestClass]
-    public class Mathematic
+    public class MathTests
     {
         /// <summary>
         ///     Test the custom DirectBitmap and how it works
