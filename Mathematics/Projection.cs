@@ -1,16 +1,24 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Mathematics
+ * FILE:        Mathematics/IProjection.cs
+ * PURPOSE:     Implementation of thhe 3D Projection Interface
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using DataFormatter;
 
 namespace Mathematics
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     The Projection class.
+    ///     Handle all 3D Operations in an isolated class.
+    /// </summary>
     public class Projection : IProjection
     {
-        public List<Vector3D> GenerateMesh(ObjFile obj, Transform transform, int height, int width)
-        {
-            return null;
-        }
-
-
+        /// <inheritdoc />
         /// <summary>
         ///     Generates the specified triangles.
         /// </summary>

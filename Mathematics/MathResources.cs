@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
 namespace Mathematics
 {
     /// <summary>
