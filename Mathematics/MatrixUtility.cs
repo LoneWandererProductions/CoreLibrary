@@ -10,6 +10,8 @@
 
 // ReSharper disable MemberCanBeInternal
 
+using System;
+
 namespace Mathematics
 {
     /// <summary>
@@ -101,6 +103,35 @@ namespace Mathematics
             }
 
             return result;
+        }
+
+        /// <summary>
+        ///     Unsafe Matrix compare.
+        /// </summary>
+        /// <param name="mOne">The m one.</param>
+        /// <param name="mTwo">The m two.</param>
+        /// <returns>If Matrices are equal with our preconfigured tolerance.</returns>
+        internal static unsafe bool UnsafeCompare(BaseMatrix mOne, BaseMatrix mTwo)
+        {
+            if(mOne.Height != mTwo.Height ) return false;
+            if(mOne.Width != mTwo.Width ) return false;
+
+            var h = mOne.Height;
+            var w = mOne.Width;
+
+            var result = new BaseMatrix(h, w);
+
+            fixed (double* pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+            {
+                for (var i = 0; i < h; i++)
+                for (var j = 0; j < w; j++)
+                {
+                    var cursor = i + (j * mOne.Width);
+                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance) return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
