@@ -119,7 +119,7 @@ namespace CommonLibraryTests
             //TODO rework comparer!
             check = expected == matrix;
 
-            //Assert.IsTrue(check, "Wrong Point At Matrix");
+            Assert.IsTrue(check, "Wrong Point At Matrix");
         }
 
         [TestMethod]
