@@ -8,6 +8,8 @@
  *              https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
  */
 
+ using System;
+
 namespace Mathematics
 {
     /// <summary>
