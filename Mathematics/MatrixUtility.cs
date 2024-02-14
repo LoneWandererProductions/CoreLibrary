@@ -30,7 +30,7 @@ namespace Mathematics
 
             for (var i = 0; i < n; ++i)
             {
-                result[i, i] = 1.0;
+                result[i, i] = 1d;
             }
 
             return new BaseMatrix(result);
@@ -63,7 +63,7 @@ namespace Mathematics
                     {
                         var iTwo = j;
 
-                        double res = 0;
+                        double res = 0d;
 
                         for (var k = 0; k < l; k++, iTwo += w)
                         {

@@ -17,7 +17,7 @@ namespace Mathematics
         /// <summary>
         ///     The Tolerance (const). Value: 0.000001.
         /// </summary>
-        internal const double Tolerance = 0.000001;
+        internal const double Tolerance = 1e-6;
 
         /// <summary>
         ///     The matrix error inverse (const). Value: "Unable to compute inverse.".
