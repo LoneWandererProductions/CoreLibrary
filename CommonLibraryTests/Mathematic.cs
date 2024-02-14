@@ -351,7 +351,7 @@ namespace CommonLibraryTests
 
             //check our new Compare
             i = MatrixUtility.MatrixIdentity(4);
-            check = data == i
+            check = data == i;
 
             Assert.IsTrue(check, "Compare Check passed");
         }
