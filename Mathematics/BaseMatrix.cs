@@ -272,15 +272,13 @@ namespace Mathematics
 
         /// <summary>
         ///     Equals the specified other.
+        ///     Does not use the jagged array Equal, because sadly, that doesn't play well enough with double values.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>Equal or not</returns>
         public bool Equals(BaseMatrix other)
         {
-            var m1 = Matrix;
-            var m2 = other.Matrix;
-
-            return m1.Equal(m2);
+            return MatrixUtility.UnsafeCompare(this, other);
         }
 
         /// <summary>
