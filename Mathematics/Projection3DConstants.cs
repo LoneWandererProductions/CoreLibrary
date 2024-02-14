@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
  *              https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
+ *              https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
  */
 
  using System;
@@ -44,7 +45,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Projections the to3 d matrix.
+        ///     Projections the to 3d matrix.
         /// </summary>
         /// <returns>Projection Matrix</returns>
         internal static BaseMatrix ProjectionTo3DMatrix()
@@ -63,7 +64,6 @@ namespace Mathematics
        /// <summary>
         ///     Converts Coordinates based on the Camera.
         ///     https://ksimek.github.io/2012/08/22/extrinsic/
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
         ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
         /// <param name="position">Current Position, also known as vCamera.</param>
