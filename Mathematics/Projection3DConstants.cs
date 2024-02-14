@@ -20,6 +20,27 @@ namespace Mathematics
         private const double Rad = Math.PI / 180.0;
 
         /// <summary>
+        ///     Camera Rotation Matrix.
+        /// </summary>
+        /// <param name="angleD">The angle d.</param>
+        /// <returns>Camera Rotation Matrix</returns>
+        public static BaseMatrix RotateCamera(double angleD)
+        {
+                //convert to Rad
+                var angle = angleD * Rad;
+
+                double[,] rotation =
+                {
+                    { Math.Cos(angle), 0, Math.Sin(angle), 0 },
+                    { 0, 1, 0, 0 },
+                    { -Math.Sin(angle), 0, Math.Cos(angle), 0 }, 
+                    { 0, 0, 0, 1 }
+                };
+
+                return new BaseMatrix { Matrix = rotation };
+        }
+
+        /// <summary>
         ///     Rotates x.
         /// </summary>
         /// <param name="angleD">The angle d.</param>

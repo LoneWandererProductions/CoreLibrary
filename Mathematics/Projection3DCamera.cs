@@ -74,10 +74,10 @@ namespace Mathematics
 
         /// <returns>
         ///     World Transformation
-        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
         ///     ModelViewProjection mvp = Projection * View * Model
         ///     Use LEFT-Handed rotation matrices (as seen in DirectX)
         ///     https://docs.microsoft.com/en-us/windows/win32/direct3d9/transforms#rotate
+        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#cumulating-transformations
         /// </returns>
         /// <summary>
         ///     Gets the model matrix.
@@ -101,47 +101,6 @@ namespace Mathematics
 
             // Model Matrix = T × R × S (right to left order)
             return scaling * rotation * translation;
-        }
-
-        /// <summary>
-        ///     View matrix.
-        ///     Uses the PointAt matrix
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
-        ///     https://ksimek.github.io/2012/08/22/extrinsic/
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
-        ///     https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#the-model-view-and-projection-matrices
-        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
-        /// </summary>
-        /// <returns>The View Matrix, aka the Camera</returns>
-        public static BaseMatrix ViewMatrix(Transform transform)
-        {
-            var cosPitch = Math.Cos(transform.Pitch * Rad);
-            var sinPitch = Math.Sin(transform.Pitch * Rad);
-
-            var cosYaw = Math.Cos(transform.Yaw * Rad);
-            var sinYaw = Math.Sin(transform.Yaw * Rad);
-
-            transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
-
-            transform.Up = new Vector3D(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
-
-            transform.Forward = new Vector3D(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
-
-            // The inverse camera's translation
-            var transl = new Vector3D(-(transform.Right * transform.Position),
-                -(transform.Up * transform.Position),
-                -(transform.Forward * transform.Position));
-
-            // Join rotation and translation in a single matrix
-            // instead of calculating their multiplication
-            var viewMatrix = new[,]
-            {
-                { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
-                { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
-                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
-            };
-
-            return new BaseMatrix { Matrix = viewMatrix };
         }
 
         /// <summary>
@@ -180,20 +139,13 @@ namespace Mathematics
             var vTarget = new Vector3D(1, 2, 3);
             var vLookDir =
                 vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget);
+            //NYI todo
+            var rotationCamera =  Projection3DConstants.RotateCamera(angle);
             //1,2,3,1
             vTarget = vCamera + vLookDir;
             //1,2,3,1
 
-            // 0.408248246, 0.872871578, 0.267261237, 0
-            // -0.816496491, 0.218217969, 0.534522474, 0
-            // 0.408248276, -0.436435580, 0.801783681, 0
-            // 0, 0, 0, 1
             var matCamera = PointAt(vCamera, vTarget, up);
-
-            //  0.4082483712994080081   0.87287152407673441941  0.26726118804963879546  0
-            //- 0.8164966364025321768  0.21821790785151009976  0.53452250693063268021  0
-            //  0.40824829299803304429 - 0.43643577190462942966 0.80178373647505295823  0
-            //   0   0   0   1
 
             var matView = matCamera.Inverse();
             return matView;
