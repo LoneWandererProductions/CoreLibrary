@@ -349,6 +349,9 @@ namespace LightVector
 
             var cache = new List<Vector3D>();
 
+            //TODO Implement Projection
+            var lst = new List<Vector3D>();
+
             for (var i = 0; i < lst.Count; i += 2)
             {
                 var one = lst[i];
