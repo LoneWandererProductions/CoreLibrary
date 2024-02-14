@@ -31,7 +31,7 @@ namespace Mathematics
             double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
-            var projection = ProjectionTo3DMatrix();
+            var projection = Projection3DConstants.ProjectionTo3DMatrix();
 
             var result = m1 * projection;
             var x = result[0, 0];
@@ -104,23 +104,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Projections the to3 d matrix.
-        /// </summary>
-        /// <returns>Projection Matrix</returns>
-        private static BaseMatrix ProjectionTo3DMatrix()
-        {
-            double[,] translation =
-            {
-                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 },
-                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
-            };
-
-            //now lacks /w, has to be done at the end!
-            return new BaseMatrix(translation);
-        }
-
-        /// <summary>
         ///     Orthographic projection to3 d matrix.
         /// </summary>
         /// <returns>Projection Matrix</returns>
@@ -133,60 +116,29 @@ namespace Mathematics
             return new BaseMatrix(translation);
         }
 
+        /// <summary>
+        /// Generates the view from the Camera onto the world.
+        /// </summary>
+        /// <param name="angle">Camera Angle</param>
+        /// <param name="vCamera">Position of the Camera</param>
+        /// <param name="up">Pitch of the Camera</param>
+        /// <returns>View on the Object from the Camera perspective</returns>
         public static BaseMatrix ViewCamera(int angle, Vector3D vCamera, Vector3D up)
         {
             //vec3d vTarget = { 1,2,3 };//{ 0,0,1 };
             var vTarget = new Vector3D(1, 2, 3);
             var vLookDir =
-                vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget);
+                vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget); Just for tests.
             //NYI todo
             var rotationCamera =  Projection3DConstants.RotateCamera(angle);
             //1,2,3,1
             vTarget = vCamera + vLookDir;
             //1,2,3,1
 
-            var matCamera = PointAt(vCamera, vTarget, up);
+            var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, up);
 
             var matView = matCamera.Inverse();
             return matView;
-        }
-
-        /// <summary>
-        ///     Converts Coordinates based on the Camera.
-        ///     https://ksimek.github.io/2012/08/22/extrinsic/
-        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
-        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
-        /// </summary>
-        /// <param name="position">Current Position, also known as vCamera.</param>
-        /// <param name="target">Directional Vector, Point at.</param>
-        /// <param name="up">Directional Vector, Z Axis.</param>
-        /// <returns>matrix for Transforming the Coordinate</returns>
-        private static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
-        {
-            var newForward = (target - position).Normalize();
-            var a = newForward * (up * newForward);
-            var newUp = (up - a).Normalize();
-            var newRight = newUp.CrossProduct(newForward);
-
-            return new BaseMatrix(4, 4)
-            {
-                [0, 0] = newRight.X,
-                [0, 1] = newRight.Y,
-                [0, 2] = newRight.Z,
-                [0, 3] = 0.0d,
-                [1, 0] = newUp.X,
-                [1, 1] = newUp.Y,
-                [1, 2] = newUp.Z,
-                [1, 3] = 0.0d,
-                [2, 0] = newForward.X,
-                [2, 1] = newForward.Y,
-                [2, 2] = newForward.Z,
-                [2, 3] = 0.0d,
-                [3, 0] = position.X,
-                [3, 1] = position.Y,
-                [3, 2] = position.Z,
-                [3, 3] = position.W
-            };
         }
     }
 }

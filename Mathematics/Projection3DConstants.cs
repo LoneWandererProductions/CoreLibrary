@@ -8,23 +8,24 @@
  *              https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
  */
 
-using System;
-
 namespace Mathematics
 {
+    /// <summary>
+    /// Some Matrices that can be used outside of 3D Projection
+    /// </summary>
     internal static class Projection3DConstants
     {
         /// <summary>
         ///     Convert Degree to radial
         /// </summary>
-        private const double Rad = Math.PI / 180.0;
+        private const double Rad = Math.PI / 180.0d;
 
         /// <summary>
         ///     Camera Rotation Matrix.
         /// </summary>
         /// <param name="angleD">The angle d.</param>
         /// <returns>Camera Rotation Matrix</returns>
-        public static BaseMatrix RotateCamera(double angleD)
+        internal static BaseMatrix RotateCamera(double angleD)
         {
                 //convert to Rad
                 var angle = angleD * Rad;
@@ -38,6 +39,61 @@ namespace Mathematics
                 };
 
                 return new BaseMatrix { Matrix = rotation };
+        }
+
+        /// <summary>
+        ///     Projections the to3 d matrix.
+        /// </summary>
+        /// <returns>Projection Matrix</returns>
+        internal static BaseMatrix ProjectionTo3DMatrix()
+        {
+            double[,] translation =
+            {
+                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
+                { 0, 0, Projection3DRegister.Q, 1 },
+                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
+            };
+
+            //now lacks /w, has to be done at the end!
+            return new BaseMatrix(translation);
+        }
+
+       /// <summary>
+        ///     Converts Coordinates based on the Camera.
+        ///     https://ksimek.github.io/2012/08/22/extrinsic/
+        ///     https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
+        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
+        /// </summary>
+        /// <param name="position">Current Position, also known as vCamera.</param>
+        /// <param name="target">Directional Vector, Point at.</param>
+        /// <param name="up">Directional Vector, Z Axis.</param>
+        /// <returns>matrix for Transforming the Coordinate</returns>
+        internal static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
+        {
+            var newForward = (target - position).Normalize();
+            var a = newForward * (up * newForward);
+            var newUp = (up - a).Normalize();
+            var newRight = newUp.CrossProduct(newForward);
+
+            return new BaseMatrix(4, 4)
+            {
+                [0, 0] = newRight.X,
+                [0, 1] = newRight.Y,
+                [0, 2] = newRight.Z,
+                [0, 3] = 0.0d,
+                [1, 0] = newUp.X,
+                [1, 1] = newUp.Y,
+                [1, 2] = newUp.Z,
+                [1, 3] = 0.0d,
+                [2, 0] = newForward.X,
+                [2, 1] = newForward.Y,
+                [2, 2] = newForward.Z,
+                [2, 3] = 0.0d,
+                [3, 0] = position.X,
+                [3, 1] = position.Y,
+                [3, 2] = position.Z,
+                [3, 3] = position.W
+            };
         }
 
         /// <summary>
