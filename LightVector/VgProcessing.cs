@@ -346,7 +346,6 @@ namespace LightVector
         {
             var projection = new Projection();
             var transform = new Transform();
-            var lst = projection.GenerateMesh(objFile, transform, height, width);
 
             var cache = new List<Vector3D>();
 
