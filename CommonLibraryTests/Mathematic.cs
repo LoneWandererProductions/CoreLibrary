@@ -348,6 +348,12 @@ namespace CommonLibraryTests
             Assert.IsTrue(Math.Abs(data[3, 0]) < 0.00001, "30");
             Assert.IsTrue(Math.Abs(data[3, 1]) < 0.00001, "31");
             Assert.IsTrue(Math.Abs(data[3, 2]) < 0.00001, "32");
+
+            //check our new Compare
+            i = MatrixUtility.MatrixIdentity(4);
+            check = data == i
+
+            Assert.IsTrue(check, "Compare Check passed");
         }
 
         /// <summary>
