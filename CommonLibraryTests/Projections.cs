@@ -118,8 +118,9 @@ namespace CommonLibraryTests
 
             //TODO rework comparer!
             check = expected == matrix;
+            var cache =  expected - matrix;
 
-            Assert.IsTrue(check, "Wrong Point At Matrix");
+            Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
         }
 
         [TestMethod]
