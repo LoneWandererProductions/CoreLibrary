@@ -26,6 +26,6 @@ namespace Mathematics
         /// <param name="vCamera">The position of the camera as vector.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>Converted 3d View</returns>
-        List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, double angle, bool? orthogonal)
+        List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, double angle, bool? orthogonal);
     }
 }
