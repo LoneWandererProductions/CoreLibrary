@@ -88,10 +88,12 @@ namespace Imaging
         internal static List<Color> WriteGlobalColorTable()
         {
             //TODO Wrong
+            //RGB values in hexadecimal
+            // 
             var lst = new List<Color>();
 
-            // The global color table includes all colors the .GIF
-            // will use, in this format (where "C" means color):
+            //      The global color table includes all colors the .GIF
+            //      will use, in this format (where "C" means color):
             //      C1 red value, C1 green value, C1 blue value,
             //      C2 red value, C2 green value, C2 blue value,
             //      ...
@@ -115,6 +117,8 @@ namespace Imaging
 
             //todo error here
             var placeholder = new Color();
+            //here we will use the ColorHsv Object and Image Analysis to get the color Table.
+            //Example: ff ff ff 00 00 00 ff 00 00 00 ff 00
 
             for (var i = ColorTable.Count; i < (int)Math.Pow(2.0, bytes[0] + 1); i++)
             {
