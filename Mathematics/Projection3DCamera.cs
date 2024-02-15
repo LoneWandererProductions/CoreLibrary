@@ -130,7 +130,7 @@ namespace Mathematics
             var vLookDir = vTarget * matCameraRot;
             vTarget = vCamera + vLookDir;
 
-            var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, vup);
+            var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, vUp);
 
             var matView = matCamera.Inverse();
             return matView;
