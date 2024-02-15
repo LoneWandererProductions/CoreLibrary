@@ -138,11 +138,10 @@ namespace CommonLibraryTests
 
             var cache = Rasterize.WorldMatrix(triangles, transform);
             var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
-            var vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
 
             cache = Rasterize.ViewPort(cache, vCamera);
 
-            cache = Rasterize.CameraPointAt(cache, vCamera, vUp);
+            cache = Rasterize.CameraPointAt(cache, 0, vCamera);
 
             cache = Rasterize.Convert2DTo3D(cache);
         }
