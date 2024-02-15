@@ -34,6 +34,7 @@ namespace Mathematics
             cache = Rasterize.ViewPort(cache, angle, vCamera);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
+            //Todo Move into View and check if Triangles are even visible
 
             return cache;
         }
