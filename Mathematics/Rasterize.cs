@@ -35,9 +35,10 @@ namespace Mathematics
         ///     Views the port.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
-        /// <param name="vCamera">The v camera.</param>
+        /// <param name="angle">The angle of the camera.</param>
+        /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Visible Vector Planes</returns>
-        internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, Vector3D vCamera)
+        internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, double angle, Vector3D vCamera)
         {
             var lst = new List<Triangle>();
 
@@ -70,12 +71,12 @@ namespace Mathematics
         ///     Cameras the point at.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
-        /// <param name="vCamera">The v camera.</param>
-        /// <param name="vUp">The v up.</param>
+        /// <param name="angle">The angle of the camera.</param>
+        /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Object from the Camera Lens</returns>
-        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, Vector3D vCamera, Vector3D vUp)
+        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, double angle, Vector3D vCamera)
         {
-            var matCamera = Projection3DCamera.ViewCamera(0, vCamera, vUp);
+            var matCamera = Projection3DCamera.ViewCamera(angle, vCamera);
 
             var lst = new List<Triangle>(triangles.Count);
 
@@ -90,7 +91,6 @@ namespace Mathematics
 
             return lst;
         }
-
 
         /// <summary>
         ///     Convert2s the d to3 d.
