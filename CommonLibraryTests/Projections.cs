@@ -88,7 +88,7 @@ namespace CommonLibraryTests
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
-            var matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp);
+            var matrix = Projection3DCamera.ViewCamera(0, vCamera);
 
             var check = expected == matrix;
 

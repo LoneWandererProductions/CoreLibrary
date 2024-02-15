@@ -119,14 +119,12 @@ namespace Mathematics
         /// <summary>
         /// Generates the view from the Camera onto the world.
         /// </summary>
-        /// <param name="angle">Camera Angle</param>
-        /// <param name="vCamera">Position of the Camera</param>
-        /// <param name="up">Pitch of the Camera</param>
+        /// <param name="angle">Camera Angle, only the angle of the camera will be changed</param>
+        /// <param name="vCamera">Position of the Camera, only the camera will be moved.</param>
         /// <returns>View on the Object from the Camera perspective</returns>
-        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera, Vector3D up)
-        {
-            //NYI TODO, activate and change Test results          
-            //var vUp = new Vector3D(0,1,0);
+        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera)
+        {     
+            var vUp = new Vector3D(0,1,0);
 		    var vTarget = new Vector3D(0,0,1);
             var matCameraRot = Projection3DConstants.RotateCamera(angle);
             var vLookDir = vTarget * matCameraRot;
