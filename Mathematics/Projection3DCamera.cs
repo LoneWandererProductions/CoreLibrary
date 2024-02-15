@@ -123,17 +123,22 @@ namespace Mathematics
         /// <param name="vCamera">Position of the Camera</param>
         /// <param name="up">Pitch of the Camera</param>
         /// <returns>View on the Object from the Camera perspective</returns>
-        public static BaseMatrix ViewCamera(int angle, Vector3D vCamera, Vector3D up)
+        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera, Vector3D up)
         {
-            //vec3d vTarget = { 1,2,3 };//{ 0,0,1 };
+            //NYI TODO, activate and change Test results
+            
+            //var vUp = new Vector3D(0,1,0);
+		    //var vTarget = new Vector3D(0,0,1);
+            //var matCameraRot = Projection3DConstants.RotateCamera(angle);
+            //var vLookDir = vTarget * matCameraRot;
+            //vTarget = vCamera + vLookDir;
+
+            //TODO just for tests
             var vTarget = new Vector3D(1, 2, 3);
-            var vLookDir =
-                vTarget; // vTarget.CrossProduct(Vector3D.UnitVector); // Matrix_MultiplyVector(angle, vTarget); Just for tests.
-            //NYI todo
-            var rotationCamera =  Projection3DConstants.RotateCamera(angle);
-            //1,2,3,1
+            var vLookDir = vTarget;
+
             vTarget = vCamera + vLookDir;
-            //1,2,3,1
+            //TODO remove until here
 
             var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, up);
 
