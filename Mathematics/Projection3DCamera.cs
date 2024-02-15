@@ -125,20 +125,12 @@ namespace Mathematics
         /// <returns>View on the Object from the Camera perspective</returns>
         public static BaseMatrix ViewCamera(double angle, Vector3D vCamera, Vector3D up)
         {
-            //NYI TODO, activate and change Test results
-            
+            //NYI TODO, activate and change Test results          
             //var vUp = new Vector3D(0,1,0);
-		    //var vTarget = new Vector3D(0,0,1);
-            //var matCameraRot = Projection3DConstants.RotateCamera(angle);
-            //var vLookDir = vTarget * matCameraRot;
-            //vTarget = vCamera + vLookDir;
-
-            //TODO just for tests
-            var vTarget = new Vector3D(1, 2, 3);
-            var vLookDir = vTarget;
-
+		    var vTarget = new Vector3D(0,0,1);
+            var matCameraRot = Projection3DConstants.RotateCamera(angle);
+            var vLookDir = vTarget * matCameraRot;
             vTarget = vCamera + vLookDir;
-            //TODO remove until here
 
             var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, up);
 
