@@ -85,11 +85,11 @@ namespace Imaging
             return lst;
         }
 
+        //TODO change return value
         internal static List<Color> WriteGlobalColorTable()
         {
             //TODO Wrong
             //RGB values in hexadecimal
-            // 
             var lst = new List<Color>();
 
             //      The global color table includes all colors the .GIF
@@ -119,7 +119,7 @@ namespace Imaging
             var placeholder = new Color();
             //here we will use the ColorHsv Object and Image Analysis to get the color Table.
             //Example: ff ff ff 00 00 00 ff 00 00 00 ff 00
-
+            // #0000FF -> From  HSV
             for (var i = ColorTable.Count; i < (int)Math.Pow(2.0, bytes[0] + 1); i++)
             {
                 lst.Add(Color.Red);
