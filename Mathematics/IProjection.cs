@@ -12,20 +12,20 @@ using DataFormatter;
 namespace Mathematics
 {
     /// <summary>
-    ///     The Projection Interface.
-    ///     Template for all external 3D operations.
+    /// The Projection Interface.
+    /// Template for all external 3D operations.
     /// </summary>
     public interface IProjection
     {
         /// <summary>
-        ///     Generates the specified triangles.
+        /// Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="angle">The angle of the camera.</param>
-        /// <param name="vCamera">The position of the camera as vector.</param>
         /// <param name="orthogonal">The orthogonal.</param>
-        /// <returns>Converted 3d View</returns>
-        List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, double angle, bool? orthogonal);
+        /// <returns>
+        /// Converted 3d View
+        /// </returns>
+        List<Triangle> Generate(List<Triangle> triangles, ref Transform transform, bool? orthogonal);
     }
 }

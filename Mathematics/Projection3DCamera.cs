@@ -8,13 +8,6 @@ namespace Mathematics
     /// </summary>
     public static class Projection3DCamera
     {
-        private const double Rad = Math.PI / 180.0;
-
-        //TODO
-        // vector = vector * WorldMatrix
-        // vector = matView * vector;
-        // final = matProj * vector;
-
         /// <summary>
         ///     Converts to 3d.
         ///     TODO Test
@@ -95,7 +88,7 @@ namespace Mathematics
 
             Trace.WriteLine(rotation.ToString());
 
-            var translation = Projection3DConstants.Translate(transform.Position);
+            var translation = Projection3DConstants.Translate(transform.Translation);
 
             var scaling = Projection3DConstants.Scale(transform.Scale);
 
@@ -123,9 +116,9 @@ namespace Mathematics
         /// <param name="vCamera">Position of the Camera, only the camera will be moved.</param>
         /// <returns>View on the Object from the Camera perspective</returns>
         public static BaseMatrix ViewCamera(double angle, Vector3D vCamera)
-        {     
+        {
             var vUp = new Vector3D(0,1,0);
-		    var vTarget = new Vector3D(0,0,1);
+            var vTarget = new Vector3D(0,0,1);
             var matCameraRot = Projection3DConstants.RotateCamera(angle);
             var vLookDir = vTarget * matCameraRot;
             vTarget = vCamera + vLookDir;

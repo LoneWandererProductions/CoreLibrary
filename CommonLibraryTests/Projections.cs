@@ -134,7 +134,7 @@ namespace CommonLibraryTests
             var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
             var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
 
-            var transform = new Transform { Rotation = rotation, Position = translation };
+            var transform = new Transform { Rotation = rotation, Translation = translation };
 
             var cache = Rasterize.WorldMatrix(triangles, transform);
             var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
@@ -164,7 +164,7 @@ namespace CommonLibraryTests
         {
             var transform = new Transform
             {
-                Position = new Vector3D(0, 0, 3), Scale = Vector3D.UnitVector, Rotation = Vector3D.ZeroVector
+                Translation = new Vector3D(0, 0, 3), Scale = Vector3D.UnitVector, Rotation = Vector3D.ZeroVector
             };
 
             //modelMatrix={1 0 0 0  0 1 0 0  0 0 1 0  0 0 3 1  }

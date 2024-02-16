@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using DataFormatter;
 
 namespace Mathematics
 {
@@ -16,7 +15,7 @@ namespace Mathematics
     ///     The Projection class.
     ///     Handle all 3D Operations in an isolated class.
     /// </summary>
-    public class Projection : IProjection
+    public sealed class Projection : IProjection
     {
         /// <inheritdoc />
         /// <summary>
@@ -24,14 +23,12 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="angle">The angle of the camera.</param>
-        /// <param name="vCamera">The position of the camera as vector.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>Converted 3d View</returns>
-        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, Vector3D vCamera, double angle, bool? orthogonal)
+        public List<Triangle> Generate(List<Triangle> triangles, ref Transform transform, bool? orthogonal)
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
-            cache = Rasterize.ViewPort(cache, angle, vCamera);
+            cache = Rasterize.ViewPort(cache, transform.Angle, transform.Camera);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
             //Todo Move into View and check if Triangles are even visible
