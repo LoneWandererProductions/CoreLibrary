@@ -82,13 +82,11 @@ namespace CommonLibraryTests
         [TestMethod]
         public void PointAt()
         {
-            var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
-            var vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
-            var vTarget = new Vector3D { X = 0, Y = 0, Z = 1 };
+            var transform = new Transform();
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
-            var matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp, vTarget);
+            var matrix = Projection3DCamera.ViewCamera(ref transform);
 
             var check = expected == matrix;
 
@@ -100,10 +98,10 @@ namespace CommonLibraryTests
                 { 0, 0, 1, 0 }, {-2, -2, -2, 1 }
             };
 
-            vCamera = new Vector3D { X = 2, Y = 2, Z = 2 };
+            transform = new Transform {Camera = new Vector3D {X = 2, Y = 2, Z = 2}};
             expected = new BaseMatrix { Matrix = m};
 
-            matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp, vTarget);
+            matrix = Projection3DCamera.ViewCamera(ref transform);
 
             check = expected == matrix;
             var cache =  expected - matrix;

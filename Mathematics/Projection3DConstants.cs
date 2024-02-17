@@ -61,20 +61,20 @@ namespace Mathematics
             return new BaseMatrix(translation);
         }
 
-       /// <summary>
-        ///     Converts Coordinates based on the Camera.
-        ///     https://ksimek.github.io/2012/08/22/extrinsic/
-        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
+        /// <summary>
+        /// Converts Coordinates based on the Camera.
+        /// https://ksimek.github.io/2012/08/22/extrinsic/
+        /// https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
-        /// <param name="position">Current Position, also known as vCamera.</param>
-        /// <param name="target">Directional Vector, Point at.</param>
-        /// <param name="up">Directional Vector, Z Axis.</param>
-        /// <returns>matrix for Transforming the Coordinate</returns>
-        internal static BaseMatrix PointAt(Vector3D position, Vector3D target, Vector3D up)
+        /// <param name="transform">The transform.</param>
+        /// <returns>
+        /// matrix for Transforming the Coordinate
+        /// </returns>
+        internal static BaseMatrix PointAt(ref Transform transform)
         {
-            var newForward = (target - position).Normalize();
-            var a = newForward * (up * newForward);
-            var newUp = (up - a).Normalize();
+            var newForward = (transform.Target - transform.Camera).Normalize();
+            var a = newForward * (transform.Up * newForward);
+            var newUp = (transform.Up - a).Normalize();
             var newRight = newUp.CrossProduct(newForward);
 
             return new BaseMatrix(4, 4)
@@ -91,10 +91,10 @@ namespace Mathematics
                 [2, 1] = newForward.Y,
                 [2, 2] = newForward.Z,
                 [2, 3] = 0.0d,
-                [3, 0] = position.X,
-                [3, 1] = position.Y,
-                [3, 2] = position.Z,
-                [3, 3] = position.W
+                [3, 0] = transform.Camera.X,
+                [3, 1] = transform.Camera.Y,
+                [3, 2] = transform.Camera.Z,
+                [3, 3] = transform.Camera.W
             };
         }
 

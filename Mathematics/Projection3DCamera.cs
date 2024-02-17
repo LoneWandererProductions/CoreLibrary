@@ -112,19 +112,20 @@ namespace Mathematics
         /// <summary>
         /// Generates the view from the Camera onto the world.
         /// </summary>
-        /// <param name="angle">Camera Angle, only the angle of the camera will be changed</param>
-        /// <param name="vCamera">Position of the Camera, only the camera will be moved.</param>
-        /// <returns>View on the Object from the Camera perspective</returns>
-        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera, Vector3D vUp, Vector3D vTarget)
+        /// <param name="transform">The transform object.</param>
+        /// <returns>
+        /// transform
+        /// View on the Object from the Camera perspective
+        /// </returns>
+        internal static BaseMatrix ViewCamera(ref Transform transform)
         {
-            var matCameraRot = Projection3DConstants.RotateCamera(angle);
-            var vLookDir = vTarget * matCameraRot;
-            vTarget = vCamera + vLookDir;
+            var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
+            transform.VLookDir = transform.Target * matCameraRot;
+            transform.Target = transform.Camera + transform.VLookDir;
 
-            var matCamera = Projection3DConstants.PointAt(vCamera, vTarget, vUp);
+            var matCamera = Projection3DConstants.PointAt(ref transform);
 
-            var matView = matCamera.Inverse();
-            return matView;
+            return matCamera.Inverse();
         }
     }
 }
