@@ -38,7 +38,7 @@ namespace Mathematics
         /// <param name="angle">The angle of the camera.</param>
         /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Visible Vector Planes</returns>
-        internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, double angle, Vector3D vCamera)
+        internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, Vector3D vCamera)
         {
             var lst = new List<Triangle>();
 
@@ -62,31 +62,6 @@ namespace Mathematics
                 //Todo here we would add some shading and textures
 
                 lst.Add(triangle);
-            }
-
-            return lst;
-        }
-
-        /// <summary>
-        ///     Cameras the point at.
-        /// </summary>
-        /// <param name="triangles">The triangles.</param>
-        /// <param name="angle">The angle of the camera.</param>
-        /// <param name="vCamera">The position of the camera as vector.</param>
-        /// <returns>Object from the Camera Lens</returns>
-        internal static List<Triangle> CameraPointAt(List<Triangle> triangles, double angle, Vector3D vCamera)
-        {
-            var matCamera = Projection3DCamera.ViewCamera(angle, vCamera);
-
-            var lst = new List<Triangle>(triangles.Count);
-
-            foreach (var triangle in triangles)
-            {
-                var triPointed = new Triangle
-                {
-                    [0] = triangle[0] * matCamera, [1] = triangle[1] * matCamera, [2] = triangle[2] * matCamera
-                };
-                lst.Add(triPointed);
             }
 
             return lst;
@@ -145,7 +120,7 @@ namespace Mathematics
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Center on Screen</returns>
-        internal static List<Triangle> MoveIntoView(List<Triangle> triangles, int width, int height)
+        internal static List<Triangle> MoveIntoView(IEnumerable<Triangle> triangles, int width, int height)
         {
             var lst = new List<Triangle>();
             var raster = new Rasterize { Width = width, Height = height };

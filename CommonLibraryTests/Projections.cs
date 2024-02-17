@@ -84,43 +84,31 @@ namespace CommonLibraryTests
         {
             var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
             var vUp = new Vector3D { X = 0, Y = 1, Z = 0 };
-
+            var vTarget = new Vector3D { X = 0, Y = 0, Z = 1 };
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
-            var matrix = Projection3DCamera.ViewCamera(0, vCamera);
+            var matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp, vTarget);
 
             var check = expected == matrix;
 
             Assert.IsTrue(check, "Wrong Point At Matrix");
 
-            //vUp = new Vector3D { X = 1, Y = 1, Z = 1 };
-            // 0.408248246, 0.872871578, 0.267261237, 0
-            // -0.816496491, 0.218217969, 0.534522474, 0
-            // 0.408248276, -0.436435580, 0.801783681, 0
-            // 0, 0, -0.00000000, 1
-
-            var m = new[,]
+            var m = new double[,]
             {
-                { 0.408248246, 0.872871578, 0.267261237, 0 }, { -0.816496491, 0.218217969, 0.534522474, 0 },
-                { 0.408248276, -0.436435580, 0.801783681, 0 }, { 0, 0, 0, 1 }
+                { 1, 0, 0, 0 }, { 0, 1, 0, 0 },
+                { 0, 0, 1, 0 }, {-2, -2, -2, 1 }
             };
 
-            //  0.4082483712994080081   0.87287152407673441941  0.26726118804963879546  0
-            //- 0.8164966364025321768  0.21821790785151009976  0.53452250693063268021  0
-            //  0.40824829299803304429 - 0.43643577190462942966 0.80178373647505295823  0
-            //   0   0   0   1
+            vCamera = new Vector3D { X = 2, Y = 2, Z = 2 };
+            expected = new BaseMatrix { Matrix = m};
 
-            //expected = new BaseMatrix { Matrix = m };
+            matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp, vTarget);
 
-            //matrix = Projection3DCamera.ViewCamera(0, vCamera, vUp);
+            check = expected == matrix;
+            var cache =  expected - matrix;
 
-
-            //TODO rework comparer!
-            //check = expected == matrix;
-            //var cache =  expected - matrix;
-
-            //Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
+            Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
         }
 
         [TestMethod]
@@ -139,7 +127,7 @@ namespace CommonLibraryTests
             var cache = Rasterize.WorldMatrix(triangles, transform);
             var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
 
-            cache = Rasterize.ViewPort(cache, 0, vCamera);
+            cache = Rasterize.ViewPort(cache, vCamera);
 
             cache = Rasterize.Convert2DTo3D(cache);
         }

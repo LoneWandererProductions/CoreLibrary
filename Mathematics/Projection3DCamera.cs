@@ -115,10 +115,8 @@ namespace Mathematics
         /// <param name="angle">Camera Angle, only the angle of the camera will be changed</param>
         /// <param name="vCamera">Position of the Camera, only the camera will be moved.</param>
         /// <returns>View on the Object from the Camera perspective</returns>
-        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera)
+        public static BaseMatrix ViewCamera(double angle, Vector3D vCamera, Vector3D vUp, Vector3D vTarget)
         {
-            var vUp = new Vector3D(0,1,0);
-            var vTarget = new Vector3D(0,0,1);
             var matCameraRot = Projection3DConstants.RotateCamera(angle);
             var vLookDir = vTarget * matCameraRot;
             vTarget = vCamera + vLookDir;
