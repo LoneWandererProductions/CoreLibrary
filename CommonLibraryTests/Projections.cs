@@ -109,6 +109,30 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
         }
 
+        /// <summary>
+        /// Cameras this instance.
+        /// </summary>
+        [TestMethod]
+        public void Camera()
+        {
+            Projection3DRegister.Width = 640;
+            Projection3DRegister.Height = 480;
+
+            var objFile = ResourceObjects.GetCube();
+            var triangles = Triangle.CreateTri(objFile);
+            var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
+            var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
+
+            var transform = new Transform { Rotation = rotation, Translation = translation };
+
+            var projection = new Projection();
+            projection.Generate(triangles, ref transform, false);
+
+            transform.DownCamera(0.5);
+            transform.LeftCamera(0.5);
+        }
+
+
         [TestMethod]
         public void BasicStructure()
         {
