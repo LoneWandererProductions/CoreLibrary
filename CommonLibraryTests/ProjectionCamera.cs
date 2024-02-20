@@ -15,7 +15,7 @@ namespace CommonLibraryTests
     public class ProjectionCamera
     {
         /// <summary>
-        /// Cameras this instance.
+        ///     Cameras this instance.
         /// </summary>
         [TestMethod]
         public void Camera()

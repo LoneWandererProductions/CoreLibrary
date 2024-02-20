@@ -9,12 +9,12 @@
  *              https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
  */
 
- using System;
+using System;
 
 namespace Mathematics
 {
     /// <summary>
-    /// Some Matrices that can be used outside of 3D Projection
+    ///     Some Matrices that can be used outside of 3D Projection
     /// </summary>
     internal static class Projection3DConstants
     {
@@ -35,10 +35,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, Math.Sin(angle), 0 },
-                { 0, 1, 0, 0 },
-                { -Math.Sin(angle), 0, Math.Cos(angle), 0 },
-                { 0, 0, 0, 1 }
+                { Math.Cos(angle), 0, Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { -Math.Sin(angle), 0, Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
             return new BaseMatrix { Matrix = rotation };
@@ -62,13 +60,13 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts Coordinates based on the Camera.
-        /// https://ksimek.github.io/2012/08/22/extrinsic/
-        /// https://www.youtube.com/watch?v=HXSuNxpCzdM
+        ///     Converts Coordinates based on the Camera.
+        ///     https://ksimek.github.io/2012/08/22/extrinsic/
+        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
         /// </summary>
         /// <param name="transform">The transform.</param>
         /// <returns>
-        /// matrix for Transforming the Coordinate
+        ///     matrix for Transforming the Coordinate
         /// </returns>
         internal static BaseMatrix PointAt(Transform transform)
         {

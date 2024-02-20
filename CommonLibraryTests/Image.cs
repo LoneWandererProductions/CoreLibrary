@@ -448,7 +448,10 @@ namespace CommonLibraryTests
             var color = Analysis.FindImagesInColorRange(imageData.R, imageData.G, imageData.B, 4,
                 SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
-            if (color == null) Assert.Fail("color was null");
+            if (color == null)
+            {
+                Assert.Fail("color was null");
+            }
 
             Assert.AreEqual(2, color.Count, "Done");
 
@@ -460,7 +463,10 @@ namespace CommonLibraryTests
 
             var images = Compare.GetDuplicateImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
-            if (images == null) Assert.Fail("images was null");
+            if (images == null)
+            {
+                Assert.Fail("images was null");
+            }
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(2, images[0].Count, "Done");
@@ -473,7 +479,10 @@ namespace CommonLibraryTests
 
             images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
 
-            if (images == null) Assert.Fail("image was null");
+            if (images == null)
+            {
+                Assert.Fail("image was null");
+            }
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(3, images[0].Count, "Done");
@@ -489,7 +498,10 @@ namespace CommonLibraryTests
             //Check Content
             var data = Analysis.GetImageDetails(imagePath);
 
-            if (data == null) Assert.Fail("data was null");
+            if (data == null)
+            {
+                Assert.Fail("data was null");
+            }
 
             Assert.AreEqual(26, data.R, "Done");
 
@@ -507,7 +519,10 @@ namespace CommonLibraryTests
 
             var dataList = Analysis.GetImageDetails(images[0]);
 
-            if (dataList == null) Assert.Fail("dataList was null");
+            if (dataList == null)
+            {
+                Assert.Fail("dataList was null");
+            }
 
             Assert.AreEqual(26, dataList[0].R, "Done");
 

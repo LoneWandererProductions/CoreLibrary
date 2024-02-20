@@ -11,19 +11,19 @@ using System.Collections.Generic;
 namespace Mathematics
 {
     /// <summary>
-    /// The Projection Interface.
-    /// Template for all external 3D operations.
+    ///     The Projection Interface.
+    ///     Template for all external 3D operations.
     /// </summary>
     public interface IProjection
     {
         /// <summary>
-        /// Generates the specified triangles.
+        ///     Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>
-        /// Converted 3d View
+        ///     Converted 3d View
         /// </returns>
         List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal);
     }

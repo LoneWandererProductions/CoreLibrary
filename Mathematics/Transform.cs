@@ -9,12 +9,92 @@
 namespace Mathematics
 {
     /// <summary>
-    /// Basic Controller for the World and the camera
+    ///     Basic Controller for the World and the camera
     /// </summary>
     public sealed class Transform
     {
         /// <summary>
-        /// Gets the instance.
+        ///     Gets or sets the angle of the camera.
+        /// </summary>
+        /// <value>
+        ///     The angle in rad.
+        /// </value>
+        public double Angle { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the camera Vector.
+        /// </summary>
+        /// <value>
+        ///     The camera.
+        /// </value>
+        public Vector3D Camera { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the camera Vector.
+        /// </summary>
+        /// <value>
+        ///     The camera.
+        /// </value>
+        public Vector3D Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets up for the Camera.
+        /// </summary>
+        /// <value>
+        ///     Up.
+        /// </value>
+        public Vector3D Up { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the target Camera.
+        /// </summary>
+        /// <value>
+        ///     The target.
+        /// </value>
+        public Vector3D Target { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the look Vector direction.
+        /// </summary>
+        /// <value>
+        ///     The v look dir.
+        /// </value>
+        public Vector3D VLookDir { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the translation.
+        /// </summary>
+        /// <value>
+        ///     The translation.
+        /// </value>
+        public Vector3D Translation { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the rotation.
+        /// </summary>
+        /// <value>
+        ///     The rotation.
+        /// </value>
+        public Vector3D Rotation { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the scale.
+        /// </summary>
+        /// <value>
+        ///     The scale.
+        /// </value>
+        public Vector3D Scale { get; set; }
+
+        public Vector3D Right { get; set; } = new();
+
+        public Vector3D Forward { get; set; } = new();
+
+        public double Pitch { get; set; }
+
+        public double Yaw { get; set; }
+
+        /// <summary>
+        ///     Gets the instance.
         /// </summary>
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance()
@@ -34,7 +114,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Gets the instance.
+        ///     Gets the instance.
         /// </summary>
         /// <param name="translation">The translation.</param>
         /// <param name="scale">The scale.</param>
@@ -57,87 +137,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Gets or sets the angle of the camera.
-        /// </summary>
-        /// <value>
-        /// The angle in rad.
-        /// </value>
-        public double Angle { get; set; }
-
-        /// <summary>
-        /// Gets or sets the camera Vector.
-        /// </summary>
-        /// <value>
-        /// The camera.
-        /// </value>
-        public Vector3D Camera { get; set; }
-
-        /// <summary>
-        /// Gets or sets the camera Vector.
-        /// </summary>
-        /// <value>
-        /// The camera.
-        /// </value>
-        public Vector3D Position { get; set; }
-
-        /// <summary>
-        /// Gets or sets up for the Camera.
-        /// </summary>
-        /// <value>
-        /// Up.
-        /// </value>
-        public Vector3D Up { get; set; }
-
-        /// <summary>
-        /// Gets or sets the target Camera.
-        /// </summary>
-        /// <value>
-        /// The target.
-        /// </value>
-        public Vector3D Target { get; set; }
-
-        /// <summary>
-        /// Gets or sets the look Vector direction.
-        /// </summary>
-        /// <value>
-        /// The v look dir.
-        /// </value>
-        public Vector3D VLookDir { get; set; }
-
-        /// <summary>
-        /// Gets or sets the translation.
-        /// </summary>
-        /// <value>
-        /// The translation.
-        /// </value>
-        public Vector3D Translation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the rotation.
-        /// </summary>
-        /// <value>
-        /// The rotation.
-        /// </value>
-        public Vector3D Rotation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the scale.
-        /// </summary>
-        /// <value>
-        /// The scale.
-        /// </value>
-        public Vector3D Scale { get; set; }
-
-        public Vector3D Right { get; set; } = new Vector3D();
-
-        public Vector3D Forward { get; set; } = new Vector3D();
-
-        public double Pitch { get; set; }
-
-        public double Yaw { get; set; } 
-
-        /// <summary>
-        /// Moves the world.
+        ///     Moves the world.
         /// </summary>
         /// <param name="translation">The translation.</param>
         public void MoveWorld(Vector3D translation)
@@ -146,7 +146,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rotates the world.
+        ///     Rotates the world.
         /// </summary>
         /// <param name="rotation">The rotation.</param>
         public void RotateWorld(Vector3D rotation)
@@ -155,7 +155,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Ups the camera.
+        ///     Ups the camera.
         /// </summary>
         /// <param name="y">The y.</param>
         public void UpCamera(double y)
@@ -165,7 +165,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Downs the camera.
+        ///     Downs the camera.
         /// </summary>
         /// <param name="y">The y.</param>
         public void DownCamera(double y)
@@ -175,7 +175,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Lefts the camera.
+        ///     Lefts the camera.
         /// </summary>
         /// <param name="x">The x.</param>
         public void LeftCamera(double x)
@@ -185,7 +185,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rights the camera.
+        ///     Rights the camera.
         /// </summary>
         /// <param name="x">The x.</param>
         public void RightCamera(double x)
@@ -195,7 +195,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Lefts the rotate camera.
+        ///     Lefts the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
         public void LeftRotateCamera(double value)
@@ -206,7 +206,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rights the rotate camera.
+        ///     Rights the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
         public void RightRotateCamera(double value)

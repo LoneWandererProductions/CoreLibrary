@@ -424,11 +424,11 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Converts to a hex string.
-        /// Will be used for gifs later
+        ///     Converts to a hex string.
+        ///     Will be used for gifs later
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

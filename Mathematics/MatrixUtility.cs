@@ -62,7 +62,7 @@ namespace Mathematics
                     {
                         var iTwo = j;
 
-                        double res = 0d;
+                        var res = 0d;
 
                         for (var k = 0; k < l; k++, iTwo += w)
                         {
@@ -112,8 +112,15 @@ namespace Mathematics
         /// <returns>If Matrices are equal with our preconfigured tolerance.</returns>
         internal static unsafe bool UnsafeCompare(BaseMatrix mOne, BaseMatrix mTwo)
         {
-            if(mOne.Height != mTwo.Height ) return false;
-            if(mOne.Width != mTwo.Width ) return false;
+            if (mOne.Height != mTwo.Height)
+            {
+                return false;
+            }
+
+            if (mOne.Width != mTwo.Width)
+            {
+                return false;
+            }
 
             var h = mOne.Height;
             var w = mOne.Width;
@@ -126,7 +133,10 @@ namespace Mathematics
                 for (var j = 0; j < w; j++)
                 {
                     var cursor = i + (j * mOne.Width);
-                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance) return false;
+                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance)
+                    {
+                        return false;
+                    }
                 }
             }
 

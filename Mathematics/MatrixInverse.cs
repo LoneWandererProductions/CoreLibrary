@@ -134,10 +134,6 @@ namespace Mathematics
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
-                // --------------------------------------------------
-                // if diagonal after swap is zero . .
-                //if (Math.Abs(result[j,j]) less-than 1.0E-20)
-                //  return null; // consider a throw
 
                 for (var i = j + 1; i < rows; ++i)
                 {

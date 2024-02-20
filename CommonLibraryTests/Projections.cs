@@ -100,24 +100,20 @@ namespace CommonLibraryTests
             Trace.WriteLine(transform.Camera.ToString());
             Assert.IsTrue(check, "Wrong Point At Matrix");
 
-            var m = new double[,]
-            {
-                { 1, 0, 0, 0 }, { 0, 1, 0, 0 },
-                { 0, 0, 1, 0 }, {-2, -2, -2, 1 }
-            };
+            var m = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -2, -2, -2, 1 } };
 
             transform = Transform.GetInstance();
-            transform.Camera = new Vector3D (2,2,2);
+            transform.Camera = new Vector3D(2, 2, 2);
             transform.Position = new Vector3D(2, 2, 2);
 
-            expected = new BaseMatrix { Matrix = m};
+            expected = new BaseMatrix { Matrix = m };
 
             matrix = Projection3DCamera.ViewCamera(transform);
 
             check = expected == matrix;
-            var cache =  expected - matrix;
+            var cache = expected - matrix;
 
-            Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
+            Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString()));
         }
 
         /// <summary>

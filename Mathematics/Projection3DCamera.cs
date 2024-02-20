@@ -20,7 +20,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = Projection3DConstants.ProjectionTo3DMatrix();
@@ -51,7 +51,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D OrthographicProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
+            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = OrthographicProjectionTo3DMatrix();
@@ -99,7 +99,10 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation = {{Projection3DRegister.A, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+            double[,] translation =
+            {
+                { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 }
+            };
             return new BaseMatrix(translation);
         }
 
@@ -124,6 +127,14 @@ namespace Mathematics
             return matCamera.Inverse();
         }
 
+        /// <summary>
+        ///     The Orbit camera.
+        /// </summary>
+        /// <param name="transform">The transform object.</param>
+        /// <returns>
+        ///     transform
+        ///     View on the Object from the Camera perspective
+        /// </returns>
         internal static BaseMatrix OrbitCamera(Transform transform)
         {
             // LEFT-Handed Coordinate System
@@ -155,12 +166,12 @@ namespace Mathematics
             // instead of calculating their multiplication
             double[,] viewMatrix =
             {
-                {transform.Right.X, transform.Up.X, transform.Forward.X, 0}, {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
-                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0}, 
-                {transl.X, transl.Y, transl.Z, 1}
+                { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
+                { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
+                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
-            return new BaseMatrix {Matrix = viewMatrix};
+            return new BaseMatrix { Matrix = viewMatrix };
         }
     }
 }
