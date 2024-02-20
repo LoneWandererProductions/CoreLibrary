@@ -13,30 +13,45 @@ namespace Mathematics
     /// </summary>
     public sealed class Transform
     {
-        public Transform()
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <returns>Instance of Transform</returns>
+        public static Transform GetInstance()
         {
-            Up = new Vector3D(0, 1, 0);
-            Target = new Vector3D(0, 0, 1);
-            VLookDir = Vector3D.ZeroVector;
-            Angle = 0;
-
-            Camera = Vector3D.ZeroVector;
-            Translation = Vector3D.UnitVector;
-            Rotation = Vector3D.UnitVector;
-            Scale = Vector3D.UnitVector;
+            return new Transform
+            {
+                Up = new Vector3D(0, 1, 0),
+                Target = new Vector3D(0, 0, 1),
+                VLookDir = new Vector3D(),
+                Angle = 0,
+                Camera = new Vector3D(),
+                Translation = new Vector3D(),
+                Rotation = new Vector3D(),
+                Scale = Vector3D.UnitVector
+            };
         }
 
-        public Transform(Vector3D translation, Vector3D scale, Vector3D rotation)
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="translation">The translation.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="rotation">The rotation.</param>
+        /// <returns>Instance of Transform</returns>
+        public static Transform GetInstance(Vector3D translation, Vector3D scale, Vector3D rotation)
         {
-            Up = new Vector3D(0, 1, 0);
-            Target = new Vector3D(0, 0, 1);
-            VLookDir = Vector3D.ZeroVector;
-            Angle = 0;
-
-            Camera = Vector3D.ZeroVector;
-            Translation = translation;
-            Scale = scale;
-            Rotation = rotation;
+            return new Transform
+            {
+                Up = new Vector3D(0, 1, 0),
+                Target = new Vector3D(0, 0, 1),
+                VLookDir = new Vector3D(),
+                Angle = 0,
+                Camera = new Vector3D(),
+                Translation = translation,
+                Rotation = rotation,
+                Scale = scale
+            };
         }
 
         /// <summary>
@@ -85,7 +100,7 @@ namespace Mathematics
         /// <value>
         /// The translation.
         /// </value>
-        public Vector3D Translation { get; set; }
+        public Vector3D Translation { get; set; } 
 
         /// <summary>
         /// Gets or sets the rotation.
@@ -145,7 +160,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void UpCamera(double y)
         {
-            Camera.Y += y;
+            Target.Y += y;
         }
 
         /// <summary>
@@ -154,7 +169,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y)
         {
-            Camera.Y -= y;
+            Target.Y -= y;
         }
 
         /// <summary>
@@ -163,7 +178,7 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x)
         {
-            Camera.X -= x;
+            Target.X -= x;
         }
 
         /// <summary>
@@ -172,7 +187,7 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x)
         {
-            Camera.X -= x;
+            Target.X -= x;
         }
 
         /// <summary>
@@ -182,7 +197,7 @@ namespace Mathematics
         public void LeftRotateCamera(double value)
         {
             var vForward = VLookDir * value;
-            Camera += vForward;
+            Target += vForward;
         }
 
         /// <summary>
@@ -192,7 +207,7 @@ namespace Mathematics
         public void RightRotateCamera(double value)
         {
             var vForward = VLookDir * value;
-            Camera -= vForward;
+            Target -= vForward;
         }
     }
 }

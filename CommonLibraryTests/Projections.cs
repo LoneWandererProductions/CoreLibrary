@@ -1,7 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        CommonLibraryTests/Projections.cs
+ * PURPOSE:     Test single parts of the 3D Engine
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Diagnostics;
-using DataFormatter;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -83,7 +89,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void PointAt()
         {
-            var transform = new Transform();
+            var transform = Transform.GetInstance();
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
@@ -100,7 +106,9 @@ namespace CommonLibraryTests
                 { 0, 0, 1, 0 }, {-2, -2, -2, 1 }
             };
 
-            transform = new Transform {Camera = new Vector3D {X = 2, Y = 2, Z = 2}};
+            transform = Transform.GetInstance();
+            transform.Camera = new Vector3D (2,2,2);
+
             expected = new BaseMatrix { Matrix = m};
 
             matrix = Projection3DCamera.ViewCamera(transform);
@@ -109,49 +117,6 @@ namespace CommonLibraryTests
             var cache =  expected - matrix;
 
             Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString() ));
-        }
-
-        /// <summary>
-        /// Cameras this instance.
-        /// </summary>
-        [TestMethod]
-        public void Camera()
-        {
-            var objFile = ResourceObjects.GetCube();
-            var triangles = Triangle.CreateTri(objFile);
-            var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
-            var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
-
-            var transform = new Transform { Rotation = rotation, Translation = translation };
-
-            var projection = new Projection();
-
-            projection.Generate(triangles, transform, false);
-
-            //transform.DownCamera(0.5);
-            //transform.LeftCamera(0.5);
-        }
-
-
-        [TestMethod]
-        public void BasicStructure()
-        {
-            Projection3DRegister.Width = 640;
-            Projection3DRegister.Height = 480;
-
-            var objFile = ResourceObjects.GetCube();
-            var triangles = Triangle.CreateTri(objFile);
-            var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
-            var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
-
-            var transform = new Transform { Rotation = rotation, Translation = translation };
-
-            var cache = Rasterize.WorldMatrix(triangles, transform);
-            var vCamera = new Vector3D { X = 0, Y = 0, Z = 0 };
-
-            cache = Rasterize.ViewPort(cache, vCamera);
-
-            cache = Rasterize.Convert2DTo3D(cache);
         }
 
         /// <summary>
@@ -172,23 +137,21 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ModelMatrix()
         {
-            var transform = new Transform
-            (
-                new Vector3D(0, 0, 3),   Vector3D.UnitVector,Vector3D.ZeroVector
-            );
-                
+            var transform = Transform.GetInstance();
 
-            //modelMatrix={1 0 0 0  0 1 0 0  0 0 1 0  0 0 3 1  }
             var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
 
             var model = new BaseMatrix { Matrix = matrix };
-
+            transform.Camera = new Vector3D(0, 0, 0);
+            transform.Translation.Z = 3;
             var cache = Projection3DCamera.ModelMatrix(transform);
 
             var check = model.Equals(cache);
-            Assert.IsTrue(check, "Not the Correct Model Matrix");
             Trace.WriteLine(cache.ToString());
             Trace.WriteLine(transform.Camera.ToString());
+
+            Assert.IsTrue(check, "Not the Correct Model Matrix");
+
             check = model == cache;
             Assert.IsTrue(check, "Equal check failed");
 
@@ -237,7 +200,6 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Vector not converted");
         }
 
-
         /// <summary>
         ///     Multiplies the matrix vector.
         /// </summary>
@@ -271,128 +233,6 @@ namespace CommonLibraryTests
             o.Z /= w;
 
             return o;
-        }
-    }
-
-
-    /// <summary>
-    ///     Load a cube
-    /// </summary>
-    internal static class ResourceObjects
-    {
-        /// <summary>
-        ///     Gets the cube.
-        /// </summary>
-        /// <returns>Cube Object</returns>
-        internal static List<TertiaryVector> GetCube()
-        {
-            //south two Triangles
-            var southOne = new TertiaryVector { X = 0, Y = 0, Z = 0 };
-            var southTwo = new TertiaryVector { X = 0, Y = 1, Z = 0 };
-            var southThree = new TertiaryVector { X = 1, Y = 1, Z = 0 };
-
-            //south two Triangles
-            var southFour = new TertiaryVector { X = 0, Y = 0, Z = 0 };
-            var southFive = new TertiaryVector { X = 1, Y = 1, Z = 0 };
-
-            var southSix = new TertiaryVector { X = 1, Y = 0, Z = 0 };
-
-            //east two Triangles
-            var eastOne = new TertiaryVector { X = 1, Y = 0, Z = 0 };
-            var eastTwo = new TertiaryVector { X = 1, Y = 1, Z = 0 };
-
-            var eastThree = new TertiaryVector { X = 1, Y = 1, Z = 1 };
-
-            //east two Triangles
-            var eastFour = new TertiaryVector { X = 1, Y = 0, Z = 0 };
-            var eastFive = new TertiaryVector { X = 1, Y = 1, Z = 1 };
-
-            var eastSix = new TertiaryVector { X = 1, Y = 0, Z = 1 };
-
-            //north two Triangles
-            var northOne = new TertiaryVector { X = 1, Y = 0, Z = 1 };
-            var northTwo = new TertiaryVector { X = 1, Y = 1, Z = 1 };
-
-            var northThree = new TertiaryVector { X = 0, Y = 1, Z = 1 };
-
-            var northFour = new TertiaryVector { X = 1, Y = 0, Z = 1 };
-            var northFive = new TertiaryVector { X = 0, Y = 1, Z = 1 };
-
-            var northSix = new TertiaryVector { X = 0, Y = 0, Z = 1 };
-
-
-            //west two Triangles
-            var westOne = new TertiaryVector { X = 0, Y = 0, Z = 1 };
-            var westTwo = new TertiaryVector { X = 0, Y = 1, Z = 1 };
-
-            var westThree = new TertiaryVector { X = 0, Y = 1, Z = 0 };
-
-            var westFour = new TertiaryVector { X = 0, Y = 0, Z = 1 };
-            var westFive = new TertiaryVector { X = 0, Y = 1, Z = 0 };
-
-            var westSix = new TertiaryVector { X = 0, Y = 0, Z = 0 };
-
-            //top two Triangles
-            var topOne = new TertiaryVector { X = 0, Y = 1, Z = 0 };
-            var topTwo = new TertiaryVector { X = 0, Y = 1, Z = 1 };
-
-            var topThree = new TertiaryVector { X = 1, Y = 1, Z = 1 };
-
-            var topFour = new TertiaryVector { X = 0, Y = 1, Z = 0 };
-            var topFive = new TertiaryVector { X = 1, Y = 1, Z = 1 };
-
-            var topSix = new TertiaryVector { X = 1, Y = 1, Z = 0 };
-
-            //bottom two Triangles
-            var bottomOne = new TertiaryVector { X = 1, Y = 0, Z = 1 };
-            var bottomTwo = new TertiaryVector { X = 0, Y = 0, Z = 1 };
-
-            var bottomThree = new TertiaryVector { X = 0, Y = 0, Z = 0 };
-
-            var bottomFour = new TertiaryVector { X = 1, Y = 0, Z = 1 };
-            var bottomFive = new TertiaryVector { X = 0, Y = 0, Z = 0 };
-
-            var bottomSix = new TertiaryVector { X = 1, Y = 0, Z = 0 };
-
-            return new List<TertiaryVector>
-            {
-                southOne,
-                southTwo,
-                southThree,
-                southFour,
-                southFive,
-                southSix,
-                eastOne,
-                eastTwo,
-                eastThree,
-                eastFour,
-                eastFive,
-                eastSix,
-                northOne,
-                northTwo,
-                northThree,
-                northFour,
-                northFive,
-                northSix,
-                westOne,
-                westTwo,
-                westThree,
-                westFour,
-                westFive,
-                westSix,
-                topOne,
-                topTwo,
-                topThree,
-                topFour,
-                topFive,
-                topSix,
-                bottomOne,
-                bottomTwo,
-                bottomThree,
-                bottomFour,
-                bottomFive,
-                bottomSix
-            };
         }
     }
 }
