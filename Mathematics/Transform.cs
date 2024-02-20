@@ -26,6 +26,7 @@ namespace Mathematics
                 VLookDir = new Vector3D(),
                 Angle = 0,
                 Camera = new Vector3D(),
+                Position = new Vector3D(),
                 Translation = new Vector3D(),
                 Rotation = new Vector3D(),
                 Scale = Vector3D.UnitVector
@@ -48,6 +49,7 @@ namespace Mathematics
                 VLookDir = new Vector3D(),
                 Angle = 0,
                 Camera = new Vector3D(),
+                Position = new Vector3D(),
                 Translation = translation,
                 Rotation = rotation,
                 Scale = scale
@@ -69,6 +71,14 @@ namespace Mathematics
         /// The camera.
         /// </value>
         public Vector3D Camera { get; set; }
+
+        /// <summary>
+        /// Gets or sets the camera Vector.
+        /// </summary>
+        /// <value>
+        /// The camera.
+        /// </value>
+        public Vector3D Position { get; set; }
 
         /// <summary>
         /// Gets or sets up for the Camera.
@@ -100,7 +110,7 @@ namespace Mathematics
         /// <value>
         /// The translation.
         /// </value>
-        public Vector3D Translation { get; set; } 
+        public Vector3D Translation { get; set; }
 
         /// <summary>
         /// Gets or sets the rotation.
@@ -160,7 +170,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void UpCamera(double y)
         {
-            Target.Y += y;
+            Position.Y += y;
         }
 
         /// <summary>
@@ -169,7 +179,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y)
         {
-            Target.Y -= y;
+            Position.Y -= y;
         }
 
         /// <summary>
@@ -178,7 +188,7 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x)
         {
-            Target.X -= x;
+            Position.X += x;
         }
 
         /// <summary>
@@ -187,7 +197,7 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x)
         {
-            Target.X -= x;
+            Position.X -= x;
         }
 
         /// <summary>
@@ -197,7 +207,7 @@ namespace Mathematics
         public void LeftRotateCamera(double value)
         {
             var vForward = VLookDir * value;
-            Target += vForward;
+            Position += vForward;
         }
 
         /// <summary>
@@ -207,7 +217,17 @@ namespace Mathematics
         public void RightRotateCamera(double value)
         {
             var vForward = VLookDir * value;
-            Target -= vForward;
+            Position -= vForward;
+        }
+
+        public void MoveForward(double z)
+        {
+            Position.Z += z;
+        }
+
+        public void MoveBack(double z)
+        {
+            Position.Z -= z;
         }
     }
 }

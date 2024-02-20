@@ -86,8 +86,6 @@ namespace Mathematics
             // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
             var rotation = rotationZ * rotationY * rotationX;
 
-            Trace.WriteLine(rotation.ToString());
-
             var translation = Projection3DConstants.Translate(transform.Translation);
 
             var scaling = Projection3DConstants.Scale(transform.Scale);
@@ -120,6 +118,7 @@ namespace Mathematics
         internal static BaseMatrix ViewCamera(Transform transform)
         {
             var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
+
             transform.VLookDir = transform.Target * matCameraRot;
             transform.Target = transform.Camera + transform.VLookDir;
 

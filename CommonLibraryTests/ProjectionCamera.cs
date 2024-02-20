@@ -20,6 +20,8 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Camera()
         {
+            //(8 * 240) / (float)(16 * 63);
+
             var objFile = ResourceObjects.GetCube();
             var triangles = Triangle.CreateTri(objFile);
 
@@ -31,8 +33,8 @@ namespace CommonLibraryTests
 
             projection.Generate(triangles, transform, false);
 
-            //transform.DownCamera(0.5);
-            //transform.LeftCamera(0.5);
+            transform.DownCamera(0.5);
+            transform.LeftCamera(0.5);
         }
     }
 }
