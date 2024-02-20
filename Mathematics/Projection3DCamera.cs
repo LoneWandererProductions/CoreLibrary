@@ -117,9 +117,12 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix ViewCamera(Transform transform)
         {
+            //TODO alt https://www.3dgep.com/understanding-the-view-matrix/#FPS_Camera
+
             var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
 
             transform.VLookDir = transform.Target * matCameraRot;
+
             transform.Target = transform.Camera + transform.VLookDir;
 
             var matCamera = Projection3DConstants.PointAt(transform);

@@ -73,6 +73,7 @@ namespace Mathematics
         internal static BaseMatrix PointAt(Transform transform)
         {
             var newForward = (transform.Target - transform.Camera).Normalize();
+
             var a = newForward * (transform.Up * newForward);
             var newUp = (transform.Up - a).Normalize();
             var newRight = newUp.CrossProduct(newForward);
