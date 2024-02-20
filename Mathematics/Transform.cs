@@ -128,6 +128,14 @@ namespace Mathematics
         /// </value>
         public Vector3D Scale { get; set; }
 
+        public Vector3D Right { get; set; } = new Vector3D();
+
+        public Vector3D Forward { get; set; } = new Vector3D();
+
+        public double Pitch { get; set; }
+
+        public double Yaw { get; set; } 
+
         /// <summary>
         /// Moves the world.
         /// </summary>
@@ -147,30 +155,13 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Rotates the camera left.
-        /// </summary>
-        /// <param name="angle">The angle.</param>
-        public void RotateCameraLeft(double angle)
-        {
-            Angle += angle;
-        }
-
-        /// <summary>
-        /// Rotates the camera right.
-        /// </summary>
-        /// <param name="angle">The angle.</param>
-        public void RotateCameraRight(double angle)
-        {
-            Angle -= angle;
-        }
-
-        /// <summary>
         /// Ups the camera.
         /// </summary>
         /// <param name="y">The y.</param>
         public void UpCamera(double y)
         {
-            Position.Y += y;
+            //Position.Y += y;
+            Position += Up * 0.05f;
         }
 
         /// <summary>
@@ -179,7 +170,8 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y)
         {
-            Position.Y -= y;
+            //Position.Y -= y;
+            Position -= Up * 0.05f;
         }
 
         /// <summary>
@@ -188,7 +180,8 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x)
         {
-            Position.X += x;
+            //Position.X += x;
+            Position -= Right * 0.05f;
         }
 
         /// <summary>
@@ -197,7 +190,8 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x)
         {
-            Position.X -= x;
+            //Position.X -= x;
+            Position += Right * 0.05f;
         }
 
         /// <summary>
@@ -206,8 +200,9 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void LeftRotateCamera(double value)
         {
-            var vForward = VLookDir * value;
-            Position += vForward;
+            //var vForward = VLookDir * value;
+            //Position += vForward;
+            Yaw -= 2.0f;
         }
 
         /// <summary>
@@ -216,18 +211,22 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void RightRotateCamera(double value)
         {
-            var vForward = VLookDir * value;
-            Position -= vForward;
+            //var vForward = VLookDir * value;
+            //Position -= vForward;
+            Yaw += 2.0f;
         }
 
         public void MoveForward(double z)
         {
-            Position.Z += z;
+            //Position.Z += z;
+            Position += Forward * 0.05f;
         }
 
         public void MoveBack(double z)
         {
-            Position.Z -= z;
+            //Position.Z -= z;
+            //Position -= Forward * 0.05f;
+            Position -= Forward * 0.05f;
         }
     }
 }

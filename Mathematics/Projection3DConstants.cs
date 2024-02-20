@@ -30,18 +30,18 @@ namespace Mathematics
         /// <returns>Camera Rotation Matrix</returns>
         internal static BaseMatrix RotateCamera(double angleD)
         {
-                //convert to Rad
-                var angle = angleD * Rad;
+            //convert to Rad
+            var angle = angleD * Rad;
 
-                double[,] rotation =
-                {
-                    { Math.Cos(angle), 0, Math.Sin(angle), 0 },
-                    { 0, 1, 0, 0 },
-                    { -Math.Sin(angle), 0, Math.Cos(angle), 0 }, 
-                    { 0, 0, 0, 1 }
-                };
+            double[,] rotation =
+            {
+                { Math.Cos(angle), 0, Math.Sin(angle), 0 },
+                { 0, 1, 0, 0 },
+                { -Math.Sin(angle), 0, Math.Cos(angle), 0 },
+                { 0, 0, 0, 1 }
+            };
 
-                return new BaseMatrix { Matrix = rotation };
+            return new BaseMatrix { Matrix = rotation };
         }
 
         /// <summary>
@@ -80,10 +80,22 @@ namespace Mathematics
 
             return new BaseMatrix(4, 4)
             {
-                [0, 0] = newRight.X, [0, 1] = newRight.Y, [0, 2] = newRight.Z, [0, 3] = 0.0d,
-                [1, 0] = newUp.X, [1, 1] = newUp.Y, [1, 2] = newUp.Z, [1, 3] = 0.0d,
-                [2, 0] = newForward.X, [2, 1] = newForward.Y, [2, 2] = newForward.Z, [2, 3] = 0.0d,
-                [3, 0] = transform.Position.X, [3, 1] = transform.Position.Y, [3, 2] = transform.Position.Z, [3, 3] = transform.Position.W
+                [0, 0] = newRight.X,
+                [0, 1] = newRight.Y,
+                [0, 2] = newRight.Z,
+                [0, 3] = 0.0d,
+                [1, 0] = newUp.X,
+                [1, 1] = newUp.Y,
+                [1, 2] = newUp.Z,
+                [1, 3] = 0.0d,
+                [2, 0] = newForward.X,
+                [2, 1] = newForward.Y,
+                [2, 2] = newForward.Z,
+                [2, 3] = 0.0d,
+                [3, 0] = transform.Position.X,
+                [3, 1] = transform.Position.Y,
+                [3, 2] = transform.Position.Z,
+                [3, 3] = transform.Position.W
             };
         }
 

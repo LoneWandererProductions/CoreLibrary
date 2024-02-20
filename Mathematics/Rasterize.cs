@@ -45,9 +45,9 @@ namespace Mathematics
             {
                 var triScaled = new Triangle
                 {
-                    [0] = triangle[0] * Projection3DCamera.ViewCamera(transform),
-                    [1] = triangle[1] * Projection3DCamera.ViewCamera(transform),
-                    [2] = triangle[2] * Projection3DCamera.ViewCamera(transform)
+                    [0] = triangle[0] * Projection3DCamera.OrbitCamera(transform),
+                    [1] = triangle[1] * Projection3DCamera.OrbitCamera(transform),
+                    [2] = triangle[2] * Projection3DCamera.OrbitCamera(transform)
                 };
                 lst.Add(triScaled);
             }

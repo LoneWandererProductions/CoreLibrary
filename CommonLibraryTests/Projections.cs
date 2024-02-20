@@ -108,6 +108,7 @@ namespace CommonLibraryTests
 
             transform = Transform.GetInstance();
             transform.Camera = new Vector3D (2,2,2);
+            transform.Position = new Vector3D(2, 2, 2);
 
             expected = new BaseMatrix { Matrix = m};
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Mathematics
 {
@@ -21,7 +20,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
             var projection = Projection3DConstants.ProjectionTo3DMatrix();
@@ -52,7 +51,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D OrthographicProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
             var projection = OrthographicProjectionTo3DMatrix();
@@ -83,7 +82,7 @@ namespace Mathematics
             var rotationY = Projection3DConstants.RotateY(transform.Rotation.Y);
             var rotationZ = Projection3DConstants.RotateZ(transform.Rotation.Z);
 
-            // XYZ rotation = (((Z × Y) × X) × Vector3) or (Z×Y×X)×V
+            // XYZ rotation = (((Z × Y) × X) × Vector3D) or (Z×Y×X)×V
             var rotation = rotationZ * rotationY * rotationX;
 
             var translation = Projection3DConstants.Translate(transform.Translation);
@@ -100,25 +99,20 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation =
-            {
-                { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 }
-            };
+            double[,] translation = {{Projection3DRegister.A, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
             return new BaseMatrix(translation);
         }
 
         /// <summary>
-        /// Generates the view from the Camera onto the world.
+        ///     Generates the view from the Camera onto the world.
         /// </summary>
         /// <param name="transform">The transform object.</param>
         /// <returns>
-        /// transform
-        /// View on the Object from the Camera perspective
+        ///     transform
+        ///     View on the Object from the Camera perspective
         /// </returns>
         internal static BaseMatrix ViewCamera(Transform transform)
         {
-            //TODO alt https://www.3dgep.com/understanding-the-view-matrix/#FPS_Camera
-
             var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
 
             transform.VLookDir = transform.Target * matCameraRot;
@@ -128,6 +122,45 @@ namespace Mathematics
             var matCamera = Projection3DConstants.PointAt(transform);
 
             return matCamera.Inverse();
+        }
+
+        internal static BaseMatrix OrbitCamera(Transform transform)
+        {
+            // LEFT-Handed Coordinate System
+
+            // Rotation in X = Positive when 'looking down'
+            // Rotation in Y = Positive when 'looking right'
+            // Rotation in Z = Positive when 'tilting left'
+
+            var toRad = (float)(Math.PI / 180.0f);
+
+            var cosPitch = (float)Math.Cos(transform.Pitch * toRad);
+            var sinPitch = (float)Math.Sin(transform.Pitch * toRad);
+
+            var cosYaw = (float)Math.Cos(transform.Yaw * toRad);
+            var sinYaw = (float)Math.Sin(transform.Yaw * toRad);
+
+            transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
+
+            transform.Up = new Vector3D(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
+
+            transform.Forward = new Vector3D(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
+
+            // The inverse camera's translation
+            var transl = new Vector3D(-(transform.Right * transform.Position),
+                -(transform.Up * transform.Position),
+                -(transform.Forward * transform.Position));
+
+            // Join rotation and translation in a single matrix
+            // instead of calculating their multiplication
+            double[,] viewMatrix =
+            {
+                {transform.Right.X, transform.Up.X, transform.Forward.X, 0}, {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
+                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0}, 
+                {transl.X, transl.Y, transl.Z, 1}
+            };
+
+            return new BaseMatrix {Matrix = viewMatrix};
         }
     }
 }
