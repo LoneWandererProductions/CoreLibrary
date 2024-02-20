@@ -25,9 +25,10 @@ namespace Mathematics
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>Converted 3d View</returns>
-        public List<Triangle> Generate(List<Triangle> triangles, ref Transform transform, bool? orthogonal)
+        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal)
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
+            cache = Rasterize.PointAt(cache, transform);
             cache = Rasterize.ViewPort(cache, transform.Camera);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);

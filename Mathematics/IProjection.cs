@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using DataFormatter;
 
 namespace Mathematics
 {
@@ -26,6 +25,6 @@ namespace Mathematics
         /// <returns>
         /// Converted 3d View
         /// </returns>
-        List<Triangle> Generate(List<Triangle> triangles, ref Transform transform, bool? orthogonal);
+        List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal);
     }
 }

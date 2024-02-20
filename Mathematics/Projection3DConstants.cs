@@ -70,7 +70,7 @@ namespace Mathematics
         /// <returns>
         /// matrix for Transforming the Coordinate
         /// </returns>
-        internal static BaseMatrix PointAt(ref Transform transform)
+        internal static BaseMatrix PointAt(Transform transform)
         {
             var newForward = (transform.Target - transform.Camera).Normalize();
             var a = newForward * (transform.Up * newForward);

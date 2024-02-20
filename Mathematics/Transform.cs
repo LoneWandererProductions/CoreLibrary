@@ -13,13 +13,39 @@ namespace Mathematics
     /// </summary>
     public sealed class Transform
     {
+        public Transform()
+        {
+            Up = new Vector3D(0, 1, 0);
+            Target = new Vector3D(0, 0, 1);
+            VLookDir = Vector3D.ZeroVector;
+            Angle = 0;
+
+            Camera = Vector3D.ZeroVector;
+            Translation = Vector3D.UnitVector;
+            Rotation = Vector3D.UnitVector;
+            Scale = Vector3D.UnitVector;
+        }
+
+        public Transform(Vector3D translation, Vector3D scale, Vector3D rotation)
+        {
+            Up = new Vector3D(0, 1, 0);
+            Target = new Vector3D(0, 0, 1);
+            VLookDir = Vector3D.ZeroVector;
+            Angle = 0;
+
+            Camera = Vector3D.ZeroVector;
+            Translation = translation;
+            Scale = scale;
+            Rotation = rotation;
+        }
+
         /// <summary>
         /// Gets or sets the angle of the camera.
         /// </summary>
         /// <value>
         /// The angle in rad.
         /// </value>
-        public double Angle { get; set; } = 0;
+        public double Angle { get; set; }
 
         /// <summary>
         /// Gets or sets the camera Vector.
@@ -27,7 +53,7 @@ namespace Mathematics
         /// <value>
         /// The camera.
         /// </value>
-        public Vector3D Camera { get; set; } = Vector3D.ZeroVector;
+        public Vector3D Camera { get; set; }
 
         /// <summary>
         /// Gets or sets up for the Camera.
@@ -35,7 +61,7 @@ namespace Mathematics
         /// <value>
         /// Up.
         /// </value>
-        public Vector3D Up { get; set; } = new Vector3D(0, 1, 0);
+        public Vector3D Up { get; set; }
 
         /// <summary>
         /// Gets or sets the target Camera.
@@ -43,7 +69,7 @@ namespace Mathematics
         /// <value>
         /// The target.
         /// </value>
-        public Vector3D Target { get; set; } = new Vector3D(0, 0, 1);
+        public Vector3D Target { get; set; }
 
         /// <summary>
         /// Gets or sets the look Vector direction.
@@ -51,7 +77,7 @@ namespace Mathematics
         /// <value>
         /// The v look dir.
         /// </value>
-        public Vector3D VLookDir { get; set; } = Vector3D.ZeroVector;
+        public Vector3D VLookDir { get; set; }
 
         /// <summary>
         /// Gets or sets the translation.
@@ -59,7 +85,7 @@ namespace Mathematics
         /// <value>
         /// The translation.
         /// </value>
-        public Vector3D Translation { get; set; } = Vector3D.UnitVector;
+        public Vector3D Translation { get; set; }
 
         /// <summary>
         /// Gets or sets the rotation.
@@ -67,7 +93,7 @@ namespace Mathematics
         /// <value>
         /// The rotation.
         /// </value>
-        public Vector3D Rotation { get; set; } = Vector3D.UnitVector;
+        public Vector3D Rotation { get; set; }
 
         /// <summary>
         /// Gets or sets the scale.
@@ -75,7 +101,7 @@ namespace Mathematics
         /// <value>
         /// The scale.
         /// </value>
-        public Vector3D Scale { get; set; } = Vector3D.UnitVector;
+        public Vector3D Scale { get; set; }
 
         /// <summary>
         /// Moves the world.

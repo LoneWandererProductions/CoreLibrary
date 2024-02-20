@@ -32,10 +32,33 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     View Camera.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="transform">The transform.</param>
+        /// <returns>Look though the lense</returns>
+        internal static List<Triangle> PointAt(IEnumerable<Triangle> triangles, Transform transform)
+        {
+            var lst = new List<Triangle>();
+
+            foreach (var triangle in triangles)
+            {
+                var triScaled = new Triangle
+                {
+                    [0] = triangle[0] * Projection3DCamera.ViewCamera(transform),
+                    [1] = triangle[1] * Projection3DCamera.ViewCamera(transform),
+                    [2] = triangle[2] * Projection3DCamera.ViewCamera(transform)
+                };
+                lst.Add(triScaled);
+            }
+
+            return lst;
+        }
+
+        /// <summary>
         ///     Views the port.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
-        /// <param name="angle">The angle of the camera.</param>
         /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Visible Vector Planes</returns>
         internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, Vector3D vCamera)

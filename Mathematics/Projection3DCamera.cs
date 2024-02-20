@@ -117,13 +117,13 @@ namespace Mathematics
         /// transform
         /// View on the Object from the Camera perspective
         /// </returns>
-        internal static BaseMatrix ViewCamera(ref Transform transform)
+        internal static BaseMatrix ViewCamera(Transform transform)
         {
             var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
             transform.VLookDir = transform.Target * matCameraRot;
             transform.Target = transform.Camera + transform.VLookDir;
 
-            var matCamera = Projection3DConstants.PointAt(ref transform);
+            var matCamera = Projection3DConstants.PointAt(transform);
 
             return matCamera.Inverse();
         }

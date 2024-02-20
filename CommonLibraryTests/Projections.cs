@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DataFormatter;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -86,10 +87,11 @@ namespace CommonLibraryTests
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
-            var matrix = Projection3DCamera.ViewCamera(ref transform);
+            var matrix = Projection3DCamera.ViewCamera(transform);
 
             var check = expected == matrix;
-
+            Trace.WriteLine(matrix.ToString());
+            Trace.WriteLine(transform.Camera.ToString());
             Assert.IsTrue(check, "Wrong Point At Matrix");
 
             var m = new double[,]
@@ -101,7 +103,7 @@ namespace CommonLibraryTests
             transform = new Transform {Camera = new Vector3D {X = 2, Y = 2, Z = 2}};
             expected = new BaseMatrix { Matrix = m};
 
-            matrix = Projection3DCamera.ViewCamera(ref transform);
+            matrix = Projection3DCamera.ViewCamera(transform);
 
             check = expected == matrix;
             var cache =  expected - matrix;
@@ -115,9 +117,6 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Camera()
         {
-            Projection3DRegister.Width = 640;
-            Projection3DRegister.Height = 480;
-
             var objFile = ResourceObjects.GetCube();
             var triangles = Triangle.CreateTri(objFile);
             var rotation = new Vector3D { X = 0, Y = 0, Z = 0 };
@@ -126,10 +125,11 @@ namespace CommonLibraryTests
             var transform = new Transform { Rotation = rotation, Translation = translation };
 
             var projection = new Projection();
-            projection.Generate(triangles, ref transform, false);
 
-            transform.DownCamera(0.5);
-            transform.LeftCamera(0.5);
+            projection.Generate(triangles, transform, false);
+
+            //transform.DownCamera(0.5);
+            //transform.LeftCamera(0.5);
         }
 
 
@@ -173,9 +173,10 @@ namespace CommonLibraryTests
         public void ModelMatrix()
         {
             var transform = new Transform
-            {
-                Translation = new Vector3D(0, 0, 3), Scale = Vector3D.UnitVector, Rotation = Vector3D.ZeroVector
-            };
+            (
+                new Vector3D(0, 0, 3),   Vector3D.UnitVector,Vector3D.ZeroVector
+            );
+                
 
             //modelMatrix={1 0 0 0  0 1 0 0  0 0 1 0  0 0 3 1  }
             var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
@@ -186,6 +187,8 @@ namespace CommonLibraryTests
 
             var check = model.Equals(cache);
             Assert.IsTrue(check, "Not the Correct Model Matrix");
+            Trace.WriteLine(cache.ToString());
+            Trace.WriteLine(transform.Camera.ToString());
             check = model == cache;
             Assert.IsTrue(check, "Equal check failed");
 
