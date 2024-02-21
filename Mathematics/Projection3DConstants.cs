@@ -98,7 +98,7 @@ namespace Mathematics
             //    [3, 1] = transform.Position.Y,
             //    [3, 2] = transform.Position.Z,
             //    [3, 3] = transform.Position.W
-            };
+            //};
 
             return new BaseMatrix(4, 4)
             {
