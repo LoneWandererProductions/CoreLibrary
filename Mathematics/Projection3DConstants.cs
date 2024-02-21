@@ -71,10 +71,34 @@ namespace Mathematics
         internal static BaseMatrix PointAt(Transform transform)
         {
             var newForward = (transform.Target - transform.Camera).Normalize();
+            //transform.Forward = (transform.Target - transform.Position).Normalize();
 
             var a = newForward * (transform.Up * newForward);
+            //var a = transform.Forward * (transform.Up * transform.Forward);
             var newUp = (transform.Up - a).Normalize();
+            //transform.Up = (transform.Up - a).Normalize();
             var newRight = newUp.CrossProduct(newForward);
+            //transform.Right  = transform.Up.CrossProduct(transform.Forward);
+
+            //return new BaseMatrix(4, 4)
+            //{
+            //    [0, 0] = transform.Right.X,
+            //    [0, 1] = transform.Right..Y,
+            //    [0, 2] = transform.Right..Z,
+            //    [0, 3] = 0.0d,
+            //    [1, 0] = transform.Up.X,
+            //    [1, 1] = transform.Up.Y,
+            //    [1, 2] = transform.Up.Z,
+            //    [1, 3] = 0.0d,
+            //    [2, 0] = transform.Forward.X,
+            //    [2, 1] = transform.Forward.Y,
+            //    [2, 2] = transform.Forward.Z,
+            //    [2, 3] = 0.0d,
+            //    [3, 0] = transform.Position.X,
+            //    [3, 1] = transform.Position.Y,
+            //    [3, 2] = transform.Position.Z,
+            //    [3, 3] = transform.Position.W
+            };
 
             return new BaseMatrix(4, 4)
             {
