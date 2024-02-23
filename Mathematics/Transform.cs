@@ -85,13 +85,39 @@ namespace Mathematics
         /// </value>
         public Vector3D Scale { get; set; }
 
+        /// <summary>
+        /// Gets or sets the right.
+        /// </summary>
+        /// <value>
+        /// The right.
+        /// </value>
         public Vector3D Right { get; set; } = new();
 
+        /// <summary>
+        /// Gets or sets the forward.
+        /// </summary>
+        /// <value>
+        /// The forward.
+        /// </value>
         public Vector3D Forward { get; set; } = new();
 
+        /// <summary>
+        /// Gets or sets the pitch.
+        /// </summary>
+        /// <value>
+        /// The pitch.
+        /// </value>
         public double Pitch { get; set; }
 
+        /// <summary>
+        /// Gets or sets the yaw.
+        /// </summary>
+        /// <value>
+        /// The yaw.
+        /// </value>
         public double Yaw { get; set; }
+
+        public bool CameraType { get; set; } = true;
 
         /// <summary>
         ///     Gets the instance.
@@ -137,31 +163,15 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Moves the world.
-        /// </summary>
-        /// <param name="translation">The translation.</param>
-        public void MoveWorld(Vector3D translation)
-        {
-            Translation += translation;
-        }
-
-        /// <summary>
-        ///     Rotates the world.
-        /// </summary>
-        /// <param name="rotation">The rotation.</param>
-        public void RotateWorld(Vector3D rotation)
-        {
-            Rotation += rotation;
-        }
-
-        /// <summary>
         ///     Ups the camera.
         /// </summary>
         /// <param name="y">The y.</param>
         public void UpCamera(double y)
         {
-            //Position.Y += y;
-            Position += Up * 0.05f;
+            //orbit
+            if (CameraType) Position += Up * 0.05d;
+            //pointAt
+            else Position.Y += 0.05d;
         }
 
         /// <summary>
@@ -170,8 +180,10 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y)
         {
-            //Position.Y -= y;
-            Position -= Up * 0.05f;
+            //orbit
+            if (CameraType) Position -= Up * 0.05d;
+            //pointAt
+            else Position.Y -= 0.05d;
         }
 
         /// <summary>
@@ -180,8 +192,10 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x)
         {
-            //Position.X += x;
-            Position -= Right * 0.05f;
+            //orbit
+            if (CameraType) Position -= Right * 0.05d;
+            //pointAt
+            Position.X += 0.05d;
         }
 
         /// <summary>
@@ -190,8 +204,10 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x)
         {
-            //Position.X -= x;
-            Position += Right * 0.05f;
+            //orbit
+            if (CameraType) Position += Right * 0.05d;
+            //pointAt
+            else Position.X -= 0.05d;
         }
 
         /// <summary>
@@ -200,9 +216,10 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void LeftRotateCamera(double value)
         {
-            //var vForward = VLookDir * value;
-            //Position += vForward;
-            Yaw -= 2.0f;
+            //orbit
+            if (CameraType) Yaw += 2.0d;
+            //pointAt
+            else Yaw -= 2.0d;
         }
 
         /// <summary>
@@ -211,22 +228,30 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void RightRotateCamera(double value)
         {
-            //var vForward = VLookDir * value;
-            //Position -= vForward;
-            Yaw += 2.0f;
+            //orbit
+            if (CameraType) Yaw += 2.0d;
+            //pointAt
+            else Yaw += 2.0d;
         }
 
+        /// <summary>
+        /// Moves the forward.
+        /// </summary>
+        /// <param name="z">The z.</param>
         public void MoveForward(double z)
         {
-            //Position.Z += z;
-            Position += Forward * 0.05f;
+            //orbit
+            if (CameraType) Position += Forward * 0.05d;
+            //pointAt
+            else Position += Forward * 0.05d;
         }
 
         public void MoveBack(double z)
         {
-            //Position.Z -= z;
-            //Position -= Forward * 0.05f;
-            Position -= Forward * 0.05f;
+            //orbit
+            if (CameraType) Position -= Forward * 0.05d;
+            //pointAt
+            else Position.Z -= z;
         }
     }
 }
