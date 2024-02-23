@@ -14,14 +14,6 @@ namespace Mathematics
     public sealed class Transform
     {
         /// <summary>
-        ///     Gets or sets the angle of the camera.
-        /// </summary>
-        /// <value>
-        ///     The angle in rad.
-        /// </value>
-        public double Angle { get; set; }
-
-        /// <summary>
         ///     Gets or sets the camera Vector.
         /// </summary>
         /// <value>
@@ -86,34 +78,34 @@ namespace Mathematics
         public Vector3D Scale { get; set; }
 
         /// <summary>
-        /// Gets or sets the right.
+        ///     Gets or sets the right.
         /// </summary>
         /// <value>
-        /// The right.
+        ///     The right.
         /// </value>
         public Vector3D Right { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets the forward.
+        ///     Gets or sets the forward.
         /// </summary>
         /// <value>
-        /// The forward.
+        ///     The forward.
         /// </value>
         public Vector3D Forward { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets the pitch.
+        ///     Gets or sets the pitch.
         /// </summary>
         /// <value>
-        /// The pitch.
+        ///     The pitch.
         /// </value>
         public double Pitch { get; set; }
 
         /// <summary>
-        /// Gets or sets the yaw.
+        ///     Gets or sets the yaw.
         /// </summary>
         /// <value>
-        /// The yaw.
+        ///     The yaw.
         /// </value>
         public double Yaw { get; set; }
 
@@ -125,12 +117,11 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance()
         {
-            return new Transform
+            return new()
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
                 VLookDir = new Vector3D(),
-                Angle = 0,
                 Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = new Vector3D(),
@@ -148,12 +139,11 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance(Vector3D translation, Vector3D scale, Vector3D rotation)
         {
-            return new Transform
+            return new()
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
                 VLookDir = new Vector3D(),
-                Angle = 0,
                 Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = translation,
@@ -166,60 +156,88 @@ namespace Mathematics
         ///     Ups the camera.
         /// </summary>
         /// <param name="y">The y.</param>
-        public void UpCamera(double y)
+        public void UpCamera(double y = 0.05d)
         {
             //orbit
-            if (CameraType) Position += Up * 0.05d;
+            if (CameraType)
+            {
+                Position += Up * y;
+            }
             //pointAt
-            else Position.Y += 0.05d;
+            else
+            {
+                Position.Y += y;
+            }
         }
 
         /// <summary>
         ///     Downs the camera.
         /// </summary>
         /// <param name="y">The y.</param>
-        public void DownCamera(double y)
+        public void DownCamera(double y = 0.05d)
         {
             //orbit
-            if (CameraType) Position -= Up * 0.05d;
+            if (CameraType)
+            {
+                Position -= Up * y;
+            }
             //pointAt
-            else Position.Y -= 0.05d;
+            else
+            {
+                Position.Y -= y;
+            }
         }
 
         /// <summary>
         ///     Lefts the camera.
         /// </summary>
         /// <param name="x">The x.</param>
-        public void LeftCamera(double x)
+        public void LeftCamera(double x = 0.05d)
         {
             //orbit
-            if (CameraType) Position -= Right * 0.05d;
+            if (CameraType)
+            {
+                Position -= Right * x;
+            }
+
             //pointAt
-            Position.X += 0.05d;
+            Position.X += x;
         }
 
         /// <summary>
         ///     Rights the camera.
         /// </summary>
         /// <param name="x">The x.</param>
-        public void RightCamera(double x)
+        public void RightCamera(double x = 0.05d)
         {
             //orbit
-            if (CameraType) Position += Right * 0.05d;
+            if (CameraType)
+            {
+                Position += Right * x;
+            }
             //pointAt
-            else Position.X -= 0.05d;
+            else
+            {
+                Position.X -= x;
+            }
         }
 
         /// <summary>
         ///     Lefts the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void LeftRotateCamera(double value)
+        public void LeftRotateCamera(double value = 2.0d)
         {
             //orbit
-            if (CameraType) Yaw += 2.0d;
+            if (CameraType)
+            {
+                Yaw -= value;
+            }
             //pointAt
-            else Yaw -= 2.0d;
+            else
+            {
+                Yaw -= value;
+            }
         }
 
         /// <summary>
@@ -229,29 +247,51 @@ namespace Mathematics
         public void RightRotateCamera(double value)
         {
             //orbit
-            if (CameraType) Yaw += 2.0d;
+            if (CameraType)
+            {
+                Yaw += value;
+            }
             //pointAt
-            else Yaw += 2.0d;
+            else
+            {
+                Yaw += value;
+            }
         }
 
         /// <summary>
-        /// Moves the forward.
+        ///     Moves the forward.
         /// </summary>
         /// <param name="z">The z.</param>
-        public void MoveForward(double z)
+        public void MoveForward(double z = 0.05d)
         {
             //orbit
-            if (CameraType) Position += Forward * 0.05d;
+            if (CameraType)
+            {
+                Position += Forward * z;
+            }
             //pointAt
-            else Position += Forward * 0.05d;
+            else
+            {
+                Position += Forward * z;
+            }
         }
 
-        public void MoveBack(double z)
+        /// <summary>
+        ///     Moves the back.
+        /// </summary>
+        /// <param name="z">The z.</param>
+        public void MoveBack(double z = 0.05d)
         {
             //orbit
-            if (CameraType) Position -= Forward * 0.05d;
+            if (CameraType)
+            {
+                Position -= Forward * z;
+            }
             //pointAt
-            else Position.Z -= z;
+            else
+            {
+                Position.Z -= z;
+            }
         }
     }
 }
