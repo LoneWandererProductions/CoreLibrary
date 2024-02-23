@@ -93,7 +93,7 @@ namespace CommonLibraryTests
 
             var expected = new BaseMatrix(4, 4) { [0, 0] = 1, [1, 1] = 1, [2, 2] = 1, [3, 3] = 1 };
 
-            var matrix = Projection3DCamera.ViewCamera(transform);
+            var matrix = Projection3DCamera.PointAt(transform);
 
             var check = expected == matrix;
             Trace.WriteLine(matrix.ToString());
@@ -108,7 +108,7 @@ namespace CommonLibraryTests
 
             expected = new BaseMatrix { Matrix = m };
 
-            matrix = Projection3DCamera.ViewCamera(transform);
+            matrix = Projection3DCamera.PointAt(transform);
 
             check = expected == matrix;
             var cache = expected - matrix;

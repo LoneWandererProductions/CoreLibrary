@@ -123,7 +123,7 @@ namespace Mathematics
         ///     transform
         ///     View on the Object from the Camera perspective
         /// </returns>
-        internal static BaseMatrix ViewCamera(Transform transform)
+        internal static BaseMatrix PointAt(Transform transform)
         {
             var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
 
@@ -159,13 +159,11 @@ namespace Mathematics
             // Rotation in Z = Positive when 'tilting left'
 
             //r Matrix
-            var toRad = (float)(Math.PI / 180.0f);
+            var cosPitch = Math.Cos(transform.Pitch * Projection3DConstants.Rad);
+            var sinPitch = Math.Sin(transform.Pitch * Projection3DConstants.Rad);
 
-            var cosPitch = (float)Math.Cos(transform.Pitch * toRad);
-            var sinPitch = (float)Math.Sin(transform.Pitch * toRad);
-
-            var cosYaw = (float)Math.Cos(transform.Yaw * toRad);
-            var sinYaw = (float)Math.Sin(transform.Yaw * toRad);
+            var cosYaw = Math.Cos(transform.Yaw * Projection3DConstants.Rad);
+            var sinYaw = Math.Sin(transform.Yaw * Projection3DConstants.Rad);
 
             //converted r matrix
             transform.Right = new Vector3D(cosYaw, 0, -sinYaw);

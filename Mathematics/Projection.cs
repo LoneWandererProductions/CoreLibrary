@@ -19,16 +19,19 @@ namespace Mathematics
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Generates the specified triangles.
+        /// Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
-        /// <returns>Converted 3d View</returns>
-        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal)
+        /// <param name="camera">if set to <c>true</c> use the OrbitCamera else use the PointAt Camera.</param>
+        /// <returns>
+        /// Converted 3d View
+        /// </returns>
+        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal, bool camera)
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
-            cache = Rasterize.PointAt(cache, transform);
+            cache = camera ? Rasterize.OrbitCamera(cache, transform) : Rasterize.PointAt(cache, transform);
             cache = Rasterize.ViewPort(cache, transform.Camera);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);

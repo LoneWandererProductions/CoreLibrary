@@ -17,14 +17,15 @@ namespace Mathematics
     public interface IProjection
     {
         /// <summary>
-        ///     Generates the specified triangles.
+        /// Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
+        /// <param name="camera">if set to <c>true</c> use the OrbitCamera else use the PointAt Camera.</param>
         /// <returns>
-        ///     Converted 3d View
+        /// Converted 3d View
         /// </returns>
-        List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal);
+        List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal, bool camera);
     }
 }

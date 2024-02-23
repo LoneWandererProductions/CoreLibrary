@@ -32,12 +32,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     View Camera.
+        ///     Orbit Camera.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>
-        /// <returns>Look though the lense</returns>
-        internal static List<Triangle> PointAt(IEnumerable<Triangle> triangles, Transform transform)
+        /// <returns>Look though the lens</returns>
+        internal static List<Triangle> OrbitCamera(IEnumerable<Triangle> triangles, Transform transform)
         {
             var lst = new List<Triangle>();
 
@@ -48,6 +48,30 @@ namespace Mathematics
                     [0] = triangle[0] * Projection3DCamera.OrbitCamera(transform),
                     [1] = triangle[1] * Projection3DCamera.OrbitCamera(transform),
                     [2] = triangle[2] * Projection3DCamera.OrbitCamera(transform)
+                };
+                lst.Add(triScaled);
+            }
+
+            return lst;
+        }
+
+        /// <summary>
+        /// Points at Camera.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="transform">The transform.</param>
+        /// <returns>Look though the lens</returns>
+        internal static List<Triangle> PointAt(IEnumerable<Triangle> triangles, Transform transform)
+        {
+            var lst = new List<Triangle>();
+
+            foreach (var triangle in triangles)
+            {
+                var triScaled = new Triangle
+                {
+                    [0] = triangle[0] * Projection3DCamera.PointAt(transform),
+                    [1] = triangle[1] * Projection3DCamera.PointAt(transform),
+                    [2] = triangle[2] * Projection3DCamera.PointAt(transform)
                 };
                 lst.Add(triScaled);
             }
