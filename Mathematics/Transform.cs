@@ -199,9 +199,11 @@ namespace Mathematics
             {
                 Position -= Right * x;
             }
-
             //pointAt
-            Position.X += x;
+            else
+            {
+                Position.X += x;
+            }
         }
 
         /// <summary>
