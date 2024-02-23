@@ -26,10 +26,11 @@ namespace CommonLibraryTests
             var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
 
             var transform = Transform.GetInstance(translation, Vector3D.UnitVector, Vector3D.ZeroVector);
+            transform.CameraType = true;
 
             var projection = new Projection();
 
-            projection.Generate(triangles, transform, false, true);
+            projection.Generate(triangles, transform, false);
 
             transform.DownCamera(0.5);
             transform.LeftCamera(0.5);
