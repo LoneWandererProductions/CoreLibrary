@@ -15,14 +15,7 @@ namespace Mathematics
     {
         /// <summary>
         ///     Gets or sets the camera Vector.
-        /// </summary>
-        /// <value>
-        ///     The camera.
-        /// </value>
-        //public Vector3D Camera { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the camera Vector.
+        ///     Used in the Orbit and LookAt Camera
         /// </summary>
         /// <value>
         ///     The camera.
@@ -30,55 +23,26 @@ namespace Mathematics
         public Vector3D Position { get; set; }
 
         /// <summary>
-        ///     Gets or sets up for the Camera.
-        /// </summary>
-        /// <value>
-        ///     Up.
-        /// </value>
-        public Vector3D Up { get; set; }
-
-        /// <summary>
         ///     Gets or sets the target Camera.
+        ///     Used in the LookAt Camera
         /// </summary>
         /// <value>
         ///     The target.
         /// </value>
-        public Vector3D Target { get; set; }
+        public Vector3D Target { get; set; } = Vector3D.ZeroVector;
 
         /// <summary>
-        ///     Gets or sets the look Vector direction.
+        ///     Gets or sets up for the Camera.
+        ///     Used in the Orbit and LookAt Camera
         /// </summary>
         /// <value>
-        ///     The v look dir.
+        ///     Up.
         /// </value>
-        public Vector3D VLookDir { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the translation.
-        /// </summary>
-        /// <value>
-        ///     The translation.
-        /// </value>
-        public Vector3D Translation { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the rotation.
-        /// </summary>
-        /// <value>
-        ///     The rotation.
-        /// </value>
-        public Vector3D Rotation { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the scale.
-        /// </summary>
-        /// <value>
-        ///     The scale.
-        /// </value>
-        public Vector3D Scale { get; set; }
+        public Vector3D Up { get; set; } //(0, 1, 0) but for Lookat it must be (1, 1, 1) ... TODO
 
         /// <summary>
         ///     Gets or sets the right.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
         ///     The right.
@@ -87,6 +51,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Gets or sets the forward.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
         ///     The forward.
@@ -95,6 +60,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Gets or sets the pitch.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
         ///     The pitch.
@@ -103,12 +69,43 @@ namespace Mathematics
 
         /// <summary>
         ///     Gets or sets the yaw.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
         ///     The yaw.
         /// </value>
         public double Yaw { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the translation of the World.
+        /// </summary>
+        /// <value>
+        ///     The translation.
+        /// </value>
+        public Vector3D Translation { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the rotation of the World.
+        /// </summary>
+        /// <value>
+        ///     The rotation.
+        /// </value>
+        public Vector3D Rotation { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the scale of the World.
+        /// </summary>
+        /// <value>
+        ///     The scale.
+        /// </value>
+        public Vector3D Scale { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
+        /// </value>
         public bool CameraType { get; set; } = true;
 
         /// <summary>
@@ -117,16 +114,17 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance()
         {
-            return new()
+            var transform = new Transform()
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
-                VLookDir = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = new Vector3D(),
                 Rotation = new Vector3D(),
                 Scale = Vector3D.UnitVector
             };
+
+            return transform;
         }
 
         /// <summary>
@@ -142,7 +140,6 @@ namespace Mathematics
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
-                VLookDir = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = translation,
                 Rotation = rotation,
