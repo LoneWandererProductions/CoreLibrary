@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.Numerics;
 
 namespace Mathematics
 {
@@ -130,11 +131,52 @@ namespace Mathematics
             //transform.VLookDir = transform.Pitch * matCameraRot;
             transform.VLookDir = transform.Target * matCameraRot;
 
-            transform.Target = transform.Camera + transform.VLookDir;
+            transform.Target = transform.Position + transform.VLookDir;
 
             var matCamera = Projection3DConstants.PointAt(transform);
 
+
+            // Define camera parameters
+            //Vector3 cameraPosition = new Vector3D(0, 0, 5);
+            //Vector3 targetPosition = new Vector3D(0, 0, 0);
+            //Vector3 upVector = Vector3.UnitY;
+            // Matrix4x4 viewMatrix = LookAt(cameraPosition, targetPosition, upVector);
+
+            // Calculate the direction from the object to the camera
+            //Vector3D directionToCamera = mainCamera.transform.position - transform.position;
+
+            // Calculate the angle between the forward direction of the object and the direction to the camera
+            //float angle = Vector3D.Angle(transform.forward, directionToCamera);
+
             return matCamera.Inverse();
+        }
+
+        internal static BaseMatrix PointAtNew(Transform transform)
+        {
+            var cameraPosition = new Vector3D(0, 0, 5);
+            var targetPosition = new Vector3D(0, 0, 0);
+            var upVector = Vector3D.UnitVector;
+            // Calculate the view matrix
+            var viewMatrix = LookAt(cameraPosition, targetPosition, upVector);
+
+            return viewMatrix;
+        }
+
+        internal static BaseMatrix LookAt(Vector3D cameraPosition, Vector3D targetPosition, Vector3D upVector)
+        {
+            Vector3D forward = (targetPosition - cameraPosition).Normalize();
+            Vector3D right =(upVector.CrossProduct(forward)).Normalize();
+            Vector3D up = forward.CrossProduct(right);
+
+            double[,] viewMatrix = {
+                {right.X, up.X, -forward.X, 0},
+                {right.Y, up.Y, -forward.Y, 0},
+                {right.Z, up.Z, -forward.Z, 0},
+                {-(right * cameraPosition), -(up *cameraPosition), (forward * cameraPosition), 1}
+            };
+
+
+            return new BaseMatrix { Matrix = viewMatrix };
         }
 
         /// <summary>

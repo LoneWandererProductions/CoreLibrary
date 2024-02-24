@@ -97,13 +97,12 @@ namespace CommonLibraryTests
 
             var check = expected == matrix;
             Trace.WriteLine(matrix.ToString());
-            Trace.WriteLine(transform.Camera.ToString());
+            Trace.WriteLine(transform.Position.ToString());
             Assert.IsTrue(check, "Wrong Point At Matrix");
 
             var m = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -2, -2, -2, 1 } };
 
             transform = Transform.GetInstance();
-            transform.Camera = new Vector3D(2, 2, 2);
             transform.Position = new Vector3D(2, 2, 2);
 
             expected = new BaseMatrix { Matrix = m };
@@ -139,13 +138,13 @@ namespace CommonLibraryTests
             var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
 
             var model = new BaseMatrix { Matrix = matrix };
-            transform.Camera = new Vector3D(0, 0, 0);
+            transform.Position = new Vector3D(0, 0, 0);
             transform.Translation.Z = 3;
             var cache = Projection3DCamera.ModelMatrix(transform);
 
             var check = model.Equals(cache);
             Trace.WriteLine(cache.ToString());
-            Trace.WriteLine(transform.Camera.ToString());
+            Trace.WriteLine(transform.Position.ToString());
 
             Assert.IsTrue(check, "Not the Correct Model Matrix");
 

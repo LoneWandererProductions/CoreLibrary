@@ -31,7 +31,7 @@ namespace Mathematics
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
             cache = transform.CameraType ? Rasterize.OrbitCamera(cache, transform) : Rasterize.PointAt(cache, transform);
-            cache = Rasterize.ViewPort(cache, transform.Camera);
+            cache = Rasterize.ViewPort(cache, transform.Position);
 
             cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
 

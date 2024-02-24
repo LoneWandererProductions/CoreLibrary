@@ -19,7 +19,7 @@ namespace Mathematics
         /// <value>
         ///     The camera.
         /// </value>
-        public Vector3D Camera { get; set; }
+        //public Vector3D Camera { get; set; }
 
         /// <summary>
         ///     Gets or sets the camera Vector.
@@ -122,7 +122,6 @@ namespace Mathematics
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
                 VLookDir = new Vector3D(),
-                Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = new Vector3D(),
                 Rotation = new Vector3D(),
@@ -144,7 +143,6 @@ namespace Mathematics
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
                 VLookDir = new Vector3D(),
-                Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = translation,
                 Rotation = rotation,
