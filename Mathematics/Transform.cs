@@ -40,6 +40,8 @@ namespace Mathematics
         /// </value>
         public Vector3D Up { get; set; } //(0, 1, 0) but for Lookat it must be (1, 1, 1) ... TODO
 
+        public Vector3D UpVector { get; set; } = Vector3D.UnitVector;
+
         /// <summary>
         ///     Gets or sets the right.
         ///     Used in the Orbit Camera.
