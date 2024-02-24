@@ -74,6 +74,8 @@ namespace Mathematics
         /// Converts Coordinates based on the Camera.
         /// https://ksimek.github.io/2012/08/22/extrinsic/
         /// https://www.youtube.com/watch?v=HXSuNxpCzdM
+        /// https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
+        /// https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
         /// <param name="cameraPosition">The camera position.</param>
         /// <param name="targetPosition">The target position.</param>
