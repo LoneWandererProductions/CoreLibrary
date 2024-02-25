@@ -1,11 +1,27 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Mathematics
+ * FILE:        Mathematics/Triangle.cs
+ * PURPOSE:     Helper Object to handle the description of the 3d object.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
 using System.Collections.Generic;
 using DataFormatter;
 
 namespace Mathematics
 {
-    public class Triangle
+    /// <summary>
+    /// In the future will be retooled to polygons.
+    /// </summary>
+    public sealed class Triangle
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Triangle"/> class.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
         public Triangle(Vector3D v1, Vector3D v2, Vector3D v3)
         {
             Vertices = new Vector3D[3];
@@ -27,6 +43,12 @@ namespace Mathematics
             Vertices[2] = new Vector3D();
         }
 
+        /// <summary>
+        /// Gets the normal.
+        /// </summary>
+        /// <value>
+        /// The normal.
+        /// </value>
         public Vector3D Normal
         {
             get
@@ -38,10 +60,24 @@ namespace Mathematics
             }
         }
 
+        /// <summary>
+        /// Gets the vertex count.
+        /// </summary>
+        /// <value>
+        /// The vertex count.
+        /// </value>
         public int VertexCount => Vertices.Length;
 
         public Vector3D[] Vertices { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="Vector3D" /> with the specified i.
+        /// </summary>
+        /// <value>
+        /// The <see cref="Vector3D" />.
+        /// </value>
+        /// <param name="i">The i.</param>
+        /// <returns>vector by id</returns>
         public Vector3D this[int i]
         {
             get => Vertices[i];
@@ -72,13 +108,22 @@ namespace Mathematics
             return polygons;
         }
 
-        public void Set(Vector3D one, Vector3D two, Vector3D three)
+        /// <summary>
+        /// Gets the plot point.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>2d Vector, we only need these anyways for drawing.</returns>
+        public Vector2D GetPlotPoint(int id)
         {
-            Vertices[0] = one;
-            Vertices[1] = two;
-            Vertices[2] = three;
+            return id > VertexCount || id < 0 ? null : (Vector2D) Vertices[id];
         }
 
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             return string.Concat(MathResources.StrOne, Vertices[0].ToString(), MathResources.StrTwo,

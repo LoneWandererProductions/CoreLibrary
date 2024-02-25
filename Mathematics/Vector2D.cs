@@ -271,6 +271,18 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Performs an explicit conversion from <see cref="Vector3D"/> to <see cref="Vector2D"/>.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector2D(Vector3D first)
+        {
+            return new Vector2D(first.X, first.Y);
+        }
+
+        /// <summary>
         ///     Implements the operator *. Cross Product
         /// </summary>
         /// <param name="second">The second.</param>
