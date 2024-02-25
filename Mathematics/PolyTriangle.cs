@@ -6,7 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataFormatter;
 
 namespace Mathematics
@@ -120,9 +122,14 @@ namespace Mathematics
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(MathResources.StrOne, Vertices[0].ToString(), MathResources.StrTwo,
-                Vertices[1].ToString(), MathResources.StrThree,
-                Vertices[2].ToString());
+            var str = string.Empty;
+
+            for (int i = 0; i < Vertices.Length; i++)
+            {
+                str = string.Concat(str, i, MathResources.Separator, Vertices[i].ToString(), Environment.NewLine);
+            }
+
+            return str;
         }
     }
 }

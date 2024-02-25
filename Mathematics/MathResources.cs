@@ -61,19 +61,9 @@ namespace Mathematics
         internal const string StrZ = " Z: ";
 
         /// <summary>
-        ///     The string 1 (const). Value: "1: ".
+        ///     The string Separator (const). Value:" : ";.
         /// </summary>
-        internal const string StrOne = "1: ";
-
-        /// <summary>
-        ///     The string 2 (const). Value: " 2: ".
-        /// </summary>
-        internal const string StrTwo = " 2: ";
-
-        /// <summary>
-        ///     The string 3 (const). Value: " 3: ".
-        /// </summary>
-        internal const string StrThree = " 3: ";
+        internal const string Separator = " : ";
 
         /// <summary>
         ///     The string Id (const). Value: " Id: ".

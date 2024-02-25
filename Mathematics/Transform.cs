@@ -192,7 +192,7 @@ namespace Mathematics
             }
             else
             {
-                Position -= Right * x;
+                Position.X -= x;
             }
         }
 
@@ -209,8 +209,7 @@ namespace Mathematics
             }
             else
             {
-                //TODO wrong
-                Position += Right * x;
+                Position.X += x;
             }
         }
 
@@ -228,7 +227,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position -= Right * value;
+                Yaw -= value;
             }
         }
 
@@ -246,7 +245,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position += Right * value;
+                Yaw += value;
             }
         }
 
