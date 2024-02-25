@@ -37,13 +37,7 @@ namespace Mathematics
 
             //Todo Move into View and check if Triangles are even visible
 
-            return cache;
-        }
-
-
-        public List<Triangle> MoveIntoView(List<Triangle> triangles, int width, int height)
-        {
-            return Rasterize.MoveIntoView(triangles, width, height);
+            return Rasterize.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }
     }
 }

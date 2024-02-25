@@ -149,12 +149,18 @@ namespace Mathematics
 
         /// <summary>
         ///     Ups the camera
-        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="y">The y.</param>
         public void UpCamera(double y = 0.05d)
         {
-            Position += Up * y;
+            if (CameraType)
+            {
+                Position += Up * y;
+            }
+            else
+            {
+                Position.Y += y;
+            }
         }
 
         /// <summary>
@@ -164,17 +170,30 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y = 0.05d)
         {
-            Position -= Up * y;
+            if (CameraType)
+            {
+                Position -= Up * y;
+            }
+            else
+            {
+                Position.Y -= y;
+            }
         }
 
         /// <summary>
         ///     Lefts the camera.
-        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="x">The x.</param>
         public void LeftCamera(double x = 0.05d)
         {
-            Position -= Right * x;
+            if (CameraType)
+            {
+                Position += Right * x;
+            }
+            else
+            {
+                Position -= Right * x;
+            }
         }
 
         /// <summary>
@@ -184,7 +203,15 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x = 0.05d)
         {
-            Position += Right * x;
+            if (CameraType)
+            {
+                Position -= Right * x;
+            }
+            else
+            {
+                //TODO wrong
+                Position += Right * x;
+            }
         }
 
         /// <summary>
@@ -201,7 +228,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Yaw -= value;
+                Position -= Right * value;
             }
         }
 
@@ -219,7 +246,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Yaw += value;
+                Position += Right * value;
             }
         }
 

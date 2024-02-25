@@ -6,13 +6,6 @@ namespace Mathematics
 {
     public class Triangle
     {
-        public Triangle(Vector3D[] vertices)
-        {
-            Array.Resize(ref vertices, 3);
-
-            Vertices = vertices;
-        }
-
         public Triangle(Vector3D v1, Vector3D v2, Vector3D v3)
         {
             Vertices = new Vector3D[3];
@@ -77,18 +70,6 @@ namespace Mathematics
             }
 
             return polygons;
-        }
-
-        public static IEnumerable<Vector3D> GetCoordinates(IEnumerable<Triangle> render)
-        {
-            var lst = new List<Vector3D>();
-
-            foreach (var triangle in render)
-            {
-                lst.AddRange(triangle.Vertices);
-            }
-
-            return lst;
         }
 
         public void Set(Vector3D one, Vector3D two, Vector3D three)

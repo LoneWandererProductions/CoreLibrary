@@ -101,6 +101,8 @@ namespace Mathematics
 
                 var comparer = triangle[0] - vCamera;
 
+                //Todo add a better algorithm!
+
                 if (normal * comparer > 0)
                 {
                     continue;
@@ -170,21 +172,38 @@ namespace Mathematics
         internal static List<Triangle> MoveIntoView(IEnumerable<Triangle> triangles, int width, int height)
         {
             var lst = new List<Triangle>();
-            var raster = new Rasterize { Width = width, Height = height };
 
             foreach (var triangle in triangles)
             {
-                var triScaled = new Triangle();
-                var cache = new Vector3D { X = triangle[0].X, Y = triangle[0].Y, Z = triangle[0].Z };
-                triScaled[0] = raster.ConvertToRaster(cache);
+                // Scale into view, we moved the normalising into cartesian space
+                // out of the matrix.vector function from the previous videos, so
+                // do this manually
+                triangle[0] /= triangle[0].W;
+                triangle[1] /= triangle[1].W;
+                triangle[2] /= triangle[2].W;
 
-                cache = new Vector3D { X = triangle[1].X, Y = triangle[1].Y, Z = triangle[1].Z };
-                triScaled[1] = raster.ConvertToRaster(cache);
+                // X/Y are inverted so put them back
+                triangle[0].X *= -1.0f;
+                triangle[1].X *= -1.0f;
+                triangle[2].X *= -1.0f;
+                triangle[0].Y *= -1.0f;
+                triangle[1].Y *= -1.0f;
+                triangle[2].Y *= -1.0f;
 
-                cache = new Vector3D { X = triangle[2].X, Y = triangle[2].Y, Z = triangle[2].Z };
-                triScaled[2] = raster.ConvertToRaster(cache);
+                // Offset verts into visible normalised space
+                var vOffsetView = new Vector3D(1, 1, 0);
+                triangle[0] += vOffsetView;
+                triangle[1] += vOffsetView;
+                triangle[2] += vOffsetView;
 
-                lst.Add(triScaled);
+                triangle[0].X *= 0.5d * width;
+                triangle[0].Y *= 0.5d * height;
+                triangle[1].X *= 0.5d * width;
+                triangle[1].Y *= 0.5d * height;
+                triangle[2].X *= 0.5d * width;
+                triangle[2].Y *= 0.5d * height;
+
+                lst.Add(triangle);
             }
 
             return lst;
