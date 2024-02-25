@@ -54,27 +54,27 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix LookAt(Transform transform)
         {
-            var Forward = (transform.Target - transform.Position).Normalize(); // Z axis
+            var forward = (transform.Target - transform.Position).Normalize(); // Z axis
 
-            var Right = transform.Up.CrossProduct(Forward).Normalize(); // X axis
+            var right = transform.Up.CrossProduct(forward).Normalize(); // X axis
 
-            var Up = Forward.CrossProduct(Right); // Y axis
+            var up = forward.CrossProduct(right); // Y axis
 
             var toDeg = (float)(180.0f / Math.PI);
 
-            var Pitch = -(float)Math.Asin(Forward.Y) * toDeg;
-            var Yaw = (float)Math.Atan2(Forward.X, Forward.Z) * toDeg;
+            var pitch = -(float)Math.Asin(forward.Y) * toDeg;
+            var yaw = (float)Math.Atan2(forward.X, forward.Z) * toDeg;
 
             // The inverse camera's translation
-            var transl = new Vector3D(-(Right * transform.Position),
-                -(Up * transform.Position),
-                -(Forward  * transform.Position));
+            var transl = new Vector3D(-(right * transform.Position),
+                -(up * transform.Position),
+                -(forward  * transform.Position));
 
             double[,] viewMatrix =
             {
-                {Right.X, Up.X, Forward.X, 0},
-                {Right.Y, Up.Y, Forward.Y, 0},
-                {Right.Z, Up.Z, Forward.Z, 0},
+                {right.X, up.X, forward.X, 0},
+                {right.Y, up.Y, forward.Y, 0},
+                {right.Z, up.Z, forward.Z, 0},
                 {transl.X, transl.Y, transl.Z, 1}
             };
 
