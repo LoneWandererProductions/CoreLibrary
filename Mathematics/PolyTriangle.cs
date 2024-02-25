@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Triangle.cs
- * PURPOSE:     Helper Object to handle the description of the 3d object.
+ * FILE:        Mathematics/PolyTriangle.cs
+ * PURPOSE:     Helper Object to handle the description of the 3d object. It also supports more than 3 Vectors, in case we want to go full polygon.s
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -14,33 +14,20 @@ namespace Mathematics
     /// <summary>
     /// In the future will be retooled to polygons.
     /// </summary>
-    public sealed class Triangle
+    public sealed class PolyTriangle
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Triangle"/> class.
+        /// Initializes a new instance of the <see cref="PolyTriangle"/> class.
         /// </summary>
-        /// <param name="v1">The v1.</param>
-        /// <param name="v2">The v2.</param>
-        /// <param name="v3">The v3.</param>
-        public Triangle(Vector3D v1, Vector3D v2, Vector3D v3)
+        /// <param name="array">The array.</param>
+        public PolyTriangle(IReadOnlyList<Vector3D> array)
         {
-            Vertices = new Vector3D[3];
+            Vertices = new Vector3D[array.Count];
 
-            Vertices[0] = v1;
-            Vertices[1] = v2;
-            Vertices[2] = v3;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Triangle" /> class.
-        /// </summary>
-        public Triangle()
-        {
-            Vertices = new Vector3D[3];
-
-            Vertices[0] = new Vector3D();
-            Vertices[1] = new Vector3D();
-            Vertices[2] = new Vector3D();
+            for (int i = 0; i < array.Count; i++)
+            {
+                Vertices[i] = array[i];
+            }
         }
 
         /// <summary>
@@ -68,6 +55,12 @@ namespace Mathematics
         /// </value>
         public int VertexCount => Vertices.Length;
 
+        /// <summary>
+        /// Gets or sets the vertices.
+        /// </summary>
+        /// <value>
+        /// The vertices.
+        /// </value>
         public Vector3D[] Vertices { get; set; }
 
         /// <summary>
@@ -90,9 +83,9 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>A list with Triangles, three Vectors in one Object</returns>
-        public static List<Triangle> CreateTri(List<TertiaryVector> triangles)
+        public static List<PolyTriangle> CreateTri(List<TertiaryVector> triangles)
         {
-            var polygons = new List<Triangle>();
+            var polygons = new List<PolyTriangle>();
 
             for (var i = 0; i <= triangles.Count - 3; i += 3)
             {
@@ -100,9 +93,10 @@ namespace Mathematics
                 var v2 = triangles[i + 1];
                 var v3 = triangles[i + 2];
 
-                var triangle = new Triangle((Vector3D)v1, (Vector3D)v2, (Vector3D)v3);
+                var array = new Vector3D[] { (Vector3D)v1, (Vector3D)v2, (Vector3D)v3 };
+                var tri = new PolyTriangle(array);
 
-                polygons.Add(triangle);
+                polygons.Add(tri);
             }
 
             return polygons;

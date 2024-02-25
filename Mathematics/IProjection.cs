@@ -25,6 +25,6 @@ namespace Mathematics
         /// <returns>
         /// Converted 3d View
         /// </returns>
-        List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal);
+        List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, bool? orthogonal);
     }
 }

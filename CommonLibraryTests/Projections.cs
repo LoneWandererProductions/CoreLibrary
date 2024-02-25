@@ -23,7 +23,7 @@ namespace CommonLibraryTests
         public void MeshLoader()
         {
             var obj = ResourceObjects.GetCube();
-            var poly = Triangle.CreateTri(obj);
+            var poly = PolyTriangle.CreateTri(obj);
 
             Assert.AreEqual(12, poly.Count, "Not the correct Count");
         }

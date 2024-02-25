@@ -21,7 +21,7 @@ namespace CommonLibraryTests
         public void Camera()
         {
             var objFile = ResourceObjects.GetCube();
-            var triangles = Triangle.CreateTri(objFile);
+            var triangles = PolyTriangle.CreateTri(objFile);
 
             var translation = new Vector3D { X = 0, Y = 0, Z = 5 };
 

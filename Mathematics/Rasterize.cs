@@ -13,19 +13,15 @@ namespace Mathematics
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>
         /// <returns>Do all Transformations for the 3D Model</returns>
-        internal static List<Triangle> WorldMatrix(List<Triangle> triangles, Transform transform)
+        internal static List<PolyTriangle> WorldMatrix(List<PolyTriangle> triangles, Transform transform)
         {
-            var lst = new List<Triangle>(triangles.Count);
+            var lst = new List<PolyTriangle>(triangles.Count);
 
             foreach (var triangle in triangles)
             {
-                var triScaled = new Triangle
-                {
-                    [0] = triangle[0] * Projection3DCamera.ModelMatrix(transform),
-                    [1] = triangle[1] * Projection3DCamera.ModelMatrix(transform),
-                    [2] = triangle[2] * Projection3DCamera.ModelMatrix(transform)
-                };
-                lst.Add(triScaled);
+                var array = new[] { triangle[0] * Projection3DCamera.ModelMatrix(transform), triangle[1] * Projection3DCamera.ModelMatrix(transform), triangle[2] * Projection3DCamera.ModelMatrix(transform) };
+                var tri = new PolyTriangle(array);
+                lst.Add(tri);
             }
 
             return lst;
@@ -37,19 +33,15 @@ namespace Mathematics
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>
         /// <returns>Look though the lens</returns>
-        internal static List<Triangle> OrbitCamera(IEnumerable<Triangle> triangles, Transform transform)
+        internal static List<PolyTriangle> OrbitCamera(IEnumerable<PolyTriangle> triangles, Transform transform)
         {
-            var lst = new List<Triangle>();
+            var lst = new List<PolyTriangle>();
 
             foreach (var triangle in triangles)
             {
-                var triScaled = new Triangle
-                {
-                    [0] = triangle[0] * Projection3DCamera.OrbitCamera(transform),
-                    [1] = triangle[1] * Projection3DCamera.OrbitCamera(transform),
-                    [2] = triangle[2] * Projection3DCamera.OrbitCamera(transform)
-                };
-                lst.Add(triScaled);
+                var array = new[] { triangle[0] * Projection3DCamera.OrbitCamera(transform), triangle[1] * Projection3DCamera.OrbitCamera(transform), triangle[2] * Projection3DCamera.OrbitCamera(transform) };
+                var tri = new PolyTriangle(array);
+                lst.Add(tri);
             }
 
             return lst;
@@ -61,19 +53,15 @@ namespace Mathematics
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The transform.</param>
         /// <returns>Look though the lens</returns>
-        internal static List<Triangle> PointAt(IEnumerable<Triangle> triangles, Transform transform)
+        internal static List<PolyTriangle> PointAt(IEnumerable<PolyTriangle> triangles, Transform transform)
         {
-            var lst = new List<Triangle>();
+            var lst = new List<PolyTriangle>();
 
             foreach (var triangle in triangles)
             {
-                var triScaled = new Triangle
-                {
-                    [0] = triangle[0] * Projection3DCamera.PointAt(transform),
-                    [1] = triangle[1] * Projection3DCamera.PointAt(transform),
-                    [2] = triangle[2] * Projection3DCamera.PointAt(transform)
-                };
-                lst.Add(triScaled);
+                var array = new[] { triangle[0] * Projection3DCamera.PointAt(transform), triangle[1] * Projection3DCamera.PointAt(transform), triangle[2] * Projection3DCamera.PointAt(transform) };
+                var tri = new PolyTriangle(array);
+                lst.Add(tri);
             }
 
             return lst;
@@ -85,9 +73,9 @@ namespace Mathematics
         /// <param name="triangles">The triangles.</param>
         /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Visible Vector Planes</returns>
-        internal static List<Triangle> ViewPort(IEnumerable<Triangle> triangles, Vector3D vCamera)
+        internal static List<PolyTriangle> ViewPort(IEnumerable<PolyTriangle> triangles, Vector3D vCamera)
         {
-            var lst = new List<Triangle>();
+            var lst = new List<PolyTriangle>();
 
             foreach (var triangle in triangles)
             {
@@ -121,19 +109,15 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>Coordinates converted into 3D Space</returns>
-        internal static List<Triangle> Convert2DTo3D(List<Triangle> triangles)
+        internal static List<PolyTriangle> Convert2DTo3D(List<PolyTriangle> triangles)
         {
-            var lst = new List<Triangle>(triangles.Count);
+            var lst = new List<PolyTriangle>(triangles.Count);
 
             foreach (var triangle in triangles)
             {
-                var tri3D = new Triangle
-                {
-                    [0] = Projection3DCamera.ProjectionTo3D(triangle[0]),
-                    [1] = Projection3DCamera.ProjectionTo3D(triangle[1]),
-                    [2] = Projection3DCamera.ProjectionTo3D(triangle[2])
-                };
-                lst.Add(tri3D);
+                var array = new[] { Projection3DCamera.ProjectionTo3D(triangle[0]), Projection3DCamera.ProjectionTo3D(triangle[1]), Projection3DCamera.ProjectionTo3D(triangle[2]) };
+                var tri = new PolyTriangle(array);
+                lst.Add(tri);
             }
 
             return lst;
@@ -144,19 +128,15 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>Coordinates converted into 3D Space</returns>
-        internal static List<Triangle> Convert2DTo3DOrthographic(List<Triangle> triangles)
+        internal static List<PolyTriangle> Convert2DTo3DOrthographic(List<PolyTriangle> triangles)
         {
-            var lst = new List<Triangle>(triangles.Count);
+            var lst = new List<PolyTriangle>(triangles.Count);
 
             foreach (var triangle in triangles)
             {
-                var tri3D = new Triangle
-                {
-                    [0] = Projection3DCamera.OrthographicProjectionTo3D(triangle[0]),
-                    [1] = Projection3DCamera.OrthographicProjectionTo3D(triangle[1]),
-                    [2] = Projection3DCamera.OrthographicProjectionTo3D(triangle[2])
-                };
-                lst.Add(tri3D);
+                var array = new[] { Projection3DCamera.OrthographicProjectionTo3D(triangle[0]), Projection3DCamera.OrthographicProjectionTo3D(triangle[1]), Projection3DCamera.OrthographicProjectionTo3D(triangle[2]) };
+                var tri = new PolyTriangle(array);
+                lst.Add(tri);
             }
 
             return lst;
@@ -169,9 +149,9 @@ namespace Mathematics
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Center on Screen</returns>
-        internal static List<Triangle> MoveIntoView(IEnumerable<Triangle> triangles, int width, int height)
+        internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height)
         {
-            var lst = new List<Triangle>();
+            var lst = new List<PolyTriangle>();
 
             foreach (var triangle in triangles)
             {

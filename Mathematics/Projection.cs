@@ -27,7 +27,7 @@ namespace Mathematics
         /// <returns>
         /// Converted 3d View
         /// </returns>
-        public List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal)
+        public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, bool? orthogonal)
         {
             var cache = Rasterize.WorldMatrix(triangles, transform);
             cache = transform.CameraType ? Rasterize.OrbitCamera(cache, transform) : Rasterize.PointAt(cache, transform);
