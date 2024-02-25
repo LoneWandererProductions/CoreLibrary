@@ -148,75 +148,43 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Ups the camera.
+        ///     Ups the camera
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="y">The y.</param>
         public void UpCamera(double y = 0.05d)
         {
-            //orbit
-            if (CameraType)
-            {
-                Position += Up * y;
-            }
-            //pointAt
-            else
-            {
-                Position.Y += y;
-            }
+            Position += Up * y;
         }
 
         /// <summary>
         ///     Downs the camera.
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="y">The y.</param>
         public void DownCamera(double y = 0.05d)
         {
-            //orbit
-            if (CameraType)
-            {
-                Position -= Up * y;
-            }
-            //pointAt
-            else
-            {
-                Position.Y -= y;
-            }
+            Position -= Up * y;
         }
 
         /// <summary>
         ///     Lefts the camera.
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="x">The x.</param>
         public void LeftCamera(double x = 0.05d)
         {
-            //orbit
-            if (CameraType)
-            {
-                Position -= Right * x;
-            }
-            //pointAt
-            else
-            {
-                Position -= Right * x;
-            }
+            Position -= Right * x;
         }
 
         /// <summary>
         ///     Rights the camera.
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="x">The x.</param>
         public void RightCamera(double x = 0.05d)
         {
-            //orbit
-            if (CameraType)
-            {
-                Position += Right * x;
-            }
-            //pointAt
-            else
-            {
-                Position += Right * x;
-            }
+            Position += Right * x;
         }
 
         /// <summary>

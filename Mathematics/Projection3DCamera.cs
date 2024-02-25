@@ -126,7 +126,7 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix PointAt(Transform transform)
         {
-            return Projection3DConstants.LookAt(transform.Position, transform.Target, transform.Up);
+            return Projection3DConstants.LookAt(transform);
         }
 
 

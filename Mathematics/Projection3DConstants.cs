@@ -48,33 +48,31 @@ namespace Mathematics
         /// https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
         /// https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
-        /// <param name="cameraPosition">The camera position.</param>
-        /// <param name="targetPosition">The target position.</param>
-        /// <param name="upVector">Up vector.</param>
+        /// <param name="transform">The transform.</param>
         /// <returns>
         /// matrix for Transforming the Coordinate
         /// </returns>
-        internal static BaseMatrix LookAt(Vector3D cameraPosition, Vector3D targetPosition, Vector3D upVector)
+        internal static BaseMatrix LookAt(Transform transform)
         {
-            var Forward = (targetPosition - cameraPosition).Normalize(); // Z axis
+            transform.Forward = (transform.Target - transform.Position).Normalize(); // Z axis
 
-            var Right = upVector.CrossProduct(Forward).Normalize(); // X axis
+            transform.Right = transform.Up.CrossProduct(transform.Forward).Normalize(); // X axis
 
-            var Up = Forward.CrossProduct(Right); // Y axis
+            transform.Up = transform.Forward.CrossProduct(transform.Right); // Y axis
 
-            var Pitch = -(float)Math.Asin(Forward.Y) * Rad;
-            var Yaw = (float)Math.Atan2(Forward.X, Forward.Z) * Rad;
+            var Pitch = -(float)Math.Asin(transform.Forward.Y) * Rad;
+            var Yaw = (float)Math.Atan2(transform.Forward.X, transform.Forward.Z) * Rad;
 
             // The inverse camera's translation
-            var transl = new Vector3D(-(Right * cameraPosition),
-                -(Up * cameraPosition),
-                -(Forward * cameraPosition));
+            var transl = new Vector3D(-(transform.Right * transform.Position),
+                -(transform.Up * transform.Position),
+                -(transform.Forward * transform.Position));
 
             double[,] viewMatrix = 
             {
-                {Right.X, Up.X, Forward.X, 0},
-                {Right.Y, Up.Y, Forward.Y, 0},
-                {Right.Z, Up.Z, Forward.Z, 0},
+                {transform.Right.X, transform.Up.X, transform.Forward.X, 0},
+                {transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0},
+                {transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0},
                 {transl.X, transl.Y, transl.Z, 1}
             };
 
