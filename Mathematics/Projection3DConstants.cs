@@ -41,35 +41,6 @@ namespace Mathematics
             return new BaseMatrix(translation);
         }
 
-        //internal static BaseMatrix PointAt(Transform transform)
-        //{
-        //    transform.Forward = (transform.Target - transform.Position).Normalize();
-        //    var a = transform.Forward * (transform.Up * transform.Forward);
-        //    transform.Up = (transform.Up - a).Normalize();
-        //    transform.Right = transform.Up.CrossProduct(transform.Forward);
-
-        //    return new BaseMatrix(4, 4)
-        //    {
-        //        [0, 0] = transform.Right.X,
-        //        [0, 1] = transform.Right.Y,
-        //        [0, 2] = transform.Right.Z,
-        //        [0, 3] = 0.0d,
-        //        [1, 0] = transform.Up.X,
-        //        [1, 1] = transform.Up.Y,
-        //        [1, 2] = transform.Up.Z,
-        //        [1, 3] = 0.0d,
-        //        [2, 0] = transform.Forward.X,
-        //        [2, 1] = transform.Forward.Y,
-        //        [2, 2] = transform.Forward.Z,
-        //        [2, 3] = 0.0d,
-        //        [3, 0] = transform.Position.X,
-        //        [3, 1] = transform.Position.Y,
-        //        [3, 2] = transform.Position.Z,
-        //        [3, 3] = transform.Position.W
-        //    };
-        //}
-
-
         /// <summary>
         /// Converts Coordinates based on the Camera.
         /// https://ksimek.github.io/2012/08/22/extrinsic/
@@ -85,15 +56,26 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix LookAt(Vector3D cameraPosition, Vector3D targetPosition, Vector3D upVector)
         {
-            var forward = (targetPosition - cameraPosition).Normalize();
-            var right = upVector.CrossProduct(forward).Normalize();
-            var up = forward.CrossProduct(right);
+            var Forward = (targetPosition - cameraPosition).Normalize(); // Z axis
 
-            double[,] viewMatrix = {
-                {right.X, up.X, -forward.X, 0},
-                {right.Y, up.Y, -forward.Y, 0},
-                {right.Z, up.Z, -forward.Z, 0},
-                {-(right * cameraPosition), -(up *cameraPosition), forward * cameraPosition, 1}
+            var Right = upVector.CrossProduct(Forward).Normalize(); // X axis
+
+            var Up = Forward.CrossProduct(Right); // Y axis
+
+            var Pitch = -(float)Math.Asin(Forward.Y) * Rad;
+            var Yaw = (float)Math.Atan2(Forward.X, Forward.Z) * Rad;
+
+            // The inverse camera's translation
+            var transl = new Vector3D(-(Right * cameraPosition),
+                -(Up * cameraPosition),
+                -(Forward * cameraPosition));
+
+            double[,] viewMatrix = 
+            {
+                {Right.X, Up.X, Forward.X, 0},
+                {Right.Y, Up.Y, Forward.Y, 0},
+                {Right.Z, Up.Z, Forward.Z, 0},
+                {transl.X, transl.Y, transl.Z, 1}
             };
 
 

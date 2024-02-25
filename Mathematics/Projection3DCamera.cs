@@ -116,33 +116,6 @@ namespace Mathematics
             return new BaseMatrix(translation);
         }
 
-        //internal static BaseMatrix PointAt(Transform transform)
-        //{
-        //    var matCameraRot = Projection3DConstants.RotateCamera(transform.Pitch);
-
-        //    //transform.VLookDir = transform.Pitch * matCameraRot;
-        //    transform.VLookDir = transform.Target * matCameraRot;
-
-        //    transform.Target = transform.Position + transform.VLookDir;
-
-        //    var matCamera = Projection3DConstants.PointAt(transform);
-
-        //    // Define camera parameters
-        //    //Vector3 cameraPosition = new Vector3D(0, 0, 5);
-        //    //Vector3 targetPosition = new Vector3D(0, 0, 0);
-        //    //Vector3 upVector = Vector3.UnitY;
-        //    // Matrix4x4 viewMatrix = LookAt(cameraPosition, targetPosition, upVector);
-
-        //    // Calculate the direction from the object to the camera
-        //    //Vector3D directionToCamera = mainCamera.transform.position - transform.position;
-
-        //    // Calculate the angle between the forward direction of the object and the direction to the camera
-        //    //float angle = Vector3D.Angle(transform.forward, directionToCamera);
-
-        //    return matCamera.Inverse();
-        //}
-
-
         /// <summary>
         /// Generates the view from the Camera onto the world.
         /// </summary>
@@ -153,7 +126,7 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix PointAt(Transform transform)
         {
-            return Projection3DConstants.LookAt(transform.Position, transform.Target, transform.UpVector);
+            return Projection3DConstants.LookAt(transform.Position, transform.Target, transform.Up);
         }
 
 

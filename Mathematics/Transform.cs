@@ -38,9 +38,7 @@ namespace Mathematics
         /// <value>
         ///     Up.
         /// </value>
-        public Vector3D Up { get; set; } //(0, 1, 0) but for Lookat it must be (1, 1, 1) ... TODO
-
-        public Vector3D UpVector { get; set; } = Vector3D.UnitVector;
+        public Vector3D Up { get; set; }
 
         /// <summary>
         ///     Gets or sets the right.
@@ -199,7 +197,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position.X += x;
+                Position -= Right * x;
             }
         }
 
@@ -217,7 +215,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position.X -= x;
+                Position += Right * x;
             }
         }
 
@@ -289,7 +287,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position.Z -= z;
+                Position -= Forward * z;
             }
         }
     }
