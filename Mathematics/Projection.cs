@@ -19,25 +19,29 @@ namespace Mathematics
     {
         /// <inheritdoc />
         /// <summary>
-        /// Generates the specified triangles.
+        ///     Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>
-        /// Converted 3d View
+        ///     Converted 3d View
         /// </returns>
         public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, bool? orthogonal)
         {
-            var cache = Rasterize.WorldMatrix(triangles, transform);
-            cache = transform.CameraType ? Rasterize.OrbitCamera(cache, transform) : Rasterize.PointAt(cache, transform);
-            cache = Rasterize.ViewPort(cache, transform.Position);
+            var cache = ProjectionRaster.WorldMatrix(triangles, transform);
+            cache = transform.CameraType
+                ? ProjectionRaster.OrbitCamera(cache, transform)
+                : ProjectionRaster.PointAt(cache, transform);
+            cache = ProjectionRaster.ViewPort(cache, transform.Position);
 
-            cache = orthogonal == true ? Rasterize.Convert2DTo3D(cache) : Rasterize.Convert2DTo3DOrthographic(cache);
+            cache = orthogonal == true
+                ? ProjectionRaster.Convert2DTo3D(cache)
+                : ProjectionRaster.Convert2DTo3DOrthographic(cache);
 
             //Todo Move into View and check if Triangles are even visible
 
-            return Rasterize.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }
     }
 }

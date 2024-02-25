@@ -11,7 +11,6 @@
  */
 
 using System;
-using System.Numerics;
 
 namespace Mathematics
 {
@@ -117,12 +116,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Generates the view from the Camera onto the world.
+        ///     Generates the view from the Camera onto the world.
         /// </summary>
         /// <param name="transform">The transform object.</param>
         /// <returns>
-        /// transform
-        /// View on the Object from the Camera perspective
+        ///     transform
+        ///     View on the Object from the Camera perspective
         /// </returns>
         internal static BaseMatrix PointAt(Transform transform)
         {
@@ -176,8 +175,7 @@ namespace Mathematics
             {
                 { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
                 { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
-                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, 
-                { transl.X, transl.Y, transl.Z, 1 }
+                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
             return new BaseMatrix { Matrix = viewMatrix };

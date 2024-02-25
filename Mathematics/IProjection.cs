@@ -6,6 +6,11 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable once UnusedMemberInSuper.Global
+// ReSharper disable UnusedMemberInSuper.Global
+
 using System.Collections.Generic;
 
 namespace Mathematics
@@ -17,13 +22,13 @@ namespace Mathematics
     public interface IProjection
     {
         /// <summary>
-        /// Generates the specified triangles.
+        ///     Generates the specified triangles.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
         /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>
-        /// Converted 3d View
+        ///     Converted 3d View
         /// </returns>
         List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, bool? orthogonal);
     }

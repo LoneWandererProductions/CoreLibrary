@@ -29,7 +29,7 @@ namespace Mathematics
         /// <value>
         ///     The target.
         /// </value>
-        public Vector3D Target { get; set; } = Vector3D.ZeroVector;
+        public Vector3D Target { get; private init; } = Vector3D.ZeroVector;
 
         /// <summary>
         ///     Gets or sets up for the Camera.
@@ -82,7 +82,7 @@ namespace Mathematics
         /// <value>
         ///     The translation.
         /// </value>
-        public Vector3D Translation { get; set; }
+        public Vector3D Translation { get; init; }
 
         /// <summary>
         ///     Gets or sets the rotation of the World.
@@ -101,10 +101,10 @@ namespace Mathematics
         public Vector3D Scale { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
+        ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
+        ///     <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
         /// </value>
         public bool CameraType { get; set; } = true;
 
@@ -114,7 +114,7 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance()
         {
-            var transform = new Transform()
+            var transform = new Transform
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
@@ -136,7 +136,7 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance(Vector3D translation, Vector3D scale, Vector3D rotation)
         {
-            return new()
+            return new Transform
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),

@@ -8,35 +8,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DataFormatter;
 
 namespace Mathematics
 {
     /// <summary>
-    /// In the future will be retooled to polygons.
+    ///     In the future will be retooled to polygons.
     /// </summary>
     public sealed class PolyTriangle
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolyTriangle"/> class.
+        ///     Initializes a new instance of the <see cref="PolyTriangle" /> class.
         /// </summary>
         /// <param name="array">The array.</param>
         public PolyTriangle(IReadOnlyList<Vector3D> array)
         {
             Vertices = new Vector3D[array.Count];
 
-            for (int i = 0; i < array.Count; i++)
+            for (var i = 0; i < array.Count; i++)
             {
                 Vertices[i] = array[i];
             }
         }
 
         /// <summary>
-        /// Gets the normal.
+        ///     Gets the normal.
         /// </summary>
         /// <value>
-        /// The normal.
+        ///     The normal.
         /// </value>
         public Vector3D Normal
         {
@@ -50,26 +49,26 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Gets the vertex count.
+        ///     Gets the vertex count.
         /// </summary>
         /// <value>
-        /// The vertex count.
+        ///     The vertex count.
         /// </value>
         public int VertexCount => Vertices.Length;
 
         /// <summary>
-        /// Gets or sets the vertices.
+        ///     Gets or sets the vertices.
         /// </summary>
         /// <value>
-        /// The vertices.
+        ///     The vertices.
         /// </value>
-        public Vector3D[] Vertices { get; set; }
+        public Vector3D[] Vertices { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="Vector3D" /> with the specified i.
+        ///     Gets or sets the <see cref="Vector3D" /> with the specified i.
         /// </summary>
         /// <value>
-        /// The <see cref="Vector3D" />.
+        ///     The <see cref="Vector3D" />.
         /// </value>
         /// <param name="i">The i.</param>
         /// <returns>vector by id</returns>
@@ -95,7 +94,7 @@ namespace Mathematics
                 var v2 = triangles[i + 1];
                 var v3 = triangles[i + 2];
 
-                var array = new Vector3D[] { (Vector3D)v1, (Vector3D)v2, (Vector3D)v3 };
+                var array = new[] { (Vector3D)v1, (Vector3D)v2, (Vector3D)v3 };
                 var tri = new PolyTriangle(array);
 
                 polygons.Add(tri);
@@ -105,26 +104,26 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Gets the plot point.
+        ///     Gets the plot point.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>2d Vector, we only need these anyways for drawing.</returns>
         public Vector2D GetPlotPoint(int id)
         {
-            return id > VertexCount || id < 0 ? null : (Vector2D) Vertices[id];
+            return id > VertexCount || id < 0 ? null : (Vector2D)Vertices[id];
         }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="string" /> that represents this instance.
+        ///     A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             var str = string.Empty;
 
-            for (int i = 0; i < Vertices.Length; i++)
+            for (var i = 0; i < Vertices.Length; i++)
             {
                 str = string.Concat(str, i, MathResources.Separator, Vertices[i].ToString(), Environment.NewLine);
             }

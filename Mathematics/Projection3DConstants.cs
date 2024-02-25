@@ -42,15 +42,15 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Converts Coordinates based on the Camera.
-        /// https://ksimek.github.io/2012/08/22/extrinsic/
-        /// https://www.youtube.com/watch?v=HXSuNxpCzdM
-        /// https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
-        /// https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
+        ///     Converts Coordinates based on the Camera.
+        ///     https://ksimek.github.io/2012/08/22/extrinsic/
+        ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
+        ///     https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
+        ///     https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
         /// <param name="transform">The transform.</param>
         /// <returns>
-        /// matrix for Transforming the Coordinate
+        ///     matrix for Transforming the Coordinate
         /// </returns>
         internal static BaseMatrix LookAt(Transform transform)
         {
@@ -68,14 +68,12 @@ namespace Mathematics
             // The inverse camera's translation
             var transl = new Vector3D(-(right * transform.Position),
                 -(up * transform.Position),
-                -(forward  * transform.Position));
+                -(forward * transform.Position));
 
             double[,] viewMatrix =
             {
-                {right.X, up.X, forward.X, 0},
-                {right.Y, up.Y, forward.Y, 0},
-                {right.Z, up.Z, forward.Z, 0},
-                {transl.X, transl.Y, transl.Z, 1}
+                { right.X, up.X, forward.X, 0 }, { right.Y, up.Y, forward.Y, 0 }, { right.Z, up.Z, forward.Z, 0 },
+                { transl.X, transl.Y, transl.Z, 1 }
             };
 
 
