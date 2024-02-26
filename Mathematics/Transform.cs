@@ -111,6 +111,14 @@ namespace Mathematics
         public Cameras CameraType { get; set; } = Cameras.Orbit;
 
         /// <summary>
+        /// Gets or sets the display type, way of converting 3d to 2d.
+        /// </summary>
+        /// <value>
+        /// The display type.
+        /// </value>
+        public Display DisplayType { get; set; } = Display.Normal;
+
+        /// <summary>
         ///     Gets the instance.
         /// </summary>
         /// <returns>Instance of Transform</returns>

@@ -24,11 +24,10 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="display">Type of Projection from 3d to 2d</param>
         /// <returns>
         ///     Converted 3d View
         /// </returns>
-        public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, Display display)
+        public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform)
         {
             var cache = ProjectionRaster.WorldMatrix(triangles, transform);
             switch (transform.CameraType)
@@ -46,7 +45,7 @@ namespace Mathematics
 
             cache = ProjectionRaster.Clipping(cache, transform.Position);
 
-            cache = display switch
+            cache = transform.DisplayType switch
             {
                 Display.Normal => ProjectionRaster.Convert2DTo3D(cache),
                 Display.Orthographic => ProjectionRaster.Convert2DTo3DOrthographic(cache),

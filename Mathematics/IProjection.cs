@@ -26,10 +26,9 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="display">Type of Projection from 3d to 2d</param>
         /// <returns>
         ///     Converted 3d View
         /// </returns>
-        List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, Display display);
+        List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
     }
 }
