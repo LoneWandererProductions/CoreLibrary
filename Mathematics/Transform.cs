@@ -82,7 +82,7 @@ namespace Mathematics
         /// <value>
         ///     The translation.
         /// </value>
-        public Vector3D Translation { get; init; }
+        public Vector3D Translation { get; set; }
 
         /// <summary>
         ///     Gets or sets the rotation of the World.
@@ -263,7 +263,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position += Forward * z;
+                Position += new Vector3D(0, 0, 1) * z;
             }
         }
 
@@ -281,7 +281,7 @@ namespace Mathematics
             //pointAt
             else
             {
-                Position -= Forward * z;
+                Position -= new Vector3D(0,0,1) * z;
             }
         }
     }

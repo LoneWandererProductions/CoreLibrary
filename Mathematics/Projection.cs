@@ -33,13 +33,11 @@ namespace Mathematics
             cache = transform.CameraType
                 ? ProjectionRaster.OrbitCamera(cache, transform)
                 : ProjectionRaster.PointAt(cache, transform);
-            cache = ProjectionRaster.ViewPort(cache, transform.Position);
+            cache = ProjectionRaster.Clipping(cache, transform.Position);
 
             cache = orthogonal == true
                 ? ProjectionRaster.Convert2DTo3D(cache)
                 : ProjectionRaster.Convert2DTo3DOrthographic(cache);
-
-            //Todo Move into View and check if Triangles are even visible
 
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }

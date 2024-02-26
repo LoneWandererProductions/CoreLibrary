@@ -48,22 +48,18 @@ namespace Mathematics
         ///     https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
         ///     https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
+        /// <param name="target">Target Vector.</param>
         /// <param name="transform">The transform.</param>
         /// <returns>
         ///     matrix for Transforming the Coordinate
         /// </returns>
-        internal static BaseMatrix LookAt(Transform transform)
+        internal static BaseMatrix LookAt(Transform transform, Vector3D target)
         {
-            var forward = (transform.Target - transform.Position).Normalize(); // Z axis
+            var forward = (target - transform.Position).Normalize(); // Z axis
 
             var right = transform.Up.CrossProduct(forward).Normalize(); // X axis
 
             var up = forward.CrossProduct(right); // Y axis
-
-            var toDeg = (float)(180.0f / Math.PI);
-
-            var pitch = -(float)Math.Asin(forward.Y) * toDeg;
-            var yaw = (float)Math.Atan2(forward.X, forward.Z) * toDeg;
 
             // The inverse camera's translation
             var transl = new Vector3D(-(right * transform.Position),
@@ -75,7 +71,6 @@ namespace Mathematics
                 { right.X, up.X, forward.X, 0 }, { right.Y, up.Y, forward.Y, 0 }, { right.Z, up.Z, forward.Z, 0 },
                 { transl.X, transl.Y, transl.Z, 1 }
             };
-
 
             return new BaseMatrix { Matrix = viewMatrix };
         }

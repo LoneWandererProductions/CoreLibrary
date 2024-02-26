@@ -125,7 +125,12 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix PointAt(Transform transform)
         {
-            return Projection3DConstants.LookAt(transform);
+            var matCameraRot = Projection3DConstants.RotateY(transform.Yaw);
+
+            var vLookDir = transform.Target * matCameraRot;
+            var vTarget = transform.Position + vLookDir;
+
+            return Projection3DConstants.LookAt(transform, vTarget);
         }
 
 

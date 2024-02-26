@@ -58,12 +58,12 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Views the port.
+        ///     Clipping Handler.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="vCamera">The position of the camera as vector.</param>
         /// <returns>Visible Vector Planes</returns>
-        internal static List<PolyTriangle> ViewPort(IEnumerable<PolyTriangle> triangles, Vector3D vCamera)
+        internal static List<PolyTriangle> Clipping(IEnumerable<PolyTriangle> triangles, Vector3D vCamera)
         {
             var lst = new List<PolyTriangle>();
 
