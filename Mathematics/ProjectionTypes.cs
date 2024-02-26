@@ -9,33 +9,33 @@
 namespace Mathematics
 {
     /// <summary>
-    /// How to convert 2d to 3d
+    ///     How to convert 2d to 3d
     /// </summary>
     public enum Display
     {
         /// <summary>
-        /// The normal Projection
+        ///     The normal Projection
         /// </summary>
         Normal = 0,
 
         /// <summary>
-        /// The orthographic Projection
+        ///     The orthographic Projection
         /// </summary>
         Orthographic = 1
     }
 
     /// <summary>
-    /// Type of Camera
+    ///     Type of Camera
     /// </summary>
     public enum Cameras
     {
         /// <summary>
-        /// The orbit camera
+        ///     The orbit camera
         /// </summary>
         Orbit = 0,
 
         /// <summary>
-        /// The point at camera
+        ///     The point at camera
         /// </summary>
         PointAt = 1
     }

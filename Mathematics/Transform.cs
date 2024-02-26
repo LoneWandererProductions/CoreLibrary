@@ -103,18 +103,18 @@ namespace Mathematics
         public Vector3D Scale { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
+        ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
+        ///     <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
         /// </value>
         public Cameras CameraType { get; set; } = Cameras.Orbit;
 
         /// <summary>
-        /// Gets or sets the display type, way of converting 3d to 2d.
+        ///     Gets or sets the display type, way of converting 3d to 2d.
         /// </summary>
         /// <value>
-        /// The display type.
+        ///     The display type.
         /// </value>
         public Display DisplayType { get; set; } = Display.Normal;
 
