@@ -49,7 +49,7 @@ namespace Mathematics
             cache = display switch
             {
                 Display.Normal => ProjectionRaster.Convert2DTo3D(cache),
-                Display.Ortographic => ProjectionRaster.Convert2DTo3DOrthographic(cache),
+                Display.Orthographic => ProjectionRaster.Convert2DTo3DOrthographic(cache),
                 _ => ProjectionRaster.Convert2DTo3D(cache)
             };
 
