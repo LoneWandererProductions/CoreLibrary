@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace Mathematics
@@ -23,21 +24,34 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="orthogonal">The orthogonal.</param>
+        /// <param name="display">Type of Projection from 3d to 2d</param>
         /// <returns>
         ///     Converted 3d View
         /// </returns>
-        public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, bool? orthogonal)
+        public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform, Display display)
         {
             var cache = ProjectionRaster.WorldMatrix(triangles, transform);
-            cache = transform.CameraType
-                ? ProjectionRaster.OrbitCamera(cache, transform)
-                : ProjectionRaster.PointAt(cache, transform);
+            switch (transform.CameraType)
+            {
+                case Cameras.Orbit:
+                    cache = ProjectionRaster.OrbitCamera(cache, transform);
+                    break;
+                case Cameras.PointAt:
+                    cache = ProjectionRaster.PointAt(cache, transform);
+                    break;
+                default:
+                    cache = ProjectionRaster.OrbitCamera(cache, transform);
+                    break;
+            }
+
             cache = ProjectionRaster.Clipping(cache, transform.Position);
 
-            cache = orthogonal == true
-                ? ProjectionRaster.Convert2DTo3D(cache)
-                : ProjectionRaster.Convert2DTo3DOrthographic(cache);
+            cache = display switch
+            {
+                Display.Normal => ProjectionRaster.Convert2DTo3D(cache),
+                Display.Ortographic => ProjectionRaster.Convert2DTo3DOrthographic(cache),
+                _ => ProjectionRaster.Convert2DTo3D(cache)
+            };
 
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }

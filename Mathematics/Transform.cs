@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+
 namespace Mathematics
 {
     /// <summary>
@@ -101,12 +103,12 @@ namespace Mathematics
         public Vector3D Scale { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
+        /// Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
+        ///   <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
         /// </value>
-        public bool CameraType { get; set; } = true;
+        public Cameras CameraType { get; set; } = Cameras.Orbit;
 
         /// <summary>
         ///     Gets the instance.
@@ -114,7 +116,7 @@ namespace Mathematics
         /// <returns>Instance of Transform</returns>
         public static Transform GetInstance()
         {
-            var transform = new Transform
+            return new Transform
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
@@ -123,8 +125,6 @@ namespace Mathematics
                 Rotation = new Vector3D(),
                 Scale = Vector3D.UnitVector
             };
-
-            return transform;
         }
 
         /// <summary>
@@ -153,13 +153,14 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void UpCamera(double y = 0.05d)
         {
-            if (CameraType)
+            switch (CameraType)
             {
-                Position += Up * y;
-            }
-            else
-            {
-                Position.Y += y;
+                case Cameras.Orbit:
+                    Position += Up * y;
+                    break;
+                case Cameras.PointAt:
+                    Position.Y += y;
+                    break;
             }
         }
 
@@ -170,13 +171,14 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y = 0.05d)
         {
-            if (CameraType)
+            switch (CameraType)
             {
-                Position -= Up * y;
-            }
-            else
-            {
-                Position.Y -= y;
+                case Cameras.Orbit:
+                    Position -= Up * y;
+                    break;
+                case Cameras.PointAt:
+                    Position.Y -= y;
+                    break;
             }
         }
 
@@ -186,13 +188,14 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x = 0.05d)
         {
-            if (CameraType)
+            switch (CameraType)
             {
-                Position += Right * x;
-            }
-            else
-            {
-                Position.X -= x;
+                case Cameras.Orbit:
+                    Position += Right * x;
+                    break;
+                case Cameras.PointAt:
+                    Position.X -= x;
+                    break;
             }
         }
 
@@ -203,13 +206,14 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x = 0.05d)
         {
-            if (CameraType)
+            switch (CameraType)
             {
-                Position -= Right * x;
-            }
-            else
-            {
-                Position.X += x;
+                case Cameras.Orbit:
+                    Position -= Right * x;
+                    break;
+                case Cameras.PointAt:
+                    Position.X += x;
+                    break;
             }
         }
 
@@ -219,15 +223,14 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void LeftRotateCamera(double value = 2.0d)
         {
-            //orbit
-            if (CameraType)
+            switch (CameraType)
             {
-                Yaw -= value;
-            }
-            //pointAt
-            else
-            {
-                Yaw -= value;
+                case Cameras.Orbit:
+                    Yaw -= value;
+                    break;
+                case Cameras.PointAt:
+                    Yaw -= value;
+                    break;
             }
         }
 
@@ -237,15 +240,14 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void RightRotateCamera(double value)
         {
-            //orbit
-            if (CameraType)
+            switch (CameraType)
             {
-                Yaw += value;
-            }
-            //pointAt
-            else
-            {
-                Yaw += value;
+                case Cameras.Orbit:
+                    Yaw += value;
+                    break;
+                case Cameras.PointAt:
+                    Yaw += value;
+                    break;
             }
         }
 
@@ -255,15 +257,14 @@ namespace Mathematics
         /// <param name="z">The z.</param>
         public void MoveForward(double z = 0.05d)
         {
-            //orbit
-            if (CameraType)
+            switch (CameraType)
             {
-                Position += Forward * z;
-            }
-            //pointAt
-            else
-            {
-                Position += new Vector3D(0, 0, 1) * z;
+                case Cameras.Orbit:
+                    Position += Forward * z;
+                    break;
+                case Cameras.PointAt:
+                    Position += new Vector3D(0, 0, 1) * z;
+                    break;
             }
         }
 
@@ -273,15 +274,14 @@ namespace Mathematics
         /// <param name="z">The z.</param>
         public void MoveBack(double z = 0.05d)
         {
-            //orbit
-            if (CameraType)
+            switch (CameraType)
             {
-                Position -= Forward * z;
-            }
-            //pointAt
-            else
-            {
-                Position -= new Vector3D(0,0,1) * z;
+                case Cameras.Orbit:
+                    Position -= Forward * z;
+                    break;
+                case Cameras.PointAt:
+                    Position -= new Vector3D(0, 0, 1) * z;
+                    break;
             }
         }
     }
