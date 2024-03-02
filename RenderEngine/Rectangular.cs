@@ -51,10 +51,13 @@ namespace RenderEngine
             var c1 = new Coordinate2D(Start.X + Width, Start.Y);
             var c2 = new Coordinate2D(Start.X, Start.Y - Height);
             var c3 = new Coordinate2D(Start.X + Width, Start.Y - Height);
-            var path = new List<Coordinate2D> {c1, c2, c3};
+            var path = new List<Coordinate2D> { c1, c2, c3 };
             var skPath = RenderHelper.CreatePath(Start, path);
 
-            if (RenderRegister.Debug) Trace.WriteLine(ToString());
+            if (RenderRegister.Debug)
+            {
+                Trace.WriteLine(ToString());
+            }
 
             // Fill or stroke the Rectangle
             switch (style)
@@ -64,12 +67,15 @@ namespace RenderEngine
                     break;
                 case GraphicStyle.Fill:
                 {
-                    using var fillPaint = new SKPaint {Style = SKPaintStyle.Fill};
+                    using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(skPath, fillPaint);
                 }
                     break;
                 case GraphicStyle.Plot:
-                    foreach (var plot in path) RenderHelper.DrawPoint(canvas, plot, paint);
+                    foreach (var plot in path)
+                    {
+                        RenderHelper.DrawPoint(canvas, plot, paint);
+                    }
 
                     break;
                 default:

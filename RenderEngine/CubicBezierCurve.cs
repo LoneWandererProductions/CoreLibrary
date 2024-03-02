@@ -78,7 +78,7 @@ namespace RenderEngine
                     break;
                 case GraphicStyle.Fill:
                 {
-                    using var fillPaint = new SKPaint {Style = SKPaintStyle.Fill};
+                    using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(path, fillPaint);
                     return; // No need to draw the stroke in the Fill style
                 }
@@ -90,7 +90,10 @@ namespace RenderEngine
                     break;
             }
 
-            if (RenderRegister.Debug) Trace.WriteLine(ToString());
+            if (RenderRegister.Debug)
+            {
+                Trace.WriteLine(ToString());
+            }
 
             // Draw the path
             canvas.DrawPath(path, paint);

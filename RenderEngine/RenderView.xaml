@@ -7,6 +7,6 @@
              mc:Ignorable="d"
              Height="450" Width="800">
     <Grid>
-        <wpf:SKElement x:Name="skiaElement" PaintSurface="OnPaintSurface" />
+        <wpf:SKElement x:Name="SkiaElement" PaintSurface="OnPaintSurface" />
     </Grid>
 </UserControl>

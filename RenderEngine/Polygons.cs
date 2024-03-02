@@ -51,19 +51,25 @@ namespace RenderEngine
                     break;
                 case GraphicStyle.Fill:
                 {
-                    using var fillPaint = new SKPaint {Style = SKPaintStyle.Fill};
+                    using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(path, fillPaint);
                 }
                     break;
                 case GraphicStyle.Plot:
-                    foreach (var plot in Path) RenderHelper.DrawPoint(canvas, plot, paint);
+                    foreach (var plot in Path)
+                    {
+                        RenderHelper.DrawPoint(canvas, plot, paint);
+                    }
 
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
 
-            if (RenderRegister.Debug) Trace.WriteLine(ToString());
+            if (RenderRegister.Debug)
+            {
+                Trace.WriteLine(ToString());
+            }
         }
 
         /// <summary>

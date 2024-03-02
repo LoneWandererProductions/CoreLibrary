@@ -20,7 +20,7 @@ namespace RenderEngine
         /// <summary>
         ///     Initializes a new instance of the <see cref="Geometry" /> class.
         /// </summary>
-        public Geometry()
+        protected Geometry()
         {
         }
 

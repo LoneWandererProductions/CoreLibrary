@@ -58,7 +58,7 @@ namespace RenderEngine
 
             e.Surface.Canvas.DrawBitmap(_bitmap, 0, 0);
 
-            skiaElement.InvalidateVisual();
+            SkiaElement.InvalidateVisual();
         }
 
         /// <summary>
@@ -66,12 +66,15 @@ namespace RenderEngine
         /// </summary>
         public void Clear()
         {
-            if (_bitmap == null) return;
+            if (_bitmap == null)
+            {
+                return;
+            }
 
             using var canvas = new SKCanvas(_bitmap);
             canvas.Clear(SKColors.White);
 
-            skiaElement.InvalidateVisual();
+            SkiaElement.InvalidateVisual();
         }
 
         /// <summary>
@@ -85,6 +88,7 @@ namespace RenderEngine
             Clear();
 
             foreach (var item in objects)
+            {
                 switch (item)
                 {
                     case Polygons polygons:
@@ -100,6 +104,7 @@ namespace RenderEngine
                         DrawShape(circle, style, clear);
                         break;
                 }
+            }
         }
 
         /// <summary>
@@ -114,7 +119,10 @@ namespace RenderEngine
             using var paint = new SKPaint();
             using var canvas = new SKCanvas(_bitmap);
 
-            if (clear) canvas.Clear(SKColors.White);
+            if (clear)
+            {
+                canvas.Clear(SKColors.White);
+            }
 
             paint.Color = shape.Color;
 
@@ -132,9 +140,12 @@ namespace RenderEngine
                     break;
             }
 
-            if (style != GraphicStyle.Plot) shape.Draw(canvas, paint, style);
+            if (style != GraphicStyle.Plot)
+            {
+                shape.Draw(canvas, paint, style);
+            }
 
-            skiaElement.InvalidateVisual();
+            SkiaElement.InvalidateVisual();
         }
 
         /// <summary>
@@ -145,7 +156,7 @@ namespace RenderEngine
         /// <returns></returns>
         public SKColor GetPixel(int x, int y)
         {
-            return (_bitmap != null && x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height)
+            return _bitmap != null && x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height
                 ? _bitmap.GetPixel(x, y)
                 : SKColors.Transparent;
         }
@@ -161,7 +172,7 @@ namespace RenderEngine
             if (_bitmap != null && x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height)
             {
                 _bitmap.SetPixel(x, y, color);
-                skiaElement.InvalidateVisual();
+                SkiaElement.InvalidateVisual();
             }
         }
     }
