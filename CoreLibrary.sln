@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imaging", "Imaging\Imaging.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solaris", "Solaris\Solaris.csproj", "{F20F039F-3D2F-4612-82FD-A63EB91F3791}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderEngine", "RenderEngine\RenderEngine.csproj", "{BB731A3C-EF90-4BEE-8BE4-5C301D536E5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{F20F039F-3D2F-4612-82FD-A63EB91F3791}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F20F039F-3D2F-4612-82FD-A63EB91F3791}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F20F039F-3D2F-4612-82FD-A63EB91F3791}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB731A3C-EF90-4BEE-8BE4-5C301D536E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB731A3C-EF90-4BEE-8BE4-5C301D536E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB731A3C-EF90-4BEE-8BE4-5C301D536E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB731A3C-EF90-4BEE-8BE4-5C301D536E5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
