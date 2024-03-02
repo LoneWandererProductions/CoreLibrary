@@ -34,7 +34,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-
         /// <summary>
         ///     Converts to string.
         /// </summary>
