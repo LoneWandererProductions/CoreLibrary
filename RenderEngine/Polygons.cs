@@ -53,6 +53,7 @@ namespace RenderEngine
                 {
                     using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(path, fillPaint);
+                    return; // No need to draw the stroke in the Fill style
                 }
                     break;
                 case GraphicStyle.Plot:

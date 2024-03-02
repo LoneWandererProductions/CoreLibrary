@@ -166,7 +166,7 @@ namespace Mathematics
                 triangle[1].Y *= -1.0f;
                 triangle[2].Y *= -1.0f;
 
-                // Offset verts into visible normalised space
+                // Offset verts into visible normalized space
                 var vOffsetView = new Vector3D(1, 1, 0);
                 triangle[0] += vOffsetView;
                 triangle[1] += vOffsetView;

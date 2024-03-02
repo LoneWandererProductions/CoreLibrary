@@ -1,13 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
- * FILE:        RenderEngine/CubicBezierCurve.cs
- * PURPOSE:     Curve object
+ * FILE:        RenderEngine/CubicBezierCurves.cs
+ * PURPOSE:     Curve objects to form a long curvy line
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Mathematics;
 using SkiaSharp;
 
@@ -27,23 +29,7 @@ namespace RenderEngine
         /// <value>
         ///     The first.
         /// </value>
-        public Coordinate2D First { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the second control point.
-        /// </summary>
-        /// <value>
-        ///     The first.
-        /// </value>
-        public Coordinate2D Second { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the third control point or Ending point.
-        /// </summary>
-        /// <value>
-        ///     The first.
-        /// </value>
-        public Coordinate2D Third { get; set; }
+        public List<Coordinate2D> Path { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the width of the stroke.
@@ -62,12 +48,30 @@ namespace RenderEngine
         /// <param name="style">The style.</param>
         public void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
-            using var path = new SKPath();
+            //check if it division is possible
+            if ((Path.Count) % 3 != 0) return;
+
+            using var path = RenderHelper.CreatePath(Start, Path);
+
             // Move to the starting point
             path.MoveTo(Start.X, Start.Y);
 
-            // Draw a cubic Bezier curve
-            path.CubicTo(First.X, First.Y, Second.X, Second.Y, Third.X, Third.Y);
+            // Draw a cubic Bezier curve, define Start Point
+            path.MoveTo(Start.X, Start.Y);
+
+            for (int i = 0; i < Path.Count; i += 3)
+            {
+                // Draw a cubic Bezier curve
+                if (i + 2 < Path.Count)
+                {
+                    path.CubicTo(path[i], path[i + 1], path[i + 2]);
+                }
+                // Draw a quadratic Bezier curve (if there are only three control points left)
+                else if (i + 1 < Path.Count)
+                {
+                    path.QuadTo(path[i], path[i + 1]);
+                }
+            }
 
             switch (style)
             {
@@ -84,9 +88,11 @@ namespace RenderEngine
                 }
                 case GraphicStyle.Plot:
                     paint.StrokeWidth = StrokeWidth;
-                    RenderHelper.DrawPoint(canvas, First, paint);
-                    RenderHelper.DrawPoint(canvas, Second, paint);
-                    RenderHelper.DrawPoint(canvas, Third, paint);
+                    foreach (var plot in Path)
+                    {
+                        RenderHelper.DrawPoint(canvas, plot, paint);
+                    }
+
                     break;
             }
 
@@ -94,6 +100,7 @@ namespace RenderEngine
             {
                 Trace.WriteLine(ToString());
             }
+
 
             // Draw the path
             canvas.DrawPath(path, paint);
@@ -108,9 +115,12 @@ namespace RenderEngine
         public override string ToString()
         {
             var str = string.Concat(Start.ToString(), Environment.NewLine);
-            str = string.Concat(str, First.ToString(), Environment.NewLine);
-            str = string.Concat(str, Second.ToString(), Environment.NewLine);
-            str = string.Concat(str, Third.ToString());
+            var last = Path.Last();
+            Path.Remove(last);
+
+            str = Path.Aggregate(str, (current, plot) => string.Concat(current, plot.ToString(), Environment.NewLine));
+
+            str = string.Concat(str, last.ToString());
 
             return str;
         }
