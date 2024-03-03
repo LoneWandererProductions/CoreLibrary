@@ -91,7 +91,7 @@ namespace RenderEngine
         {
             var str = string.Concat(Start.ToString(), Environment.NewLine);
             var last = Path.Last();
-            Path.Remove(last);
+            _ = Path.Remove(last);
 
             str = Path.Aggregate(str, (current, plot) => string.Concat(current, plot.ToString(), Environment.NewLine));
 

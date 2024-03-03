@@ -31,7 +31,19 @@ namespace RenderEngine
         private SKBitmap _bitmap;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RenderView" /> class.
+        /// The Canvas clicked Delegate
+        /// </summary>
+        /// <param name="coordinate">The coordinate.</param>
+        public delegate void DelegateCoordinate(Coordinate2D coordinate);
+
+        /// <summary>
+        /// Occurs when [canvas clicked].
+        /// </summary>
+        public event DelegateCoordinate CanvasClicked;
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:RenderEngine.RenderView" /> class.
         /// </summary>
         public RenderView()
         {
@@ -201,7 +213,7 @@ namespace RenderEngine
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <returns></returns>
+        /// <returns>Color of the Pixel</returns>
         public SKColor GetPixel(int x, int y)
         {
             return _bitmap != null && x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height
@@ -222,6 +234,20 @@ namespace RenderEngine
                 _bitmap.SetPixel(x, y, color);
                 SkiaElement.InvalidateVisual();
             }
+        }
+
+        /// <summary>
+        /// Handles the MouseDown event of the SKcanvas control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void SKcanvas_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var position = e.GetPosition(SkiaElement);
+
+            var cursor = new Coordinate2D(position.X, position.Y);
+
+            CanvasClicked?.Invoke(cursor);
         }
     }
 }
