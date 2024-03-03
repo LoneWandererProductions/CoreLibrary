@@ -33,7 +33,6 @@ namespace CommonLibraryTests
 
             projection.Generate(triangles, transform);
 
-            transform.DownCamera(0.5);
             transform.LeftCamera(0.5);
         }
     }

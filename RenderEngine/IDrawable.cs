@@ -38,6 +38,6 @@ namespace RenderEngine
         /// <param name="canvas">The canvas.</param>
         /// <param name="paint">The paint.</param>
         /// <param name="style">The style.</param>
-        void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style);
+        bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style);
     }
 }

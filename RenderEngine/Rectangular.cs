@@ -46,7 +46,10 @@ namespace RenderEngine
         /// <param name="paint">The paint.</param>
         /// <param name="style">The style.</param>
         /// <exception cref="ArgumentOutOfRangeException">style - null</exception>
-        public void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
+        /// <returns>
+        ///     Success Status.
+        /// </returns>
+        public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
             var c1 = new Coordinate2D(Start.X + Width, Start.Y);
             var c2 = new Coordinate2D(Start.X, Start.Y - Height);
@@ -63,6 +66,7 @@ namespace RenderEngine
             switch (style)
             {
                 case GraphicStyle.Mesh:
+                    paint.StrokeWidth = StrokeWidth;
                     canvas.DrawPath(skPath, paint);
                     break;
                 case GraphicStyle.Fill:
@@ -81,6 +85,8 @@ namespace RenderEngine
                 default:
                     throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
+
+            return true;
         }
 
 

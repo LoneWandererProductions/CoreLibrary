@@ -31,14 +31,6 @@ namespace RenderEngine
         /// </value>
         public List<Coordinate2D> Path { get; set; } = new();
 
-        /// <summary>
-        ///     Gets or sets the width of the stroke.
-        /// </summary>
-        /// <value>
-        ///     The width of the stroke.
-        /// </value>
-        public int StrokeWidth { get; set; } = 3;
-
         /// <inheritdoc />
         /// <summary>
         ///     Draws the specified canvas.
@@ -46,10 +38,13 @@ namespace RenderEngine
         /// <param name="canvas">The canvas.</param>
         /// <param name="paint">The paint.</param>
         /// <param name="style">The style.</param>
-        public void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
+        /// <returns>
+        ///     Success Status.
+        /// </returns>
+        public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
             //check if it division is possible
-            if ((Path.Count) % 3 != 0) return;
+            if ((Path.Count) % 3 != 0) return false;
 
             using var path = RenderHelper.CreatePath(Start, Path);
 
@@ -84,7 +79,7 @@ namespace RenderEngine
                 {
                     using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(path, fillPaint);
-                    return; // No need to draw the stroke in the Fill style
+                    return true; // No need to draw the stroke in the Fill style
                 }
                 case GraphicStyle.Plot:
                     paint.StrokeWidth = StrokeWidth;
@@ -104,6 +99,8 @@ namespace RenderEngine
 
             // Draw the path
             canvas.DrawPath(path, paint);
+
+            return true;
         }
 
         /// <summary>

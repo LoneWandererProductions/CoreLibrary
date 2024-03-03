@@ -69,5 +69,70 @@ namespace Mathematics
         ///     The string Id (const). Value: " Id: ".
         /// </summary>
         internal const string StrId = " Id: ";
+
+        /// <summary>
+        ///     The Camera Vector (const). Value: "Camera Position: ".
+        /// </summary>
+        internal const string CameraPosition = "Camera Position: ";
+
+        /// <summary>
+        ///     The Target Vector (const). Value: "Target Position: ".
+        /// </summary>
+        internal const string Target = "Target Position: ";
+
+        /// <summary>
+        ///     The Up Vector (const). Value: "Up Position: ".
+        /// </summary>
+        internal const string Up = "Up Position: ";
+
+        /// <summary>
+        ///     The Right Vector (const). Value: "Right Position: ".
+        /// </summary>
+        internal const string Right = "Right Position: ";
+
+        /// <summary>
+        ///     The Forward Vector (const). Value: "Forward Position: ".
+        /// </summary>
+        internal const string Forward = "Forward Position: ";
+
+        /// <summary>
+        ///     The Pitch (const). Value: "Pitch: ".
+        /// </summary>
+        internal const string Pitch = "Pitch: ";
+
+        /// <summary>
+        ///     The Yaw (const). Value: "Yaw: ".
+        /// </summary>
+        internal const string Yaw = "Yaw: ";
+
+        /// <summary>
+        ///     The World (const). Value: "World Transformations.".
+        /// </summary>
+        internal const string World = "World Transformations.";
+
+        /// <summary>
+        ///     The Translation Vector (const). Value: "Translation Vector: ".
+        /// </summary>
+        internal const string Translation = "Translation Vector: ";
+
+        /// <summary>
+        ///     The Rotation Vector (const). Value: "Rotation Vector: ".
+        /// </summary>
+        internal const string Rotation = "Rotation Vector: ";
+
+        /// <summary>
+        ///     The Scale Vector (const). Value: "Scale Vector: ".
+        /// </summary>
+        internal const string Scale = "Scale Vector: ";
+
+        /// <summary>
+        ///     The Camera Type (const). Value: ""Camera Type: ".
+        /// </summary>
+        internal const string CameraType = "Camera Type: ";
+
+        /// <summary>
+        ///     The Display Type(const). Value: "Display Type: ".
+        /// </summary>
+        internal const string DisplayType = "Display Type: ";
     }
 }

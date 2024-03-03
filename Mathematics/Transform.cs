@@ -8,6 +8,8 @@
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 
+using System;
+
 namespace Mathematics
 {
     /// <summary>
@@ -291,6 +293,32 @@ namespace Mathematics
                     Position -= new Vector3D(0, 0, 1) * z;
                     break;
             }
+        }
+
+        /// <summary>
+        ///     Converts to string.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var str = string.Concat(MathResources.CameraPosition, Position.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Target, Target.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Target, Up.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Up, Up.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Right, Right.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Forward, Forward.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Pitch, Pitch, Environment.NewLine);
+            str = string.Concat(str, MathResources.Yaw, Yaw, Environment.NewLine);
+            str = string.Concat(str, MathResources.World, Environment.NewLine);
+            str = string.Concat(str, MathResources.Translation, Translation.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Rotation, Rotation.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Scale, Scale.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.CameraType, CameraType.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.DisplayType, DisplayType.ToString(), Environment.NewLine);
+
+            return str;
         }
     }
 }

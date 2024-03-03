@@ -6,9 +6,12 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using Mathematics;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 
@@ -144,6 +147,51 @@ namespace RenderEngine
             {
                 shape.Draw(canvas, paint, style);
             }
+
+            SkiaElement.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Draws the dot.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <param name="clear">if set to <c>true</c> [clear].</param>
+        public void DrawDot(Coordinate2D point, bool clear)
+        {
+            using var paint = new SKPaint();
+            using var canvas = new SKCanvas(_bitmap);
+
+            if (clear)
+            {
+                canvas.Clear(SKColors.White);
+            }
+
+            RenderHelper.DrawPoint(canvas, point, paint);
+
+            SkiaElement.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Draws the line.
+        /// </summary>
+        /// <param name="line">The line.</param>
+        /// <param name="clear">if set to <c>true</c> [clear].</param>
+        public void DrawLine(Line line, bool clear)
+        {
+            using var paint = new SKPaint();
+            using var canvas = new SKCanvas(_bitmap);
+
+            if (clear)
+            {
+                canvas.Clear(SKColors.White);
+            }
+
+            using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
+
+            SKPoint startPoint = new SKPoint(line.Start.X, line.Start.Y);
+            SKPoint endPoint = new SKPoint(line.EndPoint.X, line.EndPoint.Y);
+
+            canvas.DrawLine(startPoint, endPoint, paint);
 
             SkiaElement.InvalidateVisual();
         }

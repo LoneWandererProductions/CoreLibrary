@@ -52,6 +52,14 @@ namespace RenderEngine
         public SKColor Color { get; set; } = SKColors.Blue;
 
         /// <summary>
+        ///     Gets or sets the width of the stroke.
+        /// </summary>
+        /// <value>
+        ///     The width of the stroke.
+        /// </value>
+        public int StrokeWidth { get; set; } = 2;
+
+        /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>

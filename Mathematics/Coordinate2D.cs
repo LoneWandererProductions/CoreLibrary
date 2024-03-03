@@ -33,6 +33,17 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Coordinate2D"/> class.
+        /// </summary>
+        /// <param name="x">The x in double.</param>
+        /// <param name="y">The yin double.</param>
+        public Coordinate2D(double x, double y)
+        {
+            X = (int)Math.Round(x, 1, MidpointRounding.AwayFromZero);
+            Y = (int)Math.Round(y, 1, MidpointRounding.AwayFromZero);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
@@ -191,7 +202,6 @@ namespace Mathematics
         {
             return new Coordinate2D(first.RoundedX, first.RoundedY);
         }
-
 
         /// <summary>
         ///     Converts to string.

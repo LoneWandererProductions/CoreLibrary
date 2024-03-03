@@ -35,7 +35,10 @@ namespace RenderEngine
         /// <param name="canvas">The canvas.</param>
         /// <param name="paint">The paint.</param>
         /// <param name="style">The style.</param>
-        public void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
+        /// <returns>
+        ///     Success Status.
+        /// </returns>
+        public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
             canvas.DrawCircle(Start.X, Start.Y, Radius, paint);
 
@@ -43,6 +46,8 @@ namespace RenderEngine
             {
                 Trace.WriteLine(ToString());
             }
+
+            return true;
         }
 
         /// <summary>

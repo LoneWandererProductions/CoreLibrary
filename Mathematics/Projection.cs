@@ -7,6 +7,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Mathematics
 {
@@ -29,6 +30,7 @@ namespace Mathematics
         public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform)
         {
             var cache = ProjectionRaster.WorldMatrix(triangles, transform);
+
             switch (transform.CameraType)
             {
                 case Cameras.Orbit:
@@ -52,6 +54,18 @@ namespace Mathematics
             };
 
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a debug dump.
+        /// </summary>
+        /// <param name="transform">The transform.</param>
+        public void CreateDump(Transform transform)
+        {
+            var matrix = Projection3DConstants.ProjectionTo3DMatrix();
+            Trace.WriteLine(matrix.ToString());
+            Trace.WriteLine(transform.ToString());
         }
     }
 }

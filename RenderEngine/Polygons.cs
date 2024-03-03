@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,10 +26,10 @@ namespace RenderEngine
     public sealed class Polygons : Geometry, IDrawable
     {
         /// <summary>
-        ///     Gets or sets the path.
+        /// Gets or sets the path.
         /// </summary>
         /// <value>
-        ///     The path.
+        /// The path.
         /// </value>
         public List<Coordinate2D> Path { get; set; } = new();
 
@@ -39,7 +41,10 @@ namespace RenderEngine
         /// <param name="paint">The paint.</param>
         /// <param name="style">The style.</param>
         /// <exception cref="ArgumentOutOfRangeException">style - null</exception>
-        public void Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
+        /// <returns>
+        ///    Success status of the drawing
+        /// </returns>
+        public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
             using var path = RenderHelper.CreatePath(Start, Path);
 
@@ -47,13 +52,14 @@ namespace RenderEngine
             switch (style)
             {
                 case GraphicStyle.Mesh:
+                    paint.StrokeWidth = StrokeWidth;
                     canvas.DrawPath(path, paint);
                     break;
                 case GraphicStyle.Fill:
                 {
                     using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
                     canvas.DrawPath(path, fillPaint);
-                    return; // No need to draw the stroke in the Fill style
+                    return true; // No need to draw the stroke in the Fill style
                 }
                     break;
                 case GraphicStyle.Plot:
@@ -71,6 +77,8 @@ namespace RenderEngine
             {
                 Trace.WriteLine(ToString());
             }
+
+            return true;
         }
 
         /// <summary>
