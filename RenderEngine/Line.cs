@@ -20,10 +20,10 @@ namespace RenderEngine
     public sealed class Line : Geometry
     {
         /// <summary>
-        /// Gets or sets the end point.
+        ///     Gets or sets the end point.
         /// </summary>
         /// <value>
-        /// The end point.
+        ///     The end point.
         /// </value>
         public Coordinate2D EndPoint { get; set; }
 

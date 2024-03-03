@@ -16,8 +16,8 @@ using System.Collections.Generic;
 namespace Mathematics
 {
     /// <summary>
-    /// The Projection Interface.
-    /// Template for all external 3D operations.
+    ///     The Projection Interface.
+    ///     Template for all external 3D operations.
     /// </summary>
     public interface IProjection
     {
@@ -33,7 +33,7 @@ namespace Mathematics
 
 
         /// <summary>
-        /// Creates a debug dump.
+        ///     Creates a debug dump.
         /// </summary>
         /// <param name="transform">The transform.</param>
         void CreateDump(Transform transform);

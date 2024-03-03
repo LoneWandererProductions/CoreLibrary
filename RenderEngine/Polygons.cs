@@ -26,10 +26,10 @@ namespace RenderEngine
     public sealed class Polygons : Geometry, IDrawable
     {
         /// <summary>
-        /// Gets or sets the path.
+        ///     Gets or sets the path.
         /// </summary>
         /// <value>
-        /// The path.
+        ///     The path.
         /// </value>
         public List<Coordinate2D> Path { get; set; } = new();
 
@@ -42,7 +42,7 @@ namespace RenderEngine
         /// <param name="style">The style.</param>
         /// <exception cref="ArgumentOutOfRangeException">style - null</exception>
         /// <returns>
-        ///    Success status of the drawing
+        ///     Success status of the drawing
         /// </returns>
         public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {

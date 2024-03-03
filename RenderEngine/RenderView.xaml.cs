@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using Mathematics;
 using SkiaSharp;
@@ -26,20 +27,15 @@ namespace RenderEngine
     public sealed partial class RenderView
     {
         /// <summary>
-        ///     The bitmap
-        /// </summary>
-        private SKBitmap _bitmap;
-
-        /// <summary>
-        /// The Canvas clicked Delegate
+        ///     The Canvas clicked Delegate
         /// </summary>
         /// <param name="coordinate">The coordinate.</param>
         public delegate void DelegateCoordinate(Coordinate2D coordinate);
 
         /// <summary>
-        /// Occurs when [canvas clicked].
+        ///     The bitmap
         /// </summary>
-        public event DelegateCoordinate CanvasClicked;
+        private SKBitmap _bitmap;
 
         /// <inheritdoc />
         /// <summary>
@@ -61,6 +57,11 @@ namespace RenderEngine
             get => RenderRegister.Debug;
             set => RenderRegister.Debug = value;
         }
+
+        /// <summary>
+        ///     Occurs when [canvas clicked].
+        /// </summary>
+        public event DelegateCoordinate CanvasClicked;
 
         /// <summary>
         ///     Called when [paint surface].
@@ -164,7 +165,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Draws the dot.
+        ///     Draws the dot.
         /// </summary>
         /// <param name="point">The point.</param>
         /// <param name="clear">if set to <c>true</c> [clear].</param>
@@ -184,7 +185,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Draws the line.
+        ///     Draws the line.
         /// </summary>
         /// <param name="line">The line.</param>
         /// <param name="clear">if set to <c>true</c> [clear].</param>
@@ -200,8 +201,8 @@ namespace RenderEngine
 
             using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
 
-            SKPoint startPoint = new SKPoint(line.Start.X, line.Start.Y);
-            SKPoint endPoint = new SKPoint(line.EndPoint.X, line.EndPoint.Y);
+            var startPoint = new SKPoint(line.Start.X, line.Start.Y);
+            var endPoint = new SKPoint(line.EndPoint.X, line.EndPoint.Y);
 
             canvas.DrawLine(startPoint, endPoint, paint);
 
@@ -237,11 +238,11 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Handles the MouseDown event of the SKcanvas control.
+        ///     Handles the MouseDown event of the SKcanvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
-        private void SKcanvas_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs" /> instance containing the event data.</param>
+        private void SKcanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var position = e.GetPosition(SkiaElement);
 

@@ -58,7 +58,7 @@ namespace Mathematics
 
         /// <inheritdoc />
         /// <summary>
-        /// Creates a debug dump.
+        ///     Creates a debug dump.
         /// </summary>
         /// <param name="transform">The transform.</param>
         public void CreateDump(Transform transform)

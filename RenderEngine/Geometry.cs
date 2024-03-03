@@ -6,7 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
+// ReSharper disable MemberCanBeProtected.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 using Mathematics;
 using SkiaSharp;
 
@@ -67,7 +69,7 @@ namespace RenderEngine
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Start.Id);
+            return Start.GetHashCode();
         }
     }
 }

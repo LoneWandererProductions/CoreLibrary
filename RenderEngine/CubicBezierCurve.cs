@@ -44,7 +44,10 @@ namespace RenderEngine
         public bool Draw(SKCanvas canvas, SKPaint paint, GraphicStyle style)
         {
             //check if it division is possible
-            if ((Path.Count) % 3 != 0) return false;
+            if (Path.Count % 3 != 0)
+            {
+                return false;
+            }
 
             using var path = RenderHelper.CreatePath(Start, Path);
 
@@ -54,7 +57,7 @@ namespace RenderEngine
             // Draw a cubic Bezier curve, define Start Point
             path.MoveTo(Start.X, Start.Y);
 
-            for (int i = 0; i < Path.Count; i += 3)
+            for (var i = 0; i < Path.Count; i += 3)
             {
                 // Draw a cubic Bezier curve
                 if (i + 2 < Path.Count)

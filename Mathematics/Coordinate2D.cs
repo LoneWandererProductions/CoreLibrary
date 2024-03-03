@@ -33,7 +33,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Coordinate2D"/> class.
+        ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         /// <param name="x">The x in double.</param>
         /// <param name="y">The yin double.</param>
