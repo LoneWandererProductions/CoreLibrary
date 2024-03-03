@@ -1,6 +1,9 @@
 <p>Some basic helper Libraries.</p>
 <br>
-For one:<br>
+External Dependencies are:<br>
+System.Drawing and Skia<br>
+<br>
+For one this collection of libraries can do:<br>
 <br>
 - Generic Interpreter for command line like commands and expressions<br>
 - Some custom controls<br>
@@ -18,6 +21,7 @@ For one:<br>
 - Skeleton Plugin Interface<br>
 - An A* Pathfinder Implementation<br>
 - Some basic Dialogs like an SQL Login Screen or the removed Folder Browser<br>
+- A basic render Engine with Skia<br>
 <br>
 Some Math Operations:<br>
 - Generic Matrix Calculation<br>
