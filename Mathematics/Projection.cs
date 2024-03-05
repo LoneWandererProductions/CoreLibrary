@@ -53,7 +53,7 @@ namespace Mathematics
                 _ => ProjectionRaster.Convert2DTo3D(cache)
             };
 
-            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height, transform.DisplayType);
         }
 
         /// <inheritdoc />

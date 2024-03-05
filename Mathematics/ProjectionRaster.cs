@@ -139,13 +139,17 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Moves the into view.
+        /// Moves the into view.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <returns>Center on Screen</returns>
-        internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height)
+        /// <param name="displayType">Display type of the transform.</param>
+        /// <returns>
+        /// Center on Screen
+        /// </returns>
+        internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height,
+            Display displayType)
         {
             var lst = new List<PolyTriangle>();
 
@@ -172,12 +176,26 @@ namespace Mathematics
                 triangle[1] += vOffsetView;
                 triangle[2] += vOffsetView;
 
-                triangle[0].X *= 0.5d * width;
-                triangle[0].Y *= 0.5d * height;
-                triangle[1].X *= 0.5d * width;
-                triangle[1].Y *= 0.5d * height;
-                triangle[2].X *= 0.5d * width;
-                triangle[2].Y *= 0.5d * height;
+
+                if (displayType == Display.Normal)
+                {
+                    triangle[0].X *= 0.5d * width;
+                    triangle[0].Y *= 0.5d * height;
+                    triangle[1].X *= 0.5d * width;
+                    triangle[1].Y *= 0.5d * height;
+                    triangle[2].X *= 0.5d * width;
+                    triangle[2].Y *= 0.5d * height;
+                }
+                else
+                {
+                    triangle[0].X *= 0.25d * width;
+                    triangle[0].Y *= 0.25d * height;
+                    triangle[1].X *= 0.25d * width;
+                    triangle[1].Y *= 0.25d * height;
+                    triangle[2].X *= 0.25d * width;
+                    triangle[2].Y *= 0.25d * height;
+                }
+
 
                 lst.Add(triangle);
             }
