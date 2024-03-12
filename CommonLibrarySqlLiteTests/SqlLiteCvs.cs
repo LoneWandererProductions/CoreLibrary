@@ -90,7 +90,7 @@ namespace CommonLibrarySqlLiteTests
             {
                 foreach (var element in item.Row)
                 {
-                    Trace.Write(string.Concat(element, ","));
+                    Trace.Write($"{element},");
                 }
 
                 Trace.WriteLine(Environment.NewLine);
@@ -105,7 +105,7 @@ namespace CommonLibrarySqlLiteTests
             {
                 foreach (var element in item)
                 {
-                    Trace.Write(string.Concat(element, ","));
+                    Trace.Write($"{element},");
                 }
 
                 Trace.WriteLine(Environment.NewLine);

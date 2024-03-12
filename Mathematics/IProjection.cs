@@ -31,7 +31,6 @@ namespace Mathematics
         /// </returns>
         List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
 
-
         /// <summary>
         ///     Creates a debug dump.
         /// </summary>

@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

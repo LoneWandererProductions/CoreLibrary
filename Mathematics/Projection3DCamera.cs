@@ -133,12 +133,11 @@ namespace Mathematics
             return Projection3DConstants.LookAt(transform, vTarget);
         }
 
-
         /// <summary>
         ///     The Orbit camera.
         ///     M = T r t -> Inverse(M) = V, return value is V
         ///     t,  t translation, moves the camera away from the object
-        ///     r, rotation quaternion, rotates the the camera around the object
+        ///     r, rotation quaternion, rotates the camera around the object
         ///     T, to move the pivot point of the camera to center on the object, since the Object is always the center
         ///     t will be identy matrix
         ///     https://www.3dgep.com/understanding-the-view-matrix/#Arcball_Orbit_Camera

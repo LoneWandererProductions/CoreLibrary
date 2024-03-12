@@ -358,7 +358,6 @@ namespace SQLiteHelper
         /// </summary>
         internal const string InformationPropertyWasNull = "Property was null.";
 
-
         /// <summary>
         ///     Trace could not convert data type (const). Value: "Could not convert Data Type: ".
         /// </summary>

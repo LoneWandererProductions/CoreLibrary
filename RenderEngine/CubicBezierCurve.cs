@@ -99,7 +99,6 @@ namespace RenderEngine
                 Trace.WriteLine(ToString());
             }
 
-
             // Draw the path
             canvas.DrawPath(path, paint);
 

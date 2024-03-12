@@ -8,7 +8,6 @@
 
 // ReSharper disable UnusedMember.Global
 
-
 using System;
 
 namespace ExtendedSystemObjects

@@ -89,7 +89,6 @@ namespace RenderEngine
             return true;
         }
 
-
         /// <summary>
         ///     Converts to string.
         /// </summary>

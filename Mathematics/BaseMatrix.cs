@@ -223,7 +223,6 @@ namespace Mathematics
             return (Vector3D)(first * mat);
         }
 
-
         /// <summary>
         ///     Implements the operator +.
         /// </summary>
