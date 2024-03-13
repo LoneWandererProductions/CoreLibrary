@@ -93,7 +93,6 @@ namespace Imaging
         /// </summary>
         public const string TifExt = ".tif";
 
-
         /// <summary>
         ///     The File Appendix
         /// </summary>

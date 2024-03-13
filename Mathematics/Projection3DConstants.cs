@@ -23,7 +23,6 @@ namespace Mathematics
         /// </summary>
         internal const double Rad = Math.PI / 180.0d;
 
-
         /// <summary>
         ///     Projections the to 3d matrix.
         /// </summary>
@@ -48,8 +47,8 @@ namespace Mathematics
         ///     https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
         ///     https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
-        /// <param name="target">Target Vector.</param>
         /// <param name="transform">The transform.</param>
+        /// <param name="target">Target Vector.</param>
         /// <returns>
         ///     matrix for Transforming the Coordinate
         /// </returns>

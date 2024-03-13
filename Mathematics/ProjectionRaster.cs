@@ -196,7 +196,6 @@ namespace Mathematics
                     triangle[2].Y *= 0.25d * height;
                 }
 
-
                 lst.Add(triangle);
             }
 

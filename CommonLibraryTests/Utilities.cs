@@ -35,13 +35,13 @@ namespace CommonLibraryTests
 
             var index = Utility.GetFirstAvailableIndex(lst);
 
-            Assert.AreEqual(1, index, string.Concat("Index was false", index));
+            Assert.AreEqual(1, index, $"Index was false{index}");
 
             var keys = Utility.GetAvailableIndexes(lst, 3);
 
-            Assert.AreEqual(1, keys[0], string.Concat("Index was false", keys[0]));
-            Assert.AreEqual(5, keys[1], string.Concat("Index was false", keys[1]));
-            Assert.AreEqual(7, keys[2], string.Concat("Index was false", keys[2]));
+            Assert.AreEqual(1, keys[0], $"Index was false{keys[0]}");
+            Assert.AreEqual(5, keys[1], $"Index was false{keys[1]}");
+            Assert.AreEqual(7, keys[2], $"Index was false{keys[2]}");
         }
 
         /// <summary>
@@ -53,17 +53,17 @@ namespace CommonLibraryTests
             var lst = new List<int> { 0, 3, 6 };
 
             var index = Utility.GetNextElement(3, lst);
-            Assert.AreEqual(6, index, string.Concat("Index was false", index));
+            Assert.AreEqual(6, index, $"Index was false{index}");
             index = Utility.GetNextElement(6, lst);
-            Assert.AreEqual(0, index, string.Concat("Index was false", index));
+            Assert.AreEqual(0, index, $"Index was false{index}");
             index = Utility.GetPreviousElement(3, lst);
-            Assert.AreEqual(0, index, string.Concat("Index was false", index));
+            Assert.AreEqual(0, index, $"Index was false{index}");
             index = Utility.GetPreviousElement(0, lst);
-            Assert.AreEqual(6, index, string.Concat("Index was false", index));
+            Assert.AreEqual(6, index, $"Index was false{index}");
             index = Utility.GetPreviousElement(1, lst);
-            Assert.AreEqual(6, index, string.Concat("Index was false", index));
+            Assert.AreEqual(6, index, $"Index was false{index}");
             index = Utility.GetNextElement(1, lst);
-            Assert.AreEqual(0, index, string.Concat("Index was false", index));
+            Assert.AreEqual(0, index, $"Index was false{index}");
         }
 
         /// <summary>

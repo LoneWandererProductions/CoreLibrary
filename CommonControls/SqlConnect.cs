@@ -109,7 +109,7 @@ namespace CommonControls
                 return "Error: Database Name";
             }
 
-            return string.Concat(_persistInfo, _trust, _security, Server, ";", Database);
+            return $"{_persistInfo}{_trust}{_security}{Server};{Database}";
         }
 
         ///// <summary>

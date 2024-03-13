@@ -296,7 +296,7 @@ namespace CommonLibrarySqlLiteTests
             columns.DColumns.Add(ScdHeader, elementone);
 
             var check = _target.CreateTable(TblNameFirst, columns);
-            Assert.IsFalse(check, string.Concat("Test failed Unique Key caught: ", _target.LastErrors));
+            Assert.IsFalse(check, $"Test failed Unique Key caught: {_target.LastErrors}");
         }
 
         /// <summary>
