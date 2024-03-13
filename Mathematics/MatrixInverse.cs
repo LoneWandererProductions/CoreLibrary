@@ -155,6 +155,7 @@ namespace Mathematics
             var result = matrix.Duplicate();
             var lum = MatrixDecompose(matrix, out var perm,
                 out _);
+
             if (lum == null)
             {
                 throw new ArithmeticException(MathResources.MatrixErrorInverse);

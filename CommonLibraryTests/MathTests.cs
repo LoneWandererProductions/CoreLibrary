@@ -399,7 +399,6 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Lower not correct");
         }
 
-
         /// <summary>
         ///     Matrix additions.
         /// </summary>

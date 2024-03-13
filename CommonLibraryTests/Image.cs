@@ -722,7 +722,6 @@ namespace CommonLibraryTests
             Assert.AreEqual(40, converter.G, "done");
         }
 
-
         /// <summary>
         ///     Test our Line Algorithm.
         /// </summary>

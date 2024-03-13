@@ -136,7 +136,6 @@ namespace CommonControls
         ///// </value>
         //public string Password { get; set; }
 
-
         ///// <summary>
         ///// Authentication with SqlClient and Password.
         ///// </summary>

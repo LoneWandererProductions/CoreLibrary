@@ -176,7 +176,6 @@ namespace Mathematics
                 triangle[1] += vOffsetView;
                 triangle[2] += vOffsetView;
 
-
                 if (displayType == Display.Normal)
                 {
                     triangle[0].X *= 0.5d * width;
