@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        ExtendedSystemObjects/MultiArray.cs
+ * PURPOSE:     Some Extensions for Arrays, all generic
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Text;
 
 namespace ExtendedSystemObjects
