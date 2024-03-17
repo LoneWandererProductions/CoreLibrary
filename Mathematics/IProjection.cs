@@ -30,11 +30,5 @@ namespace Mathematics
         ///     Converted 3d View
         /// </returns>
         List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
-
-        /// <summary>
-        ///     Creates a debug dump.
-        /// </summary>
-        /// <param name="transform">The transform.</param>
-        void CreateDump(Transform transform);
     }
 }
