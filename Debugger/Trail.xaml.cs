@@ -202,7 +202,7 @@ namespace Debugger
                 return;
             }
 
-            _dispatcherTimer.Stop();
+            _dispatcherTimer?.Stop();
             DebugProcessing.StopDebugging();
 
             Log.Document.Blocks.Clear();

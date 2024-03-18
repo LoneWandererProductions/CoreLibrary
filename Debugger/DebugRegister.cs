@@ -121,6 +121,8 @@ namespace Debugger
                 {
                     return;
                 }
+                //set file we want to read
+                DebugRegister.DebugPath = conf.DebugPath;
 
                 DebugPath = conf.DebugPath;
                 SecondsTick = conf.SecondsTick;
