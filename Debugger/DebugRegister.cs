@@ -36,8 +36,8 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        internal static string DebugPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(),
-            DebuggerResources.FileName);
+        internal static string DebugPath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        DebuggerResources.FileName);
 
         /// <summary>
         ///     Is dump active.
