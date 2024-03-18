@@ -158,7 +158,7 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void MenDel_Click(object sender, RoutedEventArgs e)
         {
-            _dispatcherTimer.Stop();
+            _dispatcherTimer?.Stop();
             DebugLog.Delete();
         }
 
@@ -169,7 +169,7 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void MenStop_Click(object sender, RoutedEventArgs e)
         {
-            _dispatcherTimer.Stop();
+            _dispatcherTimer?.Stop();
             DebugProcessing.StopDebugging();
         }
 
