@@ -30,7 +30,6 @@ namespace Debugger
         /// </summary>
         internal const string FileExt= "Log Files (*.txt)|*.txt;";
 
-
         /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
         /// </summary>

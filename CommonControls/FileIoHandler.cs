@@ -50,7 +50,6 @@ namespace CommonControls
             return login.View.ConnectionString;
         }
 
-
         /// <summary>
         ///     Looks up a file
         ///     Returns the PathObject
