@@ -16,6 +16,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
+using CommonControls;
 
 namespace Debugger
 {
@@ -56,11 +57,6 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists(DebugRegister.DebugPath))
-            {
-                return;
-            }
-
             //load Config
             DebugRegister.ReadConfigFile();
 
@@ -118,10 +114,12 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Read the lines.
+        /// Read the lines.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>The line we have read<see cref="T:IEnumerable{string}" />.</returns>
+        /// <returns>
+        /// The line we have read<see cref="T:IEnumerable{string}" />.
+        /// </returns>
         private static IEnumerable<string> ReadLines(string path)
         {
             if (!File.Exists(path))
@@ -202,23 +200,26 @@ namespace Debugger
                 return;
             }
 
-            _dispatcherTimer?.Stop();
-            DebugProcessing.StopDebugging();
+            LoadFile();
+        }
 
-            Log.Document.Blocks.Clear();
+        /// <summary>
+        /// Handles the Click event of the MenLog control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void MenLog_Click(object sender, RoutedEventArgs e)
+        {
+            var file = FileIoHandler.HandleFileOpen(DebuggerResources.FileExt);
 
-            foreach (var line in ReadLines(DebugRegister.DebugPath).ToList())
+            if (!File.Exists(file.FilePath))
             {
-                var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
-
-                DebugHelper.AddRange(textRange, line);
+                return;
             }
 
-            //get index
-            _index = ReadLines(DebugRegister.DebugPath).Count();
-            DebugProcessing.InitiateDebug();
+            DebugRegister.DebugPath = file.FilePath;
 
-            _dispatcherTimer.Start();
+            LoadFile();
         }
 
         /// <summary>
@@ -240,6 +241,31 @@ namespace Debugger
         {
             var conf = new ConfigWindow();
             conf.Show();
+        }
+
+        /// <summary>
+        /// Loads the file.
+        /// </summary>
+        private void LoadFile()
+        {
+            _dispatcherTimer?.Stop();
+
+            DebugProcessing.StopDebugging();
+
+            Log.Document.Blocks.Clear();
+
+            foreach (var line in ReadLines(DebugRegister.DebugPath).ToList())
+            {
+                var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
+
+                DebugHelper.AddRange(textRange, line);
+            }
+
+            //get index
+            _index = ReadLines(DebugRegister.DebugPath).Count();
+            DebugProcessing.InitiateDebug();
+
+            _dispatcherTimer.Start();
         }
     }
 }
