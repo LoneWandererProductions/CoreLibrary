@@ -19,10 +19,11 @@ using DataFormatter;
 
 namespace Mathematics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public class Vector3D
+    public class Vector3D : ICloneable
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector3D" /> class.
@@ -216,6 +217,18 @@ namespace Mathematics
         public override string ToString()
         {
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrZ, Z);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return new Vector3D(X, Y, Z);
         }
 
         /// <summary>
