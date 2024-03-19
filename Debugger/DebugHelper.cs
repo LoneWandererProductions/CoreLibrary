@@ -23,6 +23,8 @@ namespace Debugger
         /// <param name="line">The line. as Text</param>
         internal static void AddRange(TextRange textRange, string line)
         {
+            //Todo make configurable in the future in config window
+
             textRange.Text = string.Concat(line, Environment.NewLine);
 
             if (line.Contains(nameof(ErCode.Error)))
