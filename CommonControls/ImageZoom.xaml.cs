@@ -115,7 +115,6 @@ namespace CommonControls
             set => SetValue(ImageSourceProperty, value);
         }
 
-
         /// <summary>
         ///     Gets or sets the gif image  path.
         /// </summary>

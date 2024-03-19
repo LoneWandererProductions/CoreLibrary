@@ -25,6 +25,7 @@
                 <MenuItem Header="Start Debugging" Click="MenStart_Click" />
                 <MenuItem Header="Stop Debugging" Click="MenStop_Click" />
                 <Separator Height="3" />
+                <MenuItem Header="Open Log" Click="MenLog_Click" />
                 <MenuItem Header="Close" Click="MenClose_Click" />
             </MenuItem>
             <MenuItem Header="Edit">

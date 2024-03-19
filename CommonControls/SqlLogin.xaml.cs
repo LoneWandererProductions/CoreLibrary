@@ -9,7 +9,6 @@
 // ReSharper disable UnusedType.Global
 
 using System.Windows;
-using System.Windows.Markup;
 
 namespace CommonControls
 {
@@ -18,12 +17,11 @@ namespace CommonControls
     ///     Login Window for Sql Server
     /// </summary>
     /// <seealso cref="Window" />
-    /// <seealso cref="IComponentConnector" />
     public sealed partial class SqlLogin
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.SqlLogin" /> class.
+        ///     Initializes a new instance of the <see cref="SqlLogin" /> class.
         /// </summary>
         public SqlLogin()
         {

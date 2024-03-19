@@ -250,12 +250,12 @@ namespace CommonLibraryTests
 
             var path = DirectoryInformation.GetParentDirectory(1);
             Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal),
-                string.Concat("Wrong Directory Name: ", path));
+                $"Wrong Directory Name: {path}");
 
             path = DirectoryInformation.GetParentDirectory(2);
 
             Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal),
-                string.Concat("Wrong Directory Name: ", path));
+                $"Wrong Directory Name: {path}");
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace CommonLibraryTests
                 error = FileHandlerRegister.ErrorLog.Last();
             }
 
-            Assert.IsTrue(isDone, string.Concat("Folder cleaned: ", error));
+            Assert.IsTrue(isDone, $"Folder cleaned: {error}");
         }
 
         /// <summary>

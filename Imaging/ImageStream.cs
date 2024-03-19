@@ -618,7 +618,6 @@ namespace Imaging
 
             graph.FillRectangle(br, new Rectangle(x, y, width, height));
 
-
             return image;
         }
 

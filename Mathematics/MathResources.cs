@@ -134,5 +134,30 @@ namespace Mathematics
         ///     The Display Type(const). Value: "Display Type: ".
         /// </summary>
         internal const string DisplayType = "Display Type: ";
+
+        /// <summary>
+        ///     The Debug 3D World Transformation Message(const). Value: "World Transformation".
+        /// </summary>
+        internal const string Debug3DWorld = "World Transformation";
+
+        /// <summary>
+        ///     The Debug 3D Camera Message(const). Value: "Camera Transformation".
+        /// </summary>
+        internal const string Debug3DCamera = "Camera Transformation";
+
+        /// <summary>
+        ///     The Debug 3D Clipping Message(const). Value: "Display Type: ".
+        /// </summary>
+        internal const string Debug3DClipping = "Clipping Transformation";
+
+        /// <summary>
+        ///     The Debug 3D Transformation Message(const). Value: "3D Transformation".
+        /// </summary>
+        internal const string Debug3D = "3D Transformation";
+
+        /// <summary>
+        ///     The Debug 3D Transformation Setting Message(const). Value: "Transformation Settings".
+        /// </summary>
+        internal const string Debug3DTransformation = "Transformation Settings";
     }
 }

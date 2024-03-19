@@ -237,7 +237,6 @@ namespace FileHandler
 
                 myFiles.AddRange(files);
 
-
                 //Give the User Optional Infos about the Amount we delete
                 var itm = new FileItems
                 {

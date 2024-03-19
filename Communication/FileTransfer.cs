@@ -83,7 +83,6 @@ namespace Communication
             return true;
         }
 
-
         /// <summary>
         ///     Saves the file.
         /// </summary>
@@ -93,7 +92,6 @@ namespace Communication
         {
             await DownloadFileAsync(filePath, url).ConfigureAwait(false);
         }
-
 
         /// <summary>
         ///     Downloads the file asynchronous.
@@ -136,7 +134,6 @@ namespace Communication
                 }
             }
         }
-
 
         /// <summary>
         ///     Gets the path.

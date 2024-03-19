@@ -104,7 +104,7 @@ namespace CommonLibraryGuiTests
 
             var data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Map was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Map was not correct: {data.Similarity}");
 
             map = new Dictionary<int, List<int>>
             {
@@ -119,11 +119,11 @@ namespace CommonLibraryGuiTests
             aurora.AuroraMap = map;
             aurora.Initiate();
 
-            aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
+            aurora.BitmapLayerOne.Save($"{SampleImagesFolder}/example.png", ImageFormat.Png);
 
             data = compare.CompareImages(bmResultLayerOther, aurora.BitmapLayerOne);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Aurora Map was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Aurora Map was not correct: {data.Similarity}");
 
             //test remove
             aurora.AuroraRemove = new KeyValuePair<int, int>(0, 2);
@@ -136,10 +136,10 @@ namespace CommonLibraryGuiTests
 
             data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
-            aurora.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example.png"), ImageFormat.Png);
+            aurora.BitmapLayerOne.Save($"{SampleImagesFolder}/example.png", ImageFormat.Png);
 
             Assert.AreEqual(100, data.Similarity,
-                string.Concat("Aurora Map remove was not correct: ", data.Similarity));
+                $"Aurora Map remove was not correct: {data.Similarity}");
         }
 
         /// <summary>
@@ -221,11 +221,11 @@ namespace CommonLibraryGuiTests
             keyValue = new KeyValuePair<int, int>(5, 0);
             polaris.PolarisAdd = keyValue;
 
-            polaris.BitmapLayerOne.Save(string.Concat(SampleImagesFolder, "/example Polaris.png"), ImageFormat.Png);
+            polaris.BitmapLayerOne.Save($"{SampleImagesFolder}/example Polaris.png", ImageFormat.Png);
 
             var data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
             polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);
             polaris.PolarisAddDisplay = new KeyValuePair<int, int>(1, 0);
@@ -257,7 +257,7 @@ namespace CommonLibraryGuiTests
                 }
             }
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
             polaris.PolarisRemoveDisplay = 0;
             polaris.PolarisRemoveDisplay = 1;
@@ -268,7 +268,7 @@ namespace CommonLibraryGuiTests
 
             data = compare.CompareImages(blank, polaris.BitmapLayerThree);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Map Polaris was not correct: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
             //this is a duplicate so this should not be added
             polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);

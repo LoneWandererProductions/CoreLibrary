@@ -35,20 +35,20 @@ namespace CommonLibraryTests
             };
             var arithmetic = new Dispersion(lst);
 
-            Assert.AreEqual(6, arithmetic.ArithmeticMean, string.Concat("Test Failed: ", arithmetic.ArithmeticMean));
+            Assert.AreEqual(6, arithmetic.ArithmeticMean, $"Test Failed: {arithmetic.ArithmeticMean}");
 
-            Assert.AreEqual(16, arithmetic.Variance, string.Concat("Test Failed: ", arithmetic.Variance));
+            Assert.AreEqual(16, arithmetic.Variance, $"Test Failed: {arithmetic.Variance}");
 
             Assert.AreEqual(4, arithmetic.StandardDeviation,
-                string.Concat("Test Failed: ", arithmetic.StandardDeviation));
+                $"Test Failed: {arithmetic.StandardDeviation}");
 
             Assert.AreEqual(0.667, Math.Round(arithmetic.CoefficientOfVariation, 3),
-                string.Concat("Test Failed: ", arithmetic.CoefficientOfVariation));
+                $"Test Failed: {arithmetic.CoefficientOfVariation}");
 
-            Assert.AreEqual(11, arithmetic.Span, string.Concat("Test Failed: ", arithmetic.Span));
+            Assert.AreEqual(11, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
 
             Assert.AreEqual(3.6, arithmetic.MeanAbsoluteDeviation,
-                string.Concat("Test Failed: ", arithmetic.MeanAbsoluteDeviation));
+                $"Test Failed: {arithmetic.MeanAbsoluteDeviation}");
 
             lst = new List<double>
             {
@@ -60,7 +60,7 @@ namespace CommonLibraryTests
             };
             arithmetic = new Dispersion(lst);
 
-            Assert.AreEqual(10, arithmetic.Span, string.Concat("Test Failed: ", arithmetic.Span));
+            Assert.AreEqual(10, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
         }
     }
 }

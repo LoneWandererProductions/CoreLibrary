@@ -158,7 +158,7 @@ namespace CommonLibraryGuiTests
                 result.Equals(
                     @"PersistSecurity Info= False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello",
                     StringComparison.Ordinal),
-                string.Concat("Wrong Connection string: ", result));
+                $"Wrong Connection string: {result}");
         }
     }
 }

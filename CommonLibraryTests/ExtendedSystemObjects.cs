@@ -123,12 +123,12 @@ namespace CommonLibraryTests
             var secondClone = lst.Clone();
 
             Assert.AreEqual(lst.Count, secondClone.Count,
-                string.Concat("Test passed CloneList, second round:  ", list.Count));
+                $"Test passed CloneList, second round:  {list.Count}");
 
             secondClone.RemoveAt(0);
 
             Assert.AreNotEqual(lst.Count, secondClone.Count,
-                string.Concat("Test passed CloneList, second round:  ", list.Count));
+                $"Test passed CloneList, second round:  {list.Count}");
         }
 
         /// <summary>
@@ -147,10 +147,10 @@ namespace CommonLibraryTests
             };
             var result = lst.ChunkBy(2);
 
-            Assert.AreEqual(3, result.Count, string.Concat("Test passed ChunkList:  ", result.Count));
+            Assert.AreEqual(3, result.Count, $"Test passed ChunkList:  {result.Count}");
             var cache = result[2];
 
-            Assert.AreEqual(5, cache[0], string.Concat("Test passed ChunkList, second round:  ", cache[0]));
+            Assert.AreEqual(5, cache[0], $"Test passed ChunkList, second round:  {cache[0]}");
         }
 
         /// <summary>
@@ -168,11 +168,11 @@ namespace CommonLibraryTests
 
             lst.AddDistinct(ResourcesGeneral.DataItemOne, 3);
 
-            Assert.AreEqual(2, lst.Count, string.Concat("Tested not as equal: ", lst.Count));
+            Assert.AreEqual(2, lst.Count, $"Tested not as equal: {lst.Count}");
 
             lst.AddDistinct(ResourcesGeneral.DataItemTwo, 4);
 
-            Assert.AreEqual(3, lst.Count, string.Concat("Tested not as equal: ", lst.Count));
+            Assert.AreEqual(3, lst.Count, $"Tested not as equal: {lst.Count}");
         }
 
         /// <summary>
@@ -225,13 +225,13 @@ namespace CommonLibraryTests
 
             var check = one.Equal(two);
             Assert.IsTrue(check,
-                string.Concat("Base Compare Test failed: ", nameof(one), " , ", nameof(two), " : ", check));
+                $"Base Compare Test failed: {nameof(one)} , {nameof(two)} : {check}");
             check = one.Equal(four);
-            Assert.IsTrue(check, string.Concat("Base Test failed: ", nameof(one), " , ", nameof(four), " : ", check));
+            Assert.IsTrue(check, $"Base Test failed: {nameof(one)} , {nameof(four)} : {check}");
 
             check = one.Equal(two, EnumerableCompare.IgnoreOrderCount);
             Assert.IsTrue(check,
-                string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one), " , ", nameof(two), " : ", check));
+                $"IgnoreOrderCount Compare Test failed: {nameof(one)} , {nameof(two)} : {check}");
             check = one.Equal(four, EnumerableCompare.IgnoreOrderCount);
             Assert.IsTrue(check,
                 string.Concat("IgnoreOrderCount Compare Test failed: ", nameof(one), " , ", nameof(four), " : ",
@@ -239,23 +239,23 @@ namespace CommonLibraryTests
 
             check = one.Equal(two, EnumerableCompare.IgnoreOrder);
             Assert.IsTrue(check,
-                string.Concat("IgnoreOrder Compare Test failed: ", nameof(one), " , ", nameof(two), " : ", check));
+                $"IgnoreOrder Compare Test failed: {nameof(one)} , {nameof(two)} : {check}");
             check = one.Equal(four, EnumerableCompare.IgnoreOrder);
             Assert.IsFalse(check,
-                string.Concat("IgnoreOrder Compare Test failed: ", nameof(one), " , ", nameof(four), " : ", check));
+                $"IgnoreOrder Compare Test failed: {nameof(one)} , {nameof(four)} : {check}");
 
             check = one.Equal(two, EnumerableCompare.AllEqual);
             Assert.IsFalse(check,
-                string.Concat("AllEqual Compare Test failed: ", nameof(one), " , ", nameof(two), " : ", check));
+                $"AllEqual Compare Test failed: {nameof(one)} , {nameof(two)} : {check}");
             check = one.Equal(one, EnumerableCompare.AllEqual);
             Assert.IsTrue(check,
-                string.Concat("AllEqual Compare Test failed: ", nameof(one), " , ", nameof(one), " : ", check));
+                $"AllEqual Compare Test failed: {nameof(one)} , {nameof(one)} : {check}");
             check = one.Equal(three, EnumerableCompare.AllEqual);
             Assert.IsFalse(check,
-                string.Concat("AllEqual Compare Test failed: ", nameof(one), " , ", nameof(three), " : ", check));
+                $"AllEqual Compare Test failed: {nameof(one)} , {nameof(three)} : {check}");
             check = one.Equal(four, EnumerableCompare.AllEqual);
             Assert.IsFalse(check,
-                string.Concat("AllEqual Compare Test failed: ", nameof(one), " , ", nameof(four), " : ", check));
+                $"AllEqual Compare Test failed: {nameof(one)} , {nameof(four)} : {check}");
         }
 
         /// <summary>

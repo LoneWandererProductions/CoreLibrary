@@ -58,7 +58,7 @@ namespace CommonLibrarySqlLiteTests
             //check if file was deleted
             var cache = Target.SimpleSelect(string.Empty);
 
-            Assert.AreEqual(null, cache, string.Concat("Test failed exception not caught: ", Target.LastErrors));
+            Assert.AreEqual(null, cache, $"Test failed exception not caught: {Target.LastErrors}");
         }
 
         /// <summary>

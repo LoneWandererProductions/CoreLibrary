@@ -29,25 +29,25 @@ namespace CommonLibraryTests
         public void Fractures()
         {
             var one = new ExtendedMath.Fraction(14, 2);
-            Assert.AreEqual(7, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
-            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
-            Assert.AreEqual(0, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
-            Assert.AreEqual(7, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
-            Assert.AreEqual(7, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+            Assert.AreEqual(7, one.Numerator, $"Test Failed: {one.Numerator}");
+            Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
+            Assert.AreEqual(0, one.Exponent, $"Test Failed: {one.Exponent}");
+            Assert.AreEqual(7, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
+            Assert.AreEqual(7, one.Decimal, $"Test Failed: {one.Decimal}");
 
             one = new ExtendedMath.Fraction(14, 8);
-            Assert.AreEqual(3, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
-            Assert.AreEqual(4, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
-            Assert.AreEqual(1, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
-            Assert.AreEqual(7, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
-            Assert.AreEqual((decimal)1.75, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+            Assert.AreEqual(3, one.Numerator, $"Test Failed: {one.Numerator}");
+            Assert.AreEqual(4, one.Denominator, $"Test Failed: {one.Denominator}");
+            Assert.AreEqual(1, one.Exponent, $"Test Failed: {one.Exponent}");
+            Assert.AreEqual(7, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
+            Assert.AreEqual((decimal)1.75, one.Decimal, $"Test Failed: {one.Decimal}");
 
             one = new ExtendedMath.Fraction(0, 1, 2);
-            Assert.AreEqual(0, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
-            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
-            Assert.AreEqual(0, one.Exponent, string.Concat("Test Failed: ", one.Exponent));
-            Assert.AreEqual(0, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
-            Assert.AreEqual(0, one.Decimal, string.Concat("Test Failed: ", one.Decimal));
+            Assert.AreEqual(0, one.Numerator, $"Test Failed: {one.Numerator}");
+            Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
+            Assert.AreEqual(0, one.Exponent, $"Test Failed: {one.Exponent}");
+            Assert.AreEqual(0, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
+            Assert.AreEqual(0, one.Decimal, $"Test Failed: {one.Decimal}");
         }
 
         /// <summary>
@@ -57,49 +57,49 @@ namespace CommonLibraryTests
         public void FracturesOperations()
         {
             var one = new ExtendedMath.Fraction(1, 2, 2);
-            Assert.AreEqual(5, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
+            Assert.AreEqual(5, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
             var two = new ExtendedMath.Fraction(1, 2, 2);
-            Assert.AreEqual(5, two.ExponentNumerator, string.Concat("Test Failed: ", two.ExponentNumerator));
+            Assert.AreEqual(5, two.ExponentNumerator, $"Test Failed: {two.ExponentNumerator}");
 
             var result = one + two;
 
-            Assert.AreEqual(5, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(1, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual(5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(5, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(1, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(5, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual(5, result.Decimal, $"Test Failed: {result.Decimal}");
 
             result = one - two;
 
-            Assert.AreEqual(0, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(4, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(0, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual(0, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(0, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(4, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(0, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual(0, result.Decimal, $"Test Failed: {result.Decimal}");
 
             one = new ExtendedMath.Fraction(4, 2);
-            Assert.AreEqual(2, one.ExponentNumerator, string.Concat("Test Failed: ", one.ExponentNumerator));
-            Assert.AreEqual(2, one.Numerator, string.Concat("Test Failed: ", one.Numerator));
-            Assert.AreEqual(1, one.Denominator, string.Concat("Test Failed: ", one.Denominator));
+            Assert.AreEqual(2, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
+            Assert.AreEqual(2, one.Numerator, $"Test Failed: {one.Numerator}");
+            Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
 
             two = new ExtendedMath.Fraction(1, 1, 4);
-            Assert.AreEqual(4, two.ExponentNumerator, string.Concat("Test Failed: ", two.ExponentNumerator));
+            Assert.AreEqual(4, two.ExponentNumerator, $"Test Failed: {two.ExponentNumerator}");
 
             result = one * two;
 
-            Assert.AreEqual(8, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(1, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(8, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual(8, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(8, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(1, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(8, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual(8, result.Decimal, $"Test Failed: {result.Decimal}");
 
             result = one / two;
 
-            Assert.AreEqual(1, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(2, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(1, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual((decimal)0.5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(1, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(2, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(1, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual((decimal)0.5, result.Decimal, $"Test Failed: {result.Decimal}");
 
             one = new ExtendedMath.Fraction(2, 2);
             // 2 1/2                                                this is the add-on
@@ -107,11 +107,11 @@ namespace CommonLibraryTests
 
             result = one + two;
 
-            Assert.AreEqual(1, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(2, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(2, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual((decimal)2.5, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(1, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(2, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(2, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(5, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual((decimal)2.5, result.Decimal, $"Test Failed: {result.Decimal}");
 
             // 1/2
             one = new ExtendedMath.Fraction(-1, 2);
@@ -122,19 +122,19 @@ namespace CommonLibraryTests
 
             //-1/2 * 3/2 = 3 / 4
             result = one * two;
-            Assert.AreEqual(3, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(4, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(3, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual((decimal)0.75, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(3, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(4, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(3, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual((decimal)0.75, result.Decimal, $"Test Failed: {result.Decimal}");
 
             //-1/2 * -5/4 = 5 / 8
             result = one * three;
-            Assert.AreEqual(5, result.Numerator, string.Concat("Test Failed: ", result.Numerator));
-            Assert.AreEqual(8, result.Denominator, string.Concat("Test Failed: ", result.Denominator));
-            Assert.AreEqual(0, result.Exponent, string.Concat("Test Failed: ", result.Exponent));
-            Assert.AreEqual(5, result.ExponentNumerator, string.Concat("Test Failed: ", result.ExponentNumerator));
-            Assert.AreEqual((decimal)0.625, result.Decimal, string.Concat("Test Failed: ", result.Decimal));
+            Assert.AreEqual(5, result.Numerator, $"Test Failed: {result.Numerator}");
+            Assert.AreEqual(8, result.Denominator, $"Test Failed: {result.Denominator}");
+            Assert.AreEqual(0, result.Exponent, $"Test Failed: {result.Exponent}");
+            Assert.AreEqual(5, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
+            Assert.AreEqual((decimal)0.625, result.Decimal, $"Test Failed: {result.Decimal}");
 
             //todo add +/-
         }
@@ -169,7 +169,7 @@ namespace CommonLibraryTests
             var compare1 = MathSpeedTests.TestOne(m1, m2);
 
             timer.Stop();
-            Trace.WriteLine(string.Concat("Test one (span Version): ", timer.Elapsed));
+            Trace.WriteLine($"Test one (span Version): {timer.Elapsed}");
 
             timer = new Stopwatch();
             timer.Start();
@@ -177,7 +177,7 @@ namespace CommonLibraryTests
             var compare2 = MatrixUtility.UnsafeMultiplication(m1, m2);
 
             timer.Stop();
-            Trace.WriteLine(string.Concat("Test two (unsafe multiplication): ", timer.Elapsed));
+            Trace.WriteLine($"Test two (unsafe multiplication): {timer.Elapsed}");
 
             Assert.AreEqual(result[0, 0], 2, "00");
             Assert.AreEqual(result[1, 0], 1, "10");
@@ -399,7 +399,6 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Lower not correct");
         }
 
-
         /// <summary>
         ///     Matrix additions.
         /// </summary>
@@ -411,7 +410,7 @@ namespace CommonLibraryTests
 
             var cache = m1.ToString();
 
-            var str = string.Concat("8 , 4", Environment.NewLine, "3 , 2", Environment.NewLine);
+            var str = $"8 , 4{Environment.NewLine}3 , 2{Environment.NewLine}";
             var check = string.Equals(cache, str);
 
             Assert.IsTrue(check, "Done");

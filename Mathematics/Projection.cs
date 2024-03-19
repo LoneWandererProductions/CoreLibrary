@@ -18,6 +18,14 @@ namespace Mathematics
     /// </summary>
     public sealed class Projection : IProjection
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Projection"/> is debug.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if debug; otherwise, <c>false</c>.
+        /// </value>
+        public bool Debug { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         ///     Generates the specified triangles.
@@ -30,6 +38,15 @@ namespace Mathematics
         public List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform)
         {
             var cache = ProjectionRaster.WorldMatrix(triangles, transform);
+
+            if (Debug)
+            {
+                Trace.WriteLine(MathResources.Debug3DWorld);
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
+            }
 
             switch (transform.CameraType)
             {
@@ -44,7 +61,25 @@ namespace Mathematics
                     break;
             }
 
+            if (Debug)
+            {
+                Trace.WriteLine(MathResources.Debug3DCamera);
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
+            }
+
             cache = ProjectionRaster.Clipping(cache, transform.Position);
+
+            if (Debug)
+            {
+                Trace.WriteLine(MathResources.Debug3DClipping);
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
+            }
 
             cache = transform.DisplayType switch
             {
@@ -53,15 +88,27 @@ namespace Mathematics
                 _ => ProjectionRaster.Convert2DTo3D(cache)
             };
 
+            if (Debug)
+            {
+                Trace.WriteLine(MathResources.Debug3D);
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
+            }
+
+            Trace.WriteLine(MathResources.Debug3DTransformation);
+
+            if (Debug) CreateDump(transform);
+
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height, transform.DisplayType);
         }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Creates a debug dump.
         /// </summary>
         /// <param name="transform">The transform.</param>
-        public void CreateDump(Transform transform)
+        private static void CreateDump(Transform transform)
         {
             var matrix = Projection3DConstants.ProjectionTo3DMatrix();
             Trace.WriteLine(matrix.ToString());

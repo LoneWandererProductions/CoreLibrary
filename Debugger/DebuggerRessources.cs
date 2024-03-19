@@ -26,6 +26,11 @@ namespace Debugger
         internal const string FileName = "DebugLog.txt";
 
         /// <summary>
+        ///     The file extension (const). Value: "Log Files (*.txt)|*.txt;".
+        /// </summary>
+        internal const string FileExt= "Log Files (*.txt)|*.txt;";
+
+        /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
         /// </summary>
         internal const string LoglvlOne = " , Error: ";

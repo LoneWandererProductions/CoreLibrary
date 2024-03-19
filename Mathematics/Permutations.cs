@@ -21,7 +21,7 @@ namespace Mathematics
         /// <summary>
         ///     Gets the combination.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">generic Type</typeparam>
         /// <param name="list">The list.</param>
         /// <returns>Combination of all Elements</returns>
         public static IEnumerable<IEnumerable<T>> GetCombination<T>(this List<T> list)
@@ -52,7 +52,7 @@ namespace Mathematics
         ///     Combinations with repetition.
         ///     https://stackoverflow.com/questions/25824376/combinations-with-repetitions-c-sharp
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">generic Type</typeparam>
         /// <param name="input">The input.</param>
         /// <param name="length">The length.</param>
         /// <returns>All combined SubElements</returns>

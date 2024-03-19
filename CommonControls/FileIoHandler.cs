@@ -23,9 +23,9 @@ namespace CommonControls
         /// <summary>
         ///     Show a Folder Dialog, displaying Folder structure
         /// </summary>
-        /// <param name="folder">Start Path</param>
+        /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>Selected Path</returns>
-        public static string ShowFolder(string folder)
+        public static string ShowFolder(string folder = "")
         {
             if (!Directory.Exists(folder))
             {
@@ -50,17 +50,16 @@ namespace CommonControls
             return login.View.ConnectionString;
         }
 
-
         /// <summary>
         ///     Looks up a file
         ///     Returns the PathObject
         ///     With Start Folder
         /// </summary>
         /// <param name="appendage">File Extension we allow</param>
-        /// <param name="folder">Folder</param>
+        /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
         [return: MaybeNull]
-        public static PathObject HandleFileOpen(string appendage, string folder)
+        public static PathObject HandleFileOpen(string appendage, string folder ="")
         {
             if (string.IsNullOrEmpty(appendage))
             {
@@ -90,10 +89,10 @@ namespace CommonControls
         ///     With Start Folder
         /// </summary>
         /// <param name="appendage">File Extension we allow</param>
-        /// <param name="folder">Folder</param>
+        /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
         [return: MaybeNull]
-        public static PathObject HandleFileSave(string appendage, string folder)
+        public static PathObject HandleFileSave(string appendage, string folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {

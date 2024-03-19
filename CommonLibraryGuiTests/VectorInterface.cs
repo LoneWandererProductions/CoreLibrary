@@ -28,7 +28,6 @@ namespace CommonLibraryGuiTests
 
         private const int Height = 100;
 
-
         /// <summary>
         ///     The Vector Interface.
         /// </summary>

@@ -180,7 +180,7 @@ namespace CommonLibraryTests
             var compare = new ImageAnalysis();
             var data = compare.CompareImages(btm, dbm.Bitmap);
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Image was not equal: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Image was not equal: {data.Similarity}");
 
             dbm.Dispose();
         }
@@ -272,12 +272,12 @@ namespace CommonLibraryTests
             var data = compare.CompareImages(bmResultOne, cache);
 
             //Todo implement ImageComparer, 2 images
-            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Compare failed: {data.Similarity}");
 
             data = compare.CompareImages(Path.Combine(ImagesFolder.FullName, "Tile.png"),
                 Path.Combine(ImagesFolder.FullName, "Tile.png"));
 
-            Assert.AreEqual(100, data.Similarity, string.Concat("Compare failed Path: ", data.Similarity));
+            Assert.AreEqual(100, data.Similarity, $"Compare failed Path: {data.Similarity}");
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace CommonLibraryTests
             watch.Stop();
             var elapsedTwo = watch.ElapsedMilliseconds;
 
-            Trace.WriteLine(string.Concat("Second DrawVerticalLine: ", elapsedTwo, " First DrawLine: ", elapsedOne));
+            Trace.WriteLine($"Second DrawVerticalLine: {elapsedTwo} First DrawLine: {elapsedOne}");
 
             //for now it depends... sometimes it is slower sometimes it is faster ...
             Trace.WriteLine(elapsedOne < elapsedTwo, "Was faster, I made an breakthrough. ");
@@ -430,7 +430,7 @@ namespace CommonLibraryTests
             Trace.WriteLine(string.Concat("First Rectangle draw Line: ", elapsed, " Second DrawRectangle dbm: ",
                 elapsedThree));
             Assert.IsTrue(elapsed < elapsedThree,
-                string.Concat("Results: ", elapsed, "Rectangle Microsoft: ", elapsedThree));
+                $"Results: {elapsed}Rectangle Microsoft: {elapsedThree}");
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace CommonLibraryTests
 
             //should be around 99%
             Assert.AreEqual(100, Math.Round(dataList[2].Similarity, 0),
-                string.Concat("Done: ", dataList[2].Similarity));
+                $"Done: {dataList[2].Similarity}");
 
             Trace.WriteLine(dataList[2].Similarity);
         }
@@ -722,7 +722,6 @@ namespace CommonLibraryTests
             Assert.AreEqual(40, converter.G, "done");
         }
 
-
         /// <summary>
         ///     Test our Line Algorithm.
         /// </summary>
@@ -791,7 +790,7 @@ namespace CommonLibraryTests
                 bresenham += CalcTwo(one, two);
             }
 
-            var message = string.Concat("Mine was : ", mine, " Bresenham: ", bresenham);
+            var message = $"Mine was : {mine} Bresenham: {bresenham}";
             Trace.WriteLine(message);
 
             Assert.IsTrue(bresenham >= mine, message);

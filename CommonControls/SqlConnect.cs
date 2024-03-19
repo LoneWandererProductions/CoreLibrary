@@ -31,7 +31,7 @@ namespace CommonControls
         ///     The persist information string configuration for the connection string.
         /// </summary>
         private readonly string _persistInfo =
-            string.Concat("PersistSecurity Info= ", PersistSecurityInfo.ToString(), ";");
+            $"PersistSecurity Info= {PersistSecurityInfo};";
 
         /// <summary>
         ///     The IntegratedSecurity string for the connection string
@@ -88,7 +88,7 @@ namespace CommonControls
         {
             //_security = IntegratedSecurity ? @"Integrated Security=True;" : @"Integrated Security=False;";
             _security = "Integrated Security=True;";
-            _trust = TrustServerCertificate ? @"TrustServerCertificate=True;" : @"TrustServerCertificate=False;";
+            _trust = TrustServerCertificate ? "TrustServerCertificate=True;" : "TrustServerCertificate=False;";
             //return IntegratedSecurity ? SqlWindowsAuthentication() : SqlAuthentication();
             return SqlWindowsAuthentication();
         }
@@ -109,7 +109,7 @@ namespace CommonControls
                 return "Error: Database Name";
             }
 
-            return string.Concat(_persistInfo, _trust, _security, Server, ";", Database);
+            return $"{_persistInfo}{_trust}{_security}{Server};{Database}";
         }
 
         ///// <summary>
@@ -135,7 +135,6 @@ namespace CommonControls
         ///// The password.
         ///// </value>
         //public string Password { get; set; }
-
 
         ///// <summary>
         ///// Authentication with SqlClient and Password.

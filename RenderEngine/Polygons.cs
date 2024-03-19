@@ -61,7 +61,6 @@ namespace RenderEngine
                     canvas.DrawPath(path, fillPaint);
                     return true; // No need to draw the stroke in the Fill style
                 }
-                    break;
                 case GraphicStyle.Plot:
                     foreach (var plot in Path)
                     {
