@@ -231,9 +231,7 @@ namespace Debugger
             }
             else
             {
-                var fs = new FileStream(DebugRegister.DebugPath, FileMode.Append);
-                using var sr = new StreamWriter(fs);
-                sr.WriteLine(message);
+                File.AppendAllText(DebugRegister.DebugPath, message);
             }
         }
 
