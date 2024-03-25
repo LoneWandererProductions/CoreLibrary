@@ -1,0 +1,148 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibrarySqlLiteTests\\CommonLibrarySqlLiteTests.csproj": {}
+  },
+  "projects": {
+    "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibrarySqlLiteTests\\CommonLibrarySqlLiteTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibrarySqlLiteTests\\CommonLibrarySqlLiteTests.csproj",
+        "projectName": "CommonLibrarySqlLiteTests",
+        "projectPath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibrarySqlLiteTests\\CommonLibrarySqlLiteTests.csproj",
+        "packagesPath": "C:\\Users\\peter\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonLibrarySqlLiteTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\peter\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\SQLiteHelper.csproj": {
+                "projectPath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\SQLiteHelper.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "MSTest.TestAdapter": {
+              "target": "Package",
+              "version": "[2.2.3, )"
+            },
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[2.2.3, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.9.4, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.114.4, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[3.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\SQLiteHelper.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\SQLiteHelper.csproj",
+        "projectName": "SQLiteHelper",
+        "projectPath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\SQLiteHelper.csproj",
+        "packagesPath": "C:\\Users\\peter\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SQLiteHelper\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\peter\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "System.Data.SQLite.Core": {
+              "target": "Package",
+              "version": "[1.0.115.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

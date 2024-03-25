@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "1AdGhHRLOnI5RZHWLhWQNzwUiKLY1Ga32K7BZfDCm+ToFWdA5TE+QA1hcfCp6StCwYoG05Uao+HBuF9kU6uHMw==",
+  "success": true,
+  "projectFilePath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\CommonControls\\CommonControls.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\peter\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

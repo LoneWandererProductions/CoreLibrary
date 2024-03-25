@@ -1,0 +1,12 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\bin\Debug\net5.0\SQLiteHelper.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\bin\Debug\net5.0\SQLiteHelper.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\bin\Debug\net5.0\ref\SQLiteHelper.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\bin\Debug\net5.0\SQLiteHelper.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\ref\SQLiteHelper.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\SQLiteHelper\obj\Debug\net5.0\SQLiteHelper.csproj.AssemblyReference.cache

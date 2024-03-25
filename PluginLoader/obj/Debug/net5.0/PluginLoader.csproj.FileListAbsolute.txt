@@ -1,0 +1,15 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\PluginLoader.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\PluginLoader.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\ref\PluginLoader.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\PluginLoader.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\Plugin.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\bin\Debug\net5.0\Plugin.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.csproj.AssemblyReference.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.csproj.CopyComplete
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\ref\PluginLoader.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PluginLoader\obj\Debug\net5.0\PluginLoader.pdb

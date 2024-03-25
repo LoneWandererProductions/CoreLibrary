@@ -1,0 +1,12 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ref\ExtendedSystemObjects.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ref\ExtendedSystemObjects.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.csproj.AssemblyReference.cache

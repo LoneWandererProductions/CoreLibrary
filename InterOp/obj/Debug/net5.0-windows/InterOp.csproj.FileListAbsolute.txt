@@ -1,0 +1,11 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\bin\Debug\net5.0-windows\InterOp.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\bin\Debug\net5.0-windows\InterOp.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\bin\Debug\net5.0-windows\ref\InterOp.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\bin\Debug\net5.0-windows\InterOp.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\ref\InterOp.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\InterOp\obj\Debug\net5.0-windows\InterOp.pdb

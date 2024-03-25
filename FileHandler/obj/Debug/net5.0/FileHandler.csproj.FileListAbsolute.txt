@@ -1,0 +1,12 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\ref\FileHandler.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\ref\FileHandler.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.csproj.AssemblyReference.cache

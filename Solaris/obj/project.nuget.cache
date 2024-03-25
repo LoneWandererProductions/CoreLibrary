@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "MwK+ApmmBQLYJT4PRFZizPNPOoCOzn4RsPJ8OlVocjLZaY4DcEPKFbT52012MZoSf0SE0s9xxmdhMv7uam85kA==",
+  "success": true,
+  "projectFilePath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\Solaris\\Solaris.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\peter\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

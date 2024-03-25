@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Objects>
+    <SaveObject>
+      <Graphic xsi:type="LineObject">
+        <StartPoint>
+          <X>0</X>
+          <Y>0</Y>
+        </StartPoint>
+        <EndPoint>
+          <X>-1</X>
+          <Y>0</Y>
+        </EndPoint>
+      </Graphic>
+      <Type>Line</Type>
+    </SaveObject>
+    <SaveObject>
+      <Graphic xsi:type="CurveObject">
+        <Points>
+          <Point>
+            <X>0</X>
+            <Y>0</Y>
+          </Point>
+          <Point>
+            <X>0</X>
+            <Y>1</Y>
+          </Point>
+        </Points>
+        <Tension>1</Tension>
+      </Graphic>
+      <Type>Curve</Type>
+    </SaveObject>
+  </Objects>
+  <Width>100</Width>
+</Element>

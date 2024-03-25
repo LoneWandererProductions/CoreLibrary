@@ -1,0 +1,12 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\ref\PathFinding.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\ref\PathFinding.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.csproj.AssemblyReference.cache

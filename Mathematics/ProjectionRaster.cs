@@ -176,24 +176,12 @@ namespace Mathematics
                 triangle[1] += vOffsetView;
                 triangle[2] += vOffsetView;
 
-                if (displayType == Display.Normal)
-                {
-                    triangle[0].X *= 0.5d * width;
-                    triangle[0].Y *= 0.5d * height;
-                    triangle[1].X *= 0.5d * width;
-                    triangle[1].Y *= 0.5d * height;
-                    triangle[2].X *= 0.5d * width;
-                    triangle[2].Y *= 0.5d * height;
-                }
-                else
-                {
-                    triangle[0].X *= 0.25d * width;
-                    triangle[0].Y *= 0.25d * height;
-                    triangle[1].X *= 0.25d * width;
-                    triangle[1].Y *= 0.25d * height;
-                    triangle[2].X *= 0.25d * width;
-                    triangle[2].Y *= 0.25d * height;
-                }
+                triangle[0].X *= 0.5d * width;
+                triangle[0].Y *= 0.5d * height;
+                triangle[1].X *= 0.5d * width;
+                triangle[1].Y *= 0.5d * height;
+                triangle[2].X *= 0.5d * width;
+                triangle[2].Y *= 0.5d * height;
 
                 lst.Add(triangle);
             }

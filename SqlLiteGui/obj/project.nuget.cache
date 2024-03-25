@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "CtRO+DauAWb6H556sJd5Kd0EbVCsdHEdjzsHK34CAqvtk4T2V8v9M46WGGsCRgAs/1krPQms0TuhnpQ7nsiXNA==",
+  "success": true,
+  "projectFilePath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\SqlLiteGui\\SQLiteGui.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.115.5\\stub.system.data.sqlite.core.netstandard.1.0.115.5.nupkg.sha512",
+    "C:\\Users\\peter\\.nuget\\packages\\system.data.sqlite.core\\1.0.115.5\\system.data.sqlite.core.1.0.115.5.nupkg.sha512"
+  ],
+  "logs": []
+}

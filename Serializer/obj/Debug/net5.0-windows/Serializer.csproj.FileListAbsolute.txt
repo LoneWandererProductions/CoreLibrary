@@ -1,0 +1,15 @@
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\Serializer.deps.json
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\Serializer.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\ref\Serializer.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\Serializer.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\FileHandler.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\bin\Debug\net5.0-windows\FileHandler.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.csproj.AssemblyReference.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.AssemblyInfoInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.AssemblyInfo.cs
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.csproj.CoreCompileInputs.cache
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.csproj.CopyComplete
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\ref\Serializer.dll
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Serializer\obj\Debug\net5.0-windows\Serializer.pdb

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "EusibtOeo1Cc4cjkFxwTvPTMSEM0GAEyhlxA/2g/iHJnk3Sn7wVPsSEZ2bfl3NgG8nRBxUMFG+39svBWYRAaxg==",
+  "success": true,
+  "projectFilePath": "D:\\Users\\Peter\\Documents\\Visual Studio 2019\\Projects\\CoreLibrary\\Imaging\\Imaging.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\peter\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
