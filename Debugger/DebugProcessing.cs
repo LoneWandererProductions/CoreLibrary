@@ -26,6 +26,11 @@ namespace Debugger
         private static bool _isActive;
 
         /// <summary>
+        /// A lock
+        /// </summary>
+        private static readonly object thisLock = new();
+
+        /// <summary>
         ///     Entry Point for all Debug Messages
         ///     Only called by the Error Box
         ///     0 ... error
@@ -231,7 +236,10 @@ namespace Debugger
             }
             else
             {
-                File.AppendAllText(DebugRegister.DebugPath, message);
+                lock (thisLock)
+                {
+                    File.AppendAllText(DebugRegister.DebugPath, message);
+                }
             }
         }
 
