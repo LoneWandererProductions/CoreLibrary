@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/DebugProcessing.cs
@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Debugger
 {
@@ -322,7 +324,7 @@ namespace Debugger
             lock (_lockObject)
             {
                 // Append the message to the file
-                File.AppendAllText(DebuggerResources.DebugPath, message + Environment.NewLine);
+                File.AppendAllText(DebugRegister.DebugPath, string.Concat(message, Environment.NewLine));
             }
 
             // Simulate some delay (optional)
