@@ -16,6 +16,11 @@ namespace Debugger
     internal static class DebuggerResources
     {
         /// <summary>
+        ///     The Idle Timer (for delay in the Debug Log writer) (const). Value: 100.
+        /// </summary>
+        internal const int Idle = 100;
+        
+        /// <summary>
         ///     The config file (const). Value: "Config.xml".
         /// </summary>
         internal const string ConfigFile = "Config.Debug.xml";
@@ -54,6 +59,11 @@ namespace Debugger
         ///     The error serializing (const). Value: "Unexpected Problems appeared while trying to serialize object: ".
         /// </summary>
         internal const string ErrorSerializing = "Unexpected Problems appeared while trying to serialize object: ";
+
+        /// <summary>
+        ///     The error while Processing (const). Value: "Error processing message queue:".
+        /// </summary>
+        internal const string ErrorProcessing = "Error processing message queue:";
 
         /// <summary>
         ///     The formating (const). Value: " : ".
