@@ -26,9 +26,33 @@ namespace Debugger
         private static bool _isActive;
 
         /// <summary>
-        /// A lock
+        /// The lock object
         /// </summary>
-        private static readonly object thisLock = new();
+        private static readonly string _lockObject = string.Empty;
+
+        /// <summary>
+        /// The message queue
+        /// </summary>
+        private static readonly ConcurrentQueue<string> _messageQueue = new();
+
+        /// <summary>
+        /// The cancellation token source
+        /// </summary>
+        private static readonly CancellationTokenSource _cancellationTokenSource = new();
+
+        /// <summary>
+        /// The message enqueued event
+        /// </summary>
+        private static readonly ManualResetEventSlim _messageEnqueuedEvent = new(false);
+
+        /// <summary>
+        /// Initializes the <see cref="DebugProcessing"/> class.
+        /// </summary>
+        static DebugProcessing()
+        {
+            // Start a background task to process the message queue
+            Task.Run(() => ProcessMessageQueueAsync(_cancellationTokenSource.Token));
+        }
 
         /// <summary>
         ///     Entry Point for all Debug Messages
@@ -202,7 +226,9 @@ namespace Debugger
             }
 
             DebugLog.CurrentLog.Add(message);
-
+            
+            Trace.WriteLine(message);
+            
             /*
              *  Errors will always be logged down,
              *  if someone issued the Dump Command so we add everything to the File.
@@ -216,30 +242,6 @@ namespace Debugger
             if (DebugRegister.IsDumpActive)
             {
                 WriteFile(message);
-            }
-
-            Trace.WriteLine(message);
-        }
-
-        /// <summary>
-        ///     Writes the file.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private static void WriteFile(string message)
-        {
-            //add to File here, we could Use Trace Listener, but I wasn't satisfied with the Results
-            if (!File.Exists(DebugRegister.DebugPath))
-            {
-                var fs = new FileStream(DebugRegister.DebugPath, FileMode.CreateNew);
-                using var sr = new StreamWriter(fs);
-                sr.WriteLine(message);
-            }
-            else
-            {
-                lock (thisLock)
-                {
-                    File.AppendAllText(DebugRegister.DebugPath, message);
-                }
             }
         }
 
@@ -261,6 +263,69 @@ namespace Debugger
         {
             DebugRegister.IsRunning = _isActive = false;
             Trace.Close();
+        }
+
+        /// <summary>
+        ///     Writes the file.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private static void WriteFile(string message)
+        {
+            // Enqueue the message
+            _messageQueue.Enqueue(message);
+            // Signal that a message has been enqueued
+            _messageEnqueuedEvent.Set();
+        }
+        
+        /// <summary>
+        /// Processes the message queue asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        private static async Task ProcessMessageQueueAsync(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Wait for a message to be enqueued or until cancellation is requested
+                    _messageEnqueuedEvent.Wait(cancellationToken);
+
+                    // Dequeue all messages and write them to the file
+                    while (_messageQueue.TryDequeue(out var message))
+                    {
+                        await WriteToFileAsync(message);
+                    }
+
+                    // Reset the event after processing all messages
+                    _messageEnqueuedEvent.Reset();
+                }
+                catch (OperationCanceledException)
+                {
+                    // Cancellation requested, exit the loop
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error processing message queue: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes to file asynchronous.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private static async Task WriteToFileAsync(string message)
+        {
+            // Ensure thread safety while writing to the file
+            lock (_lockObject)
+            {
+                // Append the message to the file
+                File.AppendAllText(DebuggerResources.DebugPath, message + Environment.NewLine);
+            }
+
+            // Simulate some delay (optional)
+            await Task.Delay(100);
         }
     }
 }
