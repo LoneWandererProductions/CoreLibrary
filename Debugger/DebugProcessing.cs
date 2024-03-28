@@ -306,7 +306,7 @@ namespace Debugger
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Error processing message queue: {ex.Message}");
+                    Trace.WriteLine(string.Concat(DebuggerResources.ErrorProcessing, ex.Message));
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace Debugger
             }
 
             // Simulate some delay (optional)
-            await Task.Delay(100);
+            await Task.Delay(DebuggerResources.Idle);
         }
     }
 }
