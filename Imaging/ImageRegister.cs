@@ -140,10 +140,32 @@ namespace Imaging
     /// </summary>
     public enum ImageFilter
     {
-        GrayScale = 0,
-        Invert = 1,
-        Sepia = 2,
-        BlackAndWhite = 3,
-        Polaroid = 4
+        /// <summary>
+        /// The none
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The gray scale
+        /// </summary>
+        GrayScale = 1,
+
+        Invert = 2,
+
+        /// <summary>
+        /// The sepia
+        /// </summary>
+        Sepia = 3,
+
+        /// <summary>
+        /// The black and white
+        /// </summary>
+        BlackAndWhite = 4,
+
+        /// <summary>
+        /// The polaroid
+        /// </summary>
+        Polaroid = 5
     }
+}
 }
