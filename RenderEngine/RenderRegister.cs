@@ -20,5 +20,21 @@ namespace RenderEngine
         ///     <c>true</c> if debug; otherwise, <c>false</c>.
         /// </value>
         public static bool Debug { get; set; }
+
+        /// <summary>
+        /// Gets or sets the height.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
+        public static int Height { get; set; }
+
+        /// <summary>
+        /// Gets or sets the width.
+        /// </summary>
+        /// <value>
+        /// The width.
+        /// </value>
+        public static int Width { get; set; }
     }
 }

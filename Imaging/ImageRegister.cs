@@ -168,4 +168,3 @@ namespace Imaging
         Polaroid = 5
     }
 }
-}

@@ -57,8 +57,25 @@ namespace RenderEngine
                     break;
                 case GraphicStyle.Fill:
                 {
-                    using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
-                    canvas.DrawPath(path, fillPaint);
+                    //using var fillPaint = new SKPaint { Style = SKPaintStyle.Fill };
+                    var colors = new[] { SKColors.Red, SKColors.Blue };
+                    var positions = new float[] { 0, 1 };
+
+                    // Create a linear gradient shader
+                    var shader = SKShader.CreateLinearGradient(
+                        new SKPoint(0, 0), // Start point
+                        new SKPoint(0, RenderRegister.Height), // End point
+                        colors, // Colors
+                        positions, // Color positions
+                        SKShaderTileMode.Clamp); // Tile mode
+
+                    // Create a paint with the gradient shader
+                    var shade = new SKPaint
+                    {
+                        Shader = shader
+                    };
+
+                    canvas.DrawPath(path, shade);
                     return true; // No need to draw the stroke in the Fill style
                 }
                 case GraphicStyle.Plot:
