@@ -16,5 +16,5 @@ TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 202-1196958546
 ColorPicker.xaml;ColorPickerMenu.xaml;ColorSelection.xaml;DataList.xaml;FolderBrowser.xaml;FolderControl.xaml;ImageZoom.xaml;InputBox.xaml;PluginController.xaml;SqlLogin.xaml;Thumbnails.xaml;
 
-False
+True
 

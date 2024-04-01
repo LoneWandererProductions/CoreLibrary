@@ -48,6 +48,8 @@ namespace Mathematics
                 }
             }
 
+            //TODO something goes wrong here!
+
             switch (transform.CameraType)
             {
                 case Cameras.Orbit:
