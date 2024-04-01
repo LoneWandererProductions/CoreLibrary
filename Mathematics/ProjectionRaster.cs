@@ -22,6 +22,7 @@ namespace Mathematics
         internal static List<PolyTriangle> WorldMatrix(List<PolyTriangle> triangles, Transform transform)
         {
             var lst = new List<PolyTriangle>(triangles.Count);
+
             lst.AddRange(triangles.Select(triangle => new[]
             {
                 triangle[0] * Projection3DCamera.ModelMatrix(transform),

@@ -9,3 +9,4 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Plugin\obj\Debu
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Plugin\obj\Debug\net5.0\Plugin.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Plugin\obj\Debug\net5.0\ref\Plugin.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Plugin\obj\Debug\net5.0\Plugin.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Plugin\obj\Debug\net5.0\Plugin.csproj.AssemblyReference.cache

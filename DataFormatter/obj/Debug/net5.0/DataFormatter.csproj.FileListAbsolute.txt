@@ -20,3 +20,4 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\o
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\ref\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.csproj.AssemblyReference.cache
