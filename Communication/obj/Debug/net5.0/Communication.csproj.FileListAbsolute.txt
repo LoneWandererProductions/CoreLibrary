@@ -2,6 +2,7 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\b
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\bin\Debug\net5.0\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\bin\Debug\net5.0\ref\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\bin\Debug\net5.0\Communication.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.csproj.AssemblyReference.cache
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.GeneratedMSBuildEditorConfig.editorconfig
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.AssemblyInfoInputs.cache
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.AssemblyInfo.cs
@@ -9,4 +10,3 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\o
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\ref\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.pdb
-D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.csproj.AssemblyReference.cache

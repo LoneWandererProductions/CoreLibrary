@@ -13,6 +13,7 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\b
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\ref\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\DataFormatter.pdb
+D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.csproj.AssemblyReference.cache
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.GeneratedMSBuildEditorConfig.editorconfig
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.AssemblyInfoInputs.cache
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.AssemblyInfo.cs
@@ -20,4 +21,3 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\o
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\ref\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.pdb
-D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.csproj.AssemblyReference.cache
