@@ -113,7 +113,7 @@ namespace CommonLibraryTests
             check = expected == matrix;
             var cache = expected - matrix;
 
-            Assert.IsTrue(check, string.Concat("Wrong Point At Matrix: ", cache.ToString()));
+            Assert.IsTrue(check, $"Wrong Point At Matrix: {cache}");
         }
 
         /// <summary>
