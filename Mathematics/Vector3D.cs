@@ -136,6 +136,18 @@ namespace Mathematics
         /// </value>
         public int RoundedZ => (int)Math.Round(Z, 0);
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return new Vector3D(X, Y, Z);
+        }
+
         /// <summary>
         ///     Sets the w.
         /// </summary>
@@ -217,18 +229,6 @@ namespace Mathematics
         public override string ToString()
         {
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrZ, Z);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        /// A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            return new Vector3D(X, Y, Z);
         }
 
         /// <summary>

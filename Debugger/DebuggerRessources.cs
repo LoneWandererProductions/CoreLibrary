@@ -19,7 +19,7 @@ namespace Debugger
         ///     The Idle Timer (for delay in the Debug Log writer) (const). Value: 100.
         /// </summary>
         internal const int Idle = 100;
-        
+
         /// <summary>
         ///     The config file (const). Value: "Config.xml".
         /// </summary>
@@ -33,7 +33,7 @@ namespace Debugger
         /// <summary>
         ///     The file extension (const). Value: "Log Files (*.txt)|*.txt;".
         /// </summary>
-        internal const string FileExt= "Log Files (*.txt)|*.txt;";
+        internal const string FileExt = "Log Files (*.txt)|*.txt;";
 
         /// <summary>
         ///     The log Level one (const). Value: " , Error: ".

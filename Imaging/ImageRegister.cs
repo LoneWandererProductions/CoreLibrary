@@ -141,32 +141,32 @@ namespace Imaging
     public enum ImageFilter
     {
         /// <summary>
-        /// No Filter
+        ///     No Filter
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// The gray scale filter
+        ///     The gray scale filter
         /// </summary>
         GrayScale = 1,
 
         /// <summary>
-        /// The invert filter
+        ///     The invert filter
         /// </summary>
         Invert = 2,
 
         /// <summary>
-        /// The sepia filter
+        ///     The sepia filter
         /// </summary>
         Sepia = 3,
 
         /// <summary>
-        /// The black and white filter
+        ///     The black and white filter
         /// </summary>
         BlackAndWhite = 4,
 
         /// <summary>
-        /// The polaroid filter
+        ///     The polaroid filter
         /// </summary>
         Polaroid = 5
     }

@@ -19,10 +19,10 @@ namespace Mathematics
     public sealed class Projection : IProjection
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Projection"/> is debug.
+        ///     Gets or sets a value indicating whether this <see cref="Projection" /> is debug.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if debug; otherwise, <c>false</c>.
+        ///     <c>true</c> if debug; otherwise, <c>false</c>.
         /// </value>
         public bool Debug { get; set; } = true;
 
@@ -101,9 +101,13 @@ namespace Mathematics
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 
-            if (Debug) CreateDump(transform);
+            if (Debug)
+            {
+                CreateDump(transform);
+            }
 
-            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height, transform.DisplayType);
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height,
+                transform.DisplayType);
         }
 
         /// <summary>

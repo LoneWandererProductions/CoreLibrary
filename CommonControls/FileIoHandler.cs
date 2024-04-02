@@ -59,7 +59,7 @@ namespace CommonControls
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
         [return: MaybeNull]
-        public static PathObject HandleFileOpen(string appendage, string folder ="")
+        public static PathObject HandleFileOpen(string appendage, string folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {

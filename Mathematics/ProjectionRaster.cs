@@ -140,14 +140,14 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Moves the into view.
+        ///     Moves the into view.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="displayType">Display type of the transform.</param>
         /// <returns>
-        /// Center on Screen
+        ///     Center on Screen
         /// </returns>
         internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height,
             Display displayType)

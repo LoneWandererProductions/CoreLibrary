@@ -114,11 +114,11 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Read the lines.
+        ///     Read the lines.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>
-        /// The line we have read<see cref="T:IEnumerable{string}" />.
+        ///     The line we have read<see cref="T:IEnumerable{string}" />.
         /// </returns>
         private static IEnumerable<string> ReadLines(string path)
         {
@@ -204,10 +204,10 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the Click event of the MenLog control.
+        ///     Handles the Click event of the MenLog control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void MenLog_Click(object sender, RoutedEventArgs e)
         {
             var file = FileIoHandler.HandleFileOpen(DebuggerResources.FileExt);
@@ -244,7 +244,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Loads the file.
+        ///     Loads the file.
         /// </summary>
         private void LoadFile()
         {

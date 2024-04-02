@@ -27,7 +27,8 @@ namespace Mathematics
         /// <exception cref="ArithmeticException">Unable to compute MatrixDeterminant</exception>
         internal static double MatrixDeterminant(double[,] matrix)
         {
-            var lum = MatrixDecompose(matrix, out _, out var toggle) ?? throw new ArithmeticException(MathResources.MatrixErrorDeterminant);
+            var lum = MatrixDecompose(matrix, out _, out var toggle) ??
+                      throw new ArithmeticException(MathResources.MatrixErrorDeterminant);
 
             double result = toggle;
 

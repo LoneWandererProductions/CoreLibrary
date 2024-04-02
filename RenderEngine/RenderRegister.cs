@@ -22,18 +22,18 @@ namespace RenderEngine
         public static bool Debug { get; set; }
 
         /// <summary>
-        /// Gets or sets the height.
+        ///     Gets or sets the height.
         /// </summary>
         /// <value>
-        /// The height.
+        ///     The height.
         /// </value>
         public static int Height { get; set; }
 
         /// <summary>
-        /// Gets or sets the width.
+        ///     Gets or sets the width.
         /// </summary>
         /// <value>
-        /// The width.
+        ///     The width.
         /// </value>
         public static int Width { get; set; }
     }

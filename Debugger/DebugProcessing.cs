@@ -9,8 +9,8 @@
 // ReSharper disable SwitchStatementMissingSomeCases
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -29,27 +29,27 @@ namespace Debugger
         private static bool _isActive;
 
         /// <summary>
-        /// The lock object
+        ///     The lock object
         /// </summary>
         private static readonly string _lockObject = string.Empty;
 
         /// <summary>
-        /// The message queue
+        ///     The message queue
         /// </summary>
         private static readonly ConcurrentQueue<string> _messageQueue = new();
 
         /// <summary>
-        /// The cancellation token source
+        ///     The cancellation token source
         /// </summary>
         private static readonly CancellationTokenSource _cancellationTokenSource = new();
 
         /// <summary>
-        /// The message enqueued event
+        ///     The message enqueued event
         /// </summary>
         private static readonly ManualResetEventSlim _messageEnqueuedEvent = new(false);
 
         /// <summary>
-        /// Initializes the <see cref="DebugProcessing"/> class.
+        ///     Initializes the <see cref="DebugProcessing" /> class.
         /// </summary>
         static DebugProcessing()
         {
@@ -229,9 +229,9 @@ namespace Debugger
             }
 
             DebugLog.CurrentLog.Add(message);
-            
+
             Trace.WriteLine(message);
-            
+
             /*
              *  Errors will always be logged down,
              *  if someone issued the Dump Command so we add everything to the File.
@@ -279,9 +279,9 @@ namespace Debugger
             // Signal that a message has been enqueued
             _messageEnqueuedEvent.Set();
         }
-        
+
         /// <summary>
-        /// Processes the message queue asynchronous.
+        ///     Processes the message queue asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         private static async Task ProcessMessageQueueAsync(CancellationToken cancellationToken)
@@ -315,7 +315,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Writes to file asynchronous.
+        ///     Writes to file asynchronous.
         /// </summary>
         /// <param name="message">The message.</param>
         private static async Task WriteToFileAsync(string message)

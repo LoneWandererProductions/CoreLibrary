@@ -201,7 +201,7 @@ namespace CommonLibraryTests
         {
             var translator = new Vector3D(0, 0, 5);
             var triangles = GenerateCube();
-            Transform transform = new Transform
+            var transform = new Transform
             {
                 Translation = translator, Scale = new Vector3D(2, 2, 2), Rotation = new Vector3D(0, 0, 0)
             };

@@ -88,6 +88,19 @@ namespace Mathematics
         /// </value>
         public int X { get; set; }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            // Create a new instance of Coordinate2D and copy the properties
+            return new Coordinate2D(X, Y);
+        }
+
         /// <summary>
         ///     Gets the instance.
         /// </summary>
@@ -213,19 +226,6 @@ namespace Mathematics
         public override string ToString()
         {
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrId, Id);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        /// A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            // Create a new instance of Coordinate2D and copy the properties
-            return new Coordinate2D(X, Y);
         }
     }
 }

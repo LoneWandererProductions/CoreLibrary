@@ -70,10 +70,7 @@ namespace RenderEngine
                         SKShaderTileMode.Clamp); // Tile mode
 
                     // Create a paint with the gradient shader
-                    var shade = new SKPaint
-                    {
-                        Shader = shader
-                    };
+                    var shade = new SKPaint { Shader = shader };
 
                     canvas.DrawPath(path, shade);
                     return true; // No need to draw the stroke in the Fill style
