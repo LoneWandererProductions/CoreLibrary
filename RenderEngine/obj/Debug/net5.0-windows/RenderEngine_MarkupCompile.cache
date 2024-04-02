@@ -4,7 +4,7 @@
 library
 C#
 .cs
-D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\RenderEngine\obj\Debug\net5.0-windows\
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\RenderEngine\obj\Debug\net5.0-windows\
 RenderEngine
 none
 false
@@ -13,7 +13,7 @@ TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 1325288867
 
 12787284438
-200-529332353
+200-1420214470
 RenderView.xaml;
 
 False

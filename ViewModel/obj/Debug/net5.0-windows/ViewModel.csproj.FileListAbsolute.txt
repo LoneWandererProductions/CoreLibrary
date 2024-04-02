@@ -10,3 +10,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ViewModel\obj\D
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ref\ViewModel.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\bin\Debug\net5.0-windows\ViewModel.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\bin\Debug\net5.0-windows\ViewModel.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\bin\Debug\net5.0-windows\ViewModel.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\refint\ViewModel.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ViewModel.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ViewModel\obj\Debug\net5.0-windows\ref\ViewModel.dll

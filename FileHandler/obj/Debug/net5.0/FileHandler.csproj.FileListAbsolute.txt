@@ -10,3 +10,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\ref\FileHandler.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\bin\Debug\net5.0\FileHandler.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\refint\FileHandler.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\FileHandler.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\FileHandler\obj\Debug\net5.0\ref\FileHandler.dll

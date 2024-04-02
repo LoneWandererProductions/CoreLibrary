@@ -10,3 +10,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\ref\PathFinding.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\bin\Debug\net5.0-windows\PathFinding.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\refint\PathFinding.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\PathFinding.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\PathFinding\obj\Debug\net5.0-windows\ref\PathFinding.dll

@@ -21,3 +21,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\o
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\ref\DataFormatter.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\DataFormatter.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\DataFormatter.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\bin\Debug\net5.0\DataFormatter.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\refint\DataFormatter.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\DataFormatter.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\DataFormatter\obj\Debug\net5.0\ref\DataFormatter.dll

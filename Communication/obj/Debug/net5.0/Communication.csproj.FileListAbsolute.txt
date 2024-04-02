@@ -10,3 +10,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\o
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\ref\Communication.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\bin\Debug\net5.0\Communication.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\bin\Debug\net5.0\Communication.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\bin\Debug\net5.0\Communication.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\refint\Communication.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\Communication.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\Communication\obj\Debug\net5.0\ref\Communication.dll

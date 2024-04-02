@@ -10,3 +10,16 @@ D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemO
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ref\ExtendedSystemObjects.dll
 D:\Users\Peter\Documents\Visual Studio 2019\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.deps.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\bin\Debug\net5.0\ExtendedSystemObjects.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.csproj.AssemblyReference.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.AssemblyInfoInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.AssemblyInfo.cs
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.csproj.CoreCompileInputs.cache
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.sourcelink.json
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\refint\ExtendedSystemObjects.dll
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ExtendedSystemObjects.pdb
+c:\Users\peter.geinitz\Work Folders\My Documents\Projects\CoreLibrary\ExtendedSystemObjects\obj\Debug\net5.0\ref\ExtendedSystemObjects.dll
