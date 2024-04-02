@@ -229,6 +229,10 @@ namespace CommonLibraryTests
             transform.LeftCamera(0.5);
             //            Generate();
 
+            //left
+
+            //right
+
 
             //            Right Left
             //World Transformation    World Transformation
