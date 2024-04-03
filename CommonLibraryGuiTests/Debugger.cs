@@ -27,7 +27,6 @@ namespace CommonLibraryGuiTests
             Assert.IsTrue(DebugRegister.IsRunning, "Status not correct");
             Assert.IsFalse(DebugRegister.IsDumpActive, "Dump failed");
 
-
             DebugRegister.IsDumpActive = true;
             log.StopDebugging();
             Assert.IsFalse(DebugRegister.IsRunning, "Status not correct");

@@ -56,7 +56,6 @@ namespace CommonLibraryTests
 
             var northSix = new TertiaryVector { X = 0, Y = 0, Z = 1 };
 
-
             //west two Triangles
             var westOne = new TertiaryVector { X = 0, Y = 0, Z = 1 };
             var westTwo = new TertiaryVector { X = 0, Y = 1, Z = 1 };

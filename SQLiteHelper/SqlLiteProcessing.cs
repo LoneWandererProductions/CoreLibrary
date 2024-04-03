@@ -151,10 +151,7 @@ namespace SQLiteHelper
             {
                 var list = new TableSet();
 
-                foreach (var vector in row.ItemArray.Select(item => item?.ToString()))
-                {
-                    list.Row.Add(vector);
-                }
+                list.Row.AddRange(row.ItemArray.Select(item => item?.ToString()));
 
                 rows.Add(list);
             }

@@ -317,7 +317,6 @@ namespace CommonControls
             SetItems(path);
         }
 
-
         /// <summary>
         ///     Handles the Click event of the BtnExplorer control.
         /// </summary>
