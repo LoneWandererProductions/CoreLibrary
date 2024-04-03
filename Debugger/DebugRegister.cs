@@ -91,11 +91,12 @@ namespace Debugger
 
         /// <summary>
         ///     Gets or sets the config.
+        ///     This object will be saved in the file
         /// </summary>
         internal static ConfigExtended Config { get; private set; }
 
         /// <summary>
-        ///     Read the config file.
+        ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
         /// </summary>
         internal static void ReadConfigFile()
         {
@@ -117,33 +118,34 @@ namespace Debugger
             }
             else
             {
-                var conf = SerializeConfig();
-                if (conf == null)
+                var config = SerializeConfig();
+                if (config == null)
                 {
                     return;
                 }
 
                 //set file we want to read
-                DebugPath = conf.DebugPath;
                 //generic data in config
-                DebugPath = conf.DebugPath;
-                SecondsTick = conf.SecondsTick;
-                MinutesTick = conf.MinutesTick;
-                HourTick = conf.HourTick;
-                IsDumpActive = IsDumpActive;
+                DebugPath = config.DebugPath;
+                DebugPath = config.DebugPath;
+                SecondsTick = config.SecondsTick;
+                MinutesTick = config.MinutesTick;
+                HourTick = config.HourTick;
+                IsDumpActive = config.IsDumpActive;
 
                 Config = new ConfigExtended
                 {
-                    DebugPath = conf.DebugPath,
+                    DebugPath = config.DebugPath,
+                    //not saved in config
                     IsRunning = IsRunning,
-                    SecondsTick = conf.SecondsTick,
-                    MinutesTick = conf.MinutesTick,
-                    HourTick = conf.HourTick,
-                    ErrorColor = conf.ErrorColor,
-                    InformationColor = conf.InformationColor,
-                    ExternalColor = conf.ExternalColor,
-                    StandardColor = conf.StandardColor,
-                    WarningColor = conf.WarningColor
+                    SecondsTick = config.SecondsTick,
+                    MinutesTick = config.MinutesTick,
+                    HourTick = config.HourTick,
+                    ErrorColor = config.ErrorColor,
+                    InformationColor = config.InformationColor,
+                    ExternalColor = config.ExternalColor,
+                    StandardColor = config.StandardColor,
+                    WarningColor = config.WarningColor
                 };
             }
         }

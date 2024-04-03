@@ -24,12 +24,13 @@ namespace CommonLibraryGuiTests
         {
             var log = new DebugLog();
             log.Start();
-
+            Assert.IsTrue(DebugRegister.IsRunning, "Status not correct");
             Assert.IsFalse(DebugRegister.IsDumpActive, "Dump failed");
+
 
             DebugRegister.IsDumpActive = true;
             log.StopDebugging();
-
+            Assert.IsFalse(DebugRegister.IsRunning, "Status not correct");
             Assert.IsTrue(DebugRegister.IsDumpActive, "Dump set");
 
             var path = DebugRegister.DebugPath;
