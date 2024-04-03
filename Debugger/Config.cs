@@ -72,6 +72,19 @@ namespace Debugger
                 RaisePropertyChangedEvent(nameof(HourTick));
             }
         }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether Dump is Active
+        /// </summary>
+        public bool IsDumpActive
+        {
+            get => DebugRegister.IsDumpActive;
+            set
+            {
+                DebugRegister.IsDumpActive = value;
+                RaisePropertyChangedEvent(nameof(IsDumpActive));
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -91,19 +104,6 @@ namespace Debugger
             {
                 DebugRegister.SuppressWindow = value;
                 RaisePropertyChangedEvent(nameof(SuppressWindow));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether Dump is Active
-        /// </summary>
-        public bool IsDumpActive
-        {
-            get => DebugRegister.IsDumpActive;
-            set
-            {
-                DebugRegister.IsDumpActive = value;
-                RaisePropertyChangedEvent(nameof(IsDumpActive));
             }
         }
 

@@ -111,7 +111,8 @@ namespace Debugger
                     InformationColor = InformationColor,
                     ExternalColor = ExternalColor,
                     StandardColor = StandardColor,
-                    WarningColor = WarningColor
+                    WarningColor = WarningColor,
+                    IsDumpActive = IsDumpActive
                 };
             }
             else
@@ -124,17 +125,17 @@ namespace Debugger
 
                 //set file we want to read
                 DebugPath = conf.DebugPath;
-
+                //generic data in config
                 DebugPath = conf.DebugPath;
                 SecondsTick = conf.SecondsTick;
                 MinutesTick = conf.MinutesTick;
                 HourTick = conf.HourTick;
+                IsDumpActive = IsDumpActive;
 
                 Config = new ConfigExtended
                 {
                     DebugPath = conf.DebugPath,
                     IsRunning = IsRunning,
-                    IsDumpActive = IsDumpActive,
                     SecondsTick = conf.SecondsTick,
                     MinutesTick = conf.MinutesTick,
                     HourTick = conf.HourTick,
