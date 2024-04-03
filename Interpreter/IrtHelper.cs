@@ -34,12 +34,12 @@ namespace Interpreter
             }
             catch (IOException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
                 return string.Empty;
             }
             catch (ArgumentException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
                 return string.Empty;
             }
 

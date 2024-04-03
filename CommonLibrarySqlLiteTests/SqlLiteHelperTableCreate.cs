@@ -163,7 +163,7 @@ namespace CommonLibrarySqlLiteTests
             var str = _target.GetDatabaseInfos();
 
             Assert.AreNotEqual(str, string.Empty, "Test failed Get Table Status: " + str + " " + _target.LastErrors);
-            Debug.WriteLine(str);
+            Trace.WriteLine(str);
         }
 
         /// <summary>

@@ -211,10 +211,10 @@ namespace CommonLibrarySqlLiteTests
         /// <returns>Status</returns>
         private static bool CheckResultsConvertToTableRow(IReadOnlyList<string> lst)
         {
-            Debug.WriteLine("0: " + lst[0]);
-            Debug.WriteLine("1: " + lst[1]);
-            Debug.WriteLine("2: " + lst[2]);
-            Debug.WriteLine("3: " + lst[3]);
+            Trace.WriteLine("0: " + lst[0]);
+            Trace.WriteLine("1: " + lst[1]);
+            Trace.WriteLine("2: " + lst[2]);
+            Trace.WriteLine("3: " + lst[3]);
 
             if (lst[0] != "1")
             {
@@ -246,25 +246,25 @@ namespace CommonLibrarySqlLiteTests
                 return false;
             }
 
-            Debug.WriteLine("First");
+            Trace.WriteLine("First");
             if (table.DColumns["Second"].DataType != SqLiteDataTypes.Integer)
             {
                 return false;
             }
 
-            Debug.WriteLine("Second");
+            Trace.WriteLine("Second");
             if (table.DColumns["Third"].DataType != SqLiteDataTypes.DateTime)
             {
                 return false;
             }
 
-            Debug.WriteLine("Third");
+            Trace.WriteLine("Third");
             if (table.DColumns["Fourth"].DataType != SqLiteDataTypes.Real)
             {
                 return false;
             }
 
-            Debug.WriteLine("Fourth");
+            Trace.WriteLine("Fourth");
             return table.DColumns["Fiveth"].DataType == SqLiteDataTypes.Decimal;
         }
 
@@ -276,11 +276,11 @@ namespace CommonLibrarySqlLiteTests
         /// <returns>The <see cref="bool" />.</returns>
         private static bool CheckResultsConvertToTableRowOrder(IReadOnlyList<string> db, IReadOnlyList<string> data)
         {
-            Debug.WriteLine("0: " + db[0] + " " + data[0]);
-            Debug.WriteLine("1: " + db[1] + " " + data[1]);
-            Debug.WriteLine("2: " + db[2] + " " + data[2]);
-            Debug.WriteLine("3: " + db[3] + " " + data[3]);
-            Debug.WriteLine("4: " + db[4] + " " + data[4]);
+            Trace.WriteLine("0: " + db[0] + " " + data[0]);
+            Trace.WriteLine("1: " + db[1] + " " + data[1]);
+            Trace.WriteLine("2: " + db[2] + " " + data[2]);
+            Trace.WriteLine("3: " + db[3] + " " + data[3]);
+            Trace.WriteLine("4: " + db[4] + " " + data[4]);
 
             if (db[0] != data[0])
             {

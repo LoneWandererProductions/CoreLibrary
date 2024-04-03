@@ -76,7 +76,7 @@ namespace ImageCompare
                 return null;
             }
 
-            Debug.WriteLine(duplicateGroups.Count);
+            Trace.WriteLine(duplicateGroups.Count);
 
             var groups = new List<List<ImageSimilar>>();
 

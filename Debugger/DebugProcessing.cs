@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/DebugProcessing.cs
@@ -162,7 +162,7 @@ namespace Debugger
         /// </summary>
         internal static void CreateDump()
         {
-            Debug.Flush();
+            Trace.Flush();
             DebugRegister.IsDumpActive = true;
         }
 

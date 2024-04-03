@@ -220,19 +220,19 @@ namespace Debugger
             }
             catch (Win32Exception ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (InvalidOperationException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (ArgumentNullException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (IOException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
         }
 
@@ -263,15 +263,15 @@ namespace Debugger
             }
             catch (InvalidOperationException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (Win32Exception ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (NotSupportedException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             finally
             {

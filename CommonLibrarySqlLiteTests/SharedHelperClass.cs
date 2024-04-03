@@ -277,7 +277,7 @@ namespace CommonLibrarySqlLiteTests
         /// <param name="e">The error Message.</param>
         internal static void DebugPrints(object sender, string e)
         {
-            Debug.WriteLine(e);
+            Trace.WriteLine(e);
         }
     }
 }

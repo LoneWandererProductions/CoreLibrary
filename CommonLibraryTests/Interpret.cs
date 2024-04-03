@@ -304,7 +304,7 @@ namespace CommonLibraryTests
         /// <param name="e">Type</param>
         private static void SendLogs(object sender, string e)
         {
-            Debug.WriteLine(e);
+            Trace.WriteLine(e);
             _log = e;
         }
 

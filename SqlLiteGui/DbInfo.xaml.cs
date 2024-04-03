@@ -35,7 +35,7 @@ namespace SQLiteGui
         /// <param name="message">Messages from the system</param>
         internal void SetData(string message)
         {
-            Debug.WriteLine(string.Concat(message, Environment.NewLine));
+            Trace.WriteLine(string.Concat(message, Environment.NewLine));
             TxtBoxInfo.AppendText(string.Concat(message, Environment.NewLine));
         }
     }

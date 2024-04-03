@@ -46,7 +46,7 @@ namespace CommonLibrarySqlLiteTests
 
             foreach (var element in cache)
             {
-                Debug.WriteLine(element);
+                Trace.WriteLine(element);
             }
 
             Assert.AreEqual(2, cache.Count, "Test failed Unique Count " + _target.LastErrors);

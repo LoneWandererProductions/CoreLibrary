@@ -150,21 +150,13 @@ namespace ImageCompare
                 }
             }
 
-            //Debug.WriteLine(diff);
-
             var pixel = (float)diff / ImageResources.MaxPixel * 100;
-
-            Debug.WriteLine("Pixels: " + pixel);
 
             var color = (float)
                 (((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor) +
                  ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor) +
                  ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
                   ImageResources.MaxColor)) / 3 * 100;
-
-            Debug.WriteLine("Color: " + color);
-
-            Debug.WriteLine("Diff: " + ((pixel + color) / 2));
 
             return (pixel + color) / 2;
         }

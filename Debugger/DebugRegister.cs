@@ -163,27 +163,27 @@ namespace Debugger
             }
             catch (InvalidOperationException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (XmlException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (NullReferenceException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (ArgumentException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (IOException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
 
             return null;
@@ -217,27 +217,27 @@ namespace Debugger
             }
             catch (InvalidOperationException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (XmlException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (NullReferenceException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (ArgumentException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
             catch (IOException ex)
             {
-                Debug.WriteLine(ex);
+                Trace.WriteLine(ex);
             }
         }
     }

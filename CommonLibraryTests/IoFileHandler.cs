@@ -385,7 +385,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(Directory.Exists(path), "Folder not cleaned");
 
             var file = Path.Combine(path, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             isDone = FileHandleSearch.CheckIfFolderContainsElement(path);
@@ -412,12 +412,12 @@ namespace CommonLibraryTests
 
             //create File
             file = Path.Combine(subPathOne, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             //copy Files
             FileHandleCopy.CopyFiles(subPathOne, subPathTwo, true);
-            Debug.WriteLine(subPathTwo);
+            Trace.WriteLine(subPathTwo);
 
             Assert.IsTrue(FileHandleSearch.CheckIfFolderContainsElement(subPathTwo), "File was not moved");
 
@@ -442,7 +442,7 @@ namespace CommonLibraryTests
 
             var file = Path.Combine(_renamePath, _pathOperations, ResourcesGeneral.TstExt);
             var target = Path.Combine(_renamePath, "new.txt");
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             //rename a single file
@@ -556,11 +556,11 @@ namespace CommonLibraryTests
 
             //create File
             var file = Path.Combine(subPathOne, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             var firstTime = File.GetLastWriteTime(file);
@@ -600,7 +600,7 @@ namespace CommonLibraryTests
 
             //create File
             var file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             file = Path.Combine(subPathTwoExtended, _pathOperations + ResourcesGeneral.TstExt);
@@ -659,7 +659,7 @@ namespace CommonLibraryTests
 
             //create File
             var file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
-            Debug.WriteLine(file);
+            Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
             file = Path.Combine(subPathTwoExtended, _pathOperations + ResourcesGeneral.TstExt);

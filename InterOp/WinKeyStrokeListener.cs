@@ -57,7 +57,7 @@ namespace InterOp
         /// </summary>
         ~WinKeyStrokeListener()
         {
-            Debug.WriteLine(InterOpResources.InformationListenerDisposed);
+            Trace.WriteLine(InterOpResources.InformationListenerDisposed);
             _ = Win32Api.UnhookWindowsHookEx(_hookId);
         }
 

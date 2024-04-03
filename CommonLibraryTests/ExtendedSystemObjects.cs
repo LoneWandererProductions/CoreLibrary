@@ -164,7 +164,7 @@ namespace CommonLibraryTests
                 { ResourcesGeneral.DataItemOne, 1 }, { ResourcesGeneral.DataItemThree, 2 }
             };
 
-            Debug.WriteLine("Passed the basic add");
+            Trace.WriteLine("Passed the basic add");
 
             lst.AddDistinct(ResourcesGeneral.DataItemOne, 3);
 
