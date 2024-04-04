@@ -218,15 +218,17 @@ namespace CommonLibraryTests
 
             cache = raster.Generate(cache, transform);
 
-            triangleResult = cache;
-
             //other sources: https://github.com/flaviojosefo/MatrixProjection
 
             transform.RightCamera(0.5);
             //            Generate();
+            cache = raster.Generate(cache, transform);
 
             //TODO fuck up here....
             transform.LeftCamera(0.5);
+            transform.LeftCamera(0.5);
+
+            cache = raster.Generate(cache, transform);
             //            Generate();
 
             //left
