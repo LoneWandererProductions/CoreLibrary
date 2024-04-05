@@ -44,7 +44,7 @@
                 Command="{Binding ConnectCommand}" />
         <Button Content="Close" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top"
                 Command="{Binding CloseCommand}" />
-        <TextBox Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap"
+        <local:ScrollingTextBoxes Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap"
                  VerticalAlignment="Stretch"
                  Text="{Binding Path=Log, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
     </Grid>
