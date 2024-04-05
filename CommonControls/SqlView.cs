@@ -41,9 +41,9 @@ namespace CommonControls
         private string _dataBase;
 
         /// <summary>
-        ///     Is the Menu active
+        ///     Is Attribute set
         /// </summary>
-        private bool _trustIsActive;
+        private bool _trustIsActive = true;
 
         /// <summary>
         ///     The server
