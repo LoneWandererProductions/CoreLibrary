@@ -61,7 +61,7 @@ namespace CommonControls
         /// <summary>
         ///     Database string, about PersistSecurity Info (const). Value: "PersistSecurity Info".
         /// </summary>
-        internal const string DBPersistSecurityInfo = "PersistSecurity Info = ";
+        internal const string DBPersistSecurityInfo = "PersistSecurityInfo = ";
 
         /// <summary>
         /// The database integrated Security set to true (const). Value: "Integrated Security=True;".
@@ -89,9 +89,19 @@ namespace CommonControls
         internal const string DBLogConnectionStringBuildError = "Warning, SQL Connection was not created correctly.";
 
         /// <summary>
-        ///     Database string, command end (const). Value:  ";".
+        ///     Database string, command end (const). Value: ";".
         /// </summary>
         internal const string DBFin = ";";
+
+        /// <summary>
+        ///     Database string, tag for Server (const). Value: "Server = ".
+        /// </summary>
+        internal const string DBServer = "Server=";
+
+        /// <summary>
+        ///     Database string, tag for Database (const). Value: "Database = ".
+        /// </summary>
+        internal const string DBDatabase = "Database=";
 
         /// <summary>
         ///     Image add, needed for the Image Name (const). Value: "T".

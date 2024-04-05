@@ -157,13 +157,13 @@ namespace CommonLibraryGuiTests
 
             Assert.IsTrue(
                 db.Equals(
-                    @"PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello",
+                    @"PersistSecurityInfo = False;TrustServerCertificate=False;Integrated Security=True;Server=SqlServer;Database=MyDB\Hello;",
                     StringComparison.Ordinal),
                 $"Wrong Connection string: {db}");
 
             Assert.IsTrue(
                 server.Equals(
-                    "PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;",
+                    "PersistSecurityInfo = False;TrustServerCertificate=False;Integrated Security=True;Server=SqlServer;",
                     StringComparison.Ordinal),
                 $"Wrong Connection string: {server}");
         }

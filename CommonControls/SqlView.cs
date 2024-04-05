@@ -43,7 +43,7 @@ namespace CommonControls
         /// <summary>
         ///     Is the Menu active
         /// </summary>
-        private bool _isActive;
+        private bool _trustIsActive;
 
         /// <summary>
         ///     The server
@@ -56,18 +56,18 @@ namespace CommonControls
         /// <value>
         ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsActive
+        public bool TrustIsActive
         {
-            get => _isActive;
+            get => _trustIsActive;
             set
             {
-                if (_isActive == value)
+                if (_trustIsActive == value)
                 {
                     return;
                 }
 
-                _isActive = value;
-                OnPropertyChanged(nameof(IsActive));
+                _trustIsActive = value;
+                OnPropertyChanged(nameof(TrustIsActive));
             }
         }
 
@@ -223,7 +223,7 @@ namespace CommonControls
         /// <param name="obj">The object.</param>
         private void ConnectAction(object obj)
         {
-            var connect = new SqlConnect(Database, Server, IsActive);
+            var connect = new SqlConnect(Database, Server, TrustIsActive);
             Connection = connect;
             ConnectionStringServer = connect.GetConnectionString(false);
             bool check = true;

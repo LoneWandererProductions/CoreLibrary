@@ -15,6 +15,7 @@
 // ReSharper disable UnusedType.Global
 
 using System.Diagnostics;
+using System.Text;
 
 namespace CommonControls
 {
@@ -68,7 +69,7 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets the database.
-        ///      Set to be changed External
+        ///     Set to be changed External
         /// </summary>
         /// <value>
         ///     The database.
@@ -77,11 +78,12 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets a value indicating whether [trust server certificate].
+        ///     Set to be changed External, sometimes this can cause Problems, if it is not supported by the server.
         /// </summary>
         /// <value>
         ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
         /// </value>
-        internal bool TrustServerCertificate { get; set; }
+        public bool TrustServerCertificate { get; set; }
 
         /// <summary>
         /// Gets the connection string.
@@ -105,14 +107,22 @@ namespace CommonControls
                 return ComCtlResources.DBServerError;
             }
 
-            string connectionString = $"{_persistInfo}{_trust}{_security}{Server};";
+            var connectionStringBuilder = new StringBuilder();
+            connectionStringBuilder.Append(_persistInfo);
+            connectionStringBuilder.Append(_trust);
+            connectionStringBuilder.Append(_security);
+            connectionStringBuilder.Append(ComCtlResources.DBServer);
+            connectionStringBuilder.Append(Server);
+            connectionStringBuilder.Append(ComCtlResources.DBFin);
 
             if (includeDatabaseName)
             {
-                connectionString += $"{Database}";
+                connectionStringBuilder.Append(ComCtlResources.DBDatabase);
+                connectionStringBuilder.Append(Database);
+                connectionStringBuilder.Append(ComCtlResources.DBFin);
             }
 
-            return connectionString;
+            return connectionStringBuilder.ToString();
         }
 
         ///// <summary>
