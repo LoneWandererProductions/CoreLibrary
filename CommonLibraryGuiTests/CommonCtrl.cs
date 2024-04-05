@@ -151,14 +151,21 @@ namespace CommonLibraryGuiTests
             login.View.Server = "SqlServer";
             login.View.Database = @"MyDB\Hello";
             login.View.ConnectCommand.Execute(null);
-            var result = login.View.ConnectionString;
+            var db = login.View.ConnectionStringDB;
+            var server = login.View.ConnectionStringServer;
             login.Close();
 
             Assert.IsTrue(
-                result.Equals(
-                    @"PersistSecurity Info= False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello",
+                db.Equals(
+                    @"PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;MyDB\Hello",
                     StringComparison.Ordinal),
-                $"Wrong Connection string: {result}");
+                $"Wrong Connection string: {db}");
+
+            Assert.IsTrue(
+                server.Equals(
+                    @"PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;",
+                    StringComparison.Ordinal),
+                $"Wrong Connection string: {server}");
         }
     }
 }

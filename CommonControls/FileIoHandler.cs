@@ -41,13 +41,13 @@ namespace CommonControls
         /// <summary>
         ///     Shows the login screen.
         /// </summary>
-        /// <returns>Connection String</returns>
-        public static string ShowLoginScreen()
+        /// <returns>Sql Connection String Builder</returns>
+        public static SqlConnect ShowLoginScreen()
         {
             var login = new SqlLogin();
             _ = login.ShowDialog();
 
-            return login.View.ConnectionString;
+            return login.View.Connection;
         }
 
         /// <summary>

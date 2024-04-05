@@ -152,19 +152,36 @@ namespace CommonControls
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
-        ///     Gets the connection string.
+        /// Gets the connection string Class.
+        /// </summary>
+        /// <value>
+        /// Builds the Connection String.
+        /// </value>
+        public SqlConnect Connection { get; private set; }
+
+        /// <summary>
+        ///     Gets the connection string for a Database.
+        ///     Transmitted to the external viewer
         /// </summary>
         /// <value>
         ///     The connection string.
         /// </value>
-        public string ConnectionString { get; private set; }
+        public string ConnectionStringDB { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the add log.
-        ///     Here you can add some infos to the log in the Login Window
+        /// Gets the connection string for server only.
         /// </summary>
         /// <value>
-        ///     The add log.
+        /// The connection string server.
+        /// </value>
+        public string ConnectionStringServer { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the add log.
+        /// Here you can add some infos to the log in the Login Window
+        /// </summary>
+        /// <value>
+        /// The add log.
         /// </value>
         public string AddLog { get; set; }
 
@@ -206,7 +223,9 @@ namespace CommonControls
         private void ConnectAction(object obj)
         {
             var connect = new SqlConnect(Database, Server, IsActive);
-            ConnectionString = connect.GetConnectionString();
+            Connection = connect;
+            ConnectionStringDB = connect.GetConnectionString(true);
+            ConnectionStringServer = connect.GetConnectionString(false);
         }
 
         /// <summary>

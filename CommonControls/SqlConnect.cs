@@ -19,7 +19,7 @@ namespace CommonControls
     /// <summary>
     ///     The Sql connection string class
     /// </summary>
-    internal sealed class SqlConnect
+    public sealed class SqlConnect
     {
         /// <summary>
         ///     The persist security information, for Security reasons always deactivated
@@ -30,8 +30,7 @@ namespace CommonControls
         /// <summary>
         ///     The persist information string configuration for the connection string.
         /// </summary>
-        private readonly string _persistInfo =
-            $"PersistSecurity Info= {PersistSecurityInfo};";
+        private readonly string _persistInfo = string.Concat(ComCtlResources.DBPersistSecurityInfo, PersistSecurityInfo, ComCtlResources.DBFin);
 
         /// <summary>
         ///     The IntegratedSecurity string for the connection string
@@ -58,19 +57,21 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets the server.
+        ///     Set to be changed External
         /// </summary>
         /// <value>
         ///     The server.
         /// </value>
-        internal string Server { get; set; }
+        public string Server { get; set; }
 
         /// <summary>
         ///     Gets or sets the database.
+        ///      Set to be changed External
         /// </summary>
         /// <value>
         ///     The database.
         /// </value>
-        internal string Database { get; set; }
+        public string Database { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [trust server certificate].
@@ -80,36 +81,35 @@ namespace CommonControls
         /// </value>
         internal bool TrustServerCertificate { get; set; }
 
-        /// <summary>
-        ///     Gets the connection string to a SQL Server.
-        /// </summary>
-        /// <returns>Complete Connection string based on chosen Connection Typ</returns>
-        internal string GetConnectionString()
-        {
-            //_security = IntegratedSecurity ? @"Integrated Security=True;" : @"Integrated Security=False;";
-            _security = "Integrated Security=True;";
-            _trust = TrustServerCertificate ? "TrustServerCertificate=True;" : "TrustServerCertificate=False;";
-            //return IntegratedSecurity ? SqlWindowsAuthentication() : SqlAuthentication();
-            return SqlWindowsAuthentication();
-        }
 
         /// <summary>
-        ///     Authentication with Windows Authentication.
+        /// Gets the connection string.
         /// </summary>
-        /// <returns>Connection string</returns>
-        private string SqlWindowsAuthentication()
+        /// <param name="includeDatabaseName">if set to <c>true</c> [include database name].</param>
+        /// <returns>Connection String</returns>
+        public string GetConnectionString(bool includeDatabaseName)
         {
+            _security = ComCtlResources.DBIntegratedTrue;
+            _trust = TrustServerCertificate ? ComCtlResources.DBTrustServerCertificateTrue : ComCtlResources.DBTrustServerCertificateFalse;
+
             if (string.IsNullOrEmpty(Server))
             {
-                return "Error: Server Name";
+                return ComCtlResources.DBServerError;
             }
 
-            if (string.IsNullOrEmpty(Database))
+            if (includeDatabaseName && string.IsNullOrEmpty(Database))
             {
-                return "Error: Database Name";
+                return ComCtlResources.DBNameError;
             }
 
-            return $"{_persistInfo}{_trust}{_security}{Server};{Database}";
+            string connectionString = $"{_persistInfo}{_trust}{_security}{Server};";
+
+            if (includeDatabaseName)
+            {
+                connectionString += $"{Database}";
+            }
+
+            return connectionString;
         }
 
         ///// <summary>

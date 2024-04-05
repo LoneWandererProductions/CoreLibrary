@@ -49,6 +49,41 @@ namespace CommonControls
         internal const string ErrorWrongParameters = "Wrong Arguments provided: ";
 
         /// <summary>
+        ///     Error, Database problem with the Server Name (const). Value: "Error: Server Name was empty.".
+        /// </summary>
+        internal const string DBServerError = "Error: Server Name was empty.";
+
+        /// <summary>
+        ///     Error, Database problem with the Database Name (const). Value: "Error: Database Name was empty.".
+        /// </summary>
+        internal const string DBNameError = "Error: Database Name was empty.";
+
+        /// <summary>
+        ///     Database string, about PersistSecurity Info (const). Value: "PersistSecurity Info".
+        /// </summary>
+        internal const string DBPersistSecurityInfo = "PersistSecurity Info = ";
+
+        /// <summary>
+        /// The database integrated Security set to true (const). Value: "Integrated Security=True;".
+        /// </summary>
+        internal const string DBIntegratedTrue = "Integrated Security=True;";
+
+        /// <summary>
+        /// The database Trust Server Certificate set to false (const). Value: "TrustServerCertificate=False;".
+        /// </summary>
+        internal const string DBTrustServerCertificateFalse = "TrustServerCertificate=False;";
+
+        /// <summary>
+        /// The database Trust Server Certificate set to True (const). Value: "TrustServerCertificate=True;".
+        /// </summary>
+        internal const string DBTrustServerCertificateTrue = "TrustServerCertificate=True;";
+
+        /// <summary>
+        ///     Database string, command end (const). Value:  ";".
+        /// </summary>
+        internal const string DBFin = ";";
+
+        /// <summary>
         ///     Image add, needed for the Image Name (const). Value: "T".
         /// </summary>
         internal const string ImageAdd = "T";
