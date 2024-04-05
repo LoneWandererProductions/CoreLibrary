@@ -45,7 +45,7 @@
         <Button Content="Close" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top"
                 Command="{Binding CloseCommand}" />
         <local:ScrollingTextBoxes Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Log, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
+                 VerticalAlignment="Stretch" AutoScrolling="True"
+                 Text="{Binding Path=Log, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" />
     </Grid>
 </Window>

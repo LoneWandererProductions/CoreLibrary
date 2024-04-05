@@ -226,9 +226,9 @@ namespace CommonControls
             var connect = new SqlConnect(Database, Server, IsActive);
             Connection = connect;
             ConnectionStringServer = connect.GetConnectionString(false);
-            bool check =  true; 
+            bool check = true;
 
-            if (string.IsNullOrEmpty(Server)) 
+            if (string.IsNullOrEmpty(Server))
             {
                 check = false;
                 Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
@@ -239,7 +239,7 @@ namespace CommonControls
             if (string.IsNullOrEmpty(Database))
             {
                 check = false;
-                Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
+                Log = string.Concat(Log, ConnectionStringDB, Environment.NewLine);
             }
 
             if (check)
