@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -90,7 +91,7 @@ namespace Mathematics
 
                 //Todo add a better algorithm!
 
-                if (normal * comparer > 0)
+                if (Math.Abs(normal * comparer) > 0)
                 {
                     continue;
                 }
