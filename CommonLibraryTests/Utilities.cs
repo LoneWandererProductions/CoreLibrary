@@ -107,7 +107,7 @@ namespace CommonLibraryTests
                 10
             };
 
-            result = Utility.Sequencer(lst, 2, 3);
+            result = Utility.Sequencer(lst, 3, 2);
 
             Assert.AreEqual(1, result.Count, "Sequence 2");
 

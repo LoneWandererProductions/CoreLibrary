@@ -106,43 +106,38 @@ namespace ExtendedSystemObjects
         [return: MaybeNull]
         public static List<KeyValuePair<int, int>> Sequencer(List<int> lst, int sequence)
         {
-            var box = new List<List<int>>();
-            var other = new List<int>();
+            lst.Sort();
+            var sequenceGroups = new List<KeyValuePair<int, int>>();
+            var currentSequenceStart = lst[0];
+            var currentSequenceLength = 1;
 
-            for (var i = 1; i < lst.Count; i++)
+            for (int i = 1; i < lst.Count; i++)
             {
-                var cache = Math.Abs(lst[i]);
-
-                if (Math.Abs(lst[i - 1] + 1) == cache)
+                var diff = lst[i] - lst[i - 1];
+                if (diff == 1)
                 {
-                    //should be only the first case
-                    if (!other.Contains(i - 1))
-                    {
-                        other.Add(i - 1);
-                    }
-
-                    other.Add(i);
+                    currentSequenceLength++;
                 }
                 else
                 {
-                    if (other.Count == 0)
+                    if (currentSequenceLength >= sequence)
                     {
-                        continue;
+                        sequenceGroups.Add(new KeyValuePair<int, int>(currentSequenceStart, lst[i - 1]));
                     }
-
-                    box.Add(other);
-                    other = new List<int>();
+                    currentSequenceStart = lst[i];
+                    currentSequenceLength = 1;
                 }
             }
 
-            return box.Count == 0
-                ? null
-                : (from stack in box
-                    where stack.Count >= sequence
-                    let start = stack[0]
-                    let end = stack[^1]
-                    select new KeyValuePair<int, int>(start, end)).ToList();
+            // Check if the last sequence is valid
+            if (currentSequenceLength >= sequence)
+            {
+                sequenceGroups.Add(new KeyValuePair<int, int>(currentSequenceStart, lst[lst.Count - 1]));
+            }
+
+            return sequenceGroups;
         }
+
 
         /// <summary>
         ///     Sequences the specified list.
@@ -156,9 +151,9 @@ namespace ExtendedSystemObjects
             lst.Sort();
             var max = lst.Max();
 
-            var box = new List<List<int>>();
-            var other = new List<int>();
-            var observer = new List<int>();
+            var sequenceGroups = new List<List<int>>();
+            var currentSequence = new List<int>();
+            var visitedIndexes = new List<int>();
 
             foreach (var element in lst)
             {
@@ -167,14 +162,14 @@ namespace ExtendedSystemObjects
 
                 do
                 {
-                    if (other.Contains(cache))
+                    if (currentSequence.Contains(cache))
                     {
                         break;
                     }
 
-                    count += width;
+                    count += sequence;
 
-                    if (observer.Contains(count))
+                    if (visitedIndexes.Contains(count))
                     {
                         continue;
                     }
@@ -184,23 +179,23 @@ namespace ExtendedSystemObjects
                         break;
                     }
 
-                    other.Add(count);
-                    observer.Add(count);
+                    currentSequence.Add(count);
+                    visitedIndexes.Add(count);
                 } while (count < max);
 
-                if (other.Count == 0)
+                if (currentSequence.Count == 0)
                 {
                     continue;
                 }
 
-                other.AddFirst(cache);
-                box.Add(other);
-                other = new List<int>();
+                currentSequence.AddFirst(cache);
+                sequenceGroups.Add(currentSequence);
+                currentSequence = new List<int>();
             }
 
-            return box.Count == 0
+            return sequenceGroups.Count == 0
                 ? null
-                : (from stack in box
+                : (from stack in sequenceGroups
                     where stack.Count >= sequence
                     let start = stack[0]
                     let end = stack[^1]

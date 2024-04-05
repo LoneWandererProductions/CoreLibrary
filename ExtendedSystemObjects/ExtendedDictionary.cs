@@ -88,14 +88,15 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Add or Replace Key Value Pair
+        /// Adds a key-value pair to the dictionary if the key is not already present,
+        /// throwing exceptions if either the key or value already exist.
         /// </summary>
-        /// <typeparam name="TKey">Internal Key</typeparam>
-        /// <typeparam name="TValue">Internal Value</typeparam>
-        /// <param name="dic">Internal Target Dictionary</param>
-        /// <param name="key">Unique Key</param>
-        /// <param name="value">Value to add</param>
-        /// <exception cref="ArgumentException">Element was already Contained</exception>
+        /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+        /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+        /// <param name="dic">The dictionary to add the key-value pair to.</param>
+        /// <param name="key">The key of the key-value pair to add.</param>
+        /// <param name="value">The value of the key-value pair to add.</param>
+        /// <exception cref="ArgumentException">Thrown if the key or value already exist in the dictionary.</exception>
         public static void AddDistinctKeyValue<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, TValue value)
         {
             if (dic.ContainsKey(key))
@@ -122,8 +123,16 @@ namespace ExtendedSystemObjects
         /// <returns>Sorted Dictionary</returns>
         public static Dictionary<TKey, TValue> Sort<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
-            var sorted = new SortedDictionary<TKey, TValue>(dic);
-            return new Dictionary<TKey, TValue>(sorted);
+            var sortedPairs = dic.OrderBy(pair => pair.Key).ToList();
+
+            var sortedDictionary = new Dictionary<TKey, TValue>();
+
+            foreach (var pair in sortedPairs)
+            {
+                sortedDictionary.Add(pair.Key, pair.Value);
+            }
+
+            return sortedDictionary;
         }
 
         /// <summary>
@@ -165,28 +174,30 @@ namespace ExtendedSystemObjects
         /// <returns>If Dictionary has distinct Values</returns>
         public static bool IsValueDistinct<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
-            var sort = new Dictionary<TKey, TValue>(dic);
+            var uniqueValues = new HashSet<TValue>();
 
-            foreach (var (key, value) in dic)
+            foreach (var value in dic.Values)
             {
-                _ = sort.Remove(key);
-                if (sort.ContainsValue(value))
+                if (!uniqueValues.Add(value))
                 {
-                    return false;
+                    return false; // Non-unique value found
                 }
             }
 
-            return true;
+            return true; // All values are distinct
         }
 
         /// <summary>
-        ///     Get First Key by Value
+        /// Get First Key by Value
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="value">Value we look up</param>
-        /// <returns>First appearance of Value</returns>
+        /// <returns>
+        /// First appearance of Value
+        /// </returns>
+        /// <exception cref="ExtendedSystemObjects.ValueNotFoundException"></exception>
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
         public static TKey GetFirstKeyByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {

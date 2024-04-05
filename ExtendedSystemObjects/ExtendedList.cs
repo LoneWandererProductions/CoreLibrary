@@ -62,12 +62,17 @@ namespace ExtendedSystemObjects
         /// <returns>if [true] item was added, else [false]</returns>
         public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst.Contains(item))
+            var hashSet = new HashSet<TValue>(lst);
+
+            // Check if the item already exists in the HashSet
+            if (hashSet.Contains(item))
             {
-                return false;
+                return false; // Item already exists, no need to add
             }
 
+            // Add the item to the list since it doesn't already exist
             lst.Add(item);
+
             return true;
         }
 
@@ -84,7 +89,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Remove Contents of a List from another
+        ///     Remove Contents of a List from ancurrentSequence
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we remove from</param>

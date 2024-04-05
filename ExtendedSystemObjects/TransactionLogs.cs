@@ -36,7 +36,7 @@ namespace ExtendedSystemObjects
         ///     Gets a value indicating whether this <see cref="TransactionLogs" /> is changed.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if changed; otherwise, <c>false</c>.
+        ///     <c>true</c> if changed; currentSequencewise, <c>false</c>.
         /// </value>
         public bool Changed { get; private set; }
 
