@@ -91,7 +91,7 @@ namespace Mathematics
 
                 //Todo add a better algorithm!
 
-                if (Math.Abs(normal * comparer) > 0)
+                if (normal * comparer > 0)
                 {
                     continue;
                 }
