@@ -10,6 +10,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -226,6 +227,8 @@ namespace CommonControls
             Connection = connect;
             ConnectionStringDB = connect.GetConnectionString(true);
             ConnectionStringServer = connect.GetConnectionString(false);
+
+            Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuild, Environment.NewLine);
         }
 
         /// <summary>

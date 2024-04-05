@@ -79,6 +79,11 @@ namespace CommonControls
         internal const string DBTrustServerCertificateTrue = "TrustServerCertificate=True;";
 
         /// <summary>
+        /// The database Log Message, Connection object with the data was created (const). Value: "SQL Connection object was created."
+        /// </summary>
+        internal const string DBLogConnectionStringBuild = "SQL Connection object was created.";
+
+        /// <summary>
         ///     Database string, command end (const). Value:  ";".
         /// </summary>
         internal const string DBFin = ";";
