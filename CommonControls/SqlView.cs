@@ -225,10 +225,32 @@ namespace CommonControls
         {
             var connect = new SqlConnect(Database, Server, IsActive);
             Connection = connect;
-            ConnectionStringDB = connect.GetConnectionString(true);
             ConnectionStringServer = connect.GetConnectionString(false);
+            bool check =  true; 
 
-            Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuild, Environment.NewLine);
+            if (string.IsNullOrEmpty(Server)) 
+            {
+                check = false;
+                Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
+            }
+
+            ConnectionStringDB = connect.GetConnectionString(true);
+
+            if (string.IsNullOrEmpty(Database))
+            {
+                check = false;
+                Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
+            }
+
+            if (check)
+
+            {
+                Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuild, Environment.NewLine);
+            }
+            else
+            {
+                Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuildError, Environment.NewLine);
+            }
         }
 
         /// <summary>

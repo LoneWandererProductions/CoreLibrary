@@ -14,6 +14,8 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
+using System.Diagnostics;
+
 namespace CommonControls
 {
     /// <summary>
@@ -94,12 +96,14 @@ namespace CommonControls
 
             if (string.IsNullOrEmpty(Server))
             {
+                Trace.WriteLine(ComCtlResources.DBServerError);
                 return ComCtlResources.DBServerError;
             }
 
             if (includeDatabaseName && string.IsNullOrEmpty(Database))
             {
-                return ComCtlResources.DBNameError;
+                Trace.WriteLine(ComCtlResources.DBNameError);
+                return ComCtlResources.DBServerError;
             }
 
             string connectionString = $"{_persistInfo}{_trust}{_security}{Server};";

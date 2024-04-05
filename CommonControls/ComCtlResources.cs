@@ -84,6 +84,11 @@ namespace CommonControls
         internal const string DBLogConnectionStringBuild = "SQL Connection object was created.";
 
         /// <summary>
+        /// The database Log Message, Connection object with the data was not created complete (const). Value: ""SQL Connection was not created correctly."
+        /// </summary>
+        internal const string DBLogConnectionStringBuildError = "Warning, SQL Connection was not created correctly.";
+
+        /// <summary>
         ///     Database string, command end (const). Value:  ";".
         /// </summary>
         internal const string DBFin = ";";
