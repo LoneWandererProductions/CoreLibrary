@@ -61,7 +61,7 @@ namespace CommonControls
         /// <summary>
         ///     Database string, about PersistSecurity Info (const). Value: "PersistSecurity Info".
         /// </summary>
-        internal const string DBPersistSecurityInfo = "PersistSecurityInfo = ";
+        internal const string DBPersistSecurityInfo = "PersistSecurityInfo=";
 
         /// <summary>
         /// The database integrated Security set to true (const). Value: "Integrated Security=True;".
