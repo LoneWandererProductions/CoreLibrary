@@ -20,7 +20,7 @@ namespace Mathematics
     /// <summary>
     ///     Coordinate 2d Helper Class
     /// </summary>
-    public sealed class Coordinate2D : ICloneable
+    public class Coordinate2D : ICloneable
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
@@ -174,13 +174,23 @@ namespace Mathematics
         /// <summary>
         ///     Calculates the identifier.
         /// </summary>
+        /// <param name="width">The width.</param>
+        /// <returns>The id of the coordinate</returns>
+        public int CalculateId(int width)
+        {
+            return CalculateId(X,Y, width);
+        }
+
+        /// <summary>
+        ///     Calculates the identifier.
+        /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="width">The width.</param>
         /// <returns>The id of the coordinate</returns>
         private static int CalculateId(int x, int y, int width)
         {
-            return (y * width) + x;
+            return y * width + x;
         }
 
         /// <summary>
