@@ -163,7 +163,7 @@ namespace CommonLibraryGuiTests
 
             Assert.IsTrue(
                 server.Equals(
-                    @"PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;",
+                    "PersistSecurity Info = False;TrustServerCertificate=False;Integrated Security=True;SqlServer;",
                     StringComparison.Ordinal),
                 $"Wrong Connection string: {server}");
         }

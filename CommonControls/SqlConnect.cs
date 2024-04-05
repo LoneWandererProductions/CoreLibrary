@@ -83,7 +83,6 @@ namespace CommonControls
         /// </value>
         internal bool TrustServerCertificate { get; set; }
 
-
         /// <summary>
         /// Gets the connection string.
         /// </summary>

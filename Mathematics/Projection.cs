@@ -48,20 +48,12 @@ namespace Mathematics
                 }
             }
 
-            //TODO something goes wrong here!
-
-            switch (transform.CameraType)
+            cache = transform.CameraType switch
             {
-                case Cameras.Orbit:
-                    cache = ProjectionRaster.OrbitCamera(cache, transform);
-                    break;
-                case Cameras.PointAt:
-                    cache = ProjectionRaster.PointAt(cache, transform);
-                    break;
-                default:
-                    cache = ProjectionRaster.OrbitCamera(cache, transform);
-                    break;
-            }
+                Cameras.Orbit => ProjectionRaster.OrbitCamera(cache, transform),
+                Cameras.PointAt => ProjectionRaster.PointAt(cache, transform),
+                _ => ProjectionRaster.OrbitCamera(cache, transform),
+            };
 
             if (Debug)
             {

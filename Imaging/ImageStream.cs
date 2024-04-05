@@ -541,7 +541,7 @@ namespace Imaging
 
             if (height == 0 || width == 0)
             {
-                var innerException = new ArgumentNullException(nameof(CutBitmap));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap), ImagingResources.Spacing, nameof(height), ImagingResources.Spacing, nameof(width)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
