@@ -64,8 +64,6 @@ namespace Mathematics
                 }
             }
 
-            //cache = ProjectionRaster.Clipping(cache, transform.Position);
-
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DClipping);
@@ -91,7 +89,7 @@ namespace Mathematics
                 }
             }
 
-            cache = ProjectionRaster.BackfaceCulled(cache);
+            cache = ProjectionRaster.Clipping(cache);
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 
@@ -100,8 +98,12 @@ namespace Mathematics
                 CreateDump(transform);
             }
 
-            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height,
-                transform.DisplayType);
+            if (transform.DisplayType == Display.Orthographic)
+            {
+                return ProjectionRaster.MoveIntoViewOrthographic(cache, Projection3DRegister.Width, Projection3DRegister.Height);
+            }
+
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }
 
         /// <summary>

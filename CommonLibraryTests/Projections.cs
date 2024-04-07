@@ -197,18 +197,14 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Vector not converted");
         }
 
+        [TestMethod]
         public void LeftRightBug()
         {
-            var translator = new Vector3D(0, 0, 5);
             var triangles = GenerateCube();
-            var transform = new Transform
-            {
-                Translation = translator, Scale = new Vector3D(2, 2, 2), Rotation = new Vector3D(0, 0, 0)
-            };
+
+            var transform = Transform.GetInstance();
 
             var raster = new Projection();
-
-            var triangleResult = new List<PolyTriangle>(triangles);
 
             var cache = new List<PolyTriangle>(triangles);
 
@@ -216,19 +212,31 @@ namespace CommonLibraryTests
 
             transform.DisplayType = Display.Normal;
 
-            cache = raster.Generate(cache, transform);
-
             //other sources: https://github.com/flaviojosefo/MatrixProjection
 
             transform.RightCamera(0.5);
             //            Generate();
-            cache = raster.Generate(cache, transform);
+            var cache1 = raster.Generate(cache, transform);
 
             //TODO fuck up here....
             transform.LeftCamera(0.5);
             transform.LeftCamera(0.5);
 
-            cache = raster.Generate(cache, transform);
+            var cache2 = raster.Generate(cache, transform);
+
+            Trace.WriteLine("Rigth");
+            foreach (var data in cache1)
+            {
+                Trace.WriteLine(data.ToString());
+            }
+
+            Trace.WriteLine("Left");
+            foreach (var data in cache2)
+            {
+                Trace.WriteLine(data.ToString());
+            }
+
+
             //            Generate();
 
             //left

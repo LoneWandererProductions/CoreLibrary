@@ -68,50 +68,13 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Clipping Handler.
-        /// </summary>
-        /// <param name="triangles">The triangles.</param>
-        /// <param name="vCamera">The position of the camera as vector.</param>
-        /// <returns>Visible Vector Planes</returns>
-        internal static List<PolyTriangle> Clipping(IEnumerable<PolyTriangle> triangles, Vector3D vCamera)
-        {
-            var lst = new List<PolyTriangle>();
-
-            foreach (var triangle in triangles)
-            {
-                var lineOne = triangle[1] - triangle[0];
-
-                var lineTwo = triangle[2] - triangle[0];
-
-                var normal = lineOne.CrossProduct(lineTwo);
-
-                normal = normal.Normalize();
-
-                var comparer = triangle[0] - vCamera;
-
-                //Todo add a better algorithm!
-
-                if (normal * comparer > 0)
-                {
-                    continue;
-                }
-
-                //Todo here we would add some shading and textures
-
-                lst.Add(triangle);
-            }
-
-            return lst;
-        }
-
-        /// <summary>
         /// Backfaces culled.
         /// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
         /// Division by 2 is not necessary, since all we care about is if the value is positive/negative
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>All visible Triangles</returns>
-        internal static List<PolyTriangle> BackfaceCulled(IEnumerable<PolyTriangle> triangles)
+        internal static List<PolyTriangle> Clipping(IEnumerable<PolyTriangle> triangles)
         {
             var lst = new List<PolyTriangle>();
 
@@ -175,12 +138,10 @@ namespace Mathematics
         /// <param name="triangles">The triangles.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <param name="displayType">Display type of the transform.</param>
         /// <returns>
         ///     Center on Screen
         /// </returns>
-        internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height,
-            Display displayType)
+        internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height)
         {
             var lst = new List<PolyTriangle>();
 
@@ -213,6 +174,48 @@ namespace Mathematics
                 triangle[1].Y *= 0.5d * height;
                 triangle[2].X *= 0.5d * width;
                 triangle[2].Y *= 0.5d * height;
+
+                lst.Add(triangle);
+            }
+
+            return lst;
+        }
+
+        /// <summary>
+        /// Moves the orthographic Object into view.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>
+        ///     Center on Screen
+        /// </returns>
+        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width, int height)
+        {
+            var lst = new List<PolyTriangle>();
+
+            foreach (var triangle in triangles)
+            {
+                // X/Y are inverted so put them back
+                triangle[0].X *= -1.0f;
+                triangle[1].X *= -1.0f;
+                triangle[2].X *= -1.0f;
+                triangle[0].Y *= -1.0f;
+                triangle[1].Y *= -1.0f;
+                triangle[2].Y *= -1.0f;
+
+                // Offset verts into visible normalized space
+                var vOffsetView = new Vector3D(2.5, 3, 0);
+                triangle[0] += vOffsetView;
+                triangle[1] += vOffsetView;
+                triangle[2] += vOffsetView;
+
+                triangle[0].X *= 0.25d * width;
+                triangle[0].Y *= 0.25d * height;
+                triangle[1].X *= 0.25d * width;
+                triangle[1].Y *= 0.25d * height;
+                triangle[2].X *= 0.25d * width;
+                triangle[2].Y *= 0.25d * height;
 
                 lst.Add(triangle);
             }
