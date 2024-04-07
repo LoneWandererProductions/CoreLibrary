@@ -64,7 +64,7 @@ namespace Mathematics
                 }
             }
 
-            cache = ProjectionRaster.Clipping(cache, transform.Position);
+            //cache = ProjectionRaster.Clipping(cache, transform.Position);
 
             if (Debug)
             {
@@ -90,6 +90,8 @@ namespace Mathematics
                     Trace.WriteLine(triangle.ToString());
                 }
             }
+
+            cache = ProjectionRaster.BackfaceCulled(cache);
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 

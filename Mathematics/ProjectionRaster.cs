@@ -105,6 +105,35 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Backfaces culled.
+        /// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
+        /// Division by 2 is not necessary, since all we care about is if the value is positive/negative
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <returns>All visible Triangles</returns>
+        internal static List<PolyTriangle> BackfaceCulled(IEnumerable<PolyTriangle> triangles)
+        {
+            var lst = new List<PolyTriangle>();
+
+            foreach (var triangle in triangles)
+            {
+                double sum = 0;
+
+                for (var i = 0; i < triangle.VertexCount; i++)
+                {
+                    sum += (triangle[i].X * triangle[(i + 1) % triangle.VertexCount].Y) -
+                           (triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X);
+                }
+
+                if(sum >= 0) continue;
+
+                lst.Add(triangle);
+            }
+
+            return lst;
+        }
+
+        /// <summary>
         ///     Convert2s the d to3 d.
         /// </summary>
         /// <param name="triangles">The triangles.</param>

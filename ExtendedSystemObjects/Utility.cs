@@ -106,36 +106,42 @@ namespace ExtendedSystemObjects
         [return: MaybeNull]
         public static List<KeyValuePair<int, int>> Sequencer(List<int> lst, int sequence)
         {
-            lst.Sort();
-            var sequenceGroups = new List<KeyValuePair<int, int>>();
-            var currentSequenceStart = lst[0];
-            var currentSequenceLength = 1;
+            var sequenceGroups = new List<List<int>>();
+            var currentSequence = new List<int>();
 
-            for (int i = 1; i < lst.Count; i++)
+            for (var i = 1; i < lst.Count; i++)
             {
-                var diff = lst[i] - lst[i - 1];
-                if (diff == 1)
+                var cache = Math.Abs(lst[i]);
+
+                if (Math.Abs(lst[i - 1] + 1) == cache)
                 {
-                    currentSequenceLength++;
+                    //should be only the first case
+                    if (!currentSequence.Contains(i - 1))
+                    {
+                        currentSequence.Add(i - 1);
+                    }
+
+                    currentSequence.Add(i);
                 }
                 else
                 {
-                    if (currentSequenceLength >= sequence)
+                    if (currentSequence.Count == 0)
                     {
-                        sequenceGroups.Add(new KeyValuePair<int, int>(currentSequenceStart, lst[i - 1]));
+                        continue;
                     }
-                    currentSequenceStart = lst[i];
-                    currentSequenceLength = 1;
+
+                    sequenceGroups.Add(currentSequence);
+                    currentSequence = new List<int>();
                 }
             }
 
-            // Check if the last sequence is valid
-            if (currentSequenceLength >= sequence)
-            {
-                sequenceGroups.Add(new KeyValuePair<int, int>(currentSequenceStart, lst[lst.Count - 1]));
-            }
-
-            return sequenceGroups;
+            return sequenceGroups.Count == 0
+                ? null
+                : (from stack in sequenceGroups
+                    where stack.Count >= sequence
+                    let start = stack[0]
+                    let end = stack[^1]
+                    select new KeyValuePair<int, int>(start, end)).ToList();
         }
 
 
