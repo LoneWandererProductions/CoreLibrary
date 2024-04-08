@@ -19,7 +19,7 @@ using DataFormatter;
 
 namespace Mathematics
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICloneable" />
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
@@ -157,6 +157,7 @@ namespace Mathematics
             W = w;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Equals the specified other.
         /// </summary>

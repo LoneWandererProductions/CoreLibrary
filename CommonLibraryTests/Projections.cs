@@ -204,8 +204,7 @@ namespace CommonLibraryTests
 
             var transform = Transform.GetInstance();
 
-            var raster = new Projection();
-            raster.Debug = false;
+            var raster = new Projection {Debug = false};
 
             var cache = new List<PolyTriangle>(triangles);
 
