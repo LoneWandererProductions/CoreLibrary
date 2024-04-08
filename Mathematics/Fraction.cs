@@ -23,7 +23,6 @@ namespace Mathematics
         /// <summary>
         ///     Basic Fraction Object
         /// </summary>
-        /// <seealso cref="T:System.IEquatable`1" />
         public sealed class Fraction : IEquatable<Fraction>
         {
             /// <summary>
