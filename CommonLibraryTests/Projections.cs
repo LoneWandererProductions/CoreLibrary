@@ -205,6 +205,7 @@ namespace CommonLibraryTests
             var transform = Transform.GetInstance();
 
             var raster = new Projection();
+            raster.Debug = false;
 
             var cache = new List<PolyTriangle>(triangles);
 
@@ -214,14 +215,20 @@ namespace CommonLibraryTests
 
             //other sources: https://github.com/flaviojosefo/MatrixProjection
 
+            Trace.WriteLine("Start Here");
+            Trace.WriteLine(transform.Right);
             transform.RightCamera(0.5);
-            //            Generate();
+            //            Generate
             var cache1 = raster.Generate(cache, transform);
 
-            //TODO fuck up here....
+            Trace.WriteLine("Error Here");
             transform.LeftCamera(0.5);
+            Trace.WriteLine("Start Here");
+            Trace.WriteLine(transform.Right);
             transform.LeftCamera(0.5);
-
+            Trace.WriteLine("Start Here");
+            Trace.WriteLine(transform.Right);
+            Trace.WriteLine("End Here");
             var cache2 = raster.Generate(cache, transform);
 
             Trace.WriteLine("Rigth");
@@ -236,6 +243,12 @@ namespace CommonLibraryTests
                 Trace.WriteLine(data.ToString());
             }
 
+            //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Scene.cs
+            //// Turn Left, Turn Right; camera.Yaw
+            //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Camera.cs#L82
+            //public float Yaw { get; set; }
+            //Right = new Vector3(cosYaw, 0, -sinYaw);
+            //Right = new Vector3(cosYaw, 0, -sinYaw);
 
             //            Generate();
 

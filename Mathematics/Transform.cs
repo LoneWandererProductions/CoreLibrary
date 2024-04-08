@@ -248,7 +248,7 @@ namespace Mathematics
         ///     Rights the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void RightRotateCamera(double value)
+        public void RightRotateCamera(double value = 2.0d)
         {
             switch (CameraType)
             {
