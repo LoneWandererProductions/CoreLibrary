@@ -302,5 +302,27 @@ namespace ExtendedSystemObjects
         {
             return !dic.IsNullOrEmpty() && dic.Remove(dic.Keys.First());
         }
+
+        /// <summary>
+        /// Converts to list.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <typeparam name="TId">The type of the identifier.</typeparam>
+        /// <param name="dic">The dic.</param>
+        /// <returns>
+        /// A list with the Key as id
+        /// </returns>
+        public static List<TValue> ToListId<TId,TValue>(this Dictionary<TId, TValue> dic) where TValue : IIdHandling<TId>
+        {
+            var lst = new List<TValue>();
+
+            foreach (var kvp in dic)
+            {
+                kvp.Value.Id = kvp.Key;
+                lst.Add(kvp.Value);
+            }
+
+            return lst;
+        }
     }
 }

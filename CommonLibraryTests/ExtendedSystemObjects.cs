@@ -17,6 +17,7 @@ using System.Linq;
 using ExtendedSystemObjects;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace CommonLibraryTests
 {
@@ -611,6 +612,37 @@ namespace CommonLibraryTests
             Assert.AreEqual(compare1[2, 2], 2, "22");
         }
 
+        [TestMethod]
+        public void IdInterface()
+        {
+            var dct = new Dictionary<int, Item> { { 0, new Item() }, { 10, new Item() } };
+
+            //add some Test Data
+            //first
+            dct[0].Id = 1;
+            dct[0].MaxStack = 5;
+            dct[0].Amount = 5;
+
+            //second
+            dct[10].Id = 2;
+            dct[10].MaxStack = 8;
+            dct[10].Amount = 5;
+
+            //To List
+            var lst  = dct.ToListId();
+            Assert.AreEqual(lst[0].Id, 0, "Check passed");
+            Assert.AreEqual(lst[1].Id, 10, "Check passed");
+
+            lst[0].Id = 5;
+            lst[1].Id = 6;
+
+            var dic = lst.ToDictionaryId<Item, int>();
+            Assert.AreEqual(dic.Count, 2, "Check passed");
+            Assert.IsTrue(dic.ContainsKey(5), "Key does not exist");
+            Assert.IsTrue(dic.ContainsKey(6), "Key does not exist");
+        }
+
+
         /// <summary>
         ///     The Test obj class.
         /// </summary>
@@ -630,7 +662,7 @@ namespace CommonLibraryTests
         /// <summary>
         ///     Basic Object for Testing
         /// </summary>
-        private sealed class Item
+        private sealed class Item :IIdHandling<int>
         {
             /// <summary>Gets or sets the identifier.</summary>
             /// <value>The identifier.</value>

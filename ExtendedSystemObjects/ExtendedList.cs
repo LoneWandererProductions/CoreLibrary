@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace ExtendedSystemObjects
 {
@@ -186,6 +187,28 @@ namespace ExtendedSystemObjects
                 var index = RandomNumberGenerator.GetInt32(i, lst.Count);
                 (lst[index], lst[i]) = (lst[i], lst[index]);
             }
+        }
+
+        /// <summary>
+        /// Converts a list to dictionary.
+        /// but only if it implements the IIdHandling Interface
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <typeparam name="TId">The type of the identifier.</typeparam>
+        /// <param name="lst">List of generic Objects.</param>
+        /// <returns>
+        /// Dicitionary with an conversion from the attribute Id as Key
+        /// </returns>
+        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst) where TValue : IIdHandling<TId>
+        {
+            var dct = new Dictionary<TId, TValue>();
+
+            foreach (var item in lst)
+            {
+                dct.Add(item.Id, item);
+            }
+
+            return dct;
         }
     }
 }
