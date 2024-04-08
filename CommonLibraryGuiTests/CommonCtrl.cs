@@ -151,7 +151,7 @@ namespace CommonLibraryGuiTests
             login.View.Server = "SqlServer";
             login.View.Database = @"MyDB\Hello";
             login.View.ConnectCommand.Execute(null);
-            var db = login.View.ConnectionStringDB;
+            var db = login.View.ConnectionStringDb;
             var server = login.View.ConnectionStringServer;
             login.Close();
 

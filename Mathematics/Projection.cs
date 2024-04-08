@@ -24,7 +24,7 @@ namespace Mathematics
         /// <value>
         ///     <c>true</c> if debug; otherwise, <c>false</c>.
         /// </value>
-        public bool Debug { get; set; } = true;
+        public bool Debug { get; init; } = true;
 
         /// <inheritdoc />
         /// <summary>
@@ -52,7 +52,7 @@ namespace Mathematics
             {
                 Cameras.Orbit => ProjectionRaster.OrbitCamera(cache, transform),
                 Cameras.PointAt => ProjectionRaster.PointAt(cache, transform),
-                _ => ProjectionRaster.OrbitCamera(cache, transform),
+                _ => ProjectionRaster.OrbitCamera(cache, transform)
             };
 
             if (Debug)
@@ -100,7 +100,8 @@ namespace Mathematics
 
             if (transform.DisplayType == Display.Orthographic)
             {
-                return ProjectionRaster.MoveIntoViewOrthographic(cache, Projection3DRegister.Width, Projection3DRegister.Height);
+                return ProjectionRaster.MoveIntoViewOrthographic(cache, Projection3DRegister.Width,
+                    Projection3DRegister.Height);
             }
 
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);

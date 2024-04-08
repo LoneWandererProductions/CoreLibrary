@@ -31,22 +31,22 @@ namespace Debugger
         /// <summary>
         ///     The lock object
         /// </summary>
-        private static readonly string _lockObject = string.Empty;
+        private static readonly string LockObject = string.Empty;
 
         /// <summary>
         ///     The message queue
         /// </summary>
-        private static readonly ConcurrentQueue<string> _messageQueue = new();
+        private static readonly ConcurrentQueue<string> MessageQueue = new();
 
         /// <summary>
         ///     The cancellation token source
         /// </summary>
-        private static readonly CancellationTokenSource _cancellationTokenSource = new();
+        private static readonly CancellationTokenSource CancellationTokenSource = new();
 
         /// <summary>
-        ///     The message enqueued event
+        ///     The message queued event
         /// </summary>
-        private static readonly ManualResetEventSlim _messageEnqueuedEvent = new(false);
+        private static readonly ManualResetEventSlim MessageQueuedEvent = new(false);
 
         /// <summary>
         ///     Initializes the <see cref="DebugProcessing" /> class.
@@ -54,7 +54,7 @@ namespace Debugger
         static DebugProcessing()
         {
             // Start a background task to process the message queue
-            Task.Run(() => ProcessMessageQueueAsync(_cancellationTokenSource.Token));
+            Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
         }
 
         /// <summary>
@@ -275,9 +275,9 @@ namespace Debugger
         private static void WriteFile(string message)
         {
             // Enqueue the message
-            _messageQueue.Enqueue(message);
+            MessageQueue.Enqueue(message);
             // Signal that a message has been enqueued
-            _messageEnqueuedEvent.Set();
+            MessageQueuedEvent.Set();
         }
 
         /// <summary>
@@ -291,16 +291,16 @@ namespace Debugger
                 try
                 {
                     // Wait for a message to be enqueued or until cancellation is requested
-                    _messageEnqueuedEvent.Wait(cancellationToken);
+                    MessageQueuedEvent.Wait(cancellationToken);
 
                     // Dequeue all messages and write them to the file
-                    while (_messageQueue.TryDequeue(out var message))
+                    while (MessageQueue.TryDequeue(out var message))
                     {
                         await WriteToFileAsync(message);
                     }
 
                     // Reset the event after processing all messages
-                    _messageEnqueuedEvent.Reset();
+                    MessageQueuedEvent.Reset();
                 }
                 catch (OperationCanceledException)
                 {
@@ -321,7 +321,7 @@ namespace Debugger
         private static async Task WriteToFileAsync(string message)
         {
             // Ensure thread safety while writing to the file
-            lock (_lockObject)
+            lock (LockObject)
             {
                 // Append the message to the file
                 File.AppendAllText(DebugRegister.DebugPath, string.Concat(message, Environment.NewLine));

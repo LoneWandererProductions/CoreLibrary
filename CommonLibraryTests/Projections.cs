@@ -204,7 +204,7 @@ namespace CommonLibraryTests
 
             var transform = Transform.GetInstance();
 
-            var raster = new Projection {Debug = false};
+            var raster = new Projection { Debug = false };
 
             var cache = new List<PolyTriangle>(triangles);
 
@@ -466,115 +466,115 @@ namespace CommonLibraryTests
             var triangles = new List<PolyTriangle>();
 
             //south
-            var One = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
-            var Two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
-            var Three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
+            var one = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
+            var two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
+            var three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
 
-            var array = new[] { One, Two, Three };
+            var array = new[] { one, two, three };
             var triangle = new PolyTriangle(array);
 
             //var triangle = new PolyTriangle(One, Two, Three);
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
-            Two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
-            Three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
+            one = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
+            two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
+            three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
             //east
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
-            Two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
-            Three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
+            two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
+            three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
-            Two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
+            two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
             //north
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
             //west
-            One = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
+            one = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
-            Three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
+            one = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
+            three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
             //top
 
-            One = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
-            Two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
+            one = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
+            two = new Vector3D { X = 0.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
 
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
-            Two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
-            Three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
+            one = new Vector3D { X = 0.0f, Y = 1.0f, Z = 0.0f };
+            two = new Vector3D { X = 1.0f, Y = 1.0f, Z = 1.0f };
+            three = new Vector3D { X = 1.0f, Y = 1.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
             triangles.Add(triangle);
 
             //bottom
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
-            Three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 0.0f, Y = 0.0f, Z = 1.0f };
+            three = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
             triangles.Add(triangle);
 
-            One = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
-            Two = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
-            Three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
+            one = new Vector3D { X = 1.0f, Y = 0.0f, Z = 1.0f };
+            two = new Vector3D { X = 0.0f, Y = 0.0f, Z = 0.0f };
+            three = new Vector3D { X = 1.0f, Y = 0.0f, Z = 0.0f };
 
-            array = new[] { One, Two, Three };
+            array = new[] { one, two, three };
             triangle = new PolyTriangle(array);
             triangles.Add(triangle);
 

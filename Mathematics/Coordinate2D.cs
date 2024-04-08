@@ -178,7 +178,7 @@ namespace Mathematics
         /// <returns>The id of the coordinate</returns>
         public int CalculateId(int width)
         {
-            return CalculateId(X,Y, width);
+            return CalculateId(X, Y, width);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Mathematics
         /// <returns>The id of the coordinate</returns>
         private static int CalculateId(int x, int y, int width)
         {
-            return y * width + x;
+            return (y * width) + x;
         }
 
         /// <summary>

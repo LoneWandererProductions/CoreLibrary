@@ -148,15 +148,6 @@ namespace Mathematics
             return new Vector3D(X, Y, Z);
         }
 
-        /// <summary>
-        ///     Sets the w.
-        /// </summary>
-        /// <param name="w">The w.</param>
-        internal void SetW(double w)
-        {
-            W = w;
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Equals the specified other.
@@ -166,6 +157,15 @@ namespace Mathematics
         public bool Equals(Vector3D other)
         {
             return X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        }
+
+        /// <summary>
+        ///     Sets the w.
+        /// </summary>
+        /// <param name="w">The w.</param>
+        internal void SetW(double w)
+        {
+            W = w;
         }
 
         /// <summary>

@@ -33,7 +33,8 @@ namespace CommonControls
         /// <summary>
         ///     The persist information string configuration for the connection string.
         /// </summary>
-        private readonly string _persistInfo = string.Concat(ComCtlResources.DBPersistSecurityInfo, PersistSecurityInfo, ComCtlResources.DBFin);
+        private readonly string _persistInfo = string.Concat(ComCtlResources.DbPersistSecurityInfo, PersistSecurityInfo,
+            ComCtlResources.DbFin);
 
         /// <summary>
         ///     The IntegratedSecurity string for the connection string
@@ -86,40 +87,42 @@ namespace CommonControls
         public bool TrustServerCertificate { get; set; }
 
         /// <summary>
-        /// Gets the connection string.
+        ///     Gets the connection string.
         /// </summary>
         /// <param name="includeDatabaseName">if set to <c>true</c> [include database name].</param>
         /// <returns>Connection String</returns>
         public string GetConnectionString(bool includeDatabaseName)
         {
-            _security = ComCtlResources.DBIntegratedTrue;
-            _trust = TrustServerCertificate ? ComCtlResources.DBTrustServerCertificateTrue : ComCtlResources.DBTrustServerCertificateFalse;
+            _security = ComCtlResources.DbIntegratedTrue;
+            _trust = TrustServerCertificate
+                ? ComCtlResources.DbTrustServerCertificateTrue
+                : ComCtlResources.DbTrustServerCertificateFalse;
 
             if (string.IsNullOrEmpty(Server))
             {
-                Trace.WriteLine(ComCtlResources.DBServerError);
-                return ComCtlResources.DBServerError;
+                Trace.WriteLine(ComCtlResources.DbServerError);
+                return ComCtlResources.DbServerError;
             }
 
             if (includeDatabaseName && string.IsNullOrEmpty(Database))
             {
-                Trace.WriteLine(ComCtlResources.DBNameError);
-                return ComCtlResources.DBServerError;
+                Trace.WriteLine(ComCtlResources.DbNameError);
+                return ComCtlResources.DbServerError;
             }
 
             var connectionStringBuilder = new StringBuilder();
             connectionStringBuilder.Append(_persistInfo);
             connectionStringBuilder.Append(_trust);
             connectionStringBuilder.Append(_security);
-            connectionStringBuilder.Append(ComCtlResources.DBServer);
+            connectionStringBuilder.Append(ComCtlResources.DbServer);
             connectionStringBuilder.Append(Server);
-            connectionStringBuilder.Append(ComCtlResources.DBFin);
+            connectionStringBuilder.Append(ComCtlResources.DbFin);
 
             if (includeDatabaseName)
             {
-                connectionStringBuilder.Append(ComCtlResources.DBDatabase);
+                connectionStringBuilder.Append(ComCtlResources.DbDatabase);
                 connectionStringBuilder.Append(Database);
-                connectionStringBuilder.Append(ComCtlResources.DBFin);
+                connectionStringBuilder.Append(ComCtlResources.DbFin);
             }
 
             return connectionStringBuilder.ToString();

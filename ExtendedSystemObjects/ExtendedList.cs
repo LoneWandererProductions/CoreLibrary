@@ -189,16 +189,17 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts a list to dictionary.
-        /// but only if it implements the IIdHandling Interface
+        ///     Converts a list to dictionary.
+        ///     but only if it implements the IIdHandling Interface
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <typeparam name="TId">The type of the identifier.</typeparam>
         /// <param name="lst">List of generic Objects.</param>
         /// <returns>
-        /// Dicitionary with an conversion from the attribute Id as Key
+        ///     Dicitionary with an conversion from the attribute Id as Key
         /// </returns>
-        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst) where TValue : IIdHandling<TId>
+        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst)
+            where TValue : IIdHandling<TId>
         {
             var dct = new Dictionary<TId, TValue>();
 

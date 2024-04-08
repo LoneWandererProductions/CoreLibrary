@@ -41,14 +41,14 @@ namespace CommonControls
         private string _dataBase;
 
         /// <summary>
-        ///     Is Attribute set
-        /// </summary>
-        private bool _trustIsActive = true;
-
-        /// <summary>
         ///     The server
         /// </summary>
         private string _server;
+
+        /// <summary>
+        ///     Is Attribute set
+        /// </summary>
+        private bool _trustIsActive = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is active.
@@ -153,10 +153,10 @@ namespace CommonControls
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
-        /// Gets the connection string Class.
+        ///     Gets the connection string Class.
         /// </summary>
         /// <value>
-        /// Builds the Connection String.
+        ///     Builds the Connection String.
         /// </value>
         public SqlConnect Connection { get; private set; }
 
@@ -167,22 +167,22 @@ namespace CommonControls
         /// <value>
         ///     The connection string.
         /// </value>
-        public string ConnectionStringDB { get; private set; }
+        public string ConnectionStringDb { get; private set; }
 
         /// <summary>
-        /// Gets the connection string for server only.
+        ///     Gets the connection string for server only.
         /// </summary>
         /// <value>
-        /// The connection string server.
+        ///     The connection string server.
         /// </value>
         public string ConnectionStringServer { get; private set; }
 
         /// <summary>
-        /// Gets or sets the add log.
-        /// Here you can add some infos to the log in the Login Window
+        ///     Gets or sets the add log.
+        ///     Here you can add some infos to the log in the Login Window
         /// </summary>
         /// <value>
-        /// The add log.
+        ///     The add log.
         /// </value>
         public string AddLog { get; set; }
 
@@ -226,7 +226,7 @@ namespace CommonControls
             var connect = new SqlConnect(Database, Server, TrustIsActive);
             Connection = connect;
             ConnectionStringServer = connect.GetConnectionString(false);
-            bool check = true;
+            var check = true;
 
             if (string.IsNullOrEmpty(Server))
             {
@@ -234,22 +234,22 @@ namespace CommonControls
                 Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
             }
 
-            ConnectionStringDB = connect.GetConnectionString(true);
+            ConnectionStringDb = connect.GetConnectionString(true);
 
             if (string.IsNullOrEmpty(Database))
             {
                 check = false;
-                Log = string.Concat(Log, ConnectionStringDB, Environment.NewLine);
+                Log = string.Concat(Log, ConnectionStringDb, Environment.NewLine);
             }
 
             if (check)
 
             {
-                Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuild, Environment.NewLine);
+                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
             }
             else
             {
-                Log = string.Concat(Log, ComCtlResources.DBLogConnectionStringBuildError, Environment.NewLine);
+                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
             }
         }
 

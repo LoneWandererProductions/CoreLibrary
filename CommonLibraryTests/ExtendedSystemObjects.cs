@@ -17,7 +17,6 @@ using System.Linq;
 using ExtendedSystemObjects;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace CommonLibraryTests
 {
@@ -629,7 +628,7 @@ namespace CommonLibraryTests
             dct[10].Amount = 5;
 
             //To List
-            var lst  = dct.ToListId();
+            var lst = dct.ToListId();
             Assert.AreEqual(lst[0].Id, 0, "Check passed");
             Assert.AreEqual(lst[1].Id, 10, "Check passed");
 
@@ -662,12 +661,8 @@ namespace CommonLibraryTests
         /// <summary>
         ///     Basic Object for Testing
         /// </summary>
-        private sealed class Item :IIdHandling<int>
+        private sealed class Item : IIdHandling<int>
         {
-            /// <summary>Gets or sets the identifier.</summary>
-            /// <value>The identifier.</value>
-            public int Id { get; set; } = -1;
-
             /// <summary>Gets or sets the amount.</summary>
             /// <value>The amount.</value>
             public int Amount { get; set; }
@@ -675,6 +670,10 @@ namespace CommonLibraryTests
             /// <summary>Gets or sets the maximum stack.</summary>
             /// <value>The maximum stack.</value>
             public int MaxStack { get; set; } = 1;
+
+            /// <summary>Gets or sets the identifier.</summary>
+            /// <value>The identifier.</value>
+            public int Id { get; set; } = -1;
         }
     }
 }

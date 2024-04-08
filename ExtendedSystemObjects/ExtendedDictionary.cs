@@ -88,8 +88,8 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Adds a key-value pair to the dictionary if the key is not already present,
-        /// throwing exceptions if either the key or value already exist.
+        ///     Adds a key-value pair to the dictionary if the key is not already present,
+        ///     throwing exceptions if either the key or value already exist.
         /// </summary>
         /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
@@ -188,14 +188,14 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Get First Key by Value
+        ///     Get First Key by Value
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="value">Value we look up</param>
         /// <returns>
-        /// First appearance of Value
+        ///     First appearance of Value
         /// </returns>
         /// <exception cref="ExtendedSystemObjects.ValueNotFoundException"></exception>
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
@@ -304,15 +304,16 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts to list.
+        ///     Converts to list.
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <typeparam name="TId">The type of the identifier.</typeparam>
         /// <param name="dic">The dic.</param>
         /// <returns>
-        /// A list with the Key as id
+        ///     A list with the Key as id
         /// </returns>
-        public static List<TValue> ToListId<TId,TValue>(this Dictionary<TId, TValue> dic) where TValue : IIdHandling<TId>
+        public static List<TValue> ToListId<TId, TValue>(this Dictionary<TId, TValue> dic)
+            where TValue : IIdHandling<TId>
         {
             var lst = new List<TValue>();
 

@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,9 +67,9 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Backfaces culled.
-        /// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
-        /// Division by 2 is not necessary, since all we care about is if the value is positive/negative
+        ///     Backfaces culled.
+        ///     Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula#Statement
+        ///     Division by 2 is not necessary, since all we care about is if the value is positive/negative
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <returns>All visible Triangles</returns>
@@ -88,7 +87,10 @@ namespace Mathematics
                            (triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X);
                 }
 
-                if(sum >= 0) continue;
+                if (sum >= 0)
+                {
+                    continue;
+                }
 
                 lst.Add(triangle);
             }
@@ -182,7 +184,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Moves the orthographic Object into view.
+        ///     Moves the orthographic Object into view.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="width">The width.</param>
@@ -190,7 +192,8 @@ namespace Mathematics
         /// <returns>
         ///     Center on Screen
         /// </returns>
-        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width, int height)
+        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width,
+            int height)
         {
             var lst = new List<PolyTriangle>();
 

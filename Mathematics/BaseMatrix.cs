@@ -101,7 +101,7 @@ namespace Mathematics
         public double this[int x, int y]
         {
             get => Matrix[x, y];
-            set => Matrix[x, y] = value;
+            init => Matrix[x, y] = value;
         }
 
         /// <inheritdoc />

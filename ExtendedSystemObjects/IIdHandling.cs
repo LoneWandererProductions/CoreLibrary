@@ -9,16 +9,16 @@
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// Interface Id handling, for better handling of Dictionaries and list elements
+    ///     Interface Id handling, for better handling of Dictionaries and list elements
     /// </summary>
     /// <typeparam name="TId">The type of the identifier.</typeparam>
     public interface IIdHandling<TId>
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the identifier.
         /// </summary>
         /// <value>
-        /// The identifier.
+        ///     The identifier.
         /// </value>
         TId Id { get; set; }
     }
