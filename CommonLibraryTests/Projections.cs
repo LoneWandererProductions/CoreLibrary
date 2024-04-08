@@ -249,6 +249,8 @@ namespace CommonLibraryTests
             //Right = new Vector3(cosYaw, 0, -sinYaw);
             //Right = new Vector3(cosYaw, 0, -sinYaw);
 
+            //Further https://github.com/OneLoneCoder/Javidx9/tree/master/ConsoleGameEngine/BiggerProjects/Engine3D
+
             //            Generate();
 
             //left
