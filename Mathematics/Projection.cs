@@ -24,7 +24,7 @@ namespace Mathematics
         /// <value>
         ///     <c>true</c> if debug; otherwise, <c>false</c>.
         /// </value>
-        public bool Debug { get; init; } = true;
+        public bool Debug { get; set; } = true;
 
         /// <inheritdoc />
         /// <summary>

@@ -86,7 +86,7 @@ namespace Mathematics
         /// <value>
         ///     The translation.
         /// </value>
-        public Vector3D Translation { get; init; }
+        public Vector3D Translation { get; set; }
 
         /// <summary>
         ///     Gets or sets the rotation of the World.
@@ -94,7 +94,7 @@ namespace Mathematics
         /// <value>
         ///     The rotation.
         /// </value>
-        public Vector3D Rotation { get; init; }
+        public Vector3D Rotation { get; set; }
 
         /// <summary>
         ///     Gets or sets the scale of the World.
@@ -102,7 +102,7 @@ namespace Mathematics
         /// <value>
         ///     The scale.
         /// </value>
-        public Vector3D Scale { get; init; }
+        public Vector3D Scale { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
@@ -236,8 +236,6 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Yaw -= value;
-                    break;
                 case Cameras.PointAt:
                     Yaw -= value;
                     break;
@@ -253,8 +251,6 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Yaw += value;
-                    break;
                 case Cameras.PointAt:
                     Yaw += value;
                     break;
