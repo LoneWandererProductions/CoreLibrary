@@ -242,6 +242,20 @@ namespace CommonLibraryTests
                 Trace.WriteLine(data.ToString());
             }
 
+            var transform1 = Transform.GetInstance();
+            var transform2 = Transform.GetInstance();
+
+            Trace.WriteLine("Mass statement:");
+            for (var i = 0; i < 100; i++) 
+            {
+                Trace.WriteLine("Left statement:");
+                transform1.LeftCamera(0.5);
+                Trace.WriteLine(transform.Right);
+                Trace.WriteLine("Right statement:");
+                transform2.RightCamera(0.5);
+                Trace.WriteLine(transform.Right);
+            }
+
             //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Scene.cs
             //// Turn Left, Turn Right; camera.Yaw
             //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Camera.cs#L82
