@@ -173,6 +173,8 @@ namespace Mathematics
                 -(transform.Up * transform.Position),
                 -(transform.Forward * transform.Position));
 
+            //{ 1 0 0 0  0 1 - 0 0 - 0 0 1 0 - 0 - 0 - 0 1  }
+
             // Join rotation and translation in a single matrix
             // instead of calculating their multiplication
             double[,] viewMatrix =
