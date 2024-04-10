@@ -80,7 +80,7 @@ namespace Solaris
         public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(
             nameof(AuroraTextures),
             typeof(Dictionary<int, Texture>),
-            typeof(Aurora), new PropertyMetadata(100));
+            typeof(Aurora), null);
 
         /// <summary>
         ///     The grid
