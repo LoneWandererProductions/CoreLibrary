@@ -77,12 +77,10 @@ namespace Solaris
             var background = new Bitmap(width * textureSize, height * textureSize);
 
             for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
-                for (var x = 0; x < width; x++)
-                {
-                    using var graphics = Graphics.FromImage(background);
-                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-                }
+                using var graphics = Graphics.FromImage(background);
+                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
             }
 
             return background.ToBitmapImage();
@@ -102,16 +100,14 @@ namespace Solaris
             var count = -1;
 
             for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
-                for (var x = 0; x < width; x++)
-                {
-                    count++;
+                count++;
 
-                    using var graphics = Graphics.FromImage(background);
-                    var rectangle = new RectangleF((x * textureSize) + Padding, (y * textureSize) + Padding,
-                        textureSize - Padding, textureSize - Padding);
-                    graphics.DrawString(count.ToString(), new Font(Resources.Font, 8), Brushes.Black, rectangle);
-                }
+                using var graphics = Graphics.FromImage(background);
+                var rectangle = new RectangleF(x * textureSize + Padding, y * textureSize + Padding,
+                    textureSize - Padding, textureSize - Padding);
+                graphics.DrawString(count.ToString(), new Font(Resources.Font, 8), Brushes.Black, rectangle);
             }
 
             return background.ToBitmapImage();
@@ -145,26 +141,17 @@ namespace Solaris
             Dictionary<int, Texture> textures,
             KeyValuePair<int, int> idLayer)
         {
-            if (map == null)
-            {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
-            }
+            if (map == null) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
 
             var (id, layer) = idLayer;
 
-            if (!map.ContainsKey(id))
-            {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
-            }
+            if (!map.ContainsKey(id)) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
 
             var lst = map[id];
 
             var cache = lst.Where(tile => textures[tile].Layer != layer).ToList();
 
-            if (cache.Count == lst.Count)
-            {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
-            }
+            if (cache.Count == lst.Count) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
 
             map[id] = cache;
 

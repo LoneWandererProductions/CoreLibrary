@@ -34,14 +34,14 @@ namespace Solaris
         public static readonly DependencyProperty AuroraHeightProperty = DependencyProperty.Register(
             nameof(AuroraHeight),
             typeof(int),
-            typeof(Aurora), null);
+            typeof(Aurora), new PropertyMetadata(100));
 
         /// <summary>
         ///     The map width
         /// </summary>
         public static readonly DependencyProperty AuroraWidthProperty = DependencyProperty.Register(nameof(AuroraWidth),
             typeof(int),
-            typeof(Aurora), null);
+            typeof(Aurora), new PropertyMetadata(100));
 
         /// <summary>
         ///     The texture size
@@ -49,7 +49,7 @@ namespace Solaris
         public static readonly DependencyProperty AuroraTextureSizeProperty = DependencyProperty.Register(
             nameof(AuroraTextureSize),
             typeof(int),
-            typeof(Aurora), null);
+            typeof(Aurora), new PropertyMetadata(100));
 
         /// <summary>
         ///     The map
@@ -80,14 +80,14 @@ namespace Solaris
         public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(
             nameof(AuroraTextures),
             typeof(Dictionary<int, Texture>),
-            typeof(Aurora), null);
+            typeof(Aurora), new PropertyMetadata(100));
 
         /// <summary>
         ///     The grid
         /// </summary>
         public static readonly DependencyProperty AuroraGridProperty = DependencyProperty.Register(nameof(AuroraGrid),
             typeof(bool),
-            typeof(Aurora), null);
+            typeof(Aurora), new PropertyMetadata(false));
 
         /// <summary>
         ///     The add
@@ -233,10 +233,7 @@ namespace Solaris
                 SetValue(AuroraAddProperty, value);
                 var (check, dictionary) = Helper.AddTile(AuroraMap, value);
 
-                if (!check)
-                {
-                    return;
-                }
+                if (!check) return;
 
                 AuroraMap = dictionary;
 
@@ -262,10 +259,7 @@ namespace Solaris
 
                 var (check, dictionary) = Helper.RemoveTile(AuroraMap, AuroraTextures, value);
 
-                if (!check)
-                {
-                    return;
-                }
+                if (!check) return;
 
                 AuroraMap = dictionary;
 
@@ -324,10 +318,7 @@ namespace Solaris
             get => (List<int>)GetValue(AuroraMovementProperty);
             set
             {
-                if (value == null)
-                {
-                    return;
-                }
+                if (value == null) return;
 
                 SetValue(AuroraMovementProperty, value);
 
@@ -360,10 +351,7 @@ namespace Solaris
         /// </summary>
         public void Initiate()
         {
-            if (AuroraWidth == 0 || AuroraHeight == 0 || AuroraTextureSize == 0)
-            {
-                return;
-            }
+            if (AuroraWidth == 0 || AuroraHeight == 0 || AuroraTextureSize == 0) return;
 
             Touch.Height = AuroraHeight * AuroraTextureSize;
             Touch.Width = AuroraWidth * AuroraTextureSize;
@@ -373,10 +361,7 @@ namespace Solaris
 
             LayerOne.Source = BitmapLayerOne.ToBitmapImage();
 
-            if (AuroraGrid)
-            {
-                LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
-            }
+            if (AuroraGrid) LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
 
             _thirdLayer = new Bitmap(AuroraWidth * AuroraTextureSize, AuroraHeight * AuroraTextureSize);
         }
@@ -393,22 +378,14 @@ namespace Solaris
             var position = e.GetPosition(Touch);
 
             if (position.X < AuroraTextureSize)
-            {
                 _cursor.X = 0;
-            }
             else
-            {
                 _cursor.X = (int)position.X / AuroraTextureSize;
-            }
 
             if (position.Y < AuroraTextureSize)
-            {
                 _cursor.Y = 0;
-            }
             else
-            {
                 _cursor.Y = (int)position.X / AuroraTextureSize;
-            }
         }
     }
 }

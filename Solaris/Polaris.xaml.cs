@@ -34,7 +34,7 @@ namespace Solaris
         public static readonly DependencyProperty PolarisHeightProperty = DependencyProperty.Register(
             nameof(PolarisHeight),
             typeof(int),
-            typeof(Polaris), null);
+            typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
         ///     The editor width
@@ -42,7 +42,7 @@ namespace Solaris
         public static readonly DependencyProperty PolarisWidthProperty = DependencyProperty.Register(
             nameof(PolarisWidth),
             typeof(int),
-            typeof(Polaris), null);
+            typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
         ///     The editor texture size
@@ -50,7 +50,7 @@ namespace Solaris
         public static readonly DependencyProperty PolarisTextureSizeProperty = DependencyProperty.Register(
             nameof(PolarisTextureSize),
             typeof(int),
-            typeof(Polaris), null);
+            typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
         ///     The editor map
@@ -72,7 +72,7 @@ namespace Solaris
         /// </summary>
         public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
             typeof(bool),
-            typeof(Polaris), null);
+            typeof(Polaris), new PropertyMetadata(false));
 
         /// <summary>
         ///     The editor number
@@ -80,7 +80,7 @@ namespace Solaris
         public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(
             nameof(PolarisNumber),
             typeof(bool),
-            typeof(Polaris), null);
+            typeof(Polaris), new PropertyMetadata(false));
 
         /// <summary>
         ///     The editor add
@@ -191,10 +191,7 @@ namespace Solaris
             get => (Dictionary<int, List<int>>)GetValue(PolarisMapProperty);
             set
             {
-                if (value == null)
-                {
-                    return;
-                }
+                if (value == null) return;
 
                 SetValue(PolarisMapProperty, value);
 
@@ -271,10 +268,7 @@ namespace Solaris
 
                 var (check, dictionary) = Helper.AddTile(PolarisMap, value);
 
-                if (!check)
-                {
-                    return;
-                }
+                if (!check) return;
 
                 PolarisMap = dictionary;
 
@@ -299,10 +293,7 @@ namespace Solaris
                 SetValue(PolarisRemoveProperty, value);
                 var (check, dictionary) = Helper.RemoveTile(PolarisMap, PolarisTextures, value);
 
-                if (!check)
-                {
-                    return;
-                }
+                if (!check) return;
 
                 PolarisMap = dictionary;
 
@@ -355,23 +346,15 @@ namespace Solaris
         /// </summary>
         public void Initiate()
         {
-            if (PolarisWidth == 0 || PolarisHeight == 0 || PolarisTextureSize == 0)
-            {
-                return;
-            }
+            if (PolarisWidth == 0 || PolarisHeight == 0 || PolarisTextureSize == 0) return;
 
             Touch.Height = PolarisHeight * PolarisTextureSize;
             Touch.Width = PolarisWidth * PolarisTextureSize;
 
-            if (PolarisGrid)
-            {
-                LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
+            if (PolarisGrid) LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
 
             if (PolarisNumber)
-            {
                 LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
 
             BitmapLayerThree = new Bitmap(PolarisWidth * PolarisTextureSize,
                 PolarisHeight * PolarisTextureSize);
@@ -389,22 +372,14 @@ namespace Solaris
             var position = e.GetPosition(Touch);
 
             if (position.X < PolarisTextureSize)
-            {
                 _cursor.X = 0;
-            }
             else
-            {
                 _cursor.X = (int)position.X / PolarisTextureSize;
-            }
 
             if (position.Y < PolarisTextureSize)
-            {
                 _cursor.Y = 0;
-            }
             else
-            {
                 _cursor.Y = (int)position.X / PolarisTextureSize;
-            }
         }
     }
 }
