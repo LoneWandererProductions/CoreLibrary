@@ -94,6 +94,29 @@ namespace Imaging
         public int NumberOfColors { get; init; }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Cif"/> class.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        public Cif(Bitmap image)
+        {
+            var format = CifProcessing.ConvertToCif(image);
+
+            Compressed = false;
+            Height = image.Height;
+            Width = image.Width;
+            CifImage = format;
+            NumberOfColors = format.Count;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Cif"/> class.
+        /// </summary>
+        public Cif()
+        {
+            Compressed = false;
+        }
+
+        /// <summary>
         ///     Changes the color.
         /// </summary>
         /// <param name="x">The x.</param>
