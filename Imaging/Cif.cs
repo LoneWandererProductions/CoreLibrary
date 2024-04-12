@@ -28,12 +28,12 @@ namespace Imaging
         /// <summary>
         /// The cif image
         /// </summary>
-        private readonly Dictionary<Color, List<int>> _cifImage = new();
+        private readonly Dictionary<Color, SortedSet<int>> _cifImage = new();
 
         /// <summary>
         /// The cif sorted
         /// </summary>
-        private Dictionary<Color, List<int>> _cifSorted = new();
+        private Dictionary<Color, SortedSet<int>> _cifSorted = new();
 
         /// <summary>
         /// The sort required
@@ -43,7 +43,7 @@ namespace Imaging
         /// <summary>
         ///     The cif image
         /// </summary>
-        public Dictionary<Color, List<int>> CifImage
+        public Dictionary<Color, SortedSet<int>> CifImage
         {
             get => _cifImage;
             init
@@ -153,7 +153,7 @@ namespace Imaging
                 }
                 else
                 {
-                    var cache = new List<int> { id };
+                    var cache = new SortedSet<int> { id };
                     CifImage.Add(color, cache);
                 }
 
@@ -181,7 +181,7 @@ namespace Imaging
 
             if (CifImage.ContainsKey(newColor))
             {
-                CifImage[newColor].AddRange(cache);
+                CifImage[newColor].UnionWith(cache);
             }
             else
             {
@@ -254,12 +254,14 @@ namespace Imaging
             {
                 info = string.Concat(info, ImagingResources.Color, color, ImagingResources.Spacing);
 
+                var sortedList = new List<int>(value);
+
                 for (var i = 0; i < value.Count - 1; i++)
                 {
-                    info = string.Concat(info, value[i], ImagingResources.Indexer);
+                    info = string.Concat(info, sortedList[i], ImagingResources.Indexer);
                 }
 
-                info = string.Concat(info, value[value.Count], Environment.NewLine);
+                info = string.Concat(info, sortedList[sortedList.Count], Environment.NewLine);
             }
 
             return info;
@@ -281,7 +283,7 @@ namespace Imaging
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Sorted Dictionary from biggest Count to lowest</returns>
-        private static Dictionary<Color, List<int>> SortDct(Dictionary<Color, List<int>> value)
+        private static Dictionary<Color, SortedSet<int>> SortDct(Dictionary<Color, SortedSet<int>> value)
         {
             return value.OrderByDescending(kv => kv.Value.Count)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
