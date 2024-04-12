@@ -18,7 +18,7 @@ namespace Imaging
 {
     /// <inheritdoc />
     /// <summary>
-    /// The Custom Image Format
+    ///     The Custom Image Format
     /// </summary>
     /// <seealso cref="T:Imaging.ICustomImageFormat" />
     public sealed class CustomImageFormat : ICustomImageFormat

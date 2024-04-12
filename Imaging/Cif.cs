@@ -26,19 +26,42 @@ namespace Imaging
     public sealed class Cif
     {
         /// <summary>
-        /// The cif image
+        ///     The cif image
         /// </summary>
         private readonly Dictionary<Color, SortedSet<int>> _cifImage = new();
 
         /// <summary>
-        /// The cif sorted
+        ///     The cif sorted
         /// </summary>
         private Dictionary<Color, SortedSet<int>> _cifSorted = new();
 
         /// <summary>
-        /// The sort required
+        ///     The sort required
         /// </summary>
         private bool _sortRequired = true;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Cif" /> class.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        public Cif(Bitmap image)
+        {
+            var format = CifProcessing.ConvertToCif(image);
+
+            Compressed = false;
+            Height = image.Height;
+            Width = image.Width;
+            CifImage = format;
+            NumberOfColors = format.Count;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Cif" /> class.
+        /// </summary>
+        public Cif()
+        {
+            Compressed = false;
+        }
 
         /// <summary>
         ///     The cif image
@@ -92,29 +115,6 @@ namespace Imaging
         ///     The number of colors.
         /// </value>
         public int NumberOfColors { get; init; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Cif"/> class.
-        /// </summary>
-        /// <param name="image">The image.</param>
-        public Cif(Bitmap image)
-        {
-            var format = CifProcessing.ConvertToCif(image);
-
-            Compressed = false;
-            Height = image.Height;
-            Width = image.Width;
-            CifImage = format;
-            NumberOfColors = format.Count;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Cif"/> class.
-        /// </summary>
-        public Cif()
-        {
-            Compressed = false;
-        }
 
         /// <summary>
         ///     Changes the color.
@@ -192,14 +192,16 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the color, it is quite a fast way, if the image is big and the color count is low!
+        ///     Gets the color, it is quite a fast way, if the image is big and the color count is low!
         /// </summary>
-        /// 
         /// <param name="id">The identifier.</param>
         /// <returns>Color at this point or null, if id was completely wrong.</returns>
         public Color? GetColor(int id)
         {
-            if (id < 0 || id > Height * Width) return null;
+            if (id < 0 || id > Height * Width)
+            {
+                return null;
+            }
 
             // Check if sorting is required and perform lazy loading
             if (_sortRequired)
@@ -210,7 +212,10 @@ namespace Imaging
 
             foreach (var (color, value) in _cifSorted)
             {
-                if (value.Contains(id)) return color;
+                if (value.Contains(id))
+                {
+                    return color;
+                }
             }
 
             return null;
@@ -279,7 +284,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sorts the Dictionary.
+        ///     Sorts the Dictionary.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Sorted Dictionary from biggest Count to lowest</returns>

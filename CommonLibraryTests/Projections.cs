@@ -246,7 +246,7 @@ namespace CommonLibraryTests
             var transform2 = Transform.GetInstance();
 
             Trace.WriteLine("Mass statement:");
-            for (var i = 0; i < 100; i++) 
+            for (var i = 0; i < 100; i++)
             {
                 Trace.WriteLine("Left statement:");
                 transform1.LeftCamera(0.5);

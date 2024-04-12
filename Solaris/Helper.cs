@@ -105,7 +105,7 @@ namespace Solaris
                 count++;
 
                 using var graphics = Graphics.FromImage(background);
-                var rectangle = new RectangleF(x * textureSize + Padding, y * textureSize + Padding,
+                var rectangle = new RectangleF((x * textureSize) + Padding, (y * textureSize) + Padding,
                     textureSize - Padding, textureSize - Padding);
                 graphics.DrawString(count.ToString(), new Font(Resources.Font, 8), Brushes.Black, rectangle);
             }
@@ -141,17 +141,26 @@ namespace Solaris
             Dictionary<int, Texture> textures,
             KeyValuePair<int, int> idLayer)
         {
-            if (map == null) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
+            if (map == null)
+            {
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
+            }
 
             var (id, layer) = idLayer;
 
-            if (!map.ContainsKey(id)) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
+            if (!map.ContainsKey(id))
+            {
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, null);
+            }
 
             var lst = map[id];
 
             var cache = lst.Where(tile => textures[tile].Layer != layer).ToList();
 
-            if (cache.Count == lst.Count) return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            if (cache.Count == lst.Count)
+            {
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            }
 
             map[id] = cache;
 
