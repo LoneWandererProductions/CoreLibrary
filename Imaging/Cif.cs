@@ -26,9 +26,32 @@ namespace Imaging
     public sealed class Cif
     {
         /// <summary>
+        /// The cif image
+        /// </summary>
+        private readonly Dictionary<Color, List<int>> _cifImage = new();
+
+        /// <summary>
+        /// The cif sorted
+        /// </summary>
+        private Dictionary<Color, List<int>> _cifSorted = new();
+
+        /// <summary>
+        /// The sort required
+        /// </summary>
+        private bool _sortRequired = true;
+
+        /// <summary>
         ///     The cif image
         /// </summary>
-        public Dictionary<Color, List<int>> cifImage = new();
+        public Dictionary<Color, List<int>> CifImage
+        {
+            get => _cifImage;
+            init
+            {
+                _cifImage = value;
+                _sortRequired = true;
+            }
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="Cif" /> is compressed.
@@ -87,7 +110,7 @@ namespace Imaging
                 return false;
             }
 
-            foreach (var (key, value) in cifImage)
+            foreach (var (key, value) in CifImage)
             {
                 if (!value.Contains(id))
                 {
@@ -99,16 +122,16 @@ namespace Imaging
                     return false;
                 }
 
-                cifImage[key].Remove(id);
+                CifImage[key].Remove(id);
 
-                if (cifImage.ContainsKey(color))
+                if (CifImage.ContainsKey(color))
                 {
-                    cifImage[color].Add(id);
+                    CifImage[color].Add(id);
                 }
                 else
                 {
                     var cache = new List<int> { id };
-                    cifImage.Add(color, cache);
+                    CifImage.Add(color, cache);
                 }
 
                 return true;
@@ -125,24 +148,49 @@ namespace Imaging
         /// <returns>Success Status</returns>
         public bool ChangeColor(Color oldColor, Color newColor)
         {
-            if (!cifImage.ContainsKey(oldColor))
+            if (!CifImage.ContainsKey(oldColor))
             {
                 return false;
             }
 
-            var cache = cifImage[oldColor];
-            cifImage.Remove(oldColor);
+            var cache = CifImage[oldColor];
+            CifImage.Remove(oldColor);
 
-            if (cifImage.ContainsKey(newColor))
+            if (CifImage.ContainsKey(newColor))
             {
-                cifImage[newColor].AddRange(cache);
+                CifImage[newColor].AddRange(cache);
             }
             else
             {
-                cifImage.Add(newColor, cache);
+                CifImage.Add(newColor, cache);
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets the color, it is quite a fast way, if the image is big and the color count is low!
+        /// </summary>
+        /// 
+        /// <param name="id">The identifier.</param>
+        /// <returns>Color at this point or null, if id was completely wrong.</returns>
+        public Color? GetColor(int id)
+        {
+            if (id < 0 || id > Height * Width) return null;
+
+            // Check if sorting is required and perform lazy loading
+            if (_sortRequired)
+            {
+                _cifSorted = SortDct(_cifImage);
+                _sortRequired = false;
+            }
+
+            foreach (var (color, value) in _cifSorted)
+            {
+                if (value.Contains(id)) return color;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -152,7 +200,7 @@ namespace Imaging
         [return: MaybeNull]
         public Image GetImage()
         {
-            if (cifImage == null)
+            if (CifImage == null)
             {
                 return null;
             }
@@ -160,13 +208,13 @@ namespace Imaging
             var image = new Bitmap(Height, Width);
             var dbm = DirectBitmap.GetInstance(image);
 
-            foreach (var (key, value) in cifImage)
+            foreach (var (key, value) in CifImage)
             foreach (var coordinate in value.Select(id => Coordinate2D.GetInstance(id, Width)))
             {
                 dbm.SetPixel(coordinate.X, coordinate.Y, key);
             }
 
-            return null;
+            return dbm.Bitmap;
         }
 
         /// <summary>
@@ -179,7 +227,7 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            foreach (var (color, value) in cifImage)
+            foreach (var (color, value) in CifImage)
             {
                 info = string.Concat(info, ImagingResources.Color, color, ImagingResources.Spacing);
 
@@ -203,6 +251,17 @@ namespace Imaging
         public override int GetHashCode()
         {
             return HashCode.Combine(Height, Width, NumberOfColors);
+        }
+
+        /// <summary>
+        /// Sorts the Dictionary.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Sorted Dictionary from biggest Count to lowest</returns>
+        private static Dictionary<Color, List<int>> SortDct(Dictionary<Color, List<int>> value)
+        {
+            return value.OrderByDescending(kv => kv.Value.Count)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
         }
     }
 }

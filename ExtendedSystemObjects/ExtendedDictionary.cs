@@ -197,7 +197,6 @@ namespace ExtendedSystemObjects
         /// <returns>
         ///     First appearance of Value
         /// </returns>
-        /// <exception cref="ExtendedSystemObjects.ValueNotFoundException"></exception>
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
         public static TKey GetFirstKeyByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {
