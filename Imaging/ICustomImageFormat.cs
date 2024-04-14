@@ -16,7 +16,7 @@ namespace Imaging
     /// <summary>
     ///     Interface for Custom Image Format
     /// </summary>
-    internal interface ICustomImageFormat
+    public interface ICustomImageFormat
     {
         /// <summary>
         ///     Gets the cif file.

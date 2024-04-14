@@ -41,25 +41,39 @@ namespace Imaging
         private bool _sortRequired = true;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Cif" /> class.
+        /// Gets or sets the image format.
+        /// </summary>
+        /// <value>
+        /// The image format.
+        /// </value>
+        public ICustomImageFormat ImageFormat { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="image">The image.</param>
-        public Cif(Bitmap image)
+        /// <param name="imageFormat">The custom image format.</param>
+        public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
         {
-            var format = CifProcessing.ConvertToCif(image);
+            if (imageFormat != null) ImageFormat = imageFormat;
+
+            var cif =  CifProcessing.ConvertToCif(image);
 
             Compressed = false;
             Height = image.Height;
             Width = image.Width;
-            CifImage = format;
-            NumberOfColors = format.Count;
+            CifImage = cif;
+            NumberOfColors = cif.Count;
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
-        public Cif()
+        /// <param name="imageFormat">The custom image format.</param>
+        public Cif(ICustomImageFormat imageFormat = null)
         {
+            if (imageFormat != null) ImageFormat = imageFormat;
+
             Compressed = false;
         }
 
