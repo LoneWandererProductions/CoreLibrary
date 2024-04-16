@@ -55,13 +55,25 @@ namespace Imaging
         /// <param name="imageFormat">The custom image format.</param>
         public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
         {
+            if(image == null) throw new ArgumentNullException(nameof(image));
+
             if (imageFormat != null) ImageFormat = imageFormat;
 
-            var cif =  CifProcessing.ConvertToCif(image);
-
-            Compressed = false;
             Height = image.Height;
             Width = image.Width;
+            Compressed = false;
+
+            Dictionary<Color, SortedSet<int>> cif;
+
+            if (imageFormat == null)
+            {
+                cif = CifProcessing.ConvertToCif(image);
+                CifImage = cif;
+                NumberOfColors = cif.Count;
+                return;
+            }
+
+            cif = imageFormat.GetCifFile(image).CifImage;
             CifImage = cif;
             NumberOfColors = cif.Count;
         }
@@ -214,7 +226,7 @@ namespace Imaging
         {
             if (id < 0 || id > Height * Width)
             {
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             // Check if sorting is required and perform lazy loading
@@ -232,7 +244,7 @@ namespace Imaging
                 }
             }
 
-            return null;
+            throw new ArgumentOutOfRangeException(nameof(id));
         }
 
         /// <summary>
