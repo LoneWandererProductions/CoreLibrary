@@ -19,6 +19,13 @@ namespace Imaging
     public interface ICustomImageFormat
     {
         /// <summary>
+        /// Gets the cif from file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Image as pure Cif format</returns>
+        Cif GetCifFromFile(string path);
+
+        /// <summary>
         ///     Gets the cif file.
         /// </summary>
         /// <param name="path">The path.</param>

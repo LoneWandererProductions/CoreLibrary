@@ -28,20 +28,32 @@ namespace Imaging
         ///     Gets the cif file.
         /// </summary>
         /// <param name="path">The path.</param>
+        /// <returns>Image in pure Cif format</returns>
+        [return: MaybeNull]
+        public Cif GetCifFromFile(string path)
+        {
+            return CifProcessing.GetCifFromFile(path);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the cif file.
+        /// </summary>
+        /// <param name="path">The path.</param>
         /// <returns>Image</returns>
         [return: MaybeNull]
         public Bitmap GetCifFile(string path)
         {
-            var image = CsvHandler.ReadCsv(path, ImagingResources.Separator);
-            if (image == null)
+            var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
+            if (csv == null)
             {
                 return null;
             }
 
             //compressed or not
-            return image[0][2] == ImagingResources.CifCompressed
-                ? CifProcessing.CifToImageCompressed(image)
-                : CifProcessing.CifToImage(image);
+            return csv[0][2] == ImagingResources.CifCompressed
+                ? CifProcessing.CifToImageCompressed(csv)
+                : CifProcessing.CifToImage(csv);
         }
 
         /// <inheritdoc />
