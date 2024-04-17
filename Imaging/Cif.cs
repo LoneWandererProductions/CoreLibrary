@@ -67,11 +67,9 @@ namespace Imaging
             Width = cif.Width;
             Compressed = false;
 
-
             CifImage = cif.CifImage;
             NumberOfColors = cif.NumberOfColors;
         }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cif" /> class.
