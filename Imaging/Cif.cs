@@ -41,15 +41,7 @@ namespace Imaging
         private bool _sortRequired = true;
 
         /// <summary>
-        /// Gets or sets the image format.
-        /// </summary>
-        /// <value>
-        /// The image format.
-        /// </value>
-        public ICustomImageFormat ImageFormat { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Cif" /> class.
+        ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="imageFormat">The image format.</param>
@@ -57,9 +49,15 @@ namespace Imaging
         /// <exception cref="System.ArgumentException">Path was empty. - path</exception>
         public Cif(string path, ICustomImageFormat imageFormat)
         {
-            if (imageFormat == null) throw new ArgumentNullException("Interface was null.",nameof(ICustomImageFormat));
+            if (imageFormat == null)
+            {
+                throw new ArgumentNullException(nameof(ICustomImageFormat), "Interface was null.");
+            }
 
-            if (string.IsNullOrEmpty(path)) throw new ArgumentException("Path was empty.", nameof(path));
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Path was empty.", nameof(path));
+            }
 
             var cif = imageFormat.GetCifFromFile(path);
 
@@ -74,16 +72,22 @@ namespace Imaging
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cif" /> class.
+        ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="imageFormat">The custom image format.</param>
         /// <exception cref="System.ArgumentNullException">Image was null. - image</exception>
         public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
         {
-            if(image == null) throw new ArgumentNullException("Image was null.",nameof(image));
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image), "Image was null.");
+            }
 
-            if (imageFormat != null) ImageFormat = imageFormat;
+            if (imageFormat != null)
+            {
+                ImageFormat = imageFormat;
+            }
 
             Height = image.Height;
             Width = image.Width;
@@ -110,10 +114,21 @@ namespace Imaging
         /// <param name="imageFormat">The custom image format.</param>
         public Cif(ICustomImageFormat imageFormat = null)
         {
-            if (imageFormat != null) ImageFormat = imageFormat;
+            if (imageFormat != null)
+            {
+                ImageFormat = imageFormat;
+            }
 
             Compressed = false;
         }
+
+        /// <summary>
+        ///     Gets or sets the image format.
+        /// </summary>
+        /// <value>
+        ///     The image format.
+        /// </value>
+        public ICustomImageFormat ImageFormat { get; set; }
 
         /// <summary>
         ///     The cif image
@@ -205,7 +220,7 @@ namespace Imaging
                 }
                 else
                 {
-                    var cache = new SortedSet<int> { id };
+                    var cache = new SortedSet<int> {id};
                     CifImage.Add(color, cache);
                 }
 
@@ -244,18 +259,18 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the color, it is quite a fast way, if the image is big and the color count is low!
+        ///     Gets the color, it is quite a fast way, if the image is big and the color count is low!
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>
-        /// Color at this point or throw an exception, if id was completely wrong.
+        ///     Color at this point or throw an exception, if id was completely wrong.
         /// </returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Interface was null. - id</exception>
         public Color GetColor(int id)
         {
             if (id < 0 || id > Height * Width)
             {
-                throw new ArgumentOutOfRangeException("Interface was null.",nameof(id)) ;
+                throw new ArgumentOutOfRangeException(nameof(id), "Interface was null.");
             }
 
             // Check if sorting is required and perform lazy loading
@@ -273,7 +288,7 @@ namespace Imaging
                 }
             }
 
-            throw new ArgumentOutOfRangeException("Interface was null.", nameof(id));
+            throw new ArgumentOutOfRangeException(nameof(id), "Interface was null.");
         }
 
         /// <summary>

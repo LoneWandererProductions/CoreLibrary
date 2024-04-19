@@ -112,14 +112,17 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the cif from file.
+        ///     Gets the cif from file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Cif Image</returns>
         internal static Cif GetCifFromFile(string path)
         {
             var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
-            if (csv == null) return null;
+            if (csv == null)
+            {
+                return null;
+            }
 
             //get image size
             var check = int.TryParse(csv[0][0], out var height);
@@ -136,18 +139,14 @@ namespace Imaging
                 return null;
             }
 
-            var cif = new Cif
-            {
-                Height = height,
-                Width = width,
-                CifImage = new Dictionary<Color, SortedSet<int>>()
-            };
+            var cif = new Cif {Height = height, Width = width, CifImage = new Dictionary<Color, SortedSet<int>>()};
 
 
             if (csv[0][2] == ImagingResources.CifCompressed)
             {
                 cif.Compressed = true;
             }
+
             //remove the Height, length csv
             csv.RemoveAt(0);
 
@@ -194,9 +193,14 @@ namespace Imaging
                             for (var idMaster = start; idMaster <= end; idMaster++)
                             {
                                 if (cif.CifImage.ContainsKey(color))
+                                {
                                     cif.CifImage[color].Add(idMaster);
+                                }
                                 else
+                                {
                                     cif.CifImage.Add(color, new SortedSet<int>());
+                                }
+
                                 cif.CifImage[color].Add(idMaster);
                             }
                         }
@@ -210,15 +214,20 @@ namespace Imaging
                             }
 
                             if (cif.CifImage.ContainsKey(color))
+                            {
                                 cif.CifImage[color].Add(idMaster);
+                            }
                             else
+                            {
                                 cif.CifImage.Add(color, new SortedSet<int>());
+                            }
+
                             cif.CifImage[color].Add(idMaster);
                         }
                     }
                 }
             }
-            else 
+            else
             {
                 foreach (var line in csv)
                 {
@@ -246,14 +255,17 @@ namespace Imaging
                         }
 
                         if (cif.CifImage.ContainsKey(color))
+                        {
                             cif.CifImage[color].Add(idMaster);
+                        }
                         else
+                        {
                             cif.CifImage.Add(color, new SortedSet<int>());
-                            cif.CifImage[color].Add(idMaster);
+                        }
+
+                        cif.CifImage[color].Add(idMaster);
                     }
                 }
-
-
             }
 
             return cif;
@@ -378,7 +390,7 @@ namespace Imaging
                 //Possible error here
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
+                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
 
                 subChild.AddRange(value.Select(id => id.ToString()));
 
@@ -418,7 +430,7 @@ namespace Imaging
             {
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
+                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
 
                 var sequence = Utility.Sequencer(value, 3);
 
