@@ -241,7 +241,7 @@ namespace RenderEngine
         ///     Handles the MouseDown event of the SKcanvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void SKcanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var position = e.GetPosition(SkiaElement);

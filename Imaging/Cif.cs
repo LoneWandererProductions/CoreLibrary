@@ -45,8 +45,8 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="imageFormat">The image format.</param>
-        /// <exception cref="System.ArgumentNullException">Interface was null. - ICustomImageFormat</exception>
-        /// <exception cref="System.ArgumentException">Path was empty. - path</exception>
+        /// <exception cref="ArgumentNullException">Interface was null. - ICustomImageFormat</exception>
+        /// <exception cref="ArgumentException">Path was empty. - path</exception>
         public Cif(string path, ICustomImageFormat imageFormat)
         {
             if (imageFormat == null)
@@ -70,13 +70,12 @@ namespace Imaging
             NumberOfColors = cif.NumberOfColors;
         }
 
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="imageFormat">The custom image format.</param>
-        /// <exception cref="System.ArgumentNullException">Image was null. - image</exception>
+        /// <exception cref="ArgumentNullException">Image was null. - image</exception>
         public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
         {
             if (image == null)
@@ -149,7 +148,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if compressed; otherwise, <c>false</c>.
         /// </value>
-        public bool Compressed { get; set; }
+        public bool Compressed { get; init; }
 
         /// <summary>
         ///     Gets the height.
@@ -182,6 +181,17 @@ namespace Imaging
         ///     The number of colors.
         /// </value>
         public int NumberOfColors { get; init; }
+
+        /// <summary>
+        /// Gets all the colors of an Image.
+        /// </summary>
+        /// <value>
+        /// A list of colors.
+        /// </value>
+        public List<Color> Colors
+        {
+            get => _cifImage.Keys.ToList();
+        }
 
         /// <summary>
         ///     Changes the color.
@@ -265,7 +275,7 @@ namespace Imaging
         /// <returns>
         ///     Color at this point or throw an exception, if id was completely wrong.
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Interface was null. - id</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Interface was null. - id</exception>
         public Color GetColor(int id)
         {
             if (id < 0 || id > Height * Width)
