@@ -58,18 +58,11 @@ namespace Imaging
         [return: MaybeNull]
         internal static Bitmap CifToImage(List<List<string>> csv)
         {
-            //get image size
-            var check = int.TryParse(csv[0][0], out var height);
-            if (!check)
-            {
-                return null;
-            }
+            int height = 0, width = 0;
 
-            check = int.TryParse(csv[0][1], out var width);
-            if (!check)
-            {
-                return null;
-            }
+            var compressed = GetInfo(csv[0], ref height, ref width);
+
+            if (compressed == null) return null;
 
             //remove the Height, length csv
             csv.RemoveAt(0);
@@ -78,37 +71,86 @@ namespace Imaging
 
             var dbm = DirectBitmap.GetInstance(image);
 
-            foreach (var line in csv)
+            if (compressed == true)
             {
-                var hex = line[0];
-
-                check = int.TryParse(line[1], out var a);
-
-                if (!check)
+                foreach (var line in csv)
                 {
-                    continue;
-                }
+                    var hex = line[0];
 
-                var converter = new ColorHsv(hex, a);
+                    var check = int.TryParse(line[1], out var a);
 
-                var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G,
-                    (byte)converter.B);
-
-                //get coordinates
-                for (var i = 2; i < line.Count; i++)
-                {
-                    check = int.TryParse(line[i], out var idMaster);
                     if (!check)
                     {
                         continue;
                     }
 
-                    var coordinate = Coordinate2D.GetInstance(idMaster, width);
-                    dbm.SetPixel(coordinate.X, coordinate.Y, color);
-                }
-            }
+                    var color = ParseColor(hex, a);
 
-            return dbm.Bitmap;
+                    //get coordinates
+                    for (var i = 2; i < line.Count; i++)
+                    {
+                        if (line[i].Contains(ImagingResources.IntervalSplitter))
+                        {
+                            //split get start and end
+                            var lst = line[i].Split(ImagingResources.CifSeparator).ToList();
+
+                            var sequence = GetStartEndPoint(lst);
+
+                            if (sequence == null) continue;
+
+                            //paint area
+                            for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
+                            {
+                                SetPixel(dbm, idMaster, width, color);
+                            }
+                        }
+                        else
+                        {
+                            check = int.TryParse(line[i], out var idMaster);
+
+                            if (!check)
+                            {
+                                continue;
+                            }
+
+                            SetPixel(dbm, idMaster, width, color);
+                        }
+                    }
+                }
+
+                return dbm.Bitmap;
+            }
+            else
+            {
+                foreach (var line in csv)
+                {
+                    var hex = line[0];
+
+                    var check = int.TryParse(line[1], out var a);
+
+                    if (!check)
+                    {
+                        continue;
+                    }
+
+                    var color = ParseColor(hex, a);
+
+                    //get coordinates
+                    for (var i = 2; i < line.Count; i++)
+                    {
+                        check = int.TryParse(line[i], out var idMaster);
+
+                        if (!check)
+                        {
+                            continue;
+                        }
+
+                        SetPixel(dbm, idMaster, width, color);
+                    }
+                }
+
+                return dbm.Bitmap;
+            }
         }
 
         /// <summary>
@@ -124,31 +166,16 @@ namespace Imaging
                 return null;
             }
 
-            //get image size
-            var check = int.TryParse(csv[0][0], out var height);
+            int height = 0, width = 0;
 
-            if (!check)
-            {
-                return null;
-            }
+            var compressed = GetInfo(csv[0], ref height, ref width);
 
-
-            check = int.TryParse(csv[0][1], out var width);
-            if (!check)
-            {
-                return null;
-            }
-
-            var cif = new Cif {Height = height, Width = width, CifImage = new Dictionary<Color, SortedSet<int>>()};
-
-
-            if (csv[0][2] == ImagingResources.CifCompressed)
-            {
-                cif.Compressed = true;
-            }
+            if (compressed == null) return null;
 
             //remove the Height, length csv
             csv.RemoveAt(0);
+
+            var cif = new Cif {Height = height, Width = width, Compressed = false, CifImage = new Dictionary<Color, SortedSet<int>>()};
 
             if (cif.Compressed)
             {
@@ -156,7 +183,7 @@ namespace Imaging
                 {
                     var hex = line[0];
 
-                    check = int.TryParse(line[1], out var a);
+                    var check = int.TryParse(line[1], out var a);
 
                     if (!check)
                     {
@@ -171,37 +198,19 @@ namespace Imaging
                     //get coordinates
                     for (var i = 2; i < line.Count; i++)
                     {
-                        if (line[i].Contains("-"))
+                        if (line[i].Contains(ImagingResources.IntervalSplitter))
                         {
                             //split get start and end
                             var lst = line[i].Split(ImagingResources.CifSeparator).ToList();
-                            check = int.TryParse(lst[0], out var start);
 
-                            if (!check)
-                            {
-                                continue;
-                            }
+                            var sequence = GetStartEndPoint(lst);
 
-                            check = int.TryParse(lst[1], out var end);
-
-                            if (!check)
-                            {
-                                continue;
-                            }
+                            if (sequence == null) continue;
 
                             //paint area
-                            for (var idMaster = start; idMaster <= end; idMaster++)
+                            for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
                             {
-                                if (cif.CifImage.ContainsKey(color))
-                                {
-                                    cif.CifImage[color].Add(idMaster);
-                                }
-                                else
-                                {
-                                    cif.CifImage.Add(color, new SortedSet<int>());
-                                }
-
-                                cif.CifImage[color].Add(idMaster);
+                                cif.CifImage.Add(color, idMaster);
                             }
                         }
                         else
@@ -213,16 +222,7 @@ namespace Imaging
                                 continue;
                             }
 
-                            if (cif.CifImage.ContainsKey(color))
-                            {
-                                cif.CifImage[color].Add(idMaster);
-                            }
-                            else
-                            {
-                                cif.CifImage.Add(color, new SortedSet<int>());
-                            }
-
-                            cif.CifImage[color].Add(idMaster);
+                            cif.CifImage.Add(color, idMaster);
                         }
                     }
                 }
@@ -233,7 +233,7 @@ namespace Imaging
                 {
                     var hex = line[0];
 
-                    check = int.TryParse(line[1], out var a);
+                    var check = int.TryParse(line[1], out var a);
 
                     if (!check)
                     {
@@ -254,112 +254,12 @@ namespace Imaging
                             continue;
                         }
 
-                        if (cif.CifImage.ContainsKey(color))
-                        {
-                            cif.CifImage[color].Add(idMaster);
-                        }
-                        else
-                        {
-                            cif.CifImage.Add(color, new SortedSet<int>());
-                        }
-
-                        cif.CifImage[color].Add(idMaster);
+                        cif.CifImage.Add(color, idMaster);
                     }
                 }
             }
 
             return cif;
-        }
-
-        /// <summary>
-        ///     Cif to image.
-        /// </summary>
-        /// <param name="csv">The csv.</param>
-        /// <returns>The converted Image</returns>
-        [return: MaybeNull]
-        internal static Bitmap CifToImageCompressed(List<List<string>> csv)
-        {
-            //get image size
-            var check = int.TryParse(csv[0][0], out var height);
-
-            if (!check)
-            {
-                return null;
-            }
-
-            check = int.TryParse(csv[0][1], out var width);
-            if (!check)
-            {
-                return null;
-            }
-
-            //remove the Height, length csv
-            csv.RemoveAt(0);
-
-            var image = new Bitmap(height, width);
-
-            var dbm = DirectBitmap.GetInstance(image);
-
-            foreach (var line in csv)
-            {
-                var hex = line[0];
-
-                check = int.TryParse(line[1], out var a);
-
-                if (!check)
-                {
-                    continue;
-                }
-
-                var converter = new ColorHsv(hex, a);
-
-                var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G,
-                    (byte)converter.B);
-
-                //get coordinates
-                for (var i = 2; i < line.Count; i++)
-                {
-                    if (line[i].Contains("-"))
-                    {
-                        //split get start and end
-                        var lst = line[i].Split(ImagingResources.CifSeparator).ToList();
-                        check = int.TryParse(lst[0], out var start);
-
-                        if (!check)
-                        {
-                            continue;
-                        }
-
-                        check = int.TryParse(lst[1], out var end);
-
-                        if (!check)
-                        {
-                            continue;
-                        }
-
-                        //paint area
-                        for (var idMaster = start; idMaster <= end; idMaster++)
-                        {
-                            var coordinate = Coordinate2D.GetInstance(idMaster, width);
-                            dbm.SetPixel(coordinate.X, coordinate.Y, color);
-                        }
-                    }
-                    else
-                    {
-                        check = int.TryParse(line[i], out var idMaster);
-
-                        if (!check)
-                        {
-                            continue;
-                        }
-
-                        var coordinate = Coordinate2D.GetInstance(idMaster, width);
-                        dbm.SetPixel(coordinate.X, coordinate.Y, color);
-                    }
-                }
-            }
-
-            return dbm.Bitmap;
         }
 
         /// <summary>
@@ -466,6 +366,111 @@ namespace Imaging
             master[0].Add(master.Count.ToString());
 
             return master;
+        }
+
+        /// <summary>
+        /// Parses the color.
+        /// </summary>
+        /// <param name="hex">The hexadecimal.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>Converted Color to System Drawing</returns>
+        private static Color ParseColor(string hex, int alpha)
+        {
+            var converter = new ColorHsv(hex, alpha);
+            return Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G, (byte)converter.B);
+        }
+
+        /// <summary>
+        /// Sets the pixel.
+        /// </summary>
+        /// <param name="dbm">The DBM.</param>
+        /// <param name="idMaster">The identifier master.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="color">The color.</param>
+        private static void SetPixel(DirectBitmap dbm, int idMaster, int width, Color color)
+        {
+            var coordinate = Coordinate2D.GetInstance(idMaster, width);
+            dbm.SetPixel(coordinate.X, coordinate.Y, color);
+        }
+
+
+        /// <summary>
+        /// Gets the information.
+        /// </summary>
+        /// <param name="csv">The CSV.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>All needed values for our Image</returns>
+        private static bool? GetInfo(IReadOnlyList<string> csv, ref int height, ref int width)
+        {
+            //get image size
+            var check = int.TryParse(csv[0], out var h);
+            if (!check)
+            {
+                return null;
+            }
+
+            height = h;
+
+            check = int.TryParse(csv[1], out var w);
+            if (!check)
+            {
+                return null;
+            }
+
+            width = w;
+
+            return csv[2] == ImagingResources.CifCompressed;
+        }
+
+        /// <summary>
+        /// Gets the start end point.
+        /// </summary>
+        /// <param name="lst">The LST.</param>
+        /// <returns>start and End Point as Tuple</returns>
+        private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
+        {
+            var check = int.TryParse(lst[0], out var start);
+            if (!check) return null;
+
+            check = int.TryParse(lst[1], out var end);
+
+            if (!check) return null;
+
+            return new StartEndPoint(start, end);
+        }
+
+        /// <summary>
+        /// Start and end points of a Sequence
+        /// </summary>
+        private sealed class StartEndPoint
+        {
+            /// <summary>
+            /// Gets the start.
+            /// </summary>
+            /// <value>
+            /// The start.
+            /// </value>
+            internal int Start { get; }
+
+            /// <summary>
+            /// Gets the end.
+            /// </summary>
+            /// <value>
+            /// The end.
+            /// </value>
+            internal int End { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="StartEndPoint"/> class.
+            /// </summary>
+            /// <param name="start">The start.</param>
+            /// <param name="end">The end.</param>
+            internal StartEndPoint(int start, int end)
+            {
+                Start = start;
+                End = end;
+            }
         }
     }
 }

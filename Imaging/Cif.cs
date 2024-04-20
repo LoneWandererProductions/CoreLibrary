@@ -51,12 +51,12 @@ namespace Imaging
         {
             if (imageFormat == null)
             {
-                throw new ArgumentNullException(nameof(ICustomImageFormat), "Interface was null.");
+                throw new ArgumentNullException(nameof(ICustomImageFormat), ImagingResources.ErrorInferface);
             }
 
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Path was empty.", nameof(path));
+                throw new ArgumentException(ImagingResources.ErrorPath, nameof(path));
             }
 
             var cif = imageFormat.GetCifFromFile(path);
@@ -81,7 +81,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                throw new ArgumentNullException(nameof(image), "Image was null.");
+                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorImage);
             }
 
             if (imageFormat != null)
@@ -128,7 +128,7 @@ namespace Imaging
         /// <value>
         ///     The image format.
         /// </value>
-        public ICustomImageFormat ImageFormat { get; set; }
+        public ICustomImageFormat ImageFormat { get; }
 
         /// <summary>
         ///     The cif image
@@ -270,7 +270,7 @@ namespace Imaging
         {
             if (id < 0 || id > Height * Width)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), "Interface was null.");
+                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
             }
 
             // Check if sorting is required and perform lazy loading
@@ -288,7 +288,7 @@ namespace Imaging
                 }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(id), "Interface was null.");
+            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
         }
 
         /// <summary>

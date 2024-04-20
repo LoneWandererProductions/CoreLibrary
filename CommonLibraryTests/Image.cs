@@ -658,7 +658,7 @@ namespace CommonLibraryTests
             doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             //data is uncompressed! everything should still work though!
-            btm = CifProcessing.CifToImageCompressed(doc);
+            btm = CifProcessing.CifToImage(doc);
 
             ImageStream.SaveBitmap(btm, resultPathUnCompressed, ImageFormat.Png);
 

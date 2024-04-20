@@ -51,9 +51,7 @@ namespace Imaging
             }
 
             //compressed or not
-            return csv[0][2] == ImagingResources.CifCompressed
-                ? CifProcessing.CifToImageCompressed(csv)
-                : CifProcessing.CifToImage(csv);
+            return CifProcessing.CifToImage(csv);
         }
 
         /// <inheritdoc />
