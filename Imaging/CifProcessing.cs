@@ -6,10 +6,12 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+#nullable enable
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
@@ -73,7 +75,7 @@ namespace Imaging
 
             if (compressed == true)
             {
-                foreach (var line in csv)
+                Parallel.ForEach(csv, line =>
                 {
                     var hex = line[0];
 
@@ -81,7 +83,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        continue;
+                        return;
                     }
 
                     var color = ParseColor(hex, a);
@@ -116,13 +118,13 @@ namespace Imaging
                             SetPixel(dbm, idMaster, width, color);
                         }
                     }
-                }
+                });
 
                 return dbm.Bitmap;
             }
             else
             {
-                foreach (var line in csv)
+                Parallel.ForEach(csv, line =>
                 {
                     var hex = line[0];
 
@@ -130,7 +132,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        continue;
+                        return;
                     }
 
                     var color = ParseColor(hex, a);
@@ -147,7 +149,7 @@ namespace Imaging
 
                         SetPixel(dbm, idMaster, width, color);
                     }
-                }
+                });
 
                 return dbm.Bitmap;
             }
@@ -158,9 +160,11 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Cif Image</returns>
-        internal static Cif GetCifFromFile(string path)
+        [return: MaybeNull]
+        internal static Cif? GetCifFromFile(string path)
         {
             var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
+
             if (csv == null)
             {
                 return null;
@@ -177,9 +181,9 @@ namespace Imaging
 
             var cif = new Cif {Height = height, Width = width, Compressed = false, CifImage = new Dictionary<Color, SortedSet<int>>()};
 
-            if (cif.Compressed)
+            if (compressed == true)
             {
-                foreach (var line in csv)
+                Parallel.ForEach(csv, line =>
                 {
                     var hex = line[0];
 
@@ -187,7 +191,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        continue;
+                        return;
                     }
 
                     var converter = new ColorHsv(hex, a);
@@ -225,11 +229,11 @@ namespace Imaging
                             cif.CifImage.Add(color, idMaster);
                         }
                     }
-                }
+                });
             }
             else
             {
-                foreach (var line in csv)
+                Parallel.ForEach(csv, line =>
                 {
                     var hex = line[0];
 
@@ -237,7 +241,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        continue;
+                        return;
                     }
 
                     var converter = new ColorHsv(hex, a);
@@ -256,7 +260,7 @@ namespace Imaging
 
                         cif.CifImage.Add(color, idMaster);
                     }
-                }
+                });
             }
 
             return cif;
@@ -428,6 +432,7 @@ namespace Imaging
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
+        [return: MaybeNull]
         private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);
@@ -435,9 +440,7 @@ namespace Imaging
 
             check = int.TryParse(lst[1], out var end);
 
-            if (!check) return null;
-
-            return new StartEndPoint(start, end);
+            return !check ? null : new StartEndPoint(start, end);
         }
 
         /// <summary>
