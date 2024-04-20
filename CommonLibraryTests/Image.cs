@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using ExtendedSystemObjects;
 using FileHandler;
 using ImageCompare;
 using Imaging;
@@ -694,6 +695,54 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        /// Test the speed between parallel and not
+        /// </summary>
+        [TestMethod]
+        public void SpeedConvertCif()
+        {
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
+            var cifPath = Path.Combine(SampleImagesFolder.FullName, "base.cif");
+
+            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var btm = image.ToBitmap();
+
+            //convert to cif
+            Custom.SaveToCifFile(btm, cifPath);
+
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var cif = Custom.GetCifFromFile(cifPath);
+
+            timer.Stop();
+            var one = timer.Elapsed;
+            Trace.WriteLine($"Test one Cif (parallel Version): {timer.Elapsed}");
+
+            timer = new Stopwatch();
+            timer.Start();
+
+            var cif2 = SpeedTests.GetCif(cifPath);
+
+            timer.Stop();
+            var two = timer.Elapsed;
+            Trace.WriteLine($"Test two Cif (normal Version): {timer.Elapsed}");
+
+            var check = one<two;
+
+            Assert.IsTrue(check, "Parallel was not faster.");
+
+            Assert.IsNotNull(cif,"Cif was not loaded.");
+
+            Assert.IsNotNull(cif2, "Cif two was not loaded.");
+
+            check = cif.CifImage.Equal(cif2.CifImage);
+
+            Assert.IsTrue(check, "Result is not equal.");
+
+            FileHandleDelete.DeleteFile(cifPath);
+        }
+
+        /// <summary>
         ///     Test some Conversions
         /// </summary>
         [TestMethod]
@@ -733,7 +782,7 @@ namespace CommonLibraryTests
             //y = 3x +1;
 
             //just test the Bresenham
-            var lstOne = MathSpeedTests.BresenhamPlotLine(one, two);
+            var lstOne = SpeedTests.BresenhamPlotLine(one, two);
             var lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
@@ -823,7 +872,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test Bresenham
-            _ = MathSpeedTests.BresenhamPlotLine(one, two);
+            _ = SpeedTests.BresenhamPlotLine(one, two);
 
             watch.Stop();
 

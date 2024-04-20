@@ -75,7 +75,7 @@ namespace Imaging
 
             if (compressed == true)
             {
-                Parallel.ForEach(csv, line =>
+                foreach (var line in csv)
                 {
                     var hex = line[0];
 
@@ -83,7 +83,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        return;
+                        continue;
                     }
 
                     var color = ParseColor(hex, a);
@@ -118,13 +118,13 @@ namespace Imaging
                             SetPixel(dbm, idMaster, width, color);
                         }
                     }
-                });
+                }
 
                 return dbm.Bitmap;
             }
             else
             {
-                Parallel.ForEach(csv, line =>
+                foreach (var line in csv)
                 {
                     var hex = line[0];
 
@@ -132,7 +132,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        return;
+                        continue;
                     }
 
                     var color = ParseColor(hex, a);
@@ -149,7 +149,7 @@ namespace Imaging
 
                         SetPixel(dbm, idMaster, width, color);
                     }
-                });
+                }
 
                 return dbm.Bitmap;
             }
@@ -183,7 +183,7 @@ namespace Imaging
 
             if (compressed == true)
             {
-                Parallel.ForEach(csv, line =>
+                foreach (var line in csv)
                 {
                     var hex = line[0];
 
@@ -191,7 +191,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        return;
+                        continue;
                     }
 
                     var converter = new ColorHsv(hex, a);
@@ -229,11 +229,11 @@ namespace Imaging
                             cif.CifImage.Add(color, idMaster);
                         }
                     }
-                });
+                }
             }
             else
             {
-                Parallel.ForEach(csv, line =>
+                foreach (var line in csv)
                 {
                     var hex = line[0];
 
@@ -241,7 +241,7 @@ namespace Imaging
 
                     if (!check)
                     {
-                        return;
+                        continue;
                     }
 
                     var converter = new ColorHsv(hex, a);
@@ -260,7 +260,7 @@ namespace Imaging
 
                         cif.CifImage.Add(color, idMaster);
                     }
-                });
+                }
             }
 
             return cif;
@@ -397,7 +397,6 @@ namespace Imaging
             dbm.SetPixel(coordinate.X, coordinate.Y, color);
         }
 
-
         /// <summary>
         /// Gets the information.
         /// </summary>
@@ -446,7 +445,7 @@ namespace Imaging
         /// <summary>
         /// Start and end points of a Sequence
         /// </summary>
-        private sealed class StartEndPoint
+        internal sealed class StartEndPoint
         {
             /// <summary>
             /// Gets the start.
