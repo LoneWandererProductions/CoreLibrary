@@ -459,6 +459,12 @@ namespace CommonLibraryTests
             dct.Add(0, 0);
 
             Assert.IsTrue(dct.ContainsKey(0), "key not added");
+
+            var dctTwo = new Dictionary<int, SortedSet<int>> { { 1, 1 }, { 1, 1 } };
+
+            dct.Add(0, 0);
+
+            Assert.IsTrue(dct.ContainsKey(0), "key not added");
         }
 
         /// <summary>
