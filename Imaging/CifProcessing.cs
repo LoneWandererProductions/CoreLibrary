@@ -8,7 +8,6 @@
 
 #nullable enable
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using DataFormatter;
@@ -55,7 +54,6 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns></returns>
-        [return: MaybeNull]
         internal static Bitmap? CifFileToImage(string path)
         {
             var cif = CifFromFile(path);
@@ -83,7 +81,6 @@ namespace Imaging
         /// <returns>
         ///     Cif Image
         /// </returns>
-        [return: MaybeNull]
         internal static Cif? CifFromFile(string path)
         {
             var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
@@ -341,7 +338,6 @@ namespace Imaging
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
-        [return: MaybeNull]
         private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);

@@ -51,7 +51,7 @@ namespace Imaging
         {
             if (imageFormat == null)
             {
-                throw new ArgumentNullException(nameof(ICustomImageFormat), ImagingResources.ErrorInterface);
+                throw new ArgumentNullException(nameof(imageFormat), ImagingResources.ErrorInterface);
             }
 
             if (string.IsNullOrEmpty(path))
