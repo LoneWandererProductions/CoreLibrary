@@ -19,7 +19,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace Imaging
 {
@@ -210,7 +209,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the area.
+        ///     Sets the area.
         /// </summary>
         /// <param name="idList">The identifier list.</param>
         /// <param name="color">The color.</param>

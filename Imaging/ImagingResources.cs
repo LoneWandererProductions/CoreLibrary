@@ -106,7 +106,7 @@ namespace Imaging
         /// <summary>
         ///     The error, interface is null (const). Value: "Error: Interface is Null."
         /// </summary>
-        public const string ErrorInferface= "Error: Interface is Null.";
+        public const string ErrorInterface = "Error: Interface is Null.";
 
         /// <summary>
         ///     The error, image is null (const). Value: "Error: Image is Null."
@@ -116,7 +116,7 @@ namespace Imaging
         /// <summary>
         ///     The error, Path is null (const). Value: "Error: Path is Null."
         /// </summary>
-        public const string ErrorPath= "Error: Path is Null.";
+        public const string ErrorPath = "Error: Path is Null.";
 
         /// <summary>
         ///     The File Appendix

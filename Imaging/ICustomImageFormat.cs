@@ -19,7 +19,7 @@ namespace Imaging
     public interface ICustomImageFormat
     {
         /// <summary>
-        ///    Load a cif file.
+        ///     Load a cif file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image as pure Cif format</returns>
@@ -33,7 +33,7 @@ namespace Imaging
         Bitmap GetImageFromCif(string path);
 
         /// <summary>
-        ///    Generate Cif from Bitmap
+        ///     Generate Cif from Bitmap
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Custom Image Format of the Image</returns>

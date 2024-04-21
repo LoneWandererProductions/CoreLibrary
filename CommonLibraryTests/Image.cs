@@ -697,7 +697,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test the speed between parallel and not
+        ///     Test the speed between parallel and not
         /// </summary>
         [TestMethod]
         public void SpeedConvertCif()
@@ -729,11 +729,11 @@ namespace CommonLibraryTests
             var two = timer.Elapsed;
             Trace.WriteLine($"Test two Cif (normal Version): {timer.Elapsed}");
 
-            var check = one<two;
+            var check = one < two;
 
             Assert.IsTrue(check, "Parallel was not faster.");
 
-            Assert.IsNotNull(cif,"Cif was not loaded.");
+            Assert.IsNotNull(cif, "Cif was not loaded.");
 
             Assert.IsNotNull(cif2, "Cif two was not loaded.");
 

@@ -51,7 +51,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Cifs to image.
+        ///     Cifs to image.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns></returns>
@@ -59,7 +59,10 @@ namespace Imaging
         internal static Bitmap? CifFileToImage(string path)
         {
             var cif = CifFromFile(path);
-            if (cif == null) return null;
+            if (cif == null)
+            {
+                return null;
+            }
 
             var image = new Bitmap(cif.Width, cif.Height);
 
@@ -74,11 +77,11 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the cif from file.
+        ///     Gets the cif from file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>
-        /// Cif Image
+        ///     Cif Image
         /// </returns>
         [return: MaybeNull]
         internal static Cif? CifFromFile(string path)
@@ -94,12 +97,21 @@ namespace Imaging
 
             var compressed = GetInfo(csv[0], ref height, ref width);
 
-            if (compressed == null) return null;
+            if (compressed == null)
+            {
+                return null;
+            }
 
             //remove the Height, length csv
             csv.RemoveAt(0);
 
-            var cif = new Cif {Height = height, Width = width, Compressed = false, CifImage = new Dictionary<Color, SortedSet<int>>()};
+            var cif = new Cif
+            {
+                Height = height,
+                Width = width,
+                Compressed = false,
+                CifImage = new Dictionary<Color, SortedSet<int>>()
+            };
 
             if (compressed == true)
             {
@@ -129,7 +141,10 @@ namespace Imaging
 
                             var sequence = GetStartEndPoint(lst);
 
-                            if (sequence == null) continue;
+                            if (sequence == null)
+                            {
+                                continue;
+                            }
 
                             //paint area
                             for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
@@ -214,7 +229,7 @@ namespace Imaging
                 //Possible error here
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 subChild.AddRange(value.Select(id => id.ToString()));
 
@@ -254,7 +269,7 @@ namespace Imaging
             {
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 var sequence = Utility.Sequencer(value, 3);
 
@@ -293,7 +308,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the information.
+        ///     Gets the information.
         /// </summary>
         /// <param name="csv">The CSV.</param>
         /// <param name="height">The height.</param>
@@ -322,7 +337,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the start end point.
+        ///     Gets the start end point.
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
@@ -330,7 +345,10 @@ namespace Imaging
         private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(lst[1], out var end);
 
@@ -338,28 +356,12 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Start and end points of a Sequence
+        ///     Start and end points of a Sequence
         /// </summary>
         internal sealed class StartEndPoint
         {
             /// <summary>
-            /// Gets the start.
-            /// </summary>
-            /// <value>
-            /// The start.
-            /// </value>
-            internal int Start { get; }
-
-            /// <summary>
-            /// Gets the end.
-            /// </summary>
-            /// <value>
-            /// The end.
-            /// </value>
-            internal int End { get; }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="StartEndPoint"/> class.
+            ///     Initializes a new instance of the <see cref="StartEndPoint" /> class.
             /// </summary>
             /// <param name="start">The start.</param>
             /// <param name="end">The end.</param>
@@ -368,6 +370,22 @@ namespace Imaging
                 Start = start;
                 End = end;
             }
+
+            /// <summary>
+            ///     Gets the start.
+            /// </summary>
+            /// <value>
+            ///     The start.
+            /// </value>
+            internal int Start { get; }
+
+            /// <summary>
+            ///     Gets the end.
+            /// </summary>
+            /// <value>
+            ///     The end.
+            /// </value>
+            internal int End { get; }
         }
     }
 }

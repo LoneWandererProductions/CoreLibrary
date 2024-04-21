@@ -51,7 +51,7 @@ namespace Imaging
         {
             if (imageFormat == null)
             {
-                throw new ArgumentNullException(nameof(ICustomImageFormat), ImagingResources.ErrorInferface);
+                throw new ArgumentNullException(nameof(ICustomImageFormat), ImagingResources.ErrorInterface);
             }
 
             if (string.IsNullOrEmpty(path))
@@ -183,15 +183,12 @@ namespace Imaging
         public int NumberOfColors { get; init; }
 
         /// <summary>
-        /// Gets all the colors of an Image.
+        ///     Gets all the colors of an Image.
         /// </summary>
         /// <value>
-        /// A list of colors.
+        ///     A list of colors.
         /// </value>
-        public List<Color> Colors
-        {
-            get => _cifImage.Keys.ToList();
-        }
+        public List<Color> Colors => _cifImage.Keys.ToList();
 
         /// <summary>
         ///     Changes the color.
@@ -230,7 +227,7 @@ namespace Imaging
                 }
                 else
                 {
-                    var cache = new SortedSet<int> {id};
+                    var cache = new SortedSet<int> { id };
                     CifImage.Add(color, cache);
                 }
 
@@ -280,7 +277,7 @@ namespace Imaging
         {
             if (id < 0 || id > Height * Width)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
+                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
             }
 
             // Check if sorting is required and perform lazy loading
@@ -298,7 +295,7 @@ namespace Imaging
                 }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
+            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
         }
 
         /// <summary>

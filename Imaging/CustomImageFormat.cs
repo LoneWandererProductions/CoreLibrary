@@ -25,7 +25,7 @@ namespace Imaging
     {
         /// <inheritdoc />
         /// <summary>
-        ///    Load a cif file.
+        ///     Load a cif file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image in pure Cif format</returns>
@@ -49,7 +49,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///    Generate Cif from Bitmap
+        ///     Generate Cif from Bitmap
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Cif Object</returns>
