@@ -573,7 +573,7 @@ namespace CommonLibraryTests
              */
 
             //convert to cif
-            Custom.SaveToCifFile(btm, cifPath);
+            Custom.SaveBitmapToCifFile(btm, cifPath);
             //and back
             btm = Custom.GetImageFromCif(cifPath);
 
@@ -623,7 +623,7 @@ namespace CommonLibraryTests
             Trace.WriteLine("done");
 
             //convert to cif from compressed
-            Custom.CompressedToCifFile(btm, cifCompressed);
+            Custom.GenerateCompressedCifFromBitmap(btm, cifCompressed);
 
             //and back
             btm = Custom.GetImageFromCif(cifPath);
@@ -658,7 +658,7 @@ namespace CommonLibraryTests
             data = CifProcessing.ConvertBitmapToCif(btm);
             doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
-            Custom.SaveToCifFile(btm, cifPath);
+            Custom.SaveBitmapToCifFile(btm, cifPath);
 
             //data is uncompressed! everything should still work though!
             btm = CifProcessing.CifFileToImage(cifPath);
@@ -709,7 +709,7 @@ namespace CommonLibraryTests
             var btm = image.ToBitmap();
 
             //convert to cif
-            Custom.SaveToCifFile(btm, cifPath);
+            Custom.SaveBitmapToCifFile(btm, cifPath);
 
             var timer = new Stopwatch();
             timer.Start();
