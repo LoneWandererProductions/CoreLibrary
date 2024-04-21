@@ -19,11 +19,11 @@ namespace Imaging
     public interface ICustomImageFormat
     {
         /// <summary>
-        ///     Load a cif file.
+        ///     Get a cif file from defined path.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image as pure Cif format</returns>
-        Cif LoadCif(string path);
+        Cif GetCif(string path);
 
         /// <summary>
         ///     Generates Image from Cif.
@@ -44,13 +44,13 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        void SaveBitmapToCifFile(Bitmap image, string path);
+        void GenerateBitmapToCifFile(Bitmap image, string path);
 
         /// <summary>
         ///     Compressed cif file.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        void GenerateCompressedCifFromBitmap(Bitmap image, string path);
+        void GenerateCifCompressedFromBitmap(Bitmap image, string path);
     }
 }

@@ -30,7 +30,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         /// <returns>Image in pure Cif format</returns>
         [return: MaybeNull]
-        public Cif LoadCif(string path)
+        public Cif GetCif(string path)
         {
             return CifProcessing.CifFromFile(path);
         }
@@ -73,7 +73,7 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        public void SaveBitmapToCifFile(Bitmap image, string path)
+        public void GenerateBitmapToCifFile(Bitmap image, string path)
         {
             var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsv(image.Height, image.Width, imageFormat);
@@ -87,7 +87,7 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        public void GenerateCompressedCifFromBitmap(Bitmap image, string path)
+        public void GenerateCifCompressedFromBitmap(Bitmap image, string path)
         {
             var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsvCompressed(image.Height, image.Width, imageFormat);

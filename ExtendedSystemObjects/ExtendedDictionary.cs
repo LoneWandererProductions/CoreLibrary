@@ -66,25 +66,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-        public static bool Equal<TKey, TValue>(this IDictionary<TKey, SortedSet<TValue>> dicOne,
-            IDictionary<TKey, SortedSet<TValue>> dicTwo)
-        {
-            foreach (var (key, value) in dicOne)
-            {
-                if (!dicTwo.ContainsKey(key))
-                {
-                    return false;
-                }
-
-                if (!dicTwo[key].SetEquals(value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         /// <summary>
         ///     Add or Replace Key Value Pair
         /// </summary>

@@ -28,7 +28,7 @@ namespace Imaging
         /// <summary>
         ///     The cif image
         /// </summary>
-        private readonly Dictionary<Color, SortedSet<int>> _cifImage = new();
+        private Dictionary<Color, SortedSet<int>> _cifImage = new();
 
         /// <summary>
         ///     The cif sorted
@@ -39,6 +39,14 @@ namespace Imaging
         ///     The sort required
         /// </summary>
         private bool _sortRequired = true;
+
+        /// <summary>
+        ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if disposed; otherwise, <c>false</c>.
+        /// </value>
+        private bool Disposed { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
@@ -59,7 +67,7 @@ namespace Imaging
                 throw new ArgumentException(ImagingResources.ErrorPath, nameof(path));
             }
 
-            var cif = imageFormat.LoadCif(path);
+            var cif = imageFormat.GetCif(path);
 
             Height = cif.Height;
             Width = cif.Width;
@@ -127,7 +135,7 @@ namespace Imaging
         /// <value>
         ///     The image format.
         /// </value>
-        public ICustomImageFormat ImageFormat { get; }
+        public ICustomImageFormat ImageFormat { get; private set; }
 
         /// <summary>
         ///     The cif image
@@ -135,7 +143,7 @@ namespace Imaging
         public Dictionary<Color, SortedSet<int>> CifImage
         {
             get => _cifImage;
-            init
+            set
             {
                 _cifImage = value;
                 _sortRequired = true;
@@ -189,6 +197,14 @@ namespace Imaging
         ///     A list of colors.
         /// </value>
         public List<Color> Colors => _cifImage.Keys.ToList();
+
+        /// <summary>
+        /// Gets the color count.
+        /// </summary>
+        /// <value>
+        /// The color count.
+        /// </value>
+        public Dictionary<Color, int> ColorCount => GetColorCount();
 
         /// <summary>
         ///     Changes the color.
@@ -359,6 +375,61 @@ namespace Imaging
         public override int GetHashCode()
         {
             return HashCode.Combine(Height, Width, NumberOfColors);
+        }
+
+        /// <summary>
+        /// Gets the color count.
+        /// </summary>
+        /// <returns>Color and Counts sorted by most first</returns>
+        private Dictionary<Color, int> GetColorCount()
+        {
+            var colorCount = new Dictionary<Color, int>(NumberOfColors);
+
+            foreach (var (color, sortedSet) in CifImage)
+            {
+                colorCount.Add(color, sortedSet.Count);
+            }
+
+            // Sort the dictionary by value in descending order
+            return colorCount.OrderByDescending(kv => kv.Value).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+
+        /// <summary>
+        ///     Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
+        /// </param>
+        private void Dispose(bool disposing)
+        {
+            if (Disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // free managed resources
+                _cifImage = null;
+                _cifSorted = null;
+                CifImage = null;
+                ImageFormat = null;
+            }
+
+            Disposed = true;
+        }
+
+        /// <summary>
+        ///     NOTE: Leave out the finalizer altogether if this class doesn't
+        ///     own unmanaged resources, but leave the other methods
+        ///     exactly as they are.
+        ///     Finalizes an instance of the <see cref="Cif" /> class.
+        /// </summary>
+        ~Cif()
+        {
+            // Finalizer calls Dispose(false)
+            Dispose(false);
         }
 
         /// <summary>
