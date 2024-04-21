@@ -41,14 +41,6 @@ namespace Imaging
         private bool _sortRequired = true;
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if disposed; otherwise, <c>false</c>.
-        /// </value>
-        private bool Disposed { get; set; }
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -130,6 +122,14 @@ namespace Imaging
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if disposed; otherwise, <c>false</c>.
+        /// </value>
+        private bool Disposed { get; set; }
+
+        /// <summary>
         ///     Gets or sets the image format.
         /// </summary>
         /// <value>
@@ -199,10 +199,10 @@ namespace Imaging
         public List<Color> Colors => _cifImage.Keys.ToList();
 
         /// <summary>
-        /// Gets the color count.
+        ///     Gets the color count.
         /// </summary>
         /// <value>
-        /// The color count.
+        ///     The color count.
         /// </value>
         public Dictionary<Color, int> ColorCount => GetColorCount();
 
@@ -282,11 +282,11 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the color, it is quite a fast way, if the image is big and the color count is low!
+        ///     Gets the color, it is quite a fast way, if the image is big and the color count is low!
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>
-        /// Color at this point or throw an exception, if id was completely wrong.
+        ///     Color at this point or throw an exception, if id was completely wrong.
         /// </returns>
         /// <exception cref="System.ArgumentOutOfRangeException">id</exception>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">id</exception>
@@ -378,7 +378,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the color count.
+        ///     Gets the color count.
         /// </summary>
         /// <returns>Color and Counts sorted by most first</returns>
         private Dictionary<Color, int> GetColorCount()

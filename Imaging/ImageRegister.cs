@@ -171,7 +171,7 @@ namespace Imaging
         Polaroid = 5,
 
         /// <summary>
-        /// The contour
+        ///     The contour
         /// </summary>
         Contour = 6
     }

@@ -687,7 +687,6 @@ namespace Imaging
                     break;
                 case ImageFilter.Contour:
                     return ApplySobel(image);
-                    break;
                 default:
                     return null;
             }
@@ -1224,7 +1223,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the sobel.
+        ///     Applies the sobel.
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
@@ -1264,7 +1263,7 @@ namespace Imaging
                     }
 
                     // Calculate gradient magnitude
-                    var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
+                    var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
 
                     // Normalize the magnitude to fit within the range of 0-255
                     magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization

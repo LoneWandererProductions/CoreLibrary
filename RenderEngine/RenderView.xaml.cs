@@ -191,7 +191,7 @@ namespace RenderEngine
         /// <param name="clear">if set to <c>true</c> [clear].</param>
         public void DrawLine(Line line, bool clear)
         {
-            using var paint = new SKPaint {Color = line.Color};
+            using var paint = new SKPaint { Color = line.Color };
             using var canvas = new SKCanvas(_bitmap);
 
             if (clear)
