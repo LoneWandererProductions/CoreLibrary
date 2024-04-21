@@ -266,13 +266,14 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Gets the color, it is quite a fast way, if the image is big and the color count is low!
+        /// Gets the color, it is quite a fast way, if the image is big and the color count is low!
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>
-        ///     Color at this point or throw an exception, if id was completely wrong.
+        /// Color at this point or throw an exception, if id was completely wrong.
         /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">Interface was null. - id</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">id</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">id</exception>
         public Color GetColor(int id)
         {
             if (id < 0 || id > Height * Width)
@@ -295,7 +296,7 @@ namespace Imaging
                 }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
+            throw new KeyNotFoundException(nameof(id));
         }
 
         /// <summary>
