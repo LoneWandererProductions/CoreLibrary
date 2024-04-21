@@ -168,6 +168,11 @@ namespace Imaging
         /// <summary>
         ///     The polaroid filter
         /// </summary>
-        Polaroid = 5
+        Polaroid = 5,
+
+        /// <summary>
+        /// The contour
+        /// </summary>
+        Contour = 6
     }
 }
