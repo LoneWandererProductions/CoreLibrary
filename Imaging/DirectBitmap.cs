@@ -14,10 +14,12 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace Imaging
 {
@@ -204,6 +206,19 @@ namespace Imaging
             {
                 Parallel.For(y, width,
                     index => DrawHorizontalLine(x, index, height, color));
+            }
+        }
+
+        /// <summary>
+        /// Sets the area.
+        /// </summary>
+        /// <param name="idList">The identifier list.</param>
+        /// <param name="color">The color.</param>
+        public void SetArea(IEnumerable<int> idList, Color color)
+        {
+            foreach (var index in idList)
+            {
+                _bits[index] = color.ToArgb();
             }
         }
 

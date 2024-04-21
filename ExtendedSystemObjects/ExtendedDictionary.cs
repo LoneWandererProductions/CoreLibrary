@@ -45,7 +45,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Adds the specified key and adds a new initialized SortedList.
+        /// Adds the specified key and adds a new initialized SortedList.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -66,20 +66,13 @@ namespace ExtendedSystemObjects
             }
         }
 
-        public static bool Equal<TKey, TValue>(this IDictionary<TKey, SortedSet<TValue>> dicOne,
-            IDictionary<TKey, SortedSet<TValue>> dicTwo)
+        public static bool Equal<TKey, TValue>(this IDictionary<TKey, SortedSet<TValue>> dicOne, IDictionary<TKey, SortedSet<TValue>> dicTwo)
         {
             foreach (var (key, value) in dicOne)
             {
-                if (!dicTwo.ContainsKey(key))
-                {
-                    return false;
-                }
+                if (!dicTwo.ContainsKey(key)) return false;
 
-                if (!dicTwo[key].SetEquals(value))
-                {
-                    return false;
-                }
+                if (!dicTwo[key].SetEquals(value)) return false;
             }
 
             return true;

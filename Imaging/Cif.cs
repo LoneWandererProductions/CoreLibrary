@@ -51,7 +51,7 @@ namespace Imaging
         {
             if (imageFormat == null)
             {
-                throw new ArgumentNullException(nameof(imageFormat), ImagingResources.ErrorInterface);
+                throw new ArgumentNullException(nameof(ICustomImageFormat), ImagingResources.ErrorInferface);
             }
 
             if (string.IsNullOrEmpty(path))
@@ -59,7 +59,7 @@ namespace Imaging
                 throw new ArgumentException(ImagingResources.ErrorPath, nameof(path));
             }
 
-            var cif = imageFormat.GetCifFromFile(path);
+            var cif = imageFormat.LoadCif(path);
 
             Height = cif.Height;
             Width = cif.Width;
@@ -96,13 +96,13 @@ namespace Imaging
 
             if (imageFormat == null)
             {
-                cif = CifProcessing.ConvertToCif(image);
+                cif = CifProcessing.ConvertBitmapToCif(image);
                 CifImage = cif;
                 NumberOfColors = cif.Count;
                 return;
             }
 
-            cif = imageFormat.GetCifFile(image).CifImage;
+            cif = imageFormat.GenerateCifFromBitmap(image).CifImage;
             CifImage = cif;
             NumberOfColors = cif.Count;
         }
@@ -183,12 +183,15 @@ namespace Imaging
         public int NumberOfColors { get; init; }
 
         /// <summary>
-        ///     Gets all the colors of an Image.
+        /// Gets all the colors of an Image.
         /// </summary>
         /// <value>
-        ///     A list of colors.
+        /// A list of colors.
         /// </value>
-        public List<Color> Colors => _cifImage.Keys.ToList();
+        public List<Color> Colors
+        {
+            get => _cifImage.Keys.ToList();
+        }
 
         /// <summary>
         ///     Changes the color.
@@ -227,7 +230,7 @@ namespace Imaging
                 }
                 else
                 {
-                    var cache = new SortedSet<int> { id };
+                    var cache = new SortedSet<int> {id};
                     CifImage.Add(color, cache);
                 }
 
@@ -277,7 +280,7 @@ namespace Imaging
         {
             if (id < 0 || id > Height * Width)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
+                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
             }
 
             // Check if sorting is required and perform lazy loading
@@ -295,7 +298,7 @@ namespace Imaging
                 }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
+            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInferface);
         }
 
         /// <summary>

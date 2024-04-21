@@ -575,9 +575,9 @@ namespace CommonLibraryTests
             //convert to cif
             Custom.SaveToCifFile(btm, cifPath);
             //and back
-            btm = Custom.GetCifFile(cifPath);
+            btm = Custom.GetImageFromCif(cifPath);
 
-            var data = CifProcessing.ConvertToCif(btm);
+            var data = CifProcessing.ConvertBitmapToCif(btm);
             var doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Assert.AreEqual(2502, doc[1].Count, "done");
@@ -612,7 +612,7 @@ namespace CommonLibraryTests
             image = ImageStream.GetBitmapImageFileStream(imagePath);
             btm = image.ToBitmap();
 
-            data = CifProcessing.ConvertToCif(btm);
+            data = CifProcessing.ConvertBitmapToCif(btm);
             doc = CifProcessing.GenerateCsvCompressed(btm.Height, btm.Width, data);
 
             Assert.AreEqual(51, doc[1].Count, "done");
@@ -626,7 +626,7 @@ namespace CommonLibraryTests
             Custom.CompressedToCifFile(btm, cifCompressed);
 
             //and back
-            btm = Custom.GetCifFile(cifPath);
+            btm = Custom.GetImageFromCif(cifPath);
             ImageStream.SaveBitmap(btm, resultPathCompressed, ImageFormat.Png);
 
             point = new Point { X = 51, Y = 51 };
@@ -655,11 +655,13 @@ namespace CommonLibraryTests
             btm = image.ToBitmap();
 
             //check if our system can also handle non compressed files!
-            data = CifProcessing.ConvertToCif(btm);
+            data = CifProcessing.ConvertBitmapToCif(btm);
             doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
+            Custom.SaveToCifFile(btm, cifPath);
+
             //data is uncompressed! everything should still work though!
-            btm = CifProcessing.CifToImage(doc);
+            btm = CifProcessing.CifFileToImage(cifPath);
 
             ImageStream.SaveBitmap(btm, resultPathUnCompressed, ImageFormat.Png);
 
@@ -695,7 +697,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Test the speed between parallel and not
+        /// Test the speed between parallel and not
         /// </summary>
         [TestMethod]
         public void SpeedConvertCif()
@@ -712,7 +714,7 @@ namespace CommonLibraryTests
             var timer = new Stopwatch();
             timer.Start();
 
-            var cif = Custom.GetCifFromFile(cifPath);
+            var cif = Custom.LoadCif(cifPath);
 
             timer.Stop();
             var one = timer.Elapsed;
@@ -727,11 +729,11 @@ namespace CommonLibraryTests
             var two = timer.Elapsed;
             Trace.WriteLine($"Test two Cif (normal Version): {timer.Elapsed}");
 
-            var check = one < two;
+            var check = one<two;
 
             Assert.IsTrue(check, "Parallel was not faster.");
 
-            Assert.IsNotNull(cif, "Cif was not loaded.");
+            Assert.IsNotNull(cif,"Cif was not loaded.");
 
             Assert.IsNotNull(cif2, "Cif two was not loaded.");
 
