@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
@@ -57,14 +56,16 @@ namespace Imaging
         /// </summary>
         /// <param name="csv">The csv.</param>
         /// <returns>The converted Image</returns>
-        [return: MaybeNull]
-        internal static Bitmap CifToImage(List<List<string>> csv)
+        internal static Bitmap? CifToImage(List<List<string>> csv)
         {
             int height = 0, width = 0;
 
             var compressed = GetInfo(csv[0], ref height, ref width);
 
-            if (compressed == null) return null;
+            if (compressed == null)
+            {
+                return null;
+            }
 
             //remove the Height, length csv
             csv.RemoveAt(0);
@@ -98,7 +99,10 @@ namespace Imaging
 
                             var sequence = GetStartEndPoint(lst);
 
-                            if (sequence == null) continue;
+                            if (sequence == null)
+                            {
+                                continue;
+                            }
 
                             //paint area
                             for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
@@ -122,37 +126,35 @@ namespace Imaging
 
                 return dbm.Bitmap;
             }
-            else
-            {
-                foreach (var line in csv)
-                {
-                    var hex = line[0];
 
-                    var check = int.TryParse(line[1], out var a);
+            foreach (var line in csv)
+            {
+                var hex = line[0];
+
+                var check = int.TryParse(line[1], out var a);
+
+                if (!check)
+                {
+                    continue;
+                }
+
+                var color = ParseColor(hex, a);
+
+                //get coordinates
+                for (var i = 2; i < line.Count; i++)
+                {
+                    check = int.TryParse(line[i], out var idMaster);
 
                     if (!check)
                     {
                         continue;
                     }
 
-                    var color = ParseColor(hex, a);
-
-                    //get coordinates
-                    for (var i = 2; i < line.Count; i++)
-                    {
-                        check = int.TryParse(line[i], out var idMaster);
-
-                        if (!check)
-                        {
-                            continue;
-                        }
-
-                        SetPixel(dbm, idMaster, width, color);
-                    }
+                    SetPixel(dbm, idMaster, width, color);
                 }
-
-                return dbm.Bitmap;
             }
+
+            return dbm.Bitmap;
         }
 
         /// <summary>
@@ -160,7 +162,6 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Cif Image</returns>
-        [return: MaybeNull]
         internal static Cif? GetCifFromFile(string path)
         {
             var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
@@ -174,12 +175,21 @@ namespace Imaging
 
             var compressed = GetInfo(csv[0], ref height, ref width);
 
-            if (compressed == null) return null;
+            if (compressed == null)
+            {
+                return null;
+            }
 
             //remove the Height, length csv
             csv.RemoveAt(0);
 
-            var cif = new Cif {Height = height, Width = width, Compressed = false, CifImage = new Dictionary<Color, SortedSet<int>>()};
+            var cif = new Cif
+            {
+                Height = height,
+                Width = width,
+                Compressed = false,
+                CifImage = new Dictionary<Color, SortedSet<int>>()
+            };
 
             if (compressed == true)
             {
@@ -209,7 +219,10 @@ namespace Imaging
 
                             var sequence = GetStartEndPoint(lst);
 
-                            if (sequence == null) continue;
+                            if (sequence == null)
+                            {
+                                continue;
+                            }
 
                             //paint area
                             for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
@@ -294,7 +307,7 @@ namespace Imaging
                 //Possible error here
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 subChild.AddRange(value.Select(id => id.ToString()));
 
@@ -334,7 +347,7 @@ namespace Imaging
             {
                 var converter = new ColorHsv(key.R, key.G, key.B, key.A);
                 //First two keys are color and Hue
-                var subChild = new List<string>(2) {converter.Hex, key.A.ToString()};
+                var subChild = new List<string>(2) { converter.Hex, key.A.ToString() };
 
                 var sequence = Utility.Sequencer(value, 3);
 
@@ -373,7 +386,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Parses the color.
+        ///     Parses the color.
         /// </summary>
         /// <param name="hex">The hexadecimal.</param>
         /// <param name="alpha">The alpha.</param>
@@ -385,7 +398,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the pixel.
+        ///     Sets the pixel.
         /// </summary>
         /// <param name="dbm">The DBM.</param>
         /// <param name="idMaster">The identifier master.</param>
@@ -398,7 +411,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the information.
+        ///     Gets the information.
         /// </summary>
         /// <param name="csv">The CSV.</param>
         /// <param name="height">The height.</param>
@@ -427,7 +440,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the start end point.
+        ///     Gets the start end point.
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
@@ -435,7 +448,10 @@ namespace Imaging
         private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(lst[1], out var end);
 
@@ -443,28 +459,12 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Start and end points of a Sequence
+        ///     Start and end points of a Sequence
         /// </summary>
         internal sealed class StartEndPoint
         {
             /// <summary>
-            /// Gets the start.
-            /// </summary>
-            /// <value>
-            /// The start.
-            /// </value>
-            internal int Start { get; }
-
-            /// <summary>
-            /// Gets the end.
-            /// </summary>
-            /// <value>
-            /// The end.
-            /// </value>
-            internal int End { get; }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="StartEndPoint"/> class.
+            ///     Initializes a new instance of the <see cref="StartEndPoint" /> class.
             /// </summary>
             /// <param name="start">The start.</param>
             /// <param name="end">The end.</param>
@@ -473,6 +473,22 @@ namespace Imaging
                 Start = start;
                 End = end;
             }
+
+            /// <summary>
+            ///     Gets the start.
+            /// </summary>
+            /// <value>
+            ///     The start.
+            /// </value>
+            internal int Start { get; }
+
+            /// <summary>
+            ///     Gets the end.
+            /// </summary>
+            /// <value>
+            ///     The end.
+            /// </value>
+            internal int End { get; }
         }
     }
 }

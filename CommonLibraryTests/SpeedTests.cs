@@ -87,7 +87,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the cif.
+        ///     Gets the cif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns></returns>
@@ -99,7 +99,13 @@ namespace CommonLibraryTests
 
             var compressed = GetInfo(csv[0], ref height, ref width);
 
-            var cif = new Cif { Height = height, Width = width, Compressed = false, CifImage = new Dictionary<Color, SortedSet<int>>() };
+            var cif = new Cif
+            {
+                Height = height,
+                Width = width,
+                Compressed = false,
+                CifImage = new Dictionary<Color, SortedSet<int>>()
+            };
 
             if (compressed == true)
             {
@@ -129,7 +135,10 @@ namespace CommonLibraryTests
 
                             var sequence = GetStartEndPoint(lst);
 
-                            if (sequence == null) continue;
+                            if (sequence == null)
+                            {
+                                continue;
+                            }
 
                             //paint area
                             for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
@@ -187,7 +196,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the two.
+        ///     Tests the two.
         /// </summary>
         /// <param name="m1">The m1.</param>
         /// <param name="m2">The m2.</param>
@@ -300,7 +309,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the information.
+        ///     Gets the information.
         /// </summary>
         /// <param name="csv">The CSV.</param>
         /// <param name="height">The height.</param>
@@ -329,7 +338,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the start end point.
+        ///     Gets the start end point.
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
@@ -337,7 +346,10 @@ namespace CommonLibraryTests
         private static CifProcessing.StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(lst[1], out var end);
 

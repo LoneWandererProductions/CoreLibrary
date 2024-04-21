@@ -19,7 +19,7 @@ namespace Imaging
     public interface ICustomImageFormat
     {
         /// <summary>
-        /// Gets the cif from file.
+        ///     Gets the cif from file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image as pure Cif format</returns>
