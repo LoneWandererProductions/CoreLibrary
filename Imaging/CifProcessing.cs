@@ -26,7 +26,7 @@ namespace Imaging
         ///     Converts to cif.
         /// </summary>
         /// <param name="image">The image.</param>
-        internal static Dictionary<Color, SortedSet<int>> ConvertBitmapToCif(Bitmap image)
+        internal static Dictionary<Color, SortedSet<int>> ConvertToCifFromBitmap(Bitmap image)
         {
             var imageFormat = new Dictionary<Color, SortedSet<int>>();
 

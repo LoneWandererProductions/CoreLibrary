@@ -55,7 +55,7 @@ namespace Imaging
         /// <returns>Cif Object</returns>
         public Cif GenerateCifFromBitmap(Bitmap image)
         {
-            var format = CifProcessing.ConvertBitmapToCif(image);
+            var format = CifProcessing.ConvertToCifFromBitmap(image);
 
             return new Cif
             {
@@ -75,7 +75,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         public void SaveBitmapToCifFile(Bitmap image, string path)
         {
-            var imageFormat = CifProcessing.ConvertBitmapToCif(image);
+            var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsv(image.Height, image.Width, imageFormat);
             CsvHandler.WriteCsv(path, lst);
         }
@@ -89,7 +89,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         public void GenerateCompressedCifFromBitmap(Bitmap image, string path)
         {
-            var imageFormat = CifProcessing.ConvertBitmapToCif(image);
+            var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsvCompressed(image.Height, image.Width, imageFormat);
             CsvHandler.WriteCsv(path, lst);
         }

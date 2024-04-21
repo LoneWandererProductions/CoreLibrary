@@ -577,7 +577,7 @@ namespace CommonLibraryTests
             //and back
             btm = Custom.GetImageFromCif(cifPath);
 
-            var data = CifProcessing.ConvertBitmapToCif(btm);
+            var data = CifProcessing.ConvertToCifFromBitmap(btm);
             var doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Assert.AreEqual(2502, doc[1].Count, "done");
@@ -612,7 +612,7 @@ namespace CommonLibraryTests
             image = ImageStream.GetBitmapImageFileStream(imagePath);
             btm = image.ToBitmap();
 
-            data = CifProcessing.ConvertBitmapToCif(btm);
+            data = CifProcessing.ConvertToCifFromBitmap(btm);
             doc = CifProcessing.GenerateCsvCompressed(btm.Height, btm.Width, data);
 
             Assert.AreEqual(51, doc[1].Count, "done");
@@ -655,7 +655,7 @@ namespace CommonLibraryTests
             btm = image.ToBitmap();
 
             //check if our system can also handle non compressed files!
-            data = CifProcessing.ConvertBitmapToCif(btm);
+            data = CifProcessing.ConvertToCifFromBitmap(btm);
             doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Custom.SaveBitmapToCifFile(btm, cifPath);

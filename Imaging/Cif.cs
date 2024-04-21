@@ -96,7 +96,7 @@ namespace Imaging
 
             if (imageFormat == null)
             {
-                cif = CifProcessing.ConvertBitmapToCif(image);
+                cif = CifProcessing.ConvertToCifFromBitmap(image);
                 CifImage = cif;
                 NumberOfColors = cif.Count;
                 return;
