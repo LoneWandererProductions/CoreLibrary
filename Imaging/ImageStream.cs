@@ -1107,14 +1107,15 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Gets the pixel.
+        /// Gets the pixel.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="point">The point.</param>
         /// <returns>
-        ///     The Color at the point
+        /// The Color at the point
         /// </returns>
-        /// <exception cref="ArgumentNullException">nameof(image)</exception>
+        /// <exception cref="System.ArgumentNullException">Image was null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Point was out of bound.</exception>
         internal static Color GetPixel(Bitmap image, Point point)
         {
             if (image == null)
@@ -1124,28 +1125,44 @@ namespace Imaging
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
+            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
+            }
+
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
             return dbm.GetPixel(point.X, point.Y);
         }
 
         /// <summary>
-        ///     Gets the pixel.
+        /// Gets the pixel.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="point">The point.</param>
         /// <param name="radius">The radius.</param>
         /// <returns>
-        ///     The Color at the Point
+        /// The Color at the Point
         /// </returns>
-        /// <exception cref="ArgumentNullException">nameof(image)</exception>
+        /// <exception cref="System.ArgumentNullException">image was null.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// radius or point is out of bounds.
+        /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
             if (image == null)
             {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
+            }
+
+            if (radius < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            }
+
+            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
             }
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
@@ -1155,22 +1172,16 @@ namespace Imaging
                 return GetPixel(image, point);
             }
 
-            var r = 0;
-            var g = 0;
-            var b = 0;
+            int redSum = 0, greenSum = 0, blueSum = 0;
 
             foreach (var color in points.Select(pointSingle => GetPixel(image, pointSingle)))
             {
-                r += color.R;
-                g += color.G;
-                b += color.B;
+                redSum += color.R;
+                greenSum += color.G;
+                blueSum += color.B;
             }
 
-            r /= points.Count;
-            g /= points.Count;
-            b /= points.Count;
-
-            return Color.FromArgb(r, g, b);
+            return Color.FromArgb(redSum / points.Count, greenSum / points.Count, blueSum / points.Count);
         }
 
         /// <summary>
@@ -1274,6 +1285,8 @@ namespace Imaging
                 }
             }
 
+            dbmBase.Dispose();
+
             return dbmResult.Bitmap;
         }
 
@@ -1290,54 +1303,30 @@ namespace Imaging
 
         /// <summary>
         ///     Gets all points in a Circle.
+        ///     Uses the  Bresenham's circle drawing algorithm.
+        ///     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
         /// </summary>
-        /// <param name="point">The point.</param>
+        /// <param name="center">The center point.</param>
         /// <param name="radius">The radius.</param>
         /// <param name="length">The length.</param>
         /// <param name="width">The height.</param>
         /// <returns>List of Points</returns>
-        private static List<Point> GetCirclePoints(Point point, int radius, int length, int width)
+        private static List<Point> GetCirclePoints(Point center, int radius, int length, int width)
         {
-            var lst = new List<Point>();
+            var points = new List<Point>();
 
-            var minX = point.X - radius;
-            if (minX < 0)
+            for (int x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
-                minX = 0;
-            }
+                int dx = x - center.X;
+                int height = (int)Math.Sqrt(radius * radius - dx * dx);
 
-            var maxX = point.X + radius;
-            if (maxX > width)
-            {
-                maxX = width;
-            }
-
-            var minY = point.Y - radius;
-            if (minY < 0)
-            {
-                minY = 0;
-            }
-
-            var maxY = point.Y + radius;
-            if (maxY > width)
-            {
-                maxY = length;
-            }
-
-            for (var x = minX; x <= maxX; x++)
-            for (var y = minY; y <= maxY; y++)
-            {
-                var calcPoint = new Point(x, y);
-
-                var dist = Math.Sqrt(Math.Pow(calcPoint.X - point.X, 2) + Math.Pow(calcPoint.Y - point.Y, 2));
-
-                if (dist <= radius)
+                for (int y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
                 {
-                    lst.Add(calcPoint);
+                    points.Add(new Point(x, y));
                 }
             }
 
-            return lst;
+            return points;
         }
     }
 }

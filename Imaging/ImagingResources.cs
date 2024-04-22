@@ -114,6 +114,17 @@ namespace Imaging
         public const string ErrorImage = "Error: Image is Null.";
 
         /// <summary>
+        ///     The error, Radius is smaller null (const). Value: "Error: Radius cannot be negative."
+        /// </summary>
+        public const string ErrorRadius = "Error: Radius cannot be negative.";
+
+        /// <summary>
+        ///     The error, Rout of bounds (const). Value: "Error: Point is outside the bounds of the image.."
+        /// </summary>
+        public const string ErrorOutofBounds = "Error: Point is outside the bounds of the image.";
+
+
+        /// <summary>
         ///     The error, Path is null (const). Value: "Error: Path is Null."
         /// </summary>
         public const string ErrorPath = "Error: Path is Null.";
