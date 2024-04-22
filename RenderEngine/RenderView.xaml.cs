@@ -40,6 +40,7 @@ namespace RenderEngine
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RenderEngine.RenderView" /> class.
+        ///    C an't be used until Window is completely loaded!
         /// </summary>
         public RenderView()
         {
@@ -65,6 +66,7 @@ namespace RenderEngine
 
         /// <summary>
         ///     Called when [paint surface].
+        ///     Won't be called until Form is completely loaded.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SKPaintSurfaceEventArgs" /> instance containing the event data.</param>
