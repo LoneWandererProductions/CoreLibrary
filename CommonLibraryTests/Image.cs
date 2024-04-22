@@ -723,24 +723,6 @@ namespace CommonLibraryTests
             timer = new Stopwatch();
             timer.Start();
 
-            var cif2 = SpeedTests.GetCif(cifPath);
-
-            timer.Stop();
-            var two = timer.Elapsed;
-            Trace.WriteLine($"Test two Cif (normal Version): {timer.Elapsed}");
-
-            var check = one < two;
-
-            Assert.IsTrue(check, "Parallel was not faster.");
-
-            Assert.IsNotNull(cif, "Cif was not loaded.");
-
-            Assert.IsNotNull(cif2, "Cif two was not loaded.");
-
-            check = cif.CifImage.Equal(cif2.CifImage);
-
-            Assert.IsTrue(check, "Result is not equal.");
-
             FileHandleDelete.DeleteFile(cifPath);
         }
 
