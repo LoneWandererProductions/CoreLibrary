@@ -25,46 +25,37 @@ namespace Imaging
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the cif file.
+        ///     Load a cif file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image in pure Cif format</returns>
         [return: MaybeNull]
-        public Cif GetCifFromFile(string path)
+        public Cif GetCif(string path)
         {
-            return CifProcessing.GetCifFromFile(path);
+            return CifProcessing.CifFromFile(path);
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the cif file.
+        ///     Generates Image from Cif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image</returns>
         [return: MaybeNull]
-        public Bitmap GetCifFile(string path)
+        public Bitmap GetImageFromCif(string path)
         {
-            var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
-            if (csv == null)
-            {
-                return null;
-            }
-
-            //compressed or not
-            return csv[0][2] == ImagingResources.CifCompressed
-                ? CifProcessing.CifToImageCompressed(csv)
-                : CifProcessing.CifToImage(csv);
+            return CifProcessing.CifFileToImage(path);
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the cif file.
+        ///     Generate Cif from Bitmap
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Cif Object</returns>
-        public Cif GetCifFile(Bitmap image)
+        public Cif GenerateCifFromBitmap(Bitmap image)
         {
-            var format = CifProcessing.ConvertToCif(image);
+            var format = CifProcessing.ConvertToCifFromBitmap(image);
 
             return new Cif
             {
@@ -78,13 +69,13 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///     Saves to cif file.
+        ///     Saves Bitmap to cif file.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        public void SaveToCifFile(Bitmap image, string path)
+        public void GenerateBitmapToCifFile(Bitmap image, string path)
         {
-            var imageFormat = CifProcessing.ConvertToCif(image);
+            var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsv(image.Height, image.Width, imageFormat);
             CsvHandler.WriteCsv(path, lst);
         }
@@ -96,9 +87,9 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        public void CompressedToCifFile(Bitmap image, string path)
+        public void GenerateCifCompressedFromBitmap(Bitmap image, string path)
         {
-            var imageFormat = CifProcessing.ConvertToCif(image);
+            var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
             var lst = CifProcessing.GenerateCsvCompressed(image.Height, image.Width, imageFormat);
             CsvHandler.WriteCsv(path, lst);
         }

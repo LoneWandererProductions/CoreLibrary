@@ -685,6 +685,8 @@ namespace Imaging
                 case ImageFilter.Polaroid:
                     atr.SetColorMatrix(ImageRegister.Polaroid);
                     break;
+                case ImageFilter.Contour:
+                    return ApplySobel(image);
                 default:
                     return null;
             }
@@ -1218,6 +1220,61 @@ namespace Imaging
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
+        }
+
+        /// <summary>
+        ///     Applies the sobel.
+        /// </summary>
+        /// <param name="originalImage">The original image.</param>
+        /// <returns>Contour of an Image</returns>
+        private static Bitmap ApplySobel(Bitmap originalImage)
+        {
+            // Convert the original image to greyscale
+            var greyscaleImage = FilterImage(originalImage, ImageFilter.GrayScale);
+
+            // Create a new bitmap to store the result of Sobel operator
+            var resultImage = new Bitmap(greyscaleImage.Width, greyscaleImage.Height);
+
+            // Sobel masks for gradient calculation
+            int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+            int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+
+            var dbmBase = new DirectBitmap(greyscaleImage);
+            var dbmResult = new DirectBitmap(resultImage);
+
+            // Apply Sobel operator to each pixel in the image
+            for (var x = 1; x < greyscaleImage.Width - 1; x++)
+            {
+                for (var y = 1; y < greyscaleImage.Height - 1; y++)
+                {
+                    var gx = 0;
+                    var gy = 0;
+
+                    // Convolve the image with the Sobel masks
+                    for (var i = -1; i <= 1; i++)
+                    {
+                        for (var j = -1; j <= 1; j++)
+                        {
+                            var pixel = dbmBase.GetPixel(x + i, y + j);
+                            int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
+                            gx += sobelX[i + 1, j + 1] * grayValue;
+                            gy += sobelY[i + 1, j + 1] * grayValue;
+                        }
+                    }
+
+                    // Calculate gradient magnitude
+                    var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
+
+                    // Normalize the magnitude to fit within the range of 0-255
+                    magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
+                    magnitude = Math.Min(255, Math.Max(0, magnitude));
+
+                    // Set the result pixel color
+                    dbmResult.SetPixel(x, y, Color.FromArgb(magnitude, magnitude, magnitude));
+                }
+            }
+
+            return dbmResult.Bitmap;
         }
 
         /// <summary>

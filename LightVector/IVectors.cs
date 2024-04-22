@@ -93,7 +93,7 @@ namespace LightVector
         ///     The curve add.
         /// </summary>
         /// <param name="curve">The curve.</param>
-        /// <returns>The <see cref="System.Windows.Shapes.Path" />.</returns>
+        /// <returns>The <see cref="Path" />.</returns>
         Path CurveAdd(List<Point> curve);
 
         /// <summary>

@@ -459,6 +459,28 @@ namespace CommonLibraryTests
             dct.Add(0, 0);
 
             Assert.IsTrue(dct.ContainsKey(0), "key not added");
+
+            dct.Add(2, 0);
+
+            Assert.IsTrue(dct.ContainsKey(2), "key not added");
+
+            dct.Add(2, 1);
+
+            Assert.AreEqual(2, dct[2].Count, "Correct count");
+
+            var dctTwo = new Dictionary<int, SortedSet<int>> { { 1, 1 }, { 1, 1 } };
+
+            Assert.AreEqual(2, dct[1].Count, "Correct count");
+
+            dctTwo.Add(0, 0);
+
+            Assert.IsTrue(dct.ContainsKey(0), "key not added");
+
+            dctTwo.Add(2, 0);
+
+            Assert.AreEqual(2, dct[2].Count, "Correct count");
+
+            Assert.IsTrue(dct.ContainsKey(2), "key not added");
         }
 
         /// <summary>
@@ -598,7 +620,7 @@ namespace CommonLibraryTests
             var y = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
             var m2 = new BaseMatrix { Matrix = y };
 
-            var compare1 = MathSpeedTests.TestOne(m1, m2);
+            var compare1 = SpeedTests.TestOne(m1, m2);
 
             Assert.AreEqual(compare1[0, 0], 2, "00");
             Assert.AreEqual(compare1[1, 0], 1, "10");

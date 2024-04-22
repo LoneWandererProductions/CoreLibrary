@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using ExtendedSystemObjects;
 using FileHandler;
 using ImageCompare;
 using Imaging;
@@ -572,11 +573,11 @@ namespace CommonLibraryTests
              */
 
             //convert to cif
-            Custom.SaveToCifFile(btm, cifPath);
+            Custom.GenerateBitmapToCifFile(btm, cifPath);
             //and back
-            btm = Custom.GetCifFile(cifPath);
+            btm = Custom.GetImageFromCif(cifPath);
 
-            var data = CifProcessing.ConvertToCif(btm);
+            var data = CifProcessing.ConvertToCifFromBitmap(btm);
             var doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Assert.AreEqual(2502, doc[1].Count, "done");
@@ -611,7 +612,7 @@ namespace CommonLibraryTests
             image = ImageStream.GetBitmapImageFileStream(imagePath);
             btm = image.ToBitmap();
 
-            data = CifProcessing.ConvertToCif(btm);
+            data = CifProcessing.ConvertToCifFromBitmap(btm);
             doc = CifProcessing.GenerateCsvCompressed(btm.Height, btm.Width, data);
 
             Assert.AreEqual(51, doc[1].Count, "done");
@@ -622,10 +623,10 @@ namespace CommonLibraryTests
             Trace.WriteLine("done");
 
             //convert to cif from compressed
-            Custom.CompressedToCifFile(btm, cifCompressed);
+            Custom.GenerateCifCompressedFromBitmap(btm, cifCompressed);
 
             //and back
-            btm = Custom.GetCifFile(cifPath);
+            btm = Custom.GetImageFromCif(cifPath);
             ImageStream.SaveBitmap(btm, resultPathCompressed, ImageFormat.Png);
 
             point = new Point { X = 51, Y = 51 };
@@ -654,11 +655,13 @@ namespace CommonLibraryTests
             btm = image.ToBitmap();
 
             //check if our system can also handle non compressed files!
-            data = CifProcessing.ConvertToCif(btm);
+            data = CifProcessing.ConvertToCifFromBitmap(btm);
             doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
+            Custom.GenerateBitmapToCifFile(btm, cifPath);
+
             //data is uncompressed! everything should still work though!
-            btm = CifProcessing.CifToImageCompressed(doc);
+            btm = CifProcessing.CifFileToImage(cifPath);
 
             ImageStream.SaveBitmap(btm, resultPathUnCompressed, ImageFormat.Png);
 
@@ -691,6 +694,54 @@ namespace CommonLibraryTests
             FileHandleDelete.DeleteFile(cifCompressed);
 
             FileHandleDelete.DeleteFile(resultPathUnCompressed);
+        }
+
+        /// <summary>
+        ///     Test the speed between parallel and not
+        /// </summary>
+        [TestMethod]
+        public void SpeedConvertCif()
+        {
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
+            var cifPath = Path.Combine(SampleImagesFolder.FullName, "base.cif");
+
+            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var btm = image.ToBitmap();
+
+            //convert to cif
+            Custom.GenerateBitmapToCifFile(btm, cifPath);
+
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var cif = Custom.GetCif(cifPath);
+
+            timer.Stop();
+            var one = timer.Elapsed;
+            Trace.WriteLine($"Test one Cif (parallel Version): {timer.Elapsed}");
+
+            timer = new Stopwatch();
+            timer.Start();
+
+            var cif2 = SpeedTests.GetCif(cifPath);
+
+            timer.Stop();
+            var two = timer.Elapsed;
+            Trace.WriteLine($"Test two Cif (normal Version): {timer.Elapsed}");
+
+            var check = one < two;
+
+            Assert.IsTrue(check, "Parallel was not faster.");
+
+            Assert.IsNotNull(cif, "Cif was not loaded.");
+
+            Assert.IsNotNull(cif2, "Cif two was not loaded.");
+
+            check = cif.CifImage.Equal(cif2.CifImage);
+
+            Assert.IsTrue(check, "Result is not equal.");
+
+            FileHandleDelete.DeleteFile(cifPath);
         }
 
         /// <summary>
@@ -733,7 +784,7 @@ namespace CommonLibraryTests
             //y = 3x +1;
 
             //just test the Bresenham
-            var lstOne = MathSpeedTests.BresenhamPlotLine(one, two);
+            var lstOne = SpeedTests.BresenhamPlotLine(one, two);
             var lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
@@ -823,7 +874,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test Bresenham
-            _ = MathSpeedTests.BresenhamPlotLine(one, two);
+            _ = SpeedTests.BresenhamPlotLine(one, two);
 
             watch.Stop();
 
