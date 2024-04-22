@@ -1107,12 +1107,12 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the pixel.
+        ///     Gets the pixel.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="point">The point.</param>
         /// <returns>
-        /// The Color at the point
+        ///     The Color at the point
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Image was null</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Point was out of bound.</exception>
@@ -1136,17 +1136,17 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the pixel.
+        ///     Gets the pixel.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="point">The point.</param>
         /// <param name="radius">The radius.</param>
         /// <returns>
-        /// The Color at the Point
+        ///     The Color at the Point
         /// </returns>
         /// <exception cref="System.ArgumentNullException">image was null.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// radius or point is out of bounds.
+        ///     radius or point is out of bounds.
         /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
@@ -1234,7 +1234,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Applies the sobel.
+        ///     Applies the Sobel.
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
@@ -1315,12 +1315,12 @@ namespace Imaging
         {
             var points = new List<Point>();
 
-            for (int x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
+            for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
-                int dx = x - center.X;
-                int height = (int)Math.Sqrt(radius * radius - dx * dx);
+                var dx = x - center.X;
+                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
 
-                for (int y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
+                for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
                 {
                     points.Add(new Point(x, y));
                 }

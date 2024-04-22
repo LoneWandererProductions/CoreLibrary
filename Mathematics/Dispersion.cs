@@ -7,6 +7,10 @@
  * SOURCES:    https://welt-der-bwl.de/Streuungsma%C3%9Fe
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,21 +35,6 @@ namespace Mathematics
 
             Row = row;
             CalculateStatistics();
-        }
-
-        /// <summary>
-        /// Calculates the statistics.
-        /// </summary>
-        private void CalculateStatistics()
-        {
-            CalculateArithmeticMean();
-            CalculateVariance();
-            CalculateStandardDeviation();
-            CalculateCoefficientOfVariation();
-            CalculateSpan();
-            CalculateMeanAbsoluteDeviation();
-            CalculateMedian();
-            CalculateMode();
         }
 
         /// <summary>
@@ -105,20 +94,35 @@ namespace Mathematics
         public double MeanAbsoluteDeviation { get; private set; }
 
         /// <summary>
-        /// Gets the median.
+        ///     Gets the median.
         /// </summary>
         /// <value>
-        /// The median.
+        ///     The median.
         /// </value>
         public double Median { get; private set; }
 
         /// <summary>
-        /// Gets the mode.
+        ///     Gets the mode.
         /// </summary>
         /// <value>
-        /// The mode.
+        ///     The mode.
         /// </value>
         public double Mode { get; private set; }
+
+        /// <summary>
+        ///     Calculates the statistics.
+        /// </summary>
+        private void CalculateStatistics()
+        {
+            CalculateArithmeticMean();
+            CalculateVariance();
+            CalculateStandardDeviation();
+            CalculateCoefficientOfVariation();
+            CalculateSpan();
+            CalculateMeanAbsoluteDeviation();
+            CalculateMedian();
+            CalculateMode();
+        }
 
         /// <summary>
         ///     Calculates the arithmetic mean.
@@ -169,17 +173,17 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Calculates the median.
+        ///     Calculates the median.
         /// </summary>
         private void CalculateMedian()
         {
             var sortedList = Row.OrderBy(x => x).ToList();
-            int n = sortedList.Count;
-            Median = n % 2 == 0 ? (sortedList[n / 2 - 1] + sortedList[n / 2]) / 2.0 : sortedList[n / 2];
+            var n = sortedList.Count;
+            Median = n % 2 == 0 ? (sortedList[(n / 2) - 1] + sortedList[n / 2]) / 2.0 : sortedList[n / 2];
         }
 
         /// <summary>
-        /// Calculates the mode.
+        ///     Calculates the mode.
         /// </summary>
         private void CalculateMode()
         {

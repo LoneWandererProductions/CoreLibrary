@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -251,7 +250,6 @@ namespace Imaging
         ///     Gets the color list.
         /// </summary>
         /// <returns>The Image as a list of Colors</returns>
-        [return: MaybeNull]
         public Span<Color> GetColors()
         {
             if (_bits == null)

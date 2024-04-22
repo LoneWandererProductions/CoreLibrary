@@ -9,10 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using DataFormatter;
 using ExtendedSystemObjects;
 using Imaging;
 using Mathematics;
