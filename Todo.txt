@@ -51,3 +51,7 @@ Using:
 System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom("TempAssembly.dll");
 System.Type enumTest = ass.GetType("Elevation");
 string[] values = enumTest .GetEnumNames();
+
+
+TODO Debugger
+Add search lines with like, not like!
