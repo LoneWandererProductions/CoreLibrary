@@ -6,36 +6,34 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
-
 namespace CommonControls.Filters
 {
     /// <summary>
-    /// Filter Options
+    ///     Filter Options
     /// </summary>
     public sealed class FilterOption
     {
         /// <summary>
-        /// Gets or sets the selected operator.
+        ///     Gets or sets the selected operator.
         /// </summary>
         /// <value>
-        /// The selected operator.
+        ///     The selected operator.
         /// </value>
         internal string SelectedOperator { get; init; }
 
         /// <summary>
-        /// Gets or sets the logical operator options.
+        ///     Gets or sets the logical operator options.
         /// </summary>
         /// <value>
-        /// The logical operator options.
+        ///     The logical operator options.
         /// </value>
         internal string SelectedLogicalOperator { get; init; }
 
         /// <summary>
-        /// Gets or sets the entry text.
+        ///     Gets or sets the entry text.
         /// </summary>
         /// <value>
-        /// The entry text.
+        ///     The entry text.
         /// </value>
         internal string EntryText { get; init; }
     }

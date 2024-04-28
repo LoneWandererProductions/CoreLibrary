@@ -37,14 +37,14 @@ namespace Debugger
         private DispatcherTimer _dispatcherTimer;
 
         /// <summary>
+        ///     The filter
+        /// </summary>
+        private readonly Filter _filter;
+
+        /// <summary>
         ///     The index.
         /// </summary>
         private int _index;
-
-        /// <summary>
-        /// The filter
-        /// </summary>
-        private Filter _filter;
 
         /// <inheritdoc />
         /// <summary>
@@ -275,10 +275,10 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the Click event of the MenFilter control.
+        ///     Handles the Click event of the MenFilter control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void MenFilter_Click(object sender, RoutedEventArgs e)
         {
             _filter.FilterChanged += FilterChanged;
@@ -286,10 +286,10 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the FilterChanged event of the _filter control.
+        ///     Handles the FilterChanged event of the _filter control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void FilterChanged(object sender, EventArgs e)
         {
             //TODO

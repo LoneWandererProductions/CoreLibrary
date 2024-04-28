@@ -40,7 +40,7 @@ namespace RenderEngine
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:RenderEngine.RenderView" /> class.
-        ///    C an't be used until Window is completely loaded!
+        ///     C an't be used until Window is completely loaded!
         /// </summary>
         public RenderView()
         {

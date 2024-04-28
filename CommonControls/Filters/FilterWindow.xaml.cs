@@ -12,24 +12,24 @@ using System.Linq;
 namespace CommonControls.Filters
 {
     /// <inheritdoc cref="FilterWindow" />
-    ///  <summary>
-    /// Frontend for the filter
-    ///  </summary>
+    /// <summary>
+    ///     Frontend for the filter
+    /// </summary>
     internal sealed partial class FilterWindow
     {
         /// <summary>
-        /// The filter option
+        ///     The filter option
         /// </summary>
         private readonly Dictionary<int, SearchParameterControl> _filterOption = new();
 
         /// <summary>
-        /// The interface
+        ///     The interface
         /// </summary>
         private readonly Filter _interface;
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonControls.Filters.FilterWindow" /> class.
+        ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.FilterWindow" /> class.
         /// </summary>
         /// <param name="filter"></param>
         public FilterWindow(Filter filter)
@@ -43,7 +43,7 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Adds the filter.
+        ///     Adds the filter.
         /// </summary>
         public void AddFilter()
         {
@@ -59,8 +59,8 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Gets the first index of the available.
-        /// See ExtendedSystemObjects.
+        ///     Gets the first index of the available.
+        ///     See ExtendedSystemObjects.
         /// </summary>
         /// <param name="lst">The List of elements.</param>
         /// <returns>First available free id.</returns>
@@ -72,20 +72,23 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Searches the parameter control delete logic.
+        ///     Searches the parameter control delete logic.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="id">The identifier.</param>
         private void SearchParameterControl_DeleteLogic(object sender, int id)
         {
-            if(id == 0) return;
+            if (id == 0)
+            {
+                return;
+            }
 
             FilterList.Items.Remove(sender);
             _filterOption.Remove(id);
         }
 
         /// <summary>
-        /// Gets the options.
+        ///     Gets the options.
         /// </summary>
         /// <param name="options">The options.</param>
         public void GetOptions(List<FilterOption> options)

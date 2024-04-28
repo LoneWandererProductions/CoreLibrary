@@ -15,58 +15,44 @@ namespace CommonControls.Filters
 {
     /// <inheritdoc />
     /// <summary>
-    /// Search View
+    ///     Search View
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Gets the options.
-        /// </summary>
-        /// <value>
-        /// The options.
-        /// </value>
-        internal FilterOption Options => GetOptions();
-
-        /// <summary>
-        /// Gets the options.
-        /// </summary>
-        /// <returns>All selected parameter</returns>
-        private FilterOption GetOptions()
-        {
-            return new()
-            {
-                SelectedLogicalOperator = SelectedLogicalOperator,
-                SelectedOperator = SelectedOperator,
-                EntryText = EntryText
-            };
-        }
-
-        /// <summary>
-        /// The entry text
-        /// </summary>
-        private string _entryText;
-
-        /// <summary>
-        /// The selected logical operator
-        /// </summary>
-        private string _selectedLogicalOperator;
-
-        /// <summary>
-        /// The selected operator
-        /// </summary>
-        private string _selectedOperator;
-
         /// <summary>
         ///     The add command
         /// </summary>
         private ICommand _deleteCommand;
 
         /// <summary>
-        /// Gets or sets the selected operator.
+        ///     The entry text
+        /// </summary>
+        private string _entryText;
+
+        /// <summary>
+        ///     The selected logical operator
+        /// </summary>
+        private string _selectedLogicalOperator;
+
+        /// <summary>
+        ///     The selected operator
+        /// </summary>
+        private string _selectedOperator;
+
+        /// <summary>
+        ///     Gets the options.
         /// </summary>
         /// <value>
-        /// The selected operator.
+        ///     The options.
+        /// </value>
+        internal FilterOption Options => GetOptions();
+
+        /// <summary>
+        ///     Gets or sets the selected operator.
+        /// </summary>
+        /// <value>
+        ///     The selected operator.
         /// </value>
         public string SelectedOperator
         {
@@ -79,10 +65,10 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Gets or sets the entry text.
+        ///     Gets or sets the entry text.
         /// </summary>
         /// <value>
-        /// The entry text.
+        ///     The entry text.
         /// </value>
         public string EntryText
         {
@@ -95,10 +81,10 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Gets or sets the selected logical operator.
+        ///     Gets or sets the selected logical operator.
         /// </summary>
         /// <value>
-        /// The selected logical operator.
+        ///     The selected logical operator.
         /// </value>
         public string SelectedLogicalOperator
         {
@@ -111,26 +97,57 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Gets the operator options.
+        ///     Gets the operator options.
         /// </summary>
         /// <value>
-        /// The operator options.
+        ///     The operator options.
         /// </value>
-        public List<string> OperatorOptions { get; } = new() {"Like"};
+        public List<string> OperatorOptions { get; } = new() { "Like" };
 
         /// <summary>
-        /// Gets the logical operator options.
+        ///     Gets the logical operator options.
         /// </summary>
         /// <value>
-        /// The logical operator options.
+        ///     The logical operator options.
         /// </value>
-        public List<string> LogicalOperatorOptions { get; } = new() {"And", "And not"};
+        public List<string> LogicalOperatorOptions { get; } = new() { "And", "And not" };
+
+        /// <summary>
+        ///     Gets the okay command.
+        /// </summary>
+        /// <value>
+        ///     The okay command.
+        /// </value>
+        public ICommand DeleteCommand =>
+            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
+
+        /// <summary>
+        ///     Gets or sets the reference.
+        /// </summary>
+        /// <value>
+        ///     The reference.
+        /// </value>
+        public SearchParameterControl Reference { get; set; }
 
         /// <inheritdoc />
         /// <summary>
         ///     Triggers if an Attribute gets changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Gets the options.
+        /// </summary>
+        /// <returns>All selected parameter</returns>
+        private FilterOption GetOptions()
+        {
+            return new FilterOption
+            {
+                SelectedLogicalOperator = SelectedLogicalOperator,
+                SelectedOperator = SelectedOperator,
+                EntryText = EntryText
+            };
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
@@ -158,24 +175,7 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Gets the okay command.
-        /// </summary>
-        /// <value>
-        /// The okay command.
-        /// </value>
-        public ICommand DeleteCommand =>
-            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
-
-        /// <summary>
-        /// Gets or sets the reference.
-        /// </summary>
-        /// <value>
-        /// The reference.
-        /// </value>
-        public SearchParameterControl Reference { get; set; }
-
-        /// <summary>
-        /// Deletes the action.
+        ///     Deletes the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DeleteAction(object obj)

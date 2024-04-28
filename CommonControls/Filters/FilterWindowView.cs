@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,25 +18,11 @@ namespace CommonControls.Filters
 {
     /// <inheritdoc />
     /// <summary>
-    /// FilterWindow View
+    ///     FilterWindow View
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     internal sealed class FilterWindowView : INotifyPropertyChanged
     {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets or sets the reference.
-        /// </summary>
-        /// <value>
-        /// The reference.
-        /// </value>
-        public FilterWindow Reference { get; set; }
-
         /// <summary>
         ///     The add command
         /// </summary>
@@ -46,30 +34,44 @@ namespace CommonControls.Filters
         private ICommand _doneCommand;
 
         /// <summary>
-        /// Gets the add command.
+        ///     Gets or sets the reference.
         /// </summary>
         /// <value>
-        /// The add command.
+        ///     The reference.
+        /// </value>
+        public FilterWindow Reference { get; set; }
+
+        /// <summary>
+        ///     Gets the add command.
+        /// </summary>
+        /// <value>
+        ///     The add command.
         /// </value>
         public ICommand AddCommand =>
             _addCommand ??= new DelegateCommand<object>(AddAction, CanExecute);
 
         /// <summary>
-        /// Gets the done command.
+        ///     Gets the done command.
         /// </summary>
         /// <value>
-        /// The done command.
+        ///     The done command.
         /// </value>
         public ICommand DoneCommand =>
             _doneCommand ??= new DelegateCommand<object>(DoneAction, CanExecute);
 
         /// <summary>
-        /// Gets or sets the filter.
+        ///     Gets or sets the filter.
         /// </summary>
         /// <value>
-        /// The filter.
+        ///     The filter.
         /// </value>
         public Dictionary<int, SearchParameterControl> Filter { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Triggers if an Attribute gets changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
@@ -97,7 +99,7 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Adds action.
+        ///     Adds action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void AddAction(object obj)
@@ -106,7 +108,7 @@ namespace CommonControls.Filters
         }
 
         /// <summary>
-        /// Done action.
+        ///     Done action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DoneAction(object obj)

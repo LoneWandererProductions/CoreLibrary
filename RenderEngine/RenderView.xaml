@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              Height="450" Width="800">
     <Grid>
-<!--Can't be used until Window is completly loaded!-->
+        <!--Can't be used until Window is completly loaded!-->
         <wpf:SKElement x:Name="SkiaElement" PaintSurface="OnPaintSurface" MouseDown="SKcanvas_MouseDown" />
     </Grid>
 </UserControl>

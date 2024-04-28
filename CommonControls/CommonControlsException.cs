@@ -51,7 +51,7 @@ namespace CommonControls
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:CommonControls.CommonControlsException" /> class.
         /// </summary>
-        /// <param name="message">The message we declarte</param>
+        /// <param name="message">The message we declare</param>
         /// <param name="innerException">
         ///     The Exception that caused the Exception or a null reference <see langword="Nothing" /> in
         ///     Visual Basic), if there is no inner Exception.
