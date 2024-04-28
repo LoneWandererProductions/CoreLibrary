@@ -102,7 +102,7 @@ namespace CommonControls.Filters
         /// <value>
         ///     The operator options.
         /// </value>
-        public List<string> OperatorOptions { get; } = new() { "Like" };
+        public List<string> OperatorOptions { get; } = new() { "Like", "not Like" };
 
         /// <summary>
         ///     Gets the logical operator options.
