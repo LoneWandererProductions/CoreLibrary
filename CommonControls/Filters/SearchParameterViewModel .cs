@@ -36,7 +36,7 @@ namespace CommonControls.Filters
         {
             return new()
             {
-                LogicalOperatorOptions = LogicalOperatorOptions,
+                SelectedLogicalOperator = SelectedLogicalOperator,
                 SelectedOperator = SelectedOperator,
                 EntryText = EntryText
             };

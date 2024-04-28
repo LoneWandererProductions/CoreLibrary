@@ -21,7 +21,7 @@ namespace CommonControls.Filters
         /// <value>
         /// The selected operator.
         /// </value>
-        internal string SelectedOperator { get; set; }
+        internal string SelectedOperator { get; init; }
 
         /// <summary>
         /// Gets or sets the logical operator options.
@@ -29,7 +29,7 @@ namespace CommonControls.Filters
         /// <value>
         /// The logical operator options.
         /// </value>
-        internal List<string> LogicalOperatorOptions { get; set; }
+        internal string SelectedLogicalOperator { get; init; }
 
         /// <summary>
         /// Gets or sets the entry text.
@@ -37,6 +37,6 @@ namespace CommonControls.Filters
         /// <value>
         /// The entry text.
         /// </value>
-        internal string EntryText { get; set; }
+        internal string EntryText { get; init; }
     }
 }
