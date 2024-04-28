@@ -1,17 +1,47 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls
+ * FILE:        CommonControls/Filters/SearchParameterViewModel.xaml.cs
+ * PURPOSE:     
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonControls
+namespace CommonControls.Filters
 {
     /// <inheritdoc />
     /// <summary>
     /// Search View
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
-    public sealed class SearchParameterViewModel : INotifyPropertyChanged
+    internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets the options.
+        /// </summary>
+        /// <value>
+        /// The options.
+        /// </value>
+        internal FilterOption Options => GetOptions();
+
+        /// <summary>
+        /// Gets the options.
+        /// </summary>
+        /// <returns>All selected parameter</returns>
+        private FilterOption GetOptions()
+        {
+            return new()
+            {
+                LogicalOperatorOptions = LogicalOperatorOptions,
+                SelectedOperator = SelectedOperator,
+                EntryText = EntryText
+            };
+        }
+
         /// <summary>
         /// The entry text
         /// </summary>

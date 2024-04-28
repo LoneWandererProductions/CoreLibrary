@@ -1,10 +1,25 @@
-﻿using System.ComponentModel;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls
+ * FILE:        CommonControls/Filters/FilterWindowView.cs
+ * PURPOSE:     
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonControls
+namespace CommonControls.Filters
 {
-    internal sealed class FilterView : INotifyPropertyChanged
+    /// <inheritdoc />
+    /// <summary>
+    /// FilterWindow View
+    /// </summary>
+    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+    internal sealed class FilterWindowView : INotifyPropertyChanged
     {
         /// <inheritdoc />
         /// <summary>
@@ -18,7 +33,7 @@ namespace CommonControls
         /// <value>
         /// The reference.
         /// </value>
-        public Filter Reference { get; set; }
+        public FilterWindow Reference { get; set; }
 
         /// <summary>
         ///     The add command
@@ -47,6 +62,14 @@ namespace CommonControls
         /// </value>
         public ICommand DoneCommand =>
             _doneCommand ??= new DelegateCommand<object>(DoneAction, CanExecute);
+
+        /// <summary>
+        /// Gets or sets the filter.
+        /// </summary>
+        /// <value>
+        /// The filter.
+        /// </value>
+        public Dictionary<int, SearchParameterControl> Filter { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
@@ -79,8 +102,8 @@ namespace CommonControls
         /// <param name="obj">The object.</param>
         private void AddAction(object obj)
         {
+            Reference.AddFilter();
         }
-
 
         /// <summary>
         /// Done action.
@@ -88,7 +111,10 @@ namespace CommonControls
         /// <param name="obj">The object.</param>
         private void DoneAction(object obj)
         {
-        }
+            var options = new List<FilterOption>(Filter.Count);
+            options.AddRange(Filter.Values.Select(filter => filter.View.Options));
 
+            Reference.GetOptions(options);
+        }
     }
 }

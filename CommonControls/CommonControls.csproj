@@ -35,20 +35,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Filter.xaml.cs">
+    <Compile Update="Filters\FilterWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="SearchParameterControl.xaml.cs">
+    <Compile Update="Filters\SearchParameterControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Filter.xaml">
+    <Page Update="Filters\FilterWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="SearchParameterControl.xaml">
+    <Page Update="Filters\SearchParameterControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

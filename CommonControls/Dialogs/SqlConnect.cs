@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/SqlConnect.cs
+ * FILE:        CommonControls/Dialogs/SqlConnect.cs
  * PURPOSE:     Class that will build a sql Connection string in the future
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCE:      https://stackoverflow.com/questions/55590869/how-to-protect-strings-without-securestring
@@ -17,7 +17,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace CommonControls
+namespace CommonControls.Dialogs
 {
     /// <summary>
     ///     The Sql connection string class

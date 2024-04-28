@@ -13,7 +13,7 @@ using System.Windows;
 
 //TODO add basic Folder Infos
 
-namespace CommonControls
+namespace CommonControls.Filters
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

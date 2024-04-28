@@ -11,7 +11,7 @@
 
 using System.Windows;
 
-namespace CommonControls
+namespace CommonControls.Dialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

@@ -11,6 +11,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using CommonControls.Dialogs;
+using CommonControls.Filters;
 using Microsoft.Win32;
 
 namespace CommonControls

@@ -41,6 +41,11 @@ namespace Debugger
         /// </summary>
         private int _index;
 
+        /// <summary>
+        /// The filter
+        /// </summary>
+        private Filter _filter;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="Trail" /> class.
@@ -48,6 +53,7 @@ namespace Debugger
         public Trail()
         {
             InitializeComponent();
+            _filter = new Filter();
         }
 
         /// <summary>
@@ -275,8 +281,18 @@ namespace Debugger
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenFilter_Click(object sender, RoutedEventArgs e)
         {
-            var filter = new Filter();
-            filter.Show();
+            _filter.FilterChanged += FilterChanged;
+            _filter.Start();
+        }
+
+        /// <summary>
+        /// Handles the FilterChanged event of the _filter control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void FilterChanged(object sender, EventArgs e)
+        {
+            //TODO
         }
     }
 }

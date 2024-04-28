@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonControls;
+using CommonControls.Dialogs;
 using InterOp;
 using NUnit.Framework;
 
