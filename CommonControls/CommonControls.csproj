@@ -34,4 +34,24 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Filter.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SearchParameterControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Filter.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SearchParameterControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

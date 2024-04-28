@@ -265,7 +265,18 @@ namespace Debugger
             _index = ReadLines(DebugRegister.DebugPath).Count();
             DebugProcessing.InitiateDebug();
 
-            _dispatcherTimer.Start();
+            _dispatcherTimer?.Start();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the MenFilter control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void MenFilter_Click(object sender, RoutedEventArgs e)
+        {
+            var filter = new Filter();
+            filter.Show();
         }
     }
 }

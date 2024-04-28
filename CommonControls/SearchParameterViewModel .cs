@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using ViewModel;
 
-
-namespace Debugger
+namespace CommonControls
 {
     /// <inheritdoc />
     /// <summary>
@@ -28,12 +26,6 @@ namespace Debugger
         /// The selected operator
         /// </summary>
         private string _selectedOperator;
-
-        /// <summary>
-        ///     The add command
-        /// </summary>
-        private ICommand _addCommand;
-
 
         /// <summary>
         ///     The add command
@@ -151,7 +143,6 @@ namespace Debugger
         /// The reference.
         /// </value>
         public SearchParameterControl Reference { get; set; }
-
 
         /// <summary>
         /// Deletes the action.

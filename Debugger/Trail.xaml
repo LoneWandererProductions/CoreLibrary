@@ -31,6 +31,8 @@
             <MenuItem Header="Edit">
                 <MenuItem Header="Load all" Click="MenLoadA_Click" />
                 <MenuItem Header="Clear" Click="MenClear_Click" />
+                <Separator/>
+                <MenuItem Header="Filter" Click="MenFilter_Click" />
             </MenuItem>
             <MenuItem Header="Settings">
                 <MenuItem Header="Config" Click="MenConfig_Click" />

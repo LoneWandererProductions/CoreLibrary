@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace Debugger
+namespace CommonControls
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>
