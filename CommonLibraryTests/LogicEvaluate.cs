@@ -5,13 +5,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// test class for our logic engine
+    ///     test class for our logic engine
     /// </summary>
     [TestClass]
     public class LogicEvaluate
     {
         /// <summary>
-        /// Test the logic Evaluation.
+        ///     Test the logic Evaluation.
         /// </summary>
         [TestMethod]
         public void Evaluate()
@@ -19,8 +19,7 @@ namespace CommonLibraryTests
             // Example list of conditions
             var conditions = new List<(OptionsOperator Operator, string Text, LogicOperator LogicalOperator)>
             {
-                (OptionsOperator.like, "hello",LogicOperator.and),
-                (OptionsOperator.Notlike, "world",LogicOperator.or),
+                (OptionsOperator.like, "hello", LogicOperator.and), (OptionsOperator.Notlike, "world", LogicOperator.or)
                 // Add more conditions as needed
             };
 
@@ -28,7 +27,7 @@ namespace CommonLibraryTests
             const string inputString = "hello";
 
             // Evaluate the conditions against the input string
-            bool result = LogicEvaluations.Evaluate(inputString, conditions);
+            var result = LogicEvaluations.Evaluate(inputString, conditions);
 
             Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
         }

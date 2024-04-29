@@ -51,7 +51,7 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        /// Shows the input box.
+        ///     Shows the input box.
         /// </summary>
         /// <param name="header">The header.</param>
         /// <param name="description">The description.</param>

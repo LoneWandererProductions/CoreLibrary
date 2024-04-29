@@ -1246,7 +1246,7 @@ namespace Imaging
 
                     var color = GetPixel(image, point, blockSize);
 
-                   SetPixel(image, point, color);
+                    SetPixel(image, point, color);
                 }
             }
 

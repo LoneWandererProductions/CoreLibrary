@@ -28,6 +28,11 @@ namespace Debugger
     public sealed partial class Trail
     {
         /// <summary>
+        ///     The filter
+        /// </summary>
+        private readonly Filter _filter;
+
+        /// <summary>
         ///     The counter.
         /// </summary>
         private int _counter;
@@ -36,11 +41,6 @@ namespace Debugger
         ///     The dispatcher timer.
         /// </summary>
         private DispatcherTimer _dispatcherTimer;
-
-        /// <summary>
-        ///     The filter
-        /// </summary>
-        private readonly Filter _filter;
 
         /// <summary>
         ///     The index.

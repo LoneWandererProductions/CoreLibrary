@@ -22,14 +22,6 @@ namespace CommonFilter
     internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Gets the options.
-        /// </summary>
-        /// <value>
-        ///     The options.
-        /// </value>
-        internal FilterOption Options => GetOptions();
-
-        /// <summary>
         ///     The delete command
         /// </summary>
         private ICommand _deleteCommand;
@@ -48,6 +40,14 @@ namespace CommonFilter
         ///     The selected operator
         /// </summary>
         private OptionsOperator _selectedOptionsOperator;
+
+        /// <summary>
+        ///     Gets the options.
+        /// </summary>
+        /// <value>
+        ///     The options.
+        /// </value>
+        internal FilterOption Options => GetOptions();
 
         /// <summary>
         ///     Gets or sets the entry text.

@@ -9,20 +9,20 @@
 namespace CommonFilter
 {
     /// <summary>
-    /// Enum for logic Operators
+    ///     Enum for logic Operators
     /// </summary>
     public enum LogicOperator
     {
         and = 0,
-        or = 1,
+        or = 1
     }
 
     /// <summary>
-    /// Enum for logic Operators
+    ///     Enum for logic Operators
     /// </summary>
     public enum OptionsOperator
     {
-        like=0,
-        Notlike=1,
+        like = 0,
+        Notlike = 1
     }
 }

@@ -10,7 +10,7 @@ namespace CommonFilter
     public sealed class Filter : IFilter
     {
         /// <summary>
-        /// The filter
+        ///     The filter
         /// </summary>
         private FilterWindow _filter;
 

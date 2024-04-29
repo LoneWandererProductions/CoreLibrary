@@ -11,24 +11,24 @@ using System;
 namespace CommonFilter
 {
     /// <summary>
-    /// Interface Filter
+    ///     Interface Filter
     /// </summary>
     public interface IFilter
     {
         /// <summary>
-        /// Starts this instance.
+        ///     Starts this instance.
         /// </summary>
         void Start();
 
         /// <summary>
-        /// Checks the filter.
+        ///     Checks the filter.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
         bool CheckFilter(string input);
 
         /// <summary>
-        /// Occurs when [filter changed].
+        ///     Occurs when [filter changed].
         /// </summary>
         event EventHandler FilterChanged;
     }

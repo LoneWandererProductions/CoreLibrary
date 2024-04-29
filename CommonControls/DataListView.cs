@@ -87,7 +87,7 @@ namespace CommonControls
 
             if (dataItems == null || dataItems.Count == 0)
             {
-                Items = new BindingList<DataItem> { new() { Id = 0, Name = ComCtlResources.DatalistEntry } };
+                Items = new BindingList<DataItem> { new() { Id = 0, Name = ComCtlResources.DataListEntry } };
 
                 foreach (var item in Items)
                 {
