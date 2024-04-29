@@ -18,9 +18,8 @@
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
 
-        <ComboBox Grid.Column="0" ItemsSource="{Binding OperatorOptions}" SelectedItem="{Binding SelectedOperator}" />
-        <ComboBox Grid.Column="1" ItemsSource="{Binding LogicalOperatorOptions}"
-                  SelectedItem="{Binding SelectedLogicalOperator}" />
+        <ComboBox Grid.Column="0" ItemsSource="{Binding LogicalOperatorOptions}" SelectedItem="{Binding SelectedLogicalOperator}" />
+        <ComboBox Grid.Column="1" ItemsSource="{Binding OperatorOptions}" SelectedItem="{Binding SelectedOptionsOperator}" />
         <TextBox Grid.Column="2" Text="{Binding EntryText}" />
         <Button Content="Delete" Grid.Column="3" Command="{Binding DeleteCommand}" />
     </Grid>

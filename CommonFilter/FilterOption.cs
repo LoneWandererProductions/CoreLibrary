@@ -19,7 +19,7 @@ namespace CommonFilter
         /// <value>
         ///     The selected operator.
         /// </value>
-        internal string SelectedOperator { get; init; }
+        internal OptionsOperator SelectedOperator { get; init; }
 
         /// <summary>
         ///     Gets or sets the logical operator options.
@@ -27,7 +27,7 @@ namespace CommonFilter
         /// <value>
         ///     The logical operator options.
         /// </value>
-        internal string SelectedLogicalOperator { get; init; }
+        internal LogicOperator SelectedLogicalOperator { get; init; }
 
         /// <summary>
         ///     Gets or sets the entry text.

@@ -5,7 +5,7 @@ namespace CommonFilter
 {
     public static class LogicEvaluations
     {
-        public static bool Evaluate(string inputString, IEnumerable<(string Operator, string Text, string LogicalOperator)> conditions)
+        public static bool Evaluate(string inputString, IEnumerable<(OptionsOperator Operator, string Text, LogicOperator LogicalOperator)> conditions)
         {
             var result = true;
 
@@ -13,12 +13,12 @@ namespace CommonFilter
             {
                 bool conditionResult;
 
-                switch (Operator.ToLower())
+                switch (Operator)
                 {
-                    case "like":
+                    case OptionsOperator.like:
                         conditionResult = inputString.Contains(Text);
                         break;
-                    case "not like":
+                    case OptionsOperator.Notlike:
                         conditionResult = !inputString.Contains(Text);
                         break;
                     // Handle additional operators if needed
@@ -26,12 +26,15 @@ namespace CommonFilter
                         throw new ArgumentException($"Unsupported operator: {Operator}");
                 }
 
-                if (string.Equals(LogicalOperator, "and", StringComparison.OrdinalIgnoreCase))
-                    result = result && conditionResult;
-                else if (string.Equals(LogicalOperator, "or", StringComparison.OrdinalIgnoreCase))
-                    result = result || conditionResult;
-                else
-                    throw new ArgumentException($"Unsupported logical operator: {LogicalOperator}");
+                switch (LogicalOperator)
+                {
+                    case LogicOperator.and:
+                        result = result && conditionResult;
+                        break;
+                    case LogicOperator.or:
+                        result = result || conditionResult;
+                        break;
+                }
             }
 
             return result;

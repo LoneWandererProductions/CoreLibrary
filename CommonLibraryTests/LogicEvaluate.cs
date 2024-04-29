@@ -7,14 +7,17 @@ namespace CommonLibraryTests
     [TestClass]
     public class LogicEvaluate
     {
+        /// <summary>
+        /// Test the logic Evaluation.
+        /// </summary>
         [TestMethod]
         public void Evaluate()
         {
             // Example list of conditions
-            var conditions = new List<(string Operator, string Text, string LogicalOperator)>
+            var conditions = new List<(OptionsOperator Operator, string Text, LogicOperator LogicalOperator)>
             {
-                ("like", "hello", "and"),
-                ("not like", "world", "or"),
+                (OptionsOperator.like, "hello",LogicOperator.and),
+                (OptionsOperator.Notlike, "world",LogicOperator.or),
                 // Add more conditions as needed
             };
 

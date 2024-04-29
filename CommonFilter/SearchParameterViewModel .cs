@@ -6,9 +6,11 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using Imaging;
 using ViewModel;
 
 namespace CommonFilter
@@ -33,12 +35,12 @@ namespace CommonFilter
         /// <summary>
         ///     The selected logical operator
         /// </summary>
-        private string _selectedLogicalOperator;
+        private LogicOperator _selectedLogicalOperator;
 
         /// <summary>
         ///     The selected operator
         /// </summary>
-        private string _selectedOperator;
+        private OptionsOperator _selectedOptionsOperator;
 
         /// <summary>
         ///     Gets the options.
@@ -47,22 +49,6 @@ namespace CommonFilter
         ///     The options.
         /// </value>
         internal FilterOption Options => GetOptions();
-
-        /// <summary>
-        ///     Gets or sets the selected operator.
-        /// </summary>
-        /// <value>
-        ///     The selected operator.
-        /// </value>
-        public string SelectedOperator
-        {
-            get => _selectedOperator;
-            set
-            {
-                _selectedOperator = value;
-                OnPropertyChanged(nameof(SelectedOperator));
-            }
-        }
 
         /// <summary>
         ///     Gets or sets the entry text.
@@ -81,12 +67,28 @@ namespace CommonFilter
         }
 
         /// <summary>
+        ///     Gets or sets the selected operator.
+        /// </summary>
+        /// <value>
+        ///     The selected operator.
+        /// </value>
+        public OptionsOperator SelectedOptionsOperator
+        {
+            get => _selectedOptionsOperator;
+            set
+            {
+                _selectedOptionsOperator = value;
+                OnPropertyChanged(nameof(SelectedOptionsOperator));
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the selected logical operator.
         /// </summary>
         /// <value>
         ///     The selected logical operator.
         /// </value>
-        public string SelectedLogicalOperator
+        public LogicOperator SelectedLogicalOperator
         {
             get => _selectedLogicalOperator;
             set
@@ -102,7 +104,8 @@ namespace CommonFilter
         /// <value>
         ///     The operator options.
         /// </value>
-        public List<string> OperatorOptions { get; } = new() { "Like", "not Like" };
+        public IEnumerable<OptionsOperator> OperatorOptions =>
+            Enum.GetValues(typeof(OptionsOperator)) as IEnumerable<OptionsOperator>;
 
         /// <summary>
         ///     Gets the logical operator options.
@@ -110,7 +113,8 @@ namespace CommonFilter
         /// <value>
         ///     The logical operator options.
         /// </value>
-        public List<string> LogicalOperatorOptions { get; } = new() { "And", "And not" };
+        public IEnumerable<LogicOperator> LogicalOperatorOptions =>
+            Enum.GetValues(typeof(LogicOperator)) as IEnumerable<LogicOperator>;
 
         /// <summary>
         ///     Gets the okay command.
@@ -144,7 +148,7 @@ namespace CommonFilter
             return new FilterOption
             {
                 SelectedLogicalOperator = SelectedLogicalOperator,
-                SelectedOperator = SelectedOperator,
+                SelectedOperator = SelectedOptionsOperator,
                 EntryText = EntryText
             };
         }
