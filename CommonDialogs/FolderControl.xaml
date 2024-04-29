@@ -1,11 +1,11 @@
 ﻿<!-- ReSharper disable once MemberCanBeInternal, no it cannot-->
-<UserControl x:Class="CommonControls.FolderControl"
+<UserControl x:Class="CommonDialogs.FolderControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:CommonControls"
              mc:Ignorable="d"
+             xmlns:common="clr-namespace:CommonDialogs"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -57,7 +57,7 @@
                                            Mode = FindAncestor,
                                            AncestorType = { x:Type TreeViewItem }},
                                            Path=Header,
-                                           Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                           Converter={x:Static common:HeaderToImageConverter.Instance}}" />
                                     <TextBlock Text="{Binding}" Margin="5,0" />
                                 </StackPanel>
                             </DataTemplate>

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/HeaderToImageConverter.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/HeaderToImageConverter.cs
  * PURPOSE:     Needed for the FolderView Control, and FolderBrowser, converts Image into the tree Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Imaging;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <inheritdoc />
     /// <summary>

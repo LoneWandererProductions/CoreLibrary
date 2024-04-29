@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Dialogs/SqlConnect.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/SqlConnect.cs
  * PURPOSE:     Generic Sql Dialog for a connection String
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,8 +9,9 @@
 // ReSharper disable UnusedType.Global
 
 using System.Windows;
+using CommonControls;
 
-namespace CommonControls.Dialogs
+namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

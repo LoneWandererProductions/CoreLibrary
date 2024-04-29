@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/InputBox.xaml.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/InputBox.xaml.cs
  * PURPOSE:     FolderView Control, can be used independent of the FolderBrowser
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 using System.Windows;
 
-namespace CommonControls.Dialogs
+namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

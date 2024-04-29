@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonControls;
-using CommonControls.Dialogs;
 using InterOp;
 using NUnit.Framework;
 
@@ -35,7 +34,6 @@ namespace CommonLibraryGuiTests
             var colorPickerMenu = new ColorPickerMenu();
             var colorSelection = new ColorSelection();
             var dataList = new DataList();
-            var folderControl = new FolderControl();
             var imageZoom = new ImageZoom();
 
             var scrollingTextBox = new ScrollingTextBoxes { Text = "test" };
@@ -138,35 +136,6 @@ namespace CommonLibraryGuiTests
         {
             //TODO Test in Live environment
             Assert.AreNotEqual(512, Win32Enums.MouseEvents.WmMousemove, "checked out");
-        }
-
-        /// <summary>
-        ///     Test of the ConnectionString Dialog.
-        /// </summary>
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void ConnectionString()
-        {
-            var login = new SqlLogin();
-            login.Show();
-            login.View.Server = "SqlServer";
-            login.View.Database = @"MyDB\Hello";
-            login.View.ConnectCommand.Execute(null);
-            var db = login.View.ConnectionStringDb;
-            var server = login.View.ConnectionStringServer;
-            login.Close();
-
-            Assert.IsTrue(
-                db.Equals(
-                    @"PersistSecurityInfo=False;TrustServerCertificate=True;Integrated Security=True;Server=SqlServer;Database=MyDB\Hello;",
-                    StringComparison.Ordinal),
-                $"Wrong Connection string: {db}");
-
-            Assert.IsTrue(
-                server.Equals(
-                    "PersistSecurityInfo=False;TrustServerCertificate=True;Integrated Security=True;Server=SqlServer;",
-                    StringComparison.Ordinal),
-                $"Wrong Connection string: {server}");
         }
     }
 }

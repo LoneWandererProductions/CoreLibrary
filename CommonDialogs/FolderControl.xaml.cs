@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/FolderView.xaml.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/FolderView.xaml.cs
  * PURPOSE:     FolderView Control, can be used independent of the FolderBrowser
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -16,9 +16,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using CommonControls.Dialogs;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
@@ -47,7 +46,7 @@ namespace CommonControls
         /// <value>
         ///     The root.
         /// </value>
-        internal static string Root { get; private set; }
+        public static string Root { get; private set; }
 
         /// <summary>
         ///     Gets or sets the path.

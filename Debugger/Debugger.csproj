@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\CommonDialogs\CommonDialogs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

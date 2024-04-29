@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using CommonControls;
+using CommonDialogs;
 
 namespace Debugger
 {

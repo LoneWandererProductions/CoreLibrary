@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/FileIoHandler.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/FileIoHandler.cs
  * PURPOSE:     Extension for File Dialogs, some smaller extras and Extensions like a Folder View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,11 +11,10 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using CommonControls.Dialogs;
-using CommonControls.Filters;
+using CommonControls;
 using Microsoft.Win32;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <summary>
     ///     Loads all the basic Files on StartUp
