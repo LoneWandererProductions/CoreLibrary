@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// test class for our logic engine
+    /// </summary>
     [TestClass]
     public class LogicEvaluate
     {

@@ -10,7 +10,7 @@ namespace CommonFilter
     public sealed class Filter : IFilter
     {
         /// <summary>
-        ///     The filter
+        /// The filter
         /// </summary>
         private FilterWindow _filter;
 
@@ -40,7 +40,7 @@ namespace CommonFilter
         ///     Checks the filter.
         /// </summary>
         /// <param name="input">The input.</param>
-        /// <returns></returns>
+        /// <returns>Contition fullfilled?</returns>
         public bool CheckFilter(string input)
         {
             return false;

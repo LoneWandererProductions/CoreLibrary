@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/FilterWindow.xaml.cs
- * PURPOSE:     
+ * PURPOSE:     Filter Window, Container for all Search Parameters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 

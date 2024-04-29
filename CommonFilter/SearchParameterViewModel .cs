@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/SearchParameterViewModel.xaml.cs
- * PURPOSE:     
+ * PURPOSE:     View for SearchParameterControl
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
-using Imaging;
 using ViewModel;
 
 namespace CommonFilter
@@ -23,7 +22,15 @@ namespace CommonFilter
     internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     {
         /// <summary>
-        ///     The add command
+        ///     Gets the options.
+        /// </summary>
+        /// <value>
+        ///     The options.
+        /// </value>
+        internal FilterOption Options => GetOptions();
+
+        /// <summary>
+        ///     The delete command
         /// </summary>
         private ICommand _deleteCommand;
 
@@ -41,14 +48,6 @@ namespace CommonFilter
         ///     The selected operator
         /// </summary>
         private OptionsOperator _selectedOptionsOperator;
-
-        /// <summary>
-        ///     Gets the options.
-        /// </summary>
-        /// <value>
-        ///     The options.
-        /// </value>
-        internal FilterOption Options => GetOptions();
 
         /// <summary>
         ///     Gets or sets the entry text.

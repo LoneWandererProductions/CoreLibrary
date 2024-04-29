@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
  * FILE:        CommonControls/Filters/SearchParameterControl.xaml.cs
- * PURPOSE:     
+ * PURPOSE:     Control for the Parameter, one Control, one Parameter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/FilterWindowView.cs
- * PURPOSE:     
+ * PURPOSE:     View for Filter Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -29,7 +29,7 @@ namespace CommonFilter
         private ICommand _addCommand;
 
         /// <summary>
-        ///     The add command
+        ///     The done command
         /// </summary>
         private ICommand _doneCommand;
 
