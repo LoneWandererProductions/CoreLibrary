@@ -9,20 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="System\drive.png" />
-    <None Remove="System\folder.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="System\drive.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="System\folder.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
     <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />

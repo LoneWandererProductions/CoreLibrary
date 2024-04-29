@@ -52,6 +52,26 @@ namespace CommonDialogs
         }
 
         /// <summary>
+        /// Shows the input box.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="description">The description.</param>
+        /// <returns>Input string</returns>
+        public static string ShowInputBox(string header, string description)
+        {
+            var input = new InputBox(header, description);
+            _ = input.ShowDialog();
+
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return string.Empty;
+            }
+
+            return input.InputText;
+        }
+
+
+        /// <summary>
         ///     Looks up a file
         ///     Returns the PathObject
         ///     With Start Folder
