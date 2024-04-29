@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Filters/FilterWindow.xaml.cs
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/FilterWindow.xaml.cs
  * PURPOSE:     
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     /// <inheritdoc cref="FilterWindow" />
     /// <summary>

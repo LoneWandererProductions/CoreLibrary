@@ -8,7 +8,6 @@
 
 // ReSharper disable UnusedVariable
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using CommonControls;

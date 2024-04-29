@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     public static class LogicEvaluations
     {
         public static bool Evaluate(string inputString, IEnumerable<(string Operator, string Text, string LogicalOperator)> conditions)
         {
-            bool result = true;
+            var result = true;
 
             foreach (var condition in conditions)
             {

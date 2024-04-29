@@ -8,9 +8,10 @@
 
 // ReSharper disable MemberCanBeInternal
 
+using System;
 using System.Windows.Controls;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>
@@ -55,11 +56,10 @@ namespace CommonControls.Filters
         /// </value>
         private int Id { get; }
 
-
         /// <summary>
         ///     Occurs when [delete logic].
         /// </summary>
-        public event DeleteLogicEventHandler DeleteLogic;
+        public event EventHandler<int> DeleteLogic;
 
         /// <summary>
         ///     Deletes the clicked.

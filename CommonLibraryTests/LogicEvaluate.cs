@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CommonControls.Filters;
+using CommonFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests

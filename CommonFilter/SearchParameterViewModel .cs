@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Filters/SearchParameterViewModel.xaml.cs
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/SearchParameterViewModel.xaml.cs
  * PURPOSE:     
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     /// <inheritdoc />
     /// <summary>

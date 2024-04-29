@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CommonControls.Filters;
 
-namespace CommonControls
+namespace CommonFilter
 {
     /// <summary>
     ///     Filter Interface implementation

@@ -10,7 +10,6 @@
 
 using System.ComponentModel;
 using System.Windows;
-using CommonControls;
 
 //TODO add basic Folder Infos
 

@@ -11,7 +11,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using CommonControls;
 using Microsoft.Win32;
 
 namespace CommonDialogs
@@ -69,7 +68,6 @@ namespace CommonDialogs
 
             return input.InputText;
         }
-
 
         /// <summary>
         ///     Looks up a file

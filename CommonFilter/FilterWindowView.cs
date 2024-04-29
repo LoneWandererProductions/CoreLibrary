@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Filters/FilterWindowView.cs
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/FilterWindowView.cs
  * PURPOSE:     
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     /// <inheritdoc />
     /// <summary>

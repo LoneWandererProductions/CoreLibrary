@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Filters/FilterOption.cs
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/FilterOption.cs
  * PURPOSE:     Filter Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     /// <summary>
     ///     Filter Options

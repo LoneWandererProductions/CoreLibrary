@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/Filters/IFilter.cs
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/IFilter.cs
  * PURPOSE:     
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System;
 
-namespace CommonControls.Filters
+namespace CommonFilter
 {
     public interface IFilter
     {

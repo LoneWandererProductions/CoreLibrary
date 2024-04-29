@@ -73,6 +73,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
     <ProjectReference Include="..\Communication\Communication.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
