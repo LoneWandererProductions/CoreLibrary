@@ -1235,89 +1235,22 @@ namespace Imaging
 
         internal static Bitmap Pixelate(Bitmap image, int blockSize)
         {
-            // Create a new bitmap to store the pixelated image
-            var pixelatedImage = new Bitmap(image.Width, image.Height);
-
-            // Lock the bits of the original image
-            var rect = new Rectangle(0, 0, image.Width, image.Height);
-            var imageData = image.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-            // Lock the bits of the pixelated image
-            var pixelatedData = pixelatedImage.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
             // Iterate over each block of pixels
             for (var y = 0; y < image.Height; y += blockSize)
             {
                 for (var x = 0; x < image.Width; x += blockSize)
                 {
                     // Calculate the average color of the block
-                    var averageColor = CalculateAverageColor(imageData, x, y, blockSize);
+                    //var averageColor = CalculateAverageColor(imageData, x, y, blockSize);
+                    var point = new Point(x, y);
 
-                    // Fill the block with the average color
-                    FillBlock(pixelatedData, x, y, blockSize, averageColor);
+                    var color = GetPixel(image, point, blockSize);
+
+                   SetPixel(image, point, color);
                 }
             }
 
-            // Unlock the bits of both images
-            image.UnlockBits(imageData);
-            pixelatedImage.UnlockBits(pixelatedData);
-
-            return pixelatedImage;
-        }
-
-        private static Color CalculateAverageColor(BitmapData imageData, int xStart, int yStart, int blockSize)
-        {
-            int totalR = 0, totalG = 0, totalB = 0;
-            var pixelCount = 0;
-
-            // Iterate over each pixel in the block
-            for (var y = yStart; y < yStart + blockSize && y < imageData.Height; y++)
-            {
-                for (var x = xStart; x < xStart + blockSize && x < imageData.Width; x++)
-                {
-                    // Calculate the index of the current pixel
-                    var index = (y * imageData.Stride) + (x * 4);
-
-                    // Extract the color components of the pixel
-                    var r = Marshal.ReadByte(imageData.Scan0, index + 2);
-                    var g = Marshal.ReadByte(imageData.Scan0, index + 1);
-                    var b = Marshal.ReadByte(imageData.Scan0, index);
-
-                    // Sum up the color components
-                    totalR += r;
-                    totalG += g;
-                    totalB += b;
-
-                    // Increment the pixel count
-                    pixelCount++;
-                }
-            }
-
-            // Calculate the average color components
-            var avgR = (byte)(totalR / pixelCount);
-            var avgG = (byte)(totalG / pixelCount);
-            var avgB = (byte)(totalB / pixelCount);
-
-            // Return the average color
-            return Color.FromArgb(avgR, avgG, avgB);
-        }
-
-        private static void FillBlock(BitmapData imageData, int xStart, int yStart, int blockSize, Color color)
-        {
-            // Iterate over each pixel in the block
-            for (var y = yStart; y < yStart + blockSize && y < imageData.Height; y++)
-            {
-                for (var x = xStart; x < xStart + blockSize && x < imageData.Width; x++)
-                {
-                    // Calculate the index of the current pixel
-                    var index = (y * imageData.Stride) + (x * 4);
-
-                    // Set the color components of the pixel
-                    Marshal.WriteByte(imageData.Scan0, index + 2, color.R); // Red
-                    Marshal.WriteByte(imageData.Scan0, index + 1, color.G); // Green
-                    Marshal.WriteByte(imageData.Scan0, index, color.B); // Blue
-                }
-            }
+            return image;
         }
 
         /// <summary>
