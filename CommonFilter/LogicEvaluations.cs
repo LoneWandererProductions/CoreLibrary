@@ -9,29 +9,29 @@ namespace CommonFilter
         {
             var result = true;
 
-            foreach (var condition in conditions)
+            foreach (var (Operator, Text, LogicalOperator) in conditions)
             {
                 bool conditionResult;
 
-                switch (condition.Operator.ToLower())
+                switch (Operator.ToLower())
                 {
                     case "like":
-                        conditionResult = inputString.Contains(condition.Text);
+                        conditionResult = inputString.Contains(Text);
                         break;
                     case "not like":
-                        conditionResult = !inputString.Contains(condition.Text);
+                        conditionResult = !inputString.Contains(Text);
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException($"Unsupported operator: {condition.Operator}");
+                        throw new ArgumentException($"Unsupported operator: {Operator}");
                 }
 
-                if (condition.LogicalOperator.ToLower() == "and")
+                if (string.Equals(LogicalOperator, "and", StringComparison.OrdinalIgnoreCase))
                     result = result && conditionResult;
-                else if (condition.LogicalOperator.ToLower() == "or")
+                else if (string.Equals(LogicalOperator, "or", StringComparison.OrdinalIgnoreCase))
                     result = result || conditionResult;
                 else
-                    throw new ArgumentException($"Unsupported logical operator: {condition.LogicalOperator}");
+                    throw new ArgumentException($"Unsupported logical operator: {LogicalOperator}");
             }
 
             return result;

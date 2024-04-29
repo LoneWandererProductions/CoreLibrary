@@ -19,11 +19,10 @@ namespace CommonLibraryTests
             };
 
             // Input string to test against the conditions
-            string inputString = "hello";
+            const string inputString = "hello";
 
             // Evaluate the conditions against the input string
             bool result = LogicEvaluations.Evaluate(inputString, conditions);
-
 
             Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
         }
