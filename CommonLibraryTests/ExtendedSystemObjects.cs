@@ -663,7 +663,6 @@ namespace CommonLibraryTests
             Assert.IsTrue(dic.ContainsKey(6), "Key does not exist");
         }
 
-
         /// <summary>
         ///     The Test obj class.
         /// </summary>

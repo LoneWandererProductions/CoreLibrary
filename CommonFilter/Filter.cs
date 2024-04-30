@@ -63,7 +63,6 @@ namespace CommonFilter
         {
             if(Conditions == null || string.IsNullOrEmpty(input) || _evaluate == null) return false;
             return _evaluate.Evaluate(input, Conditions);
-
         }
 
         /// <summary>

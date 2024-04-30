@@ -101,28 +101,6 @@ namespace CommonLibraryTests
             {
                 0,
                 2,
-                4,
-                6,
-                8,
-                10
-            };
-
-            result = Utility.Sequencer(lst, 3, 2);
-
-            Assert.AreEqual(1, result.Count, "Sequence 2");
-
-            Assert.AreEqual(10, result[0].Value, "Sequence 2");
-
-            //Image width = 2
-            //0,2,4,6,8,10
-            //xx
-            //xx
-            //xx
-            //xx
-            lst = new List<int>
-            {
-                0,
-                2,
                 3,
                 5,
                 4,

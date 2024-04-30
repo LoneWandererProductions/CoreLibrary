@@ -108,7 +108,6 @@ namespace CommonLibraryTests
             return newMatrix;
         }
 
-
         /// <summary>
         ///     Plots the line if it is falling.
         /// </summary>

@@ -29,15 +29,14 @@ namespace CommonLibraryGuiTests
         [Apartment(ApartmentState.STA)]
         public void Basic()
         {
-            var colorPicker = new ColorPicker();
-            var colorPickerMenu = new ColorPickerMenu();
-            var colorSelection = new ColorSelection();
-            var dataList = new DataList();
-            var imageZoom = new ImageZoom();
-
-            var scrollingTextBox = new ScrollingTextBoxes { Text = "test" };
-            var scrollingRichTextBox = new ScrollingRichTextBox();
-            var thumbNails = new Thumbnails();
+            _ = new ColorPicker();
+            _ = new ColorPickerMenu();
+            _ = new ColorSelection();
+            _ = new DataList();
+            _ = new ImageZoom();
+            _ = new ScrollingTextBoxes { Text = "test" };
+            _ = new ScrollingRichTextBox();
+            _ = new Thumbnails();
 
             Assert.Pass();
         }

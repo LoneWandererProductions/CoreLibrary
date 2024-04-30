@@ -28,7 +28,7 @@ namespace CommonLibraryGuiTests
         [Apartment(ApartmentState.STA)]
         public void Basic()
         {
-            var folderControl = new FolderControl();
+            _ = new FolderControl();
 
             Assert.Pass();
         }
