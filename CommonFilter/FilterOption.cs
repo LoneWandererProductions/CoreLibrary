@@ -14,12 +14,12 @@ namespace CommonFilter
     public sealed class FilterOption
     {
         /// <summary>
-        ///     Gets or sets the selected operator.
+        ///     Gets or sets the selected compare operator.
         /// </summary>
         /// <value>
         ///     The selected operator.
         /// </value>
-        internal OptionsOperator SelectedOperator { get; init; }
+        internal CompareOperator SelectedCompareOperator { get; init; }
 
         /// <summary>
         ///     Gets or sets the logical operator options.

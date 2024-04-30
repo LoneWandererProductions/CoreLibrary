@@ -18,9 +18,9 @@ namespace CommonFilter
     }
 
     /// <summary>
-    ///     Enum for logic Operators
+    ///     Enum for compare Operators
     /// </summary>
-    public enum OptionsOperator
+    public enum CompareOperator
     {
         like = 0,
         Notlike = 1

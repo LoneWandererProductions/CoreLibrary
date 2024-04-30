@@ -37,9 +37,9 @@ namespace CommonFilter
         private LogicOperator _selectedLogicalOperator;
 
         /// <summary>
-        ///     The selected operator
+        ///     The selected compare operator
         /// </summary>
-        private OptionsOperator _selectedOptionsOperator;
+        private CompareOperator _selectedCompareOperator;
 
         /// <summary>
         ///     Gets the options.
@@ -66,18 +66,18 @@ namespace CommonFilter
         }
 
         /// <summary>
-        ///     Gets or sets the selected operator.
+        ///     Gets or sets the selected compare operator.
         /// </summary>
         /// <value>
         ///     The selected operator.
         /// </value>
-        public OptionsOperator SelectedOptionsOperator
+        public CompareOperator SelectedCompareOperator
         {
-            get => _selectedOptionsOperator;
+            get => _selectedCompareOperator;
             set
             {
-                _selectedOptionsOperator = value;
-                OnPropertyChanged(nameof(SelectedOptionsOperator));
+                _selectedCompareOperator = value;
+                OnPropertyChanged(nameof(SelectedCompareOperator));
             }
         }
 
@@ -103,8 +103,8 @@ namespace CommonFilter
         /// <value>
         ///     The operator options.
         /// </value>
-        public IEnumerable<OptionsOperator> OperatorOptions =>
-            Enum.GetValues(typeof(OptionsOperator)) as IEnumerable<OptionsOperator>;
+        public IEnumerable<CompareOperator> CompareOperatorOptions =>
+            Enum.GetValues(typeof(CompareOperator)) as IEnumerable<CompareOperator>;
 
         /// <summary>
         ///     Gets the logical operator options.
@@ -147,7 +147,7 @@ namespace CommonFilter
             return new FilterOption
             {
                 SelectedLogicalOperator = SelectedLogicalOperator,
-                SelectedOperator = SelectedOptionsOperator,
+                SelectedCompareOperator = SelectedCompareOperator,
                 EntryText = EntryText
             };
         }

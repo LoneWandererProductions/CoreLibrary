@@ -32,17 +32,17 @@ namespace CommonFilter
             {
                 bool conditionResult;
 
-                switch (term.SelectedOperator)
+                switch (term.SelectedCompareOperator)
                 {
-                    case OptionsOperator.like:
+                    case CompareOperator.like:
                         conditionResult = inputString.Contains(term.EntryText);
                         break;
-                    case OptionsOperator.Notlike:
+                    case CompareOperator.Notlike:
                         conditionResult = !inputString.Contains(term.EntryText);
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException($"Unsupported operator: {term.SelectedOperator}");
+                        throw new ArgumentException($"Unsupported operator: {term.SelectedCompareOperator}");
                 }
 
                 switch (term.SelectedLogicalOperator)
