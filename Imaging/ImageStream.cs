@@ -1106,6 +1106,33 @@ namespace Imaging
             return btm;
         }
 
+
+        /// <summary>
+        /// Pixelate the specified input image.
+        /// </summary>
+        /// <param name="inputImage">The input image.</param>
+        /// <param name="stepWidth">Width of the step.</param>
+        /// <returns>Pixelated Image</returns>
+        internal static Bitmap Pixelate(Bitmap inputImage, int stepWidth)
+        {
+            // Create a new bitmap to store the processed image
+            var dbm = new DirectBitmap(inputImage);
+
+            // Iterate over the image with the specified step width
+            for (int y = 0; y < dbm.Height; y += stepWidth)
+            {
+                for (int x = 0; x < dbm.Width; x += stepWidth)
+                {
+                    // Get the color of the current rectangle
+                    Color averageColor = GetAverageColor(dbm, x, y, stepWidth, stepWidth);
+                    // Draw a rectangle with the average color
+                    dbm.DrawRectangle(x, y, stepWidth, stepWidth, averageColor);
+                }
+            }
+
+            return dbm.Bitmap;
+        }
+
         /// <summary>
         ///     Gets the pixel.
         /// </summary>
@@ -1234,27 +1261,44 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Pixelates the specified image.
+        /// Gets the average color.
         /// </summary>
-        /// <param name="image">The image.</param>
-        /// <param name="blockSize">Size of the block.</param>
-        /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Bitmap image, int blockSize)
+        /// <param name="dbm">The DBM.</param>
+        /// <param name="startX">The start x.</param>
+        /// <param name="startY">The start y.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Average Color of the Area</returns>
+        private static Color GetAverageColor(DirectBitmap dbm, int startX, int startY, int width, int height)
         {
-            // Iterate over each block of pixels
-            for (var y = 0; y < image.Height; y += blockSize)
+            int totalRed = 0;
+            int totalGreen = 0;
+            int totalBlue = 0;
+            int pixelCount = 0;
+
+            // Iterate over the specified rectangle in the image
+            for (int y = startY; y < startY + height && y < dbm.Height; y++)
             {
-                for (var x = 0; x < image.Width; x += blockSize)
+                for (int x = startX; x < startX + width && x < dbm.Width; x++)
                 {
-                    var point = new Point(x, y);
+                    // Get the color of the current pixel
+                    Color pixelColor = dbm.GetPixel(x, y);
 
-                    var color = GetPixel(image, point, blockSize);
-
-                    SetPixel(image, point, color);
+                    // Accumulate the color components
+                    totalRed += pixelColor.R;
+                    totalGreen += pixelColor.G;
+                    totalBlue += pixelColor.B;
+                    pixelCount++;
                 }
             }
 
-            return image;
+            // Calculate the average color components
+            int averageRed = totalRed / pixelCount;
+            int averageGreen = totalGreen / pixelCount;
+            int averageBlue = totalBlue / pixelCount;
+
+            // Return the average color
+            return Color.FromArgb(averageRed, averageGreen, averageBlue);
         }
 
         /// <summary>
