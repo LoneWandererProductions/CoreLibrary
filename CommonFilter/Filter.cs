@@ -10,6 +10,11 @@ namespace CommonFilter
     public sealed class Filter : IFilter
     {
         /// <summary>
+        /// The evaluate
+        /// </summary>
+        private ILogicEvaluations _evaluate;
+
+        /// <summary>
         ///     The filter
         /// </summary>
         private FilterWindow _filter;
@@ -20,7 +25,7 @@ namespace CommonFilter
         /// <value>
         ///     The options.
         /// </value>
-        internal static List<FilterOption> Options { get; set; }
+        internal static List<FilterOption> Conditions { get; set; }
 
         /// <summary>
         ///     Occurs when [filter changed].
@@ -32,6 +37,19 @@ namespace CommonFilter
         /// </summary>
         public void Start()
         {
+            _evaluate = new LogicEvaluations();
+            _filter = new FilterWindow(this);
+            _filter.ShowDialog();
+        }
+
+        /// <summary>
+        /// Starts the specified evaluate.
+        /// So we can use custom Evaluations
+        /// </summary>
+        /// <param name="evaluate">The evaluate.</param>
+        public void Start(ILogicEvaluations evaluate)
+        {
+            _evaluate = evaluate;
             _filter = new FilterWindow(this);
             _filter.ShowDialog();
         }
@@ -43,6 +61,7 @@ namespace CommonFilter
         /// <returns>Contition fullfilled?</returns>
         public bool CheckFilter(string input)
         {
+            _evaluate.Evaluate(input, Conditions);
             return false;
         }
 

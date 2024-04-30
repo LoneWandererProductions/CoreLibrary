@@ -14,20 +14,37 @@ namespace CommonLibraryTests
         ///     Test the logic Evaluation.
         /// </summary>
         [TestMethod]
-        public void Evaluate()
+        public void EvaluateTest()
         {
+            var evaluate = new LogicEvaluations();
+
             // Example list of conditions
-            var conditions = new List<(OptionsOperator Operator, string Text, LogicOperator LogicalOperator)>
+            var conditions = new List<FilterOption>();
+
+            var con = new FilterOption
             {
-                (OptionsOperator.like, "hello", LogicOperator.and), (OptionsOperator.Notlike, "world", LogicOperator.or)
-                // Add more conditions as needed
+                SelectedOperator = OptionsOperator.like,
+                SelectedLogicalOperator = LogicOperator.and,
+                EntryText = "hello"
             };
+
+            conditions.Add(con);
+
+            con = new FilterOption
+            {
+                SelectedOperator = OptionsOperator.Notlike,
+                SelectedLogicalOperator = LogicOperator.or,
+                EntryText = "world"
+            };
+
+            conditions.Add(con);
+            // Add more conditions as needed
 
             // Input string to test against the conditions
             const string inputString = "hello";
 
             // Evaluate the conditions against the input string
-            var result = LogicEvaluations.Evaluate(inputString, conditions);
+            var result = evaluate.Evaluate(inputString, conditions);
 
             Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
         }

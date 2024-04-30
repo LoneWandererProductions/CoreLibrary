@@ -1,43 +1,51 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonFilter
+ * FILE:        CommonFilter/LogicEvaluations.cs
+ * PURPOSE:     An Implementation for ILogicEvaluations
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CommonFilter
 {
     /// <summary>
     ///     Will be packed into an Interface and be an optional Interface for Filter
     /// </summary>
-    public static class LogicEvaluations
+    public class LogicEvaluations : ILogicEvaluations
     {
         /// <summary>
-        ///     Evaluates the specified input string.
+        /// Evaluates the specified input string.
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <param name="conditions">The conditions.</param>
-        /// <returns>Check a set of Conditions</returns>
+        /// <returns>If conditions are met</returns>
         /// <exception cref="System.ArgumentException">Unsupported operator: {Operator}</exception>
-        public static bool Evaluate(string inputString,
-            IEnumerable<(OptionsOperator Operator, string Text, LogicOperator LogicalOperator)> conditions)
+        public bool Evaluate(string inputString, List<FilterOption> conditions)
         {
             var result = true;
 
-            foreach (var (Operator, Text, LogicalOperator) in conditions)
+            foreach (var term in conditions)
             {
                 bool conditionResult;
 
-                switch (Operator)
+                switch (term.SelectedOperator)
                 {
                     case OptionsOperator.like:
-                        conditionResult = inputString.Contains(Text);
+                        conditionResult = inputString.Contains(term.EntryText);
                         break;
                     case OptionsOperator.Notlike:
-                        conditionResult = !inputString.Contains(Text);
+                        conditionResult = !inputString.Contains(term.EntryText);
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException($"Unsupported operator: {Operator}");
+                        throw new ArgumentException($"Unsupported operator: {term.SelectedOperator}");
                 }
 
-                switch (LogicalOperator)
+                switch (term.SelectedLogicalOperator)
                 {
                     case LogicOperator.and:
                         result = result && conditionResult;
@@ -47,7 +55,7 @@ namespace CommonFilter
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException($"Unsupported operator: {Operator}");
+                        throw new ArgumentException($"Unsupported operator: {term.SelectedLogicalOperator}");
                 }
             }
 

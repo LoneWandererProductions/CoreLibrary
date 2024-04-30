@@ -88,12 +88,12 @@ namespace CommonFilter
         }
 
         /// <summary>
-        ///     Gets the options.
+        ///     Gets the conditions.
         /// </summary>
-        /// <param name="options">The options.</param>
-        public void GetOptions(List<FilterOption> options)
+        /// <param name="conditions">The conditions.</param>
+        public void GetConditions(List<FilterOption> conditions)
         {
-            Filter.Options = options;
+            Filter.Conditions = conditions;
             _interface.Done();
         }
     }

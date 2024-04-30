@@ -116,7 +116,7 @@ namespace CommonFilter
             var options = new List<FilterOption>(Filter.Count);
             options.AddRange(Filter.Values.Select(filter => filter.View.Options));
 
-            Reference.GetOptions(options);
+            Reference.GetConditions(options);
         }
     }
 }

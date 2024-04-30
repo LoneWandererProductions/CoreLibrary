@@ -1233,6 +1233,12 @@ namespace Imaging
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
         }
 
+        /// <summary>
+        /// Pixelates the specified image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="blockSize">Size of the block.</param>
+        /// <returns>Pixelated Image</returns>
         internal static Bitmap Pixelate(Bitmap image, int blockSize)
         {
             // Iterate over each block of pixels
@@ -1240,8 +1246,6 @@ namespace Imaging
             {
                 for (var x = 0; x < image.Width; x += blockSize)
                 {
-                    // Calculate the average color of the block
-                    //var averageColor = CalculateAverageColor(imageData, x, y, blockSize);
                     var point = new Point(x, y);
 
                     var color = GetPixel(image, point, blockSize);
