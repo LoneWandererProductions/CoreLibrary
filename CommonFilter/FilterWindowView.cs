@@ -48,7 +48,7 @@ namespace CommonFilter
         ///     The add command.
         /// </value>
         public ICommand AddCommand =>
-            _addCommand ??= new DelegateCommand<object>(AddAction, CanExecute);
+            _addCommand = new DelegateCommand<object>(AddAction, CanExecute);
 
         /// <summary>
         ///     Gets the done command.
@@ -57,7 +57,7 @@ namespace CommonFilter
         ///     The done command.
         /// </value>
         public ICommand DoneCommand =>
-            _doneCommand ??= new DelegateCommand<object>(DoneAction, CanExecute);
+            _doneCommand = new DelegateCommand<object>(DoneAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the filter.
@@ -95,7 +95,7 @@ namespace CommonFilter
         /// <param name="propertyName">Name of the property.</param>
         public void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

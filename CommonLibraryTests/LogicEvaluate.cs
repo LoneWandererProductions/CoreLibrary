@@ -23,8 +23,8 @@ namespace CommonLibraryTests
 
             var con = new FilterOption
             {
-                SelectedCompareOperator = CompareOperator.like,
-                SelectedLogicalOperator = LogicOperator.and,
+                SelectedCompareOperator = CompareOperator.Like,
+                SelectedLogicalOperator = LogicOperator.And,
                 EntryText = "hello"
             };
 
@@ -33,7 +33,7 @@ namespace CommonLibraryTests
             con = new FilterOption
             {
                 SelectedCompareOperator = CompareOperator.Notlike,
-                SelectedLogicalOperator = LogicOperator.or,
+                SelectedLogicalOperator = LogicOperator.Or,
                 EntryText = "world"
             };
 

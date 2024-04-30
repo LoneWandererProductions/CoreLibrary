@@ -13,8 +13,8 @@ namespace CommonFilter
     /// </summary>
     public enum LogicOperator
     {
-        and = 0,
-        or = 1
+        And = 0,
+        Or = 1
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ namespace CommonFilter
     /// </summary>
     public enum CompareOperator
     {
-        like = 0,
+        Like = 0,
         Notlike = 1
     }
 }

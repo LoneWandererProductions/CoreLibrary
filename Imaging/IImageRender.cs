@@ -270,7 +270,7 @@ namespace Imaging
         Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold);
 
         /// <summary>
-        /// Pixelate the specified image.
+        ///     Pixelate the specified image.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="stepWidth">Width of the step.</param>

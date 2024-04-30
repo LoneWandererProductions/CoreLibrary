@@ -353,12 +353,12 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Pixelate the specified image.
+        ///     Pixelate the specified image.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>
-        /// Pixelated Image
+        ///     Pixelated Image
         /// </returns>
         public Bitmap Pixelate(Bitmap image, int stepWidth = 2)
         {

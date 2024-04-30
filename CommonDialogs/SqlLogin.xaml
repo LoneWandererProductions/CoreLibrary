@@ -1,5 +1,5 @@
 ﻿<!-- ReSharper disable once UnusedType.Global -->
-<Window xmlns:CommonControls="clr-namespace:CommonControls;assembly=CommonControls"
+<Window xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
         x:Class="CommonDialogs.SqlLogin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -45,7 +45,7 @@
                 Command="{Binding ConnectCommand}" />
         <Button Content="Close" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top"
                 Command="{Binding CloseCommand}" />
-        <CommonControls:ScrollingTextBoxes Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch"
+        <commonControls:ScrollingTextBoxes Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Stretch"
                                            Grid.Row="9"
                                            TextWrapping="Wrap"
                                            VerticalAlignment="Stretch" AutoScrolling="True"

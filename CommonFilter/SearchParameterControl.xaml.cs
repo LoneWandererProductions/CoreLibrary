@@ -17,7 +17,7 @@ namespace CommonFilter
     /// <summary>
     ///     Search Parameter
     /// </summary>
-    public sealed partial class SearchParameterControl
+    internal sealed partial class SearchParameterControl
     {
         /// <summary>
         ///     Define a delegate with an integer parameter
@@ -66,7 +66,7 @@ namespace CommonFilter
         /// </summary>
         internal void DeleteClicked()
         {
-            DeleteLogic?.Invoke(this, Id);
+            DeleteLogic(this, Id);
         }
     }
 }

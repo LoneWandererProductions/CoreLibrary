@@ -141,7 +141,7 @@ namespace CommonDialogs
         ///     The connect command.
         /// </value>
         public ICommand ConnectCommand =>
-            _connectCommand ??= new DelegateCommand<object>(ConnectAction, CanExecute);
+            _connectCommand = new DelegateCommand<object>(ConnectAction, CanExecute);
 
         /// <summary>
         ///     Gets the close command.
@@ -150,7 +150,7 @@ namespace CommonDialogs
         ///     The close command.
         /// </value>
         public ICommand CloseCommand =>
-            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
+            _closeCommand = new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
         ///     Gets the connection string Class.
@@ -198,7 +198,7 @@ namespace CommonDialogs
         /// <param name="propertyName">Name of the property.</param>
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

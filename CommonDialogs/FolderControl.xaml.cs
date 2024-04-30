@@ -102,7 +102,7 @@ namespace CommonDialogs
         /// <param name="propertyName">Name of the property.</param>
         public void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace CommonDialogs
         {
             var tree = sender as TreeView;
 
-            var selection = (TreeViewItem)tree?.SelectedItem;
+            var selection = (TreeViewItem)tree.SelectedItem;
 
             if (selection != null)
             {

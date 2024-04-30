@@ -32,14 +32,14 @@ namespace CommonFilter
         private string _entryText;
 
         /// <summary>
-        ///     The selected logical operator
-        /// </summary>
-        private LogicOperator _selectedLogicalOperator;
-
-        /// <summary>
         ///     The selected compare operator
         /// </summary>
         private CompareOperator _selectedCompareOperator;
+
+        /// <summary>
+        ///     The selected logical operator
+        /// </summary>
+        private LogicOperator _selectedLogicalOperator;
 
         /// <summary>
         ///     Gets the options.
@@ -103,7 +103,7 @@ namespace CommonFilter
         /// <value>
         ///     The operator options.
         /// </value>
-        public IEnumerable<CompareOperator> CompareOperatorOptions =>
+        public IEnumerable<CompareOperator> OperatorOptions =>
             Enum.GetValues(typeof(CompareOperator)) as IEnumerable<CompareOperator>;
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace CommonFilter
         ///     The okay command.
         /// </value>
         public ICommand DeleteCommand =>
-            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
+            _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the reference.
@@ -174,7 +174,7 @@ namespace CommonFilter
         /// <param name="propertyName">Name of the property.</param>
         public void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace CommonFilter
     public sealed class Filter : IFilter
     {
         /// <summary>
-        /// The evaluate
+        ///     The evaluate
         /// </summary>
         private ILogicEvaluations _evaluate;
 
@@ -43,8 +43,8 @@ namespace CommonFilter
         }
 
         /// <summary>
-        /// Starts the specified evaluate.
-        /// So we can use custom Evaluations
+        ///     Starts the specified evaluate.
+        ///     So we can use custom Evaluations
         /// </summary>
         /// <param name="evaluate">The evaluate.</param>
         public void Start(ILogicEvaluations evaluate)
@@ -58,10 +58,14 @@ namespace CommonFilter
         ///     Checks the filter.
         /// </summary>
         /// <param name="input">The input.</param>
-        /// <returns>Contition fullfilled?</returns>
+        /// <returns>Condition fulfilled?</returns>
         public bool CheckFilter(string input)
         {
-            if(Conditions == null || string.IsNullOrEmpty(input) || _evaluate == null) return false;
+            if (Conditions.Count == 0 || string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
             return _evaluate.Evaluate(input, Conditions);
         }
 
@@ -70,7 +74,7 @@ namespace CommonFilter
         /// </summary>
         internal void Done()
         {
-            FilterChanged?.Invoke(this, EventArgs.Empty);
+            FilterChanged(this, EventArgs.Empty);
         }
     }
 }

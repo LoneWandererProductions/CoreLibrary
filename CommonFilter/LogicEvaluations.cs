@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CommonFilter
 {
@@ -18,7 +17,7 @@ namespace CommonFilter
     public class LogicEvaluations : ILogicEvaluations
     {
         /// <summary>
-        /// Evaluates the specified input string.
+        ///     Evaluates the specified input string.
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <param name="conditions">The conditions.</param>
@@ -34,7 +33,7 @@ namespace CommonFilter
 
                 switch (term.SelectedCompareOperator)
                 {
-                    case CompareOperator.like:
+                    case CompareOperator.Like:
                         conditionResult = inputString.Contains(term.EntryText);
                         break;
                     case CompareOperator.Notlike:
@@ -47,10 +46,10 @@ namespace CommonFilter
 
                 switch (term.SelectedLogicalOperator)
                 {
-                    case LogicOperator.and:
+                    case LogicOperator.And:
                         result = result && conditionResult;
                         break;
-                    case LogicOperator.or:
+                    case LogicOperator.Or:
                         result = result || conditionResult;
                         break;
                     // Handle additional operators if needed

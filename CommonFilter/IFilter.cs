@@ -21,8 +21,8 @@ namespace CommonFilter
         void Start();
 
         /// <summary>
-        /// Starts the specified evaluate.
-        /// So we can use custom Evaluations
+        ///     Starts the specified evaluate.
+        ///     So we can use custom Evaluations
         /// </summary>
         /// <param name="evaluate">The evaluate.</param>
         void Start(ILogicEvaluations evaluate);
