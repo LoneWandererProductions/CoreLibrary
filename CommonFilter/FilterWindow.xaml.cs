@@ -93,7 +93,7 @@ namespace CommonFilter
         /// <param name="conditions">The conditions.</param>
         public void GetConditions(List<FilterOption> conditions)
         {
-            Filter.Conditions = conditions;
+            _interface.Conditions = conditions;
             _interface.Done();
         }
     }

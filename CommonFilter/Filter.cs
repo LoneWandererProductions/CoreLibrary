@@ -25,7 +25,7 @@ namespace CommonFilter
         /// <value>
         ///     The options.
         /// </value>
-        internal static List<FilterOption> Conditions { get; set; }
+        internal List<FilterOption> Conditions { get; set; }
 
         /// <summary>
         ///     Occurs when [filter changed].
@@ -61,8 +61,9 @@ namespace CommonFilter
         /// <returns>Contition fullfilled?</returns>
         public bool CheckFilter(string input)
         {
-            _evaluate.Evaluate(input, Conditions);
-            return false;
+            if(Conditions == null || string.IsNullOrEmpty(input) || _evaluate == null) return false;
+            return _evaluate.Evaluate(input, Conditions);
+
         }
 
         /// <summary>
