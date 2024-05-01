@@ -162,10 +162,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++)
-            {
-                SetPixel(x, i, color);
-            }
+            for (var i = y; i < height; i++) SetPixel(x, i, color);
         }
 
         /// <summary>
@@ -179,32 +176,28 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++)
-            {
-                SetPixel(i, y, color);
-            }
+            for (var i = x; i < length; i++) SetPixel(i, y, color);
         }
 
         /// <summary>
         ///     Draws the rectangle.
         ///     For now Microsoft's Rectangle Method is faster
         /// </summary>
-        /// <param name="x">The x Coordinate.</param>
-        /// <param name="y">The y Coordinate.</param>
+        /// <param name="x1">The x Coordinate.</param>
+        /// <param name="y2">The y Coordinate.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="color">The color.</param>
-        public void DrawRectangle(int x, int y, int width, int height, Color color)
+        public void DrawRectangle(int x1, int y2, int width, int height, Color color)
         {
-            if (width > height)
+            // Iterate over the pixels within the rectangle
+            for (var y = y2; y < y2 + height && y < Height; y++)
             {
-                Parallel.For(x, height,
-                    index => DrawVerticalLine(index, y, width, color));
-            }
-            else
-            {
-                Parallel.For(y, width,
-                    index => DrawHorizontalLine(x, index, height, color));
+                for (var x = x1; x < x1 + width && x < Width; x++)
+                {
+                    // Set the color of each pixel
+                    SetPixel(x, y, color);
+                }
             }
         }
 
@@ -215,10 +208,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
-            foreach (var index in idList)
-            {
-                _bits[index] = color.ToArgb();
-            }
+            foreach (var index in idList) _bits[index] = color.ToArgb();
         }
 
         /// <summary>
@@ -229,7 +219,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             _bits[index] = color.ToArgb();
         }
 
@@ -241,7 +231,7 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             var col = _bits[index];
             return Color.FromArgb(col);
         }
@@ -252,10 +242,7 @@ namespace Imaging
         /// <returns>The Image as a list of Colors</returns>
         public Span<Color> GetColors()
         {
-            if (_bits == null)
-            {
-                return null;
-            }
+            if (_bits == null) return null;
 
             var length = Height * Width;
 
@@ -282,10 +269,7 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            for (var i = 0; i < _bits.Length - 1; i++)
-            {
-                info = string.Concat(info, _bits[i], ImagingResources.Indexer);
-            }
+            for (var i = 0; i < _bits.Length - 1; i++) info = string.Concat(info, _bits[i], ImagingResources.Indexer);
 
             return string.Concat(info, ImagingResources.Spacing, _bits[_bits.Length]);
         }
@@ -310,10 +294,7 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {
