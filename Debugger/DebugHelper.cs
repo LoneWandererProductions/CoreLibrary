@@ -21,11 +21,17 @@ namespace Debugger
         /// </summary>
         /// <param name="textRange">The textRange.</param>
         /// <param name="line">The line. as Text</param>
-        internal static void AddRange(TextRange textRange, string line)
+        /// <param name="found">The string was filtered</param>
+        internal static void AddRange(TextRange textRange, string line, bool found)
         {
             //Todo make configurable in the future in config window
 
             textRange.Text = string.Concat(line, Environment.NewLine);
+
+            if (found)
+            {
+                textRange.ApplyPropertyValue(TextElement.BackgroundProperty, DebugRegister.FoundColor);
+            }
 
             if (line.Contains(nameof(ErCode.Error)))
             {

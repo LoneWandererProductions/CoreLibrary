@@ -114,7 +114,7 @@ namespace Debugger
             {
                 var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
 
-                DebugHelper.AddRange(textRange, line);
+                DebugHelper.AddRange(textRange, line, false);
             }
 
             _index = _counter;
@@ -219,7 +219,7 @@ namespace Debugger
         {
             var file = FileIoHandler.HandleFileOpen(DebuggerResources.FileExt);
 
-            if (!File.Exists(file.FilePath))
+            if (file != null && !File.Exists(file.FilePath))
             {
                 return;
             }
@@ -265,7 +265,7 @@ namespace Debugger
             {
                 var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
 
-                DebugHelper.AddRange(textRange, line);
+                DebugHelper.AddRange(textRange, line, false);
             }
 
             //get index
@@ -293,7 +293,16 @@ namespace Debugger
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void FilterChanged(object sender, EventArgs e)
         {
-            //TODO
+            Log.Document.Blocks.Clear();
+
+            foreach (var line in ReadLines(DebugRegister.DebugPath).ToList())
+            {
+                var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
+
+                var check = _filter.CheckFilter(line);
+
+                DebugHelper.AddRange(textRange, line, check);
+            }
         }
     }
 }

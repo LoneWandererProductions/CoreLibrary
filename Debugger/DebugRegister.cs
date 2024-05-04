@@ -90,10 +90,19 @@ namespace Debugger
         internal static string StandardColor { get; set; } = "Black";
 
         /// <summary>
+        /// Gets or sets the color of the found item in the line
+        /// </summary>
+        /// <value>
+        /// The color of the found.
+        /// </value>
+        internal static string FoundColor { get; set; } = "Yellow";
+
+        /// <summary>
         ///     Gets or sets the config.
         ///     This object will be saved in the file
         /// </summary>
         internal static ConfigExtended Config { get; private set; }
+
 
         /// <summary>
         ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
