@@ -19,13 +19,6 @@ namespace CommonFilter
     /// </summary>
     internal sealed partial class SearchParameterControl
     {
-        /// <summary>
-        ///     Define a delegate with an integer parameter
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="value">The value.</param>
-        public delegate void DeleteLogicEventHandler(object sender, int value);
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.

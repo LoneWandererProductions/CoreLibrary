@@ -3,8 +3,6 @@
  * PROJECT:     Imaging
  * FILE:        Imaging/DirectBitmap.cs
  * PURPOSE:     Custom Image Class, speeds up Get and Set Pixel
- *              Use is mostly single pixel manipulation and color inspection of pixel.
- *              Not cost/speed effective in large scale changes of areas sadly.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=net-7.0
  *              https://learn.microsoft.com/en-us/dotnet/api/system.drawing.imaging.pixelformat?view=dotnet-plat-ext-8.0
@@ -20,6 +18,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Imaging
 {

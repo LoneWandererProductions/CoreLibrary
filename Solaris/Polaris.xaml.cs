@@ -12,6 +12,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
@@ -405,6 +406,15 @@ namespace Solaris
             {
                 _cursor.Y = (int)position.X / PolarisTextureSize;
             }
+
+            var id = _cursor.CalculateId(PolarisWidth);
+
+            Clicked?.Invoke(this, id);
         }
+
+        /// <summary>
+        ///     Occurs when [delete logic].
+        /// </summary>
+        public event EventHandler<int> Clicked;
     }
 }
