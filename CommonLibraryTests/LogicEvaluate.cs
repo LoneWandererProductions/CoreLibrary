@@ -32,7 +32,7 @@ namespace CommonLibraryTests
 
             con = new FilterOption
             {
-                SelectedCompareOperator = CompareOperator.Notlike,
+                SelectedCompareOperator = CompareOperator.NotLike,
                 SelectedLogicalOperator = LogicOperator.Or,
                 EntryText = "world"
             };

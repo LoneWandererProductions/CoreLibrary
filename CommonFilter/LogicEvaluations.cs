@@ -16,13 +16,14 @@ namespace CommonFilter
     /// </summary>
     public class LogicEvaluations : ILogicEvaluations
     {
+        /// <inheritdoc />
         /// <summary>
         ///     Evaluates the specified input string.
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <param name="conditions">The conditions.</param>
         /// <returns>If conditions are met</returns>
-        /// <exception cref="System.ArgumentException">Unsupported operator: {Operator}</exception>
+        /// <exception cref="T:System.ArgumentException">Unsupported operator: {Operator}</exception>
         public bool Evaluate(string inputString, List<FilterOption> conditions)
         {
             var result = true;
@@ -36,8 +37,14 @@ namespace CommonFilter
                     case CompareOperator.Like:
                         conditionResult = inputString.Contains(term.EntryText);
                         break;
-                    case CompareOperator.Notlike:
+                    case CompareOperator.NotLike:
                         conditionResult = !inputString.Contains(term.EntryText);
+                        break;
+                    case CompareOperator.Equal:
+                        conditionResult = string.Equals(inputString, term.EntryText);
+                        break;
+                    case CompareOperator.NotEqual:
+                        conditionResult = !string.Equals(inputString, term.EntryText);
                         break;
                     // Handle additional operators if needed
                     default:
@@ -51,6 +58,12 @@ namespace CommonFilter
                         break;
                     case LogicOperator.Or:
                         result = result || conditionResult;
+                        break;
+                    case LogicOperator.AndNot:
+                        result = result && !conditionResult;
+                        break;
+                    case LogicOperator.OrNot:
+                        result = result || !conditionResult;
                         break;
                     // Handle additional operators if needed
                     default:

@@ -224,7 +224,10 @@ namespace Debugger
                 return;
             }
 
+            //already checked, can't be null
+            // ReSharper disable PossibleNullReferenceException
             DebugRegister.DebugPath = file.FilePath;
+            // ReSharper restore PossibleNullReferenceException
 
             LoadFile();
         }
@@ -268,7 +271,7 @@ namespace Debugger
                 DebugHelper.AddRange(textRange, line, false);
             }
 
-            //get index
+            //set index
             _index = ReadLines(DebugRegister.DebugPath).Count();
             DebugProcessing.InitiateDebug();
 
@@ -303,6 +306,9 @@ namespace Debugger
 
                 DebugHelper.AddRange(textRange, line, check);
             }
+
+            //set index
+            _index = ReadLines(DebugRegister.DebugPath).Count();
         }
     }
 }
