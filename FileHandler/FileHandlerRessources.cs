@@ -34,6 +34,11 @@ namespace FileHandler
         internal const string Space = " ";
 
         /// <summary>
+        ///     The append (const). Value: "_".
+        /// </summary>
+        internal const string Append = "_";
+
+        /// <summary>
         ///     Tries (const). Value: "Tries: ".
         /// </summary>
         internal const string Tries = "Tries: ";
