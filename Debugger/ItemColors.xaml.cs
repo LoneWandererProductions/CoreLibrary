@@ -32,8 +32,8 @@ namespace Debugger
             var id = GetFirstAvailableIndex(_filterOption.Keys.ToList());
 
             var itemControl = new ItemColor(id);
-            itemControl.DeleteLogic += ItemControl_DeleteLogic; ;
-
+            itemControl.DeleteLogic += ItemControl_DeleteLogic;
+            _ = ColorList.Items.Add(itemControl);
             _filterOption.Add(id, itemControl);
         }
 
@@ -48,7 +48,7 @@ namespace Debugger
             {
                 return;
             }
-
+            ColorList.Items.Remove(sender);
             _filterOption.Remove(id);
         }
 
