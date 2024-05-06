@@ -14,32 +14,32 @@ namespace ExtendedSystemObjects
     internal static class ExtendedSystemObjectsResources
     {
         /// <summary>
-        ///     Error value not found (const).
+        ///     Error value not found (const). "Value not found in the dictionary".
         /// </summary>
         internal const string ErrorValueNotFound = "Value not found in the dictionary";
 
         /// <summary>
-        ///     Error no value found (const).
+        ///     Error no value found (const). Value: "Values not found in the dictionary".
         /// </summary>
         internal const string ErrorNoValueFound = "Values not found in the dictionary";
 
         /// <summary>
-        ///     Error no value found (const).
+        ///     Error no value found (const). Value: "Value is not sane".
         /// </summary>
         internal const string ErrorValueNotAllowed = "Value is not sane";
 
         /// <summary>
-        ///     Error Key Exists (const).
+        ///     Error Key Exists (const). Value: "Key already exists: ".
         /// </summary>
         internal const string ErrorKeyExists = "Key already exists: ";
 
         /// <summary>
-        ///     Error Value Exists (const).
+        ///     Error Value Exists (const). "Value already exists: ".
         /// </summary>
         internal const string ErrorValueExists = "Value already exists: ";
 
         /// <summary>
-        ///     Separator(const).
+        ///     Separator(const). Value: " , ".
         /// </summary>
         internal const string Separator = " , ";
     }
