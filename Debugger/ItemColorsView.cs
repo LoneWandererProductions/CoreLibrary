@@ -8,6 +8,8 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using CommonFilter;
 
 namespace Debugger
 {
@@ -58,6 +60,19 @@ namespace Debugger
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        /// <summary>
+        /// Done action.
+        /// </summary>
+        /// <returns>All Color Options that were generated.</returns>
+        public List<ColorOption> GetOption()
+        {
+            var options = new List<ColorOption>(Filter.Count);
+            options.AddRange(Filter.Values.Select(filter => filter.View.Options));
+
+            return options;
         }
     }
 }

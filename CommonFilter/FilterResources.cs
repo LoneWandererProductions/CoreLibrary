@@ -22,6 +22,5 @@ namespace CommonFilter
         ///     Eroor unsupported Logical Operator (const). Value: "Unsupported Logical operator: ".
         /// </summary>
         internal const string ErrorLogicalOperator = "Unsupported Logical operator: ";
-
     }
 }
