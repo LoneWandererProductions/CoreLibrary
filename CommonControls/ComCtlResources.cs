@@ -19,6 +19,26 @@ namespace CommonControls
         internal const string ErrorWrongParameters = "Wrong Arguments provided: ";
 
         /// <summary>
+        ///     Error, Color Selection parameters (const). Value: "Error selecting color".
+        /// </summary>
+        internal const string ErrorColorSelection = "Error selecting color";
+
+        /// <summary>
+        ///     Error, Color switching parameters (const). Value: ""Error switching color".
+        /// </summary>
+        internal const string ErrorSwitchingColor = "Error switching color";
+
+        /// <summary>
+        ///     Error, Color Selection initializing parameters (const). Value: "Error initializing color selection control"
+        /// </summary>
+        internal const string ErrorInitializingColorSelection = "Error initializing color selection control";
+
+        /// <summary>
+        ///     Error, Color Dictionary initializing parameters (const). Value: "Error initializing color Dictionary "
+        /// </summary>
+        internal const string ErrorInitializingColorDictionary = "Error initializing color Dictionary ";
+
+        /// <summary>
         ///     Image add, needed for the Image Name (const). Value: "T".
         /// </summary>
         internal const string ImageAdd = "T";

@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -79,20 +80,34 @@ namespace CommonControls
         /// </summary>
         public List<string> ColorPalette { get; private set; }
 
+
+        /// <summary>
+        /// Occurs when [color changed].
+        /// </summary>
+        public event EventHandler<string> ColorChanged;
+
         /// <summary>
         ///     The initiate.
         ///     Sadly can't be handled onLoaded
         /// </summary>
         private void Initiate()
         {
-            //Fill the ComboBox
-            CmbColor.ItemsSource = typeof(Colors).GetProperties();
-
             //Generate Color Dictionary
             _colorDct = InitiateColors();
 
-            //Generate a possible List of Colors we can use from Code
-            ColorPalette = _colorDct.Keys.ToList();
+            try
+            {
+                //Fill the ComboBox
+                CmbColor.ItemsSource = typeof(Colors).GetProperties();
+                //Generate Color Dictionary
+                _colorDct = InitiateColors();
+                //Generate a possible List of Colors we can use from Code
+                ColorPalette = _colorDct.Keys.ToList();
+            }
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorSelection, ex);
+            }
         }
 
         /// <summary>
@@ -102,13 +117,30 @@ namespace CommonControls
         /// <param name="e">The selection changed event arguments.</param>
         private void CmbColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CmbColor?.SelectedItem is not PropertyInfo property)
+            try
             {
-                return;
+                if (CmbColor?.SelectedItem is not PropertyInfo property)
+                {
+                    return;
+                }
+
+                var selectedColor = (Color)property.GetValue(null, null);
+                StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
+                ColorChanged(this, StartColor);
             }
 
-            var selectedColor = (Color)property.GetValue(null, null);
-            StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
+            }
+            catch (TargetException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
+            }
+            catch (MethodAccessException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
+            }
         }
 
         /// <summary>
@@ -116,9 +148,20 @@ namespace CommonControls
         /// </summary>
         private void SwitchColor()
         {
-            if (StartColor != null)
+            try
             {
-                CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
+                if (!string.IsNullOrEmpty(StartColor))
+                {
+                    CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
+            }
+            catch (AmbiguousMatchException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
             }
         }
 
@@ -128,8 +171,32 @@ namespace CommonControls
         /// <returns>The <see cref="T:Dictionary{string, Color}" />.</returns>
         private static Dictionary<string, Color> InitiateColors()
         {
-            return typeof(Colors).GetProperties().ToDictionary(property => property.Name,
-                property => (Color)ColorConverter.ConvertFromString(property.Name));
+            try
+            {
+                return typeof(Colors).GetProperties()
+                    .ToDictionary(property => property.Name, property => (Color)ColorConverter.ConvertFromString(property.Name));
+            }
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
+            }
+
+            catch (FormatException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
+            }
+
+            return new Dictionary<string, Color>();
+        }
+
+        /// <summary>
+        /// Shows the error message box.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="ex">The ex.</param>
+        private static void ShowErrorMessageBox(string message, Exception ex)
+        {
+            MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
