@@ -1,11 +1,32 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Debugger
+ * FILE:        Debugger/ItemColors.xaml.cs
+ * PURPOSE:     Usercontrol, that holds the ItemColor controls
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Debugger
 {
     internal sealed class ItemColorsView
     {
+        /// <summary>
+        /// Gets or sets the reference.
+        /// </summary>
+        /// <value>
+        /// The reference.
+        /// </value>
         public ItemColors Reference { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the filter.
+        /// </summary>
+        /// <value>
+        /// The filter.
+        /// </value>
         public Dictionary<int, ItemColor> Filter { get; internal set; }
 
         /// <inheritdoc />

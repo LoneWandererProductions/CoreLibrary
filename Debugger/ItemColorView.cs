@@ -1,5 +1,14 @@
-﻿using System.ComponentModel;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Debugger
+ * FILE:        Debugger/ItemColorView.cs
+ * PURPOSE:     View for ItemColor Control
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.ComponentModel;
 using System.Windows.Input;
+using ViewModel;
 
 namespace Debugger
 {
@@ -9,6 +18,14 @@ namespace Debugger
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class ItemColorView : INotifyPropertyChanged
     {
+        /// <summary>
+        ///     Gets the options.
+        /// </summary>
+        /// <value>
+        ///     The options.
+        /// </value>
+        internal ColorOption Options => GetOptions();
+
         /// <summary>
         ///     The delete command
         /// </summary>
@@ -36,12 +53,29 @@ namespace Debugger
         }
 
         /// <summary>
+        /// Gets or sets the name of the color.
+        /// </summary>
+        /// <value>
+        /// The name of the color.
+        /// </value>
+        public string ColorName { get; internal set; }
+
+        /// <summary>
         ///     Gets or sets the reference.
         /// </summary>
         /// <value>
         ///     The reference.
         /// </value>
         public ItemColor Reference { get; set; }
+
+        /// <summary>
+        ///     Gets the delete command.
+        /// </summary>
+        /// <value>
+        ///     The delete command.
+        /// </value>
+        public ICommand DeleteCommand =>
+            _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
 
         /// <inheritdoc />
         /// <summary>
@@ -83,6 +117,19 @@ namespace Debugger
             // Perform delete action logic
             // Raise the event
             Reference.DeleteClicked();
+        }
+
+        /// <summary>
+        /// Gets the options.
+        /// </summary>
+        /// <returns>ColorOption Container</returns>
+        private ColorOption GetOptions()
+        {
+            return new ColorOption
+            {
+                ColorName = ColorName,
+                EntryText = EntryText
+            };
         }
     }
 }

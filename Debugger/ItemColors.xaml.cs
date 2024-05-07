@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Debugger
+ * FILE:        Debugger/ItemColors.xaml.cs
+ * PURPOSE:     Usercontrol, that holds the ItemColor controls
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
-using CommonFilter;
 
 namespace Debugger
 {
     /// <summary>
-    /// Interaktionslogik für ItemColors.xaml
+    /// ItemColors Usercontrol
     /// </summary>
     public partial class ItemColors
     {
@@ -15,6 +21,9 @@ namespace Debugger
         /// </summary>
         private readonly Dictionary<int, ItemColor> _filterOption = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemColors"/> class.
+        /// </summary>
         public ItemColors()
         {
             InitializeComponent();

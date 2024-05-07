@@ -17,7 +17,7 @@
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
         <!-- ColorSelector Control -->
-        <CommonControls:ColorSelection  Grid.Column="0"  />
+        <CommonControls:ColorSelection  Grid.Column="0" x:Name="ColorPicker" />
         <!-- TextBox Control -->
         <TextBox x:Name="textBox" Width="200" Margin="5"  Grid.Column="1" Text="{Binding EntryText}" />
         <!-- Button to Delete -->

@@ -116,10 +116,10 @@ namespace CommonFilter
             Enum.GetValues(typeof(LogicOperator)) as IEnumerable<LogicOperator>;
 
         /// <summary>
-        ///     Gets the okay command.
+        ///     Gets the delete command.
         /// </summary>
         /// <value>
-        ///     The okay command.
+        ///     The delete command.
         /// </value>
         public ICommand DeleteCommand =>
             _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
