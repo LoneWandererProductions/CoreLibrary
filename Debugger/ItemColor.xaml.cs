@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/ItemColor.xaml.cs
- * PURPOSE:     Usercontrol ItemColor, that holds the Info about Color and Text
+ * PURPOSE:     UserControl ItemColor, that holds the Info about Color and Text
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -12,23 +12,17 @@ using System.Windows.Controls;
 
 namespace Debugger
 {
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
-    /// ItemColor Item
+    ///     ItemColor Item
     /// </summary>
-    /// <seealso cref="UserControl" />
-    /// <seealso cref="IComponentConnector" />
-    public partial class ItemColor : UserControl
+    /// <seealso cref="T:System.Windows.Controls.UserControl" />
+    /// <seealso cref="!:IComponentConnector" />
+    internal sealed partial class ItemColor
     {
+        /// <inheritdoc />
         /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
-        private int Id { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemColor"/> class.
+        ///     Initializes a new instance of the <see cref="T:Debugger.ItemColor" /> class.
         /// </summary>
         public ItemColor()
         {
@@ -37,8 +31,9 @@ namespace Debugger
             ColorPicker.ColorChanged += ColorPicker_ColorChanged;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemColor"/> class.
+        ///     Initializes a new instance of the <see cref="T:Debugger.ItemColor" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         public ItemColor(int id)
@@ -47,6 +42,14 @@ namespace Debugger
             Id = id;
             View.Reference = this;
         }
+
+        /// <summary>
+        ///     Gets the identifier.
+        /// </summary>
+        /// <value>
+        ///     The identifier.
+        /// </value>
+        private int Id { get; }
 
         /// <summary>
         ///     Occurs when [delete logic].
@@ -62,7 +65,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Colors the picker color changed.
+        ///     Colors the picker color changed.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="color">The color.</param>

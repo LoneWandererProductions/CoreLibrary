@@ -229,8 +229,8 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// LU decomposition.
-        /// https://en.wikipedia.org/wiki/LU_decomposition
+        ///     LU decomposition.
+        ///     https://en.wikipedia.org/wiki/LU_decomposition
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>LU decomposition</returns>

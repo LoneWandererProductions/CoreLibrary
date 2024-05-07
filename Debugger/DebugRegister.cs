@@ -90,10 +90,10 @@ namespace Debugger
         internal static string StandardColor { get; set; } = "Black";
 
         /// <summary>
-        /// Gets or sets the color of the found item in the line
+        ///     Gets or sets the color of the found item in the line
         /// </summary>
         /// <value>
-        /// The color of the found.
+        ///     The color of the found.
         /// </value>
         internal static string FoundColor { get; set; } = "Yellow";
 

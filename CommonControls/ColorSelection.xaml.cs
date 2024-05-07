@@ -82,7 +82,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// Occurs when [color changed].
+        ///     Occurs when [color changed].
         /// </summary>
         public event EventHandler<string> ColorChanged;
 
@@ -174,7 +174,8 @@ namespace CommonControls
             try
             {
                 return typeof(Colors).GetProperties()
-                    .ToDictionary(property => property.Name, property => (Color)ColorConverter.ConvertFromString(property.Name));
+                    .ToDictionary(property => property.Name,
+                        property => (Color)ColorConverter.ConvertFromString(property.Name));
             }
             catch (ArgumentException ex)
             {
@@ -190,7 +191,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Shows the error message box.
+        ///     Shows the error message box.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="ex">The ex.</param>

@@ -16,24 +16,24 @@ namespace CommonFilter
     public enum LogicOperator
     {
         /// <summary>
-        /// The and
+        ///     The and
         /// </summary>
         And = 0,
 
         /// <summary>
-        /// The or
+        ///     The or
         /// </summary>
         Or = 1,
 
         /// <summary>
-        /// The and not
+        ///     The and not
         /// </summary>
         AndNot = 2,
 
         /// <summary>
-        /// The or not
+        ///     The or not
         /// </summary>
-        OrNot = 3,
+        OrNot = 3
     }
 
     /// <summary>
@@ -42,22 +42,22 @@ namespace CommonFilter
     public enum CompareOperator
     {
         /// <summary>
-        /// The like
+        ///     The like
         /// </summary>
         Like = 0,
 
         /// <summary>
-        /// The not like
+        ///     The not like
         /// </summary>
         NotLike = 1,
 
         /// <summary>
-        /// The equal
+        ///     The equal
         /// </summary>
         Equal = 2,
 
         /// <summary>
-        /// The not equal
+        ///     The not equal
         /// </summary>
         NotEqual = 3
     }

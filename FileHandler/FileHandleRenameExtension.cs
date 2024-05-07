@@ -77,7 +77,8 @@ namespace FileHandler
 
             return string.Concat(
                 charsToRemove.Where(c => !string.IsNullOrEmpty(c))
-                    .Aggregate(str, (current, c) => current.Replace(c, string.Empty)), FileHandlerResources.Append, numbers);
+                    .Aggregate(str, (current, c) => current.Replace(c, string.Empty)), FileHandlerResources.Append,
+                numbers);
         }
     }
 }

@@ -251,7 +251,10 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path)) return new Bitmap(path, true);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
+            {
+                return new Bitmap(path, true);
+            }
 
             var innerException = path != null
                 ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
@@ -477,11 +480,16 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
+                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
+                }
             }
 
-            foreach (var image in images) image.Dispose();
+            foreach (var image in images)
+            {
+                image.Dispose();
+            }
 
             //before return please Convert
             return btm;
@@ -771,7 +779,10 @@ namespace Imaging
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
             //no need to do anything
-            if (degree is 360 or 0) return image;
+            if (degree is 360 or 0)
+            {
+                return image;
+            }
 
             if (image == null)
             {
@@ -800,8 +811,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
-                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
+                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
+                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
             }
 
             // Find the min and max x and y coordinates.
@@ -870,14 +881,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     top = x;
                     break;
                 }
 
-                if (top != -1) break;
+                if (top != -1)
+                {
+                    break;
+                }
             }
 
             //Get the Bottom
@@ -886,14 +903,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     bottom = x;
                     break;
                 }
 
-                if (bottom != -1) break;
+                if (bottom != -1)
+                {
+                    break;
+                }
             }
 
             //Get the left
@@ -902,14 +925,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     left = x;
                     break;
                 }
 
-                if (left != -1) break;
+                if (left != -1)
+                {
+                    break;
+                }
             }
 
             //Get the right
@@ -918,14 +947,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     right = x;
                     break;
                 }
 
-                if (right != -1) break;
+                if (right != -1)
+                {
+                    break;
+                }
             }
 
             first.X = left;
@@ -998,7 +1033,10 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    return;
+                }
 
                 var newPath = path;
 
@@ -1050,7 +1088,10 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
+                {
+                    continue;
+                }
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -1115,7 +1156,9 @@ namespace Imaging
             }
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
+            }
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -1137,16 +1180,27 @@ namespace Imaging
         /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
-            if (image == null) throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
+            }
 
-            if (radius < 0) throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            if (radius < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            }
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
+            }
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0) return GetPixel(image, point);
+            if (points.Count == 0)
+            {
+                return GetPixel(image, point);
+            }
 
             int redSum = 0, greenSum = 0, blueSum = 0;
 
@@ -1292,7 +1346,7 @@ namespace Imaging
                 }
 
                 // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
+                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
 
                 // Normalize the magnitude to fit within the range of 0-255
                 magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
@@ -1335,10 +1389,12 @@ namespace Imaging
             for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
                 var dx = x - center.X;
-                var height = (int)Math.Sqrt(radius * radius - dx * dx);
+                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
 
                 for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
+                {
                     points.Add(new Point(x, y));
+                }
             }
 
             return points;

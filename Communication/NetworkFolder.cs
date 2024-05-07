@@ -8,11 +8,10 @@ namespace Communication
         public void SearchNetworkFolder(string path)
         {
             // Create a new FileSystemWatcher instance
-            FileSystemWatcher watcher = new FileSystemWatcher(path)
+            var watcher = new FileSystemWatcher(path)
             {
                 // Set the FileSystemWatcher properties
-                NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName,
-                IncludeSubdirectories = true
+                NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName, IncludeSubdirectories = true
             };
 
             // Subscribe to the Deleted event
@@ -34,6 +33,5 @@ namespace Communication
             // Handle the deletion event
             Console.WriteLine($"File or folder '{e.FullPath}' was deleted.");
         }
-
     }
 }

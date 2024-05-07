@@ -9,17 +9,17 @@
 namespace CommonFilter
 {
     /// <summary>
-    /// String Resources
+    ///     String Resources
     /// </summary>
     internal static class FilterResources
     {
         /// <summary>
-        ///     Eroor unsupported Compare Operator (const). Value: "Unsupported Compare operator: ".
+        ///     Error unsupported Compare Operator (const). Value: "Unsupported Compare operator: ".
         /// </summary>
         internal const string ErrorCompareOperator = "Unsupported Compare operator: ";
 
         /// <summary>
-        ///     Eroor unsupported Logical Operator (const). Value: "Unsupported Logical operator: ".
+        ///     Error unsupported Logical Operator (const). Value: "Unsupported Logical operator: ".
         /// </summary>
         internal const string ErrorLogicalOperator = "Unsupported Logical operator: ";
     }

@@ -48,7 +48,8 @@ namespace CommonFilter
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException(string.Concat(FilterResources.ErrorCompareOperator, term.SelectedCompareOperator));
+                        throw new ArgumentException(string.Concat(FilterResources.ErrorCompareOperator,
+                            term.SelectedCompareOperator));
                 }
 
                 switch (term.SelectedLogicalOperator)
@@ -67,7 +68,8 @@ namespace CommonFilter
                         break;
                     // Handle additional operators if needed
                     default:
-                        throw new ArgumentException(string.Concat(FilterResources.ErrorLogicalOperator, term.SelectedLogicalOperator));
+                        throw new ArgumentException(string.Concat(FilterResources.ErrorLogicalOperator,
+                            term.SelectedLogicalOperator));
                 }
             }
 

@@ -2,36 +2,54 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/ItemColors.xaml.cs
- * PURPOSE:     Usercontrol, that holds the ItemColor controls
+ * PURPOSE:     UserControl, that holds the ItemColor controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CommonFilter;
+using System.Windows.Input;
+using ViewModel;
 
 namespace Debugger
 {
     internal sealed class ItemColorsView
     {
         /// <summary>
-        /// Gets or sets the reference.
+        ///     Gets the delete command.
         /// </summary>
         /// <value>
-        /// The reference.
+        ///     The delete command.
+        /// </value>
+        public ICommand AddCommand =>
+            new DelegateCommand<object>(AddAction, CanExecute);
+
+        /// <summary>
+        ///     Gets or sets the reference.
+        /// </summary>
+        /// <value>
+        ///     The reference.
         /// </value>
         public ItemColors Reference { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the filter.
+        ///     Gets or sets the filter.
         /// </summary>
         /// <value>
-        /// The filter.
+        ///     The filter.
         /// </value>
         public Dictionary<int, ItemColor> Filter { get; internal set; }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Adds the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void AddAction(object obj)
+        {
+        }
+
+        /// <inheritdoc cref="PropertyChangedEventHandler" />
         /// <summary>
         ///     Triggers if an Attribute gets changed
         /// </summary>
@@ -64,7 +82,7 @@ namespace Debugger
 
 
         /// <summary>
-        /// Done action.
+        ///     Done action.
         /// </summary>
         /// <returns>All Color Options that were generated.</returns>
         public List<ColorOption> GetOption()

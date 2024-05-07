@@ -13,11 +13,16 @@ using ViewModel;
 namespace Debugger
 {
     /// <summary>
-    /// View vor the ItemColor Control
+    ///     View vor the ItemColor Control
     /// </summary>
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class ItemColorView : INotifyPropertyChanged
     {
+        /// <summary>
+        ///     The entry text
+        /// </summary>
+        private string _entryText;
+
         /// <summary>
         ///     Gets the options.
         /// </summary>
@@ -25,16 +30,6 @@ namespace Debugger
         ///     The options.
         /// </value>
         internal ColorOption Options => GetOptions();
-
-        /// <summary>
-        ///     The delete command
-        /// </summary>
-        private ICommand _deleteCommand;
-
-        /// <summary>
-        ///     The entry text
-        /// </summary>
-        private string _entryText;
 
         /// <summary>
         ///     Gets or sets the entry text.
@@ -53,10 +48,10 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Gets or sets the name of the color.
+        ///     Gets or sets the name of the color.
         /// </summary>
         /// <value>
-        /// The name of the color.
+        ///     The name of the color.
         /// </value>
         public string ColorName { get; internal set; }
 
@@ -75,7 +70,7 @@ namespace Debugger
         ///     The delete command.
         /// </value>
         public ICommand DeleteCommand =>
-            _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
+            new DelegateCommand<object>(DeleteAction, CanExecute);
 
         /// <inheritdoc />
         /// <summary>
@@ -120,16 +115,12 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Gets the options.
+        ///     Gets the options.
         /// </summary>
         /// <returns>ColorOption Container</returns>
         private ColorOption GetOptions()
         {
-            return new ColorOption
-            {
-                ColorName = ColorName,
-                EntryText = EntryText
-            };
+            return new ColorOption { ColorName = ColorName, EntryText = EntryText };
         }
     }
 }

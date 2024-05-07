@@ -9,15 +9,15 @@
 namespace Debugger
 {
     /// <summary>
-    /// Container that will hold the text and the corresponding color
+    ///     Container that will hold the text and the corresponding color
     /// </summary>
     internal sealed class ColorOption
     {
         /// <summary>
-        /// Gets the name of the color.
+        ///     Gets the name of the color.
         /// </summary>
         /// <value>
-        /// The name of the color.
+        ///     The name of the color.
         /// </value>
         internal string ColorName { get; init; }
 

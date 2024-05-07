@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/ItemColors.xaml.cs
- * PURPOSE:     Usercontrol, that holds the ItemColor controls
+ * PURPOSE:     UserControl, that holds the ItemColor controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -12,7 +12,7 @@ using System.Linq;
 namespace Debugger
 {
     /// <summary>
-    /// ItemColors Usercontrol
+    ///     ItemColors UserControl
     /// </summary>
     public partial class ItemColors
     {
@@ -22,7 +22,7 @@ namespace Debugger
         private readonly Dictionary<int, ItemColor> _filterOption = new();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemColors"/> class.
+        ///     Initializes a new instance of the <see cref="ItemColors" /> class.
         /// </summary>
         public ItemColors()
         {
@@ -47,7 +47,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Items the control delete logic.
+        ///     Items the control delete logic.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="id">The identifier.</param>
@@ -57,6 +57,7 @@ namespace Debugger
             {
                 return;
             }
+
             ColorList.Items.Remove(sender);
             _filterOption.Remove(id);
         }
