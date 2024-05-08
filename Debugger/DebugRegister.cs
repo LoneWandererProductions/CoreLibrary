@@ -232,6 +232,7 @@ namespace Debugger
             data.InformationColor = InformationColor;
             data.ExternalColor = ExternalColor;
             data.StandardColor = StandardColor;
+            data.ColorOptions = ColorOptions;
 
             try
             {
