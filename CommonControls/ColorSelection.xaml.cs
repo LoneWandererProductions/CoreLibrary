@@ -58,7 +58,6 @@ namespace CommonControls
         {
             StartColor = color;
             InitializeComponent();
-
         }
 
         /// <summary>

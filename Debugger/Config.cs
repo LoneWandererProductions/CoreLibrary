@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeMadeStatic.Global, Config Class
 // ReSharper disable MemberCanBeInternal, no just no, else we get problems with the Serializer
 
+using System.Collections.Generic;
 using ViewModel;
 
 namespace Debugger
@@ -164,5 +165,13 @@ namespace Debugger
             get => DebugRegister.StandardColor;
             set => DebugRegister.StandardColor = value;
         }
+
+        /// <summary>
+        /// Gets or sets the color options.
+        /// </summary>
+        /// <value>
+        /// The color options.
+        /// </value>
+        public List<ColorOption> ColorOptions { get; set; }
     }
 }

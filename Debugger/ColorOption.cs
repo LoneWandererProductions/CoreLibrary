@@ -13,7 +13,7 @@ namespace Debugger
     /// <summary>
     ///     Container that will hold the text and the corresponding color
     /// </summary>
-    internal sealed class ColorOption
+    public sealed class ColorOption
     {
         /// <summary>
         ///     Gets the name of the color.

@@ -104,6 +104,13 @@ namespace Debugger
         /// </summary>
         internal static ConfigExtended Config { get; private set; }
 
+        /// <summary>
+        /// Gets the color options.
+        /// </summary>
+        /// <value>
+        /// The color options.
+        /// </value>
+        public static List<ColorOption> ColorOptions { get; private set; }
 
         /// <summary>
         ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
@@ -123,7 +130,8 @@ namespace Debugger
                     ExternalColor = ExternalColor,
                     StandardColor = StandardColor,
                     WarningColor = WarningColor,
-                    IsDumpActive = IsDumpActive
+                    IsDumpActive = IsDumpActive,
+                    ColorOptions = ColorOptions
                 };
             }
             else
@@ -155,7 +163,8 @@ namespace Debugger
                     InformationColor = config.InformationColor,
                     ExternalColor = config.ExternalColor,
                     StandardColor = config.StandardColor,
-                    WarningColor = config.WarningColor
+                    WarningColor = config.WarningColor,
+                    ColorOptions = ColorOptions
                 };
             }
         }
@@ -209,10 +218,13 @@ namespace Debugger
         /// <param name="options">The options.</param>
         internal static void XmlSerializerObject<T>(T serializeObject, List<ColorOption> options)
         {
-            if (serializeObject is not ConfigExtended data)
+            //check if everything is in place
+            if (serializeObject is not ConfigExtended data || options == null)
             {
                 return;
             }
+
+            ColorOptions = options;
 
             //Add our Colors a bit of a hack but works for now
             data.ErrorColor = ErrorColor;
