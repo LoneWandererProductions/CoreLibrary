@@ -41,6 +41,7 @@ namespace Debugger
             InitializeComponent();
             Id = id;
             View.Reference = this;
+            ColorPicker.ColorChanged += ColorPicker_ColorChanged;
         }
 
         /// <summary>

@@ -47,6 +47,7 @@ namespace Debugger
         /// <param name="obj">The object.</param>
         private void AddAction(object obj)
         {
+            Reference.AddFilter();
         }
 
         /// <inheritdoc cref="PropertyChangedEventHandler" />
