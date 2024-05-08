@@ -45,6 +45,21 @@ namespace Debugger
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ItemColor"/> class.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="option">The option for the parameter.</param>
+        public ItemColor(int id, ColorOption option)
+        {
+            InitializeComponent();
+            Id = id;
+            View.Reference = this;
+            View.EntryText = option.EntryText;
+            View.ColorName = option.ColorName;
+            ColorPicker.ColorChanged += ColorPicker_ColorChanged;
+        }
+        
+        /// <summary>
         ///     Gets the identifier.
         /// </summary>
         /// <value>

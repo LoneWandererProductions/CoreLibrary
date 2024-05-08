@@ -6,10 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using CommonFilter;
 
 namespace Debugger
 {
@@ -33,6 +31,18 @@ namespace Debugger
             View.Filter = _filterOption;
             _filterOption = new Dictionary<int, ItemColor>();
             AddFilter();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemColors"/> class.
+        /// </summary>
+        /// <param name="filterOption">The filter options we want to display.</param>
+        public ItemColors(List<ColorOption> filterOption)
+        {
+            InitializeComponent();
+            View.Reference = this;
+            _filterOption = new Dictionary<int, ItemColor>();
+            AddFilter(filterOption);
         }
 
         /// <summary>
@@ -71,6 +81,23 @@ namespace Debugger
         internal List<ColorOption> GetColorOptions()
         {
             return _filterOption.Values.Select(option => option.GetOption()).ToList();
+        }
+
+        /// <summary>
+        /// Adds the filter.
+        /// </summary>
+        /// <param name="filterOption">The filter option.</param>
+        private void AddFilter(List<ColorOption> filterOption)
+        {
+            foreach (var item in filterOption)
+            {
+                var id = GetFirstAvailableIndex(_filterOption.Keys.ToList());
+
+                var itemControl = new ItemColor(id, item);
+                itemControl.DeleteLogic += ItemControl_DeleteLogic;
+                _ = ColorList.Items.Add(itemControl);
+                _filterOption.Add(id, itemControl);
+            }
         }
 
         /// <summary>

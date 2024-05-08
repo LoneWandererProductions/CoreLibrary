@@ -24,6 +24,11 @@ namespace Debugger
         private string _entryText;
 
         /// <summary>
+        /// The color name
+        /// </summary>
+        private string _colorName;
+
+        /// <summary>
         ///     Gets the options.
         /// </summary>
         /// <value>
@@ -53,7 +58,17 @@ namespace Debugger
         /// <value>
         ///     The name of the color.
         /// </value>
-        public string ColorName { get; internal set; }
+        public string ColorName
+        {
+            get => _colorName;
+            set
+            {
+                _colorName = value;
+                //set Color of the Color Selection
+                Reference.ColorPicker.StartColor = value;
+                OnPropertyChanged(nameof(ColorName));
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the reference.
