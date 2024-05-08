@@ -126,7 +126,7 @@ namespace CommonControls
 
                 var selectedColor = (Color)property.GetValue(null, null);
                 StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
-                ColorChanged(this, StartColor);
+                ColorChanged?.Invoke(this, StartColor);
             }
 
             catch (ArgumentException ex)

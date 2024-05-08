@@ -32,6 +32,7 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            var options = ColorOptions.GetColorOptions();
             DebugRegister.ErrorColor = CombColorError.StartColor;
             DebugRegister.WarningColor = CombColorWarning.StartColor;
             DebugRegister.InformationColor = CombColorInformation.StartColor;

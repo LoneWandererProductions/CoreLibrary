@@ -56,6 +56,16 @@ namespace Debugger
         /// </summary>
         public event EventHandler<int> DeleteLogic;
 
+
+        /// <summary>
+        /// Gets the option.
+        /// </summary>
+        /// <returns>Return selected Color Options</returns>
+        internal ColorOption GetOption()
+        {
+            return View.Options;
+        }
+
         /// <summary>
         ///     Deletes the clicked.
         /// </summary>

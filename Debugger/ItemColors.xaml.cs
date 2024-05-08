@@ -6,8 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using CommonFilter;
 
 namespace Debugger
 {
@@ -60,6 +62,15 @@ namespace Debugger
 
             ColorList.Items.Remove(sender);
             _filterOption.Remove(id);
+        }
+
+        /// <summary>
+        /// Gets the color options.
+        /// </summary>
+        /// <returns>List of Color Options</returns>
+        internal List<ColorOption> GetColorOptions()
+        {
+            return _filterOption.Values.Select(option => option.GetOption()).ToList();
         }
 
         /// <summary>
