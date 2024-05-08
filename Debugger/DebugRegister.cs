@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -201,11 +202,12 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Generic Serializer Of Objects
+        /// Generic Serializer Of Objects
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="serializeObject">Target Object</param>
-        internal static void XmlSerializerObject<T>(T serializeObject)
+        /// <param name="options">The options.</param>
+        internal static void XmlSerializerObject<T>(T serializeObject, List<ColorOption> options)
         {
             if (serializeObject is not ConfigExtended data)
             {

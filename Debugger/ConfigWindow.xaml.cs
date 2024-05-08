@@ -38,7 +38,7 @@ namespace Debugger
             DebugRegister.InformationColor = CombColorInformation.StartColor;
             DebugRegister.ExternalColor = CombColorExternal.StartColor;
             DebugRegister.StandardColor = CombColorStandard.StartColor;
-            DebugRegister.XmlSerializerObject(DataContext);
+            DebugRegister.XmlSerializerObject(DataContext, options);
         }
 
         /// <summary>

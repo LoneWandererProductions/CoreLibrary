@@ -32,7 +32,7 @@ namespace CommonControls
         ///     The selected Color (readonly). Value: DependencyProperty.Register StartColor
         /// </summary>
         public static readonly DependencyProperty StartColorProperty = DependencyProperty.Register(nameof(StartColor),
-            typeof(object),
+            typeof(string),
             typeof(ColorSelection), new UIPropertyMetadata(string.Empty));
 
         /// <summary>
@@ -47,7 +47,6 @@ namespace CommonControls
         public ColorSelection()
         {
             InitializeComponent();
-            Initiate();
         }
 
         /// <inheritdoc />
@@ -59,6 +58,16 @@ namespace CommonControls
         {
             StartColor = color;
             InitializeComponent();
+
+        }
+
+        /// <summary>
+        /// Handles the Loaded event of the UserControl ColorSelection.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void ColorSelection_Loaded(object sender, RoutedEventArgs e)
+        {
             Initiate();
         }
 
@@ -103,6 +112,9 @@ namespace CommonControls
                 _colorDct = InitiateColors();
                 //Generate a possible List of Colors we can use from Code
                 ColorPalette = _colorDct.Keys.ToList();
+
+                SwitchToStartColor();
+
             }
             catch (ArgumentException ex)
             {
@@ -150,10 +162,7 @@ namespace CommonControls
         {
             try
             {
-                if (!string.IsNullOrEmpty(StartColor))
-                {
-                    CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
-                }
+                SwitchToStartColor();
             }
             catch (ArgumentException ex)
             {
@@ -190,6 +199,17 @@ namespace CommonControls
             return new Dictionary<string, Color>();
         }
 
+
+        /// <summary>
+        /// Switches to start color.
+        /// </summary>
+        private void SwitchToStartColor()
+        {
+            if (string.IsNullOrEmpty(StartColor)) return;
+            CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
+        }
+
+
         /// <summary>
         ///     Shows the error message box.
         /// </summary>
@@ -199,5 +219,7 @@ namespace CommonControls
         {
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+
     }
 }
