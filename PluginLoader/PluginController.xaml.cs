@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/PluginController.xaml.cs
+ * PROJECT:     PluginLoader
+ * FILE:        PluginLoader/PluginController.xaml.cs
  * PURPOSE:     Plugin Control, that displays all plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,9 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using PluginLoader;
 
-namespace CommonControls
+namespace PluginLoader
 {
     /// <inheritdoc cref="INotifyPropertyChanged" />
     /// <summary>
@@ -36,7 +35,7 @@ namespace CommonControls
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.PluginController" /> class.
+        ///     Initializes a new instance of the <see cref="T:PluginLoader.PluginController" /> class.
         /// </summary>
         public PluginController()
         {
@@ -101,7 +100,7 @@ namespace CommonControls
 
             if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
             {
-                Trace.WriteLine(ComCtlResources.InformationPlugin);
+                Trace.WriteLine(PluginLoaderResources.InformationPlugin);
                 return;
             }
 

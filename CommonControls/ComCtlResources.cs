@@ -79,11 +79,6 @@ namespace CommonControls
         internal const string NewItem = "New Item";
 
         /// <summary>
-        ///     Information about Plugin Status (const). Value: "No Plugins found.".
-        /// </summary>
-        internal const string InformationPlugin = "No Plugins found.";
-
-        /// <summary>
         ///     Separator (const). Value: " , ".
         /// </summary>
         internal const string Separator = " , ";

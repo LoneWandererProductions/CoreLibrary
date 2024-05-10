@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
-    <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
   </ItemGroup>
 

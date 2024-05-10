@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/PluginItem.cs
+ * PROJECT:     PluginLoader
+ * FILE:        PluginLoader/PluginItem.cs
  * PURPOSE:     Container for the collected Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@ using System;
 using Plugin;
 using ViewModel;
 
-namespace CommonControls
+namespace PluginLoader
 {
     /// <inheritdoc />
     /// <summary>

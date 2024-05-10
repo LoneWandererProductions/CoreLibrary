@@ -43,6 +43,11 @@ namespace PluginLoader
         internal const string ErrorDirectory = "Directory does not exist.";
 
         /// <summary>
+        ///     Information about Plugin Status (const). Value: "No Plugins found.".
+        /// </summary>
+        internal const string InformationPlugin = "No Plugins found.";
+
+        /// <summary>
         ///     Format Information about the specified assembly.
         /// </summary>
         /// <param name="assembly">The assembly.</param>

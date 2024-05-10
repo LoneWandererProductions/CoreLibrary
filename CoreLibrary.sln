@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34729.46
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{9B2741D2-443A-4136-B9A4-1191686DA4AD}"
 EndProject
@@ -37,8 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLiteHelper", "SQLiteHelpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin", "Plugin\Plugin.csproj", "{74E75A16-F42B-4874-BFC9-0313BA0CCD38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginLoader", "PluginLoader\PluginLoader.csproj", "{FFDD5924-FDF0-479A-A255-71E55E7D08F8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinding", "PathFinding\PathFinding.csproj", "{22342B05-8A75-4FBB-AC1C-9C4418F00FBB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debugger", "Debugger\Debugger.csproj", "{2B3D839E-CF1D-4F77-BDFB-5380F7A01572}"
@@ -62,6 +60,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonDialogs", "CommonDialogs\CommonDialogs.csproj", "{7B953859-4789-4A9D-83F6-DF196709D718}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonFilter", "CommonFilter\CommonFilter.csproj", "{5521362D-1037-4E87-A1FD-6A3C008D654C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginLoader", "PluginLoader\PluginLoader.csproj", "{501245AD-6550-4AAB-9D88-218CD5E90350}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,10 +121,6 @@ Global
 		{74E75A16-F42B-4874-BFC9-0313BA0CCD38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74E75A16-F42B-4874-BFC9-0313BA0CCD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74E75A16-F42B-4874-BFC9-0313BA0CCD38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FFDD5924-FDF0-479A-A255-71E55E7D08F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFDD5924-FDF0-479A-A255-71E55E7D08F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFDD5924-FDF0-479A-A255-71E55E7D08F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFDD5924-FDF0-479A-A255-71E55E7D08F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22342B05-8A75-4FBB-AC1C-9C4418F00FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22342B05-8A75-4FBB-AC1C-9C4418F00FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22342B05-8A75-4FBB-AC1C-9C4418F00FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -173,6 +169,10 @@ Global
 		{5521362D-1037-4E87-A1FD-6A3C008D654C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5521362D-1037-4E87-A1FD-6A3C008D654C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5521362D-1037-4E87-A1FD-6A3C008D654C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501245AD-6550-4AAB-9D88-218CD5E90350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501245AD-6550-4AAB-9D88-218CD5E90350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501245AD-6550-4AAB-9D88-218CD5E90350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501245AD-6550-4AAB-9D88-218CD5E90350}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

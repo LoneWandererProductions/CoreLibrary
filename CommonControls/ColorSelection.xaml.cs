@@ -205,9 +205,9 @@ namespace CommonControls
         private void SwitchToStartColor()
         {
             if (string.IsNullOrEmpty(StartColor)) return;
+
             CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
         }
-
 
         /// <summary>
         ///     Shows the error message box.
@@ -218,7 +218,5 @@ namespace CommonControls
         {
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-
     }
 }
