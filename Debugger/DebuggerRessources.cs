@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace Debugger
 {
@@ -116,5 +117,16 @@ namespace Debugger
         /// ss
         internal static readonly string ObjectFormatting = string.Concat(Environment.NewLine, "Object:",
             Environment.NewLine);
+
+        /// <summary>
+        /// The initial options for the colors
+        /// </summary>
+        internal static readonly List<ColorOption> InitialOptions = new()
+        {
+            new ColorOption() {ColorName = "Red", EntryText = nameof(ErCode.Error) },
+            new ColorOption() { ColorName = "Orange", EntryText = nameof(ErCode.Warning) },
+            new ColorOption() { ColorName = "Blue", EntryText = nameof(ErCode.Information) },
+            new ColorOption() { ColorName = "Green", EntryText = nameof(ErCode.External) },
+        };
     }
 }
