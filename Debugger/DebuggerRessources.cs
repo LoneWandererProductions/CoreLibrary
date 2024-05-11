@@ -39,17 +39,17 @@ namespace Debugger
         /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
         /// </summary>
-        internal const string LogLvlOne = " , Error: ";
+        internal const string LogLvlOne = "Error: ";
 
         /// <summary>
         ///     The log Level two (const). Value: " , Warning: ".
         /// </summary>
-        internal const string LogLvlTwo = " , Warning: ";
+        internal const string LogLvlTwo = "Warning: ";
 
         /// <summary>
         ///     The log Level three (const). Value: " , Information: ".
         /// </summary>
-        internal const string LogLvlThree = " , Information: ";
+        internal const string LogLvlThree = "Information: ";
 
         /// <summary>
         ///     The log Level four (const). Value: "External Source: ".
@@ -119,14 +119,39 @@ namespace Debugger
             Environment.NewLine);
 
         /// <summary>
+        ///     Gets or sets the error color.
+        /// </summary>
+        internal static string ErrorColor { get; set; } = "Red";
+
+        /// <summary>
+        ///     Gets or sets the warning color.
+        /// </summary>
+        internal static string WarningColor { get; set; } = "Orange";
+
+        /// <summary>
+        ///     Gets or sets the information color.
+        /// </summary>
+        internal static string InformationColor { get; set; } = "Blue";
+
+        /// <summary>
+        ///     Gets or sets the external color.
+        /// </summary>
+        internal static string ExternalColor { get; set; } = "Green";
+
+        /// <summary>
+        ///     Gets or sets the standard color.
+        /// </summary>
+        internal static string StandardColor { get; set; } = "Black";
+
+        /// <summary>
         /// The initial options for the colors
         /// </summary>
         internal static readonly List<ColorOption> InitialOptions = new()
         {
-            new ColorOption() {ColorName = "Red", EntryText = nameof(ErCode.Error) },
-            new ColorOption() { ColorName = "Orange", EntryText = nameof(ErCode.Warning) },
-            new ColorOption() { ColorName = "Blue", EntryText = nameof(ErCode.Information) },
-            new ColorOption() { ColorName = "Green", EntryText = nameof(ErCode.External) },
+            new ColorOption() {ColorName = ErrorColor, EntryText = LogLvlOne},
+            new ColorOption() {ColorName = WarningColor, EntryText = LogLvlTwo},
+            new ColorOption() {ColorName = InformationColor, EntryText = LogLvlThree},
+            new ColorOption() {ColorName = ExternalColor, EntryText = LogLvlFour},
         };
     }
 }

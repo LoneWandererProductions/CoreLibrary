@@ -126,8 +126,8 @@ namespace Debugger
         /// </summary>
         public string ErrorColor
         {
-            get => DebugRegister.ErrorColor;
-            set => DebugRegister.ErrorColor = value;
+            get => DebuggerResources.ErrorColor;
+            set => DebuggerResources.ErrorColor = value;
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace Debugger
         /// </summary>
         public string WarningColor
         {
-            get => DebugRegister.WarningColor;
-            set => DebugRegister.WarningColor = value;
+            get => DebuggerResources.WarningColor;
+            set => DebuggerResources.WarningColor = value;
         }
 
         /// <summary>
@@ -144,8 +144,8 @@ namespace Debugger
         /// </summary>
         public string InformationColor
         {
-            get => DebugRegister.InformationColor;
-            set => DebugRegister.InformationColor = value;
+            get => DebuggerResources.InformationColor;
+            set => DebuggerResources.InformationColor = value;
         }
 
         /// <summary>
@@ -153,8 +153,8 @@ namespace Debugger
         /// </summary>
         public string ExternalColor
         {
-            get => DebugRegister.ExternalColor;
-            set => DebugRegister.ExternalColor = value;
+            get => DebuggerResources.ExternalColor;
+            set => DebuggerResources.ExternalColor = value;
         }
 
         /// <summary>
@@ -162,8 +162,8 @@ namespace Debugger
         /// </summary>
         public string StandardColor
         {
-            get => DebugRegister.StandardColor;
-            set => DebugRegister.StandardColor = value;
+            get => DebuggerResources.StandardColor;
+            set => DebuggerResources.StandardColor = value;
         }
 
         /// <summary>

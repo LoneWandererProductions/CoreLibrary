@@ -33,11 +33,11 @@ namespace Debugger
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             var options = ColorOptions.GetColorOptions();
-            DebugRegister.ErrorColor = CombColorError.StartColor;
-            DebugRegister.WarningColor = CombColorWarning.StartColor;
-            DebugRegister.InformationColor = CombColorInformation.StartColor;
-            DebugRegister.ExternalColor = CombColorExternal.StartColor;
-            DebugRegister.StandardColor = CombColorStandard.StartColor;
+            DebuggerResources.ErrorColor = CombColorError.StartColor;
+            DebuggerResources.WarningColor = CombColorWarning.StartColor;
+            DebuggerResources.InformationColor = CombColorInformation.StartColor;
+            DebuggerResources.ExternalColor = CombColorExternal.StartColor;
+            DebuggerResources.StandardColor = CombColorStandard.StartColor;
             DebugRegister.XmlSerializerObject(DataContext, options);
         }
 
@@ -54,11 +54,11 @@ namespace Debugger
             }
 
             DataContext = DebugRegister.Config;
-            CombColorError.StartColor = DebugRegister.ErrorColor;
-            CombColorWarning.StartColor = DebugRegister.WarningColor;
-            CombColorInformation.StartColor = DebugRegister.InformationColor;
-            CombColorExternal.StartColor = DebugRegister.ExternalColor;
-            CombColorStandard.StartColor = DebugRegister.StandardColor;
+            CombColorError.StartColor = DebuggerResources.ErrorColor;
+            CombColorWarning.StartColor = DebuggerResources.WarningColor;
+            CombColorInformation.StartColor = DebuggerResources.InformationColor;
+            CombColorExternal.StartColor = DebuggerResources.ExternalColor;
+            CombColorStandard.StartColor = DebuggerResources.StandardColor;
         }
 
         /// <summary>

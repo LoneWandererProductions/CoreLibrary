@@ -33,30 +33,30 @@ namespace Debugger
                 textRange.ApplyPropertyValue(TextElement.BackgroundProperty, DebugRegister.FoundColor);
             }
 
-            if (line.StartsWith(nameof(ErCode.Error), StringComparison.Ordinal))
+            if (line.StartsWith(DebuggerResources.LogLvlOne, StringComparison.Ordinal))
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.ErrorColor);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.ErrorColor);
             }
 
-            if (line.StartsWith(nameof(ErCode.Warning), StringComparison.Ordinal))
+            if (line.StartsWith(DebuggerResources.LogLvlTwo, StringComparison.Ordinal))
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.WarningColor);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.WarningColor);
             }
 
-            if (line.StartsWith(nameof(ErCode.Information), StringComparison.Ordinal))
+            if (line.StartsWith(DebuggerResources.LogLvlThree, StringComparison.Ordinal))
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.InformationColor);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.InformationColor);
             }
 
-            if (line.StartsWith(nameof(ErCode.External), StringComparison.Ordinal))
+            if (line.StartsWith(DebuggerResources.LogLvlFour, StringComparison.Ordinal))
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.ExternalColor);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.ExternalColor);
             }
 
             if (!line.Contains(nameof(ErCode.External)) && !line.Contains(nameof(ErCode.Error)) &&
                 !line.Contains(nameof(ErCode.Warning)) && !line.Contains(nameof(ErCode.Information)))
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.StandardColor);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.StandardColor);
             }
         }
     }
