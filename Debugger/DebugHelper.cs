@@ -33,22 +33,22 @@ namespace Debugger
                 textRange.ApplyPropertyValue(TextElement.BackgroundProperty, DebugRegister.FoundColor);
             }
 
-            if (line.Contains(nameof(ErCode.Error)))
+            if (line.StartsWith(nameof(ErCode.Error), StringComparison.Ordinal))
             {
                 textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.ErrorColor);
             }
 
-            if (line.Contains(nameof(ErCode.Warning)))
+            if (line.StartsWith(nameof(ErCode.Warning), StringComparison.Ordinal))
             {
                 textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.WarningColor);
             }
 
-            if (line.Contains(nameof(ErCode.Information)))
+            if (line.StartsWith(nameof(ErCode.Information), StringComparison.Ordinal))
             {
                 textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.InformationColor);
             }
 
-            if (line.Contains(nameof(ErCode.External)))
+            if (line.StartsWith(nameof(ErCode.External), StringComparison.Ordinal))
             {
                 textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebugRegister.ExternalColor);
             }
