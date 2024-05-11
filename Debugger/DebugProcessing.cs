@@ -186,19 +186,19 @@ namespace Debugger
             switch (lvl)
             {
                 case ErCode.Error:
-                    error = string.Concat(DateTime.Now, DebuggerResources.LogLvlOne, error);
+                    error = string.Concat( DebuggerResources.LogLvlOne, DateTime.Now, error);
                     break;
 
                 case ErCode.Warning:
-                    error = string.Concat(DateTime.Now, DebuggerResources.LogLvlTwo, error);
+                    error = string.Concat(DebuggerResources.LogLvlTwo, DateTime.Now, error);
                     break;
 
                 case ErCode.Information:
-                    error = string.Concat(DateTime.Now, DebuggerResources.LogLvlThree, error);
+                    error = string.Concat( DebuggerResources.LogLvlThree, DateTime.Now, error);
                     break;
 
                 case ErCode.External:
-                    error = string.Concat(DebuggerResources.LogLvlFour, error);
+                    error = string.Concat(DebuggerResources.LogLvlFour, DateTime.Now, error);
                     break;
             }
 
@@ -276,7 +276,7 @@ namespace Debugger
         {
             // Enqueue the message
             MessageQueue.Enqueue(message);
-            // Signal that a message has been enqueued
+            // Signal that a message has been queued
             MessageQueuedEvent.Set();
         }
 
