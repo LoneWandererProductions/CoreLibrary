@@ -38,22 +38,22 @@ namespace Debugger
         /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
         /// </summary>
-        internal const string LoglvlOne = " , Error: ";
+        internal const string LogLvlOne = " , Error: ";
 
         /// <summary>
         ///     The log Level two (const). Value: " , Warning: ".
         /// </summary>
-        internal const string LoglvlTwo = " , Warning: ";
+        internal const string LogLvlTwo = " , Warning: ";
 
         /// <summary>
         ///     The log Level three (const). Value: " , Information: ".
         /// </summary>
-        internal const string LoglvlThree = " , Information: ";
+        internal const string LogLvlThree = " , Information: ";
 
         /// <summary>
         ///     The log Level four (const). Value: "External Source: ".
         /// </summary>
-        internal const string LoglvlFour = "External Source: ";
+        internal const string LogLvlFour = "External Source: ";
 
         /// <summary>
         ///     The error serializing (const). Value: "Unexpected Problems appeared while trying to serialize object: ".
@@ -66,9 +66,9 @@ namespace Debugger
         internal const string ErrorProcessing = "Error processing message queue:";
 
         /// <summary>
-        ///     The formating (const). Value: " : ".
+        ///     The formatting (const). Value: " : ".
         /// </summary>
-        internal const string Formating = " : ";
+        internal const string Formatting = " : ";
 
         /// <summary>
         ///     The caller (const). Value: "Method: ".
@@ -111,10 +111,10 @@ namespace Debugger
         internal const string ManualStart = "Manual Start for Debug started";
 
         /// <summary>
-        ///     The object formating (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
+        ///     The object formatting (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
         /// </summary>
         /// ss
-        internal static readonly string ObjectFormating = string.Concat(Environment.NewLine, "Object:",
+        internal static readonly string ObjectFormatting = string.Concat(Environment.NewLine, "Object:",
             Environment.NewLine);
     }
 }

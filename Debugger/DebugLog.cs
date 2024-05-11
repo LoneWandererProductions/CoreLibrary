@@ -193,7 +193,7 @@ namespace Debugger
         private static string GenerateInfo(string methodName, int line, string file)
         {
             return string.Concat(DebuggerResources.Caller, methodName, DebuggerResources.LineNumber, line,
-                Environment.NewLine, DebuggerResources.Location, DebuggerResources.Formating, file);
+                Environment.NewLine, DebuggerResources.Location, DebuggerResources.Formatting, file);
         }
 
         /// <summary>

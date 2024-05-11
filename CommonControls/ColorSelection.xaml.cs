@@ -113,7 +113,6 @@ namespace CommonControls
                 ColorPalette = _colorDct.Keys.ToList();
 
                 SwitchToStartColor();
-
             }
             catch (ArgumentException ex)
             {

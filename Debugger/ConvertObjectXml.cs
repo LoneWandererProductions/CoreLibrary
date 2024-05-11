@@ -56,7 +56,7 @@ namespace Debugger
             foreach (var element in serializeObject)
             {
                 var vector = ConvertObjectToXml(element.Value);
-                bld.Append(element.Key).Append(DebuggerResources.Formating).AppendLine(vector);
+                bld.Append(element.Key).Append(DebuggerResources.Formatting).AppendLine(vector);
             }
 
             return bld.ToString();
