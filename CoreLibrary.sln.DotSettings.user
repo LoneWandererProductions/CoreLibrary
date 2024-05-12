@@ -1,13 +1,13 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=22cef65f_002D8313_002D4418_002Db3ab_002D8f58fe7f8b2f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CommonCtrl" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=22cef65f_002D8313_002D4418_002Db3ab_002D8f58fe7f8b2f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CommonCtrl" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fda52545_002De1eb_002D4d94_002D9d07_002Dd3c4be883354/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SpeedConvertCif" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;MSTest::D2D1B7B6-0C94-45F8-BD4E-1FB9A318AC21::net5.0-windows7.0::CommonLibraryTests.Image.SpeedConvertCif&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A890CA68-39D7-449C-869D-193BB56B6409::net5.0-windows7.0::CommonLibraryGuiTests.LogicEvaluator&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::D2D1B7B6-0C94-45F8-BD4E-1FB9A318AC21::net5.0-windows7.0::CommonLibraryTests.LogicEvaluator&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryGuiTests" Presentation="&amp;lt;CommonLibraryGuiTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibrarySqlLiteTests" Presentation="&amp;lt;CommonLibrarySqlLiteTests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryTests" Presentation="&amp;lt;CommonLibraryTests&amp;gt;" /&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
 	

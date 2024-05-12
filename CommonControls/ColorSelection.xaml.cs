@@ -61,16 +61,6 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Handles the Loaded event of the UserControl ColorSelection.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void ColorSelection_Loaded(object sender, RoutedEventArgs e)
-        {
-            Initiate();
-        }
-
-        /// <summary>
         ///     Gets or sets the Start color.
         /// </summary>
         public string StartColor
@@ -87,6 +77,16 @@ namespace CommonControls
         ///     Gets the color palette.
         /// </summary>
         public List<string> ColorPalette { get; private set; }
+
+        /// <summary>
+        ///     Handles the Loaded event of the UserControl ColorSelection.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void ColorSelection_Loaded(object sender, RoutedEventArgs e)
+        {
+            Initiate();
+        }
 
 
         /// <summary>
@@ -199,11 +199,14 @@ namespace CommonControls
 
 
         /// <summary>
-        /// Switches to start color.
+        ///     Switches to start color.
         /// </summary>
         private void SwitchToStartColor()
         {
-            if (string.IsNullOrEmpty(StartColor)) return;
+            if (string.IsNullOrEmpty(StartColor))
+            {
+                return;
+            }
 
             CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
         }

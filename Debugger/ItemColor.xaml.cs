@@ -45,7 +45,7 @@ namespace Debugger
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Debugger.ItemColor" /> class.
+        ///     Initializes a new instance of the <see cref="T:Debugger.ItemColor" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="option">The option for the parameter.</param>
@@ -74,7 +74,7 @@ namespace Debugger
 
 
         /// <summary>
-        /// Gets the option.
+        ///     Gets the option.
         /// </summary>
         /// <returns>Return selected Color Options</returns>
         internal ColorOption GetOption()
