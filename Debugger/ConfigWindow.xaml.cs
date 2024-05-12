@@ -53,6 +53,7 @@ namespace Debugger
                 DebugRegister.ReadConfigFile();
             }
 
+            ColorOptions.AddItemColors(DebugRegister.ColorOptions);
             DataContext = DebugRegister.Config;
             CombColorError.StartColor = DebuggerResources.ErrorColor;
             CombColorWarning.StartColor = DebuggerResources.WarningColor;

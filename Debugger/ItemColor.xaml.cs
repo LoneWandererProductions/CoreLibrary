@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
 using System;
 using System.Windows.Controls;
 
@@ -44,21 +43,22 @@ namespace Debugger
             ColorPicker.ColorChanged += ColorPicker_ColorChanged;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemColor"/> class.
+        /// Initializes a new instance of the <see cref="T:Debugger.ItemColor" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="option">The option for the parameter.</param>
         public ItemColor(int id, ColorOption option)
         {
             InitializeComponent();
-            Id = id;
             View.Reference = this;
+            Id = id;
             View.EntryText = option.EntryText;
             View.ColorName = option.ColorName;
             ColorPicker.ColorChanged += ColorPicker_ColorChanged;
         }
-        
+
         /// <summary>
         ///     Gets the identifier.
         /// </summary>

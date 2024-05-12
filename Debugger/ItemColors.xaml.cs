@@ -5,24 +5,28 @@
  * PURPOSE:     UserControl, that holds the ItemColor controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+// ReSharper disable MemberCanBeInternal
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media.Animation;
 
 namespace Debugger
 {
+    /// <inheritdoc cref="System.Windows.Controls.UserControl" />
     /// <summary>
     ///     ItemColors UserControl
     /// </summary>
-    public partial class ItemColors
+    public sealed partial class ItemColors
     {
         /// <summary>
         ///     The filter option
         /// </summary>
         private readonly Dictionary<int, ItemColor> _filterOption = new();
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ItemColors" /> class.
+        ///     Initializes a new instance of the <see cref="T:Debugger.ItemColors" /> class.
         /// </summary>
         public ItemColors()
         {
@@ -34,15 +38,16 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemColors"/> class.
+        /// Sets the start value.
         /// </summary>
-        /// <param name="filterOption">The filter options we want to display.</param>
-        public ItemColors(List<ColorOption> filterOption)
+        /// <param name="colorOptions">The color options.</param>
+        public void AddItemColors(IEnumerable<ColorOption> colorOptions)
         {
             InitializeComponent();
             View.Reference = this;
-            _filterOption = new Dictionary<int, ItemColor>();
-            AddFilter(filterOption);
+            View.Filter = _filterOption;
+            _filterOption.Clear();
+            AddFilter(colorOptions);
         }
 
         /// <summary>
@@ -86,10 +91,12 @@ namespace Debugger
         /// <summary>
         /// Adds the filter.
         /// </summary>
-        /// <param name="filterOption">The filter option.</param>
-        private void AddFilter(List<ColorOption> filterOption)
+        /// <param name="colorOptions">The filter option.</param>
+        private void AddFilter(IEnumerable<ColorOption> colorOptions)
         {
-            foreach (var item in filterOption)
+            if(colorOptions == null || colorOptions.Count() ==0) return;
+
+            foreach (var item in colorOptions)
             {
                 var id = GetFirstAvailableIndex(_filterOption.Keys.ToList());
 

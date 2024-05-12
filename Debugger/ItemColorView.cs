@@ -12,10 +12,11 @@ using ViewModel;
 
 namespace Debugger
 {
+    /// <inheritdoc />
     /// <summary>
     ///     View vor the ItemColor Control
     /// </summary>
-    /// <seealso cref="INotifyPropertyChanged" />
+    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     internal sealed class ItemColorView : INotifyPropertyChanged
     {
         /// <summary>

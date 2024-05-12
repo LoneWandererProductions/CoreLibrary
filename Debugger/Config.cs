@@ -136,7 +136,11 @@ namespace Debugger
         public string WarningColor
         {
             get => DebuggerResources.WarningColor;
-            set => DebuggerResources.WarningColor = value;
+            set
+            {
+                DebuggerResources.WarningColor = value;
+                RaisePropertyChangedEvent(nameof(WarningColor));
+            }
         }
 
         /// <summary>
@@ -172,6 +176,6 @@ namespace Debugger
         /// <value>
         /// The color options.
         /// </value>
-        public List<ColorOption> ColorOptions { get; set; }
+        public List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
     }
 }

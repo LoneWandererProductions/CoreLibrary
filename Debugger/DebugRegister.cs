@@ -85,7 +85,7 @@ namespace Debugger
         /// <value>
         /// The color options.
         /// </value>
-        public static List<ColorOption> ColorOptions { get; private set; }
+        public static List<ColorOption> ColorOptions { get; private set; } = DebuggerResources.InitialOptions;
 
         /// <summary>
         ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
