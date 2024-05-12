@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type Debugger:ConfigExtended}}"
-        Title="Config" Height="500" Width="350"
+        Title="Config" Height="600" Width="350"
         x:ClassModifier="internal" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,13 +23,7 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="150" />
             <RowDefinition Height="5" />
             <RowDefinition />
             <RowDefinition Height="25" />
@@ -48,103 +42,47 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
-        <Label Content="File Path:" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1"
-               VerticalAlignment="Stretch" />
-        <Label Content="Suppress Window:" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3"
-               VerticalAlignment="Stretch" />
-        <Label Content="Ticks:" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Stretch" />
-        <Label Content="Is Running:" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="7"
-               VerticalAlignment="Stretch" />
-        <Label Content="Dump Active:" HorizontalAlignment="Stretch" Grid.Row="9" VerticalAlignment="Stretch"
+        <Label Content="File Path:" Grid.Column="1" Grid.Row="1" />
+        <Label Content="Suppress Window:" Grid.Column="1" Grid.Row="3" />
+        <Label Content="Ticks:" Grid.Column="1" Grid.Row="5" />
+        <Label Content="Is Running:" Grid.Column="1" Grid.Row="7" />
+        <Label Content="Dump Active:" Grid.Row="9"
                Grid.Column="1" />
         <TextBox Grid.ColumnSpan="7"
                  Grid.Column="3"
-                 HorizontalAlignment="Stretch"
                  Grid.Row="1"
-                 TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
                  Text="{Binding DebugPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <CheckBox Grid.ColumnSpan="5"
                   Grid.Column="3"
-                  HorizontalAlignment="Stretch"
                   Grid.Row="3"
-                  VerticalAlignment="Stretch"
                   IsHitTestVisible="false"
                   IsChecked="{Binding SuppressWindow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="5" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
+        <TextBox Grid.Column="3" Grid.Row="5" TextWrapping="Wrap"
                  Text="{Binding HourTick, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox Grid.Column="5" HorizontalAlignment="Stretch" Grid.Row="5" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
+        <TextBox Grid.Column="5" Grid.Row="5" TextWrapping="Wrap"
                  Text="{Binding MinutesTick, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox Grid.Column="7" HorizontalAlignment="Stretch" Grid.Row="5" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
+        <TextBox Grid.Column="7" Grid.Row="5" TextWrapping="Wrap"
                  Text="{Binding SecondsTick, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Button
             Content="Save"
             Grid.Column="3"
-            HorizontalAlignment="Stretch"
-            Grid.Row="22"
-            VerticalAlignment="Stretch" Click="BtnSave_Click" Grid.ColumnSpan="5" />
+            Grid.Row="16" Click="BtnSave_Click" Grid.ColumnSpan="5" />
         <Button
             Content="Cancel"
-            HorizontalAlignment="Stretch"
-            Grid.Row="22"
-            VerticalAlignment="Stretch" Click="BtnCnl_Click" Grid.ColumnSpan="2" Grid.Column="0" />
+            Grid.Row="16" Click="BtnCnl_Click" Grid.ColumnSpan="2" Grid.Column="0"/>
         <CheckBox Grid.ColumnSpan="5"
                   Grid.Column="3"
-                  HorizontalAlignment="Stretch"
                   Grid.Row="7"
-                  VerticalAlignment="Stretch"
                   IsHitTestVisible="false"
                   IsChecked="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
         <CheckBox Grid.ColumnSpan="5"
                   Grid.Column="3"
-                  HorizontalAlignment="Stretch"
                   Grid.Row="9"
-                  VerticalAlignment="Stretch"
                   IsChecked="{Binding IsDumpActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <commonControls:ColorSelection x:Name="CombColorError"
-                                       Grid.ColumnSpan="6"
-                                       Grid.Column="3"
-                                       HorizontalAlignment="Stretch"
-                                       Grid.Row="11"
-                                       VerticalAlignment="Stretch" />
-        <commonControls:ColorSelection x:Name="CombColorWarning"
-                                       Grid.ColumnSpan="6"
-                                       Grid.Column="3"
-                                       HorizontalAlignment="Stretch"
-                                       Grid.Row="13"
-                                       VerticalAlignment="Stretch"
-                                       StartColor="Black" />
-        <commonControls:ColorSelection x:Name="CombColorInformation"
-                                       Grid.ColumnSpan="6"
-                                       Grid.Column="3"
-                                       HorizontalAlignment="Stretch"
-                                       Grid.Row="15"
-                                       VerticalAlignment="Stretch" />
-        <commonControls:ColorSelection x:Name="CombColorExternal"
-                                       Grid.ColumnSpan="6"
-                                       Grid.Column="3"
-                                       HorizontalAlignment="Stretch"
-                                       Grid.Row="17"
-                                       VerticalAlignment="Stretch" />
-        <commonControls:ColorSelection x:Name="CombColorStandard"
-                                       Grid.ColumnSpan="6"
-                                       Grid.Column="3"
-                                       HorizontalAlignment="Stretch"
-                                       Grid.Row="19"
-                                       VerticalAlignment="Stretch" />
-        <Label Content="Error Color:" HorizontalAlignment="Stretch" Grid.Row="11" VerticalAlignment="Stretch"
+        <Label Content="Color of the Text" Grid.Row="11"
                Grid.Column="1" />
-        <Label Content="Warning Color:" HorizontalAlignment="Stretch" Grid.Row="13" VerticalAlignment="Stretch"
-               Grid.Column="1" />
-        <Label Content="Information Color:" HorizontalAlignment="Stretch" Grid.Row="15" VerticalAlignment="Stretch"
-               Grid.Column="1" />
-        <Label Content="External Color:" HorizontalAlignment="Stretch" Grid.Row="17" VerticalAlignment="Stretch"
-               Grid.Column="1" />
-        <Label Content="Standard Color:" HorizontalAlignment="Stretch" Grid.Row="19" VerticalAlignment="Stretch"
-               Grid.Column="1" />
-        <Debugger:ItemColors Grid.Column="1" Grid.Row="21" Grid.ColumnSpan="9" x:Name="ColorOptions"/>
+        <Label Content="Contains the following Text" Grid.Row="11"
+               Grid.Column="3" Grid.ColumnSpan="7" />
+        <Debugger:ItemColors Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="9" x:Name="ColorOptions"/>
     </Grid>
 </Window>

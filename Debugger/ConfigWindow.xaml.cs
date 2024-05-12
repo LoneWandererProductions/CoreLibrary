@@ -33,11 +33,6 @@ namespace Debugger
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             var options = ColorOptions.GetColorOptions();
-            DebuggerResources.ErrorColor = CombColorError.StartColor;
-            DebuggerResources.WarningColor = CombColorWarning.StartColor;
-            DebuggerResources.InformationColor = CombColorInformation.StartColor;
-            DebuggerResources.ExternalColor = CombColorExternal.StartColor;
-            DebuggerResources.StandardColor = CombColorStandard.StartColor;
             DebugRegister.XmlSerializerObject(DataContext, options);
         }
 
@@ -55,11 +50,6 @@ namespace Debugger
 
             ColorOptions.AddItemColors(DebugRegister.ColorOptions);
             DataContext = DebugRegister.Config;
-            CombColorError.StartColor = DebuggerResources.ErrorColor;
-            CombColorWarning.StartColor = DebuggerResources.WarningColor;
-            CombColorInformation.StartColor = DebuggerResources.InformationColor;
-            CombColorExternal.StartColor = DebuggerResources.ExternalColor;
-            CombColorStandard.StartColor = DebuggerResources.StandardColor;
         }
 
         /// <summary>

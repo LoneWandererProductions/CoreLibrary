@@ -24,8 +24,6 @@ namespace Debugger
         /// <param name="found">The string was filtered</param>
         internal static void AddRange(TextRange textRange, string line, bool found)
         {
-            //Todo make configurable in the future in config window
-
             textRange.Text = string.Concat(line, Environment.NewLine);
 
             if (found)
@@ -33,31 +31,24 @@ namespace Debugger
                 textRange.ApplyPropertyValue(TextElement.BackgroundProperty, DebugRegister.FoundColor);
             }
 
-            if (line.StartsWith(DebuggerResources.LogLvlOne, StringComparison.Ordinal))
+            ColorOption option;
+
+            for (int i = 1; i < DebugRegister.ColorOptions.Count; i++)
             {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.ErrorColor);
+                option = DebugRegister.ColorOptions[i];
+
+                if (!line.StartsWith(option.EntryText, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, option.ColorName);
+                return;
             }
 
-            if (line.StartsWith(DebuggerResources.LogLvlTwo, StringComparison.Ordinal))
-            {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.WarningColor);
-            }
+            option = DebugRegister.ColorOptions[0];
 
-            if (line.StartsWith(DebuggerResources.LogLvlThree, StringComparison.Ordinal))
-            {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.InformationColor);
-            }
-
-            if (line.StartsWith(DebuggerResources.LogLvlFour, StringComparison.Ordinal))
-            {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.ExternalColor);
-            }
-
-            if (!line.Contains(nameof(ErCode.External)) && !line.Contains(nameof(ErCode.Error)) &&
-                !line.Contains(nameof(ErCode.Warning)) && !line.Contains(nameof(ErCode.Information)))
-            {
-                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, DebuggerResources.StandardColor);
-            }
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, option.ColorName);
         }
     }
 }
