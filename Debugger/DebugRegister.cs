@@ -30,6 +30,24 @@ namespace Debugger
             DebuggerResources.ConfigFile);
 
         /// <summary>
+        ///     The base options
+        /// </summary>
+        private static readonly ConfigExtended BaseOptions = new()
+        {
+            DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
+            SecondsTick = 1,
+            MinutesTick = 0,
+            HourTick = 0,
+            ErrorColor = DebuggerResources.ErrorColor,
+            InformationColor = DebuggerResources.InformationColor,
+            ExternalColor = DebuggerResources.ExternalColor,
+            StandardColor = DebuggerResources.StandardColor,
+            WarningColor = DebuggerResources.WarningColor,
+            IsDumpActive = false,
+            ColorOptions = DebuggerResources.InitialOptions
+        };
+
+        /// <summary>
         ///     Gets or sets a value indicating whether the Debugger is Running
         /// </summary>
         public static bool IsRunning { get; internal set; }
@@ -105,33 +123,15 @@ namespace Debugger
         internal static ConfigExtended Config { get; private set; }
 
         /// <summary>
-        /// Gets the color options.
+        ///     Gets the color options.
         /// </summary>
         /// <value>
-        /// The color options.
+        ///     The color options.
         /// </value>
         internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
 
         /// <summary>
-        /// The base options
-        /// </summary>
-        private static readonly ConfigExtended BaseOptions = new()
-        {
-            DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
-            SecondsTick = 1,
-            MinutesTick = 0,
-            HourTick = 0,
-            ErrorColor = DebuggerResources.ErrorColor,
-            InformationColor = DebuggerResources.InformationColor,
-            ExternalColor = DebuggerResources.ExternalColor,
-            StandardColor = DebuggerResources.StandardColor,
-            WarningColor = DebuggerResources.WarningColor,
-            IsDumpActive = false,
-            ColorOptions = DebuggerResources.InitialOptions
-        };
-
-        /// <summary>
-        /// Resets this instance.
+        ///     Resets this instance.
         /// </summary>
         internal static void Reset()
         {
@@ -224,7 +224,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Generic Serializer Of Objects
+        ///     Generic Serializer Of Objects
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="serializeObject">Target Object</param>

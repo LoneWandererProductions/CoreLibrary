@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBeInternal, same as usual we can not make it internal because we bind it to the window
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -40,8 +39,7 @@ namespace CommonDialogs
         /// <param name="parameter">Parameter</param>
         /// <param name="culture">CultureInfo</param>
         /// <returns>Image</returns>
-        [return: MaybeNull]
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var str = value as string;
 

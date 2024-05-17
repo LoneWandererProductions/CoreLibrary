@@ -11,21 +11,22 @@ using System.Collections.Generic;
 
 namespace CommonFilter
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Filter Interface implementation
     /// </summary>
-    /// <seealso cref="IFilter" />
+    /// <seealso cref="T:CommonFilter.IFilter" />
     public sealed class Filter : IFilter
     {
         /// <summary>
         ///     The evaluate
         /// </summary>
-        private ILogicEvaluations _evaluate;
+        private ILogicEvaluations _evaluate = null!;
 
         /// <summary>
         ///     The filter
         /// </summary>
-        private FilterWindow _filter;
+        private FilterWindow _filter = null!;
 
         /// <summary>
         ///     Gets or sets the options.
@@ -33,13 +34,15 @@ namespace CommonFilter
         /// <value>
         ///     The options.
         /// </value>
-        internal List<FilterOption> Conditions { get; set; }
+        internal List<FilterOption> Conditions { get; set; } = null!;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Occurs when [filter changed].
         /// </summary>
         public event EventHandler FilterChanged;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Starts this instance.
         /// </summary>
@@ -50,6 +53,7 @@ namespace CommonFilter
             _filter.ShowDialog();
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Starts the specified evaluate.
         ///     So we can use custom Evaluations
@@ -62,6 +66,7 @@ namespace CommonFilter
             _filter.ShowDialog();
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Checks the filter.
         /// </summary>

@@ -186,7 +186,7 @@ namespace Debugger
             switch (lvl)
             {
                 case ErCode.Error:
-                    error = string.Concat( DebuggerResources.LogLvlOne, DateTime.Now, DebuggerResources.Spacer, error);
+                    error = string.Concat(DebuggerResources.LogLvlOne, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
 
                 case ErCode.Warning:
@@ -194,7 +194,7 @@ namespace Debugger
                     break;
 
                 case ErCode.Information:
-                    error = string.Concat( DebuggerResources.LogLvlThree, DateTime.Now, DebuggerResources.Spacer, error);
+                    error = string.Concat(DebuggerResources.LogLvlThree, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
 
                 case ErCode.External:
@@ -290,7 +290,7 @@ namespace Debugger
             {
                 try
                 {
-                    // Wait for a message to be enqueued or until cancellation is requested
+                    // Wait for a message to be enqueue or until cancellation is requested
                     MessageQueuedEvent.Wait(cancellationToken);
 
                     // Dequeue all messages and write them to the file

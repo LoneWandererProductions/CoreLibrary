@@ -20,14 +20,14 @@ namespace Debugger
     internal sealed class ItemColorView : INotifyPropertyChanged
     {
         /// <summary>
+        ///     The color name
+        /// </summary>
+        private string _colorName;
+
+        /// <summary>
         ///     The entry text
         /// </summary>
         private string _entryText;
-
-        /// <summary>
-        /// The color name
-        /// </summary>
-        private string _colorName;
 
         /// <summary>
         ///     Gets the options.

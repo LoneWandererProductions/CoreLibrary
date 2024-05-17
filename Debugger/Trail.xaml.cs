@@ -255,7 +255,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Loads the file async to speed up the whole mess.
+        ///     Loads the file async to speed up the whole mess.
         /// </summary>
         private async Task LoadFile()
         {

@@ -9,7 +9,6 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Win32;
 
@@ -77,8 +76,7 @@ namespace CommonDialogs
         /// <param name="appendage">File Extension we allow</param>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
-        [return: MaybeNull]
-        public static PathObject HandleFileOpen(string appendage, string folder = "")
+        public static PathObject? HandleFileOpen(string appendage, string folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {
@@ -110,8 +108,7 @@ namespace CommonDialogs
         /// <param name="appendage">File Extension we allow</param>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
-        [return: MaybeNull]
-        public static PathObject HandleFileSave(string appendage, string folder = "")
+        public static PathObject? HandleFileSave(string appendage, string folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {

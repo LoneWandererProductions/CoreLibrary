@@ -39,7 +39,7 @@ namespace Debugger
         /// <summary>
         ///     Base Text(const). Value: "Color for everything else".
         /// </summary>
-        internal const string BaseText = "<Color for everything else>";
+        private const string BaseText = "<Color for everything else>";
 
         /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
@@ -77,7 +77,7 @@ namespace Debugger
         internal const string Formatting = " : ";
 
         /// <summary>
-        /// The spacer (const). Value:  " , ".
+        ///     The spacer (const). Value:  " , ".
         /// </summary>
         internal const string Spacer = " , ";
 
@@ -122,48 +122,29 @@ namespace Debugger
         internal const string ManualStart = "Manual Start of Trail.";
 
         /// <summary>
-        ///     The object formatting (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
-        /// </summary>
-        /// ss
-        internal static readonly string ObjectFormatting = string.Concat(Environment.NewLine, "Object:",
-            Environment.NewLine);
-
-        /// <summary>
-        /// The initial options for the colors
-        /// </summary>
-        internal static readonly List<ColorOption> InitialOptions = new()
-        {
-            new ColorOption() { ColorName = DebugRegister.StandardColor, EntryText = BaseText },
-            new ColorOption() { ColorName = DebugRegister.ErrorColor, EntryText = LogLvlOne },
-            new ColorOption() { ColorName = DebugRegister.WarningColor, EntryText = LogLvlTwo },
-            new ColorOption() { ColorName = DebugRegister.InformationColor, EntryText = LogLvlThree },
-            new ColorOption() { ColorName = DebugRegister.ExternalColor, EntryText = LogLvlFour },
-        };
-
-        /// <summary>
         ///     Gets or sets the error color.
         /// </summary>
-        internal const string ErrorColor  = "Red";
+        internal const string ErrorColor = "Red";
 
         /// <summary>
         ///     Gets or sets the warning color.
         /// </summary>
-        internal const string WarningColor  = "Orange";
+        internal const string WarningColor = "Orange";
 
-    /// <summary>
-    ///     Gets or sets the information color.
-    /// </summary>
-    internal const string InformationColor  = "Blue";
+        /// <summary>
+        ///     Gets or sets the information color.
+        /// </summary>
+        internal const string InformationColor = "Blue";
 
         /// <summary>
         ///     Gets or sets the external color.
         /// </summary>
-        internal const string ExternalColor  = "Green";
+        internal const string ExternalColor = "Green";
 
         /// <summary>
         ///     Gets or sets the standard color.
         /// </summary>
-        internal const string StandardColor  = "Black";
+        internal const string StandardColor = "Black";
 
         /// <summary>
         ///     Gets or sets the color of the found item in the line
@@ -171,6 +152,25 @@ namespace Debugger
         /// <value>
         ///     The color of the found.
         /// </value>
-        internal const string FoundColor  = "Yellow";
+        internal const string FoundColor = "Yellow";
+
+        /// <summary>
+        ///     The object formatting (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
+        /// </summary>
+        /// ss
+        internal static readonly string ObjectFormatting = string.Concat(Environment.NewLine, "Object:",
+            Environment.NewLine);
+
+        /// <summary>
+        ///     The initial options for the colors
+        /// </summary>
+        internal static readonly List<ColorOption> InitialOptions = new()
+        {
+            new ColorOption { ColorName = DebugRegister.StandardColor, EntryText = BaseText },
+            new ColorOption { ColorName = DebugRegister.ErrorColor, EntryText = LogLvlOne },
+            new ColorOption { ColorName = DebugRegister.WarningColor, EntryText = LogLvlTwo },
+            new ColorOption { ColorName = DebugRegister.InformationColor, EntryText = LogLvlThree },
+            new ColorOption { ColorName = DebugRegister.ExternalColor, EntryText = LogLvlFour }
+        };
     }
 }

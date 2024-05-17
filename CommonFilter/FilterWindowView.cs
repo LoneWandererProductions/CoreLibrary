@@ -24,22 +24,12 @@ namespace CommonFilter
     internal sealed class FilterWindowView : INotifyPropertyChanged
     {
         /// <summary>
-        ///     The add command
-        /// </summary>
-        private ICommand _addCommand;
-
-        /// <summary>
-        ///     The done command
-        /// </summary>
-        private ICommand _doneCommand;
-
-        /// <summary>
         ///     Gets or sets the reference.
         /// </summary>
         /// <value>
         ///     The reference.
         /// </value>
-        public FilterWindow Reference { get; set; }
+        public FilterWindow Reference { get; set; } = null!;
 
         /// <summary>
         ///     Gets the add command.
@@ -48,7 +38,7 @@ namespace CommonFilter
         ///     The add command.
         /// </value>
         public ICommand AddCommand =>
-            _addCommand = new DelegateCommand<object>(AddAction, CanExecute);
+            new DelegateCommand<object>(AddAction, CanExecute);
 
         /// <summary>
         ///     Gets the done command.
@@ -57,7 +47,7 @@ namespace CommonFilter
         ///     The done command.
         /// </value>
         public ICommand DoneCommand =>
-            _doneCommand = new DelegateCommand<object>(DoneAction, CanExecute);
+            new DelegateCommand<object>(DoneAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the filter.
