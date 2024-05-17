@@ -37,6 +37,11 @@ namespace Debugger
         internal const string FileExt = "Log Files (*.txt)|*.txt;";
 
         /// <summary>
+        ///     Base Text(const). Value: "<Color for everything else>".
+        /// </summary>
+        internal const string BaseText = "<Color for everything else>";
+
+        /// <summary>
         ///     The log Level one (const). Value: " , Error: ".
         /// </summary>
         internal const string LogLvlOne = "Error: ";
@@ -119,17 +124,6 @@ namespace Debugger
             Environment.NewLine);
 
         /// <summary>
-        ///     The initial options for the colors
-        /// </summary>
-        internal static readonly List<ColorOption> InitialOptions = new()
-        {
-            new ColorOption { ColorName = ErrorColor, EntryText = LogLvlOne },
-            new ColorOption { ColorName = WarningColor, EntryText = LogLvlTwo },
-            new ColorOption { ColorName = InformationColor, EntryText = LogLvlThree },
-            new ColorOption { ColorName = ExternalColor, EntryText = LogLvlFour }
-        };
-
-        /// <summary>
         ///     Gets or sets the error color.
         /// </summary>
         internal static string ErrorColor { get; set; } = "Red";
@@ -153,5 +147,17 @@ namespace Debugger
         ///     Gets or sets the standard color.
         /// </summary>
         internal static string StandardColor { get; set; } = "Black";
+
+        /// <summary>
+        /// The initial options for the colors
+        /// </summary>
+        internal static readonly List<ColorOption> InitialOptions = new()
+        {
+            new ColorOption() {ColorName = StandardColor, EntryText = BaseText},
+            new ColorOption() {ColorName = ErrorColor, EntryText = LogLvlOne},
+            new ColorOption() {ColorName = WarningColor, EntryText = LogLvlTwo},
+            new ColorOption() {ColorName = InformationColor, EntryText = LogLvlThree},
+            new ColorOption() {ColorName = ExternalColor, EntryText = LogLvlFour},
+        };
     }
 }

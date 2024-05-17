@@ -52,7 +52,7 @@ namespace InterOp
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 return null;
             }
 

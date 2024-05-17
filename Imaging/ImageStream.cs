@@ -64,11 +64,11 @@ namespace Imaging
             }
             catch (InvalidOperationException ex)
             {
-                throw new InvalidOperationException(ex.ToString());
+                throw new InvalidOperationException(ex.Message);
             }
             catch (NotSupportedException ex)
             {
-                throw new NotSupportedException(ex.ToString());
+                throw new NotSupportedException(ex.Message);
             }
         }
 
@@ -114,11 +114,11 @@ namespace Imaging
             }
             catch (InvalidOperationException ex)
             {
-                throw new InvalidOperationException(ex.ToString());
+                throw new InvalidOperationException(ex.Message);
             }
             catch (NotSupportedException ex)
             {
-                throw new NotSupportedException(ex.ToString());
+                throw new NotSupportedException(ex.Message);
             }
         }
 
@@ -366,12 +366,12 @@ namespace Imaging
             catch (InsufficientMemoryException ex)
             {
                 Trace.WriteLine(ex);
-                throw new InsufficientMemoryException(ex.ToString());
+                throw new InsufficientMemoryException(ex.Message);
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                throw new ArgumentException(ex.ToString());
+                throw new ArgumentException(ex.Message);
             }
             catch (OutOfMemoryException ex)
             {

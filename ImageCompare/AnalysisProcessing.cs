@@ -78,7 +78,7 @@ namespace ImageCompare
                     {
                         //Could not load an Image
                         Trace.WriteLine(ex);
-                        throw new InvalidOperationException(ex.ToString());
+                        throw new InvalidOperationException(ex.Message);
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace ImageCompare
             {
                 //Could not load an Image
                 Trace.WriteLine(ex);
-                throw new InvalidOperationException(ex.ToString());
+                throw new InvalidOperationException(ex.Message);
             }
 
             //File was skipped? Return null

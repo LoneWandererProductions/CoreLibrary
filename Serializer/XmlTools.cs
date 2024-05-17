@@ -108,27 +108,27 @@ namespace Serializer
             }
             catch (FileNotFoundException ex)
             {
-                throw new FileNotFoundException(ex.ToString());
+                throw new FileNotFoundException(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                throw new ArgumentException(ex.ToString());
+                throw new ArgumentException(ex.Message);
             }
             catch (XmlException ex)
             {
-                throw new XmlException(ex.ToString());
+                throw new XmlException(ex.Message);
             }
             catch (IOException ex)
             {
-                throw new IOException(ex.ToString());
+                throw new IOException(ex.Message);
             }
             catch (NotSupportedException ex)
             {
-                throw new NotSupportedException(ex.ToString());
+                throw new NotSupportedException(ex.Message);
             }
             catch (SecurityException ex)
             {
-                throw new SecurityException(ex.ToString());
+                throw new SecurityException(ex.Message);
             }
 
             return doc;

@@ -65,32 +65,32 @@ namespace PluginLoader
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
                 catch (FileLoadException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
                 catch (ApplicationException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
                 catch (ReflectionTypeLoadException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
                 catch (BadImageFormatException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
                 catch (FileNotFoundException ex)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.Message));
                 }
             }
 

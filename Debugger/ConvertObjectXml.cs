@@ -87,7 +87,7 @@ namespace Debugger
             }
             catch (ArgumentNullException ex)
             {
-                str = ex.ToString();
+                str = ex.Message;
                 Trace.WriteLine(str);
             }
 

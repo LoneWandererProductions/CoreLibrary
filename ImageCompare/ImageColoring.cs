@@ -95,12 +95,12 @@ namespace ImageCompare
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new ArgumentException(ex.ToString(), path);
+                    throw new ArgumentException(ex.Message, path);
                 }
                 catch (InvalidOperationException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new InvalidOperationException(ex.ToString());
+                    throw new InvalidOperationException(ex.Message);
                 }
             }
 

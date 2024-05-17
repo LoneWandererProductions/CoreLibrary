@@ -42,11 +42,11 @@ namespace DataFormatter
             }
             catch (IOException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
             }
 
             return parts;
@@ -65,12 +65,12 @@ namespace DataFormatter
             }
             catch (IOException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 throw new IOException(string.Empty, ex);
             }
             catch (ArgumentException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 throw new ArgumentException(string.Empty, ex);
             }
         }

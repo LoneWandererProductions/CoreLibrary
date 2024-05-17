@@ -143,7 +143,7 @@ namespace ImageCompare
                 catch (InvalidOperationException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new InvalidOperationException(ex.ToString());
+                    throw new InvalidOperationException(ex.Message);
                 }
             }
 

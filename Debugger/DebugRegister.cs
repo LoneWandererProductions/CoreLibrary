@@ -80,10 +80,10 @@ namespace Debugger
         internal static ConfigExtended Config { get; private set; }
 
         /// <summary>
-        ///     Gets the color options.
+        /// Gets the color options.
         /// </summary>
         /// <value>
-        ///     The color options.
+        /// The color options.
         /// </value>
         public static List<ColorOption> ColorOptions { get; private set; } = DebuggerResources.InitialOptions;
 
@@ -186,7 +186,7 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Generic Serializer Of Objects
+        /// Generic Serializer Of Objects
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="serializeObject">Target Object</param>

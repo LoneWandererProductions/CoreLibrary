@@ -33,7 +33,7 @@ namespace Debugger
 
             ColorOption option;
 
-            for (var i = 1; i < DebugRegister.ColorOptions.Count; i++)
+            for (int i = 1; i < DebugRegister.ColorOptions.Count; i++)
             {
                 option = DebugRegister.ColorOptions[i];
 

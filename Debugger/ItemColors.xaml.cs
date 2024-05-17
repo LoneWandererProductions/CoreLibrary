@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media.Animation;
 
 namespace Debugger
 {
@@ -37,7 +38,7 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Sets the start value.
+        /// Sets the start value.
         /// </summary>
         /// <param name="colorOptions">The color options.</param>
         public void AddItemColors(IEnumerable<ColorOption> colorOptions)
@@ -69,7 +70,7 @@ namespace Debugger
         /// <param name="id">The identifier.</param>
         private void ItemControl_DeleteLogic(object sender, int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 return;
             }
@@ -79,7 +80,7 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Gets the color options.
+        /// Gets the color options.
         /// </summary>
         /// <returns>List of Color Options</returns>
         internal List<ColorOption> GetColorOptions()
@@ -88,15 +89,12 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Adds the filter.
+        /// Adds the filter.
         /// </summary>
         /// <param name="colorOptions">The filter option.</param>
         private void AddFilter(IEnumerable<ColorOption> colorOptions)
         {
-            if (colorOptions == null || colorOptions.Count() == 0)
-            {
-                return;
-            }
+            if(colorOptions == null || colorOptions.Count() ==0) return;
 
             foreach (var item in colorOptions)
             {

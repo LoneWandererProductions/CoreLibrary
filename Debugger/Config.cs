@@ -171,10 +171,10 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Gets or sets the color options.
+        /// Gets or sets the color options.
         /// </summary>
         /// <value>
-        ///     The color options.
+        /// The color options.
         /// </value>
         public List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
     }

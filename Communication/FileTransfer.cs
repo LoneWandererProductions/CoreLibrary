@@ -61,22 +61,22 @@ namespace Communication
             }
             catch (ExternalException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 return false;
             }
             catch (ArgumentNullException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 return false;
             }
             catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 return false;
             }
             catch (WebException ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
                 return false;
             }
 
@@ -122,15 +122,15 @@ namespace Communication
                 }
                 catch (ExternalException ex)
                 {
-                    Trace.WriteLine(ex.ToString());
+                    Trace.WriteLine(ex.Message);
                 }
                 catch (ArgumentNullException ex)
                 {
-                    Trace.WriteLine(ex.ToString());
+                    Trace.WriteLine(ex.Message);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    Trace.WriteLine(ex.ToString());
+                    Trace.WriteLine(ex.Message);
                 }
             }
         }

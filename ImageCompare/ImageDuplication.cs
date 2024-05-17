@@ -101,7 +101,7 @@ namespace ImageCompare
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new ArgumentException(ex.ToString(), value);
+                    throw new ArgumentException(ex.Message, value);
                 }
                 catch (OutOfMemoryException ex)
                 {
@@ -112,7 +112,7 @@ namespace ImageCompare
                 catch (InvalidOperationException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new InvalidOperationException(ex.ToString());
+                    throw new InvalidOperationException(ex.Message);
                 }
             }
 
