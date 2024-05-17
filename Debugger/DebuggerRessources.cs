@@ -77,6 +77,11 @@ namespace Debugger
         internal const string Formatting = " : ";
 
         /// <summary>
+        /// The spacer (const). Value:  " , ".
+        /// </summary>
+        internal const string Spacer = " , ";
+
+        /// <summary>
         ///     The caller (const). Value: "Method: ".
         /// </summary>
         internal const string Caller = "Method: ";

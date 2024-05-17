@@ -186,19 +186,19 @@ namespace Debugger
             switch (lvl)
             {
                 case ErCode.Error:
-                    error = string.Concat( DebuggerResources.LogLvlOne, DateTime.Now, error);
+                    error = string.Concat( DebuggerResources.LogLvlOne, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
 
                 case ErCode.Warning:
-                    error = string.Concat(DebuggerResources.LogLvlTwo, DateTime.Now, error);
+                    error = string.Concat(DebuggerResources.LogLvlTwo, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
 
                 case ErCode.Information:
-                    error = string.Concat( DebuggerResources.LogLvlThree, DateTime.Now, error);
+                    error = string.Concat( DebuggerResources.LogLvlThree, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
 
                 case ErCode.External:
-                    error = string.Concat(DebuggerResources.LogLvlFour, DateTime.Now, error);
+                    error = string.Concat(DebuggerResources.LogLvlFour, DateTime.Now, DebuggerResources.Spacer, error);
                     break;
             }
 

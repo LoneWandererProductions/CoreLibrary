@@ -70,7 +70,7 @@ namespace Debugger
         /// <param name="id">The identifier.</param>
         private void ItemControl_DeleteLogic(object sender, int id)
         {
-            if (id <= 0)
+            if (id <= 4)
             {
                 return;
             }
@@ -95,6 +95,9 @@ namespace Debugger
         private void AddFilter(IEnumerable<ColorOption> colorOptions)
         {
             if(colorOptions == null || colorOptions.Count() ==0) return;
+
+            ColorList.Items.Clear();
+            _filterOption.Clear();
 
             foreach (var item in colorOptions)
             {

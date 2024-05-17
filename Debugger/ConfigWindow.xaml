@@ -23,7 +23,7 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
-            <RowDefinition Height="150" />
+            <RowDefinition Height="250" />
             <RowDefinition Height="5" />
             <RowDefinition />
             <RowDefinition Height="25" />
@@ -39,6 +39,7 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="30" />
             <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
@@ -83,6 +84,6 @@
                Grid.Column="1" />
         <Label Content="Contains the following Text" Grid.Row="11"
                Grid.Column="3" Grid.ColumnSpan="7" />
-        <Debugger:ItemColors Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="9" x:Name="ColorOptions"/>
+        <Debugger:ItemColors Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="10" x:Name="ColorOptions"/>
     </Grid>
 </Window>

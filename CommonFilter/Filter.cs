@@ -83,6 +83,7 @@ namespace CommonFilter
         internal void Done()
         {
             FilterChanged(this, EventArgs.Empty);
+            _filter.Close();
         }
     }
 }
