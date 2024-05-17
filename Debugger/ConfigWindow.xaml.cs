@@ -25,6 +25,13 @@ namespace Debugger
             InitializeComponent();
         }
 
+        private void BtnReset_Click(object sender, RoutedEventArgs e)
+        {
+            DebugRegister.Reset();
+            ColorOptions.AddItemColors(DebugRegister.ColorOptions);
+            DataContext = DebugRegister.Config;
+        }
+
         /// <summary>
         ///     The Button save click.
         /// </summary>

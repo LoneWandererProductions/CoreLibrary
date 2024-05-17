@@ -126,8 +126,8 @@ namespace Debugger
         /// </summary>
         public string ErrorColor
         {
-            get => DebuggerResources.ErrorColor;
-            set => DebuggerResources.ErrorColor = value;
+            get => DebugRegister.ErrorColor;
+            set => DebugRegister.ErrorColor = value;
         }
 
         /// <summary>
@@ -135,10 +135,10 @@ namespace Debugger
         /// </summary>
         public string WarningColor
         {
-            get => DebuggerResources.WarningColor;
+            get => DebugRegister.WarningColor;
             set
             {
-                DebuggerResources.WarningColor = value;
+                DebugRegister.WarningColor = value;
                 RaisePropertyChangedEvent(nameof(WarningColor));
             }
         }
@@ -148,8 +148,8 @@ namespace Debugger
         /// </summary>
         public string InformationColor
         {
-            get => DebuggerResources.InformationColor;
-            set => DebuggerResources.InformationColor = value;
+            get => DebugRegister.InformationColor;
+            set => DebugRegister.InformationColor = value;
         }
 
         /// <summary>
@@ -157,8 +157,8 @@ namespace Debugger
         /// </summary>
         public string ExternalColor
         {
-            get => DebuggerResources.ExternalColor;
-            set => DebuggerResources.ExternalColor = value;
+            get => DebugRegister.ExternalColor;
+            set => DebugRegister.ExternalColor = value;
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace Debugger
         /// </summary>
         public string StandardColor
         {
-            get => DebuggerResources.StandardColor;
-            set => DebuggerResources.StandardColor = value;
+            get => DebugRegister.StandardColor;
+            set => DebugRegister.StandardColor = value;
         }
 
         /// <summary>
@@ -176,6 +176,10 @@ namespace Debugger
         /// <value>
         /// The color options.
         /// </value>
-        public List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
+        public List<ColorOption> ColorOptions
+        {
+            get => DebugRegister.ColorOptions;
+            set => DebugRegister.ColorOptions = value;
+        }
     }
 }

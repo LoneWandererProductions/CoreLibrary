@@ -66,12 +66,37 @@ namespace Debugger
         internal static int MinutesTick { get; set; }
 
         /// <summary>
+        ///     Gets or sets the error color.
+        /// </summary>
+        internal static string ErrorColor { get; set; } = DebuggerResources.ErrorColor;
+
+        /// <summary>
+        ///     Gets or sets the warning color.
+        /// </summary>
+        internal static string WarningColor { get; set; } = DebuggerResources.WarningColor;
+
+        /// <summary>
+        ///     Gets or sets the information color.
+        /// </summary>
+        internal static string InformationColor { get; set; } = DebuggerResources.InformationColor;
+
+        /// <summary>
+        ///     Gets or sets the external color.
+        /// </summary>
+        internal static string ExternalColor { get; set; } = DebuggerResources.ExternalColor;
+
+        /// <summary>
+        ///     Gets or sets the standard color.
+        /// </summary>
+        internal static string StandardColor { get; set; } = DebuggerResources.StandardColor;
+
+        /// <summary>
         ///     Gets or sets the color of the found item in the line
         /// </summary>
         /// <value>
         ///     The color of the found.
         /// </value>
-        internal static string FoundColor { get; set; } = "Yellow";
+        internal static string FoundColor { get; set; } = DebuggerResources.FoundColor;
 
         /// <summary>
         ///     Gets or sets the config.
@@ -85,7 +110,33 @@ namespace Debugger
         /// <value>
         /// The color options.
         /// </value>
-        public static List<ColorOption> ColorOptions { get; private set; } = DebuggerResources.InitialOptions;
+        internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
+
+        /// <summary>
+        /// The base options
+        /// </summary>
+        private static readonly ConfigExtended BaseOptions = new()
+        {
+            DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
+            SecondsTick = 1,
+            MinutesTick = 0,
+            HourTick = 0,
+            ErrorColor = DebuggerResources.ErrorColor,
+            InformationColor = DebuggerResources.InformationColor,
+            ExternalColor = DebuggerResources.ExternalColor,
+            StandardColor = DebuggerResources.StandardColor,
+            WarningColor = DebuggerResources.WarningColor,
+            IsDumpActive = false,
+            ColorOptions = DebuggerResources.InitialOptions
+        };
+
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
+        internal static void Reset()
+        {
+            Config = BaseOptions;
+        }
 
         /// <summary>
         ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
@@ -94,20 +145,7 @@ namespace Debugger
         {
             if (!File.Exists(DebuggerResources.ConfigFile))
             {
-                Config = new ConfigExtended
-                {
-                    DebugPath = DebugPath,
-                    SecondsTick = SecondsTick,
-                    MinutesTick = MinutesTick,
-                    HourTick = HourTick,
-                    ErrorColor = DebuggerResources.ErrorColor,
-                    InformationColor = DebuggerResources.InformationColor,
-                    ExternalColor = DebuggerResources.ExternalColor,
-                    StandardColor = DebuggerResources.StandardColor,
-                    WarningColor = DebuggerResources.WarningColor,
-                    IsDumpActive = IsDumpActive,
-                    ColorOptions = ColorOptions
-                };
+                Config = BaseOptions;
             }
             else
             {
@@ -202,11 +240,11 @@ namespace Debugger
             ColorOptions = options;
 
             //Add our Colors a bit of a hack but works for now
-            data.ErrorColor = DebuggerResources.ErrorColor;
-            data.WarningColor = DebuggerResources.WarningColor;
-            data.InformationColor = DebuggerResources.InformationColor;
-            data.ExternalColor = DebuggerResources.ExternalColor;
-            data.StandardColor = DebuggerResources.StandardColor;
+            data.ErrorColor = ErrorColor;
+            data.WarningColor = WarningColor;
+            data.InformationColor = InformationColor;
+            data.ExternalColor = ExternalColor;
+            data.StandardColor = StandardColor;
             data.ColorOptions = ColorOptions;
 
             try

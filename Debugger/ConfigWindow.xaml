@@ -85,5 +85,6 @@
         <Label Content="Contains the following Text" Grid.Row="11"
                Grid.Column="3" Grid.ColumnSpan="7" />
         <Debugger:ItemColors Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="10" x:Name="ColorOptions"/>
+        <Button  Content="Reset" Grid.Column="9" HorizontalAlignment="Stretch" Grid.Row="16" VerticalAlignment="Stretch" Click="BtnReset_Click"/>
     </Grid>
 </Window>
