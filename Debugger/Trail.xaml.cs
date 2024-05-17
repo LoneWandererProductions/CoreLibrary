@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
@@ -207,7 +208,7 @@ namespace Debugger
                 return;
             }
 
-            LoadFile();
+            _ = LoadFile();
         }
 
         /// <summary>
@@ -229,7 +230,7 @@ namespace Debugger
             DebugRegister.DebugPath = file.FilePath;
             // ReSharper restore PossibleNullReferenceException
 
-            LoadFile();
+            _ = LoadFile();
         }
 
         /// <summary>
@@ -254,9 +255,9 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Loads the file.
+        /// Loads the file async to speed up the whole mess.
         /// </summary>
-        private void LoadFile()
+        private async Task LoadFile()
         {
             _dispatcherTimer?.Stop();
 
@@ -264,12 +265,20 @@ namespace Debugger
 
             Log.Document.Blocks.Clear();
 
-            foreach (var line in ReadLines(DebugRegister.DebugPath).ToList())
-            {
-                var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
+            var lines = ReadLines(DebugRegister.DebugPath).ToList();
 
-                DebugHelper.AddRange(textRange, line, false);
-            }
+            await Task.Run(() =>
+            {
+                foreach (var line in lines)
+                {
+                    // Use Dispatcher to update the UI
+                    Dispatcher.Invoke(() =>
+                    {
+                        var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
+                        DebugHelper.AddRange(textRange, line, false);
+                    });
+                }
+            });
 
             //set index
             _index = ReadLines(DebugRegister.DebugPath).Count();

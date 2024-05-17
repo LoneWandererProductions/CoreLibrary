@@ -117,9 +117,9 @@ namespace Debugger
         internal const string InformationCreateLogFile = "Created a new Log File";
 
         /// <summary>
-        ///     Manual Start of the Debugger (const). Value: "Manual Start for Debug started".
+        ///     Manual Start of the Debugger (const). Value: "Manual Start of Trail.".
         /// </summary>
-        internal const string ManualStart = "Manual Start for Debug started";
+        internal const string ManualStart = "Manual Start of Trail.";
 
         /// <summary>
         ///     The object formatting (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
