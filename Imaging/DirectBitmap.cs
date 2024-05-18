@@ -3,8 +3,6 @@
  * PROJECT:     Imaging
  * FILE:        Imaging/DirectBitmap.cs
  * PURPOSE:     Custom Image Class, speeds up Get and Set Pixel
- *              Use is mostly single pixel manipulation and color inspection of pixel.
- *              Not cost/speed effective in large scale changes of areas sadly.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=net-7.0
  *              https://learn.microsoft.com/en-us/dotnet/api/system.drawing.imaging.pixelformat?view=dotnet-plat-ext-8.0
@@ -36,7 +34,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        private int[] _bits;
+        public int[] Bits { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
@@ -132,8 +130,8 @@ namespace Imaging
         /// </summary>
         private void Initiate()
         {
-            _bits = new int[Width * Height];
-            BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
+            Bits = new int[Width * Height];
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
             Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
                 BitsHandle.AddrOfPinnedObject());
         }
@@ -163,10 +161,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++)
-            {
-                SetPixel(x, i, color);
-            }
+            for (var i = y; i < height; i++) SetPixel(x, i, color);
         }
 
         /// <summary>
@@ -180,10 +175,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++)
-            {
-                SetPixel(i, y, color);
-            }
+            for (var i = x; i < length; i++) SetPixel(i, y, color);
         }
 
         /// <summary>
@@ -215,10 +207,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
-            foreach (var index in idList)
-            {
-                _bits[index] = color.ToArgb();
-            }
+            foreach (var index in idList) Bits[index] = color.ToArgb();
         }
 
         /// <summary>
@@ -229,8 +218,8 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + (y * Width);
-            _bits[index] = color.ToArgb();
+            var index = x + y * Width;
+            Bits[index] = color.ToArgb();
         }
 
         /// <summary>
@@ -241,8 +230,8 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
-            var col = _bits[index];
+            var index = x + y * Width;
+            var col = Bits[index];
             return Color.FromArgb(col);
         }
 
@@ -252,10 +241,7 @@ namespace Imaging
         /// <returns>The Image as a list of Colors</returns>
         public Span<Color> GetColors()
         {
-            if (_bits == null)
-            {
-                return null;
-            }
+            if (Bits == null) return null;
 
             var length = Height * Width;
 
@@ -265,7 +251,7 @@ namespace Imaging
 
             for (var i = 0; i < length; i++)
             {
-                var col = _bits[i];
+                var col = Bits[i];
                 span[i] = Color.FromArgb(col);
             }
 
@@ -282,12 +268,9 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            for (var i = 0; i < _bits.Length - 1; i++)
-            {
-                info = string.Concat(info, _bits[i], ImagingResources.Indexer);
-            }
+            for (var i = 0; i < Bits.Length - 1; i++) info = string.Concat(info, Bits[i], ImagingResources.Indexer);
 
-            return string.Concat(info, ImagingResources.Spacing, _bits[_bits.Length]);
+            return string.Concat(info, ImagingResources.Spacing, Bits[Bits.Length]);
         }
 
         /// <summary>
@@ -310,10 +293,7 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {

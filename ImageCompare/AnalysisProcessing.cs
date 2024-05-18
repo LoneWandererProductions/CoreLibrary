@@ -13,6 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Imaging;
 
@@ -37,23 +38,14 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static List<float> GetSimilarity(List<string> imagePaths)
         {
-            if (imagePaths.IsNullOrEmpty())
-            {
-                return null;
-            }
+            if (imagePaths.IsNullOrEmpty()) return null;
 
-            if (imagePaths.Count == 1)
-            {
-                return null;
-            }
+            if (imagePaths.Count == 1) return null;
 
             var paths = new List<string>(imagePaths);
 
             var path = imagePaths[0];
-            if (!File.Exists(path))
-            {
-                return null;
-            }
+            if (!File.Exists(path)) return null;
 
             var lst = new List<float>(paths.Count - 1);
 
@@ -65,7 +57,6 @@ namespace ImageCompare
 
                 //with sanity check in Case one file went missing, we won't have to stop everything
                 foreach (var element in paths.Where(File.Exists))
-                {
                     try
                     {
                         using var btm = new Bitmap(element);
@@ -78,22 +69,18 @@ namespace ImageCompare
                     {
                         //Could not load an Image
                         Trace.WriteLine(ex);
-                        throw new InvalidOperationException(ex.Message);
+                        throw new InvalidOperationException(ex.ToString());
                     }
-                }
             }
             catch (InvalidOperationException ex)
             {
                 //Could not load an Image
                 Trace.WriteLine(ex);
-                throw new InvalidOperationException(ex.Message);
+                throw new InvalidOperationException(ex.ToString());
             }
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count - 1)
-            {
-                return null;
-            }
+            if (lst.Count != imagePaths.Count - 1) return null;
 
             lst.AddFirst(100);
             return lst;
@@ -177,10 +164,7 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static ImageData GetImageDetails(string imagePath)
         {
-            if (!File.Exists(imagePath))
-            {
-                return null;
-            }
+            if (!File.Exists(imagePath)) return null;
 
             using var btm = new Bitmap(imagePath);
             var color = GenerateData(btm, string.Empty);
@@ -230,24 +214,32 @@ namespace ImageCompare
         /// <returns>The difference Bitmap</returns>
         internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
-            var width = first.Width <= second.Width ? first.Width : second.Width;
-            var height = first.Height <= second.Height ? first.Height : second.Height;
+            var width = Math.Min(first.Width, second.Width);
+            var height = Math.Min(first.Height, second.Height);
 
             var canvas = Render.CutBitmap(first, 0, 0, height, width);
 
-            var dbmCanvas = new DirectBitmap(canvas);
-            var dbmCompare = new DirectBitmap(second);
+            using var dbmCanvas = new DirectBitmap(canvas);
+            using var dbmCompare = new DirectBitmap(second);
 
-            for (var x = 0; x < width; x++)
-            {
-                for (var y = 0; y < height; y++)
-                {
-                    if (dbmCanvas.GetPixel(x, y) != dbmCompare.GetPixel(x, y))
-                    {
-                        dbmCanvas.SetPixel(x, y, color);
-                    }
-                }
-            }
+            // Access the pixel arrays directly for comparison
+            var canvasPixels = dbmCanvas.Bits;
+            var comparePixels = dbmCompare.Bits;
+            var colorArgb = color.ToArgb();
+
+            // Process the pixels in parallel
+            _ = Parallel.For(0, height, y =>
+              {
+                  var offset = y * width;
+                  for (var x = 0; x < width; x++)
+                  {
+                      var index = offset + x;
+                      if (canvasPixels[index] != comparePixels[index])
+                      {
+                          canvasPixels[index] = colorArgb;
+                      }
+                  }
+              });
 
             return dbmCanvas.Bitmap;
         }
