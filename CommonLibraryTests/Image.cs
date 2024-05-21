@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Communication;
 using FileHandler;
 using ImageCompare;
 using Imaging;

@@ -14,6 +14,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Mathematics;
 
 namespace ImageCompare
 {
@@ -185,6 +186,36 @@ namespace ImageCompare
             }
 
             return AnalysisProcessing.DifferenceImage(first, second, color);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether [is part of] [the specified big image].
+        /// </summary>
+        /// <param name="bigImage">The big image.</param>
+        /// <param name="smallImage">The small image.</param>
+        /// <param name="startCoordinates">The start coordinates.</param>
+        /// <returns>
+        ///   <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates)
+        {
+            return ImageSlider.IsPartOf(bigImage, smallImage, out startCoordinates);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether [is part of] [the specified big image].
+        /// </summary>
+        /// <param name="bigImagePath">The Path to big image.</param>
+        /// <param name="smallImagePath">The Path to small image.</param>
+        /// <param name="startCoordinates">The start coordinates.</param>
+        /// <returns>
+        ///   <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates)
+        {
+            return ImageSlider.IsPartOf(bigImagePath, smallImagePath, out startCoordinates);
         }
     }
 }
