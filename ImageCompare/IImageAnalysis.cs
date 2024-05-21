@@ -120,9 +120,10 @@ namespace ImageCompare
         /// <param name="bigImagePath">The Path to big image.</param>
         /// <param name="smallImagePath">The Path to small image.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
+        /// <param name="threshold">The threshold. Optional Parameter</param>
         /// <returns>
         ///   <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates);
+        bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates, int threshold = 0);
     }
 }

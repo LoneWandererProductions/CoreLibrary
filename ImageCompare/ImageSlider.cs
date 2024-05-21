@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Drawing;
 using Imaging;
 using Mathematics;
@@ -23,14 +24,15 @@ namespace ImageCompare
         /// <param name="bigImagePath">The big image path.</param>
         /// <param name="smallImagePath">The small image path.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
+        /// <param name="threshold">The color difference threshold.</param>
         /// <returns>
         ///   <c>true</c> if [is part of] [the specified big image path]; otherwise, <c>false</c>.
         /// </returns>
-        internal static bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates)
+        internal static bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates, int threshold = 0)
         {
             using var bigImage = new Bitmap(bigImagePath);
             using var smallImage = new Bitmap(smallImagePath);
-            return IsPartOf(bigImage, smallImage, out startCoordinates);
+            return IsPartOf(bigImage, smallImage, out startCoordinates, threshold);
         }
 
         /// <summary>
@@ -39,10 +41,11 @@ namespace ImageCompare
         /// <param name="bigImage">The big image.</param>
         /// <param name="smallImage">The small image.</param>
         /// <param name="startCoordinates">The starting coordinates where the small image overlays the big image.</param>
+        /// <param name="threshold">The color difference threshold.</param>
         /// <returns>
         ///   <c>true</c> if the small image is part of the big image; otherwise, <c>false</c>.
         /// </returns>
-        internal static bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates)
+        internal static bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates, int threshold = 0)
         {
             int bigHeight = bigImage.Height;
             int bigWidth = bigImage.Width;
@@ -64,7 +67,7 @@ namespace ImageCompare
                         smallImageBottomEdge.SetPixel(x, 0, dbmBig.GetPixel(j + x, i + smallHeight - 1));
                     }
 
-                    if (CheckEdges(dbmBig, dbmSmall, i, j, smallImageBottomEdge) && CheckFull(dbmBig, dbmSmall, i, j))
+                    if (CheckEdges(dbmBig, dbmSmall, i, j, smallImageBottomEdge, threshold) && CheckFull(dbmBig, dbmSmall, i, j, threshold))
                     {
                         smallImageBottomEdge.Dispose();
                         startCoordinates = new Coordinate2D(j, i);
@@ -86,8 +89,9 @@ namespace ImageCompare
         /// <param name="startRow">The start row.</param>
         /// <param name="startCol">The start col.</param>
         /// <param name="smallImageBottomEdge">The small image bottom edge.</param>
+        /// <param name="threshold">The color difference threshold.</param>
         /// <returns>Basic check of the edges</returns>
-        private static bool CheckEdges(DirectBitmap bigImage, DirectBitmap smallImage, int startRow, int startCol, DirectBitmap smallImageBottomEdge)
+        private static bool CheckEdges(DirectBitmap bigImage, DirectBitmap smallImage, int startRow, int startCol, DirectBitmap smallImageBottomEdge, int threshold)
         {
             int smallHeight = smallImage.Height;
             int smallWidth = smallImage.Width;
@@ -95,7 +99,7 @@ namespace ImageCompare
             // Check top edge
             for (int x = 0; x < smallWidth; x++)
             {
-                if (bigImage.GetPixel(startCol + x, startRow) != smallImage.GetPixel(x, 0))
+                if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow), smallImage.GetPixel(x, 0), threshold))
                 {
                     return false;
                 }
@@ -104,7 +108,7 @@ namespace ImageCompare
             // Check bottom edge
             for (int x = 0; x < smallWidth; x++)
             {
-                if (bigImage.GetPixel(startCol + x, startRow + smallHeight - 1) != smallImageBottomEdge.GetPixel(x, 0))
+                if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + smallHeight - 1), smallImageBottomEdge.GetPixel(x, 0), threshold))
                 {
                     return false;
                 }
@@ -113,7 +117,7 @@ namespace ImageCompare
             // Check left edge
             for (int y = 0; y < smallHeight; y++)
             {
-                if (bigImage.GetPixel(startCol, startRow + y) != smallImage.GetPixel(0, y))
+                if (!IsColorMatch(bigImage.GetPixel(startCol, startRow + y), smallImage.GetPixel(0, y), threshold))
                 {
                     return false;
                 }
@@ -122,7 +126,7 @@ namespace ImageCompare
             // Check right edge
             for (int y = 0; y < smallHeight; y++)
             {
-                if (bigImage.GetPixel(startCol + smallWidth - 1, startRow + y) != smallImage.GetPixel(smallWidth - 1, y))
+                if (!IsColorMatch(bigImage.GetPixel(startCol + smallWidth - 1, startRow + y), smallImage.GetPixel(smallWidth - 1, y), threshold))
                 {
                     return false;
                 }
@@ -138,10 +142,11 @@ namespace ImageCompare
         /// <param name="smallImage">The small image.</param>
         /// <param name="startRow">The start row.</param>
         /// <param name="startCol">The start col.</param>
+        /// <param name="threshold">The color difference threshold.</param>
         /// <returns>
         /// True if images are equal in the defined area, otherwise false.
         /// </returns>
-        private static bool CheckFull(DirectBitmap bigImage, DirectBitmap smallImage, int startRow, int startCol)
+        private static bool CheckFull(DirectBitmap bigImage, DirectBitmap smallImage, int startRow, int startCol, int threshold)
         {
             int smallHeight = smallImage.Height;
             int smallWidth = smallImage.Width;
@@ -150,7 +155,7 @@ namespace ImageCompare
             {
                 for (int x = 0; x < smallWidth; x++)
                 {
-                    if (bigImage.GetPixel(startCol + x, startRow + y) != smallImage.GetPixel(x, y))
+                    if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + y), smallImage.GetPixel(x, y), threshold))
                     {
                         return false;
                     }
@@ -158,6 +163,22 @@ namespace ImageCompare
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks if two colors match within a given threshold.
+        /// </summary>
+        /// <param name="color1">The first color.</param>
+        /// <param name="color2">The second color.</param>
+        /// <param name="threshold">The color difference threshold.</param>
+        /// <returns>
+        ///   <c>true</c> if the colors match within the threshold; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsColorMatch(Color color1, Color color2, int threshold)
+        {
+            return Math.Abs(color1.R - color2.R) <= threshold &&
+                   Math.Abs(color1.G - color2.G) <= threshold &&
+                   Math.Abs(color1.B - color2.B) <= threshold;
         }
     }
 }

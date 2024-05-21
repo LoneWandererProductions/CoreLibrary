@@ -1157,7 +1157,7 @@ namespace Imaging
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
             {
-                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
             }
 
             //use our new Format
@@ -1192,7 +1192,7 @@ namespace Imaging
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
             {
-                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
             }
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
