@@ -122,6 +122,7 @@ namespace Interpreter
             }
 
             TextBoxInputs.Text = CodeInput[_countUp];
+            TextBoxInputs.ScrollToEnd();
         }
 
         /// <summary>
