@@ -58,6 +58,17 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Gets the null point.
+        /// </summary>
+        /// <value>
+        /// The null point.
+        /// </value>
+        public static Coordinate2D NullPoint
+        {
+            get;
+        } = new(0, 0);
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
         /// </summary>
         public Coordinate2D()

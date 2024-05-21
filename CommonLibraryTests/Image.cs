@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Communication;
 using FileHandler;
 using ImageCompare;
 using Imaging;
@@ -193,6 +194,9 @@ namespace CommonLibraryTests
         {
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
+            // Ensure the image exists
+            Assert.IsTrue(File.Exists(imagePath), $"File does not exist: {imagePath}");
+
             var image = ImageStream.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
             var lst = ImageStream.CutBitmaps(btm, 2, 2, 50, 50);
@@ -248,6 +252,31 @@ namespace CommonLibraryTests
             Assert.AreEqual(colOld.R, col.R, "done");
             Assert.AreEqual(colOld.B, col.B, "done");
             Assert.AreEqual(colOld.G, col.G, "done");
+        }
+
+        /// <summary>
+        ///     Test the cut Bitmap and if we finde the correct Coordinates with Image slide
+        /// </summary>
+        [TestMethod]
+        public void SlideImage()
+        {
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
+
+            // Ensure the image exists
+            Assert.IsTrue(File.Exists(imagePath), $"File does not exist: {imagePath}");
+
+            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            using var btm = image.ToBitmap();
+            using var cutOut = ImageStream.CutBitmap(btm, 22, 10, 50, 50);
+
+            var point = Coordinate2D.NullPoint;
+
+            var check = ImageSlider.IsPartOf(btm, cutOut, out point);
+
+            Assert.IsTrue(check, "The smaller image was not found in the larger image.");
+
+            Assert.AreEqual(22, point.X, "The X coordinate of the matching point is incorrect.");
+            Assert.AreEqual(10, point.Y, "The Y coordinate of the matching point is incorrect.");
         }
 
         /// <summary>
@@ -833,7 +862,7 @@ namespace CommonLibraryTests
         /// </summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>
-        /// <returns></returns>
+        /// <returns>Time needed</returns>
         private static long CalcOne(Coordinate2D one, Coordinate2D two)
         {
             var watch = Stopwatch.StartNew();
@@ -850,7 +879,7 @@ namespace CommonLibraryTests
         /// </summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>
-        /// <returns></returns>
+        /// <returns>Time needed</returns>
         private static long CalcTwo(Coordinate2D one, Coordinate2D two)
         {
             var watch = Stopwatch.StartNew();
