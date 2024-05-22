@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/ISqliteDatabase.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/ISqliteDatabase.cs
  * PURPOSE:     SQLiteHelper Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@
 
 using System.Collections.Generic;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The ISqlLiteDatabase interface.

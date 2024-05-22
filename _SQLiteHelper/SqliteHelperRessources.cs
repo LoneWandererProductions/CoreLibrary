@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteHelperResources.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqliteHelperResources.cs
  * PURPOSE:     Basic String Resources and magic Numbers
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The sql lite helper resources class.

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/MessageHandling.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/MessageHandling.cs
  * PURPOSE:     Collects all Errors and Status Messages
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The error logging class.

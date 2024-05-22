@@ -7,7 +7,7 @@
  */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SQLiteHelper;
+using SqliteHelper;
 
 // ReSharper disable CyclomaticComplexity
 

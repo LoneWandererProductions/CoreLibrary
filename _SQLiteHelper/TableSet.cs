@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/TableSet.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/TableSet.cs
  * PURPOSE:     Used in add Statement and Select
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     Used for the Add Statement

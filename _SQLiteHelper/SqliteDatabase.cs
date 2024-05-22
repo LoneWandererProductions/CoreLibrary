@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteDatabase.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqliteDatabase.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite, packed into a light weight wrapper for easy to use SqlLite Integration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -19,7 +19,7 @@ using System.Linq;
 // TODO Add new Interface for attach detach and faster access and async
 // https://stackoverflow.com/questions/53183370/c-sharp-how-to-start-an-async-method-without-await-its-complete
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <inheritdoc cref="ISqliteDatabase" />
     /// <summary>

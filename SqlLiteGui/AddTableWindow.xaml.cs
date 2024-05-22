@@ -8,7 +8,7 @@
 
 using System.Collections.ObjectModel;
 using System.Windows;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace SQLiteGui
 {

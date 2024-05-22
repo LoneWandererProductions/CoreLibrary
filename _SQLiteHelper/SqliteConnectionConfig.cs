@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteConnectionConfig.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqliteConnectionConfig.cs
  * PURPOSE:     Connection Strings
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.IO;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The sql lite connection Config class.

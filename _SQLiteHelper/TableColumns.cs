@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/TableRow.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/TableRow.cs
  * PURPOSE:     Describes a Table Header
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The table columns class.

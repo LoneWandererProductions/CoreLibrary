@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteProcessing.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqliteProcessing.cs
  * PURPOSE:     Processing of various Database Objects processing and Checks
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -16,7 +16,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The sql lite processing class.

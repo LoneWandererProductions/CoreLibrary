@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqlLiteUtility.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqlLiteUtility.cs
  * PURPOSE:     Tools for SqlLite and Conversion of Objects into more appropriate for Tables
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <inheritdoc cref="ISqlLiteUtility" />
     /// <summary>

@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace CommonLibrarySqlLiteTests
 {

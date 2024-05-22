@@ -13,7 +13,7 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\SQLiteHelper\SQLiteHelper.csproj" />
+    <ProjectReference Include="..\SqliteHelper\SqliteHelper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace SQLiteGui
 {

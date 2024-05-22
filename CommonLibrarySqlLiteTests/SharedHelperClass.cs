@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace CommonLibrarySqlLiteTests
 {

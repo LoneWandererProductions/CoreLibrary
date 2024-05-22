@@ -11,7 +11,7 @@
 
 using System.Collections.Generic;
 using System.Data;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace SQLiteGui
 {

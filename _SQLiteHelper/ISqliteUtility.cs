@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/ISqliteUtility.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/ISqliteUtility.cs
  * PURPOSE:     Interface Tools for SqlLite
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 // ReSharper disable UnusedMemberInSuper.Global
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     The ISqlLiteUtility interface.

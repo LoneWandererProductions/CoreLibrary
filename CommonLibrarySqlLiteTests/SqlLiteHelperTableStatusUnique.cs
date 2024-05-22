@@ -8,7 +8,7 @@
 
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SQLiteHelper;
+using SqliteHelper;
 
 namespace CommonLibrarySqlLiteTests
 {

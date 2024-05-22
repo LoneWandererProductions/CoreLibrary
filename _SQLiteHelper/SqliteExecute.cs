@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteExecute.cs
+ * PROJECT:     SQLiteHelper
+ * FILE:        SQLiteHelper/SqliteExecute.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ using System.Linq;
 
 // ReSharper disable ArrangeBraces_foreach
 
-namespace SqliteHelper
+namespace SQLiteHelper
 {
     /// <summary>
     ///     SqlLite Data types

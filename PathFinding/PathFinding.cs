@@ -3,7 +3,7 @@
  * PROJECT:     PathFinding
  * FILE:        PathFinding/PathFinding.cs
  * PURPOSE:     Path-finding class with the A* Algorithm
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Source:      https://www.dotnetperls.com/maze
  * Source:      https://github.com/roy-t/AStar/blob/master/Roy-T.AStar/PathFinder.cs
  */
@@ -15,35 +15,35 @@ using System.Diagnostics.CodeAnalysis;
 namespace PathFinding
 {
     /// <summary>
-    /// Path-finding with the A* Algorithm
-    /// Only used by EventEngine
-    /// TODO Implement Pathfinder add Diagonal move points, this must be implemented in the TileBorders
-    /// TODO Implement Pathfinder add weighted Terrain
+    ///     Path-finding with the A* Algorithm
+    ///     Only used by EventEngine
+    ///     TODO Implement Pathfinder add Diagonal move points, this must be implemented in the TileBorders
+    ///     TODO Implement Pathfinder add weighed Terrain
     /// </summary>
     internal static class PathFinding
     {
         /// <summary>
-        /// The border array.
+        ///     The border array.
         /// </summary>
         private static int[,] _borderArray;
 
         /// <summary>
-        /// The grid, aka PathFinding Nodes.
+        ///     The grid, aka PathFinding Nodes.
         /// </summary>
         private static PathNode[,] _gridArray;
 
         /// <summary>
-        /// The height of the Map.
+        ///     The height of the Map.
         /// </summary>
         private static int _height;
 
         /// <summary>
-        /// The length of the Map.
+        ///     The length of the Map.
         /// </summary>
         private static int _length;
 
         /// <summary>
-        /// Initiate the Engine
+        ///     Initiate the Engine
         /// </summary>
         /// <param name="borders">Border Map</param>
         /// <param name="height">Height of the Map</param>
@@ -57,7 +57,7 @@ namespace PathFinding
         }
 
         /// <summary>
-        /// Checks if Node is accessible
+        ///     Checks if Node is accessible
         /// </summary>
         /// <param name="targetCoordinateId">Target Node</param>
         /// <remarks>Boolean</remarks>
@@ -70,7 +70,7 @@ namespace PathFinding
         }
 
         /// <summary>
-        /// Return's clean
+        ///     Return's clean
         /// </summary>
         /// <param name="start">Start Coordinates(transformed)</param>
         /// ///
@@ -98,7 +98,7 @@ namespace PathFinding
         }
 
         /// <summary>
-        /// A* Algorithm finds path from starting point to target
+        ///     A* Algorithm finds path from starting point to target
         /// </summary>
         /// <remarks>Nodes have to transformed in Coordinates to display the movement</remarks>
         /// <returns>Path as Nodes</returns>
@@ -125,10 +125,7 @@ namespace PathFinding
                 currentPoint.XRow = current.XNodeRow;
                 currentPoint.YColumn = current.YNodeColumn;
 
-                if (currentPoint.Equals(end))
-                {
-                    break; //If we stand on the target node return. No need to continue
-                }
+                if (currentPoint.Equals(end)) break; //If we stand on the target node return. No need to continue
 
                 possibleList.RemoveAt(0); //Removes the starting point from the possible Node Queue
                 exploredList.Add(current); //Add Start-point, since we stand on it.
@@ -138,18 +135,14 @@ namespace PathFinding
                 //Skips the node if it is blocked, thanks to Linq all in the loop
                 foreach (var neighbor in GetValidNeighbors(currentPoint, diagonal))
                 {
-                    if (exploredList.Contains(neighbor) || neighbor.IsWall)
-                    {
-                        continue;
-                    }
+                    if (exploredList.Contains(neighbor) || neighbor.IsWall) continue;
 
                     //Decision tree how we progress
                     //Check new possible Node
-                    int stepCost = (neighbor.XNodeRow != current.XNodeRow && neighbor.YNodeColumn != current.YNodeColumn) ? 14 : 10; // 14 for diagonal, 10 for straight
                     if (neighbor.Parent == null)
                     {
                         neighbor.Parent = current; //Where it came from, final path can be found by linking parents
-                        neighbor.Cost = current.Cost + stepCost;
+                        neighbor.Cost = current.Cost + 10;
                         //10 is the cost for each horizontal or vertical node moved, for now, optional -> " * option.Cost". if we want to add specific weight to the tiles, diagonal costs should considered as well
 
                         //Calculating the Heuristic value, ignoring any obstacles
@@ -163,14 +156,11 @@ namespace PathFinding
                     else
                     {
                         //Is this a more efficient route than last time?
-                        if (current.Cost + stepCost >= neighbor.Cost)
-                        {
-                            continue;
-                        }
+                        if (current.Cost + 10 >= neighbor.Cost) continue;
 
                         //else replace with new Node
                         neighbor.Parent = current; //Where it came from, final path can be found by linking parents
-                        neighbor.Cost = current.Cost + stepCost;
+                        neighbor.Cost = current.Cost + 10;
                         //10 is the cost for each horizontal or vertical node moved, for now, optional -> " * option.Cost". if we want to add specific weight to the tiles, diagonal costs should considered as well
                     }
 
@@ -183,15 +173,9 @@ namespace PathFinding
             var pathway = new List<PathNode>();
 
             ////bail should not happen if files are loaded correct, if we load a wrong map, this might actual be possible, but we should still catch it
-            if (end.XRow > (_length * 3) - 2)
-            {
-                throw new Exception(string.Concat(PathResources.ErrorLength, _length));
-            }
+            if (end.XRow > _length * 3 - 2) throw new Exception(string.Concat(PathResources.ErrorLength, _length));
 
-            if (end.YColumn > (_height * 3) - 2)
-            {
-                throw new Exception(string.Concat(PathResources.ErrorHeight, _height));
-            }
+            if (end.YColumn > _height * 3 - 2) throw new Exception(string.Concat(PathResources.ErrorHeight, _height));
 
             current = _gridArray[end.XRow, end.YColumn]; //Current = end designation node
 
@@ -210,9 +194,9 @@ namespace PathFinding
         }
 
         /// <summary>
-        /// Manhattan method
-        /// ignores any obstacles
-        /// Calculating the Heuristic value
+        ///     Manhattan method
+        ///     ignores any obstacles
+        ///     Calculating the Heuristic value
         /// </summary>
         /// <param name="neighbor">Neighbor Tile</param>
         /// <param name="end">Target Tile</param>
@@ -223,26 +207,22 @@ namespace PathFinding
         }
 
         /// <summary>
-        /// Cleans the Elements of the Node Array [,] Grid
+        ///     Cleans the Elements of the Node Array [,] Grid
         /// </summary>
         /// <remarks>Nulls every single Parent element of Grid</remarks>
         private static void CleanPath()
         {
             //Resets all the parent variables to clear the paths created last time
             for (var x = 0; x <= _gridArray.GetUpperBound(0); x++)
-            {
                 for (var y = 0; y <= _gridArray.GetUpperBound(1); y++)
-                {
                     _gridArray[x, y].Parent = null;
-                }
-            }
         }
 
         /// <summary>
-        /// Here we can add the other Directions
-        /// Get's all Neighbors of a point
-        /// Now we just use 4 directions
-        /// If we want edged add 4 extra Checks,see description.
+        ///     Here we can add the other Directions
+        ///     Get's all Neighbors of a point
+        ///     Now we just use 4 directions
+        ///     If we want edged add 4 extra Checks,see description.
         /// </summary>
         /// <param name="point">Point Coordinates(untransformed)</param>
         /// <param name="diagonal">Do we use diagonal directions</param>
@@ -259,58 +239,34 @@ namespace PathFinding
             var maxHeight = _gridArray.GetUpperBound(1);
 
             //W
-            if (point.XRow - 1 >= 0)
-            {
-                cache.Add(_gridArray[point.XRow - 1, point.YColumn]);
-            }
+            if (point.XRow - 1 >= 0) cache.Add(_gridArray[point.XRow - 1, point.YColumn]);
 
             //E
-            if (point.XRow < maxLength)
-            {
-                cache.Add(_gridArray[point.XRow + 1, point.YColumn]);
-            }
+            if (point.XRow < maxLength) cache.Add(_gridArray[point.XRow + 1, point.YColumn]);
 
             //S
-            if (point.YColumn - 1 >= 0)
-            {
-                cache.Add(_gridArray[point.XRow, point.YColumn - 1]);
-            }
+            if (point.YColumn - 1 >= 0) cache.Add(_gridArray[point.XRow, point.YColumn - 1]);
 
             //N
-            if (point.YColumn < maxHeight)
-            {
-                cache.Add(_gridArray[point.XRow, point.YColumn + 1]);
-            }
+            if (point.YColumn < maxHeight) cache.Add(_gridArray[point.XRow, point.YColumn + 1]);
 
             //Conditional diagonal steps
-            if (!diagonal)
-            {
-                return cache;
-            }
+            if (!diagonal) return cache;
 
             //NE
             if (point.XRow < maxLength && point.YColumn < maxHeight)
-            {
                 cache.Add(_gridArray[point.XRow + 1, point.YColumn + 1]);
-            }
 
             //NW
             if (point.XRow - 1 >= 0 && point.YColumn < maxHeight)
-            {
                 cache.Add(_gridArray[point.XRow - 1, point.YColumn + 1]);
-            }
 
             //SE
             if (point.XRow < maxLength && point.YColumn - 1 >= 0)
-            {
                 cache.Add(_gridArray[point.XRow + 1, point.YColumn - 1]);
-            }
 
             //SW
-            if (point.XRow - 1 >= 0 && point.YColumn - 1 >= 0)
-            {
-                cache.Add(_gridArray[point.XRow - 1, point.YColumn - 1]);
-            }
+            if (point.XRow - 1 >= 0 && point.YColumn - 1 >= 0) cache.Add(_gridArray[point.XRow - 1, point.YColumn - 1]);
 
             return cache;
         }

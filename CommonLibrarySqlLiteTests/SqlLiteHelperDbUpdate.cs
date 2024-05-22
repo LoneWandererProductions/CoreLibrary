@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SQLiteHelper;
+using SqliteHelper;;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable once MemberCanBeInternal
