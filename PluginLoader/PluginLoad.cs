@@ -106,7 +106,7 @@ namespace PluginLoader
         {
             if (string.IsNullOrEmpty(path))
             {
-                Trace.WriteLine(PluginLoaderResources.ErrorEmptyPath);
+                Trace.WriteLine(PluginLoaderResources.ErrorPath);
                 return null;
             }
 
