@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using DataFormatter;
@@ -46,7 +47,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void LoadLstObjectFromXml()
         {
-            var lst = new List<XmlItem> { ResourcesGeneral.DataItemOne, ResourcesGeneral.DataItemTwo };
+            var lst = new List<XmlItem> {ResourcesGeneral.DataItemOne, ResourcesGeneral.DataItemTwo};
 
             var paths = Path.Combine(Directory.GetCurrentDirectory(), "testList.xml");
 
@@ -78,6 +79,102 @@ namespace CommonLibraryTests
             FileHandleDelete.DeleteFile(path);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Test_SerializeDictionary_NullDictionary_ThrowsException()
+        {
+            // Arrange
+            var path = "test.xml";
+
+            // Act
+            Serializer.Serialize.SaveDctObjectToXml((Dictionary<string, string>)null, path);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Test_SerializeDictionary_EmptyDictionary_ThrowsException()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, string>();
+            var path = "test.xml";
+
+            // Act
+            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+        }
+
+        [TestMethod]
+        public void Test_SerializeDictionary_ValidDictionary_CreatesXmlFile()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
+
+            // Act
+            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+
+            // Assert
+            Assert.IsTrue(File.Exists(path));
+            var fileContent = File.ReadAllText(path);
+            Assert.IsTrue(fileContent.Contains("<Item>"));
+            Assert.IsTrue(fileContent.Contains("key1"));
+            Assert.IsTrue(fileContent.Contains("value1"));
+
+            FileHandleDelete.DeleteFile(path);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void Test_SerializeDictionary_InvalidPath_ThrowsException()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+            var path = "invalid\0path.xml";
+
+            // Act
+            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+        }
+
+        [TestMethod]
+        public void Test_LoadDictionaryFromXml_ValidPath_ReturnsDictionary()
+        {
+            // Arrange
+            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
+            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+
+            // Act
+            var result = DeSerialize.LoadDictionaryFromXml<string, string>(path);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(dictionary.Count, result.Count);
+            Assert.AreEqual(dictionary["key1"], result["key1"]);
+            Assert.AreEqual(dictionary["key2"], result["key2"]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Test_LoadDictionaryFromXml_InvalidPath_ThrowsException()
+        {
+            // Arrange
+            var path = "nonexistent.xml";
+
+            // Act
+            DeSerialize.LoadDictionaryFromXml<string, string>(path);
+        }
+
+        [TestMethod]
+        public void Test_LoadDictionaryFromXml_EmptyFile_ThrowsException()
+        {
+            // Arrange
+            var path = "empty.xml";
+            File.WriteAllText(path, string.Empty);
+
+            // Act & Assert
+            Assert.ThrowsException<ArgumentException>(() => DeSerialize.LoadDictionaryFromXml<string, string>(path));
+        }
+
         /// <summary>
         ///     Check if the whole cvs stuff works.
         /// </summary>
@@ -85,7 +182,7 @@ namespace CommonLibraryTests
         public void Cvs()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Serialize),
-                "cvstest.cvs");
+                "cvsTest.cvs");
 
             var lst = new List<List<string>>();
 
