@@ -21,22 +21,22 @@ namespace ViewModel
     public sealed class DelegateCommand<T> : ICommand
     {
         /// <summary>
-        ///     The action (readonly).
+        ///     The action to execute.
         /// </summary>
         private readonly Action<T> _action;
 
         /// <summary>
-        ///     The can execute
+        ///     The predicate to determine if the command can execute.
         /// </summary>
         private readonly Predicate<T> _canExecute;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ICommand" /> class.
+        ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
         /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="canExecute">A boolean property to containing current permissions to execute the command</param>
-        /// <exception cref="ArgumentNullException">action</exception>
-        public DelegateCommand(Action<T> action, Predicate<T> canExecute)
+        /// <param name="action">The action to execute.</param>
+        /// <param name="canExecute">A predicate to determine if the command can execute. If null, the command is always executable.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
+        public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
             _canExecute = canExecute;
@@ -44,9 +44,9 @@ namespace ViewModel
 
         /// <inheritdoc />
         /// <summary>
-        ///     The execute.
+        ///     Executes the command.
         /// </summary>
-        /// <param name="parameter">The parameter.</param>
+        /// <param name="parameter">The parameter for the action.</param>
         public void Execute(object parameter)
         {
             _action((T)parameter);
@@ -54,18 +54,18 @@ namespace ViewModel
 
         /// <inheritdoc />
         /// <summary>
-        ///     Check if it can be executed
+        ///     Determines if the command can execute.
         /// </summary>
-        /// <param name="parameter">The parameter.</param>
-        /// <returns>The Execute Check<see cref="T:System.Boolean" />.</returns>
+        /// <param name="parameter">The parameter for the predicate.</param>
+        /// <returns>True if the command can execute, otherwise false.</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute?.Invoke((T)parameter) != false;
+            return _canExecute?.Invoke((T)parameter) ?? true;
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Must be implemented
+        ///     Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
         public event EventHandler CanExecuteChanged
         {

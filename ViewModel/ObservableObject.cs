@@ -7,29 +7,29 @@
  */
 
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ViewModel
 {
     /// <inheritdoc />
     /// <summary>
-    ///     The observable object class.
+    ///     A base class that implements <see cref="INotifyPropertyChanged"/> to provide property change notifications.
     /// </summary>
     public class ObservableObject : INotifyPropertyChanged
     {
         /// <inheritdoc />
         /// <summary>
-        ///     The property changed event of the <see cref="T:System.ComponentModel.PropertyChangedEventHandler" />.
+        ///     Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        ///     The raise property changed event.
+        ///     Raises the <see cref="PropertyChanged"/> event.
         /// </summary>
-        /// <param name="propertyName">The propertyName.</param>
-        protected void RaisePropertyChangedEvent(string propertyName)
+        /// <param name="propertyName">The name of the property that changed.</param>
+        protected void RaisePropertyChangedEvent([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
