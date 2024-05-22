@@ -10,4 +10,11 @@
     <Authors>Wayfarer</Authors>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>CommonLibraryGuiTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

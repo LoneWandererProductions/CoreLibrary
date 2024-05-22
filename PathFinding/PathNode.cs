@@ -49,16 +49,7 @@ namespace PathFinding
         /// <summary>
         ///     Cost + Heuristic, expected Cost
         /// </summary>
-        public int TotalCost => Cost + Heuristic;
-
-        /// <summary>
-        /// Gets or sets the step cost.
-        /// Must be changed per Tile Value
-        /// </summary>
-        /// <value>
-        /// The step cost.
-        /// </value>
-        public int StepCost { get; set; } = 10;
+        private int F => Cost + Heuristic;
 
         /// <inheritdoc />
         /// <summary>
@@ -70,7 +61,7 @@ namespace PathFinding
         /// <returns> Sorted Nodes</returns>
         public int CompareTo(PathNode other)
         {
-            return TotalCost.CompareTo(other.TotalCost);
+            return F < other.F ? -1 : F == other.F ? 0 : 1;
         }
     }
 }
