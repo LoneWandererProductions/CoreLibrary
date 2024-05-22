@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using FileHandler;
@@ -31,48 +32,17 @@ namespace Serializer
         /// <typeparam name="T">Type of the Object.</typeparam>
         public static T LoadObjectFromXml<T>(string path) where T : class, new()
         {
-            //if File exists
-            if (!FileHandleSearch.FileExists(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
-            }
-
-            //check if file is empty, if empty return a new empty one
-            if (!FileContent(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
-            }
+            ValidateFilePath(path);
 
             try
             {
                 var deserializer = new XmlSerializer(typeof(T));
-                using TextReader reader = new StreamReader(path);
-                //can return null but unlikely
+                using var reader = new StreamReader(path);
                 return deserializer.Deserialize(reader) as T;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -84,48 +54,17 @@ namespace Serializer
         /// <typeparam name="T"></typeparam>
         public static List<T> LoadListFromXml<T>(string path) where T : class, new()
         {
-            //if File exists
-            if (!FileHandleSearch.FileExists(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
-            }
-
-            //check if file is empty, if empty return a new empty one
-            if (!FileContent(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
-            }
+            ValidateFilePath(path);
 
             try
             {
-                var data = typeof(List<T>);
-                var ser = new XmlSerializer(data);
-                using Stream tr = File.OpenRead(path);
-                return (List<T>)ser.Deserialize(tr);
+                var serializer = new XmlSerializer(typeof(List<T>));
+                using var stream = new FileStream(path, FileMode.Open);
+                return (List<T>)serializer.Deserialize(stream);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -138,64 +77,21 @@ namespace Serializer
         /// <typeparam name="TValue">Dictionary Value</typeparam>
         public static Dictionary<TKey, TValue> LoadDictionaryFromXml<TKey, TValue>(string path)
         {
-            //if File exists
-            if (!FileHandleSearch.FileExists(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorPath, path));
-            }
-
-            //check if file is empty, if empty return a new empty one
-            if (!FileContent(path))
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorFileEmpty, path));
-            }
-
-            var sr = new StreamReader(path);
+            ValidateFilePath(path);
 
             try
             {
-                var xs = new XmlSerializer(typeof(List<Item>));
-                var lst = (List<Item>)xs.Deserialize(sr);
+                var serializer = new XmlSerializer(typeof(List<Item>));
+                using var reader = new StreamReader(path);
+                var list = (List<Item>)serializer.Deserialize(reader);
 
-                var dct = new Dictionary<TKey, TValue>();
-
-                if (lst == null)
-                {
-                    return null;
-                }
-
-                foreach (var node in lst)
-                {
-                    var value = Deserialize<TValue>(node.Value);
-                    var key = Deserialize<TKey>(node.Key);
-                    dct.Add(key, value);
-                }
-
-                return dct;
+                return list.ToDictionary(
+                    item => Deserialize<TKey>(item.Key),
+                    item => Deserialize<TValue>(item.Value));
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -210,18 +106,33 @@ namespace Serializer
         }
 
         /// <summary>
+        ///     Validates the file path.
+        /// </summary>
+        /// <param name="path">The path to validate.</param>
+        private static void ValidateFilePath(string path)
+        {
+            if (!FileHandleSearch.FileExists(path))
+            {
+                throw new ArgumentException($"{SerialResources.ErrorPath} {path}");
+            }
+
+            if (!FileContent(path))
+            {
+                throw new ArgumentException($"{SerialResources.ErrorFileEmpty} {path}");
+            }
+        }
+
+        /// <summary>
         ///     Generic deserializer.
         /// </summary>
-        /// <typeparam name="T">>Generic Type of Object</typeparam>
+        /// <typeparam name="T">Generic Type of Object</typeparam>
         /// <param name="serialized">Object Serialized</param>
         /// <returns>The deserialized Object<see cref="T" />.</returns>
-        private static T Deserialize<T>(this string serialized)
+        private static T Deserialize<T>(string serialized)
         {
             var serializer = new XmlSerializer(typeof(T));
-
             using var reader = new StringReader(serialized);
-            using var stm = new XmlTextReader(reader);
-            return (T)serializer.Deserialize(stm);
+            return (T)serializer.Deserialize(reader);
         }
     }
 }
