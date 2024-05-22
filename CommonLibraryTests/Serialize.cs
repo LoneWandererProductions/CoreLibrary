@@ -79,6 +79,9 @@ namespace CommonLibraryTests
             FileHandleDelete.DeleteFile(path);
         }
 
+        /// <summary>
+        /// Tests the serialize dictionary null dictionary throws exception.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Test_SerializeDictionary_NullDictionary_ThrowsException()
@@ -90,6 +93,9 @@ namespace CommonLibraryTests
             Serializer.Serialize.SaveDctObjectToXml((Dictionary<string, string>)null, path);
         }
 
+        /// <summary>
+        /// Tests the serialize dictionary empty dictionary throws exception.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Test_SerializeDictionary_EmptyDictionary_ThrowsException()
@@ -102,6 +108,9 @@ namespace CommonLibraryTests
             Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
         }
 
+        /// <summary>
+        /// Tests the serialize dictionary valid dictionary creates XML file.
+        /// </summary>
         [TestMethod]
         public void Test_SerializeDictionary_ValidDictionary_CreatesXmlFile()
         {
@@ -123,6 +132,9 @@ namespace CommonLibraryTests
             FileHandleDelete.DeleteFile(path);
         }
 
+        /// <summary>
+        /// Tests the serialize dictionary invalid path throws exception.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
         public void Test_SerializeDictionary_InvalidPath_ThrowsException()
@@ -135,6 +147,9 @@ namespace CommonLibraryTests
             Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
         }
 
+        /// <summary>
+        /// Tests the load dictionary from XML valid path returns dictionary.
+        /// </summary>
         [TestMethod]
         public void Test_LoadDictionaryFromXml_ValidPath_ReturnsDictionary()
         {
@@ -153,6 +168,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(dictionary["key2"], result["key2"]);
         }
 
+        /// <summary>
+        /// Tests the load dictionary from XML invalid path throws exception.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Test_LoadDictionaryFromXml_InvalidPath_ThrowsException()
@@ -164,6 +182,9 @@ namespace CommonLibraryTests
             DeSerialize.LoadDictionaryFromXml<string, string>(path);
         }
 
+        /// <summary>
+        /// Tests the load dictionary from XML empty file throws exception.
+        /// </summary>
         [TestMethod]
         public void Test_LoadDictionaryFromXml_EmptyFile_ThrowsException()
         {
