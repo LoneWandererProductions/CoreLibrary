@@ -80,6 +80,7 @@
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\Interpreter\Interpreter.csproj" />
+    <ProjectReference Include="..\PathFinding\PathFinding.csproj" />
     <ProjectReference Include="..\Serializer\Serializer.csproj" />
   </ItemGroup>
 
