@@ -50,6 +50,9 @@ namespace PathFinding
         ///     Cost + Heuristic, expected Cost
         /// </summary>
         private int F => Cost + Heuristic;
+        public int TotalCost => Cost + Heuristic;
+
+        public int StepCost { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -61,7 +64,7 @@ namespace PathFinding
         /// <returns> Sorted Nodes</returns>
         public int CompareTo(PathNode other)
         {
-            return F < other.F ? -1 : F == other.F ? 0 : 1;
+            return TotalCost.CompareTo(other.TotalCost);
         }
     }
 }

@@ -647,7 +647,7 @@ namespace SQLiteHelper
                 return false;
             }
 
-            var table = SqLiteHelper.LoadCsv(csv, headers);
+            var table = SqliteHelper.LoadCsv(csv, headers);
             return _execute.InsertMultipleRow(tableAlias, table, true);
         }
 
@@ -668,10 +668,10 @@ namespace SQLiteHelper
 
             if (headers)
             {
-                return SqLiteHelper.ExportCsv(table, info);
+                return SqliteHelper.ExportCsv(table, info);
             }
 
-            return SqLiteHelper.ExportCsv(table);
+            return SqliteHelper.ExportCsv(table);
         }
 
         /// <inheritdoc />

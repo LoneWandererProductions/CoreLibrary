@@ -85,7 +85,7 @@ namespace PathFinding
         /// <returns>If Object is equal</returns>
         public override bool Equals(object obj)
         {
-            return obj is MovePoint other && Equals(other);
+            return obj is MovePoint other && XRow == other.XRow && YColumn == other.YColumn;
         }
     }
 }
