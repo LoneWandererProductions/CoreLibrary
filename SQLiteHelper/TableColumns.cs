@@ -28,7 +28,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Optional
         /// </summary>
-        public bool PrimaryKey { get; set; }
+        public bool PrimaryKey { get; init; }
 
         /// <summary>
         ///     Optional

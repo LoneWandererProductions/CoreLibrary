@@ -34,7 +34,9 @@ namespace Serializer
         public static void SaveObjectToXml<T>(T obj, string path)
         {
             if (obj == null)
+            {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+            }
 
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
@@ -45,7 +47,7 @@ namespace Serializer
                 using var writer = new StreamWriter(path);
                 serializer.Serialize(writer, obj);
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -60,18 +62,19 @@ namespace Serializer
         public static void SaveLstObjectToXml<T>(List<T> obj, string path)
         {
             if (obj == null || obj.Count == 0)
+            {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+            }
 
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
 
             try
             {
-                var serializer = new XmlSerializer(typeof(List<T>));
                 using var fileStream = new FileStream(path, FileMode.Create);
-                serializer.Serialize(fileStream, obj);
+                new XmlSerializer(typeof(List<T>)).Serialize(fileStream, obj);
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -85,7 +88,9 @@ namespace Serializer
         public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path)
         {
             if (dct == null || dct.Count == 0)
+            {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+            }
 
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
@@ -99,7 +104,7 @@ namespace Serializer
 
                 SerializeDictionary(myDictionary, path);
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -114,8 +119,7 @@ namespace Serializer
         private static string Handle<T>(T obj)
         {
             using var stringWriter = new StringWriter();
-            var serializer = new XmlSerializer(typeof(T));
-            serializer.Serialize(stringWriter, obj);
+            new XmlSerializer(typeof(T)).Serialize(stringWriter, obj);
             return stringWriter.ToString();
         }
 
@@ -127,7 +131,9 @@ namespace Serializer
         private static void SerializeDictionary(Dictionary<string, string> dct, string path)
         {
             if (dct == null || dct.Count == 0)
+            {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+            }
 
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
@@ -135,17 +141,16 @@ namespace Serializer
             try
             {
                 var tempDataItems = dct.Select(pair => new Item(pair.Key, pair.Value)).ToList();
-                var serializer = new XmlSerializer(typeof(List<Item>));
                 var namespaces = new XmlSerializerNamespaces();
                 namespaces.Add(string.Empty, string.Empty);
 
                 using var stringWriter = new StringWriter(CultureInfo.InvariantCulture);
-                serializer.Serialize(stringWriter, tempDataItems, namespaces);
+                new XmlSerializer(typeof(List<Item>)).Serialize(stringWriter, tempDataItems, namespaces);
 
                 using var streamWriter = new StreamWriter(path);
                 streamWriter.Write(stringWriter.ToString());
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }

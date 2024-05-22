@@ -103,26 +103,26 @@ namespace ImageCompare
         Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color);
 
         /// <summary>
-        /// Determines whether [is part of] [the specified big image].
+        ///     Determines whether [is part of] [the specified big image].
         /// </summary>
         /// <param name="bigImage">The big image.</param>
         /// <param name="smallImage">The small image.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>
-        ///   <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
         bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates);
 
 
         /// <summary>
-        /// Determines whether [is part of] [the specified big image].
+        ///     Determines whether [is part of] [the specified big image].
         /// </summary>
         /// <param name="bigImagePath">The Path to big image.</param>
         /// <param name="smallImagePath">The Path to small image.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
         /// <param name="threshold">The threshold. Optional Parameter</param>
         /// <returns>
-        ///   <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
         bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates, int threshold = 0);
     }

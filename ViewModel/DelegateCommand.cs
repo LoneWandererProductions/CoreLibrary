@@ -34,7 +34,10 @@ namespace ViewModel
         ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
         /// </summary>
         /// <param name="action">The action to execute.</param>
-        /// <param name="canExecute">A predicate to determine if the command can execute. If null, the command is always executable.</param>
+        /// <param name="canExecute">
+        ///     A predicate to determine if the command can execute. If null, the command is always
+        ///     executable.
+        /// </param>
         /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
         public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
         {

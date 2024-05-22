@@ -43,7 +43,10 @@ namespace SqliteHelper
             //5 Primary Key 1 is primary Key
             foreach (DataRow row in table.Rows)
             {
-                if (row == null) continue;
+                if (row == null)
+                {
+                    continue;
+                }
 
                 var column = new TableColumns
                 {
@@ -55,7 +58,10 @@ namespace SqliteHelper
 
                 column = SetDataType(column, row.ItemArray[2].ToString());
 
-                if (column == null) return null;
+                if (column == null)
+                {
+                    return null;
+                }
 
                 headers.Add(row.ItemArray[1].ToString(), column);
             }
@@ -72,9 +78,9 @@ namespace SqliteHelper
         internal static List<string> CheckUniqueTableHeaders(DataTable table)
         {
             return table.Rows.Cast<DataRow>()
-                        .Select(row => row.ItemArray[1]?.ToString())
-                        .Where(name => !string.IsNullOrEmpty(name))
-                        .ToList();
+                .Select(row => row.ItemArray[1]?.ToString())
+                .Where(name => !string.IsNullOrEmpty(name))
+                .ToList();
         }
 
         /// <summary>
@@ -86,8 +92,8 @@ namespace SqliteHelper
         internal static string GetTableHeader(DataTable table)
         {
             return table.Rows.Cast<DataRow>()
-                        .Select(row => row.ItemArray[2]?.ToString())
-                        .FirstOrDefault();
+                .Select(row => row.ItemArray[2]?.ToString())
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -96,7 +102,8 @@ namespace SqliteHelper
         /// <param name="tableInfo">Dictionary of Table Information</param>
         /// <param name="uniqueHeaders">List of Unique Columns</param>
         /// <returns>Dictionary of Table Information with Unique checked</returns>
-        internal static Dictionary<string, TableColumns> AddUniqueStatus(Dictionary<string, TableColumns> tableInfo, List<string> uniqueHeaders)
+        internal static Dictionary<string, TableColumns> AddUniqueStatus(Dictionary<string, TableColumns> tableInfo,
+            List<string> uniqueHeaders)
         {
             foreach (var header in uniqueHeaders)
             {
@@ -139,11 +146,8 @@ namespace SqliteHelper
             return new DataSet
             {
                 Row = dt.Rows.Cast<DataRow>()
-                             .Select(row => new TableSet
-                             {
-                                 Row = row.ItemArray.Select(item => item?.ToString()).ToList()
-                             })
-                             .ToList()
+                    .Select(row => new TableSet { Row = row.ItemArray.Select(item => item?.ToString()).ToList() })
+                    .ToList()
             };
         }
 

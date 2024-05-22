@@ -59,10 +59,10 @@ namespace PluginLoader
         }
 
         /// <summary>
-        /// Gets or sets the extension.
+        ///     Gets or sets the extension.
         /// </summary>
         /// <value>
-        /// The extension.
+        ///     The extension.
         /// </value>
         public string Extension
         {
@@ -108,10 +108,10 @@ namespace PluginLoader
         }
 
         /// <summary>
-        /// Handles the Loaded event of the PluginController control.
+        ///     Handles the Loaded event of the PluginController control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void PluginController_Loaded(object sender, RoutedEventArgs e)
         {
             var directory = Directory.GetCurrentDirectory();

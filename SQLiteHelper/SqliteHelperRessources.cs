@@ -344,21 +344,6 @@ namespace SqliteHelper
         internal const string ErrorEmptyInput = " Input Value was empty ";
 
         /// <summary>
-        ///     The Information Property is protected (const). Value: "Property is protected.".
-        /// </summary>
-        internal const string InformationPropertyProtected = "Property is protected.";
-
-        /// <summary>
-        ///     The Information Property needs a Parameter (const). Value: "Property needs a Parameter.".
-        /// </summary>
-        internal const string InformationPropertyNeedsParameter = "Property needs a Parameter.";
-
-        /// <summary>
-        ///     The Information Property was null (const). Value: "Property was null.".
-        /// </summary>
-        internal const string InformationPropertyWasNull = "Property was null.";
-
-        /// <summary>
         ///     Trace could not convert data type (const). Value: "Could not convert Data Type: ".
         /// </summary>
         internal const string TraceCouldNotConvert = "Could not convert Data Type: ";

@@ -36,11 +36,10 @@ namespace Serializer
 
             try
             {
-                var deserializer = new XmlSerializer(typeof(T));
                 using var reader = new StreamReader(path);
-                return deserializer.Deserialize(reader) as T;
+                return new XmlSerializer(typeof(T)).Deserialize(reader) as T;
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -62,7 +61,7 @@ namespace Serializer
                 using var stream = new FileStream(path, FileMode.Open);
                 return (List<T>)serializer.Deserialize(stream);
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -81,15 +80,14 @@ namespace Serializer
 
             try
             {
-                var serializer = new XmlSerializer(typeof(List<Item>));
                 using var reader = new StreamReader(path);
-                var list = (List<Item>)serializer.Deserialize(reader);
+                var list = (List<Item>)new XmlSerializer(typeof(List<Item>)).Deserialize(reader);
 
                 return list.ToDictionary(
                     item => Deserialize<TKey>(item.Key),
                     item => Deserialize<TValue>(item.Value));
             }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }

@@ -13,7 +13,7 @@ namespace ViewModel
 {
     /// <inheritdoc />
     /// <summary>
-    ///     A base class that implements <see cref="INotifyPropertyChanged"/> to provide property change notifications.
+    ///     A base class that implements <see cref="INotifyPropertyChanged" /> to provide property change notifications.
     /// </summary>
     public class ObservableObject : INotifyPropertyChanged
     {
@@ -24,7 +24,7 @@ namespace ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        ///     Raises the <see cref="PropertyChanged"/> event.
+        ///     Raises the <see cref="PropertyChanged" /> event.
         /// </summary>
         /// <param name="propertyName">The name of the property that changed.</param>
         protected void RaisePropertyChangedEvent([CallerMemberName] string propertyName = null)

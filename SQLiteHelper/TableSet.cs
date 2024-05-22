@@ -75,7 +75,7 @@ namespace SqliteHelper
         ///     Custom Data View,
         ///     Infos about the Table and the Data it Contains
         /// </summary>
-        public List<TableSet> Row { get; internal set; }
+        public List<TableSet> Row { get; internal init; }
 
         /// <summary>
         ///     Get a specific Column of the Data set

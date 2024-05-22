@@ -17,7 +17,7 @@ using System.Reflection;
 
 namespace SqliteHelper
 {
-    /// <inheritdoc cref="ISqlLiteUtility" />
+    /// <inheritdoc cref="SqliteUtility" />
     /// <summary>
     ///     The sql lite utility class.
     /// </summary>
@@ -32,7 +32,10 @@ namespace SqliteHelper
         [return: MaybeNull]
         public DictionaryTableColumns ConvertObjectToTableColumns(object obj)
         {
-            if (obj == null) return null;
+            if (obj == null)
+            {
+                return null;
+            }
 
             var tableColumns = new DictionaryTableColumns();
 
@@ -76,7 +79,10 @@ namespace SqliteHelper
         public TableSet ConvertObjectToTableSet(object obj)
         {
             //well obvious don't fuck with me and don't expect an Debug Message
-            if (obj == null) return null;
+            if (obj == null)
+            {
+                return null;
+            }
 
             var attributes = ConvertAttributes(obj);
 
@@ -89,18 +95,20 @@ namespace SqliteHelper
         ///     Strictly depends on the Order so well it is quite fragile
         ///     Works with Enum, sort of no guarantees
         /// </summary>
-        /// <param name="row">Dictionary of Attribute Names and Values</param>
+        /// <param name="attributes">Dictionary of Attribute Names and Values</param>
         /// <param name="obj">Object to be filled</param>
         /// <returns>Filled Object</returns>
         [return: MaybeNull]
         public object FillObjectFromAttributes(List<string> attributes, object obj)
         {
             if (attributes == null || obj == null || attributes.Count != obj.GetType().GetProperties().Length)
+            {
                 return null;
+            }
 
             try
             {
-                int count = 0;
+                var count = 0;
                 foreach (var propertyInfo in obj.GetType().GetProperties())
                 {
                     var value = propertyInfo.PropertyType.IsEnum
@@ -110,12 +118,7 @@ namespace SqliteHelper
                     count++;
                 }
             }
-            catch (Exception ex) when (ex is ArgumentException ||
-                                       ex is TargetException ||
-                                       ex is TargetParameterCountException ||
-                                       ex is MethodAccessException ||
-                                       ex is TargetInvocationException ||
-                                       ex is OverflowException)
+            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetParameterCountException or MethodAccessException or TargetInvocationException or OverflowException)
             {
                 Trace.WriteLine(ex);
             }
@@ -147,7 +150,7 @@ namespace SqliteHelper
                     attributes.Add(value);
                 }
             }
-            catch (Exception ex) when (ex is ArgumentNullException || ex is TargetParameterCountException)
+            catch (Exception ex) when (ex is ArgumentNullException or TargetParameterCountException)
             {
                 Trace.WriteLine(ex);
                 return null;

@@ -9,6 +9,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnassignedField.Global
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,18 +39,21 @@ namespace PluginLoader
         public static List<IPlugin> PluginContainer { get; private set; }
 
         /// <summary>
-        /// Loads all.
+        ///     Loads all.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="extension">The extension for plugins.</param>
         /// <returns>
-        /// Success Status
+        ///     Success Status
         /// </returns>
         public static bool LoadAll(string path, string extension = PluginLoaderResources.FileExt)
         {
             var pluginPaths = GetFilesByExtensionFullPath(path, extension);
 
-            if (pluginPaths == null) return false;
+            if (pluginPaths == null)
+            {
+                return false;
+            }
 
             PluginContainer = new List<IPlugin>();
 
@@ -61,12 +65,7 @@ namespace PluginLoader
                     var lst = CreateCommands(pluginAssembly).ToList();
                     PluginContainer.AddRange(lst);
                 }
-                catch (Exception ex) when (ex is ArgumentException ||
-                                           ex is FileLoadException ||
-                                           ex is ApplicationException ||
-                                           ex is ReflectionTypeLoadException ||
-                                           ex is BadImageFormatException ||
-                                           ex is FileNotFoundException)
+                catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException or ReflectionTypeLoadException or BadImageFormatException or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
@@ -87,7 +86,10 @@ namespace PluginLoader
         /// <returns>Success Status</returns>
         public static bool SetEnvironmentVariables(Dictionary<int, object> store)
         {
-            if (store == null) return false;
+            if (store == null)
+            {
+                return false;
+            }
 
             // Key, here we define the accessible Environment for the plugins
             DataRegister.Store = store;
@@ -111,7 +113,9 @@ namespace PluginLoader
             }
 
             if (Directory.Exists(path))
+            {
                 return Directory.EnumerateFiles(path, $"*{extension}", SearchOption.TopDirectoryOnly).ToList();
+            }
 
             Trace.WriteLine(PluginLoaderResources.ErrorDirectory);
 
@@ -145,15 +149,22 @@ namespace PluginLoader
 
             foreach (var type in assembly.GetTypes().Where(type => typeof(IPlugin).IsAssignableFrom(type)))
             {
-                if (Activator.CreateInstance(type) is not IPlugin result) continue;
+                if (Activator.CreateInstance(type) is not IPlugin result)
+                {
+                    continue;
+                }
 
                 count++;
                 yield return result;
             }
 
-            if (count != 0) yield break;
+            if (count != 0)
+            {
+                yield break;
+            }
 
-            var availableTypes = string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
+            var availableTypes =
+                string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
 
             var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin,
                 PluginLoaderResources.Information(assembly, availableTypes));
