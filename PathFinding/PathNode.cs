@@ -49,10 +49,16 @@ namespace PathFinding
         /// <summary>
         ///     Cost + Heuristic, expected Cost
         /// </summary>
-        private int F => Cost + Heuristic;
         public int TotalCost => Cost + Heuristic;
 
-        public int StepCost { get; set; }
+        /// <summary>
+        /// Gets or sets the step cost.
+        /// Must be changed per Tile Value
+        /// </summary>
+        /// <value>
+        /// The step cost.
+        /// </value>
+        public int StepCost { get; set; } = 10;
 
         /// <inheritdoc />
         /// <summary>
