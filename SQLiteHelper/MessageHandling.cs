@@ -62,16 +62,16 @@ namespace SQLiteHelper
             switch (logLvl)
             {
                 case 0:
-                    LastError = string.Concat(SqLiteHelperResources.MessageError, DateTime.Now,
-                        SqLiteHelperResources.End, Environment.NewLine, error);
+                    LastError = string.Concat(SqliteHelperResources.MessageError, DateTime.Now,
+                        SqliteHelperResources.End, Environment.NewLine, error);
                     break;
                 case 1:
-                    LastError = string.Concat(SqLiteHelperResources.MessageWarning, DateTime.Now,
-                        SqLiteHelperResources.End, Environment.NewLine, error);
+                    LastError = string.Concat(SqliteHelperResources.MessageWarning, DateTime.Now,
+                        SqliteHelperResources.End, Environment.NewLine, error);
                     break;
                 case 2:
-                    LastError = string.Concat(SqLiteHelperResources.MessageInfo, DateTime.Now,
-                        SqLiteHelperResources.End, Environment.NewLine, error);
+                    LastError = string.Concat(SqliteHelperResources.MessageInfo, DateTime.Now,
+                        SqliteHelperResources.End, Environment.NewLine, error);
                     break;
                 default: return string.Empty;
             }
@@ -106,7 +106,7 @@ namespace SQLiteHelper
         /// </summary>
         internal static void ClearErrors()
         {
-            LastError = SqLiteHelperResources.ErrorCheck;
+            LastError = SqliteHelperResources.ErrorCheck;
             ListError.Clear();
             LogFile.Clear();
             ListError.Clear();

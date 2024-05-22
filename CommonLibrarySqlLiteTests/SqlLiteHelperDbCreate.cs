@@ -37,7 +37,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The SqlLite Interface.
         /// </summary>
-        private static SqlLiteDatabase _target = new();
+        private static SqliteDatabase _target = new();
 
         /// <summary>
         ///     Test if we can create a Database
@@ -121,7 +121,7 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void ConfigConnection()
         {
-            _target = new SqlLiteDatabase("Path", "Name of Db", 2);
+            _target = new SqliteDatabase("Path", "Name of Db", 2);
 
             _target.SendMessage += SharedHelperClass.DebugPrints;
 

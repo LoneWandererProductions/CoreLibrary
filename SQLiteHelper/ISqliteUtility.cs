@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/ISqlLiteUtility.cs
+ * FILE:        SQLiteHelper/ISqliteUtility.cs
  * PURPOSE:     Interface Tools for SqlLite
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,14 +15,14 @@ namespace SQLiteHelper
     /// <summary>
     ///     The ISqlLiteUtility interface.
     /// </summary>
-    internal interface ISqlLiteUtility
+    internal interface ISqliteUtility
     {
         /// <summary>
         ///     Convert the object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>The <see cref="DictionaryTableColumns" />.</returns>
-        DictionaryTableColumns ConvertObject(object obj);
+        DictionaryTableColumns ConvertObjectToTableColumns(object obj);
 
         /// <summary>
         ///     Convert the to attribute.
@@ -31,7 +31,7 @@ namespace SQLiteHelper
         /// <returns>
         ///     The <see cref="T:List{string}" />, can return null.
         /// </returns>
-        List<string> ConvertToAttribute(object obj);
+        List<string> ConvertObjectToAttributes(object obj);
 
         /// <summary>
         ///     Converts to table set.
@@ -40,7 +40,7 @@ namespace SQLiteHelper
         /// <returns>
         ///     The TableSet, can return null.
         /// </returns>
-        TableSet ConvertToTableSet(object obj);
+        TableSet ConvertObjectToTableSet(object obj);
 
         /// <summary>
         ///     Fill the object.
@@ -48,6 +48,6 @@ namespace SQLiteHelper
         /// <param name="row">The row.</param>
         /// <param name="obj">The obj.</param>
         /// <returns>The <see cref="object" />.</returns>
-        object FillObject(List<string> row, object obj);
+        object FillObjectFromAttributes(List<string> row, object obj);
     }
 }

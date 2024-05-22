@@ -26,7 +26,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Database Handler
         /// </summary>
-        private static SqlLiteDatabase _db;
+        private static SqliteDatabase _db;
 
         /// <summary>
         ///     Where Clause for the Statements
@@ -92,7 +92,7 @@ namespace SQLiteGui
             var location = Directory.GetParent(path)?.ToString();
             var dbName = Path.GetFileName(path);
 
-            _db = new SqlLiteDatabase(location, dbName);
+            _db = new SqliteDatabase(location, dbName);
 
             //Get Tables
             var lst = _db.GetTables();

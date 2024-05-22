@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SqlLiteConnectionConfig.cs
+ * FILE:        SQLiteHelper/SqliteConnectionConfig.cs
  * PURPOSE:     Connection Strings
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     The sql lite connection Config class.
     /// </summary>
-    internal static class SqlLiteConnectionConfig
+    internal static class SqliteConnectionConfig
     {
         /// <summary>
         ///     Gets or sets the location.
@@ -40,9 +40,9 @@ namespace SQLiteHelper
         /// </summary>
         internal static string ConnectionString
             =>
-                string.Concat(SqLiteHelperResources.DataSource, FullPath, SqLiteHelperResources.DataVersion,
+                string.Concat(SqliteHelperResources.DataSource, FullPath, SqliteHelperResources.DataVersion,
                     DbVersion,
-                    SqLiteHelperResources.End);
+                    SqliteHelperResources.End);
 
         /// <summary>
         ///     Gets the full path.

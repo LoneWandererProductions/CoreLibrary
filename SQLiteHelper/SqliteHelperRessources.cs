@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SQLiteHelperResources.cs
+ * FILE:        SQLiteHelper/SqliteHelperResources.cs
  * PURPOSE:     Basic String Resources and magic Numbers
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     The sql lite helper resources class.
     /// </summary>
-    internal static class SqLiteHelperResources
+    internal static class SqliteHelperResources
     {
         /// <summary>
         ///     0 cid not needed by us, id of column

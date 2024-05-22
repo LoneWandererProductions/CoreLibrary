@@ -28,7 +28,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The Util (readonly). Value: new SqlLiteUtility().
         /// </summary>
-        private readonly SqlLiteUtility _util = new();
+        private readonly SqliteUtility _util = new();
 
         /// <summary>
         ///     Test the utility works
@@ -37,7 +37,7 @@ namespace CommonLibrarySqlLiteTests
         public void ConvertObject()
         {
             var tst = new TstObj();
-            var cache = _util.ConvertObject(tst);
+            var cache = _util.ConvertObjectToTableColumns(tst);
 
             Assert.AreEqual(5, cache.DColumns.Count, "Wrong Number of Elements");
 
@@ -54,7 +54,7 @@ namespace CommonLibrarySqlLiteTests
         {
             var tst = new TstObjAttribute { First = "1", Second = "2", Third = 3, Fourth = 4 };
 
-            var cache = _util.ConvertToAttribute(tst);
+            var cache = _util.ConvertAttributes(tst);
 
             Assert.AreEqual(4, cache.Count, "Wrong Number of Elements");
 
@@ -62,7 +62,7 @@ namespace CommonLibrarySqlLiteTests
 
             Assert.IsTrue(check, "Test failed ConvertToAttribute");
 
-            var data = _util.ConvertToTableSet(tst);
+            var data = _util.ConvertObjectToTableSet(tst);
 
             Assert.AreEqual(4, data.Row.Count, "Wrong Number of Elements");
 
@@ -79,7 +79,7 @@ namespace CommonLibrarySqlLiteTests
         {
             var tst = new TstObjEnumAttribute { Start = "1", End = TstEnm.Second };
 
-            var cache = _util.ConvertToAttribute(tst);
+            var cache = _util.ConvertObjectToAttributes(tst);
 
             Assert.AreEqual(2, cache.Count, "Wrong Number of Elements");
             Assert.IsTrue(cache[0] == "1", "Wrong Element Name: " + cache[0]);
@@ -87,7 +87,7 @@ namespace CommonLibrarySqlLiteTests
 
             tst = new TstObjEnumAttribute { Start = "3", End = TstEnm.First };
 
-            cache = _util.ConvertToAttribute(tst);
+            cache = _util.ConvertObjectToAttributes(tst);
 
             Assert.AreEqual(2, cache.Count, "Wrong Number of Elements");
             Assert.IsTrue(cache[0] == "3", "Wrong Element Name: " + cache[0]);
@@ -109,11 +109,11 @@ namespace CommonLibrarySqlLiteTests
                 HereWeGo = "HereWeGo"
             };
 
-            var db = _util.ConvertObject(tst);
+            var db = _util.ConvertObjectToTableColumns(tst);
 
-            var data = _util.ConvertToAttribute(tst);
+            var data = _util.ConvertObjectToAttributes(tst);
             Assert.AreEqual(5, data.Count, "Wrong Number of Elements");
-            data = _util.ConvertToAttribute(tst);
+            data = _util.ConvertObjectToAttributes(tst);
             Assert.AreEqual(5, data.Count, "Wrong Number of Elements");
 
             var check = CheckResultsConvertToTableRowOrder(db.DColumns.Keys.ToList(), data);
@@ -136,11 +136,11 @@ namespace CommonLibrarySqlLiteTests
                 HereWeGo = "HereWeGo"
             };
 
-            var data = _util.ConvertToAttribute(tst);
+            var data = _util.ConvertObjectToAttributes(tst);
 
             var ts = new Order();
 
-            var db = (Order)_util.FillObject(data, ts);
+            var db = (Order)_util.FillObjectFromAttributes(data, ts);
 
             Assert.IsTrue(tst.First == db.First, "Test failed First");
             Assert.IsTrue(tst.Alpha == db.Alpha, "Test failed Alpha");
@@ -157,11 +157,11 @@ namespace CommonLibrarySqlLiteTests
         {
             var tst = new TstObjEnumAttribute { Start = "1", End = TstEnm.Second };
 
-            var data = _util.ConvertToAttribute(tst);
+            var data = _util.ConvertObjectToAttributes(tst);
 
             var ts = new TstObjEnumAttribute();
 
-            var db = (TstObjEnumAttribute)_util.FillObject(data, ts);
+            var db = (TstObjEnumAttribute)_util.FillObjectFromAttributes(data, ts);
 
             Assert.IsTrue(tst.Start == db.Start, "Test failed First");
             Assert.IsTrue(tst.End == db.End, "Test failed Alpha");
@@ -178,7 +178,7 @@ namespace CommonLibrarySqlLiteTests
             SharedHelperClass.CleanUp(path);
 
             var tst = new TstObj();
-            var cache = _util.ConvertObject(tst);
+            var cache = _util.ConvertObjectToTableColumns(tst);
 
             Assert.AreEqual(5, cache.DColumns.Count, " Wrong Number of Elements");
 
@@ -187,7 +187,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.IsTrue(check, "Test failed wrong conversion");
 
             //basic initiation
-            var db = new SqlLiteDatabase();
+            var db = new SqliteDatabase();
 
             //Check if file was created
             db.CreateDatabase(true);

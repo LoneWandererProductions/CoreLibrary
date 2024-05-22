@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SqlLiteQueryConst.cs
+ * FILE:        SQLiteHelper/SqliteQueryConst.cs
  * PURPOSE:     Const Sql Parameters for basic SqLite Operations, mostly basic Data types no Objects for portability, one Exception though I need a plan for this
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -19,7 +19,7 @@ namespace SQLiteHelper
     ///     https://www.sqlite.org/pragma.html
     ///     Basic Constants for SqLite Queries
     /// </summary>
-    internal static class SqlLiteQueryConst
+    internal static class SqliteQueryConst
     {
         /// <summary>
         ///     Helper to check for Primary Key
@@ -90,7 +90,7 @@ namespace SQLiteHelper
         /// <returns>Sql String</returns>
         internal static string SelectTable(string tableAlias)
         {
-            return string.IsNullOrEmpty(tableAlias) ? SqLiteHelperResources.ErrorCheck : $"select * from {tableAlias}";
+            return string.IsNullOrEmpty(tableAlias) ? SqliteHelperResources.ErrorCheck : $"select * from {tableAlias}";
         }
 
         /// <summary>
@@ -105,12 +105,12 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             if (tableHeaders == null || tableHeaders.DColumns.Count == 0)
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             _primaryKey = false;
@@ -128,12 +128,12 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             if (headerTable == null || headerTable.Count == 0)
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             var queryStart = $"INSERT INTO {tableAlias} (";
@@ -154,7 +154,7 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias) || string.IsNullOrEmpty(where) || string.IsNullOrEmpty(value))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             return $"DELETE from {tableAlias} WHERE {where} = '{value}'";
@@ -177,20 +177,20 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             if (headerTable == null || headerTable.Count == 0)
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             var queryStart = $"UPDATE {tableAlias} SET ";
             var queryEnd = string.Concat(
-                SqLiteHelperResources.Spacing, SqLiteHelperResources.SqlWhere,
-                SqLiteHelperResources.Spacing, where, SqLiteHelperResources.Spacing,
-                OperatorToString(operators), SqLiteHelperResources.Spacing,
-                SqLiteHelperResources.Escape, value, SqLiteHelperResources.Escape
+                SqliteHelperResources.Spacing, SqliteHelperResources.SqlWhere,
+                SqliteHelperResources.Spacing, where, SqliteHelperResources.Spacing,
+                OperatorToString(operators), SqliteHelperResources.Spacing,
+                SqliteHelperResources.Escape, value, SqliteHelperResources.Escape
             );
 
             return BuildInsert(queryStart, queryEnd, headerTable);
@@ -206,7 +206,7 @@ namespace SQLiteHelper
         internal static string Pragma_TableInfo(string tableAlias)
         {
             return string.IsNullOrEmpty(tableAlias)
-                ? SqLiteHelperResources.ErrorCheck
+                ? SqliteHelperResources.ErrorCheck
                 : $"PRAGMA table_info({tableAlias})";
         }
 
@@ -220,7 +220,7 @@ namespace SQLiteHelper
         internal static string Pragma_index_list(string tableAlias)
         {
             return string.IsNullOrEmpty(tableAlias)
-                ? SqLiteHelperResources.ErrorCheck
+                ? SqliteHelperResources.ErrorCheck
                 : $"PRAGMA index_list({tableAlias})";
         }
 
@@ -262,28 +262,28 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             if (headerTable == null || headerTable.Count == 0)
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
-            var queryStart = SqLiteHelperResources.SqlSelect;
+            var queryStart = SqliteHelperResources.SqlSelect;
             string vector;
 
             if (headers != null)
             {
                 vector = GetTableHeaders(queryStart, headers, headerTable);
-                if (vector == SqLiteHelperResources.ErrorCheck)
+                if (vector == SqliteHelperResources.ErrorCheck)
                 {
-                    return SqLiteHelperResources.ErrorCheck;
+                    return SqliteHelperResources.ErrorCheck;
                 }
             }
             else
             {
-                vector = SqLiteHelperResources.SqlSelect + SqLiteHelperResources.Star;
+                vector = SqliteHelperResources.SqlSelect + SqliteHelperResources.Star;
             }
 
             queryStart = vector;
@@ -293,9 +293,9 @@ namespace SQLiteHelper
             if (headers != null)
             {
                 vector = SetWhereClause(oderBy, where, operators, whereValue, headerTable);
-                if (vector == SqLiteHelperResources.ErrorCheck)
+                if (vector == SqliteHelperResources.ErrorCheck)
                 {
-                    return SqLiteHelperResources.ErrorCheck;
+                    return SqliteHelperResources.ErrorCheck;
                 }
 
                 queryEnd += vector;
@@ -308,10 +308,10 @@ namespace SQLiteHelper
                 }
 
                 vector = string.Concat(
-                    SqLiteHelperResources.SqlWhere, SqLiteHelperResources.Spacing, where,
-                    SqLiteHelperResources.Spacing, OperatorToString(operators),
-                    SqLiteHelperResources.Spacing, SqLiteHelperResources.Escape, whereValue,
-                    SqLiteHelperResources.Escape
+                    SqliteHelperResources.SqlWhere, SqliteHelperResources.Spacing, where,
+                    SqliteHelperResources.Spacing, OperatorToString(operators),
+                    SqliteHelperResources.Spacing, SqliteHelperResources.Escape, whereValue,
+                    SqliteHelperResources.Escape
                 );
                 queryEnd += vector;
             }
@@ -330,7 +330,7 @@ namespace SQLiteHelper
         {
             if (string.IsNullOrEmpty(tableAlias) || string.IsNullOrEmpty(column) || string.IsNullOrEmpty(indexName))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
             return $"CREATE UNIQUE INDEX {indexName} on {tableAlias}  ({column})";
@@ -363,62 +363,62 @@ namespace SQLiteHelper
             switch (cache.Count)
             {
                 case 0:
-                    return SqLiteHelperResources.ErrorCheck;
+                    return SqliteHelperResources.ErrorCheck;
 
                 case 1:
                     var queryOne = query;
-                    queryOne = string.Concat(queryOne, SqLiteHelperResources.BracketOpen);
+                    queryOne = string.Concat(queryOne, SqliteHelperResources.BracketOpen);
                     queryOne = AddRowDefinitions(queryOne, first);
-                    if (queryOne == SqLiteHelperResources.ErrorCheck)
+                    if (queryOne == SqliteHelperResources.ErrorCheck)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
-                    return string.Concat(queryOne, SqLiteHelperResources.BracketClose);
+                    return string.Concat(queryOne, SqliteHelperResources.BracketClose);
 
                 case 2:
                     var queryTwo = query;
-                    queryTwo = string.Concat(queryTwo, SqLiteHelperResources.BracketOpen);
+                    queryTwo = string.Concat(queryTwo, SqliteHelperResources.BracketOpen);
                     queryTwo = AddRowDefinitions(queryTwo, first);
-                    if (queryTwo == SqLiteHelperResources.ErrorCheck)
+                    if (queryTwo == SqliteHelperResources.ErrorCheck)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
-                    queryTwo = string.Concat(queryTwo, SqLiteHelperResources.Comma);
+                    queryTwo = string.Concat(queryTwo, SqliteHelperResources.Comma);
                     queryTwo = AddRowDefinitions(queryTwo, last);
-                    if (queryTwo == SqLiteHelperResources.ErrorCheck)
+                    if (queryTwo == SqliteHelperResources.ErrorCheck)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
-                    return string.Concat(queryTwo, SqLiteHelperResources.BracketClose);
+                    return string.Concat(queryTwo, SqliteHelperResources.BracketClose);
 
                 default:
                     cache.Remove(first.Key);
                     cache.Remove(last.Key);
 
-                    query = string.Concat(query, SqLiteHelperResources.BracketOpen);
+                    query = string.Concat(query, SqliteHelperResources.BracketOpen);
                     query = AddRowDefinitions(query, first);
-                    query = string.Concat(query, SqLiteHelperResources.Comma);
-                    if (query == SqLiteHelperResources.ErrorCheck)
+                    query = string.Concat(query, SqliteHelperResources.Comma);
+                    if (query == SqliteHelperResources.ErrorCheck)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
                     foreach (var headers in cache)
                     {
                         query = AddRowDefinitions(query, headers);
-                        if (query == SqLiteHelperResources.ErrorCheck)
+                        if (query == SqliteHelperResources.ErrorCheck)
                         {
-                            return SqLiteHelperResources.ErrorCheck;
+                            return SqliteHelperResources.ErrorCheck;
                         }
 
-                        query = string.Concat(query, SqLiteHelperResources.Comma);
+                        query = string.Concat(query, SqliteHelperResources.Comma);
                     }
 
                     query = AddRowDefinitions(query, last);
-                    return string.Concat(query, SqLiteHelperResources.BracketClose);
+                    return string.Concat(query, SqliteHelperResources.BracketClose);
             }
         }
 
@@ -439,21 +439,21 @@ namespace SQLiteHelper
             {
                 query = string.Concat(
                     query, headerTable[i],
-                    SqLiteHelperResources.CompEqual,
-                    SqLiteHelperResources.Param,
+                    SqliteHelperResources.CompEqual,
+                    SqliteHelperResources.Param,
                     i,
-                    SqLiteHelperResources.Comma,
-                    SqLiteHelperResources.Spacing
+                    SqliteHelperResources.Comma,
+                    SqliteHelperResources.Spacing
                 );
             }
 
             query = string.Concat(
                 query,
                 headerTable[^1],
-                SqLiteHelperResources.CompEqual,
-                SqLiteHelperResources.Param,
+                SqliteHelperResources.CompEqual,
+                SqliteHelperResources.Param,
                 headerTable.Count - 1,
-                SqLiteHelperResources.Spacing
+                SqliteHelperResources.Spacing
             );
 
             return string.Concat(query, queryEnd);
@@ -471,14 +471,14 @@ namespace SQLiteHelper
             {
                 if (_primaryKey)
                 {
-                    return SqLiteHelperResources.ErrorCheck;
+                    return SqliteHelperResources.ErrorCheck;
                 }
 
                 _primaryKey = true;
                 query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  PRIMARY KEY ");
                 if (value.Value.NotNull)
                 {
-                    query = string.Concat(query, SqLiteHelperResources.SqlNotNull);
+                    query = string.Concat(query, SqliteHelperResources.SqlNotNull);
                 }
 
                 return query;
@@ -489,7 +489,7 @@ namespace SQLiteHelper
                 query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  UNIQUE ");
                 if (value.Value.NotNull)
                 {
-                    query = string.Concat(query, SqLiteHelperResources.SqlNotNull);
+                    query = string.Concat(query, SqliteHelperResources.SqlNotNull);
                 }
 
                 return query;
@@ -498,7 +498,7 @@ namespace SQLiteHelper
             query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  ");
             if (value.Value.NotNull)
             {
-                query = string.Concat(query, SqLiteHelperResources.SqlNotNull);
+                query = string.Concat(query, SqliteHelperResources.SqlNotNull);
             }
 
             return query;
@@ -514,21 +514,21 @@ namespace SQLiteHelper
         private static string BuildConjunction(string queryStart, string queryEnd, ICollection<string> headerTable)
         {
             var count = headerTable.Count;
-            var endColumn = string.Concat(headerTable.Last(), SqLiteHelperResources.BracketClose);
+            var endColumn = string.Concat(headerTable.Last(), SqliteHelperResources.BracketClose);
             //remove last element
             headerTable.Remove(headerTable.Last());
 
             var query = headerTable.Aggregate(queryStart,
-                (current, key) => string.Concat(current, key, SqLiteHelperResources.Comma));
+                (current, key) => string.Concat(current, key, SqliteHelperResources.Comma));
 
             query = string.Concat(query, endColumn, queryEnd);
 
             for (var i = 0; i < count - 1; i++)
             {
-                query = string.Concat(query, SqLiteHelperResources.Param, i, SqLiteHelperResources.Comma);
+                query = string.Concat(query, SqliteHelperResources.Param, i, SqliteHelperResources.Comma);
             }
 
-            return string.Concat(query, SqLiteHelperResources.Param, count - 1, SqLiteHelperResources.BracketClose);
+            return string.Concat(query, SqliteHelperResources.Param, count - 1, SqliteHelperResources.BracketClose);
         }
 
         /// <summary>
@@ -553,27 +553,27 @@ namespace SQLiteHelper
                     isFound = headers.Intersect(headerTable).Any();
                     if (!isFound)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
                     lastRow = headers.Last();
 
-                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
 
                 default:
                     isFound = headers.Intersect(headerTable).Any();
                     if (!isFound)
                     {
-                        return SqLiteHelperResources.ErrorCheck;
+                        return SqliteHelperResources.ErrorCheck;
                     }
 
                     lastRow = headers.Last();
                     headers.RemoveAt(headers.Count - 1);
 
                     queryStart = headers.Aggregate(queryStart,
-                        (current, row) => string.Concat(current, row, SqLiteHelperResources.Comma));
+                        (current, row) => string.Concat(current, row, SqliteHelperResources.Comma));
 
-                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
             }
 
             //standard headers
@@ -582,7 +582,7 @@ namespace SQLiteHelper
                 case 1:
                     lastRow = headerTable.Last();
 
-                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
 
                 default:
                     lastRow = headerTable.Last();
@@ -590,9 +590,9 @@ namespace SQLiteHelper
                     headerTable.RemoveAt(headerTable.Count - 1);
 
                     queryStart = headerTable.Aggregate(queryStart,
-                        (current, row) => string.Concat(current, row, SqLiteHelperResources.Comma));
+                        (current, row) => string.Concat(current, row, SqliteHelperResources.Comma));
 
-                    return string.Concat(queryStart, lastRow, SqLiteHelperResources.Spacing);
+                    return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
             }
         }
 
@@ -613,18 +613,18 @@ namespace SQLiteHelper
             {
                 if (!headerTable.Exists(item => item == where))
                 {
-                    return SqLiteHelperResources.ErrorCheck;
+                    return SqliteHelperResources.ErrorCheck;
                 }
 
                 var comOperator = OperatorToString(operators);
-                if (comOperator != SqLiteHelperResources.CompNone)
+                if (comOperator != SqliteHelperResources.CompNone)
                 {
                     query = string.Concat(
-                        SqLiteHelperResources.Spacing, SqLiteHelperResources.SqlWhere,
-                        SqLiteHelperResources.Spacing, where,
-                        SqLiteHelperResources.Spacing, OperatorToString(operators),
-                        SqLiteHelperResources.Spacing, SqLiteHelperResources.Escape, whereValue,
-                        SqLiteHelperResources.Escape
+                        SqliteHelperResources.Spacing, SqliteHelperResources.SqlWhere,
+                        SqliteHelperResources.Spacing, where,
+                        SqliteHelperResources.Spacing, OperatorToString(operators),
+                        SqliteHelperResources.Spacing, SqliteHelperResources.Escape, whereValue,
+                        SqliteHelperResources.Escape
                     );
                 }
             }
@@ -636,11 +636,11 @@ namespace SQLiteHelper
 
             if (!headerTable.Exists(item => item == oderBy))
             {
-                return SqLiteHelperResources.ErrorCheck;
+                return SqliteHelperResources.ErrorCheck;
             }
 
-            return string.Concat(query, SqLiteHelperResources.Spacing, SqLiteHelperResources.SqlOrderBy,
-                SqLiteHelperResources.Spacing, oderBy);
+            return string.Concat(query, SqliteHelperResources.Spacing, SqliteHelperResources.SqlOrderBy,
+                SqliteHelperResources.Spacing, oderBy);
         }
 
         /// <summary>
@@ -652,11 +652,11 @@ namespace SQLiteHelper
         {
             return operators switch
             {
-                CompareOperator.Equal => SqLiteHelperResources.CompEqual,
-                CompareOperator.Like => SqLiteHelperResources.CompLike,
-                CompareOperator.NotLike => SqLiteHelperResources.CompNotLike,
-                CompareOperator.NotEqual => SqLiteHelperResources.CompNotEqual,
-                CompareOperator.None => SqLiteHelperResources.CompNone,
+                CompareOperator.Equal => SqliteHelperResources.CompEqual,
+                CompareOperator.Like => SqliteHelperResources.CompLike,
+                CompareOperator.NotLike => SqliteHelperResources.CompNotLike,
+                CompareOperator.NotEqual => SqliteHelperResources.CompNotEqual,
+                CompareOperator.None => SqliteHelperResources.CompNone,
                 _ => throw new ArgumentOutOfRangeException(nameof(operators), operators, null)
             };
         }

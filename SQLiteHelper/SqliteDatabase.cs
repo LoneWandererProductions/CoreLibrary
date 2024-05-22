@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SqlLiteDatabase.cs
+ * FILE:        SQLiteHelper/SqliteDatabase.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite, packed into a light weight wrapper for easy to use SqlLite Integration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace SQLiteHelper
 {
-    /// <inheritdoc cref="ISqlLiteDatabase" />
+    /// <inheritdoc cref="ISqliteDatabase" />
     /// <summary>
     ///     General access Point and Configuration
     ///     Sources: http://www.sqlitetutorial.net/sqlite-alter-table/
@@ -35,25 +35,25 @@ namespace SQLiteHelper
     ///     - Full Text Search
     ///     - Sources:  http://www.sqlitetutorial.net/sqlite-full-text-search/
     /// </summary>
-    public sealed class SqlLiteDatabase : ISqlLiteDatabase
+    public sealed class SqliteDatabase : ISqliteDatabase
     {
         /// <summary>
         ///     The Util (readonly). Value: new SqlLiteUtility().
         /// </summary>
-        private readonly SqlLiteUtility _util = new();
+        private readonly SqliteUtility _util = new();
 
         /// <summary>
         ///     Execute our Tasks
         /// </summary>
-        private SqlLiteExecute _execute;
+        private SqliteExecute _execute;
 
         /// <summary>
         ///     Initiate Database
         /// </summary>
-        public SqlLiteDatabase()
+        public SqliteDatabase()
         {
             Location = Directory.GetCurrentDirectory();
-            DbName = SqLiteHelperResources.StandardName;
+            DbName = SqliteHelperResources.StandardName;
 
             InitiateSystem();
         }
@@ -62,7 +62,7 @@ namespace SQLiteHelper
         ///     Initiate Database
         /// </summary>
         /// <param name="dbName">Name of the Database</param>
-        public SqlLiteDatabase(string dbName)
+        public SqliteDatabase(string dbName)
         {
             Location = Directory.GetCurrentDirectory();
             DbName = dbName;
@@ -75,7 +75,7 @@ namespace SQLiteHelper
         /// </summary>
         /// <param name="location">Path to location</param>
         /// <param name="dbName">Name of the Database</param>
-        public SqlLiteDatabase(string location, string dbName)
+        public SqliteDatabase(string location, string dbName)
         {
             Location = location;
             DbName = dbName;
@@ -89,7 +89,7 @@ namespace SQLiteHelper
         /// <param name="location">Path to location</param>
         /// <param name="dbName">Name of the Database</param>
         /// <param name="timeOut">Time Out</param>
-        public SqlLiteDatabase(string location, string dbName, int timeOut)
+        public SqliteDatabase(string location, string dbName, int timeOut)
         {
             Location = location;
             DbName = dbName;
@@ -121,9 +121,9 @@ namespace SQLiteHelper
         /// </summary>
         public string Location
         {
-            get => SqlLiteConnectionConfig.Location;
+            get => SqliteConnectionConfig.Location;
 
-            set => SqlLiteConnectionConfig.Location = value;
+            set => SqliteConnectionConfig.Location = value;
         }
 
         /// <inheritdoc />
@@ -132,9 +132,9 @@ namespace SQLiteHelper
         /// </summary>
         public string DbName
         {
-            get => SqlLiteConnectionConfig.DbName;
+            get => SqliteConnectionConfig.DbName;
 
-            set => SqlLiteConnectionConfig.DbName = value;
+            set => SqliteConnectionConfig.DbName = value;
         }
 
         /// <inheritdoc />
@@ -143,9 +143,9 @@ namespace SQLiteHelper
         /// </summary>
         public int DbVersion
         {
-            get => SqlLiteConnectionConfig.DbVersion;
+            get => SqliteConnectionConfig.DbVersion;
 
-            set => SqlLiteConnectionConfig.DbVersion = value;
+            set => SqliteConnectionConfig.DbVersion = value;
         }
 
         /// <inheritdoc />
@@ -154,9 +154,9 @@ namespace SQLiteHelper
         /// </summary>
         public int TimeOut
         {
-            get => SqlLiteConnectionConfig.TimeOut;
+            get => SqliteConnectionConfig.TimeOut;
 
-            set => SqlLiteConnectionConfig.TimeOut = value;
+            set => SqliteConnectionConfig.TimeOut = value;
         }
 
         /// <inheritdoc />
@@ -382,7 +382,7 @@ namespace SQLiteHelper
         /// <returns>Count of rows updated</returns>
         public int UpdateTable(string tableAlias, CompareOperator operators, string where, string value, object obj)
         {
-            var lst = _util.ConvertToAttribute(obj);
+            var lst = _util.ConvertObjectToAttributes(obj);
             return _execute.UpdateTable(tableAlias, operators, where, value, lst);
         }
 
@@ -699,7 +699,7 @@ namespace SQLiteHelper
         /// </summary>
         private void InitiateSystem()
         {
-            _execute = new SqlLiteExecute();
+            _execute = new SqliteExecute();
             _execute.setMessage += SetMessage;
             MessageHandling.ClearErrors();
         }

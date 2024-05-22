@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SqLiteHelper.cs
+ * FILE:        SQLiteHelper/SqliteHelper.cs
  * PURPOSE:     Helper Class for some Conversions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     Helper Class
     /// </summary>
-    internal static class SqLiteHelper
+    internal static class SqliteHelper
     {
         /// <summary>
         ///     Loads the CSV into Table conform format.

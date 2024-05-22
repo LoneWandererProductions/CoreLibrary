@@ -35,7 +35,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().
         /// </summary>
-        private readonly SqlLiteDatabase _target = new();
+        private readonly SqliteDatabase _target = new();
 
         /// <summary>
         ///     Test if we can create a Database

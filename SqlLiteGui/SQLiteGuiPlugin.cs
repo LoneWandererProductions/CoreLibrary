@@ -37,7 +37,7 @@ namespace SQLiteGui
         /// <value>
         ///     The name.
         /// </value>
-        public string Name { get; } = nameof(SqlLiteUtility);
+        public string Name { get; } = nameof(SqliteUtility);
 
         /// <inheritdoc />
         /// <summary>
@@ -156,7 +156,7 @@ namespace SQLiteGui
         /// <returns>The Current Version</returns>
         private static Version GetVersion()
         {
-            var assembly = typeof(SqlLiteUtility).Assembly;
+            var assembly = typeof(SqliteUtility).Assembly;
             var assemblyName = assembly.GetName();
 
             return assemblyName.Version;

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/ISqlLiteDatabase.cs
+ * FILE:        SQLiteHelper/ISqliteDatabase.cs
  * PURPOSE:     SQLiteHelper Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     The ISqlLiteDatabase interface.
     /// </summary>
-    internal interface ISqlLiteDatabase
+    internal interface ISqliteDatabase
     {
         /// <summary>
         ///     Gets the last Errors.

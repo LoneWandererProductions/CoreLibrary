@@ -29,7 +29,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().
         /// </summary>
-        private static readonly SqlLiteDatabase Target = new();
+        private static readonly SqliteDatabase Target = new();
 
         /// <summary>
         ///     CSVs the import export.

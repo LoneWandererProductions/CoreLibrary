@@ -21,7 +21,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     The sql lite utility class.
     /// </summary>
-    public sealed class SqlLiteUtility : ISqlLiteUtility
+    public sealed class SqliteUtility : ISqliteUtility
     {
         /// <inheritdoc />
         /// <summary>
@@ -30,29 +30,25 @@ namespace SQLiteHelper
         /// <param name="obj">Generic Object</param>
         /// <returns>Table Suggestion</returns>
         [return: MaybeNull]
-        public DictionaryTableColumns ConvertObject(object obj)
+        public DictionaryTableColumns ConvertObjectToTableColumns(object obj)
         {
-            //well obvious don't fuck with me and don't expect an Debug Message
-            if (obj == null)
-            {
-                return null;
-            }
+            if (obj == null) return null;
 
-            var dct = new DictionaryTableColumns();
+            var tableColumns = new DictionaryTableColumns();
 
             foreach (var propertyInfo in obj.GetType().GetProperties())
             {
-                var element = new TableColumns
+                var column = new TableColumns
                 {
-                    DataType = GetDataTyp(propertyInfo.PropertyType.Name),
+                    DataType = GetDataType(propertyInfo.PropertyType.Name),
                     PrimaryKey = false,
                     Unique = false,
                     NotNull = false
                 };
-                dct.DColumns.Add(propertyInfo.Name, element);
+                tableColumns.DColumns.Add(propertyInfo.Name, column);
             }
 
-            return dct;
+            return tableColumns;
         }
 
         /// <inheritdoc />
@@ -64,10 +60,10 @@ namespace SQLiteHelper
         /// <param name="obj">Generic Object</param>
         /// <returns>List of Attribute as String, can return null.</returns>
         [return: MaybeNull]
-        public List<string> ConvertToAttribute(object obj)
+        public List<string> ConvertObjectToAttributes(object obj)
         {
             //well obvious don't fuck with me and don't expect an Debug Message
-            return obj == null ? null : ConvertAttribute(obj);
+            return obj == null ? null : ConvertAttributes(obj);
         }
 
         /// <inheritdoc />
@@ -77,17 +73,14 @@ namespace SQLiteHelper
         /// <param name="obj">The object.</param>
         /// <returns>TableSet of Attribute,  can return null.</returns>
         [return: MaybeNull]
-        public TableSet ConvertToTableSet(object obj)
+        public TableSet ConvertObjectToTableSet(object obj)
         {
             //well obvious don't fuck with me and don't expect an Debug Message
-            if (obj == null)
-            {
-                return null;
-            }
+            if (obj == null) return null;
 
-            var lst = ConvertAttribute(obj);
+            var attributes = ConvertAttributes(obj);
 
-            return lst == null ? null : new TableSet(lst);
+            return attributes == null ? null : new TableSet(attributes);
         }
 
         /// <inheritdoc />
@@ -100,57 +93,29 @@ namespace SQLiteHelper
         /// <param name="obj">Object to be filled</param>
         /// <returns>Filled Object</returns>
         [return: MaybeNull]
-        public object FillObject(List<string> row, object obj)
+        public object FillObjectFromAttributes(List<string> attributes, object obj)
         {
-            if (row == null || obj == null)
-            {
+            if (attributes == null || obj == null || attributes.Count != obj.GetType().GetProperties().Length)
                 return null;
-            }
-
-            if (row.Count != obj.GetType().GetProperties().Length)
-            {
-                return null;
-            }
 
             try
             {
-                var count = -1;
-
+                int count = 0;
                 foreach (var propertyInfo in obj.GetType().GetProperties())
                 {
+                    var value = propertyInfo.PropertyType.IsEnum
+                        ? Enum.Parse(propertyInfo.PropertyType, attributes[count], true)
+                        : Convert.ChangeType(attributes[count], propertyInfo.PropertyType);
+                    propertyInfo.SetValue(obj, value);
                     count++;
-
-                    if (!propertyInfo.PropertyType.IsEnum)
-                    {
-                        propertyInfo.SetValue(obj, Convert.ChangeType(row[count], propertyInfo.PropertyType), null);
-                    }
-                    else
-                    {
-                        propertyInfo.SetValue(obj, Enum.Parse(propertyInfo.PropertyType, row[count], true), null);
-                    }
                 }
             }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (TargetException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (TargetParameterCountException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (MethodAccessException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (TargetInvocationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (OverflowException ex)
+            catch (Exception ex) when (ex is ArgumentException ||
+                                       ex is TargetException ||
+                                       ex is TargetParameterCountException ||
+                                       ex is MethodAccessException ||
+                                       ex is TargetInvocationException ||
+                                       ex is OverflowException)
             {
                 Trace.WriteLine(ex);
             }
@@ -164,59 +129,31 @@ namespace SQLiteHelper
         /// <param name="obj">The object.</param>
         /// <returns>List of Attribute as String, can return null</returns>
         [return: MaybeNull]
-        private static List<string> ConvertAttribute(object obj)
+        public List<string> ConvertAttributes(object obj)
         {
-            var lst = new List<string>();
+            var attributes = new List<string>();
 
             try
             {
                 foreach (var prop in obj.GetType().GetProperties())
                 {
-                    var value = string.Empty;
-
-                    if (!prop.CanRead)
+                    if (!prop.CanRead || prop.GetIndexParameters().Length > 0)
                     {
-                        //Does the property has a Get accessor, if not add a blank
-                        Trace.WriteLine(SqLiteHelperResources.InformationPropertyProtected);
-                        lst.Add(value);
+                        attributes.Add(string.Empty);
                         continue;
                     }
 
-                    if (prop.GetIndexParameters().Length != 0)
-                    {
-                        //Does the property requires any Parameter?
-                        Trace.WriteLine(SqLiteHelperResources.InformationPropertyNeedsParameter);
-                        lst.Add(value);
-                        continue;
-                    }
-
-                    if (prop.GetValue(obj) != null)
-                    {
-                        lst.Add(prop.GetValue(obj)?.ToString());
-                    }
-                    else
-                    {
-                        //Was the Property null, if not add a blank
-                        Trace.WriteLine(SqLiteHelperResources.InformationPropertyWasNull);
-                        lst.Add(value);
-                    }
+                    var value = prop.GetValue(obj)?.ToString() ?? string.Empty;
+                    attributes.Add(value);
                 }
             }
-            catch (ArgumentNullException ex)
+            catch (Exception ex) when (ex is ArgumentNullException || ex is TargetParameterCountException)
             {
-                Trace.WriteLine(ex);
-                return null;
-            }
-            catch (TargetParameterCountException ex)
-            {
-                //https://docs.microsoft.com/en-us/dotnet/api/system.reflection.targetparametercountexception?view=net-5.0
-                //but should be catched anyways
-                //https://stackoverflow.com/questions/6156577/targetparametercountexception-when-enumerating-through-properties-of-string
                 Trace.WriteLine(ex);
                 return null;
             }
 
-            return lst;
+            return attributes;
         }
 
         /// <summary>
@@ -224,7 +161,7 @@ namespace SQLiteHelper
         /// </summary>
         /// <param name="dataType">Get C# Data Type</param>
         /// <returns>SqlLite DataType</returns>
-        private static SqLiteDataTypes GetDataTyp(string dataType)
+        private static SqLiteDataTypes GetDataType(string dataType)
         {
             return dataType switch
             {

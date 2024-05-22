@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteHelper
- * FILE:        SQLiteHelper/SQLiteHelpers.cs
+ * FILE:        SQLiteHelper/SqliteExecute.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -85,7 +85,7 @@ namespace SQLiteHelper
     /// <summary>
     ///     Just execute our queries here
     /// </summary>
-    internal sealed class SqlLiteExecute
+    internal sealed class SqliteExecute
     {
         /// <summary>
         ///     Logging of System Messages
@@ -106,7 +106,7 @@ namespace SQLiteHelper
         internal bool DatabaseContextSwitch(string location, string dbName)
         {
             MessageHandling.ClearErrors();
-            var message = new MessageItem { Message = SqLiteHelperResources.ContextSwitchLog, Level = 2 };
+            var message = new MessageItem { Message = SqliteHelperResources.ContextSwitchLog, Level = 2 };
             OnError(message);
 
             SetDataBaseInfo(location, dbName);
@@ -129,17 +129,17 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorDbInfoCreate, overwrite), Level = 0
+                    Message = string.Concat(SqliteHelperResources.ErrorDbInfoCreate, overwrite), Level = 0
                 };
                 OnError(_message);
                 return false;
             }
 
-            SQLiteConnection.CreateFile(SqlLiteConnectionConfig.FullPath);
+            SQLiteConnection.CreateFile(SqliteConnectionConfig.FullPath);
 
             _message = new MessageItem
             {
-                Message = string.Concat(SqLiteHelperResources.SuccessCreatedLog, dbName), Level = 2
+                Message = string.Concat(SqliteHelperResources.SuccessCreatedLog, dbName), Level = 2
             };
             OnError(_message);
 
@@ -161,7 +161,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorDbInfoDelete, location, dbName), Level = 0
+                    Message = string.Concat(SqliteHelperResources.ErrorDbInfoDelete, location, dbName), Level = 0
                 };
                 OnError(_message);
 
@@ -170,12 +170,12 @@ namespace SQLiteHelper
 
             try
             {
-                File.SetAttributes(SqlLiteConnectionConfig.FullPath, FileAttributes.Normal);
-                File.Delete(SqlLiteConnectionConfig.FullPath);
+                File.SetAttributes(SqliteConnectionConfig.FullPath, FileAttributes.Normal);
+                File.Delete(SqliteConnectionConfig.FullPath);
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.SuccessDeletedLog, dbName), Level = 2
+                    Message = string.Concat(SqliteHelperResources.SuccessDeletedLog, dbName), Level = 2
                 };
                 OnError(_message);
 
@@ -185,14 +185,14 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorDeleted, dbName,
-                        SqLiteHelperResources.Spacing, ex),
+                    Message = string.Concat(SqliteHelperResources.ErrorDeleted, dbName,
+                        SqliteHelperResources.Spacing, ex),
                     Level = 0
                 };
                 OnError(_message);
             }
 
-            return !File.Exists(SqlLiteConnectionConfig.FullPath);
+            return !File.Exists(SqliteConnectionConfig.FullPath);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tblName))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -213,14 +213,14 @@ namespace SQLiteHelper
 
             if (CheckIfDatabaseTableExists(tblNameNew))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
                 OnError(_message);
 
                 return false;
             }
 
-            var sqlQuery = SqlLiteQueryConst.RenameTable(tblName, tblNameNew);
-            return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+            var sqlQuery = SqliteQueryConst.RenameTable(tblName, tblNameNew);
+            return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
         }
 
         /// <summary>
@@ -232,12 +232,12 @@ namespace SQLiteHelper
         internal bool AttachDatabase(string dbName, string alias)
         {
             //Use current Connection, check if the current Database exists
-            if (!File.Exists(SqlLiteConnectionConfig.FullPath))
+            if (!File.Exists(SqliteConnectionConfig.FullPath))
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorDbNotFound,
-                        SqlLiteConnectionConfig.FullPath),
+                    Message = string.Concat(SqliteHelperResources.ErrorDbNotFound,
+                        SqliteConnectionConfig.FullPath),
                     Level = 0
                 };
                 OnError(_message);
@@ -247,13 +247,13 @@ namespace SQLiteHelper
 
             //Check if Database we want to attach exists
             var toAttach = string.Concat(Environment.CurrentDirectory, Path.DirectorySeparatorChar, alias,
-                SqLiteHelperResources.SqlDbExt);
+                SqliteHelperResources.SqlDbExt);
 
             if (!File.Exists(toAttach))
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorDbNotFound, toAttach), Level = 0
+                    Message = string.Concat(SqliteHelperResources.ErrorDbNotFound, toAttach), Level = 0
                 };
                 OnError(_message);
 
@@ -261,7 +261,7 @@ namespace SQLiteHelper
             }
 
             //Do your work
-            var sqlQuery = SqlLiteQueryConst.AttachDatabaseTable(dbName, alias);
+            var sqlQuery = SqliteQueryConst.AttachDatabaseTable(dbName, alias);
             return ExecuteNonQuery(sqlQuery, false);
         }
 
@@ -271,7 +271,7 @@ namespace SQLiteHelper
         /// <returns>All Info as string</returns>
         internal string GetDatabaseInfos()
         {
-            var sqlQuery = SqlLiteQueryConst.GetDatabaseStatus();
+            var sqlQuery = SqliteQueryConst.GetDatabaseStatus();
 
             var dt = SelectDataTable(sqlQuery);
 
@@ -285,8 +285,8 @@ namespace SQLiteHelper
         /// <returns>Operation Success</returns>
         internal bool CheckIfDatabaseTableExists(string tableAlias)
         {
-            var sqlQuery = SqlLiteQueryConst.SelectTable(tableAlias);
-            return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.SuppressError);
+            var sqlQuery = SqliteQueryConst.SelectTable(tableAlias);
+            return ExecuteNonQuery(sqlQuery, SqliteHelperResources.SuppressError);
         }
 
         /// <summary>
@@ -298,14 +298,14 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
             }
 
-            var sqlQuery = SqlLiteQueryConst.DropTable(tableAlias);
-            return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+            var sqlQuery = SqliteQueryConst.DropTable(tableAlias);
+            return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
         }
 
         /// <summary>
@@ -317,13 +317,13 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
                 return false;
             }
 
-            var sqlQuery = SqlLiteQueryConst.TruncateTable(tableAlias);
-            return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+            var sqlQuery = SqliteQueryConst.TruncateTable(tableAlias);
+            return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
         }
 
         /// <summary>
@@ -336,19 +336,19 @@ namespace SQLiteHelper
         {
             if (CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesAlreadyExist, Level = 0 };
                 OnError(_message);
                 return false;
             }
 
-            var sqlQuery = SqlLiteQueryConst.CreateTable(tableAlias, tableHeaders);
+            var sqlQuery = SqliteQueryConst.CreateTable(tableAlias, tableHeaders);
 
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
-                return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+                return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -370,7 +370,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = SqLiteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                    Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
                 };
                 OnError(_message);
                 return false;
@@ -379,22 +379,22 @@ namespace SQLiteHelper
             //empty input
             if (table == null || table.Count == 0)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorEmptyInput, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorEmptyInput, Level = 0 };
                 OnError(_message);
                 return false;
             }
 
             var headerTable = tableInfo.Keys.ToList();
 
-            var sqlQuery = SqlLiteQueryConst.InsertTable(tableAlias, headerTable);
+            var sqlQuery = SqliteQueryConst.InsertTable(tableAlias, headerTable);
 
             //finish
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
                 return ExecuteInsertQuery(sqlQuery, table, tableInfo, checking);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorInsertSingleRow, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorInsertSingleRow, Level = 0 };
             OnError(_message);
 
             return false;
@@ -409,15 +409,15 @@ namespace SQLiteHelper
         /// <returns>Rows deleted</returns>
         internal int DeleteRows(string tableAlias, string where, string value)
         {
-            var sqlQuery = SqlLiteQueryConst.DeleteRows(tableAlias, where, value);
+            var sqlQuery = SqliteQueryConst.DeleteRows(tableAlias, where, value);
 
             //finish
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
                 return ExecuteDeleteQuery(sqlQuery);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorDeleteRows, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorDeleteRows, Level = 0 };
             OnError(_message);
 
             return -1;
@@ -444,7 +444,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = SqLiteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                    Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
                 };
                 OnError(_message);
 
@@ -453,14 +453,14 @@ namespace SQLiteHelper
 
             var headerTable = tableInfo.Keys.ToList();
 
-            var sqlQuery = SqlLiteQueryConst.UpdateTable(tableAlias, headerTable, operators, where, value);
+            var sqlQuery = SqliteQueryConst.UpdateTable(tableAlias, headerTable, operators, where, value);
 
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
                 return ExecuteUpdateQuery(sqlQuery, lst);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorUpdateTable, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorUpdateTable, Level = 0 };
             OnError(_message);
 
             return -1;
@@ -478,20 +478,20 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return false;
             }
 
-            var sqlQuery = SqlLiteQueryConst.CreateUniqueIndex(tableAlias, column, indexName);
+            var sqlQuery = SqliteQueryConst.CreateUniqueIndex(tableAlias, column, indexName);
 
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
-                return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+                return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -505,14 +505,14 @@ namespace SQLiteHelper
         /// <returns>Operation Success</returns>
         internal bool DropUniqueIndex(string indexName)
         {
-            var sqlQuery = SqlLiteQueryConst.DropUniqueIndex(indexName);
+            var sqlQuery = SqliteQueryConst.DropUniqueIndex(indexName);
 
-            if (sqlQuery != SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery != SqliteHelperResources.ErrorCheck)
             {
-                return ExecuteNonQuery(sqlQuery, SqLiteHelperResources.DoNotSuppressError);
+                return ExecuteNonQuery(sqlQuery, SqliteHelperResources.DoNotSuppressError);
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableKeyConstraint, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorTableKeyConstraint, Level = 0 };
             OnError(_message);
 
             return false;
@@ -543,28 +543,28 @@ namespace SQLiteHelper
 
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return uniqueColumnsList;
             }
 
-            var sqlQuery = SqlLiteQueryConst.Pragma_index_list(tableAlias);
+            var sqlQuery = SqliteQueryConst.Pragma_index_list(tableAlias);
             var table = SelectDataTable(sqlQuery);
 
             if (table == null)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableInfoNotFound, Level = 0 };
                 OnError(_message);
 
                 return null;
             }
 
-            var tableInfo = SqlLiteProcessing.CheckUniqueTableHeaders(table);
+            var tableInfo = SqliteProcessing.CheckUniqueTableHeaders(table);
 
             if (tableInfo.Count == 0)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorCheckUniqueTableHeaders, Level = 1 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorCheckUniqueTableHeaders, Level = 1 };
                 OnError(_message);
 
                 return new List<string>();
@@ -573,13 +573,13 @@ namespace SQLiteHelper
             //Pragma_index_info
             foreach (var indexName in tableInfo)
             {
-                sqlQuery = SqlLiteQueryConst.Pragma_index_info(indexName);
+                sqlQuery = SqliteQueryConst.Pragma_index_info(indexName);
                 table = SelectDataTable(sqlQuery);
-                var columnName = SqlLiteProcessing.GetTableHeader(table);
+                var columnName = SqliteProcessing.GetTableHeader(table);
 
                 if (string.IsNullOrEmpty(columnName))
                 {
-                    _message = new MessageItem { Message = SqLiteHelperResources.ErrorGetTableHeader, Level = 0 };
+                    _message = new MessageItem { Message = SqliteHelperResources.ErrorGetTableHeader, Level = 0 };
                     OnError(_message);
 
                     return uniqueColumnsList;
@@ -598,7 +598,7 @@ namespace SQLiteHelper
         [return: MaybeNull]
         internal List<string> GetTables()
         {
-            var sqlQuery = SqlLiteQueryConst.GetTables();
+            var sqlQuery = SqliteQueryConst.GetTables();
 
             var dt = SelectDataTable(sqlQuery);
             if (dt == null || dt.Rows.Count == 0)
@@ -621,7 +621,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -646,7 +646,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -675,7 +675,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -703,7 +703,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -733,7 +733,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -761,7 +761,7 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -780,9 +780,9 @@ namespace SQLiteHelper
         [return: MaybeNull]
         private DataSet ExecSelect(string sqlQuery)
         {
-            if (sqlQuery == SqLiteHelperResources.ErrorCheck)
+            if (sqlQuery == SqliteHelperResources.ErrorCheck)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorSimpleSelectParameters, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorSimpleSelectParameters, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -794,7 +794,7 @@ namespace SQLiteHelper
                 return table;
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorSimpleSelectExecution, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorSimpleSelectExecution, Level = 0 };
             OnError(_message);
 
             return null;
@@ -808,7 +808,7 @@ namespace SQLiteHelper
         {
             try
             {
-                using var conn = new SQLiteConnection(SqlLiteConnectionConfig.ConnectionString);
+                using var conn = new SQLiteConnection(SqliteConnectionConfig.ConnectionString);
                 conn.Open(); // throws if invalid
             }
             catch (SQLiteException ex1)
@@ -833,14 +833,14 @@ namespace SQLiteHelper
         {
             if (!File.Exists(location + Path.DirectorySeparatorChar + dbName))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorDatabaseAlreadyExists, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorDatabaseAlreadyExists, Level = 0 };
                 OnError(_message);
 
                 return false;
             }
 
-            SqlLiteConnectionConfig.Location = location;
-            SqlLiteConnectionConfig.DbName = dbName;
+            SqliteConnectionConfig.Location = location;
+            SqliteConnectionConfig.DbName = dbName;
             return true;
         }
 
@@ -870,14 +870,14 @@ namespace SQLiteHelper
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
-                cmd.CommandTimeout = SqlLiteConnectionConfig.TimeOut;
+                cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
                 cmd.CommandText = sqlQuery;
                 cmd.ExecuteNonQuery();
                 tr.Commit();
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
                 };
                 OnError(_message);
             }
@@ -908,7 +908,7 @@ namespace SQLiteHelper
         {
             DataTable dt = null;
 
-            var cmd = new SQLiteCommand { CommandText = sqlQuery, CommandTimeout = SqlLiteConnectionConfig.TimeOut };
+            var cmd = new SQLiteCommand { CommandText = sqlQuery, CommandTimeout = SqliteConnectionConfig.TimeOut };
 
             using var conn = GetConn();
             if (conn == null)
@@ -921,7 +921,7 @@ namespace SQLiteHelper
 
             _message = new MessageItem
             {
-                Message = string.Concat(SqLiteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
             };
             OnError(_message);
 
@@ -941,7 +941,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.ErrorInSelectStatement, sqlQuery), Level = 1
+                    Message = string.Concat(SqliteHelperResources.ErrorInSelectStatement, sqlQuery), Level = 1
                 };
                 OnError(_message);
                 _message = new MessageItem { Message = ex1.ToString(), Level = 0 };
@@ -965,7 +965,7 @@ namespace SQLiteHelper
                 return null;
             }
 
-            var tm = SqlLiteProcessing.ConvertToTableMultipleSet(dt);
+            var tm = SqliteProcessing.ConvertToTableMultipleSet(dt);
 
             //for Data binding!
             tm.Raw = dt.DefaultView;
@@ -1007,7 +1007,7 @@ namespace SQLiteHelper
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
-                cmd.CommandTimeout = SqlLiteConnectionConfig.TimeOut;
+                cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
 
                 //for checks only
 
@@ -1042,7 +1042,7 @@ namespace SQLiteHelper
                     for (var i = 0; i < row.Row.Count; i++)
                     {
                         var cell = row.Row[i];
-                        _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqLiteHelperResources.Param, i),
+                        _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqliteHelperResources.Param, i),
                             cell));
                     }
 
@@ -1053,7 +1053,7 @@ namespace SQLiteHelper
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
                 };
                 OnError(_message);
             }
@@ -1097,7 +1097,7 @@ namespace SQLiteHelper
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
-                cmd.CommandTimeout = SqlLiteConnectionConfig.TimeOut;
+                cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
 
                 cmd.CommandText = sqlQuery;
 
@@ -1105,7 +1105,7 @@ namespace SQLiteHelper
                 for (var i = 0; i < lst.Count; i++)
                 {
                     var row = lst[i];
-                    _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqLiteHelperResources.Param, i), row));
+                    _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqliteHelperResources.Param, i), row));
                 }
 
                 lines = cmd.ExecuteNonQuery();
@@ -1114,7 +1114,7 @@ namespace SQLiteHelper
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
                 };
                 OnError(_message);
             }
@@ -1155,7 +1155,7 @@ namespace SQLiteHelper
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
-                cmd.CommandTimeout = SqlLiteConnectionConfig.TimeOut;
+                cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
 
                 cmd.CommandText = sqlQuery;
 
@@ -1165,7 +1165,7 @@ namespace SQLiteHelper
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqLiteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
                 };
                 OnError(_message);
             }
@@ -1199,7 +1199,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = SqLiteHelperResources.ErrorMoreElementsToAddThanRows, Level = 0
+                    Message = SqliteHelperResources.ErrorMoreElementsToAddThanRows, Level = 0
                 };
                 OnError(_message);
 
@@ -1216,21 +1216,21 @@ namespace SQLiteHelper
                 //check if nullable
                 if (rows == null && !convert.NotNull)
                 {
-                    _message = new MessageItem { Message = SqLiteHelperResources.ErrorNotNullAble, Level = 0 };
+                    _message = new MessageItem { Message = SqliteHelperResources.ErrorNotNullAble, Level = 0 };
                     OnError(_message);
 
                     return false;
                 }
 
                 //check if convert-able Type
-                var check = SqlLiteProcessing.CheckConvert(convert.DataType, rows);
+                var check = SqliteProcessing.CheckConvert(convert.DataType, rows);
 
                 if (!check)
                 {
                     _message = new MessageItem
                     {
-                        Message = string.Concat(SqLiteHelperResources.ErrorWrongType, rows,
-                            SqLiteHelperResources.ConvertTo,
+                        Message = string.Concat(SqliteHelperResources.ErrorWrongType, rows,
+                            SqliteHelperResources.ConvertTo,
                             convert.DataType),
                         Level = 0
                     };
@@ -1248,7 +1248,7 @@ namespace SQLiteHelper
                     continue;
                 }
 
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorNotUnique, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorNotUnique, Level = 0 };
                 OnError(_message);
 
                 return false;
@@ -1279,7 +1279,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = SqLiteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                    Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
                 };
                 OnError(_message);
 
@@ -1294,7 +1294,7 @@ namespace SQLiteHelper
                 header = new List<string>(headers);
             }
 
-            return SqlLiteQueryConst.SimpleSelect(headerTable, header, tableAlias, oderBy, where, operators,
+            return SqliteQueryConst.SimpleSelect(headerTable, header, tableAlias, oderBy, where, operators,
                 whereValue);
         }
 
@@ -1310,27 +1310,27 @@ namespace SQLiteHelper
             string oderBy)
         {
             sqlQuery = string.Concat(sqlQuery,
-                SqLiteHelperResources.Spacing,
-                SqLiteHelperResources.SqlWhere,
-                SqLiteHelperResources.Spacing,
-                whereValue, SqLiteHelperResources.Spacing,
-                SqLiteHelperResources.SqlIn,
-                SqLiteHelperResources.BracketOpen);
+                SqliteHelperResources.Spacing,
+                SqliteHelperResources.SqlWhere,
+                SqliteHelperResources.Spacing,
+                whereValue, SqliteHelperResources.Spacing,
+                SqliteHelperResources.SqlIn,
+                SqliteHelperResources.BracketOpen);
 
             for (var i = 0; i < inClause.Count - 1; i++)
             {
-                sqlQuery = string.Concat(sqlQuery, inClause[i], SqLiteHelperResources.Comma);
+                sqlQuery = string.Concat(sqlQuery, inClause[i], SqliteHelperResources.Comma);
             }
 
-            sqlQuery = string.Concat(sqlQuery, inClause[^1], SqLiteHelperResources.BracketClose);
+            sqlQuery = string.Concat(sqlQuery, inClause[^1], SqliteHelperResources.BracketClose);
 
             if (oderBy == null)
             {
                 return sqlQuery;
             }
 
-            return string.Concat(sqlQuery, SqLiteHelperResources.Spacing, SqLiteHelperResources.SqlOrderBy,
-                SqLiteHelperResources.Spacing, oderBy);
+            return string.Concat(sqlQuery, SqliteHelperResources.Spacing, SqliteHelperResources.SqlOrderBy,
+                SqliteHelperResources.Spacing, oderBy);
         }
 
         /// <summary>
@@ -1340,13 +1340,13 @@ namespace SQLiteHelper
         /// <returns>String of DB Status</returns>
         private static string GetAllData(DataTable dt)
         {
-            var str = string.Concat(SqLiteHelperResources.MessageInitiate, Environment.NewLine);
+            var str = string.Concat(SqliteHelperResources.MessageInitiate, Environment.NewLine);
 
             foreach (DataRow row in dt.Rows)
             {
                 for (var i = 0; i < row.ItemArray.Length; i++)
                 {
-                    str = string.Concat(str, SqLiteHelperResources.Spacing, row[i], Environment.NewLine);
+                    str = string.Concat(str, SqliteHelperResources.Spacing, row[i], Environment.NewLine);
                 }
             }
 
@@ -1374,27 +1374,27 @@ namespace SQLiteHelper
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableDoesNotExist, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableDoesNotExist, Level = 0 };
                 OnError(_message);
 
                 return null;
             }
 
-            var sqlQuery = SqlLiteQueryConst.Pragma_TableInfo(tableAlias);
+            var sqlQuery = SqliteQueryConst.Pragma_TableInfo(tableAlias);
 
             var table = SelectDataTable(sqlQuery);
             if (table == null)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorTableInfoNotFound, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorTableInfoNotFound, Level = 0 };
                 OnError(_message);
 
                 return null;
             }
 
-            var tableInfo = SqlLiteProcessing.ConvertTableHeaders(table);
+            var tableInfo = SqliteProcessing.ConvertTableHeaders(table);
             if (tableInfo == null)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorConvertTableInfos, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorConvertTableInfos, Level = 0 };
                 OnError(_message);
 
                 return null;
@@ -1405,20 +1405,20 @@ namespace SQLiteHelper
 
             if (tableHeaders == null)
             {
-                _message = new MessageItem { Message = SqLiteHelperResources.ErrorPragmaIndexList, Level = 0 };
+                _message = new MessageItem { Message = SqliteHelperResources.ErrorPragmaIndexList, Level = 0 };
                 OnError(_message);
 
                 return null;
             }
 
-            tableInfo = SqlLiteProcessing.AddUniqueStatus(tableInfo, tableHeaders);
+            tableInfo = SqliteProcessing.AddUniqueStatus(tableInfo, tableHeaders);
 
             if (tableInfo != null)
             {
                 return tableInfo;
             }
 
-            _message = new MessageItem { Message = SqLiteHelperResources.ErrorAddUniqueStatus, Level = 0 };
+            _message = new MessageItem { Message = SqliteHelperResources.ErrorAddUniqueStatus, Level = 0 };
             OnError(_message);
 
             return null;
@@ -1440,8 +1440,8 @@ namespace SQLiteHelper
                 return false;
             }
 
-            SqlLiteConnectionConfig.Location = location;
-            SqlLiteConnectionConfig.DbName = dbName;
+            SqliteConnectionConfig.Location = location;
+            SqliteConnectionConfig.DbName = dbName;
             return true;
         }
 
@@ -1455,7 +1455,7 @@ namespace SQLiteHelper
         {
             try
             {
-                var connection = new SQLiteConnection(SqlLiteConnectionConfig.ConnectionString);
+                var connection = new SQLiteConnection(SqliteConnectionConfig.ConnectionString);
                 connection.Open();
                 return connection;
             }
@@ -1469,7 +1469,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(ex, SqlLiteConnectionConfig.ConnectionString), Level = 0
+                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
                 };
                 OnError(_message);
                 return null;
@@ -1478,7 +1478,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(ex, SqlLiteConnectionConfig.ConnectionString), Level = 0
+                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
                 };
                 OnError(_message);
                 return null;
@@ -1487,7 +1487,7 @@ namespace SQLiteHelper
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(ex, SqlLiteConnectionConfig.ConnectionString), Level = 0
+                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
                 };
                 OnError(_message);
                 return null;
