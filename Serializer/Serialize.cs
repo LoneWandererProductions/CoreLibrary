@@ -33,131 +33,76 @@ namespace Serializer
         /// <param name="path">Target Path with extension</param>
         public static void SaveObjectToXml<T>(T obj, string path)
         {
+            if (obj == null)
+                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
 
-            //check if file is empty, if empty return
-            if (obj == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
-
             try
             {
-                var serializer = new XmlSerializer(obj.GetType());
-
-                using var tr = new StreamWriter(path);
-                serializer.Serialize(tr, obj);
+                var serializer = new XmlSerializer(typeof(T));
+                using var writer = new StreamWriter(path);
+                serializer.Serialize(writer, obj);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
         /// <summary>
         ///     Generic Serializer Of List Objects
-        ///     Serializer Works but not De Serializer
         /// </summary>
+        /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="obj">The obj.</param>
         /// <param name="path">The path.</param>
-        /// <typeparam name="T"></typeparam>
         public static void SaveLstObjectToXml<T>(List<T> obj, string path)
         {
+            if (obj == null || obj.Count == 0)
+                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
 
-            //check if file is empty, if empty return
-            if (obj == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
-
             try
             {
+                var serializer = new XmlSerializer(typeof(List<T>));
                 using var fileStream = new FileStream(path, FileMode.Create);
-                var ser = new XmlSerializer(typeof(List<T>));
-                ser.Serialize(fileStream, obj);
+                serializer.Serialize(fileStream, obj);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
         /// <summary>
         ///     Serializes Dictionary Type of: Tile Dictionary
-        ///     Uses SerializeDictionary
         /// </summary>
         /// <param name="dct">Dictionary Tile</param>
         /// <param name="path">Target Path</param>
         public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path)
         {
+            if (dct == null || dct.Count == 0)
+                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+
             var folder = Path.GetDirectoryName(path);
             FileHandleCreate.CreateFolder(folder);
 
-            //check if file is empty, if empty return
-            if (dct == null || dct.Count == 0)
+            try
             {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
+                var myDictionary = dct.ToDictionary(
+                    pair => Handle(pair.Key),
+                    pair => Handle(pair.Value)
+                );
+
+                SerializeDictionary(myDictionary, path);
             }
-
-            var myDictionary = new Dictionary<string, string>();
-
-            foreach (var (key, value) in dct)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                var itemValue = Handle(value);
-                var itemKey = Handle(key);
-
-                if (string.IsNullOrEmpty(itemValue) || string.IsNullOrEmpty(itemKey))
-                {
-                    continue;
-                }
-
-                myDictionary.Add(itemKey, itemValue);
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
-
-            SerializeDictionary(myDictionary, path);
         }
 
         /// <summary>
@@ -166,73 +111,43 @@ namespace Serializer
         /// <typeparam name="T">Generic Type of Object</typeparam>
         /// <param name="obj">Object to Serialize</param>
         /// <returns>Object as XML string</returns>
-        private static string Handle<T>(this T obj)
+        private static string Handle<T>(T obj)
         {
             using var stringWriter = new StringWriter();
-            var serializer = new XmlSerializer(obj.GetType());
+            var serializer = new XmlSerializer(typeof(T));
             serializer.Serialize(stringWriter, obj);
             return stringWriter.ToString();
         }
 
         /// <summary>
-        ///     helper class for Dictionary Object also used for external use
+        ///     Helper class for Dictionary Object also used for external use
         /// </summary>
         /// <param name="dct">Type Id String</param>
         /// <param name="path">File Destination</param>
         private static void SerializeDictionary(Dictionary<string, string> dct, string path)
         {
-            //check if file is empty, if empty return
             if (dct == null || dct.Count == 0)
-            {
                 throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
 
-            var sw = new StringWriter(CultureInfo.InvariantCulture);
+            var folder = Path.GetDirectoryName(path);
+            FileHandleCreate.CreateFolder(folder);
+
             try
             {
-                var tempDataItems = new List<Item>(dct.Count);
-                tempDataItems.AddRange(dct.Keys.Select(key => new Item(key, dct[key])));
-
+                var tempDataItems = dct.Select(pair => new Item(pair.Key, pair.Value)).ToList();
                 var serializer = new XmlSerializer(typeof(List<Item>));
+                var namespaces = new XmlSerializerNamespaces();
+                namespaces.Add(string.Empty, string.Empty);
 
-                var ns = new XmlSerializerNamespaces();
-                ns.Add(string.Empty, string.Empty);
+                using var stringWriter = new StringWriter(CultureInfo.InvariantCulture);
+                serializer.Serialize(stringWriter, tempDataItems, namespaces);
 
-                serializer.Serialize(sw, tempDataItems, ns);
-
-                using var tr = new StreamWriter(path);
-                tr.Write(sw.ToString());
+                using var streamWriter = new StreamWriter(path);
+                streamWriter.Write(stringWriter.ToString());
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is XmlException || ex is NullReferenceException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is IOException)
             {
-                throw new InvalidOperationException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (NullReferenceException ex)
-            {
-                throw new NullReferenceException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                throw new UnauthorizedAccessException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(string.Concat(SerialResources.ErrorSerializerXml, ex));
-            }
-            finally
-            {
-                if (true)
-                {
-                    sw.Dispose();
-                }
+                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
     }
