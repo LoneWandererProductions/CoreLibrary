@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable ArrangeBraces_foreach
-// ReSharper disable ArrangeBraces_ifelse
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+
 
 namespace FileHandler
 {
@@ -137,25 +138,7 @@ namespace FileHandler
 
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
                 }
-                catch (UnauthorizedAccessException ex)
-                {
-                    check = false;
-                    FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
-                    Trace.WriteLine(ex);
-                }
-                catch (ArgumentException ex)
-                {
-                    check = false;
-                    FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
-                    Trace.WriteLine(ex);
-                }
-                catch (IOException ex)
-                {
-                    check = false;
-                    FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
-                    Trace.WriteLine(ex);
-                }
-                catch (NotSupportedException ex)
+                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
                 {
                     check = false;
                     FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
@@ -269,25 +252,7 @@ namespace FileHandler
                             FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
                         }
                     }
-                    catch (UnauthorizedAccessException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
-                    catch (IOException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
-                    catch (NotSupportedException ex)
+                    catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
                     {
                         check = false;
                         FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
