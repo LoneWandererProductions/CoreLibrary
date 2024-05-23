@@ -94,6 +94,16 @@ namespace FileHandler
         internal const string ErrorFileNotFound = "File not found: ";
 
         /// <summary>
+        ///     The error file Extension null (const). Value: "File extension list cannot be null.".
+        /// </summary>
+        internal const string ErrorFileExtension = "File extension list cannot be null.";
+
+        /// <summary>
+        ///     The error invalid Path null (const). Value: "Invalid path.".
+        /// </summary>
+        internal const string ErrorInvalidPath = "Invalid path.";
+
+        /// <summary>
         ///     The Information File Deletion (const). Value: "File(s) that will be deleted: ".
         /// </summary>
         internal const string InformationFileDeletion = "File(s) that will be deleted: ";

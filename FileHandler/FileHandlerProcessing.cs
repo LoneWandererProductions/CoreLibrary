@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandler/FileHandlerProcessing.cs
  * PURPOSE:     Helper Methods for the FileHandler library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
@@ -15,68 +15,56 @@ using System.Linq;
 namespace FileHandler
 {
     /// <summary>
-    ///     The file handler processing class.
+    /// The file handler processing class.
     /// </summary>
     internal static class FileHandlerProcessing
     {
         /// <summary>
-        ///     Clean the up extension list.
+        /// Cleans up the file extension list by removing dots.
         /// </summary>
-        /// <param name="fileExtList">The fileExtList.</param>
-        /// <returns>The <see cref="T:List{string}" />.</returns>
+        /// <param name="fileExtList">The file extension list.</param>
+        /// <returns>The cleaned up list of file extensions.</returns>
         internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
         {
-            return fileExtList.Select(appendix => appendix.Replace(FileHandlerResources.Dot, string.Empty)).ToList();
+            if (fileExtList == null)
+            {
+                throw new ArgumentNullException(nameof(fileExtList), FileHandlerResources.ErrorFileExtension);
+            }
+
+            return fileExtList.Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty)).ToList();
         }
 
         /// <summary>
-        ///     Get the sub folder.
+        /// Gets the subfolder path relative to the root directory and combines it with the target directory.
         /// </summary>
-        /// <param name="element">The element.</param>
-        /// <param name="root">The root.</param>
-        /// <param name="target">The target.</param>
-        /// <returns>The target Folder<see cref="string" />.</returns>
+        /// <param name="element">The path of the element.</param>
+        /// <param name="root">The root directory path.</param>
+        /// <param name="target">The target directory path.</param>
+        /// <returns>The combined target folder path.</returns>
+        /// <exception cref="ArgumentException">Thrown when any of the input paths are invalid.</exception>
         internal static string GetSubFolder(string element, string root, string target)
         {
-            element = Path.GetDirectoryName(element);
-            root = Path.GetDirectoryName(root);
+            var elementDir = Path.GetFullPath(element) ?? throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(element));
+            var rootDir = Path.GetFullPath(root) ?? throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(root));
 
-            // ReSharper disable once PossibleNullReferenceException, already checked
-            var len = Math.Min(root.Length,
-                // ReSharper disable once PossibleNullReferenceException, already checked
-                element.Length);
-
-            var index = 0;
-            while (index < len)
+            if (!elementDir.StartsWith(rootDir, StringComparison.OrdinalIgnoreCase))
             {
-                if (root[index] != element[index])
-                {
-                    break;
-                }
-
-                index++;
+                throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
             }
 
-            element = element.Remove(0, index);
+            var relativePath = elementDir.Substring(rootDir.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            if (element.Length == 0)
-            {
-                return target;
-            }
-
-            //Needed to remove the trailing \
-            element = element.Remove(0, 1);
-            return Path.Combine(target, element);
+            return Path.Combine(target, relativePath);
         }
 
         /// <summary>
-        ///     Collects all files with a specific Extension
+        /// Collects all files with a specific extension from the target folder.
         /// </summary>
-        /// <param name="path">Target Folder</param>
-        /// <param name="appendix">File Extension</param>
-        /// <param name="subdirectories">Include Sub-folders</param>
-        /// <returns>List of Files, with extension</returns>
-        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        /// <param name="path">The target folder path.</param>
+        /// <param name="appendix">The file extension.</param>
+        /// <param name="subdirectories">Indicates whether to include subdirectories.</param>
+        /// <returns>List of files with the specified extension.</returns>
+        /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
         [return: MaybeNull]
         internal static List<string> GetFilesByExtension(string path, string appendix, bool subdirectories)
         {
@@ -95,13 +83,11 @@ namespace FileHandler
                 appendix = FileHandlerResources.Star;
             }
 
-            //cleanups just in Case
             appendix = appendix.Replace(FileHandlerResources.Dot, string.Empty);
 
             var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
-            return Directory.EnumerateFiles(path, string.Concat(FileHandlerResources.StarDot, appendix), option)
-                .ToList();
+            return Directory.EnumerateFiles(path, $"{FileHandlerResources.StarDot}{appendix}", option).ToList();
         }
     }
 }

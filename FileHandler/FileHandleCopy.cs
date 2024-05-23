@@ -165,15 +165,19 @@ namespace FileHandler
 
             //Do the work
             var root = SearchRoot(source);
-
+            var file = new FileInfo(root);
+            root = file.Directory.FullName;
+            
             foreach (var element in source)
             {
                 try
                 {
-                    var file = new FileInfo(element);
+                    file = new FileInfo(element);
+
+                    string directoryPath = file.Directory.FullName;
 
                     //Get Sub Folder
-                    var path = FileHandlerProcessing.GetSubFolder(element, root, target);
+                    var path = FileHandlerProcessing.GetSubFolder(directoryPath, root, target);
 
                     if (path?.Length == 0)
                     {
