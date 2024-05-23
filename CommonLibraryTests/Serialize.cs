@@ -102,7 +102,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var dictionary = new Dictionary<string, string>();
-            var path = "test.xml";
+            const string path = "test.xml";
 
             // Act
             Serializer.Serialize.SaveDctObjectToXml(dictionary, path);

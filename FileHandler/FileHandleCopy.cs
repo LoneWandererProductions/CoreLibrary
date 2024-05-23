@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleCopy.cs
- * PURPOSE:     Does all types of File Operations, Copy Files
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/FileHandleCopy.cs
+* PURPOSE:     Does all types of File Operations, Copy Files
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
@@ -36,101 +36,42 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CopyFiles(string source, string target, bool overwrite)
         {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
+            ValidatePaths(source, target);
 
-            if (source.Equals(target, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
-
-            //if nothing exists we can return anyways
             if (!Directory.Exists(source))
             {
                 return false;
             }
 
-            var check = true;
-            var dir = new DirectoryInfo(source);
-            var dirs = dir.GetDirectories();
-            var files = dir.GetFiles();
-
-            //Give the User Optional Infos about the Amount we Copy
-            var lstFiles = (from file in files
-                select file.Name).ToList();
-
-            var itm = new FileItems
+            var sourceDir = new DirectoryInfo(source);
+            var targetDir = new DirectoryInfo(target);
+            if (!targetDir.Exists)
             {
-                Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
-            };
+                targetDir.Create();
+            }
 
-            FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
-
-            //do the actual work
-            if (files.Length > 0)
+            var files = sourceDir.GetFiles();
+            foreach (var file in files)
             {
-                if (!Directory.Exists(target))
+                try
                 {
-                    _ = Directory.CreateDirectory(target);
+                    file.CopyTo(Path.Combine(target, file.Name), overwrite);
+                    FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
                 }
-
-                foreach (var file in files)
+                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
                 {
-                    var tempPath = Path.Combine(target, file.Name);
-
-                    try
-                    {
-                        _ = file.CopyTo(tempPath, overwrite);
-
-                        FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
-                    }
-                    catch (UnauthorizedAccessException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-
-                        Trace.WriteLine(ex);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
-                    catch (IOException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
-                    catch (NotSupportedException ex)
-                    {
-                        check = false;
-                        FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
-                    }
+                    FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
+                    Trace.WriteLine(ex);
+                    return false;
                 }
             }
 
-            foreach (var subDir in dirs)
+            foreach (var subDir in sourceDir.GetDirectories())
             {
-                var tempPath = Path.Combine(target, subDir.Name);
-                if (!Directory.Exists(target))
-                {
-                    _ = Directory.CreateDirectory(target);
-                }
-
-                if (File.Exists(tempPath))
-                {
-                    continue;
-                }
-
-                _ = CopyFiles(subDir.FullName, tempPath, overwrite);
+                CopyFiles(subDir.FullName, Path.Combine(target, subDir.Name), overwrite);
             }
 
-            return check;
+            return true;
         }
 
         /// <summary>
@@ -158,7 +99,8 @@ namespace FileHandler
             //Give the User Optional Infos about the Amount we Copy
             var itm = new FileItems
             {
-                Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(source),
+                Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
@@ -167,7 +109,7 @@ namespace FileHandler
             var root = SearchRoot(source);
             var file = new FileInfo(root);
             root = file.Directory.FullName;
-            
+
             foreach (var element in source)
             {
                 try
@@ -235,15 +177,7 @@ namespace FileHandler
         [return: MaybeNull]
         public static IList<string> CopyFiles(string source, string target)
         {
-            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
-
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
+            ValidatePaths(source, target);
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -289,15 +223,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CopyFilesReplaceIfNewer(string source, string target)
         {
-            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
-
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
+            ValidatePaths(source, target);
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -312,11 +238,12 @@ namespace FileHandler
 
             //Give the User Optional Infos about the Amount we Copy
             var lstFiles = (from file in files
-                select file.Name).ToList();
+                            select file.Name).ToList();
 
             var itm = new FileItems
             {
-                Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(lstFiles),
+                Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
@@ -407,6 +334,24 @@ namespace FileHandler
             }
 
             return shortest;
+        }
+
+        /// <summary>
+        /// Validates the paths.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="target">The target.</param>
+        private static void ValidatePaths(string source, string target)
+        {
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
+
+            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            }
         }
     }
 }

@@ -36,15 +36,25 @@ namespace CommonLibraryTests
         /// <summary>
         ///     The _pathOperations (readonly). Value: "IO".
         /// </summary>
-        private readonly string _pathOperations = "IO";
+        private const string PathOperations = "IO";
 
         /// <summary>
         ///     The _pathOperations Two (readonly). Value: "IO2".
         /// </summary>
-        private readonly string _pathOperationsTwo = "IO2";
+        private const string PathOperationsTwo = "IO2";
 
         /// <summary>
-        ///     The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
+        /// The test source dir
+        /// </summary>
+        private const string TestSourceDir = "TestSource";
+
+        /// <summary>
+        /// The test target dir
+        /// </summary>
+        private const string TestTargetDir = "TestTarget";
+
+        /// <summary>
+        /// The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
         /// </summary>
         private readonly string _renamePath = Path.Combine(Directory.GetCurrentDirectory(), PathRename);
 
@@ -73,7 +83,7 @@ namespace CommonLibraryTests
             //Set Amount of Repeats
             FileHandlerRegister.Tries = 2;
 
-            var file = Path.Combine(_path, Path.ChangeExtension(_pathOperations, ResourcesGeneral.TstExt)!);
+            var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
             HelperMethods.CreateFile(file);
 
             var list =
@@ -96,7 +106,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, list.Count, "Did not get the Files Folder by multiple Extension");
 
-            Assert.AreEqual(list[0], Path.Combine(_path, _pathOperations + ResourcesGeneral.TstExt),
+            Assert.AreEqual(list[0], Path.Combine(_path, PathOperations + ResourcesGeneral.TstExt),
                 "Not the correct File");
 
             var lst = FileHandleSearch.GetAllFiles(_path, false);
@@ -121,7 +131,7 @@ namespace CommonLibraryTests
             var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
             Assert.IsTrue(isDone, "Could not cleanup");
 
-            var file = Path.Combine(_path, Path.ChangeExtension(_pathOperations, ResourcesGeneral.TstExt)!);
+            var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
 
             //Create File
             HelperMethods.CreateFile(file);
@@ -141,7 +151,7 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(check, "Correct Number of files");
 
-            Assert.AreEqual(list[0], _pathOperations, "Not the correct File");
+            Assert.AreEqual(list[0], PathOperations, "Not the correct File");
 
             //search Test with contains string
             var ext = new List<string> { ResourcesGeneral.TstExt };
@@ -202,7 +212,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(isDone, "Could not cleanup");
 
             var check = false;
-            var file = Path.Combine(_path, Path.ChangeExtension(_pathOperations, ResourcesGeneral.TstExt)!);
+            var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
             HelperMethods.CreateFile(file);
 
             var list =
@@ -220,7 +230,7 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(check, "Did not delete Folder:");
 
-            Assert.AreEqual(list[0], _pathOperations + ResourcesGeneral.TstExt, "Correct File");
+            Assert.AreEqual(list[0], PathOperations + ResourcesGeneral.TstExt, "Correct File");
 
             check = FileHandleDelete.DeleteFile(file);
 
@@ -264,7 +274,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void GetFileInformation()
         {
-            var file = Path.Combine(_path, Path.ChangeExtension(_pathOperations, ResourcesGeneral.TstExt)!);
+            var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
             HelperMethods.CreateFile(file);
 
             var info = FileHandleSearch.GetFileDetails(file);
@@ -289,7 +299,7 @@ namespace CommonLibraryTests
         {
             FileHandleDelete.DeleteAllContents(_path, true);
             var fileOne = Path.Combine(_path, nameof(GetNewFileName),
-                Path.ChangeExtension(_pathOperations, ResourcesGeneral.TstExt)!);
+                Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
             HelperMethods.CreateFile(fileOne);
 
             var info = FileUtility.GetNewFileName(fileOne);
@@ -333,14 +343,14 @@ namespace CommonLibraryTests
         public void GenerateFolder()
         {
             var check = FileHandleCreate.CreateFolder(Path.Combine(_path, nameof(GenerateFolder)),
-                _pathOperations);
+                PathOperations);
 
             Assert.IsTrue(check,
                 "Path not Created: ");
 
             var expectedPath = Path.Combine(_path,
                 nameof(GenerateFolder),
-                _pathOperations);
+                PathOperations);
 
             Assert.IsTrue(Directory.Exists(expectedPath),
                 "Path not equal: ");
@@ -384,7 +394,7 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(path);
             Assert.IsTrue(Directory.Exists(path), "Folder not cleaned");
 
-            var file = Path.Combine(path, _pathOperations + ResourcesGeneral.TstExt);
+            var file = Path.Combine(path, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
@@ -411,7 +421,7 @@ namespace CommonLibraryTests
             Assert.IsFalse(FileHandleSearch.CheckIfFolderContainsElement(path), "File was not deleted");
 
             //create File
-            file = Path.Combine(subPathOne, _pathOperations + ResourcesGeneral.TstExt);
+            file = Path.Combine(subPathOne, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
@@ -440,7 +450,7 @@ namespace CommonLibraryTests
             FileHandleCreate.CreateFolder(_renamePath);
             Assert.IsTrue(Directory.Exists(_renamePath), "Folder not cleaned");
 
-            var file = Path.Combine(_renamePath, _pathOperations, ResourcesGeneral.TstExt);
+            var file = Path.Combine(_renamePath, PathOperations, ResourcesGeneral.TstExt);
             var target = Path.Combine(_renamePath, "new.txt");
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
@@ -555,11 +565,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
-            var file = Path.Combine(subPathOne, _pathOperations + ResourcesGeneral.TstExt);
+            var file = Path.Combine(subPathOne, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
-            file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
+            file = Path.Combine(subPathTwo, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
@@ -599,11 +609,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
-            var file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
+            var file = Path.Combine(subPathTwo, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
-            file = Path.Combine(subPathTwoExtended, _pathOperations + ResourcesGeneral.TstExt);
+            file = Path.Combine(subPathTwoExtended, PathOperations + ResourcesGeneral.TstExt);
             HelperMethods.CreateFile(file);
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathTwo, ".*", true);
 
@@ -633,47 +643,140 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
         }
 
-        [TestMethod]
-        public void CopyFiles_WhenSourceDirectoryNotFound_ReturnsFalse()
-        {
-            // Arrange
-            var source = @"C:\nonexistent";
-            var target = @"C:\target";
-            var overwrite = true;
-
-            // Act
-            var result = FileHandleCopy.CopyFiles(source, target, overwrite);
-
-            // Assert
-            //Assert.IsFalse(result);
-            //TODO Add cleanup
-            //Assert.IsFalse(Directory.Exists(target));
-
-            Directory.Delete(target);
-        }
-
+        /// <summary>
+        /// Copies the files when source and target equal throws file handler exception.
+        /// </summary>
         [TestMethod]
         public void CopyFiles_WhenSourceAndTargetEqual_ThrowsFileHandlerException()
         {
             // Arrange
             var source = @"C:\folder";
             var target = @"C:\folder";
-            var overwrite = true;
 
             // Act & Assert
-            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, overwrite));
+            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, true));
         }
 
+        /// <summary>
+        /// Copies the files when source null or empty throws file handler exception.
+        /// </summary>
         [TestMethod]
         public void CopyFiles_WhenSourceNullOrEmpty_ThrowsFileHandlerException()
         {
             // Arrange
-            string source = null;
             var target = @"C:\target";
-            var overwrite = true;
 
             // Act & Assert
-            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, overwrite));
+            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles((string) null, target, true));
+        }
+
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
+        [TestInitialize]
+        public void Setup()
+        {
+            if (Directory.Exists(TestSourceDir))
+                Directory.Delete(TestSourceDir, true);
+            if (Directory.Exists(TestTargetDir))
+                Directory.Delete(TestTargetDir, true);
+
+            Directory.CreateDirectory(TestSourceDir);
+            Directory.CreateDirectory(TestTargetDir);
+        }
+
+        /// <summary>
+        /// Cleanups this instance.
+        /// </summary>
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (Directory.Exists(TestSourceDir))
+                Directory.Delete(TestSourceDir, true);
+            if (Directory.Exists(TestTargetDir))
+                Directory.Delete(TestTargetDir, true);
+        }
+
+        /// <summary>
+        /// Copies the files empty source throws exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void CopyFiles_EmptySource_ThrowsException()
+        {
+            FileHandleCopy.CopyFiles("", TestTargetDir, false);
+        }
+
+        /// <summary>
+        /// Copies the files equal source and target throws exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void CopyFiles_EqualSourceAndTarget_ThrowsException()
+        {
+            FileHandleCopy.CopyFiles(TestSourceDir, TestSourceDir, false);
+        }
+
+        /// <summary>
+        /// Copies the files with overwrite copies files successfully.
+        /// </summary>
+        [TestMethod]
+        public void CopyFiles_WithOverwrite_CopiesFilesSuccessfully()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+
+            // Act
+            var result = FileHandleCopy.CopyFiles(TestSourceDir, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+        }
+
+        /// <summary>
+        /// Copies the files replace if newer copies only newer files.
+        /// </summary>
+        [TestMethod]
+        public void CopyFilesReplaceIfNewer_CopiesOnlyNewerFiles()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "New Content");
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            File.WriteAllText(targetFilePath, "Old Content");
+            File.SetLastWriteTime(targetFilePath, DateTime.Now.AddDays(-1));
+
+            // Act
+            var result = FileHandleCopy.CopyFilesReplaceIfNewer(TestSourceDir, TestTargetDir);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual("New Content", File.ReadAllText(targetFilePath));
+        }
+
+        /// <summary>
+        /// Copies the files with list copies files successfully.
+        /// </summary>
+        [TestMethod]
+        public void CopyFiles_WithList_CopiesFilesSuccessfully()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+            var fileList = new List<string> { sourceFilePath };
+
+            // Act
+            var result = FileHandleCopy.CopyFiles(fileList, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
         }
 
         /// <summary>
@@ -701,11 +804,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //create File
-            var file = Path.Combine(subPathTwo, _pathOperations + ResourcesGeneral.TstExt);
+            var file = Path.Combine(subPathTwo, PathOperations + ResourcesGeneral.TstExt);
             Trace.WriteLine(file);
             HelperMethods.CreateFile(file);
 
-            file = Path.Combine(subPathTwoExtended, _pathOperations + ResourcesGeneral.TstExt);
+            file = Path.Combine(subPathTwoExtended, PathOperations + ResourcesGeneral.TstExt);
             HelperMethods.CreateFile(file);
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathTwo, ".*", true);
 
@@ -736,6 +839,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
         }
 
+        /// <summary>
+        /// Compressions this instance.
+        /// </summary>
         [TestMethod]
         public void Compression()
         {
@@ -746,10 +852,10 @@ namespace CommonLibraryTests
             var lst = new List<string>();
 
             //generate to Files
-            var file = Path.Combine(path, _pathOperations + ResourcesGeneral.TstExt);
+            var file = Path.Combine(path, PathOperations + ResourcesGeneral.TstExt);
             lst.Add(file);
             HelperMethods.CreateFile(file);
-            file = Path.Combine(path, _pathOperationsTwo + ResourcesGeneral.TstExt);
+            file = Path.Combine(path, PathOperationsTwo + ResourcesGeneral.TstExt);
             lst.Add(file);
             HelperMethods.CreateFile(file);
 
