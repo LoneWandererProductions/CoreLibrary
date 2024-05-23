@@ -464,7 +464,7 @@ namespace CommonLibraryTests
         ///     Test the Rename feature with appendages
         /// </summary>
         [TestMethod]
-        public void RAppendageOfFile()
+        public void AppendageOfFile()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_renamePath);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -631,6 +631,49 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
+        }
+
+        [TestMethod]
+        public void CopyFiles_WhenSourceDirectoryNotFound_ReturnsFalse()
+        {
+            // Arrange
+            var source = @"C:\nonexistent";
+            var target = @"C:\target";
+            var overwrite = true;
+
+            // Act
+            var result = FileHandleCopy.CopyFiles(source, target, overwrite);
+
+            // Assert
+            Assert.IsFalse(result);
+            //TODO Add cleanup
+            //Assert.IsFalse(Directory.Exists(target));
+
+            Directory.Delete(target);
+        }
+
+        [TestMethod]
+        public void CopyFiles_WhenSourceAndTargetEqual_ThrowsFileHandlerException()
+        {
+            // Arrange
+            var source = @"C:\folder";
+            var target = @"C:\folder";
+            var overwrite = true;
+
+            // Act & Assert
+            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, overwrite));
+        }
+
+        [TestMethod]
+        public void CopyFiles_WhenSourceNullOrEmpty_ThrowsFileHandlerException()
+        {
+            // Arrange
+            string source = null;
+            var target = @"C:\target";
+            var overwrite = true;
+
+            // Act & Assert
+            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, overwrite));
         }
 
         /// <summary>
