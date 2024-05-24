@@ -32,6 +32,20 @@ namespace CommonLibraryTests
         private const string PathOperations = "IO";
 
         /// <summary>
+        /// Setups this instance.
+        /// </summary>
+        [TestInitialize]
+        public void Setup()
+        {
+            Directory.CreateDirectory(_path);
+            File.WriteAllText(Path.Combine(_path, "test1.txt"), "Test file 1");
+            File.WriteAllText(Path.Combine(_path, "test2.log"), "Test file 2");
+            File.WriteAllText(Path.Combine(_path, "test3.txt"), "Test file 3");
+            Directory.CreateDirectory(Path.Combine(_path, "subdir"));
+            File.WriteAllText(Path.Combine(_path, "subdir", "test4.txt"), "Test file 4");
+        }
+
+        /// <summary>
         ///     Simple Check for getting files Contains in a Folder
         /// </summary>
         [TestMethod]
@@ -251,6 +265,125 @@ namespace CommonLibraryTests
             _ = FileHandleDelete.DeleteFile(file);
             var check = FileHandleSearch.FileExists(file);
             Assert.IsFalse(check, "File not deleted");
+        }
+
+        /// <summary>
+        /// Files the exists should return true when file exists.
+        /// </summary>
+        [TestMethod]
+        public void FileExistsShouldReturnTrueWhenFileExists()
+        {
+            var path = Path.Combine(_path, "test1.txt");
+            var result = FileHandleSearch.FileExists(path);
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Files the exists should return false when file does not exist.
+        /// </summary>
+        [TestMethod]
+        public void FileExistsShouldReturnFalseWhenFileDoesNotExist()
+        {
+            var path = Path.Combine(_path, "nonexistent.txt");
+            var result = FileHandleSearch.FileExists(path);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Gets the files by extension full path should return files with given extension.
+        /// </summary>
+        [TestMethod]
+        public void GetFilesByExtensionFullPathShouldReturnFilesWithGivenExtension()
+        {
+            var result = FileHandleSearch.GetFilesByExtensionFullPath(_path, ".txt", false);
+            Assert.AreEqual(2, result.Count);
+        }
+
+        /// <summary>
+        /// Gets the files by extension full path should return files from subdirectories.
+        /// </summary>
+        [TestMethod]
+        public void GetFilesByExtensionFullPathShouldReturnFilesFromSubdirectories()
+        {
+            var result = FileHandleSearch.GetFilesByExtensionFullPath(_path, ".txt", true);
+            Assert.AreEqual(3, result.Count);
+        }
+
+        /// <summary>
+        /// Gets the file details should return file details.
+        /// </summary>
+        [TestMethod]
+        public void GetFileDetailsShouldReturnFileDetails()
+        {
+            var path = Path.Combine(_path, "test1.txt");
+            var result = FileHandleSearch.GetFileDetails(path);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("test1.txt", result.FileName);
+        }
+
+        /// <summary>
+        /// Gets all subfolders should return subfolders.
+        /// </summary>
+        [TestMethod]
+        public void GetAllSubfoldersShouldReturnSubfolders()
+        {
+            var result = FileHandleSearch.GetAllSubfolders(_path);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual("subdir", result[0]);
+        }
+
+        /// <summary>
+        /// Checks if folder contains element should return true if folder contains files.
+        /// </summary>
+        [TestMethod]
+        public void CheckIfFolderContainsElementShouldReturnTrueIfFolderContainsFiles()
+        {
+            var result = FileHandleSearch.CheckIfFolderContainsElement(_path);
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Checks if folder contains element should return false if folder is empty.
+        /// </summary>
+        [TestMethod]
+        public void CheckIfFolderContainsElementShouldReturnFalseIfFolderIsEmpty()
+        {
+            var emptyDir = Path.Combine(_path, "emptyDir");
+            Directory.CreateDirectory(emptyDir);
+            var result = FileHandleSearch.CheckIfFolderContainsElement(emptyDir);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Gets the files with sub string should return files containing sub string.
+        /// </summary>
+        [TestMethod]
+        public void GetFilesWithSubStringShouldReturnFilesContainingSubString()
+        {
+            var result = FileHandleSearch.GetFilesWithSubString(_path, new List<string> { ".txt" }, true, "3", false);
+            Assert.AreEqual(1, result.Count);
+            Assert.IsTrue(result[0].EndsWith("test3.txt"));
+        }
+
+        /// <summary>
+        /// Gets the files with sub string should return files not containing sub string when invert is true.
+        /// </summary>
+        [TestMethod]
+        public void GetFilesWithSubStringShouldReturnFilesNotContainingSubString_WhenInvertIsTrue()
+        {
+            var result = FileHandleSearch.GetFilesWithSubString(_path, new List<string> { ".txt" }, true, "3", true);
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result.TrueForAll(file => !file.EndsWith("test3.txt")));
+        }
+
+
+        /// <summary>
+        /// Teardowns this instance.
+        /// </summary>
+        [TestCleanup]
+        public void Teardown()
+        {
+            Directory.Delete(_path, true);
         }
     }
 }
