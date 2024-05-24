@@ -37,7 +37,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CopyFiles(string source, string target, bool overwrite)
         {
-            ValidatePaths(source, target);
+            FileHandlerProcessing.ValidatePaths(source, target);
 
             if (!Directory.Exists(source))
             {
@@ -107,7 +107,7 @@ namespace FileHandler
             FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
 
             //Do the work
-            var root = SearchRoot(source);
+            var root = FileHandlerProcessing.SearchRoot(source);
             var file = new FileInfo(root);
             root = file.Directory.FullName;
 
@@ -160,7 +160,7 @@ namespace FileHandler
         [return: MaybeNull]
         public static IList<string> CopyFiles(string source, string target)
         {
-            ValidatePaths(source, target);
+            FileHandlerProcessing.ValidatePaths(source, target);
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -206,7 +206,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CopyFilesReplaceIfNewer(string source, string target)
         {
-            ValidatePaths(source, target);
+            FileHandlerProcessing.ValidatePaths(source, target);
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -278,45 +278,6 @@ namespace FileHandler
             }
 
             return check;
-        }
-
-        /// <summary>
-        ///     Search the root Path.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns>The root<see cref="string" />.</returns>
-        internal static string SearchRoot(IReadOnlyCollection<string> source)
-        {
-            var shortest = source.First();
-
-            // ReSharper disable once LoopCanBePartlyConvertedToQuery
-            foreach (var path in source)
-            {
-                if (path.Length < shortest.Length)
-                {
-                    shortest = path;
-                }
-            }
-
-            return shortest;
-        }
-
-        /// <summary>
-        /// Validates the paths.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        private static void ValidatePaths(string source, string target)
-        {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
-
-            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
         }
     }
 }

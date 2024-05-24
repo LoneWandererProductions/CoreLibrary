@@ -59,6 +59,18 @@ namespace CommonLibraryTests
         private readonly string _renamePath = Path.Combine(Directory.GetCurrentDirectory(), PathRename);
 
         /// <summary>
+        /// Setups this instance.
+        /// </summary>
+        [TestInitialize]
+        public void Setup()
+        {
+            Cleanup(); // Ensure a clean state before each test
+
+            Directory.CreateDirectory(TestSourceDir);
+            Directory.CreateDirectory(TestTargetDir);
+        }
+
+        /// <summary>
         ///     Basic test for the File Function
         /// </summary>
         [TestMethod]
@@ -545,48 +557,6 @@ namespace CommonLibraryTests
         ///     Copy the if newer.
         /// </summary>
         [TestMethod]
-        public void CopyIfNewer()
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyNewer");
-            var isDone = FileHandleDelete.DeleteCompleteFolder(path);
-            Assert.IsTrue(isDone, "Could not cleanup");
-
-            var subPathOne = Path.Combine(path, @"subOne\");
-            var subPathTwo = Path.Combine(path, @"subTwo\");
-            FileHandleCreate.CreateFolder(subPathOne);
-            FileHandleCreate.CreateFolder(subPathTwo);
-            var lst = FileHandleSearch.GetAllSubfolders(path);
-
-            if (lst == null)
-            {
-                Assert.Fail("Null Reference");
-            }
-
-            Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
-
-            //create File
-            var file = Path.Combine(subPathOne, PathOperations + ResourcesGeneral.TstExt);
-            Trace.WriteLine(file);
-            HelperMethods.CreateFile(file);
-
-            file = Path.Combine(subPathTwo, PathOperations + ResourcesGeneral.TstExt);
-            Trace.WriteLine(file);
-            HelperMethods.CreateFile(file);
-
-            var firstTime = File.GetLastWriteTime(file);
-
-            isDone = FileHandleCopy.CopyFilesReplaceIfNewer(subPathOne, subPathTwo);
-
-            var secondTime = File.GetLastWriteTime(file);
-
-            Assert.IsTrue(isDone, "File were not moved");
-            Assert.AreEqual(firstTime, secondTime, "File was not the same");
-        }
-
-        /// <summary>
-        ///     Copy the if newer.
-        /// </summary>
-        [TestMethod]
         public void CopyList()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyList");
@@ -644,93 +614,107 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files when source and target equal throws file handler exception.
+        /// Copies the files valid source and target copies files.
         /// </summary>
         [TestMethod]
-        public void CopyFiles_WhenSourceAndTargetEqual_ThrowsFileHandlerException()
+        public void CopyFilesValidSourceAndTargetCopiesFiles()
         {
-            // Arrange
-            var source = @"C:\folder";
-            var target = @"C:\folder";
-
-            // Act & Assert
-            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles(source, target, true));
-        }
-
-        /// <summary>
-        /// Copies the files when source null or empty throws file handler exception.
-        /// </summary>
-        [TestMethod]
-        public void CopyFiles_WhenSourceNullOrEmpty_ThrowsFileHandlerException()
-        {
-            // Arrange
-            var target = @"C:\target";
-
-            // Act & Assert
-            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles((string) null, target, true));
-        }
-
-        /// <summary>
-        /// Setups this instance.
-        /// </summary>
-        [TestInitialize]
-        public void Setup()
-        {
-            if (Directory.Exists(TestSourceDir))
-                Directory.Delete(TestSourceDir, true);
-            if (Directory.Exists(TestTargetDir))
-                Directory.Delete(TestTargetDir, true);
-
-            Directory.CreateDirectory(TestSourceDir);
-            Directory.CreateDirectory(TestTargetDir);
-        }
-
-        /// <summary>
-        /// Cleanups this instance.
-        /// </summary>
-        [TestCleanup]
-        public void Cleanup()
-        {
-            if (Directory.Exists(TestSourceDir))
-                Directory.Delete(TestSourceDir, true);
-            if (Directory.Exists(TestTargetDir))
-                Directory.Delete(TestTargetDir, true);
-        }
-
-        /// <summary>
-        /// Copies the files empty source throws exception.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(FileHandlerException))]
-        public void CopyFiles_EmptySource_ThrowsException()
-        {
-            FileHandleCopy.CopyFiles("", TestTargetDir, false);
-        }
-
-        /// <summary>
-        /// Copies the files equal source and target throws exception.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(FileHandlerException))]
-        public void CopyFiles_EqualSourceAndTarget_ThrowsException()
-        {
-            FileHandleCopy.CopyFiles(TestSourceDir, TestSourceDir, false);
-        }
-
-        /// <summary>
-        /// Copies the files with overwrite copies files successfully.
-        /// </summary>
-        [TestMethod]
-        public void CopyFiles_WithOverwrite_CopiesFilesSuccessfully()
-        {
-            // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
             File.WriteAllText(sourceFilePath, "Test Content");
 
-            // Act
             var result = FileHandleCopy.CopyFiles(TestSourceDir, TestTargetDir, true);
 
-            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+        }
+
+        /// <summary>
+        /// Copies the files source directory not found returns false.
+        /// </summary>
+        [TestMethod]
+        public void CopyFilesSourceDirectoryNotFoundReturnsFalse()
+        {
+            var result = FileHandleCopy.CopyFiles("NonExistentSource", TestTargetDir, true);
+
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Copies the files source and target equal throws file handler exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void CopyFilesSourceAndTargetEqualThrowsFileHandlerException()
+        {
+            FileHandleCopy.CopyFiles(TestSourceDir, TestSourceDir, true);
+        }
+
+        /// <summary>
+        ///     Check if our Exceptions do actual work
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException), "Invalid Input. String was Empty")]
+        public void CopyException()
+        {
+            FileHandleCopy.CopyFiles(string.Empty, null);
+        }
+
+        /// <summary>
+        ///     Copy the if newer.
+        /// </summary>
+        [TestMethod]
+        public void CopyIfNewer()
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyNewer");
+            var isDone = FileHandleDelete.DeleteCompleteFolder(path);
+            Assert.IsTrue(isDone, "Could not cleanup");
+
+            var subPathOne = Path.Combine(path, @"subOne\");
+            var subPathTwo = Path.Combine(path, @"subTwo\");
+            FileHandleCreate.CreateFolder(subPathOne);
+            FileHandleCreate.CreateFolder(subPathTwo);
+            var lst = FileHandleSearch.GetAllSubfolders(path);
+
+            if (lst == null)
+            {
+                Assert.Fail("Null Reference");
+            }
+
+            Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
+
+            //create File
+            var file = Path.Combine(subPathOne, PathOperations + ResourcesGeneral.TstExt);
+            Trace.WriteLine(file);
+            HelperMethods.CreateFile(file);
+
+            file = Path.Combine(subPathTwo, PathOperations + ResourcesGeneral.TstExt);
+            Trace.WriteLine(file);
+            HelperMethods.CreateFile(file);
+
+            var firstTime = File.GetLastWriteTime(file);
+
+            isDone = FileHandleCopy.CopyFilesReplaceIfNewer(subPathOne, subPathTwo);
+
+            var secondTime = File.GetLastWriteTime(file);
+
+            Assert.IsTrue(isDone, "File were not moved");
+            Assert.AreEqual(firstTime, secondTime, "File was not the same");
+        }
+
+        /// <summary>
+        /// Copies the files with file list copies files successfully.
+        /// </summary>
+        [TestMethod]
+        public void CopyFilesWithFileListCopiesFilesSuccessfully()
+        {
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+            var fileList = new List<string> { sourceFilePath };
+
+            var result = FileHandleCopy.CopyFiles(fileList, TestTargetDir, true);
+
             Assert.IsTrue(result);
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
             Assert.IsTrue(File.Exists(targetFilePath));
@@ -741,42 +725,69 @@ namespace CommonLibraryTests
         /// Copies the files replace if newer copies only newer files.
         /// </summary>
         [TestMethod]
-        public void CopyFilesReplaceIfNewer_CopiesOnlyNewerFiles()
+        public void CopyFilesReplaceIfNewerCopiesOnlyNewerFiles()
         {
-            // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
             File.WriteAllText(sourceFilePath, "New Content");
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
             File.WriteAllText(targetFilePath, "Old Content");
             File.SetLastWriteTime(targetFilePath, DateTime.Now.AddDays(-1));
 
-            // Act
             var result = FileHandleCopy.CopyFilesReplaceIfNewer(TestSourceDir, TestTargetDir);
 
-            // Assert
             Assert.IsTrue(result);
             Assert.AreEqual("New Content", File.ReadAllText(targetFilePath));
         }
 
         /// <summary>
-        /// Copies the files with list copies files successfully.
+        /// Copies the files with differing source and target returns files not copied.
         /// </summary>
         [TestMethod]
-        public void CopyFiles_WithList_CopiesFilesSuccessfully()
+        public void CopyFilesWithDifferingSourceAndTargetReturnsFilesNotCopied()
         {
-            // Arrange
-            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "Test Content");
-            var fileList = new List<string> { sourceFilePath };
+            var subPathOne = Path.Combine(TestSourceDir, "subOne");
+            var subPathTwo = Path.Combine(TestTargetDir, "subTwo");
+            Directory.CreateDirectory(subPathOne);
+            Directory.CreateDirectory(subPathTwo);
 
-            // Act
-            var result = FileHandleCopy.CopyFiles(fileList, TestTargetDir, true);
+            var file1 = Path.Combine(subPathOne, PathOperations + ".txt");
+            var file2 = Path.Combine(subPathTwo, PathOperationsTwo + ".txt");
+            File.WriteAllText(file1, "Content One");
+            File.WriteAllText(file2, "Content Two");
 
-            // Assert
+            var fileList = new List<string> { file1, file2 };
+            var notCopied = FileHandleCopy.CopyFiles(fileList, subPathOne, false);
+
+            Assert.IsFalse(notCopied);
+        }
+
+        /// <summary>
+        /// Copies the files copy list copies files correctly.
+        /// </summary>
+        [TestMethod]
+        public void CopyFilesCopyListCopiesFilesCorrectly()
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyList");
+            var subPathOne = Path.Combine(path, "subOne");
+            var subPathTwo = Path.Combine(path, "subTwo");
+            var subPathTwoExtended = Path.Combine(path, "subTwo", "test");
+
+            Directory.CreateDirectory(subPathOne);
+            Directory.CreateDirectory(subPathTwo);
+            Directory.CreateDirectory(subPathTwoExtended);
+
+            var file1 = Path.Combine(subPathTwo, PathOperations + ".txt");
+            var file2 = Path.Combine(subPathTwoExtended, PathOperations + ".txt");
+            File.WriteAllText(file1, "Content One");
+            File.WriteAllText(file2, "Content Two");
+
+            var filesToCopy = new List<string> { file1, file2 };
+            var result = FileHandleCopy.CopyFiles(filesToCopy, subPathOne, true);
+
             Assert.IsTrue(result);
-            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
-            Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+
+            var copiedFiles = Directory.GetFiles(subPathOne, "*.*", SearchOption.AllDirectories);
+            Assert.AreEqual(2, copiedFiles.Length);
         }
 
         /// <summary>
@@ -837,6 +848,157 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(2, result.Count, "Enough files were accounted for");
+        }
+
+        /// <summary>
+        /// Cuts the files valid source and target cuts files.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesValidSourceAndTargetCutsFiles()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+
+            // Act
+            var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.IsFalse(File.Exists(sourceFilePath));
+        }
+
+        /// <summary>
+        /// Cuts the files source and target equal throws file handler exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void CutFilesSourceAndTargetEqualThrowsFileHandlerException()
+        {
+            FileHandleCut.CutFiles(TestSourceDir, TestSourceDir, true);
+        }
+
+        /// <summary>
+        /// Cuts the files non existent source returns false.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesNonExistentSourceReturnsFalse()
+        {
+            var result = FileHandleCut.CutFiles("NonExistentSource", TestTargetDir, true);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Cuts the files with file list cuts files successfully.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesWithFileListCutsFilesSuccessfully()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+            var fileList = new List<string> { sourceFilePath };
+
+            // Act
+            var result = FileHandleCut.CutFiles(fileList, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.IsFalse(File.Exists(sourceFilePath));
+        }
+
+        /// <summary>
+        /// Cuts the files file list null or empty throws file handler exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FileHandlerException))]
+        public void CutFilesFileListNullOrEmptyThrowsFileHandlerException()
+        {
+            FileHandleCut.CutFiles((List<string>)null, TestTargetDir, true);
+        }
+
+        /// <summary>
+        /// Cuts the files file list non existent file returns false.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesFileListNonExistentFileReturnsFalse()
+        {
+            var fileList = new List<string> { "NonExistentFile.txt" };
+            var result = FileHandleCut.CutFiles(fileList, TestTargetDir, true);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Cuts the files with overwrite cuts files successfully.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesWithOverwriteCutsFilesSuccessfully()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "New Content");
+            File.WriteAllText(targetFilePath, "Old Content");
+
+            // Act
+            var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("New Content", File.ReadAllText(targetFilePath));
+            Assert.IsFalse(File.Exists(sourceFilePath));
+        }
+
+        /// <summary>
+        /// Cuts the files without overwrite existing files not overwritten.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesWithoutOverwriteExistingFilesNotOverwritten()
+        {
+            // Arrange
+            var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
+            var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "New Content");
+            File.WriteAllText(targetFilePath, "Old Content");
+
+            // Act
+            var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, false);
+
+            // Assert, show false, since we have not moved all files
+            Assert.IsFalse(result);
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Old Content", File.ReadAllText(targetFilePath));
+            Assert.IsTrue(File.Exists(sourceFilePath)); // Source file should not be moved
+        }
+
+        /// <summary>
+        /// Cuts the files handles subdirectories.
+        /// </summary>
+        [TestMethod]
+        public void CutFilesHandlesSubdirectories()
+        {
+            // Arrange
+            var subDir = Path.Combine(TestSourceDir, "SubDir");
+            Directory.CreateDirectory(subDir);
+            var sourceFilePath = Path.Combine(subDir, "test.txt");
+            File.WriteAllText(sourceFilePath, "Test Content");
+
+            // Act
+            var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+
+            // Assert
+            Assert.IsTrue(result);
+            var targetFilePath = Path.Combine(TestTargetDir, "SubDir", "test.txt");
+            Assert.IsTrue(File.Exists(targetFilePath));
+            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.IsFalse(File.Exists(sourceFilePath));
         }
 
         /// <summary>
@@ -977,13 +1139,15 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Check if our Exceptions do actual work
+        /// Cleanups this instance.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(FileHandlerException), "Invalid Input. String was Empty")]
-        public void CopyException()
+        [TestCleanup]
+        public void Cleanup()
         {
-            FileHandleCopy.CopyFiles(string.Empty, null);
+            if (Directory.Exists(TestSourceDir))
+                Directory.Delete(TestSourceDir, true);
+            if (Directory.Exists(TestTargetDir))
+                Directory.Delete(TestTargetDir, true);
         }
     }
 }
