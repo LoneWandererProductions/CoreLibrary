@@ -61,17 +61,10 @@ namespace FileHandler
             {
                 FileSystem.DeleteFile(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
-                return false;
-            }
-            catch (IOException ex)
-            {
-                //well something went wrong, unlucky Access
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
                 return false;
             }
 
