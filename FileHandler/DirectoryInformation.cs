@@ -11,6 +11,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Xml;
 
 namespace FileHandler
 {
@@ -48,22 +49,10 @@ namespace FileHandler
                     path = Directory.GetParent(path!)?.ToString();
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
-            }
-            catch (DirectoryNotFoundException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
             }
 

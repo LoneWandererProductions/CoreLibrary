@@ -18,7 +18,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
-
 namespace FileHandler
 {
     /// <summary>

@@ -59,22 +59,7 @@ namespace Communication
                 //webC.DownloadFileAsync(new Uri(url), path);
                 webC.DownloadFile(link, path);
             }
-            catch (ExternalException ex)
-            {
-                Trace.WriteLine(ex.Message);
-                return false;
-            }
-            catch (ArgumentNullException ex)
-            {
-                Trace.WriteLine(ex.Message);
-                return false;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Trace.WriteLine(ex.Message);
-                return false;
-            }
-            catch (WebException ex)
+            catch (Exception ex) when (ex is ExternalException or ArgumentNullException or UnauthorizedAccessException or WebException)
             {
                 Trace.WriteLine(ex.Message);
                 return false;
@@ -120,15 +105,7 @@ namespace Communication
                     webC.DownloadProgressChanged += DownloadProgressChanged;
                     await webC.DownloadFileTaskAsync(urls, path).ConfigureAwait(false);
                 }
-                catch (ExternalException ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                }
-                catch (ArgumentNullException ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                }
-                catch (UnauthorizedAccessException ex)
+                catch (Exception ex) when (ex is ExternalException or ArgumentNullException or UnauthorizedAccessException)
                 {
                     Trace.WriteLine(ex.Message);
                 }
