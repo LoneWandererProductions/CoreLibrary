@@ -1,14 +1,14 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ColorHsv.cs
- * PURPOSE:     General Conversions of all Types of Color Displays, Todo Sort out Degree and radian a bit more
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- * SOURCE:      https://manufacture.tistory.com/33
- *              https://www.rapidtables.com/convert/color/rgb-to-hsv.html
- *              https://en.wikipedia.org/wiki/HSL_and_HSV
- *              https://docs.microsoft.com/de-de/dotnet/fundamentals/code-analysis/quality-rules/ca1036
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     Imaging
+* FILE:        Imaging/ColorHsv.cs
+* PURPOSE:     General Conversions of all Types of Color Displays, Todo Sort out Degree and radian a bit more
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+* SOURCE:      https://manufacture.tistory.com/33
+*              https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+*              https://en.wikipedia.org/wiki/HSL_and_HSV
+*              https://docs.microsoft.com/de-de/dotnet/fundamentals/code-analysis/quality-rules/ca1036
+*/
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Media;
 using ExtendedSystemObjects;
 
@@ -238,14 +239,9 @@ namespace Imaging
             {
                 color = (Color)ColorConverter.ConvertFromString(hex);
             }
-            catch (NullReferenceException e)
+            catch (Exception ex) when (ex is NullReferenceException or FormatException)
             {
-                Trace.WriteLine(e);
-                return;
-            }
-            catch (FormatException e)
-            {
-                Trace.WriteLine(e);
+                Trace.WriteLine(ex);
                 return;
             }
 

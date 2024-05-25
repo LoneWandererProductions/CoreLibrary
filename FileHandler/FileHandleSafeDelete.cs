@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleSafeDelete.cs
- * PURPOSE:     Variation of delete files, with Progress Bar and Deletion to Recycle BIn
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/FileHandleSafeDelete.cs
+* PURPOSE:     Variation of delete files, with Progress Bar and Deletion to Recycle BIn
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -61,17 +61,10 @@ namespace FileHandler
             {
                 FileSystem.DeleteFile(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
-                return false;
-            }
-            catch (IOException ex)
-            {
-                //well something went wrong, unlucky Access
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
                 return false;
             }
 
