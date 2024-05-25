@@ -83,7 +83,15 @@ namespace Debugger
             {
                 File.Delete(DebugRegister.DebugPath);
             }
-            catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
+            catch (ArgumentException ex)
+            {
+                CreateLogFile(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), ErCode.Error);
+            }
+            catch (IOException ex)
+            {
+                CreateLogFile(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), ErCode.Error);
+            }
+            catch (UnauthorizedAccessException ex)
             {
                 CreateLogFile(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), ErCode.Error);
             }
@@ -210,7 +218,19 @@ namespace Debugger
                 // Call WaitForExit and then the using-statement will close.
                 Process.Start(startInfo);
             }
-            catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or ArgumentNullException or IOException)
+            catch (Win32Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (IOException ex)
             {
                 Trace.WriteLine(ex);
             }
@@ -241,7 +261,15 @@ namespace Debugger
                     debugger.Kill();
                 }
             }
-            catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or NotSupportedException)
+            catch (InvalidOperationException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (Win32Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (NotSupportedException ex)
             {
                 Trace.WriteLine(ex);
             }

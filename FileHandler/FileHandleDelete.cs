@@ -70,10 +70,17 @@ namespace FileHandler
                 File.Delete(path);
                 FileHandlerRegister.SendStatus?.Invoke(nameof(DeleteFile), path);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            catch (UnauthorizedAccessException ex)
             {
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
                 Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
+                return false;
+            }
+            catch (IOException ex)
+            {
+                //well something went wrong, unlucky Access
+                Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
                 return false;
             }
 
@@ -171,11 +178,17 @@ namespace FileHandler
                     _ = DeleteFile(file);
                 }
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            catch (UnauthorizedAccessException ex)
             {
+                check = false;
                 FileHandlerRegister.AddError(nameof(DeleteAllContents), string.Empty, ex);
                 Trace.WriteLine(ex);
+            }
+            catch (IOException ex)
+            {
                 check = false;
+                FileHandlerRegister.AddError(nameof(DeleteAllContents), string.Empty, ex);
+                Trace.WriteLine(ex);
             }
 
             return check;
@@ -267,8 +280,14 @@ namespace FileHandler
             {
                 Directory.Delete(path, true);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            catch (UnauthorizedAccessException ex)
             {
+                Trace.WriteLine(ex);
+                return false;
+            }
+            catch (IOException ex)
+            {
+                //well something went wrong, unlucky Access
                 FileHandlerRegister.AddError(nameof(DeleteFolder), path, ex);
                 Trace.WriteLine(ex);
                 return false;
@@ -292,9 +311,30 @@ namespace FileHandler
             {
                 stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
             }
-            catch (Exception ex) when (ex is ArgumentException or PathTooLongException or IOException or UnauthorizedAccessException or NotSupportedException)
+            catch (ArgumentException ex)
             {
                 Trace.WriteLine(string.Concat(FileHandlerResources.ErrorLock, ex));
+                return true;
+            }
+            catch (PathTooLongException ex)
+            {
+                Trace.WriteLine(string.Concat(FileHandlerResources.ErrorLock, ex));
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(string.Concat(FileHandlerResources.ErrorLock, ex));
+                return true;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                //the file is locked, probably
+                Trace.WriteLine(FileHandlerResources.ErrorLock + ex);
+                return true;
+            }
+            catch (NotSupportedException ex)
+            {
+                Trace.WriteLine(FileHandlerResources.ErrorLock + ex);
                 return true;
             }
             finally

@@ -21,22 +21,16 @@ namespace CommonLibraryTests
     [TestClass]
     public sealed class IoFileHandlerInternal
     {
-        /// <summary>
-        /// Cleans up extension list null input throws argument null exception.
-        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void CleanUpExtensionListNullInputThrowsArgumentNullException()
+        public void CleanUpExtensionList_NullInput_ThrowsArgumentNullException()
         {
             // Act
             FileHandlerProcessing.CleanUpExtensionList(null);
         }
 
-        /// <summary>
-        /// Cleans up extension list valid input removes dots.
-        /// </summary>
         [TestMethod]
-        public void CleanUpExtensionListValidInputRemovesDots()
+        public void CleanUpExtensionList_ValidInput_RemovesDots()
         {
             // Arrange
             var input = new List<string> { ".txt", ".csv", ".docx" };
@@ -49,12 +43,9 @@ namespace CommonLibraryTests
             CollectionAssert.AreEqual(expected, result);
         }
 
-        /// <summary>
-        /// Gets the sub folder invalid element path throws argument exception.
-        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void GetSubFolderInvalidElementPathThrowsArgumentException()
+        public void GetSubFolder_InvalidElementPath_ThrowsArgumentException()
         {
             // Arrange
             string element = null;
@@ -65,12 +56,9 @@ namespace CommonLibraryTests
             FileHandlerProcessing.GetSubFolder(element, root, target);
         }
 
-        /// <summary>
-        /// Gets the sub folder invalid root path throws argument exception.
-        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void GetSubFolderInvalidRootPathThrowsArgumentException()
+        public void GetSubFolder_InvalidRootPath_ThrowsArgumentException()
         {
             // Arrange
             var element = @"C:\root\folder\subfolder\file.txt";
@@ -81,11 +69,8 @@ namespace CommonLibraryTests
             FileHandlerProcessing.GetSubFolder(element, root, target);
         }
 
-        /// <summary>
-        /// Gets the sub folder valid paths returns relative path.
-        /// </summary>
         [TestMethod]
-        public void GetSubFolderValidPathsReturnsRelativePath()
+        public void GetSubFolder_ValidPaths_ReturnsRelativePath()
         {
             // Arrange
             var element = @"C:\root\folder\subfolder\";
@@ -101,22 +86,16 @@ namespace CommonLibraryTests
             Assert.AreEqual(expected, result);
         }
 
-        /// <summary>
-        /// Gets the files by extension empty path throws file handler exception.
-        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
-        public void GetFilesByExtensionEmptyPathThrowsFileHandlerException()
+        public void GetFilesByExtension_EmptyPath_ThrowsFileHandlerException()
         {
             // Act
             FileHandlerProcessing.GetFilesByExtension(string.Empty, ".txt", false);
         }
 
-        /// <summary>
-        /// Gets the files by extension invalid path returns null.
-        /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionInvalidPathReturnsNull()
+        public void GetFilesByExtension_InvalidPath_ReturnsNull()
         {
             // Act
             var result = FileHandlerProcessing.GetFilesByExtension(@"C:\invalidpath", ".txt", false);
@@ -125,11 +104,8 @@ namespace CommonLibraryTests
             Assert.IsNull(result);
         }
 
-        /// <summary>
-        /// Gets the files by extension valid path returns files.
-        /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionValidPathReturnsFiles()
+        public void GetFilesByExtension_ValidPath_ReturnsFiles()
         {
             // Arrange
             var path = Path.Combine(Path.GetTempPath(), "testfolder");

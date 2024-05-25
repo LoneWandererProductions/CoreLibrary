@@ -89,44 +89,5 @@ namespace FileHandler
 
             return Directory.EnumerateFiles(path, $"{FileHandlerResources.StarDot}{appendix}", option).ToList();
         }
-
-        /// <summary>
-        ///     Search the root Path.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <returns>The root<see cref="string" />.</returns>
-        internal static string SearchRoot(IReadOnlyCollection<string> source)
-        {
-            var shortest = source.First();
-
-            // ReSharper disable once LoopCanBePartlyConvertedToQuery
-            foreach (var path in source)
-            {
-                if (path.Length < shortest.Length)
-                {
-                    shortest = path;
-                }
-            }
-
-            return shortest;
-        }
-
-        /// <summary>
-        /// Validates the paths.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        internal static void ValidatePaths(string source, string target)
-        {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
-
-            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
-        }
     }
 }

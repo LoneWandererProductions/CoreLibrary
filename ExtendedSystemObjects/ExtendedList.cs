@@ -89,7 +89,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Remove Contents of a List from ancurrentSequence
+        ///     Remove Contents of a List from a Sequence
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we remove from</param>
@@ -196,7 +196,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TId">The type of the identifier.</typeparam>
         /// <param name="lst">List of generic Objects.</param>
         /// <returns>
-        ///     Dicitionary with an conversion from the attribute Id as Key
+        ///     Dictionary with an conversion from the attribute Id as Key
         /// </returns>
         public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst)
             where TValue : IIdHandling<TId>

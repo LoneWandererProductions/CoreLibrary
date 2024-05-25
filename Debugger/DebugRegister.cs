@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -196,7 +195,27 @@ namespace Debugger
                 using Stream tr = File.OpenRead(ConfigPath);
                 return serializer.Deserialize(tr) as ConfigExtended;
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (InvalidOperationException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (XmlException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (NullReferenceException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (IOException ex)
             {
                 Trace.WriteLine(ex);
             }
@@ -235,7 +254,27 @@ namespace Debugger
                     new StreamWriter(ConfigPath);
                 serializer.Serialize(tr, data);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (InvalidOperationException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (XmlException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (NullReferenceException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            catch (IOException ex)
             {
                 Trace.WriteLine(ex);
             }

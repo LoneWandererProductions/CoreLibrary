@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace FileHandler
 {
@@ -34,7 +33,15 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CutFiles(string source, string target, bool overwrite)
         {
-            FileHandlerProcessing.ValidatePaths(source, target);
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
+
+            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            }
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -76,11 +83,29 @@ namespace FileHandler
 
                         FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                     }
-                    catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+                    catch (UnauthorizedAccessException ex)
                     {
-                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
-                        Trace.WriteLine(ex);
                         check = false;
+                        Trace.WriteLine(ex);
+                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        check = false;
+                        Trace.WriteLine(ex);
+                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
+                    }
+                    catch (IOException ex)
+                    {
+                        check = false;
+                        Trace.WriteLine(ex);
+                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
+                    }
+                    catch (NotSupportedException ex)
+                    {
+                        check = false;
+                        Trace.WriteLine(ex);
+                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
                     }
                 }
             }
@@ -134,7 +159,7 @@ namespace FileHandler
 
             var check = true;
             //Do the work
-            var root = FileHandlerProcessing.SearchRoot(source);
+            var root = FileHandleCopy.SearchRoot(source);
             var file = new FileInfo(root);
             root = file.Directory.FullName;
 
@@ -165,11 +190,29 @@ namespace FileHandler
 
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                 }
-                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+                catch (UnauthorizedAccessException ex)
                 {
-                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
-                    Trace.WriteLine(ex);
                     check = false;
+                    Trace.WriteLine(ex);
+                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
+                }
+                catch (ArgumentException ex)
+                {
+                    check = false;
+                    Trace.WriteLine(ex);
+                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
+                }
+                catch (IOException ex)
+                {
+                    check = false;
+                    Trace.WriteLine(ex);
+                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
+                }
+                catch (NotSupportedException ex)
+                {
+                    check = false;
+                    Trace.WriteLine(ex);
+                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
                 }
             }
 

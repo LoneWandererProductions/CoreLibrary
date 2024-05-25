@@ -17,7 +17,6 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Media;
 using ExtendedSystemObjects;
 
@@ -239,9 +238,14 @@ namespace Imaging
             {
                 color = (Color)ColorConverter.ConvertFromString(hex);
             }
-            catch (Exception ex) when (ex is NullReferenceException or FormatException)
+            catch (NullReferenceException e)
             {
-                Trace.WriteLine(ex);
+                Trace.WriteLine(e);
+                return;
+            }
+            catch (FormatException e)
+            {
+                Trace.WriteLine(e);
                 return;
             }
 

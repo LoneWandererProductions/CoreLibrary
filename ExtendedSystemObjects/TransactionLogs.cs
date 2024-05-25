@@ -141,7 +141,7 @@ namespace ExtendedSystemObjects
         /// <param name="uniqueIdentifier">The unique identifier.</param>
         /// <param name="state">State of Item</param>
         /// <returns>ChangedItem</returns>
-        private int GetItem(int uniqueIdentifier, LogState state)
+        internal int GetItem(int uniqueIdentifier, LogState state)
         {
             if (Changelog == null || Changelog.Count == 0)
             {

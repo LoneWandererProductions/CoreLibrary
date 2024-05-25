@@ -46,10 +46,16 @@ namespace FileHandler
             {
                 Directory.Move(source, target);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException  or IOException)
+            catch (UnauthorizedAccessException ex)
             {
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                return false;
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 return false;
             }
 
@@ -85,10 +91,22 @@ namespace FileHandler
             {
                 File.Move(source, target);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
+            catch (UnauthorizedAccessException ex)
             {
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                return false;
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                return false;
+            }
+            catch (NotSupportedException ex)
+            {
+                Trace.WriteLine(ex);
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 return false;
             }
 

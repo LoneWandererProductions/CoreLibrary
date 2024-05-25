@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -89,6 +88,7 @@ namespace CommonControls
             Initiate();
         }
 
+
         /// <summary>
         ///     Occurs when [color changed].
         /// </summary>
@@ -138,7 +138,16 @@ namespace CommonControls
                 StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
                 ColorChanged?.Invoke(this, StartColor);
             }
-            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException or MethodAccessException)
+
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
+            }
+            catch (TargetException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
+            }
+            catch (MethodAccessException ex)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
             }
@@ -153,7 +162,11 @@ namespace CommonControls
             {
                 SwitchToStartColor();
             }
-            catch (Exception ex) when (ex is ArgumentException or AmbiguousMatchException)
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
+            }
+            catch (AmbiguousMatchException ex)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
             }
@@ -171,13 +184,19 @@ namespace CommonControls
                     .ToDictionary(property => property.Name,
                         property => (Color)ColorConverter.ConvertFromString(property.Name));
             }
-            catch (Exception ex) when (ex is ArgumentException or FormatException)
+            catch (ArgumentException ex)
+            {
+                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
+            }
+
+            catch (FormatException ex)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
             }
 
             return new Dictionary<string, Color>();
         }
+
 
         /// <summary>
         ///     Switches to start color.

@@ -73,6 +73,39 @@ namespace CommonLibraryTests
         };
 
         /// <summary>
+        /// The irt prompt
+        /// </summary>
+        private IrtPrompt _irtPrompt;
+
+        /// <summary>
+        /// The commands
+        /// </summary>
+        private Dictionary<int, InCommand> _commands;
+
+        /// <summary>
+        /// The namespace
+        /// </summary>
+        private string _namespace;
+
+        /// <summary>
+        /// Sets up.
+        /// </summary>
+        [TestInitialize]
+        public void SetUp()
+        {
+            _irtPrompt = new IrtPrompt();
+            _commands = new Dictionary<int, InCommand>
+            {
+                { 1, new InCommand { Command = "COMMAND1", ParameterCount = 0, Description = "Description1" } },
+                { 2, new InCommand { Command = "COMMAND2", ParameterCount = 1, Description = "Description2" } }
+            };
+            _namespace = "TestNamespace";
+            var userSpace = new UserSpace { Commands = _commands, UserSpaceName = _namespace };
+            _irtPrompt.Initiate(userSpace);
+        }
+
+
+        /// <summary>
         ///     Check our Interpreter
         /// </summary>
         [TestMethod]
@@ -317,5 +350,99 @@ namespace CommonLibraryTests
         {
             _outCommand = e;
         }
+
+        /// <summary>
+        /// Handles the input valid command no parameters success.
+        /// </summary>
+        [TestMethod]
+            public void HandleInputValidCommandNoParameters_Success()
+            {
+                bool commandHandled = false;
+                _irtPrompt.sendCommand += (sender, e) =>
+                {
+                    Assert.AreEqual(1, e.Command);
+                    commandHandled = true;
+                };
+
+                _irtPrompt.HandleInput("COMMAND1");
+
+                Assert.IsTrue(commandHandled);
+            }
+
+        /// <summary>
+        /// Handles the input invalid command logs error.
+        /// </summary>
+        [TestMethod]
+            public void HandleInputInvalidCommandLogsError()
+            {
+                bool logHandled = false;
+                _irtPrompt.sendLog += (_, e) =>
+                {
+                    Assert.IsTrue(e.Contains(IrtConst.KeyWordNotFoundError));
+                    logHandled = true;
+                };
+
+                _irtPrompt.HandleInput("INVALIDCOMMAND");
+
+                Assert.IsTrue(logHandled);
+            }
+
+        /// <summary>
+        /// Handles the input help command logs help.
+        /// </summary>
+        [TestMethod]
+            public void HandleInputHelpCommandLogsHelp()
+            {
+                bool logHandled = false;
+                _irtPrompt.sendLog += (sender, e) =>
+                {
+                    Assert.AreEqual(IrtConst.HelpGeneric, e);
+                    logHandled = true;
+                };
+
+                _irtPrompt.HandleInput(IrtConst.InternalCommandHelp);
+
+                Assert.IsTrue(logHandled);
+            }
+
+        /// <summary>
+        /// Handles the input command with parameters success.
+        /// </summary>
+        [TestMethod]
+            public void HandleInputCommandWithParametersSuccess()
+            {
+                bool commandHandled = false;
+                _irtPrompt.sendCommand += (sender, e) =>
+                {
+                    Assert.AreEqual(2, e.Command);
+                    Assert.AreEqual(1, e.Parameter.Count);
+                    Assert.AreEqual("PARAM1", e.Parameter[0]);
+                    commandHandled = true;
+                };
+
+                _irtPrompt.HandleInput("COMMAND2(PARAM1)");
+
+                Assert.IsTrue(commandHandled);
+            }
+
+        /// <summary>
+        /// Handles the input command with invalid parameters logs error.
+        /// </summary>
+        [TestMethod]
+            public void HandleInputCommandWithInvalidParametersLogsError()
+            {
+                bool logHandled = false;
+                _irtPrompt.sendLog += (sender, e) =>
+                {
+                    Assert.IsTrue(e.Contains(IrtConst.ParenthesisError));
+                    logHandled = true;
+                };
+
+                _irtPrompt.HandleInput("COMMAND2(PARAM1");
+
+                Assert.IsTrue(logHandled);
+            }
+        }
     }
-}
+
+
