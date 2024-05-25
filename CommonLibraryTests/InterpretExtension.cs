@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     [TestClass]
-    public class IrtPromptTests
+    public class InterpretExtension
     {
         private IrtPrompt _irtPrompt;
 
@@ -39,7 +39,7 @@ namespace CommonLibraryTests
         }
 
         [TestMethod]
-        public void HandleInput_ChainedCommandWithExtension_Success()
+        public void HandleInputChainedCommandWithExtensionSuccess()
         {
             _irtPrompt.sendLog += (_, e) =>
             {
