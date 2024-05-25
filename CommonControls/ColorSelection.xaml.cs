@@ -1,13 +1,14 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/ColorPicker.xaml.cs
- * PURPOSE:     Basic Color Picker Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     CommonControls
+* FILE:        CommonControls/ColorPicker.xaml.cs
+* PURPOSE:     Basic Color Picker Control
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -88,7 +89,6 @@ namespace CommonControls
             Initiate();
         }
 
-
         /// <summary>
         ///     Occurs when [color changed].
         /// </summary>
@@ -138,16 +138,7 @@ namespace CommonControls
                 StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
                 ColorChanged?.Invoke(this, StartColor);
             }
-
-            catch (ArgumentException ex)
-            {
-                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
-            }
-            catch (TargetException ex)
-            {
-                ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
-            }
-            catch (MethodAccessException ex)
+            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException or MethodAccessException)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
             }
@@ -162,11 +153,7 @@ namespace CommonControls
             {
                 SwitchToStartColor();
             }
-            catch (ArgumentException ex)
-            {
-                ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
-            }
-            catch (AmbiguousMatchException ex)
+            catch (Exception ex) when (ex is ArgumentException or AmbiguousMatchException)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorSwitchingColor, ex);
             }
@@ -184,19 +171,13 @@ namespace CommonControls
                     .ToDictionary(property => property.Name,
                         property => (Color)ColorConverter.ConvertFromString(property.Name));
             }
-            catch (ArgumentException ex)
-            {
-                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
-            }
-
-            catch (FormatException ex)
+            catch (Exception ex) when (ex is ArgumentException or FormatException)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorDictionary, ex);
             }
 
             return new Dictionary<string, Color>();
         }
-
 
         /// <summary>
         ///     Switches to start color.

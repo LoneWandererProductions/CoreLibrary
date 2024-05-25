@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleRename.cs
- * PURPOSE:     Utility to Rename Files and Folders
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/FileHandleRename.cs
+* PURPOSE:     Utility to Rename Files and Folders
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Diagnostics;
@@ -46,16 +46,10 @@ namespace FileHandler
             {
                 Directory.Move(source, target);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-                return false;
-            }
-            catch (IOException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 return false;
             }
 
@@ -91,22 +85,10 @@ namespace FileHandler
             {
                 File.Move(source, target);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-                return false;
-            }
-            catch (IOException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-                return false;
-            }
-            catch (NotSupportedException ex)
-            {
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
                 return false;
             }
 

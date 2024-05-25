@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/DirectoryInformation.cs
- * PURPOSE:     Generic System Functions for Directories
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/DirectoryInformation.cs
+* PURPOSE:     Generic System Functions for Directories
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable UnusedType.Global
 
@@ -48,22 +48,10 @@ namespace FileHandler
                     path = Directory.GetParent(path!)?.ToString();
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
-            }
-            catch (DirectoryNotFoundException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
             }
 

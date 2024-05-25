@@ -1,12 +1,12 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleCompress.cs
- * PURPOSE:     File Compression Utilities
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- * Sources:     https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.zipfile?view=net-5.0
- *              https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.ziparchive.entries?view=net-5.0
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/FileHandleCompress.cs
+* PURPOSE:     File Compression Utilities
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+* Sources:     https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.zipfile?view=net-5.0
+*              https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.ziparchive.entries?view=net-5.0
+*/
 
 using System;
 using System.Collections.Generic;
@@ -53,22 +53,10 @@ namespace FileHandler
                     FileHandlerRegister.SendStatus?.Invoke(nameof(SaveZip), file);
                 }
             }
-            catch (IOException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
-                return false;
-            }
-            catch (ArgumentException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
-                return false;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
                 return false;
             }
 
@@ -106,22 +94,10 @@ namespace FileHandler
                 using var archive = ZipFile.Open(zipPath, ZipArchiveMode.Update);
                 archive.ExtractToDirectory(extractPath);
             }
-            catch (IOException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
             {
-                Trace.WriteLine(ex);
                 FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
-                return false;
-            }
-            catch (ArgumentException ex)
-            {
                 Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
-                return false;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
                 return false;
             }
 
