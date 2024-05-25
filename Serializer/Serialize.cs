@@ -47,7 +47,8 @@ namespace Serializer
                 using var writer = new StreamWriter(path);
                 serializer.Serialize(writer, obj);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -74,7 +75,8 @@ namespace Serializer
                 using var fileStream = new FileStream(path, FileMode.Create);
                 new XmlSerializer(typeof(List<T>)).Serialize(fileStream, obj);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -104,7 +106,8 @@ namespace Serializer
 
                 SerializeDictionary(myDictionary, path);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -150,7 +153,8 @@ namespace Serializer
                 using var streamWriter = new StreamWriter(path);
                 streamWriter.Write(stringWriter.ToString());
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }

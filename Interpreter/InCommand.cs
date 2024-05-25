@@ -34,6 +34,24 @@ namespace Interpreter
         public int ParameterCount { internal get; init; }
 
         /// <summary>
+        ///     Gets or sets the execute.
+        ///     Function to execute the command
+        /// </summary>
+        /// <value>
+        ///     The execute.
+        /// </value>
+        public Func<List<string>, object> Execute { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the extensions.
+        ///     New: Dictionary to store possible extension methods
+        /// </summary>
+        /// <value>
+        ///     The extensions.
+        /// </value>
+        public Dictionary<string, Func<object, List<string>, object>> Extensions { get; set; } = new();
+
+        /// <summary>
         ///     Converts to string.
         /// </summary>
         /// <returns>
@@ -54,23 +72,5 @@ namespace Interpreter
         {
             return HashCode.Combine(Command, ParameterCount);
         }
-
-        /// <summary>
-        /// Gets or sets the execute.
-        /// Function to execute the command
-        /// </summary>
-        /// <value>
-        /// The execute.
-        /// </value>
-        public Func<List<string>, object> Execute { get; set; }
-
-        /// <summary>
-        /// Gets or sets the extensions.
-        /// New: Dictionary to store possible extension methods
-        /// </summary>
-        /// <value>
-        /// The extensions.
-        /// </value>
-        public Dictionary<string, Func<object, List<string>, object>> Extensions { get; set; } = new();
     }
 }

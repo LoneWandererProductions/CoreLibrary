@@ -22,7 +22,7 @@ namespace CommonLibraryTests
                         Command = "BASE",
                         ParameterCount = 1,
                         Description = "Base command",
-                        Execute = (parameters) => "Base executed with " + parameters[0],
+                        Execute = parameters => "Base executed with " + parameters[0],
                         Extensions = new Dictionary<string, Func<object, List<string>, object>>
                         {
                             {
@@ -41,12 +41,9 @@ namespace CommonLibraryTests
         [TestMethod]
         public void HandleInput_ChainedCommandWithExtension_Success()
         {
-            bool logHandled = false;
-
             _irtPrompt.sendLog += (_, e) =>
             {
                 Assert.AreEqual("Base executed with param1 | Ext executed with param2", e);
-                logHandled = true;
             };
 
             _irtPrompt.HandleInput("BASE(param1).EXT(param2)");

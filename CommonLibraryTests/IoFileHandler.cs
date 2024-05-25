@@ -29,11 +29,6 @@ namespace CommonLibraryTests
         private const string PathRename = "Rename";
 
         /// <summary>
-        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
-        /// </summary>
-        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
-
-        /// <summary>
         ///     The _pathOperations (readonly). Value: "IO".
         /// </summary>
         private const string PathOperations = "IO";
@@ -44,17 +39,22 @@ namespace CommonLibraryTests
         private const string PathOperationsTwo = "IO2";
 
         /// <summary>
-        /// The test source dir
+        ///     The test source dir
         /// </summary>
         private const string TestSourceDir = "TestSource";
 
         /// <summary>
-        /// The test target dir
+        ///     The test target dir
         /// </summary>
         private const string TestTargetDir = "TestTarget";
 
         /// <summary>
-        /// The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
+        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
+        /// </summary>
+        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
+
+        /// <summary>
+        ///     The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
         /// </summary>
         private readonly string _renamePath = Path.Combine(Directory.GetCurrentDirectory(), PathRename);
 
@@ -644,7 +644,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files when source and target equal throws file handler exception.
+        ///     Copies the files when source and target equal throws file handler exception.
         /// </summary>
         [TestMethod]
         public void CopyFiles_WhenSourceAndTargetEqual_ThrowsFileHandlerException()
@@ -658,7 +658,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files when source null or empty throws file handler exception.
+        ///     Copies the files when source null or empty throws file handler exception.
         /// </summary>
         [TestMethod]
         public void CopyFiles_WhenSourceNullOrEmpty_ThrowsFileHandlerException()
@@ -667,38 +667,48 @@ namespace CommonLibraryTests
             var target = @"C:\target";
 
             // Act & Assert
-            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles((string) null, target, true));
+            Assert.ThrowsException<FileHandlerException>(() => FileHandleCopy.CopyFiles((string)null, target, true));
         }
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
         {
             if (Directory.Exists(TestSourceDir))
+            {
                 Directory.Delete(TestSourceDir, true);
+            }
+
             if (Directory.Exists(TestTargetDir))
+            {
                 Directory.Delete(TestTargetDir, true);
+            }
 
             Directory.CreateDirectory(TestSourceDir);
             Directory.CreateDirectory(TestTargetDir);
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
         {
             if (Directory.Exists(TestSourceDir))
+            {
                 Directory.Delete(TestSourceDir, true);
+            }
+
             if (Directory.Exists(TestTargetDir))
+            {
                 Directory.Delete(TestTargetDir, true);
+            }
         }
 
         /// <summary>
-        /// Copies the files empty source throws exception.
+        ///     Copies the files empty source throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -708,7 +718,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files equal source and target throws exception.
+        ///     Copies the files equal source and target throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -718,7 +728,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files with overwrite copies files successfully.
+        ///     Copies the files with overwrite copies files successfully.
         /// </summary>
         [TestMethod]
         public void CopyFiles_WithOverwrite_CopiesFilesSuccessfully()
@@ -738,7 +748,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files replace if newer copies only newer files.
+        ///     Copies the files replace if newer copies only newer files.
         /// </summary>
         [TestMethod]
         public void CopyFilesReplaceIfNewer_CopiesOnlyNewerFiles()
@@ -759,7 +769,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files with list copies files successfully.
+        ///     Copies the files with list copies files successfully.
         /// </summary>
         [TestMethod]
         public void CopyFiles_WithList_CopiesFilesSuccessfully()
@@ -840,7 +850,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compressions this instance.
+        ///     Compressions this instance.
         /// </summary>
         [TestMethod]
         public void Compression()

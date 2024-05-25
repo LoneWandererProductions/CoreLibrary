@@ -434,7 +434,7 @@ namespace CommonLibraryTests
             //Forward Position: X: 0 Y: -0 Z: 1   Forward Position: X: 0 Y: -0 Z: 1
             //Pitch: 0    Pitch: 0
             //Yaw: 0  Yaw: 0
-            //World Transformations.	World Transformations.
+            //World Transformations.    World Transformations.
             //Translation Vector: X: 0 Y: 0 Z: 5  Translation Vector: X: 0 Y: 0 Z: 5
             //Rotation Vector: X: 0 Y: 0 Z: 0 Rotation Vector: X: 0 Y: 0 Z: 0
             //Scale Vector: X: 2 Y: 2 Z: 2    Scale Vector: X: 2 Y: 2 Z: 2

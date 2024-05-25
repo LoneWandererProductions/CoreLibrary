@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -66,14 +65,20 @@ namespace Interpreter
             result = null;
 
             var match = Regex.Match(extensionInput, @"(\w+)\((.*?)\)");
-            if (!match.Success) return false;
+            if (!match.Success)
+            {
+                return false;
+            }
 
             var extensionName = match.Groups[1].Value;
             var parameterString = match.Groups[2].Value;
             var parameters = parameterString.Split(',').Select(p => p.Trim()).ToList();
 
             var baseCommand = _com.Values.FirstOrDefault(cmd => cmd.Extensions.ContainsKey(extensionName));
-            if (baseCommand == null) return false;
+            if (baseCommand == null)
+            {
+                return false;
+            }
 
             var extension = baseCommand.Extensions[extensionName];
             result = extension(baseResult, parameters);

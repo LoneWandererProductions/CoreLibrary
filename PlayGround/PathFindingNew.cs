@@ -85,29 +85,24 @@ namespace PlayGround
                 path.Add(currentNode);
                 currentNode = currentNode.Parent;
             }
+
             path.Reverse();
             return path;
         }
 
         private static int GetTileId(int x, int y)
         {
-            return x * _gridWithObstacles.GetLength(1) + y;
+            return (x * _gridWithObstacles.GetLength(1)) + y;
         }
 
         private static IEnumerable<PathNode> GetNeighbors(PathNode node, bool allowDiagonal)
         {
             var neighbors = new List<PathNode>();
-            var directions = new List<(int, int)>
-            {
-                (-1, 0), (1, 0), (0, -1), (0, 1)
-            };
+            var directions = new List<(int, int)> { (-1, 0), (1, 0), (0, -1), (0, 1) };
 
             if (allowDiagonal)
             {
-                directions.AddRange(new List<(int, int)>
-                {
-                    (-1, -1), (-1, 1), (1, -1), (1, 1)
-                });
+                directions.AddRange(new List<(int, int)> { (-1, -1), (-1, 1), (1, -1), (1, 1) });
             }
 
             foreach (var (dx, dy) in directions)
@@ -126,8 +121,8 @@ namespace PlayGround
 
         private static int GetDistance(PathNode a, PathNode b)
         {
-            int dx = Math.Abs(a.X - b.X);
-            int dy = Math.Abs(a.Y - b.Y);
+            var dx = Math.Abs(a.X - b.X);
+            var dy = Math.Abs(a.Y - b.Y);
             return dx + dy;
         }
     }

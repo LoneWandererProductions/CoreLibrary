@@ -65,7 +65,9 @@ namespace PluginLoader
                     var lst = CreateCommands(pluginAssembly).ToList();
                     PluginContainer.AddRange(lst);
                 }
-                catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException or ReflectionTypeLoadException or BadImageFormatException or FileNotFoundException)
+                catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
+                                               or ReflectionTypeLoadException or BadImageFormatException
+                                               or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));

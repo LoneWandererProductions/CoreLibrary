@@ -39,7 +39,8 @@ namespace Serializer
                 using var reader = new StreamReader(path);
                 return new XmlSerializer(typeof(T)).Deserialize(reader) as T;
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -61,7 +62,8 @@ namespace Serializer
                 using var stream = new FileStream(path, FileMode.Open);
                 return (List<T>)serializer.Deserialize(stream);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
@@ -87,7 +89,8 @@ namespace Serializer
                     item => Deserialize<TKey>(item.Key),
                     item => Deserialize<TValue>(item.Value));
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }

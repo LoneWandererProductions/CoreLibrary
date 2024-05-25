@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -228,7 +229,6 @@ namespace CommonLibraryTests
         /// </summary>
         /// <param name="lst">The LST.</param>
         /// <returns>start and End Point as Tuple</returns>
-        [return: MaybeNull]
         private static CifProcessing.StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);

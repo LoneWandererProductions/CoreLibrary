@@ -32,7 +32,7 @@ namespace CommonLibraryTests
 
             var key = log.GetNewKey();
 
-            var data = new DataItem {Id = key, Name = "start"};
+            var data = new DataItem { Id = key, Name = "start" };
 
             //start of the event, nothing was done yet
 
@@ -40,13 +40,13 @@ namespace CommonLibraryTests
 
             key = log.GetNewKey();
 
-            data = new DataItem {Id = key, Name = "added"};
+            data = new DataItem { Id = key, Name = "added" };
             log.Add(data.Id, data, false);
 
-            data = new DataItem {Id = key, Name = "added Change"};
+            data = new DataItem { Id = key, Name = "added Change" };
             log.Change(data.Id, data);
 
-            data = new DataItem {Id = key, Name = "another Change"};
+            data = new DataItem { Id = key, Name = "another Change" };
             log.Change(data.Id, data);
 
             var logEntry = log.Changelog[1];
@@ -70,7 +70,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Adds the item success.
+        ///     Adds the item success.
         /// </summary>
         [TestMethod]
         public void AddItemSuccess()
@@ -84,7 +84,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Removes the item success.
+        ///     Removes the item success.
         /// </summary>
         [TestMethod]
         public void RemoveItemSuccess()
@@ -99,7 +99,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Changes the item success.
+        ///     Changes the item success.
         /// </summary>
         [TestMethod]
         public void ChangeItemSuccess()
@@ -114,7 +114,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the predecessor success.
+        ///     Gets the predecessor success.
         /// </summary>
         [TestMethod]
         public void GetPredecessorSuccess()
@@ -130,7 +130,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the new items success.
+        ///     Gets the new items success.
         /// </summary>
         [TestMethod]
         public void GetNewItemsSuccess()
@@ -147,7 +147,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the index of the item item exists returns.
+        ///     Gets the index of the item item exists returns.
         /// </summary>
         [TestMethod]
         public void GetItemItemExistsReturnsIndex()
@@ -161,7 +161,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the item item does not exist returns minus one.
+        ///     Gets the item item does not exist returns minus one.
         /// </summary>
         [TestMethod]
         public void GetItemItemDoesNotExistReturnsMinusOne()
@@ -174,7 +174,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the new key returns correct key.
+        ///     Gets the new key returns correct key.
         /// </summary>
         [TestMethod]
         public void GetNewKeyReturnsCorrectKey()

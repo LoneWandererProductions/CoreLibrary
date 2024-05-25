@@ -683,7 +683,7 @@ namespace CommonLibraryTests
 
             //check if our system can also handle non compressed files!
             data = CifProcessing.ConvertToCifFromBitmap(btm);
-            doc = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
+            CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Custom.GenerateBitmapToCifFile(btm, cifPath);
 
@@ -741,10 +741,9 @@ namespace CommonLibraryTests
             var timer = new Stopwatch();
             timer.Start();
 
-            var cif = Custom.GetCif(cifPath);
+            Custom.GetCif(cifPath);
 
             timer.Stop();
-            var one = timer.Elapsed;
             Trace.WriteLine($"Test one Cif (parallel Version): {timer.Elapsed}");
 
             timer = new Stopwatch();

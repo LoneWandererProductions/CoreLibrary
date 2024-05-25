@@ -118,7 +118,8 @@ namespace SqliteHelper
                     count++;
                 }
             }
-            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetParameterCountException or MethodAccessException or TargetInvocationException or OverflowException)
+            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetParameterCountException
+                                           or MethodAccessException or TargetInvocationException or OverflowException)
             {
                 Trace.WriteLine(ex);
             }

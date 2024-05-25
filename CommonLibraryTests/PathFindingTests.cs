@@ -16,20 +16,15 @@ namespace CommonLibraryTests
     [TestClass]
     public class PathFindingTests
     {
-        private int[,] _gridWithObstacles = new[,]
-                                        {
-                                            { 0, 0, 0, 0, 0, 0 },
-                                            { 0, 1, 1, 1, 1, 0 },
-                                            { 0, 1, 0, 0, 0, 0 },
-                                            { 0, 1, 0, 0, 0, 0 },
-                                            { 0, 2, 1, 1, 2, 0 },
-                                            { 0, 0, 0, 0, 0, 0 }
-                                        };
+        private readonly int[,] _gridWithObstacles =
+        {
+            { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 1, 1, 0 }, { 0, 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0, 0 },
+            { 0, 2, 1, 1, 2, 0 }, { 0, 0, 0, 0, 0, 0 }
+        };
 
         [TestMethod]
         public void Test_Pathfinding_SimplePath()
         {
-
             PathFindingNew.SetData(_gridWithObstacles);
             var (path, cost) = PathFindingNew.GetPath(1, 1, 4, 4, false);
 

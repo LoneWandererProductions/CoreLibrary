@@ -47,7 +47,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void LoadLstObjectFromXml()
         {
-            var lst = new List<XmlItem> {ResourcesGeneral.DataItemOne, ResourcesGeneral.DataItemTwo};
+            var lst = new List<XmlItem> { ResourcesGeneral.DataItemOne, ResourcesGeneral.DataItemTwo };
 
             var paths = Path.Combine(Directory.GetCurrentDirectory(), "testList.xml");
 
@@ -80,7 +80,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the serialize dictionary null dictionary throws exception.
+        ///     Tests the serialize dictionary null dictionary throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -94,7 +94,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the serialize dictionary empty dictionary throws exception.
+        ///     Tests the serialize dictionary empty dictionary throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -109,13 +109,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the serialize dictionary valid dictionary creates XML file.
+        ///     Tests the serialize dictionary valid dictionary creates XML file.
         /// </summary>
         [TestMethod]
         public void Test_SerializeDictionary_ValidDictionary_CreatesXmlFile()
         {
             // Arrange
-            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+            var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
 
@@ -133,14 +133,14 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the serialize dictionary invalid path throws exception.
+        ///     Tests the serialize dictionary invalid path throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
         public void Test_SerializeDictionary_InvalidPath_ThrowsException()
         {
             // Arrange
-            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+            var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
             var path = "invalid\0path.xml";
 
             // Act
@@ -148,13 +148,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the load dictionary from XML valid path returns dictionary.
+        ///     Tests the load dictionary from XML valid path returns dictionary.
         /// </summary>
         [TestMethod]
         public void Test_LoadDictionaryFromXml_ValidPath_ReturnsDictionary()
         {
             // Arrange
-            var dictionary = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
+            var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
             var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
             Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
 
@@ -169,7 +169,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the load dictionary from XML invalid path throws exception.
+        ///     Tests the load dictionary from XML invalid path throws exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -183,7 +183,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the load dictionary from XML empty file throws exception.
+        ///     Tests the load dictionary from XML empty file throws exception.
         /// </summary>
         [TestMethod]
         public void Test_LoadDictionaryFromXml_EmptyFile_ThrowsException()

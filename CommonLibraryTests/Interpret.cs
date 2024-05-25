@@ -73,22 +73,22 @@ namespace CommonLibraryTests
         };
 
         /// <summary>
-        /// The irt prompt
-        /// </summary>
-        private IrtPrompt _irtPrompt;
-
-        /// <summary>
-        /// The commands
+        ///     The commands
         /// </summary>
         private Dictionary<int, InCommand> _commands;
 
         /// <summary>
-        /// The namespace
+        ///     The irt prompt
+        /// </summary>
+        private IrtPrompt _irtPrompt;
+
+        /// <summary>
+        ///     The namespace
         /// </summary>
         private string _namespace;
 
         /// <summary>
-        /// Sets up.
+        ///     Sets up.
         /// </summary>
         [TestInitialize]
         public void SetUp()
@@ -352,97 +352,95 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Handles the input valid command no parameters success.
+        ///     Handles the input valid command no parameters success.
         /// </summary>
         [TestMethod]
-            public void HandleInputValidCommandNoParameters_Success()
+        public void HandleInputValidCommandNoParameters_Success()
+        {
+            var commandHandled = false;
+            _irtPrompt.sendCommand += (sender, e) =>
             {
-                bool commandHandled = false;
-                _irtPrompt.sendCommand += (sender, e) =>
-                {
-                    Assert.AreEqual(1, e.Command);
-                    commandHandled = true;
-                };
+                Assert.AreEqual(1, e.Command);
+                commandHandled = true;
+            };
 
-                _irtPrompt.HandleInput("COMMAND1");
+            _irtPrompt.HandleInput("COMMAND1");
 
-                Assert.IsTrue(commandHandled);
-            }
+            Assert.IsTrue(commandHandled);
+        }
 
         /// <summary>
-        /// Handles the input invalid command logs error.
+        ///     Handles the input invalid command logs error.
         /// </summary>
         [TestMethod]
-            public void HandleInputInvalidCommandLogsError()
+        public void HandleInputInvalidCommandLogsError()
+        {
+            var logHandled = false;
+            _irtPrompt.sendLog += (_, e) =>
             {
-                bool logHandled = false;
-                _irtPrompt.sendLog += (_, e) =>
-                {
-                    Assert.IsTrue(e.Contains(IrtConst.KeyWordNotFoundError));
-                    logHandled = true;
-                };
+                Assert.IsTrue(e.Contains(IrtConst.KeyWordNotFoundError));
+                logHandled = true;
+            };
 
-                _irtPrompt.HandleInput("INVALIDCOMMAND");
+            _irtPrompt.HandleInput("INVALIDCOMMAND");
 
-                Assert.IsTrue(logHandled);
-            }
+            Assert.IsTrue(logHandled);
+        }
 
         /// <summary>
-        /// Handles the input help command logs help.
+        ///     Handles the input help command logs help.
         /// </summary>
         [TestMethod]
-            public void HandleInputHelpCommandLogsHelp()
+        public void HandleInputHelpCommandLogsHelp()
+        {
+            var logHandled = false;
+            _irtPrompt.sendLog += (sender, e) =>
             {
-                bool logHandled = false;
-                _irtPrompt.sendLog += (sender, e) =>
-                {
-                    Assert.AreEqual(IrtConst.HelpGeneric, e);
-                    logHandled = true;
-                };
+                Assert.AreEqual(IrtConst.HelpGeneric, e);
+                logHandled = true;
+            };
 
-                _irtPrompt.HandleInput(IrtConst.InternalCommandHelp);
+            _irtPrompt.HandleInput(IrtConst.InternalCommandHelp);
 
-                Assert.IsTrue(logHandled);
-            }
+            Assert.IsTrue(logHandled);
+        }
 
         /// <summary>
-        /// Handles the input command with parameters success.
+        ///     Handles the input command with parameters success.
         /// </summary>
         [TestMethod]
-            public void HandleInputCommandWithParametersSuccess()
+        public void HandleInputCommandWithParametersSuccess()
+        {
+            var commandHandled = false;
+            _irtPrompt.sendCommand += (sender, e) =>
             {
-                bool commandHandled = false;
-                _irtPrompt.sendCommand += (sender, e) =>
-                {
-                    Assert.AreEqual(2, e.Command);
-                    Assert.AreEqual(1, e.Parameter.Count);
-                    Assert.AreEqual("PARAM1", e.Parameter[0]);
-                    commandHandled = true;
-                };
+                Assert.AreEqual(2, e.Command);
+                Assert.AreEqual(1, e.Parameter.Count);
+                Assert.AreEqual("PARAM1", e.Parameter[0]);
+                commandHandled = true;
+            };
 
-                _irtPrompt.HandleInput("COMMAND2(PARAM1)");
+            _irtPrompt.HandleInput("COMMAND2(PARAM1)");
 
-                Assert.IsTrue(commandHandled);
-            }
+            Assert.IsTrue(commandHandled);
+        }
 
         /// <summary>
-        /// Handles the input command with invalid parameters logs error.
+        ///     Handles the input command with invalid parameters logs error.
         /// </summary>
         [TestMethod]
-            public void HandleInputCommandWithInvalidParametersLogsError()
+        public void HandleInputCommandWithInvalidParametersLogsError()
+        {
+            var logHandled = false;
+            _irtPrompt.sendLog += (sender, e) =>
             {
-                bool logHandled = false;
-                _irtPrompt.sendLog += (sender, e) =>
-                {
-                    Assert.IsTrue(e.Contains(IrtConst.ParenthesisError));
-                    logHandled = true;
-                };
+                Assert.IsTrue(e.Contains(IrtConst.ParenthesisError));
+                logHandled = true;
+            };
 
-                _irtPrompt.HandleInput("COMMAND2(PARAM1");
+            _irtPrompt.HandleInput("COMMAND2(PARAM1");
 
-                Assert.IsTrue(logHandled);
-            }
+            Assert.IsTrue(logHandled);
         }
     }
-
-
+}
