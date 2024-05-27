@@ -32,13 +32,10 @@ namespace CommonLibraryTests
         public void SetUp()
         {
             // Create a test file with UTF-8 encoding and special characters
-            using (var writer = new StreamWriter(testFilePath, false, System.Text.Encoding.UTF8))
-            {
-                writer.WriteLine("Line 1 with Ü");
-                writer.WriteLine("Line 2 with ö");
-            }
+            using var writer = new StreamWriter(testFilePath, false, System.Text.Encoding.UTF8);
+            writer.WriteLine("Line 1 with Ü");
+            writer.WriteLine("Line 2 with ö");
         }
-
 
         /// <summary>
         ///     Check if the whole cvs stuff works.
