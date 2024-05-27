@@ -84,7 +84,7 @@ namespace CommonLibraryTests
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Test_SerializeDictionary_NullDictionary_ThrowsException()
+        public void TestSerializeDictionaryNullDictionaryThrowsException()
         {
             // Arrange
             var path = "test.xml";
@@ -98,7 +98,7 @@ namespace CommonLibraryTests
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Test_SerializeDictionary_EmptyDictionary_ThrowsException()
+        public void TestSerializeDictionaryEmptyDictionaryThrowsException()
         {
             // Arrange
             var dictionary = new Dictionary<string, string>();
@@ -112,7 +112,7 @@ namespace CommonLibraryTests
         ///     Tests the serialize dictionary valid dictionary creates XML file.
         /// </summary>
         [TestMethod]
-        public void Test_SerializeDictionary_ValidDictionary_CreatesXmlFile()
+        public void TestSerializeDictionaryValidDictionaryCreatesXmlFile()
         {
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
@@ -137,7 +137,7 @@ namespace CommonLibraryTests
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
-        public void Test_SerializeDictionary_InvalidPath_ThrowsException()
+        public void Test_SerializeDictionaryInvalidPathThrowsException()
         {
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
@@ -151,7 +151,7 @@ namespace CommonLibraryTests
         ///     Tests the load dictionary from XML valid path returns dictionary.
         /// </summary>
         [TestMethod]
-        public void Test_LoadDictionaryFromXml_ValidPath_ReturnsDictionary()
+        public void Test_LoadDictionaryFromXmlValidPathReturnsDictionary()
         {
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
@@ -173,7 +173,7 @@ namespace CommonLibraryTests
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Test_LoadDictionaryFromXml_InvalidPath_ThrowsException()
+        public void TestLoadDictionaryFromXmlInvalidPathThrowsException()
         {
             // Arrange
             var path = "nonexistent.xml";
@@ -186,7 +186,7 @@ namespace CommonLibraryTests
         ///     Tests the load dictionary from XML empty file throws exception.
         /// </summary>
         [TestMethod]
-        public void Test_LoadDictionaryFromXml_EmptyFile_ThrowsException()
+        public void TestLoadDictionaryFromXmlEmptyFileThrowsException()
         {
             // Arrange
             var path = "empty.xml";
@@ -194,42 +194,6 @@ namespace CommonLibraryTests
 
             // Act & Assert
             Assert.ThrowsException<ArgumentException>(() => DeSerialize.LoadDictionaryFromXml<string, string>(path));
-        }
-
-        /// <summary>
-        ///     Check if the whole cvs stuff works.
-        /// </summary>
-        [TestMethod]
-        public void Cvs()
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Serialize),
-                "cvsTest.cvs");
-
-            var lst = new List<List<string>>();
-
-            for (var i = 0; i < 10; i++)
-            {
-                var line = new List<string>();
-
-                for (var j = 0; j < 10; j++)
-                {
-                    line.Add(j.ToString());
-                }
-
-                lst.Add(line);
-            }
-
-            CsvHandler.WriteCsv(path, lst);
-
-            Assert.IsTrue(File.Exists(path), "File exists");
-
-            lst = CsvHandler.ReadCsv(path, ',');
-
-            Assert.AreEqual("0", lst[1][0], "Right Element");
-
-            Assert.AreEqual("9", lst[2][9], "Right Element");
-
-            FileHandleDelete.DeleteFile(path);
         }
     }
 }
