@@ -125,7 +125,7 @@ namespace Interpreter
         /// <summary>
         ///     For Internal Commands
         /// </summary>
-        /// <param name="param"></param>
+        /// <param name="param">Parameter of the internal Command.</param>
         /// <param name="inputString">Input string</param>
         private void HandleInternalCommands(string param, string inputString)
         {
