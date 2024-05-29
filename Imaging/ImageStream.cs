@@ -1110,13 +1110,20 @@ namespace Imaging
         /// <summary>
         ///     Pixelate the specified input image.
         /// </summary>
-        /// <param name="inputImage">The input image.</param>
+        /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Bitmap inputImage, int stepWidth)
+        internal static Bitmap Pixelate(Bitmap image, int stepWidth)
         {
+            if (image == null)
+            {
+                var innerException = new ArgumentNullException(string.Concat(nameof(ConvertWhiteToTransparent),
+                    ImagingResources.Spacing, nameof(image)));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
             // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(inputImage);
+            var dbm = new DirectBitmap(image);
             // Create a new bitmap to store the processed image
             var processedImage = new Bitmap(dbm.Width, dbm.Height);
 
@@ -1126,7 +1133,7 @@ namespace Imaging
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
                 // Get the color of the current rectangle
-                var averageColor = GetAverageColor(inputImage, x, y, stepWidth, stepWidth);
+                var averageColor = GetAverageColor(image, x, y, stepWidth, stepWidth);
 
                 using var g = Graphics.FromImage(processedImage);
                 using var brush = new SolidBrush(averageColor);
@@ -1272,7 +1279,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Average Color of the Area</returns>
-        private static Color GetAverageColor(Bitmap inputImage, int startX, int startY, int width, int height)
+        private static Color GetAverageColor(Image inputImage, int startX, int startY, int width, int height)
         {
             var totalRed = 0;
             var totalGreen = 0;
@@ -1307,6 +1314,12 @@ namespace Imaging
             // Return the average color
             return Color.FromArgb(averageRed, averageGreen, averageBlue);
         }
+
+        // TODO add:
+        // Prewitt
+        // Roberts Cross
+        // Laplacian
+        // Laplacian of Gaussain
 
         /// <summary>
         ///     Applies the Sobel.
