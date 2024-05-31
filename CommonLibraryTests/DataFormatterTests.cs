@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/DataFormatterTestscs.cs
+ * FILE:        CommonLibraryTests/DataFormatterTests.cs
  * PURPOSE:     Some basic tests for DataFormatter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -18,7 +18,7 @@ namespace CommonLibraryTests
     /// Test some special cases for the Data Formatter
     /// </summary>
     [TestClass]
-    public class DataFormatterTestscs
+    public class DataFormatterTests
     {
         /// <summary>
         /// The test file path
@@ -43,7 +43,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Cvs()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Serialize),
+            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(DataFormatterTests),
                 "cvsTest.cvs");
 
             var lst = new List<List<string>>();
