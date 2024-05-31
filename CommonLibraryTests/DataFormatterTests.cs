@@ -23,7 +23,7 @@ namespace CommonLibraryTests
         /// <summary>
         /// The test file path
         /// </summary>
-        private const string testFilePath = "testfile.txt";
+        private const string TestFilePath = "testfile.txt";
 
         /// <summary>
         /// Sets up.
@@ -32,7 +32,7 @@ namespace CommonLibraryTests
         public void SetUp()
         {
             // Create a test file with UTF-8 encoding and special characters
-            using var writer = new StreamWriter(testFilePath, false, System.Text.Encoding.UTF8);
+            using var writer = new StreamWriter(TestFilePath, false, System.Text.Encoding.UTF8);
             writer.WriteLine("Line 1 with Ü");
             writer.WriteLine("Line 2 with ö");
         }
@@ -57,17 +57,17 @@ namespace CommonLibraryTests
                 lst.Add(line);
             }
 
-            CsvHandler.WriteCsv(testFilePath, lst);
+            CsvHandler.WriteCsv(TestFilePath, lst);
 
-            Assert.IsTrue(File.Exists(testFilePath), "File exists");
+            Assert.IsTrue(File.Exists(TestFilePath), "File exists");
 
-            lst = CsvHandler.ReadCsv(testFilePath, ',');
+            lst = CsvHandler.ReadCsv(TestFilePath, ',');
 
             Assert.AreEqual("0", lst[1][0], "Right Element");
 
             Assert.AreEqual("9", lst[2][9], "Right Element");
 
-            FileHandleDelete.DeleteFile(testFilePath);
+            FileHandleDelete.DeleteFile(TestFilePath);
         }
 
         /// <summary>
@@ -77,9 +77,9 @@ namespace CommonLibraryTests
         public void TearDown()
         {
             // Clean up the test file
-            if (File.Exists(testFilePath))
+            if (File.Exists(TestFilePath))
             {
-                File.Delete(testFilePath);
+                File.Delete(TestFilePath);
             }
         }
 
@@ -93,7 +93,7 @@ namespace CommonLibraryTests
             List<string> expectedLines = new List<string> { "Line 1 with Ü", "Line 2 with ö" };
 
             // Act
-            List<string> actualLines = ReadText.ReadFile(testFilePath);
+            List<string> actualLines = ReadText.ReadFile(TestFilePath);
 
             // Assert
             CollectionAssert.AreEqual(expectedLines, actualLines);
