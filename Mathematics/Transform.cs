@@ -42,7 +42,7 @@ namespace Mathematics
         /// <value>
         ///     Up.
         /// </value>
-        public Vector3D Up { get; set; }
+        public Vector3D Up { get; set; } = new Vector3D(0, 1, 0); //untested
 
         /// <summary>
         ///     Gets or sets the right.
@@ -51,7 +51,7 @@ namespace Mathematics
         /// <value>
         ///     The right.
         /// </value>
-        public Vector3D Right { get; set; } = new();
+        public Vector3D Right { get; set; } = new Vector3D(1, 0, 0);//= new(); 
 
         /// <summary>
         ///     Gets or sets the forward.
@@ -60,7 +60,7 @@ namespace Mathematics
         /// <value>
         ///     The forward.
         /// </value>
-        public Vector3D Forward { get; set; } = new();
+        public Vector3D Forward { get; set; } = new Vector3D(0, 0, 1);//= new ();
 
         /// <summary>
         ///     Gets or sets the pitch.
@@ -133,7 +133,10 @@ namespace Mathematics
                 Position = new Vector3D(),
                 Translation = new Vector3D(),
                 Rotation = new Vector3D(),
-                Scale = Vector3D.UnitVector
+                Scale = Vector3D.UnitVector,
+                //new
+                Right = new Vector3D(1, 0, 0),
+                Forward = new Vector3D(0, 0, 1)
             };
         }
 
@@ -153,7 +156,10 @@ namespace Mathematics
                 Position = new Vector3D(),
                 Translation = translation,
                 Rotation = rotation,
-                Scale = scale
+                Scale = scale,
+                //new
+                Right = new Vector3D(1, 0, 0),
+                Forward = new Vector3D(0, 0, 1)
             };
         }
 
@@ -201,7 +207,7 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Position += Right * x;
+                    Position -= Right * x; //switch
                     break;
                 case Cameras.PointAt:
                     Position.X -= x;
@@ -219,7 +225,7 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Position -= Right * x;
+                    Position += Right * x;//switch
                     break;
                 case Cameras.PointAt:
                     Position.X += x;
