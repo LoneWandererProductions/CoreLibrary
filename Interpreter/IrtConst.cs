@@ -162,6 +162,11 @@ namespace Interpreter
         internal const char NewCommand = ';';
 
         /// <summary>
+        ///    Indicator for comment, mostyl used for batch files, (const). Value: "--".
+        /// </summary>
+        internal const string CommentCommand = "--";
+
+        /// <summary>
         ///     The internal commands
         /// </summary>
         internal static readonly List<string> InternalCommands = new()

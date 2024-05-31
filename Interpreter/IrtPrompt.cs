@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Interpreter
@@ -56,6 +57,13 @@ namespace Interpreter
         {
             //clean string, remove trailing whitespace
             inputString = inputString.Trim().ToUpper(CultureInfo.CurrentCulture).ToUpper(CultureInfo.InvariantCulture);
+
+            //handle File comments
+            if (inputString.StartsWith(IrtConst.CommentCommand))
+            {
+                Trace.WriteLine(inputString);
+                return;
+            }
 
             //Help definition
             if (inputString.Equals(IrtConst.InternalCommandHelp, StringComparison.InvariantCultureIgnoreCase))
