@@ -262,8 +262,8 @@ namespace Interpreter
             var check = Irt.CheckMultiple(inputString, openParenthesis, closeParenthesis);
 
             //Remove outer and first Parenthesis
-            parameterPart = Irt.RemoveLastSymbol(parameterPart, IrtConst.AdvancedClose);
-            parameterPart = Irt.RemoveFirstSymbol(parameterPart, IrtConst.AdvancedOpen);
+            parameterPart = Irt.RemoveLastOccurrence(parameterPart, IrtConst.AdvancedClose);
+            parameterPart = Irt.RemoveFirstOccurrence(parameterPart, IrtConst.AdvancedOpen);
 
             if (!check)
             {

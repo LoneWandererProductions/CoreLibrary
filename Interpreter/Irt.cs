@@ -22,10 +22,16 @@ namespace Interpreter
     internal static class Irt
     {
         /// <summary>
-        ///     Parentheses Check
+        /// Checks if the input string has balanced parentheses of a single type.
         /// </summary>
-        /// <param name="input">String to check</param>
-        /// <returns>Well Formed</returns>
+        /// <param name="input">Input string to check.</param>
+        /// <returns>True if parentheses are balanced, false otherwise.</returns>
+        /// <example>
+        /// <code>
+        /// bool result = Irt.SingleCheck("(a + b) * c");
+        /// // result is true
+        /// </code>
+        /// </example>
         internal static bool SingleCheck(string input)
         {
             // Index of the currently open parentheses:
@@ -64,14 +70,17 @@ namespace Interpreter
         }
 
         /// <summary>
-        ///     parentheses Check for different Type of  Parenthesis
+        /// Checks if the input string has balanced parentheses of multiple types.
         /// </summary>
-        /// <param name="input">String to check</param>
-        /// <param name="openParenthesis">Char that Represents Open</param>
-        /// <param name="closeParenthesis">Char that Represents Close</param>
-        /// <returns>Well Formed</returns>
+        /// <param name="input">Input string to check.</param>
+        /// <param name="openParenthesis">Array of opening parentheses characters.</param>
+        /// <param name="closeParenthesis">Array of closing parentheses characters.</param>
+        /// <returns>True if parentheses are balanced, false otherwise.</returns>
         internal static bool CheckMultiple(string input, char[] openParenthesis, char[] closeParenthesis)
         {
+            //Open and close parentheses arrays are not the same length.
+            if (openParenthesis.Length != closeParenthesis.Length) return false;
+
             // Index of the currently open parentheses:
             var parentheses = new Stack<int>();
 
@@ -106,8 +115,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        ///     Checks if string is well formed, if it is it removes the parenthesis
-        ///     Not yet agnostic Char for Open/Close
+        ///     Removes the outermost parentheses from the input string if well-formed.
         /// </summary>
         /// <param name="input">Last bit of string</param>
         /// <param name="closeClause">The close clause.</param>
@@ -123,30 +131,23 @@ namespace Interpreter
                 return input;
             }
 
-            //check parenthesis, if first is the actual Parenthesis
-            if (input.Substring(0, 1) != openClause.ToString())
+            // Ensure the string starts with the openClause and ends with the closeClause
+            if (StartsAndEndsWith(input, openClause, closeClause))
             {
-                return IrtConst.ParenthesisError;
+                // Remove the first and last characters
+                return input.Substring(1, input.Length - 2).Trim();
             }
 
-            if (input.Substring(input.Length - 1, 1) != closeClause.ToString())
-            {
-                return IrtConst.ParenthesisError;
-            }
-
-            //remove them
-            input = input.Remove(0, 1);
-            input = input.Remove(input.Length - 1, 1);
-            return input.Trim();
+            return IrtConst.ParenthesisError;
         }
 
         /// <summary>
-        ///     Removes the first symbol.
+        /// Removes the first occurrence of the specified symbol from the input string.
         /// </summary>
-        /// <param name="input">The input.</param>
-        /// <param name="symbol">The symbol.</param>
-        /// <returns></returns>
-        internal static string RemoveFirstSymbol(string input, char symbol)
+        /// <param name="input">The input string.</param>
+        /// <param name="symbol">The symbol to remove.</param>
+        /// <returns>The modified string.</returns>
+        internal static string RemoveFirstOccurrence(string input, char symbol)
         {
             return input.Remove(input.IndexOf(symbol.ToString(), StringComparison.Ordinal), 1);
         }
@@ -156,8 +157,8 @@ namespace Interpreter
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="symbol">The symbol.</param>
-        /// <returns></returns>
-        internal static string RemoveLastSymbol(string input, char symbol)
+        /// <returns>The modified string.</returns>
+        internal static string RemoveLastOccurrence(string input, char symbol)
         {
             return input.Substring(0, input.LastIndexOf(symbol.ToString(), StringComparison.Ordinal));
         }
@@ -262,6 +263,18 @@ namespace Interpreter
             }
 
             return IrtConst.ErrorParam;
+        }
+
+        /// <summary>
+        /// Checks if the string starts and ends with the specified characters.
+        /// </summary>
+        /// <param name="input">Input string to check.</param>
+        /// <param name="start">Expected starting character.</param>
+        /// <param name="end">Expected ending character.</param>
+        /// <returns>True if the string starts with 'start' and ends with 'end', false otherwise.</returns>
+        private static bool StartsAndEndsWith(string input, char start, char end)
+        {
+            return input.Length > 1 && input[0] == start && input[^1] == end;
         }
     }
 }

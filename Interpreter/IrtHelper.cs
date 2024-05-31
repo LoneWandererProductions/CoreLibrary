@@ -14,6 +14,9 @@ using System.Linq;
 
 namespace Interpreter
 {
+    /// <summary>
+    /// Mostly handles Batch Files for now in the future it will do more stuff
+    /// </summary>
     internal static class IrtHelper
     {
         /// <summary>
