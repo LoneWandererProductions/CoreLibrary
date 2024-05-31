@@ -23,7 +23,7 @@ namespace CommonLibraryTests
         /// <summary>
         /// The test file path
         /// </summary>
-        private string testFilePath = "testfile.txt";
+        private const string testFilePath = "testfile.txt";
 
         /// <summary>
         /// Sets up.
@@ -43,9 +43,6 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Cvs()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(DataFormatterTests),
-                "cvsTest.cvs");
-
             var lst = new List<List<string>>();
 
             for (var i = 0; i < 10; i++)
@@ -60,17 +57,17 @@ namespace CommonLibraryTests
                 lst.Add(line);
             }
 
-            CsvHandler.WriteCsv(path, lst);
+            CsvHandler.WriteCsv(testFilePath, lst);
 
-            Assert.IsTrue(File.Exists(path), "File exists");
+            Assert.IsTrue(File.Exists(testFilePath), "File exists");
 
-            lst = CsvHandler.ReadCsv(path, ',');
+            lst = CsvHandler.ReadCsv(testFilePath, ',');
 
             Assert.AreEqual("0", lst[1][0], "Right Element");
 
             Assert.AreEqual("9", lst[2][9], "Right Element");
 
-            FileHandleDelete.DeleteFile(path);
+            FileHandleDelete.DeleteFile(testFilePath);
         }
 
         /// <summary>

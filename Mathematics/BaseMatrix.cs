@@ -35,7 +35,6 @@ namespace Mathematics
                 throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(dimX));
             }
 
-
             if (dimY <= 0)
             {
                 throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(dimY));
