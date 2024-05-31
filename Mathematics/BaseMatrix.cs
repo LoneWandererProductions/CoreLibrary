@@ -30,6 +30,17 @@ namespace Mathematics
         /// <param name="dimY">The Height.</param>
         public BaseMatrix(int dimX, int dimY)
         {
+            if (dimX <= 0)
+            {
+                throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(dimX));
+            }
+
+
+            if (dimY <= 0)
+            {
+                throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(dimY));
+            }
+
             Matrix = new double[dimX, dimY];
         }
 
@@ -39,6 +50,11 @@ namespace Mathematics
         /// <param name="matrix">Basic Matrix</param>
         public BaseMatrix(double[,] matrix)
         {
+            if (matrix.GetLength(0) <= 0 || matrix.GetLength(1) <= 0)
+            {
+                throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(matrix));
+            }
+
             Matrix = matrix;
         }
 
