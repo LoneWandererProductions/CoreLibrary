@@ -82,6 +82,50 @@ namespace CommonLibraryTests
             Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
             Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
             Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            vector = new Vector3D(1,1,7);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            //known values: 1,1,3 expected: 1/3, 1/3, 1
+
+            vector = new Vector3D(1, 1, 3);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            vector = new Vector3D(1, 1, 7);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
+
+            //known values: 1,1,3 expected: 1/3, 1/3, 1
+
+            vector = new Vector3D(-1, 1, 3);
+
+            vec = MultiplyMatrixVector(vector, matProj);
+
+            comp = Projection3DCamera.ProjectionTo3D(vector);
+
+            Assert.IsTrue(Math.Abs(vec.X - comp.X) < 0.00001, "Basic check one, X");
+            Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
+            Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
         }
 
         /// <summary>
@@ -203,243 +247,35 @@ namespace CommonLibraryTests
             var triangles = GenerateCube();
 
             var transform = Transform.GetInstance();
-
-            var raster = new Projection { Debug = false };
-
-            var cache = new List<PolyTriangle>(triangles);
-
-            transform.CameraType = Cameras.Orbit;
-
-            transform.DisplayType = Display.Normal;
-
-            //other sources: https://github.com/flaviojosefo/MatrixProjection
-
-            Trace.WriteLine("Start Here");
-            Trace.WriteLine(transform.Right);
-            transform.RightCamera(0.5);
-            //            Generate
-            var cache1 = raster.Generate(cache, transform);
-
-            Trace.WriteLine("Error Here");
-            transform.LeftCamera(0.5);
-            Trace.WriteLine("Start Here");
-            Trace.WriteLine(transform.Right);
-            transform.LeftCamera(0.5);
-            Trace.WriteLine("Start Here");
-            Trace.WriteLine(transform.Right);
-            Trace.WriteLine("End Here");
-            var cache2 = raster.Generate(cache, transform);
-
-            Trace.WriteLine("Rigth");
-            foreach (var data in cache1)
-            {
-                Trace.WriteLine(data.ToString());
-            }
-
-            Trace.WriteLine("Left");
-            foreach (var data in cache2)
-            {
-                Trace.WriteLine(data.ToString());
-            }
-
             var transform1 = Transform.GetInstance();
             var transform2 = Transform.GetInstance();
 
-            Trace.WriteLine("Mass statement:");
-            for (var i = 0; i < 100; i++)
+            var cache = new List<PolyTriangle>(triangles);
+
+            transform1.CameraType = transform2.CameraType = transform.CameraType = Cameras.Orbit;
+
+            transform1.DisplayType = transform2.DisplayType = transform.DisplayType = Display.Normal;
+
+
+            transform1.LeftCamera(0.5);
+            transform2.RightCamera(0.5);
+
+            var raster = new Projection { Debug = false };
+            var reference = raster.Generate(cache, transform);
+            var left = raster.Generate(cache, transform1);
+            var right = raster.Generate(cache, transform1);
+
+            Trace.WriteLine("Details:");
+
+            for (int i = 0; i < reference.Count; i++)
             {
-                Trace.WriteLine("Left statement:");
-                transform1.LeftCamera(0.5);
-                Trace.WriteLine(transform.Right);
-                Trace.WriteLine("Right statement:");
-                transform2.RightCamera(0.5);
-                Trace.WriteLine(transform.Right);
+                Trace.WriteLine("Base:");
+                Trace.WriteLine(reference[i].ToString());
+                Trace.WriteLine("left:");
+                Trace.WriteLine(left[i].ToString());
+                Trace.WriteLine("Right:");
+                Trace.WriteLine(right[i].ToString());
             }
-
-            //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Scene.cs
-            //// Turn Left, Turn Right; camera.Yaw
-            //https://github.com/flaviojosefo/MatrixProjection/blob/main/MatrixProjection/Camera.cs#L82
-            //public float Yaw { get; set; }
-            //Right = new Vector3(cosYaw, 0, -sinYaw);
-            //Right = new Vector3(cosYaw, 0, -sinYaw);
-
-            //Further https://github.com/OneLoneCoder/Javidx9/tree/master/ConsoleGameEngine/BiggerProjects/Engine3D
-
-            //            Generate();
-
-            //left
-
-            //right
-
-            //            Right Left
-            //World Transformation    World Transformation
-            //0 : X: 0 Y: 0 Z: 5  0 : X: 0 Y: 0 Z: 5
-            //1 : X: 0 Y: 2 Z: 5  1 : X: 0 Y: 2 Z: 5
-            //2 : X: 2 Y: 2 Z: 5  2 : X: 2 Y: 2 Z: 5
-
-            //0 : X: 0 Y: 0 Z: 5  0 : X: 0 Y: 0 Z: 5
-            //1 : X: 2 Y: 2 Z: 5  1 : X: 2 Y: 2 Z: 5
-            //2 : X: 2 Y: 0 Z: 5  2 : X: 2 Y: 0 Z: 5
-
-            //0 : X: 2 Y: 0 Z: 5  0 : X: 2 Y: 0 Z: 5
-            //1 : X: 2 Y: 2 Z: 5  1 : X: 2 Y: 2 Z: 5
-            //2 : X: 2 Y: 2 Z: 7  2 : X: 2 Y: 2 Z: 7
-
-            //0 : X: 2 Y: 0 Z: 5  0 : X: 2 Y: 0 Z: 5
-            //1 : X: 2 Y: 2 Z: 7  1 : X: 2 Y: 2 Z: 7
-            //2 : X: 2 Y: 0 Z: 7  2 : X: 2 Y: 0 Z: 7
-
-            //0 : X: 2 Y: 0 Z: 7  0 : X: 2 Y: 0 Z: 7
-            //1 : X: 2 Y: 2 Z: 7  1 : X: 2 Y: 2 Z: 7
-            //2 : X: 0 Y: 2 Z: 7  2 : X: 0 Y: 2 Z: 7
-
-            //0 : X: 2 Y: 0 Z: 7  0 : X: 2 Y: 0 Z: 7
-            //1 : X: 0 Y: 2 Z: 7  1 : X: 0 Y: 2 Z: 7
-            //2 : X: 0 Y: 0 Z: 7  2 : X: 0 Y: 0 Z: 7
-
-            //0 : X: 0 Y: 0 Z: 7  0 : X: 0 Y: 0 Z: 7
-            //1 : X: 0 Y: 2 Z: 7  1 : X: 0 Y: 2 Z: 7
-            //2 : X: 0 Y: 2 Z: 5  2 : X: 0 Y: 2 Z: 5
-
-            //0 : X: 0 Y: 0 Z: 7  0 : X: 0 Y: 0 Z: 7
-            //1 : X: 0 Y: 2 Z: 5  1 : X: 0 Y: 2 Z: 5
-            //2 : X: 0 Y: 0 Z: 5  2 : X: 0 Y: 0 Z: 5
-
-            //0 : X: 0 Y: 2 Z: 5  0 : X: 0 Y: 2 Z: 5
-            //1 : X: 0 Y: 2 Z: 7  1 : X: 0 Y: 2 Z: 7
-            //2 : X: 2 Y: 2 Z: 7  2 : X: 2 Y: 2 Z: 7
-
-            //0 : X: 0 Y: 2 Z: 5  0 : X: 0 Y: 2 Z: 5
-            //1 : X: 2 Y: 2 Z: 7  1 : X: 2 Y: 2 Z: 7
-            //2 : X: 2 Y: 2 Z: 5  2 : X: 2 Y: 2 Z: 5
-
-            //0 : X: 2 Y: 0 Z: 7  0 : X: 2 Y: 0 Z: 7
-            //1 : X: 0 Y: 0 Z: 7  1 : X: 0 Y: 0 Z: 7
-            //2 : X: 0 Y: 0 Z: 5  2 : X: 0 Y: 0 Z: 5
-
-            //0 : X: 2 Y: 0 Z: 7  0 : X: 2 Y: 0 Z: 7
-            //1 : X: 0 Y: 0 Z: 5  1 : X: 0 Y: 0 Z: 5
-            //2 : X: 2 Y: 0 Z: 5  2 : X: 2 Y: 0 Z: 5
-
-            //Camera Transformation   Camera Transformation
-            //0 : X: 0,5 Y: 0 Z: 5    0 : X: -0,5 Y: 0 Z: 5
-            //1 : X: 0,5 Y: 2 Z: 5    1 : X: -0,5 Y: 2 Z: 5
-            //2 : X: 2,5 Y: 2 Z: 5    2 : X: 1,5 Y: 2 Z: 5
-
-            //0 : X: 0,5 Y: 0 Z: 5    0 : X: -0,5 Y: 0 Z: 5
-            //1 : X: 2,5 Y: 2 Z: 5    1 : X: 1,5 Y: 2 Z: 5
-            //2 : X: 2,5 Y: 0 Z: 5    2 : X: 1,5 Y: 0 Z: 5
-
-            //0 : X: 2,5 Y: 0 Z: 5    0 : X: 1,5 Y: 0 Z: 5
-            //1 : X: 2,5 Y: 2 Z: 5    1 : X: 1,5 Y: 2 Z: 5
-            //2 : X: 2,5 Y: 2 Z: 7    2 : X: 1,5 Y: 2 Z: 7
-
-            //0 : X: 2,5 Y: 0 Z: 5    0 : X: 1,5 Y: 0 Z: 5
-            //1 : X: 2,5 Y: 2 Z: 7    1 : X: 1,5 Y: 2 Z: 7
-            //2 : X: 2,5 Y: 0 Z: 7    2 : X: 1,5 Y: 0 Z: 7
-
-            //0 : X: 2,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 2,5 Y: 2 Z: 7    1 : X: 1,5 Y: 2 Z: 7
-            //2 : X: 0,5 Y: 2 Z: 7    2 : X: -0,5 Y: 2 Z: 7
-
-            //0 : X: 2,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 2 Z: 7    1 : X: -0,5 Y: 2 Z: 7
-            //2 : X: 0,5 Y: 0 Z: 7    2 : X: -0,5 Y: 0 Z: 7
-
-            //0 : X: 0,5 Y: 0 Z: 7    0 : X: -0,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 2 Z: 7    1 : X: -0,5 Y: 2 Z: 7
-            //2 : X: 0,5 Y: 2 Z: 5    2 : X: -0,5 Y: 2 Z: 5
-
-            //0 : X: 0,5 Y: 0 Z: 7    0 : X: -0,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 2 Z: 5    1 : X: -0,5 Y: 2 Z: 5
-            //2 : X: 0,5 Y: 0 Z: 5    2 : X: -0,5 Y: 0 Z: 5
-
-            //0 : X: 0,5 Y: 2 Z: 5    0 : X: -0,5 Y: 2 Z: 5
-            //1 : X: 0,5 Y: 2 Z: 7    1 : X: -0,5 Y: 2 Z: 7
-            //2 : X: 2,5 Y: 2 Z: 7    2 : X: 1,5 Y: 2 Z: 7
-
-            //0 : X: 0,5 Y: 2 Z: 5    0 : X: -0,5 Y: 2 Z: 5
-            //1 : X: 2,5 Y: 2 Z: 7    1 : X: 1,5 Y: 2 Z: 7
-            //2 : X: 2,5 Y: 2 Z: 5    2 : X: 1,5 Y: 2 Z: 5
-
-            //0 : X: 2,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 0 Z: 7    1 : X: -0,5 Y: 0 Z: 7
-            //2 : X: 0,5 Y: 0 Z: 5    2 : X: -0,5 Y: 0 Z: 5
-
-            //0 : X: 2,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 0 Z: 5    1 : X: -0,5 Y: 0 Z: 5
-            //2 : X: 2,5 Y: 0 Z: 5    2 : X: 1,5 Y: 0 Z: 5
-
-            //Clipping Transformation Clipping Transformation
-            //0 : X: 0,5 Y: 0 Z: 5    0 : X: -0,5 Y: 0 Z: 5
-            //1 : X: 0,5 Y: 2 Z: 5    1 : X: -0,5 Y: 2 Z: 5
-            //2 : X: 2,5 Y: 2 Z: 5    2 : X: 1,5 Y: 2 Z: 5
-
-            //0 : X: 0,5 Y: 0 Z: 5    0 : X: -0,5 Y: 0 Z: 5
-            //1 : X: 2,5 Y: 2 Z: 5    1 : X: 1,5 Y: 2 Z: 5
-            //2 : X: 2,5 Y: 0 Z: 5    2 : X: 1,5 Y: 0 Z: 5
-
-            //0 : X: 0,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 2 Z: 7    1 : X: -0,5 Y: 0 Z: 7
-            //2 : X: 0,5 Y: 2 Z: 5    2 : X: -0,5 Y: 0 Z: 5
-
-            //0 : X: 0,5 Y: 0 Z: 7    0 : X: 1,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 2 Z: 5    1 : X: -0,5 Y: 0 Z: 5
-            //2 : X: 0,5 Y: 0 Z: 5    2 : X: 1,5 Y: 0 Z: 5
-
-            //0 : X: 2,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 0 Z: 7
-            //2 : X: 0,5 Y: 0 Z: 5
-
-            //0 : X: 2,5 Y: 0 Z: 7
-            //1 : X: 0,5 Y: 0 Z: 5
-            //2 : X: 2,5 Y: 0 Z: 5
-
-            //3D Transformation   3D Transformation
-            //0 : X: 0,07500000000000002 Y: 0 Z: 0,9800980095043877   0 : X: -0,07500000000000002 Y: 0 Z: 0,9800980095043877
-            //1 : X: 0,07500000000000002 Y: 0,4000000000000001 Z: 0,9800980095043877  1 : X: -0,07500000000000002 Y: 0,4000000000000001 Z: 0,9800980095043877
-            //2 : X: 0,3750000000000001 Y: 0,4000000000000001 Z: 0,9800980095043877   2 : X: 0,2250000000000001 Y: 0,4000000000000001 Z: 0,9800980095043877
-
-            //0 : X: 0,07500000000000002 Y: 0 Z: 0,9800980095043877   0 : X: -0,07500000000000002 Y: 0 Z: 0,9800980095043877
-            //1 : X: 0,3750000000000001 Y: 0,4000000000000001 Z: 0,9800980095043877   1 : X: 0,2250000000000001 Y: 0,4000000000000001 Z: 0,9800980095043877
-            //2 : X: 0,3750000000000001 Y: 0 Z: 0,9800980095043877    2 : X: 0,2250000000000001 Y: 0 Z: 0,9800980095043877
-
-            //0 : X: 0,05357142857142859 Y: 0 Z: 0,9858128667895599   0 : X: 0,16071428571428578 Y: 0 Z: 0,9858128667895599
-            //1 : X: 0,05357142857142859 Y: 0,28571428571428575 Z: 0,9858128667895599 1 : X: -0,05357142857142859 Y: 0 Z: 0,9858128667895599
-            //2 : X: 0,07500000000000002 Y: 0,4000000000000001 Z: 0,9800980095043877  2 : X: -0,07500000000000002 Y: 0 Z: 0,9800980095043877
-
-            //0 : X: 0,05357142857142859 Y: 0 Z: 0,9858128667895599   0 : X: 0,16071428571428578 Y: 0 Z: 0,9858128667895599
-            //1 : X: 0,07500000000000002 Y: 0,4000000000000001 Z: 0,9800980095043877  1 : X: -0,07500000000000002 Y: 0 Z: 0,9800980095043877
-            //2 : X: 0,07500000000000002 Y: 0 Z: 0,9800980095043877   2 : X: 0,2250000000000001 Y: 0 Z: 0,9800980095043877
-
-            //0 : X: 0,2678571428571429 Y: 0 Z: 0,9858128667895599
-            //1 : X: 0,05357142857142859 Y: 0 Z: 0,9858128667895599
-            //2 : X: 0,07500000000000002 Y: 0 Z: 0,9800980095043877
-
-            //0 : X: 0,2678571428571429 Y: 0 Z: 0,9858128667895599
-            //1 : X: 0,07500000000000002 Y: 0 Z: 0,9800980095043877
-            //2 : X: 0,3750000000000001 Y: 0 Z: 0,9800980095043877
-
-            //Transformation Settings Transformation Settings
-            //0,7500000000000002 , 0 , 0 , 0  0,7500000000000002 , 0 , 0 , 0
-            //0 , 1,0000000000000002 , 0 , 0  0 , 1,0000000000000002 , 0 , 0
-            //0 , 0 , 1,0001000100024906 , 1  0 , 0 , 1,0001000100024906 , 1
-            //0 , 0 , -0,1000100024905142 , 0 0 , 0 , -0,1000100024905142 , 0
-
-            //Camera Position: X: -0,5 Y: 0 Z: 0  Camera Position: X: 0,5 Y: 0 Z: 0
-            //Target Position: X: 0 Y: 0 Z: 1 Target Position: X: 0 Y: 0 Z: 1
-            //Target Position: X: 0 Y: 1 Z: 0 Target Position: X: 0 Y: 1 Z: 0
-            //Up Position: X: 0 Y: 1 Z: 0 Up Position: X: 0 Y: 1 Z: 0
-            //Right Position: X: 1 Y: 0 Z: -0 Right Position: X: 1 Y: 0 Z: -0
-            //Forward Position: X: 0 Y: -0 Z: 1   Forward Position: X: 0 Y: -0 Z: 1
-            //Pitch: 0    Pitch: 0
-            //Yaw: 0  Yaw: 0
-            //World Transformations.    World Transformations.
-            //Translation Vector: X: 0 Y: 0 Z: 5  Translation Vector: X: 0 Y: 0 Z: 5
-            //Rotation Vector: X: 0 Y: 0 Z: 0 Rotation Vector: X: 0 Y: 0 Z: 0
-            //Scale Vector: X: 2 Y: 2 Z: 2    Scale Vector: X: 2 Y: 2 Z: 2
-            //Camera Type: Orbit Camera Type: Orbit
-            //Display Type: Normal Display Type: Normal
         }
 
         /// <summary>
