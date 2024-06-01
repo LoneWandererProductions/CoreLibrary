@@ -109,7 +109,8 @@ namespace Mathematics
             lst.AddRange(triangles
                 .Select(triangle => new[]
                 {
-                    Projection3DCamera.ProjectionTo3D(triangle[0]), Projection3DCamera.ProjectionTo3D(triangle[1]),
+                    Projection3DCamera.ProjectionTo3D(triangle[0]), 
+                    Projection3DCamera.ProjectionTo3D(triangle[1]),
                     Projection3DCamera.ProjectionTo3D(triangle[2])
                 }).Select(array => new PolyTriangle(array)));
 
@@ -150,8 +151,7 @@ namespace Mathematics
             foreach (var triangle in triangles)
             {
                 // Scale into view, we moved the normalising into cartesian space
-                // out of the matrix.vector function from the previous videos, so
-                // do this manually
+
                 triangle[0] /= triangle[0].W;
                 triangle[1] /= triangle[1].W;
                 triangle[2] /= triangle[2].W;
