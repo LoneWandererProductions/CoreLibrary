@@ -95,7 +95,8 @@ namespace Interpreter
         /// </summary>
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">UserSpace of the register</param>
-        public void Initiate(Dictionary<int, InCommand> com, string userSpace)
+        /// <param name="extension">Optional Extension Methods</param>
+        public void Initiate(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
         {
             CollectedSpaces = new Dictionary<string, UserSpace>();
             Log = new Dictionary<int, string>();
@@ -116,7 +117,8 @@ namespace Interpreter
         /// <summary>Start the Sender and Interpreter</summary>
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">Userspace of the register</param>
-        public void AddCommands(Dictionary<int, InCommand> com, string userSpace)
+        /// <param name="extension">Optional Extension Methods</param>
+        public void AddCommands(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
         {
             _interpret.sendLog += SendLog;
 
@@ -262,5 +264,13 @@ namespace Interpreter
         ///     Gets or sets the parameter.
         /// </summary>
         public List<string> Parameter { get; internal init; }
+
+        /// <summary>
+        /// Gets a value indicating whether [extension used].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [extension used]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ExtensionUsed { get; internal init; }
     }
 }

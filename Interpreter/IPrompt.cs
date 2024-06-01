@@ -21,12 +21,14 @@ namespace Interpreter
         /// <summary>Start the Sender and Interpreter</summary>
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">Userspace of the register</param>
-        void Initiate(Dictionary<int, InCommand> com, string userSpace);
+        /// <param name="extension">Optional Extension Methods</param>
+        void Initiate(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null);
 
         /// <summary>Add further command Namespaces</summary>
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">UserSpace of the register</param>
-        void AddCommands(Dictionary<int, InCommand> com, string userSpace);
+        /// <param name="extension">Optional Extension Methods</param>
+        void AddCommands(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null);
 
         /// <summary>
         ///     Start the window.
