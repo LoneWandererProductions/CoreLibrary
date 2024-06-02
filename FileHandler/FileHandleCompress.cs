@@ -53,7 +53,8 @@ namespace FileHandler
                     FileHandlerRegister.SendStatus?.Invoke(nameof(SaveZip), file);
                 }
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                           or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
                 Trace.WriteLine(ex);
@@ -94,7 +95,8 @@ namespace FileHandler
                 using var archive = ZipFile.Open(zipPath, ZipArchiveMode.Update);
                 archive.ExtractToDirectory(extractPath);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                           or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
                 Trace.WriteLine(ex);

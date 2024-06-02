@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace FileHandler
 {
@@ -49,12 +48,11 @@ namespace FileHandler
 
             //Give the User Optional Infos about the Amount we Copy
             var lstFiles = (from file in files
-                            select file.Name).ToList();
+                select file.Name).ToList();
 
             var itm = new FileItems
             {
-                Elements = new List<string>(lstFiles),
-                Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles), itm);
@@ -77,7 +75,8 @@ namespace FileHandler
 
                         FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                     }
-                    catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+                    catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                                   or NotSupportedException)
                     {
                         FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
                         Trace.WriteLine(ex);
@@ -128,8 +127,7 @@ namespace FileHandler
             //Give the User Optional Infos about the Amount we Copy
             var itm = new FileItems
             {
-                Elements = new List<string>(source),
-                Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles), itm);
@@ -167,7 +165,8 @@ namespace FileHandler
 
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                 }
-                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                               or NotSupportedException)
                 {
                     FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
                     Trace.WriteLine(ex);

@@ -16,10 +16,10 @@ namespace Interpreter
     public sealed class OutCommand
     {
         /// <summary>
-        /// Gets the used name space.
+        ///     Gets the used name space.
         /// </summary>
         /// <value>
-        /// The used name space.
+        ///     The used name space.
         /// </value>
         public string UsedNameSpace { get; internal init; }
 
@@ -34,10 +34,10 @@ namespace Interpreter
         public List<string> Parameter { get; internal init; }
 
         /// <summary>
-        /// Gets a value indicating whether [extension used].
+        ///     Gets a value indicating whether [extension used].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [extension used]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [extension used]; otherwise, <c>false</c>.
         /// </value>
         public bool ExtensionUsed { get; internal init; }
     }

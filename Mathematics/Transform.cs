@@ -43,7 +43,7 @@ namespace Mathematics
         /// <value>
         ///     Up.
         /// </value>
-        public Vector3D Up { get; set; } = new Vector3D(0, 1, 0);
+        public Vector3D Up { get; set; } = new(0, 1, 0);
 
         /// <summary>
         ///     Gets or sets the right.
@@ -52,7 +52,7 @@ namespace Mathematics
         /// <value>
         ///     The right.
         /// </value>
-        public Vector3D Right { get; set; } = new Vector3D(1, 0, 0);
+        public Vector3D Right { get; set; } = new(1, 0, 0);
 
         /// <summary>
         ///     Gets or sets the forward.
@@ -61,7 +61,7 @@ namespace Mathematics
         /// <value>
         ///     The forward.
         /// </value>
-        public Vector3D Forward { get; set; } = new Vector3D(0, 0, 1);
+        public Vector3D Forward { get; set; } = new(0, 0, 1);
 
         /// <summary>
         ///     Gets or sets the pitch.
@@ -226,7 +226,7 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Position += Right * x;//switch
+                    Position += Right * x; //switch
                     Trace.WriteLine("pos r right: " + Position);
                     Trace.WriteLine("pos r: " + Position);
 

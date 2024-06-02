@@ -5,6 +5,5 @@ namespace CommonLibraryTests
     [TestClass]
     public class InterpretExtension
     {
-
     }
 }

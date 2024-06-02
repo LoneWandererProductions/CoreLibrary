@@ -210,7 +210,8 @@ namespace Debugger
                 // Call WaitForExit and then the using-statement will close.
                 Process.Start(startInfo);
             }
-            catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or ArgumentNullException or IOException)
+            catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or ArgumentNullException
+                                           or IOException)
             {
                 Trace.WriteLine(ex);
             }

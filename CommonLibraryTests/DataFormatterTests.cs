@@ -6,33 +6,34 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using DataFormatter;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.IO;
 
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Test some special cases for the Data Formatter
+    ///     Test some special cases for the Data Formatter
     /// </summary>
     [TestClass]
     public class DataFormatterTests
     {
         /// <summary>
-        /// The test file path
+        ///     The test file path
         /// </summary>
         private const string TestFilePath = "testfile.txt";
 
         /// <summary>
-        /// Sets up.
+        ///     Sets up.
         /// </summary>
         [TestInitialize]
         public void SetUp()
         {
             // Create a test file with UTF-8 encoding and special characters
-            using var writer = new StreamWriter(TestFilePath, false, System.Text.Encoding.UTF8);
+            using var writer = new StreamWriter(TestFilePath, false, Encoding.UTF8);
             writer.WriteLine("Line 1 with Ü");
             writer.WriteLine("Line 2 with ö");
         }
@@ -71,7 +72,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tears down.
+        ///     Tears down.
         /// </summary>
         [TestCleanup]
         public void TearDown()
@@ -84,16 +85,16 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Reads the file should read special characters.
+        ///     Reads the file should read special characters.
         /// </summary>
         [TestMethod]
         public void ReadFileShouldReadSpecialCharacters()
         {
             // Arrange
-            List<string> expectedLines = new List<string> { "Line 1 with Ü", "Line 2 with ö" };
+            var expectedLines = new List<string> { "Line 1 with Ü", "Line 2 with ö" };
 
             // Act
-            List<string> actualLines = ReadText.ReadFile(TestFilePath);
+            var actualLines = ReadText.ReadFile(TestFilePath);
 
             // Assert
             CollectionAssert.AreEqual(expectedLines, actualLines);

@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -138,7 +137,8 @@ namespace CommonControls
                 StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
                 ColorChanged?.Invoke(this, StartColor);
             }
-            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException or MethodAccessException)
+            catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException
+                                           or MethodAccessException)
             {
                 ShowErrorMessageBox(ComCtlResources.ErrorColorSelection, ex);
             }

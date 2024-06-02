@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -196,7 +195,8 @@ namespace Debugger
                 using Stream tr = File.OpenRead(ConfigPath);
                 return serializer.Deserialize(tr) as ConfigExtended;
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }
@@ -235,7 +235,8 @@ namespace Debugger
                     new StreamWriter(ConfigPath);
                 serializer.Serialize(tr, data);
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }

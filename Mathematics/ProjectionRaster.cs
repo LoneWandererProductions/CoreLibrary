@@ -109,8 +109,7 @@ namespace Mathematics
             lst.AddRange(triangles
                 .Select(triangle => new[]
                 {
-                    Projection3DCamera.ProjectionTo3D(triangle[0]), 
-                    Projection3DCamera.ProjectionTo3D(triangle[1]),
+                    Projection3DCamera.ProjectionTo3D(triangle[0]), Projection3DCamera.ProjectionTo3D(triangle[1]),
                     Projection3DCamera.ProjectionTo3D(triangle[2])
                 }).Select(array => new PolyTriangle(array)));
 

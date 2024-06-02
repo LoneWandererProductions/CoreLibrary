@@ -156,8 +156,7 @@ namespace FileHandler
                 //Give the User Optional Infos about the Amount we delete
                 var itm = new FileItems
                 {
-                    Elements = new List<string>(myFiles),
-                    Message = FileHandlerResources.InformationFileDeletion
+                    Elements = new List<string>(myFiles), Message = FileHandlerResources.InformationFileDeletion
                 };
 
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteAllContents), itm);
@@ -228,8 +227,7 @@ namespace FileHandler
                 //Give the User Optional Infos about the Amount we delete
                 var itm = new FileItems
                 {
-                    Elements = new List<string>(myFiles),
-                    Message = FileHandlerResources.InformationFileDeletion
+                    Elements = new List<string>(myFiles), Message = FileHandlerResources.InformationFileDeletion
                 };
 
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtension), itm);
@@ -294,7 +292,8 @@ namespace FileHandler
             {
                 stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
             }
-            catch (Exception ex) when (ex is ArgumentException or PathTooLongException or IOException or UnauthorizedAccessException or NotSupportedException)
+            catch (Exception ex) when (ex is ArgumentException or PathTooLongException or IOException
+                                           or UnauthorizedAccessException or NotSupportedException)
             {
                 Trace.WriteLine(string.Concat(FileHandlerResources.ErrorLock, ex));
                 return true;

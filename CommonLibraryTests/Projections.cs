@@ -83,7 +83,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(Math.Abs(vec.Y - comp.Y) < 0.00001, "Basic check one, Y");
             Assert.IsTrue(Math.Abs(vec.Z - comp.Z) < 0.00001, "Basic check one, Z");
 
-            vector = new Vector3D(1,1,7);
+            vector = new Vector3D(1, 1, 7);
 
             vec = MultiplyMatrixVector(vector, matProj);
 
@@ -267,7 +267,7 @@ namespace CommonLibraryTests
 
             Trace.WriteLine("Details:");
 
-            for (int i = 0; i < reference.Count; i++)
+            for (var i = 0; i < reference.Count; i++)
             {
                 Trace.WriteLine("Base:");
                 Trace.WriteLine(reference[i].ToString());

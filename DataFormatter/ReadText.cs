@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DataFormatter
@@ -32,15 +33,15 @@ namespace DataFormatter
         public static List<string> ReadFile(string filepath)
         {
             var parts = new List<string>();
-			try
+            try
             {
-				using var reader = new StreamReader(filepath, System.Text.Encoding.UTF8);
-				string line;
-				while ((line = reader.ReadLine()) != null)
-				{
-					parts.Add(line);
-				}
-			}
+                using var reader = new StreamReader(filepath, Encoding.UTF8);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    parts.Add(line);
+                }
+            }
             catch (IOException ex)
             {
                 Trace.WriteLine(ex.Message);

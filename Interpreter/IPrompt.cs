@@ -20,7 +20,7 @@ namespace Interpreter
     {
         /// <summary>Start the Sender and Interpreter</summary>
         /// <param name="com">Command Register</param>
-        /// <param name="userSpace">Userspace of the register</param>
+        /// <param name="userSpace">UserSpace of the register</param>
         /// <param name="extension">Optional Extension Methods</param>
         void Initiate(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null);
 
@@ -42,7 +42,7 @@ namespace Interpreter
         void CallbacksWindow(string message);
 
         /// <summary>
-        /// Callbacks the specified message.
+        ///     Callbacks the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
         void Callback(string message);

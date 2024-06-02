@@ -9,8 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Documents;
-using ExtendedSystemObjects;
 
 namespace Interpreter
 {
@@ -20,9 +18,9 @@ namespace Interpreter
     internal static class ErrorLogging
     {
         /// <summary>
-        /// The log
+        ///     The log
         /// </summary>
-        internal static List<string> Log = new List<string>();
+        internal static readonly List<string> Log = new();
 
         /// <summary>
         ///     Error Logging

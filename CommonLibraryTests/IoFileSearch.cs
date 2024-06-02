@@ -21,14 +21,14 @@ namespace CommonLibraryTests
     public sealed class IoFileSearch
     {
         /// <summary>
-        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
-        /// </summary>
-        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
-
-        /// <summary>
         ///     The _pathOperations (readonly). Value: "IO".
         /// </summary>
         private const string PathOperations = "IO";
+
+        /// <summary>
+        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
+        /// </summary>
+        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
 
         /// <summary>
         ///     Simple Check for getting files Contains in a Folder

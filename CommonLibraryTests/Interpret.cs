@@ -358,7 +358,7 @@ namespace CommonLibraryTests
         public void HandleInputValidCommandNoParameters_Success()
         {
             var commandHandled = false;
-            _irtPrompt.SendCommand += (sender, e) =>
+            _irtPrompt.sendCommand += (sender, e) =>
             {
                 Assert.AreEqual(1, e.Command);
                 commandHandled = true;
@@ -412,7 +412,7 @@ namespace CommonLibraryTests
         public void HandleInputCommandWithParametersSuccess()
         {
             var commandHandled = false;
-            _irtPrompt.SendCommand += (sender, e) =>
+            _irtPrompt.sendCommand += (sender, e) =>
             {
                 Assert.AreEqual(2, e.Command);
                 Assert.AreEqual(1, e.Parameter.Count);

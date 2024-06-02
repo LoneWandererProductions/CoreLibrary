@@ -29,11 +29,6 @@ namespace CommonLibraryTests
         private const string PathRename = "Rename";
 
         /// <summary>
-        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
-        /// </summary>
-        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
-
-        /// <summary>
         ///     The _pathOperations (readonly). Value: "IO".
         /// </summary>
         private const string PathOperations = "IO";
@@ -44,22 +39,27 @@ namespace CommonLibraryTests
         private const string PathOperationsTwo = "IO2";
 
         /// <summary>
-        /// The test source dir
+        ///     The test source dir
         /// </summary>
         private const string TestSourceDir = "TestSource";
 
         /// <summary>
-        /// The test target dir
+        ///     The test target dir
         /// </summary>
         private const string TestTargetDir = "TestTarget";
 
         /// <summary>
-        /// The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
+        ///     The path (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(), ResourcesGeneral.CampaignsFolder).
+        /// </summary>
+        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(IoFileHandler));
+
+        /// <summary>
+        ///     The core (readonly). Value: Path.Combine(Directory.GetCurrentDirectory(),  "test").
         /// </summary>
         private readonly string _renamePath = Path.Combine(Directory.GetCurrentDirectory(), PathRename);
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -392,7 +392,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files valid source and target copies files.
+        ///     Copies the files valid source and target copies files.
         /// </summary>
         [TestMethod]
         public void CopyFilesValidSourceAndTargetCopiesFiles()
@@ -409,7 +409,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files source directory not found returns false.
+        ///     Copies the files source directory not found returns false.
         /// </summary>
         [TestMethod]
         public void CopyFilesSourceDirectoryNotFoundReturnsFalse()
@@ -420,7 +420,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files source and target equal throws file handler exception.
+        ///     Copies the files source and target equal throws file handler exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -482,7 +482,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files with file list copies files successfully.
+        ///     Copies the files with file list copies files successfully.
         /// </summary>
         [TestMethod]
         public void CopyFilesWithFileListCopiesFilesSuccessfully()
@@ -500,7 +500,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files replace if newer copies only newer files.
+        ///     Copies the files replace if newer copies only newer files.
         /// </summary>
         [TestMethod]
         public void CopyFilesReplaceIfNewerCopiesOnlyNewerFiles()
@@ -518,7 +518,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files with differing source and target returns files not copied.
+        ///     Copies the files with differing source and target returns files not copied.
         /// </summary>
         [TestMethod]
         public void CopyFilesWithDifferingSourceAndTargetReturnsFilesNotCopied()
@@ -540,7 +540,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Copies the files copy list copies files correctly.
+        ///     Copies the files copy list copies files correctly.
         /// </summary>
         [TestMethod]
         public void CopyFilesCopyListCopiesFilesCorrectly()
@@ -629,7 +629,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files valid source and target cuts files.
+        ///     Cuts the files valid source and target cuts files.
         /// </summary>
         [TestMethod]
         public void CutFilesValidSourceAndTargetCutsFiles()
@@ -650,7 +650,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files source and target equal throws file handler exception.
+        ///     Cuts the files source and target equal throws file handler exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -660,7 +660,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files non existent source returns false.
+        ///     Cuts the files non existent source returns false.
         /// </summary>
         [TestMethod]
         public void CutFilesNonExistentSourceReturnsFalse()
@@ -670,7 +670,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files with file list cuts files successfully.
+        ///     Cuts the files with file list cuts files successfully.
         /// </summary>
         [TestMethod]
         public void CutFilesWithFileListCutsFilesSuccessfully()
@@ -692,7 +692,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files file list null or empty throws file handler exception.
+        ///     Cuts the files file list null or empty throws file handler exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -702,7 +702,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files file list non existent file returns false.
+        ///     Cuts the files file list non existent file returns false.
         /// </summary>
         [TestMethod]
         public void CutFilesFileListNonExistentFileReturnsFalse()
@@ -713,7 +713,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files with overwrite cuts files successfully.
+        ///     Cuts the files with overwrite cuts files successfully.
         /// </summary>
         [TestMethod]
         public void CutFilesWithOverwriteCutsFilesSuccessfully()
@@ -735,7 +735,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files without overwrite existing files not overwritten.
+        ///     Cuts the files without overwrite existing files not overwritten.
         /// </summary>
         [TestMethod]
         public void CutFilesWithoutOverwriteExistingFilesNotOverwritten()
@@ -757,7 +757,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cuts the files handles subdirectories.
+        ///     Cuts the files handles subdirectories.
         /// </summary>
         [TestMethod]
         public void CutFilesHandlesSubdirectories()
@@ -780,7 +780,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compressions this instance.
+        ///     Compressions this instance.
         /// </summary>
         [TestMethod]
         public void Compression()
@@ -917,15 +917,20 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
         {
             if (Directory.Exists(TestSourceDir))
+            {
                 Directory.Delete(TestSourceDir, true);
+            }
+
             if (Directory.Exists(TestTargetDir))
+            {
                 Directory.Delete(TestTargetDir, true);
+            }
         }
     }
 }

@@ -15,12 +15,12 @@ using System.Linq;
 namespace FileHandler
 {
     /// <summary>
-    /// The file handler processing class.
+    ///     The file handler processing class.
     /// </summary>
     internal static class FileHandlerProcessing
     {
         /// <summary>
-        /// Cleans up the file extension list by removing dots.
+        ///     Cleans up the file extension list by removing dots.
         /// </summary>
         /// <param name="fileExtList">The file extension list.</param>
         /// <returns>The cleaned up list of file extensions.</returns>
@@ -35,7 +35,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Gets the subfolder path relative to the root directory and combines it with the target directory.
+        ///     Gets the subfolder path relative to the root directory and combines it with the target directory.
         /// </summary>
         /// <param name="element">The path of the element.</param>
         /// <param name="root">The root directory path.</param>
@@ -44,21 +44,24 @@ namespace FileHandler
         /// <exception cref="ArgumentException">Thrown when any of the input paths are invalid.</exception>
         internal static string GetSubFolder(string element, string root, string target)
         {
-            var elementDir = Path.GetFullPath(element) ?? throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(element));
-            var rootDir = Path.GetFullPath(root) ?? throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(root));
+            var elementDir = Path.GetFullPath(element) ??
+                             throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(element));
+            var rootDir = Path.GetFullPath(root) ??
+                          throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(root));
 
             if (!elementDir.StartsWith(rootDir, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
             }
 
-            var relativePath = elementDir.Substring(rootDir.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var relativePath = elementDir.Substring(rootDir.Length)
+                .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             return Path.Combine(target, relativePath);
         }
 
         /// <summary>
-        /// Collects all files with a specific extension from the target folder.
+        ///     Collects all files with a specific extension from the target folder.
         /// </summary>
         /// <param name="path">The target folder path.</param>
         /// <param name="appendix">The file extension.</param>
@@ -112,7 +115,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Validates the paths.
+        ///     Validates the paths.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="target">The target.</param>

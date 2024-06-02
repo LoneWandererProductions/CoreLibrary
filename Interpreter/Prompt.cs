@@ -96,7 +96,8 @@ namespace Interpreter
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">UserSpace of the register</param>
         /// <param name="extension">Optional Extension Methods</param>
-        public void Initiate(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
+        public void Initiate(Dictionary<int, InCommand> com, string userSpace,
+            Dictionary<int, InCommand> extension = null)
         {
             ResetState();
 
@@ -108,15 +109,16 @@ namespace Interpreter
             _interpret = new IrtPrompt(this);
             _interpret.Initiate(use);
             _interpret.SendLog += SendLog;
-            _interpret.SendCommand += SendCommand;
+            _interpret.sendCommand += SendCommand;
         }
 
         /// <inheritdoc />
         /// <summary>Start the Sender and Interpreter</summary>
         /// <param name="com">Command Register</param>
-        /// <param name="userSpace">Userspace of the register</param>
+        /// <param name="userSpace">UserSpace of the register</param>
         /// <param name="extension">Optional Extension Methods</param>
-        public void AddCommands(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
+        public void AddCommands(Dictionary<int, InCommand> com, string userSpace,
+            Dictionary<int, InCommand> extension = null)
         {
             if (CollectedSpaces.IsNullOrEmpty())
             {
@@ -125,6 +127,7 @@ namespace Interpreter
             }
 
             var use = CreateUserSpace(userSpace, com);
+            CollectedSpaces.AddDistinct(userSpace, use);
             _interpret.SendLog += SendLog;
         }
 
@@ -226,7 +229,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Adds to log.
+        ///     Adds to log.
         /// </summary>
         /// <param name="message">The message.</param>
         private void AddToLog(string message)
@@ -241,7 +244,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Resets the state.
+        ///     Resets the state.
         /// </summary>
         private void ResetState()
         {
@@ -251,11 +254,11 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Creates the user space.
+        ///     Creates the user space.
         /// </summary>
         /// <param name="userSpace">The user space.</param>
         /// <param name="com">The COM.</param>
-        /// <returns>New userspace</returns>
+        /// <returns>New UserSpace</returns>
         private static UserSpace CreateUserSpace(string userSpace, Dictionary<int, InCommand> com)
         {
             var use = new UserSpace { UserSpaceName = userSpace, Commands = com };

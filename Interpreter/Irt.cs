@@ -22,12 +22,12 @@ namespace Interpreter
     internal static class Irt
     {
         /// <summary>
-        /// Checks if the input string has balanced parentheses of a single type.
+        ///     Checks if the input string has balanced parentheses of a single type.
         /// </summary>
         /// <param name="input">Input string to check.</param>
         /// <returns>True if parentheses are balanced, false otherwise.</returns>
         /// <example>
-        /// <code>
+        ///     <code>
         /// bool result = Irt.SingleCheck("(a + b) * c");
         /// // result is true
         /// </code>
@@ -70,7 +70,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Checks if the input string has balanced parentheses of multiple types.
+        ///     Checks if the input string has balanced parentheses of multiple types.
         /// </summary>
         /// <param name="input">Input string to check.</param>
         /// <param name="openParenthesis">Array of opening parentheses characters.</param>
@@ -79,7 +79,10 @@ namespace Interpreter
         internal static bool CheckMultiple(string input, char[] openParenthesis, char[] closeParenthesis)
         {
             //Open and close parentheses arrays are not the same length.
-            if (openParenthesis.Length != closeParenthesis.Length) return false;
+            if (openParenthesis.Length != closeParenthesis.Length)
+            {
+                return false;
+            }
 
             // Index of the currently open parentheses:
             var parentheses = new Stack<int>();
@@ -142,7 +145,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Removes the first occurrence of the specified symbol from the input string.
+        ///     Removes the first occurrence of the specified symbol from the input string.
         /// </summary>
         /// <param name="input">The input string.</param>
         /// <param name="symbol">The symbol to remove.</param>
@@ -222,7 +225,8 @@ namespace Interpreter
                 }
             }
 
-            foreach (var command in IrtConst.InternalCommands.Where(command => string.Equals(input, command.ToUpper(CultureInfo.InvariantCulture), StringComparison.Ordinal)))
+            foreach (var command in IrtConst.InternalCommands.Where(command =>
+                         string.Equals(input, command.ToUpper(CultureInfo.InvariantCulture), StringComparison.Ordinal)))
             {
                 return command;
             }
@@ -283,7 +287,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Checks if the string starts and ends with the specified characters.
+        ///     Checks if the string starts and ends with the specified characters.
         /// </summary>
         /// <param name="input">Input string to check.</param>
         /// <param name="start">Expected starting character.</param>

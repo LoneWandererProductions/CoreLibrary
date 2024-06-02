@@ -22,7 +22,7 @@ namespace CommonLibraryTests
     public sealed class IoFileHandlerInternal
     {
         /// <summary>
-        /// Cleans up extension list null input throws argument null exception.
+        ///     Cleans up extension list null input throws argument null exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -33,7 +33,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cleans up extension list valid input removes dots.
+        ///     Cleans up extension list valid input removes dots.
         /// </summary>
         [TestMethod]
         public void CleanUpExtensionListValidInputRemovesDots()
@@ -50,7 +50,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the sub folder invalid element path throws argument exception.
+        ///     Gets the sub folder invalid element path throws argument exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -66,7 +66,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the sub folder invalid root path throws argument exception.
+        ///     Gets the sub folder invalid root path throws argument exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -82,7 +82,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the sub folder valid paths returns relative path.
+        ///     Gets the sub folder valid paths returns relative path.
         /// </summary>
         [TestMethod]
         public void GetSubFolderValidPathsReturnsRelativePath()
@@ -102,7 +102,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the files by extension empty path throws file handler exception.
+        ///     Gets the files by extension empty path throws file handler exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FileHandlerException))]
@@ -113,7 +113,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the files by extension invalid path returns null.
+        ///     Gets the files by extension invalid path returns null.
         /// </summary>
         [TestMethod]
         public void GetFilesByExtensionInvalidPathReturnsNull()
@@ -126,7 +126,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the files by extension valid path returns files.
+        ///     Gets the files by extension valid path returns files.
         /// </summary>
         [TestMethod]
         public void GetFilesByExtensionValidPathReturnsFiles()

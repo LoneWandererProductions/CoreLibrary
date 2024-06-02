@@ -19,7 +19,7 @@ namespace CommonLibraryTests
     public sealed class InterpretInternal
     {
         /// <summary>
-        /// Singles the check should return true for balanced parentheses.
+        ///     Singles the check should return true for balanced parentheses.
         /// </summary>
         [TestMethod]
         public void SingleCheckShouldReturnTrueForBalancedParentheses()
@@ -30,7 +30,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Singles the check should return false for unbalanced parentheses.
+        ///     Singles the check should return false for unbalanced parentheses.
         /// </summary>
         [TestMethod]
         public void SingleCheckShouldReturnFalseForUnbalancedParentheses()
@@ -41,7 +41,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Removes the parenthesis should remove outer parentheses when well formed.
+        ///     Removes the parenthesis should remove outer parentheses when well formed.
         /// </summary>
         [TestMethod]
         public void RemoveParenthesisShouldRemoveOuterParenthesesWhenWellFormed()
@@ -52,7 +52,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Removes the parenthesis should return the input string, this is just an edge Case
+        ///     Removes the parenthesis should return the input string, this is just an edge Case
         /// </summary>
         [TestMethod]
         public void RemoveParenthesisShouldReturnInput()
@@ -63,7 +63,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Removes the parenthesis should return error message when input has mismatched parentheses.
+        ///     Removes the parenthesis should return error message when input has mismatched parentheses.
         /// </summary>
         [TestMethod]
         public void RemoveParenthesisShouldReturnErrorMessageWhenInputHasMismatchedParentheses()
@@ -74,7 +74,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Checks the overload should return command identifier when overload matches.
+        ///     Checks the overload should return command identifier when overload matches.
         /// </summary>
         [TestMethod]
         public void CheckOverloadShouldReturnCommandIdWhenOverloadMatches()
@@ -89,7 +89,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Checks the overload should return error when overload does not match.
+        ///     Checks the overload should return error when overload does not match.
         /// </summary>
         [TestMethod]
         public void CheckOverloadShouldReturnErrorWhenOverloadDoesNotMatch()
@@ -102,7 +102,5 @@ namespace CommonLibraryTests
             var result = Irt.CheckOverload("command", 3, commands);
             Assert.AreEqual(IrtConst.ErrorParam, result);
         }
-
-
     }
 }

@@ -29,9 +29,19 @@ namespace Interpreter
         private static string _nameSpace;
 
         /// <summary>
+        ///     The log
+        /// </summary>
+        private readonly Dictionary<int, string> _log;
+
+        /// <summary>
+        ///     The send logs
+        /// </summary>
+        private readonly EventHandler<string> _sendLogs;
+
+        /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<OutCommand> SendCommand;
+        internal EventHandler<OutCommand> sendCommand;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
@@ -39,23 +49,13 @@ namespace Interpreter
         internal EventHandler<string> SendLog;
 
         /// <summary>
-        /// The log
-        /// </summary>
-        private readonly Dictionary<int, string> _log;
-
-        /// <summary>
-        /// The send logs
-        /// </summary>
-        private readonly EventHandler<string> _SendLogs;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IrtPrompt"/> class.
+        ///     Initializes a new instance of the <see cref="IrtPrompt" /> class.
         /// </summary>
         /// <param name="prompt">The prompt.</param>
         public IrtPrompt(Prompt prompt)
         {
             _log = prompt.Log;
-            _SendLogs = prompt.SendLogs;
+            _sendLogs = prompt.SendLogs;
         }
 
         /// <summary>Get the Engine Running</summary>
@@ -285,7 +285,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Commands the log.
+        ///     Commands the log.
         /// </summary>
         private void CommandLogError()
         {
@@ -296,24 +296,24 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Commands the log information.
+        ///     Commands the log information.
         /// </summary>
         private void CommandLogInfo()
         {
-            var message= string.Concat(IrtConst.MessageLogStatistics, Environment.NewLine, IrtConst.MessageErrorCount,
+            var message = string.Concat(IrtConst.MessageLogStatistics, Environment.NewLine, IrtConst.MessageErrorCount,
                 ErrorLogging.Log.Count, Environment.NewLine, IrtConst.MessageLogCount, _log.Count);
 
             OnStatus(message);
         }
 
         /// <summary>
-        /// Commands the log full.
+        ///     Commands the log full.
         /// </summary>
         private void CommandLogFull()
         {
             foreach (var entry in new List<string>(_log.Values))
             {
-                _SendLogs.Invoke(this, entry);
+                _sendLogs.Invoke(this, entry);
             }
         }
 
@@ -386,7 +386,7 @@ namespace Interpreter
         /// <returns>Result of our Command</returns>
         private void SetResult(int key, List<string> parameter)
         {
-            var com = new OutCommand { Command = key, Parameter = parameter, UsedNameSpace = _nameSpace};
+            var com = new OutCommand { Command = key, Parameter = parameter, UsedNameSpace = _nameSpace };
 
             OnCommand(com);
         }
@@ -416,7 +416,7 @@ namespace Interpreter
         /// <param name="outCommand">Selected User Command</param>
         private void OnCommand(OutCommand outCommand)
         {
-            SendCommand?.Invoke(this, outCommand);
+            sendCommand?.Invoke(this, outCommand);
         }
     }
 }

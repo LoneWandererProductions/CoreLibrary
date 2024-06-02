@@ -64,7 +64,7 @@ namespace Interpreter
         /// <summary>
         ///     The internal command Log full (const). Value: "LOGFULL".
         /// </summary>
-        internal const string InternalLogFull= "LOGFULL";
+        internal const string InternalLogFull = "LOGFULL";
 
         /// <summary>
         ///     The error no commands provided (const). Value: "No Commands were provided".
@@ -192,7 +192,7 @@ namespace Interpreter
         internal const char NewCommand = ';';
 
         /// <summary>
-        ///    Indicator for comment, mostyl used for batch files, (const). Value: "--".
+        ///     Indicator for comment, mostly used for batch files, (const). Value: "--".
         /// </summary>
         internal const string CommentCommand = "--";
 
