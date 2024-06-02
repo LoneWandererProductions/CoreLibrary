@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
-using System.Collections.Generic;
 
 namespace Interpreter
 {

@@ -201,13 +201,30 @@ namespace Interpreter
         /// <returns>If internal Command was used</returns>
         internal static string CheckInternalCommands(string input)
         {
-            foreach (
-                var enums in
-                IrtConst.InternalCommands.Where(
-                    enums => input.StartsWith(enums.ToUpper(CultureInfo.InvariantCulture),
-                        StringComparison.Ordinal)))
+            if (input.Contains(IrtConst.AdvancedOpen))
             {
-                return enums;
+                var index = input.IndexOf(IrtConst.AdvancedOpen);
+
+                if (index >= 0)
+                {
+                    input = input[..index];
+                    input = input.Trim();
+                }
+            }
+            else if (input.Contains(IrtConst.BaseOpen))
+            {
+                var index = input.IndexOf(IrtConst.BaseOpen);
+
+                if (index >= 0)
+                {
+                    input = input[..index];
+                    input = input.Trim();
+                }
+            }
+
+            foreach (var command in IrtConst.InternalCommands.Where(command => string.Equals(input, command.ToUpper(CultureInfo.InvariantCulture), StringComparison.Ordinal)))
+            {
+                return command;
             }
 
             return string.Empty;

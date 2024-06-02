@@ -64,7 +64,7 @@ namespace Interpreter
         internal WindowPrompt(IrtPrompt interpret)
         {
             _interpret = interpret;
-            _interpret.sendLog += SendLogs;
+            _interpret.SendLog += SendLogs;
             InitializeComponent();
         }
 

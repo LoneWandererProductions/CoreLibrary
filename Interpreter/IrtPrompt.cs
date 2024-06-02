@@ -31,12 +31,32 @@ namespace Interpreter
         /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<OutCommand> sendCommand;
+        internal EventHandler<OutCommand> SendCommand;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<string> sendLog;
+        internal EventHandler<string> SendLog;
+
+        /// <summary>
+        /// The log
+        /// </summary>
+        private readonly Dictionary<int, string> _log;
+
+        /// <summary>
+        /// The send logs
+        /// </summary>
+        private readonly EventHandler<string> _SendLogs;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IrtPrompt"/> class.
+        /// </summary>
+        /// <param name="prompt">The prompt.</param>
+        public IrtPrompt(Prompt prompt)
+        {
+            _log = prompt.Log;
+            _SendLogs = prompt.SendLogs;
+        }
 
         /// <summary>Get the Engine Running</summary>
         /// <param name="use">The Command Structure</param>
@@ -59,7 +79,7 @@ namespace Interpreter
             inputString = inputString.Trim().ToUpper(CultureInfo.CurrentCulture).ToUpper(CultureInfo.InvariantCulture);
 
             //handle File comments
-            if (inputString.StartsWith(IrtConst.CommentCommand))
+            if (inputString.StartsWith(IrtConst.CommentCommand, StringComparison.InvariantCultureIgnoreCase))
             {
                 Trace.WriteLine(inputString);
                 return;
@@ -166,17 +186,32 @@ namespace Interpreter
                     CommandUse(parameterPart);
                     break;
 
+                case IrtConst.InternalErrorLog:
+                    CommandLogError();
+                    break;
+
+                case IrtConst.InternalLogInfo:
+                    CommandLogInfo();
+                    break;
+
+                case IrtConst.InternalLogFull:
+                    CommandLogFull();
+                    break;
+
                 case IrtConst.InternalCommandContainer:
                     CommandContainer(inputString, parameterPart);
                     break;
+
                 case IrtConst.InternalCommandBatchExecute:
                     CommandBatchExecute(parameterPart);
                     break;
+
                 default:
                     OnStatus(string.Concat(IrtConst.KeyWordNotFoundError, param));
                     break;
             }
         }
+
 
         /// <summary>
         ///     Return help for specific command
@@ -234,7 +269,7 @@ namespace Interpreter
         {
             foreach (var com in _com.Values)
             {
-                OnStatus(string.Concat(com.Command, Environment.NewLine));
+                OnStatus(string.Concat(com.Command, Environment.NewLine, com.Description));
             }
         }
 
@@ -246,6 +281,39 @@ namespace Interpreter
             foreach (var key in Prompt.CollectedSpaces.Keys)
             {
                 OnStatus(string.Concat(key, Environment.NewLine));
+            }
+        }
+
+        /// <summary>
+        /// Commands the log.
+        /// </summary>
+        private void CommandLogError()
+        {
+            foreach (var entry in ErrorLogging.Log)
+            {
+                OnStatus(string.Concat(entry, Environment.NewLine));
+            }
+        }
+
+        /// <summary>
+        /// Commands the log information.
+        /// </summary>
+        private void CommandLogInfo()
+        {
+            var message= string.Concat(IrtConst.MessageLogStatistics, Environment.NewLine, IrtConst.MessageErrorCount,
+                ErrorLogging.Log.Count, Environment.NewLine, IrtConst.MessageLogCount, _log.Count);
+
+            OnStatus(message);
+        }
+
+        /// <summary>
+        /// Commands the log full.
+        /// </summary>
+        private void CommandLogFull()
+        {
+            foreach (var entry in new List<string>(_log.Values))
+            {
+                _SendLogs.Invoke(this, entry);
             }
         }
 
@@ -318,7 +386,7 @@ namespace Interpreter
         /// <returns>Result of our Command</returns>
         private void SetResult(int key, List<string> parameter)
         {
-            var com = new OutCommand { Command = key, Parameter = parameter };
+            var com = new OutCommand { Command = key, Parameter = parameter, UsedNameSpace = _nameSpace};
 
             OnCommand(com);
         }
@@ -328,7 +396,7 @@ namespace Interpreter
         /// </summary>
         private void SetError()
         {
-            var com = new OutCommand { Command = IrtConst.ErrorParam, Parameter = null };
+            var com = new OutCommand { Command = IrtConst.ErrorParam, Parameter = null, UsedNameSpace = _nameSpace };
 
             OnCommand(com);
         }
@@ -339,7 +407,7 @@ namespace Interpreter
         /// <param name="sendLog">Debug and Status Messages</param>
         private void OnStatus(string sendLog)
         {
-            this.sendLog?.Invoke(this, sendLog);
+            SendLog?.Invoke(this, sendLog);
         }
 
         /// <summary>
@@ -348,7 +416,7 @@ namespace Interpreter
         /// <param name="outCommand">Selected User Command</param>
         private void OnCommand(OutCommand outCommand)
         {
-            sendCommand?.Invoke(this, outCommand);
+            SendCommand?.Invoke(this, outCommand);
         }
     }
 }

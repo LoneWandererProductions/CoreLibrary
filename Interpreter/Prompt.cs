@@ -98,19 +98,17 @@ namespace Interpreter
         /// <param name="extension">Optional Extension Methods</param>
         public void Initiate(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
         {
-            CollectedSpaces = new Dictionary<string, UserSpace>();
-            Log = new Dictionary<int, string>();
-            _count = -1;
+            ResetState();
 
             var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
 
             //Upper is needed because of the way we compare commands in the Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
 
-            _interpret = new IrtPrompt();
+            _interpret = new IrtPrompt(this);
             _interpret.Initiate(use);
-            _interpret.sendLog += SendLog;
-            _interpret.sendCommand += SendCommand;
+            _interpret.SendLog += SendLog;
+            _interpret.SendCommand += SendCommand;
         }
 
         /// <inheritdoc />
@@ -120,22 +118,20 @@ namespace Interpreter
         /// <param name="extension">Optional Extension Methods</param>
         public void AddCommands(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null)
         {
-            _interpret.sendLog += SendLog;
-
             if (CollectedSpaces.IsNullOrEmpty())
             {
-                _interpret.sendLog?.Invoke(this, IrtConst.ErrorNotInitialized);
+                SendLogs?.Invoke(this, IrtConst.ErrorNotInitialized);
                 return;
             }
 
-            var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
-            //Upper is needed because of the way we compare commands in the Interpreter
-            CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
+            var use = CreateUserSpace(userSpace, com);
+            _interpret.SendLog += SendLog;
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Start a Window for the Input
+        ///     Start a Window for the Input.
+        ///     Included and optional
         /// </summary>
         public void StartWindow()
         {
@@ -155,13 +151,24 @@ namespace Interpreter
 
         /// <inheritdoc />
         /// <summary>
-        ///     Callback from the Outside
+        ///     Callback from the Outside, here for window
         /// </summary>
         /// <param name="message">Feedback Message for Display</param>
-        public void Callbacks(string message)
+        public void CallbacksWindow(string message)
         {
             _prompt?.FeedbackMessage(message);
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Generic Callback from Outside, will appear in the window as SendLog Event
+        /// </summary>
+        /// <param name="message">Feedback Message for Display</param>
+        public void Callback(string message)
+        {
+            SendLogs?.Invoke(nameof(Callback), message);
+        }
+
 
         /// <summary>Switches the name spaces.</summary>
         /// <param name="space">The Namespace we would like to use.</param>
@@ -178,14 +185,7 @@ namespace Interpreter
         /// <param name="e">Type</param>
         private void SendCommand(object sender, OutCommand e)
         {
-            if (_count == MaxLines)
-            {
-                Log.Remove(Log.Keys.First());
-            }
-
-            _count++;
-            Log.Add(_count, e.Command.ToString());
-
+            AddToLog(e.Command.ToString());
             SendCommands?.Invoke(nameof(Prompt), e);
         }
 
@@ -196,14 +196,7 @@ namespace Interpreter
         /// <param name="e">Type</param>
         private void SendLog(object sender, string e)
         {
-            if (_count == MaxLines)
-            {
-                Log.Remove(Log.Keys.First());
-            }
-
-            _count++;
-            Log.Add(_count, e);
-
+            AddToLog(e);
             SendLogs?.Invoke(nameof(Prompt), e);
         }
 
@@ -223,19 +216,53 @@ namespace Interpreter
 
             if (disposing)
             {
-                // free managed resources
                 _interpret = null;
                 CollectedSpaces = null;
                 Log = null;
-
-                if (_prompt?.IsActive ?? false)
-                {
-                    _prompt.Close();
-                }
+                _prompt?.Close();
             }
 
             Disposed = true;
         }
+
+        /// <summary>
+        /// Adds to log.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private void AddToLog(string message)
+        {
+            if (_count == MaxLines)
+            {
+                Log.Remove(Log.Keys.First());
+            }
+
+            _count++;
+            Log.Add(_count, message);
+        }
+
+        /// <summary>
+        /// Resets the state.
+        /// </summary>
+        private void ResetState()
+        {
+            CollectedSpaces = new Dictionary<string, UserSpace>();
+            Log = new Dictionary<int, string>();
+            _count = -1;
+        }
+
+        /// <summary>
+        /// Creates the user space.
+        /// </summary>
+        /// <param name="userSpace">The user space.</param>
+        /// <param name="com">The COM.</param>
+        /// <returns>New userspace</returns>
+        private static UserSpace CreateUserSpace(string userSpace, Dictionary<int, InCommand> com)
+        {
+            var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
+            CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
+            return use;
+        }
+
 
         /// <summary>
         ///     NOTE: Leave out the finalizer altogether if this class doesn't
@@ -248,29 +275,5 @@ namespace Interpreter
             // Finalizer calls Dispose(false)
             Dispose(false);
         }
-    }
-
-    /// <summary>
-    ///     Only simple Methods with Parameter that are not Collections for now
-    /// </summary>
-    public sealed class OutCommand
-    {
-        /// <summary>
-        ///     Gets or sets the command.
-        /// </summary>
-        public int Command { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the parameter.
-        /// </summary>
-        public List<string> Parameter { get; internal init; }
-
-        /// <summary>
-        /// Gets a value indicating whether [extension used].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [extension used]; otherwise, <c>false</c>.
-        /// </value>
-        public bool ExtensionUsed { get; internal init; }
     }
 }

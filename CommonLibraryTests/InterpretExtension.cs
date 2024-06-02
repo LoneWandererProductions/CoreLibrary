@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Interpreter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {

@@ -7,7 +7,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Documents;
+using ExtendedSystemObjects;
 
 namespace Interpreter
 {
@@ -16,6 +19,11 @@ namespace Interpreter
     /// </summary>
     internal static class ErrorLogging
     {
+        /// <summary>
+        /// The log
+        /// </summary>
+        internal static List<string> Log = new List<string>();
+
         /// <summary>
         ///     Error Logging
         /// </summary>
@@ -48,6 +56,8 @@ namespace Interpreter
 
                 default: return string.Empty;
             }
+
+            Log.Add(message);
 
             Trace.WriteLine(string.Concat(message, Environment.NewLine));
 

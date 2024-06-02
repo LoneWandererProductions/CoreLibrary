@@ -93,7 +93,7 @@ namespace CommonLibraryTests
         [TestInitialize]
         public void SetUp()
         {
-            _irtPrompt = new IrtPrompt();
+            _irtPrompt = new IrtPrompt(new Prompt());
             _commands = new Dictionary<int, InCommand>
             {
                 { 1, new InCommand { Command = "COMMAND1", ParameterCount = 0, Description = "Description1" } },
@@ -358,7 +358,7 @@ namespace CommonLibraryTests
         public void HandleInputValidCommandNoParameters_Success()
         {
             var commandHandled = false;
-            _irtPrompt.sendCommand += (sender, e) =>
+            _irtPrompt.SendCommand += (sender, e) =>
             {
                 Assert.AreEqual(1, e.Command);
                 commandHandled = true;
@@ -376,7 +376,7 @@ namespace CommonLibraryTests
         public void HandleInputInvalidCommandLogsError()
         {
             var logHandled = false;
-            _irtPrompt.sendLog += (_, e) =>
+            _irtPrompt.SendLog += (_, e) =>
             {
                 Assert.IsTrue(e.Contains(IrtConst.KeyWordNotFoundError));
                 logHandled = true;
@@ -394,7 +394,7 @@ namespace CommonLibraryTests
         public void HandleInputHelpCommandLogsHelp()
         {
             var logHandled = false;
-            _irtPrompt.sendLog += (sender, e) =>
+            _irtPrompt.SendLog += (sender, e) =>
             {
                 Assert.AreEqual(IrtConst.HelpGeneric, e);
                 logHandled = true;
@@ -412,7 +412,7 @@ namespace CommonLibraryTests
         public void HandleInputCommandWithParametersSuccess()
         {
             var commandHandled = false;
-            _irtPrompt.sendCommand += (sender, e) =>
+            _irtPrompt.SendCommand += (sender, e) =>
             {
                 Assert.AreEqual(2, e.Command);
                 Assert.AreEqual(1, e.Parameter.Count);
@@ -432,7 +432,7 @@ namespace CommonLibraryTests
         public void HandleInputCommandWithInvalidParametersLogsError()
         {
             var logHandled = false;
-            _irtPrompt.sendLog += (sender, e) =>
+            _irtPrompt.SendLog += (sender, e) =>
             {
                 Assert.IsTrue(e.Contains(IrtConst.ParenthesisError));
                 logHandled = true;

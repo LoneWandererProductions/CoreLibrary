@@ -31,15 +31,21 @@ namespace Interpreter
         void AddCommands(Dictionary<int, InCommand> com, string userSpace, Dictionary<int, InCommand> extension = null);
 
         /// <summary>
-        ///     Start the window.
+        ///     Start the window. If we want to use the included window.
         /// </summary>
         void StartWindow();
 
         /// <summary>
-        ///     The callbacks.
+        ///     The callbacks for Window, method messages to the window.
         /// </summary>
         /// <param name="message">The messages.</param>
-        void Callbacks(string message);
+        void CallbacksWindow(string message);
+
+        /// <summary>
+        /// Callbacks the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        void Callback(string message);
 
         /// <summary>
         ///     Start the console.
