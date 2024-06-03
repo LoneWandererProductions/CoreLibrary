@@ -44,7 +44,7 @@ namespace Interpreter
         /// <summary>
         ///     The collected Namespaces
         /// </summary>
-        public static Dictionary<string, UserSpace> CollectedSpaces { get; private set; }
+        public Dictionary<string, UserSpace> CollectedSpaces { get; private set; }
 
         /// <summary>
         ///     Send selected Command to the Subscriber
@@ -127,7 +127,7 @@ namespace Interpreter
             }
 
             var use = CreateUserSpace(userSpace, com);
-            CollectedSpaces.AddDistinct(userSpace, use);
+            CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
             _interpret.SendLog += SendLog;
         }
 
@@ -172,10 +172,9 @@ namespace Interpreter
             SendLogs?.Invoke(nameof(Callback), message);
         }
 
-
         /// <summary>Switches the name spaces.</summary>
         /// <param name="space">The Namespace we would like to use.</param>
-        internal static void SwitchNameSpaces(string space)
+        internal void SwitchNameSpaces(string space)
         {
             var use = CollectedSpaces[space];
             _interpret.Initiate(use);
@@ -232,7 +231,7 @@ namespace Interpreter
         ///     Adds to log.
         /// </summary>
         /// <param name="message">The message.</param>
-        private void AddToLog(string message)
+        internal void AddToLog(string message)
         {
             if (_count == MaxLines)
             {
@@ -259,13 +258,12 @@ namespace Interpreter
         /// <param name="userSpace">The user space.</param>
         /// <param name="com">The COM.</param>
         /// <returns>New UserSpace</returns>
-        private static UserSpace CreateUserSpace(string userSpace, Dictionary<int, InCommand> com)
+        private UserSpace CreateUserSpace(string userSpace, Dictionary<int, InCommand> com)
         {
             var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
             return use;
         }
-
 
         /// <summary>
         ///     NOTE: Leave out the finalizer altogether if this class doesn't

@@ -29,6 +29,8 @@ namespace Interpreter
 
         /// <summary>
         ///     Gets or sets the Parameter count.
+        ///     If positive Amount = Amount
+        ///     If negative Amount >= Absolute(amount)
         /// </summary>
         public int ParameterCount { internal get; init; }
 

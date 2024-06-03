@@ -29,11 +29,6 @@ namespace Interpreter
         private static string _nameSpace;
 
         /// <summary>
-        ///     The log
-        /// </summary>
-        private readonly Dictionary<int, string> _log;
-
-        /// <summary>
         ///     The send logs
         /// </summary>
         private readonly EventHandler<string> _sendLogs;
@@ -42,6 +37,16 @@ namespace Interpreter
         ///     Send selected Command to the Subscriber
         /// </summary>
         internal EventHandler<OutCommand> sendCommand;
+
+        /// <summary>
+        /// The prompt
+        /// </summary>
+        private readonly Prompt _prompt;
+
+        /// <summary>
+        ///     The log
+        /// </summary>
+        private readonly Dictionary<int, string> _log;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
@@ -56,6 +61,7 @@ namespace Interpreter
         {
             _log = prompt.Log;
             _sendLogs = prompt.SendLogs;
+            _prompt = prompt;
         }
 
         /// <summary>Get the Engine Running</summary>
@@ -136,15 +142,19 @@ namespace Interpreter
             var parameter = Irt.SplitParameter(parameterPart, IrtConst.Splitter);
 
             //Check for overloads, get the Overload by Parameter Count, return -1 if we do not find a match
-            key = Irt.CheckOverload(_com[key].Command, parameter.Count, _com);
+            var check = Irt.CheckOverload(_com[key].Command, parameter.Count, _com);
 
             //Incorrect overload
-            if (key == IrtConst.ErrorParam)
+            if (check == null)
             {
                 var log = ErrorLogging.SetLastError(IrtConst.SyntaxError, 0);
                 OnStatus(log);
                 SetError();
                 return;
+            }
+            else
+            {
+                key = (int)check;
             }
 
             SetResult(key, parameter);
@@ -212,7 +222,6 @@ namespace Interpreter
             }
         }
 
-
         /// <summary>
         ///     Return help for specific command
         /// </summary>
@@ -253,13 +262,13 @@ namespace Interpreter
             //Remove Parenthesis and split
             parameterPart = Irt.RemoveParenthesis(parameterPart, IrtConst.BaseClose, IrtConst.BaseOpen);
 
-            if (!Prompt.CollectedSpaces.ContainsKey(parameterPart))
+            if (!_prompt.CollectedSpaces.ContainsKey(parameterPart))
             {
                 OnStatus(IrtConst.ErrorUserSpaceNotFound);
                 return;
             }
 
-            Prompt.SwitchNameSpaces(parameterPart);
+            _prompt.SwitchNameSpaces(parameterPart);
         }
 
         /// <summary>
@@ -278,7 +287,7 @@ namespace Interpreter
         private void CommandUsing(string nameSpace)
         {
             OnStatus(string.Concat(IrtConst.Active, nameSpace, Environment.NewLine));
-            foreach (var key in Prompt.CollectedSpaces.Keys)
+            foreach (var key in _prompt.CollectedSpaces.Keys)
             {
                 OnStatus(string.Concat(key, Environment.NewLine));
             }
@@ -374,6 +383,8 @@ namespace Interpreter
         {
             foreach (var com in Irt.SplitParameter(parameterPart, IrtConst.NewCommand))
             {
+                //just because we run a container or a batch, we still have to log it
+                _prompt.AddToLog(com);
                 HandleInput(com);
             }
         }

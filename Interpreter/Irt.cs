@@ -267,23 +267,24 @@ namespace Interpreter
 
         /// <summary>
         ///     Check the overload and the Parameter Count
+        ///     if count is positive count and parameter must be equal.
+        ///     if count is negative the parameter count must be equal and or bigger
         /// </summary>
         /// <param name="command">The command Keyword</param>
         /// <param name="count">The count of Parameters</param>
         /// <param name="commands">The Command Dictionary</param>
         /// <returns>
-        ///     The Command Id, identical, if there is no overload, new id, if there is an overload, -1 if something went
+        ///     The Command Id, identical, if there is no overload, new id, if there is an overload, null if something went
         ///     wrong <see cref="int" />.
         /// </returns>
-        internal static int CheckOverload(string command, int count, Dictionary<int, InCommand> commands)
+        internal static int? CheckOverload(string command, int count, Dictionary<int, InCommand> commands)
         {
-            foreach (
-                var comm in commands.Where(com => command == com.Value.Command && com.Value.ParameterCount == count))
-            {
-                return comm.Key;
-            }
+            var matchingCommands = commands
+                .Where(com => com.Value.Command == command &&
+                              (count < 0 ? com.Value.ParameterCount >= count : com.Value.ParameterCount == count))
+                .Select(com => (int?)com.Key);
 
-            return IrtConst.ErrorParam;
+            return matchingCommands.FirstOrDefault();
         }
 
         /// <summary>
