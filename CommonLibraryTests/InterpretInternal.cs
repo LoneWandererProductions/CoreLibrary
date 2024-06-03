@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Interpreter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace InterpreteTests
 {
     /// <summary>
     ///     Interpreter unit test class. Internal functions
@@ -100,7 +100,7 @@ namespace CommonLibraryTests
             };
 
             var result = Irt.CheckOverload("command", 3, commands);
-            Assert.AreEqual(IrtConst.ErrorParam, result);
+            Assert.AreEqual(null, result);
         }
     }
 }

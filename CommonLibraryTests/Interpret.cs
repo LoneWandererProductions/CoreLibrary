@@ -104,7 +104,6 @@ namespace CommonLibraryTests
             _irtPrompt.Initiate(userSpace);
         }
 
-
         /// <summary>
         ///     Check our Interpreter
         /// </summary>
@@ -249,7 +248,7 @@ namespace CommonLibraryTests
 
             _prompt.AddCommands(DctCommandTwo, UserSpaceTwo);
 
-            Assert.AreEqual(2, Prompt.CollectedSpaces.Count, "Wrong Number of Namespaces");
+            Assert.AreEqual(2, _prompt.CollectedSpaces.Count, "Wrong Number of Namespaces");
 
             _prompt.StartConsole("use (" + UserSpaceTwo + ")");
             _prompt.StartConsole("test");
@@ -272,14 +271,14 @@ namespace CommonLibraryTests
             _prompt.SendLogs += SendLogs;
             _prompt.SendCommands += SendCommands;
             _prompt.Initiate(DctCommandOne, UserSpaceOne);
-            _prompt.StartConsole("Container{FirSt(1,2); Third() ; Help()};;;;");
+            _prompt.StartConsole("Container{FirSt(1,2); Third() ; ; --test comment;Help()};;;;");
 
             Assert.AreEqual(true,
                 _log.Contains("Basic prompt, Version : 0.3. Author: Peter Geinitz (Wayfarer), not context sensitive"),
                 "Help not displayed" + _log);
 
-            Assert.AreEqual(_prompt.Log[0], "0", "Correct Parameter");
-            Assert.AreEqual(_prompt.Log[1], "2", "Correct Parameter");
+            Assert.AreEqual(_prompt.Log[1], "0", "Correct Parameter");
+            Assert.AreEqual(_prompt.Log[3], "2", "Correct Parameter");
             _prompt.Dispose();
         }
 
@@ -302,8 +301,9 @@ namespace CommonLibraryTests
                 _log.Contains("Basic prompt, Version : 0.3. Author: Peter Geinitz (Wayfarer), not context sensitive"),
                 "Help not displayed" + _log);
 
-            Assert.AreEqual(_prompt.Log[0], "0", "Correct Parameter");
-            Assert.AreEqual(_prompt.Log[1], "2", "Correct Parameter");
+            Assert.AreEqual(_prompt.Log[1], "0", "Correct Parameter");
+            Assert.AreEqual(_prompt.Log[2], "Third()", "Correct Parameter");
+            Assert.AreEqual(_prompt.Log[3], "2", "Correct Parameter");
 
             if (File.Exists(Batch))
             {
