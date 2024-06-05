@@ -68,13 +68,27 @@ namespace PluginLoader
 
             foreach (var pluginPath in pluginPaths)
             {
+                var pluginAssembly = LoadPlugin(pluginPath);
+
                 try
                 {
-                    var pluginAssembly = LoadPlugin(pluginPath);
+
                     var syncPlugins = CreateCommands<IPlugin>(pluginAssembly).ToList();
-                    var asyncPlugins = CreateCommands<IAsyncPlugin>(pluginAssembly).ToList();
 
                     PluginContainer.AddRange(syncPlugins);
+                }
+                catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
+                                               or ReflectionTypeLoadException or BadImageFormatException
+                                               or FileNotFoundException)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+
+                try
+                {
+                    var asyncPlugins = CreateCommands<IAsyncPlugin>(pluginAssembly).ToList();
+
                     AsyncPluginContainer.AddRange(asyncPlugins);
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
