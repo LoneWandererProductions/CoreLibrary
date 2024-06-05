@@ -81,6 +81,7 @@
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\Interpreter\Interpreter.csproj" />
     <ProjectReference Include="..\PlayGround\PlayGround.csproj" />
+    <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
     <ProjectReference Include="..\Serializer\Serializer.csproj" />
   </ItemGroup>
 

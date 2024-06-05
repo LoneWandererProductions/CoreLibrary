@@ -19,10 +19,11 @@ namespace CommonLibraryGuiTests
     {
         /// <summary>
         ///     Test the  Loads Plugin.
+        ///     with my custom SqlLite Frontend
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
-        public void LoadPlugin()
+        public void LoadPluginSqliIte()
         {
             var root = DirectoryInformation.GetParentDirectory(3);
             var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net5.0-windows");
