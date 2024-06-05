@@ -84,7 +84,7 @@ namespace Plugin
         ///     This method is optional.
         /// </summary>
         /// <param name="id">The identifier of the command.</param>
-        /// <returns>Status Code</returns>
+        /// <returns>Result object</returns>
         object ExecuteCommand(int id);
 
         /// <summary>

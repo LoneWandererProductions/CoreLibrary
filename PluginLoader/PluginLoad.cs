@@ -39,6 +39,14 @@ namespace PluginLoader
         public static List<IPlugin> PluginContainer { get; private set; }
 
         /// <summary>
+        /// Gets the asynchronous plugin container.
+        /// </summary>
+        /// <value>
+        /// The asynchronous plugin container.
+        /// </value>
+        public static List<IAsyncPlugin> AsyncPluginContainer { get; private set; }
+
+        /// <summary>
         ///     Loads all.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -56,14 +64,18 @@ namespace PluginLoader
             }
 
             PluginContainer = new List<IPlugin>();
+            AsyncPluginContainer = new List<IAsyncPlugin>();
 
             foreach (var pluginPath in pluginPaths)
             {
                 try
                 {
                     var pluginAssembly = LoadPlugin(pluginPath);
-                    var lst = CreateCommands(pluginAssembly).ToList();
-                    PluginContainer.AddRange(lst);
+                    var syncPlugins = CreateCommands<IPlugin>(pluginAssembly).ToList();
+                    var asyncPlugins = CreateCommands<IAsyncPlugin>(pluginAssembly).ToList();
+
+                    PluginContainer.AddRange(syncPlugins);
+                    AsyncPluginContainer.AddRange(asyncPlugins);
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
                                                or ReflectionTypeLoadException or BadImageFormatException
@@ -74,7 +86,7 @@ namespace PluginLoader
                 }
             }
 
-            return PluginContainer.Count != 0;
+            return PluginContainer.Count != 0 || AsyncPluginContainer.Count != 0;
         }
 
         /// <summary>
@@ -138,20 +150,21 @@ namespace PluginLoader
         /// <summary>
         ///     Creates the commands.
         /// </summary>
+        /// <typeparam name="T">Type of Plugin</typeparam>
         /// <param name="assembly">The assembly.</param>
-        /// <returns>Adds References to the Commands</returns>
-        /// <exception cref="ApplicationException">
+        /// <returns>
+        /// Adds References to the Commands
         ///     Can't find any type which implements IPlugin in {assembly} from {assembly.Location}.\n" +
         ///     $"Available types: {availableTypes}
-        /// </exception>
+        /// $"Available types: {availableTypes}</exception>
         /// <exception cref="ArgumentException">Could not find the Plugin</exception>
-        private static IEnumerable<IPlugin> CreateCommands(Assembly assembly)
+        private static IEnumerable<T> CreateCommands<T>(Assembly assembly) where T : class
         {
             var count = 0;
 
-            foreach (var type in assembly.GetTypes().Where(type => typeof(IPlugin).IsAssignableFrom(type)))
+            foreach (var type in assembly.GetTypes().Where(type => typeof(T).IsAssignableFrom(type)))
             {
-                if (Activator.CreateInstance(type) is not IPlugin result)
+                if (Activator.CreateInstance(type) is not T result)
                 {
                     continue;
                 }
@@ -165,12 +178,9 @@ namespace PluginLoader
                 yield break;
             }
 
-            var availableTypes =
-                string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
-
+            var availableTypes = string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
             var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin,
                 PluginLoaderResources.Information(assembly, availableTypes));
-
             throw new ArgumentException(message);
         }
     }
