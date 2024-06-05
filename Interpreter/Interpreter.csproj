@@ -21,10 +21,6 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-
-
-
-  
   <ItemGroup>
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
   </ItemGroup>
