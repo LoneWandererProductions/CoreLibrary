@@ -11,6 +11,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects;
 
@@ -180,6 +181,26 @@ namespace Mathematics
 
             var result = MatrixInverse.Inverse(Matrix);
             return new BaseMatrix(result);
+        }
+
+        /// <summary>
+        /// Lus the decomposition.
+        /// </summary>
+        /// <returns>Key Value Pair of L and U Matrix</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public KeyValuePair<BaseMatrix, BaseMatrix> LuDecomposition()
+        {
+            if (Height != Width)
+            {
+                throw new NotImplementedException(MathResources.MatrixErrorInverseNotCubic);
+            }
+
+            var (l, u) = MatrixInverse.LuDecomposition(Matrix);
+
+            var lMatrix = new BaseMatrix(l);
+            var uMatrix = new BaseMatrix(u);
+
+            return new KeyValuePair<BaseMatrix, BaseMatrix>(lMatrix, uMatrix);
         }
 
         /// <summary>
