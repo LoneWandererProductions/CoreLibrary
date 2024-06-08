@@ -10,11 +10,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using FileHandler;
+using System.Text;
 
 namespace Serializer
 {
@@ -24,6 +26,43 @@ namespace Serializer
     /// </summary>
     public static class DeSerialize
     {
+        /// <summary>
+        /// Logs the provided message. For demonstration purposes, this logs to the console.
+        /// In a real application, use a proper logging framework.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        private static void Log(string message)
+        {
+            Trace.WriteLine($"[{DateTime.Now}] {message}");
+        }
+
+        /// <summary>
+        /// Validates that the file exists and is not empty.
+        /// </summary>
+        /// <param name="path">The file path.</param>
+        private static void ValidateFilePath(string path)
+        {
+            if (!FileHandleSearch.FileExists(path))
+            {
+                throw new ArgumentException($"{SerialResources.ErrorPath} {path}");
+            }
+
+            if (!FileContent(path))
+            {
+                throw new ArgumentException($"{SerialResources.ErrorFileEmpty} {path}");
+            }
+        }
+
+        /// <summary>
+        /// Checks if the file has content.
+        /// </summary>
+        /// <param name="path">The file path.</param>
+        /// <returns>True if file has content, false otherwise.</returns>
+        private static bool FileContent(string path)
+        {
+            return new FileInfo(path).Length != 0;
+        }
+
         /// <summary>
         ///     Load the object from XML.
         /// </summary>
@@ -36,13 +75,15 @@ namespace Serializer
 
             try
             {
-                using var reader = new StreamReader(path);
-                return new XmlSerializer(typeof(T)).Deserialize(reader) as T;
+                using var reader = new StreamReader(path, Encoding.UTF8);
+                var result = new XmlSerializer(typeof(T)).Deserialize(reader) as T;
+                Log($"Object of type {typeof(T)} successfully deserialized from {path}");
+                return result;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw new Serialize.DeserializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -60,12 +101,14 @@ namespace Serializer
             {
                 var serializer = new XmlSerializer(typeof(List<T>));
                 using var stream = new FileStream(path, FileMode.Open);
-                return (List<T>)serializer.Deserialize(stream);
+                var result = (List<T>)serializer.Deserialize(stream);
+                Log($"List of type {typeof(T)} successfully deserialized from {path}");
+                return result;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw new Serialize.DeserializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -82,44 +125,19 @@ namespace Serializer
 
             try
             {
-                using var reader = new StreamReader(path);
+                using var reader = new StreamReader(path, Encoding.UTF8);
                 var list = (List<Item>)new XmlSerializer(typeof(List<Item>)).Deserialize(reader);
 
-                return list.ToDictionary(
+                var result = list.ToDictionary(
                     item => Deserialize<TKey>(item.Key),
                     item => Deserialize<TValue>(item.Value));
+                Log($"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully deserialized from {path}");
+                return result;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new Exception($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        ///     Basic check if File is empty
-        /// </summary>
-        /// <param name="path">Name of the File</param>
-        /// <returns>Status if File has actual content and some Debug Messages for easier Debugging</returns>
-        private static bool FileContent(string path)
-        {
-            return new FileInfo(path).Length != 0;
-        }
-
-        /// <summary>
-        ///     Validates the file path.
-        /// </summary>
-        /// <param name="path">The path to validate.</param>
-        private static void ValidateFilePath(string path)
-        {
-            if (!FileHandleSearch.FileExists(path))
-            {
-                throw new ArgumentException($"{SerialResources.ErrorPath} {path}");
-            }
-
-            if (!FileContent(path))
-            {
-                throw new ArgumentException($"{SerialResources.ErrorFileEmpty} {path}");
+                throw new Serialize.DeserializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 

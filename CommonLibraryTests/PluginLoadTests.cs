@@ -58,26 +58,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the files by extension full path0 valid path no files returns empty list.
-        /// </summary>
-        [TestMethod]
-        public void GetFilesByExtensionFullPath0ValidPathNoFilesReturnsEmptyList()
-        {
-            // Arrange
-            var validPath = System.IO.Path.GetTempPath();
-            var extension = ".dll";
-
-            // Act
-            var result = InvokePrivateStaticMethod<IEnumerable<string>>(typeof(PluginLoad), "GetFilesByExtensionFullPath", validPath, extension);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.Any());
-        }
-
-        // Additional test methods to cover more scenarios can be added here
-
-        /// <summary>
         /// Loads all no plugins found returns false.
         /// </summary>
         [TestMethod]

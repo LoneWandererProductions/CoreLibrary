@@ -66,7 +66,7 @@ namespace Mathematics
         /// <value>
         ///     A, as Aspect Ratio
         /// </value>
-        internal static double A => (double)Height / Width;
+        internal static double A => (double)Width / Height ;
 
         /// <summary>
         ///     field of view, degree

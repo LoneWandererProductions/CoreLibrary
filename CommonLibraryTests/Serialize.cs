@@ -93,21 +93,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Tests the serialize dictionary empty dictionary throws exception.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void TestSerializeDictionaryEmptyDictionaryThrowsException()
-        {
-            // Arrange
-            var dictionary = new Dictionary<string, string>();
-            const string path = "test.xml";
-
-            // Act
-            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
-        }
-
-        /// <summary>
         ///     Tests the serialize dictionary valid dictionary creates XML file.
         /// </summary>
         [TestMethod]
@@ -135,8 +120,8 @@ namespace CommonLibraryTests
         ///     Tests the serialize dictionary invalid path throws exception.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(FileHandlerException))]
-        public void Test_SerializeDictionaryInvalidPathThrowsException()
+        [ExpectedException(typeof(Serializer.Serialize.SerializationException))]
+        public void TestSerializeDictionaryInvalidPathThrowsException()
         {
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };

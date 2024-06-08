@@ -44,7 +44,8 @@ namespace CommonLibraryTests
             const float fNear = 0.1f;
             const float fFar = 1000.0f;
             const float fFov = 90.0f;
-            const double fAspectRatio = (double)screenHeight / screenWidth;
+            //since a error was fixed this one will be switched just for this
+            const double fAspectRatio = (double)screenWidth / screenHeight;
             var fFovRad = 1.0f / Math.Tan(fFov * 0.5f / 180.0f * 3.14159f);
 
             Projection3DRegister.Width = screenWidth;
