@@ -49,5 +49,20 @@ namespace DataFormatter
         ///     The string Z (const). Value: " Z: ".
         /// </summary>
         internal const string StrZ = " Z: ";
+
+        /// <summary>
+        ///     The Error file was empty (const). Value: "Error reading CSV file: ".
+        /// </summary>
+        internal const string ErrorFileEmpty = "Error reading CSV file: ";
+
+        /// <summary>
+        ///     The Error data was empty (const). Value: "CSV data cannot be null.".
+        /// </summary>
+        internal const string ErrorDataEmpty = "CSV data cannot be null.";
+
+        /// <summary>
+        ///     Throw Message, file was empty (const). Value: "File path cannot be null or empty.".
+        /// </summary>
+        internal const string ThrowFileEmpty = "File path cannot be null or empty.";
     }
 }

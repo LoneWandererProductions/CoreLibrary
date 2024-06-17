@@ -24,7 +24,7 @@ namespace CommonLibraryTests
         /// <summary>
         ///     The test file path
         /// </summary>
-        private const string TestFilePath = "testfile.txt";
+        private readonly string _testFilePath = Path.Combine(Directory.GetCurrentDirectory(), "testFile.txt");
 
         /// <summary>
         ///     Sets up.
@@ -33,7 +33,7 @@ namespace CommonLibraryTests
         public void SetUp()
         {
             // Create a test file with UTF-8 encoding and special characters
-            using var writer = new StreamWriter(TestFilePath, false, Encoding.UTF8);
+            using var writer = new StreamWriter(_testFilePath, false, Encoding.UTF8);
             writer.WriteLine("Line 1 with Ü");
             writer.WriteLine("Line 2 with ö");
         }
@@ -58,17 +58,17 @@ namespace CommonLibraryTests
                 lst.Add(line);
             }
 
-            CsvHandler.WriteCsv(TestFilePath, lst);
+            CsvHandler.WriteCsv(_testFilePath, lst);
 
-            Assert.IsTrue(File.Exists(TestFilePath), "File exists");
+            Assert.IsTrue(File.Exists(_testFilePath), "File exists");
 
-            lst = CsvHandler.ReadCsv(TestFilePath, ',');
+            lst = CsvHandler.ReadCsv(_testFilePath, ',');
 
             Assert.AreEqual("0", lst[1][0], "Right Element");
 
             Assert.AreEqual("9", lst[2][9], "Right Element");
 
-            FileHandleDelete.DeleteFile(TestFilePath);
+            FileHandleDelete.DeleteFile(_testFilePath);
         }
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace CommonLibraryTests
         public void TearDown()
         {
             // Clean up the test file
-            if (File.Exists(TestFilePath))
+            if (File.Exists(_testFilePath))
             {
-                File.Delete(TestFilePath);
+                File.Delete(_testFilePath);
             }
         }
 
@@ -94,10 +94,56 @@ namespace CommonLibraryTests
             var expectedLines = new List<string> { "Line 1 with Ü", "Line 2 with ö" };
 
             // Act
-            var actualLines = ReadText.ReadFile(TestFilePath);
+            var actualLines = ReadText.ReadFile(_testFilePath);
 
             // Assert
             CollectionAssert.AreEqual(expectedLines, actualLines);
         }
+
+        [TestMethod]
+        public void TestReadCsv()
+        {
+            // Arrange
+            const string csvContent = "123,Hello\n456,World";
+            File.WriteAllText(_testFilePath, csvContent);
+            const char separator = ',';
+
+            // Act
+            List<MyCustomType> result = CsvHandler.ReadCsv<MyCustomType>(_testFilePath, separator);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
+
+            Assert.AreEqual(123, result[0].Property1);
+            Assert.AreEqual("Hello", result[0].Property2);
+
+            Assert.AreEqual(456, result[1].Property1);
+            Assert.AreEqual("World", result[1].Property2);
+        }
+    }
+
+    /// <summary>
+    /// Test Class
+    /// </summary>
+    internal class MyCustomType
+    {
+        /// <summary>
+        /// Gets or sets the property1.
+        /// </summary>
+        /// <value>
+        /// The property1.
+        /// </value>
+        [CsvColumn(0, typeof(IntAttributeConverter))]
+        public int Property1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the property2.
+        /// </summary>
+        /// <value>
+        /// The property2.
+        /// </value>
+        [CsvColumn(1, typeof(StringAttributeConverter))]
+        public string Property2 { get; set; }
     }
 }
