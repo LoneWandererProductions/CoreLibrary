@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataFormatter
@@ -35,7 +34,8 @@ namespace DataFormatter
             var parts = new List<string>();
             try
             {
-                using var reader = new StreamReader(filepath, Encoding.UTF8);
+                var encoding = EncodingHelper.GetFileEncoding(filepath);
+                using var reader = new StreamReader(filepath, encoding);
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
