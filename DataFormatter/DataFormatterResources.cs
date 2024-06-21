@@ -64,5 +64,10 @@ namespace DataFormatter
         ///     Throw Message, file was empty (const). Value: "File path cannot be null or empty.".
         /// </summary>
         internal const string ThrowFileEmpty = "File path cannot be null or empty.";
+
+        /// <summary>
+        ///    Encoding Parameter (const). Value: "UTF-32BE".
+        /// </summary>
+        internal const string EncodingUTF32 = "UTF-32BE";
     }
 }
