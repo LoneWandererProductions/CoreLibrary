@@ -23,6 +23,7 @@ namespace DataFormatter
         /// </summary>
         /// <param name="str">The string.</param>
         /// <param separator="separator"></param>
+        /// <param name="separator">the splitter used in the csv</param>
         /// <returns>split Parts</returns>
         internal static List<string> GetParts(string str, char separator)
         {
@@ -39,38 +40,42 @@ namespace DataFormatter
             using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             // Read the first few bytes to detect the encoding
             byte[] buffer = new byte[5];
-            fs.Read(buffer, 0, 5);
+            var bytesRead = fs.Read(buffer, 0, 5);
 
-            // Check for UTF-8 BOM
-            if (buffer[0] == 0xef && buffer[1] == 0xbb && buffer[2] == 0xbf)
+            // Check if the file is smaller than the BOM sizes we are checking
+            if (bytesRead < 2)
+            {
+                return Encoding.Default; // Default ANSI code page if not enough bytes for BOM
+            }
+
+            // Check for BOMs
+            if (buffer[0] == 0xef && bytesRead >= 3 && buffer[1] == 0xbb && buffer[2] == 0xbf)
             {
                 return Encoding.UTF8;
             }
-            // Check for UTF-16 LE BOM
-            else if (buffer[0] == 0xff && buffer[1] == 0xfe)
+
+            if (buffer[0] == 0xff && buffer[1] == 0xfe)
             {
                 return Encoding.Unicode; // UTF-16 LE
             }
-            // Check for UTF-16 BE BOM
-            else if (buffer[0] == 0xfe && buffer[1] == 0xff)
+
+            if (buffer[0] == 0xfe && buffer[1] == 0xff)
             {
                 return Encoding.BigEndianUnicode; // UTF-16 BE
             }
-            // Check for UTF-32 LE BOM
-            else if (buffer[0] == 0xff && buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00)
+
+            if (buffer[0] == 0xff && bytesRead >= 4 && buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00)
             {
                 return Encoding.UTF32; // UTF-32 LE
             }
-            // Check for UTF-32 BE BOM
-            else if (buffer[0] == 0x00 && buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff)
+
+            if (buffer[0] == 0x00 && bytesRead >= 4 && buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff)
             {
-                return Encoding.GetEncoding(DataFormatterResources.EncodingUTF32); // UTF-32 BE
+                return Encoding.GetEncoding("utf-32BE"); // UTF-32 BE
             }
-            else
-            {
-                // Default encoding (change this as per your requirements)
-                return Encoding.Default; // Default ANSI code page
-            }
+
+            // Default encoding (change this as per your requirements)
+            return Encoding.Default; // Default ANSI code page
         }
     }
 }
