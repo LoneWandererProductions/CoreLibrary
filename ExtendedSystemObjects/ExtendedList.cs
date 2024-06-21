@@ -89,18 +89,100 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Remove Contents of a List from a Sequence
+        ///     Add contents of another sequence to the base list, ensuring no duplicates
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
-        /// <param name="lst">Base list we remove from</param>
-        /// <param name="range">List with elements we want to remove</param>
-        public static void RemoveListRange<TValue>(this List<TValue> lst, IEnumerable<TValue> range)
+        /// <param name="lst">Base list we add to</param>
+        /// <param name="range">Sequence with elements we want to add</param>
+        public static void Union<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
         {
-            foreach (var element in range.Where(lst.Contains))
+            if(invert)
             {
-                _ = lst.Remove(element);
+                lst.Difference(range);
+            }
+            else
+            {
+                var set = new HashSet<TValue>(lst);
+                set.UnionWith(range);
+                lst.Clear();
+                lst.AddRange(set);
             }
         }
+
+        /// <summary>
+        ///     Add contents of another sequence to the base list, ensuring no duplicates
+        /// </summary>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <param name="lst">Base list we add to</param>
+        /// <param name="range">Sequence with elements we want to add</param>
+        /// <param name="invert">If true, removes elements instead of adding them</param>
+        public static void Difference<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
+        {
+            if (invert)
+            {
+                var set = new HashSet<TValue>(lst);
+                set.UnionWith(range);
+                lst.Clear();
+                lst.AddRange(set);
+            }
+            else
+            {
+                var newList = lst.Except(range).ToList();
+                lst.Clear();
+                lst.AddRange(newList);
+            }
+        }
+
+        /// <summary>
+        ///     Keep only elements present in both the base list and another sequence
+        /// </summary>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <param name="lst">Base list to filter</param>
+        /// <param name="range">Sequence with elements to retain</param>
+        /// <param name="invert">If true, keeps elements not present in both sequences</param>
+        public static void Intersection<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
+        {
+            if (invert)
+            {
+                var lstExceptRange = lst.Except(range);
+                var rangeExceptLst = range.Except(lst);
+                var newList = lstExceptRange.Union(rangeExceptLst).ToList();
+                lst.Clear();
+                lst.AddRange(newList);
+            }
+            else
+            {
+                var newList = lst.Intersect(range).ToList();
+                lst.Clear();
+                lst.AddRange(newList);
+            }
+        }
+
+        /// <summary>
+        ///     Keep only elements that are in either the base list or another sequence but not in both
+        /// </summary>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <param name="lst">Base list to modify</param>
+        /// <param name="range">Sequence with elements to compare</param>
+        /// <param name="invert">If true, keeps elements that are in both sequences</param>
+        public static void SymmetricDifference<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
+        {
+            if (invert)
+            {
+                var newList = lst.Intersect(range).ToList();
+                lst.Clear();
+                lst.AddRange(newList);
+            }
+            else
+            {
+                var lstExceptRange = lst.Except(range);
+                var rangeExceptLst = range.Except(lst);
+                var newList = lstExceptRange.Union(rangeExceptLst).ToList();
+                lst.Clear();
+                lst.AddRange(newList);
+            }
+        }
+
 
         /// <summary>
         ///     Try to Clone a List

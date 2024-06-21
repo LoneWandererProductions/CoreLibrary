@@ -179,26 +179,6 @@ namespace CommonLibraryTests
         ///     Here we Test our List AddReplace
         /// </summary>
         [TestMethod]
-        public void ExtendedListRemoveListRange()
-        {
-            var baseLst = new List<int> { 1, 2, 3 };
-            var removeList = new List<int> { 1, 2 };
-            baseLst.RemoveListRange(removeList);
-            Assert.AreEqual(1, baseLst.Count, "Not removed");
-            Assert.AreEqual(3, baseLst[0], "Right Element removed");
-
-            baseLst.Add(5);
-            baseLst.Add(6);
-
-            var removeLstAlt = new List<int> { 1, 2 };
-            baseLst.RemoveListRange(removeLstAlt);
-            Assert.AreEqual(3, baseLst.Count, "Not removed");
-        }
-
-        /// <summary>
-        ///     Here we Test our List AddReplace
-        /// </summary>
-        [TestMethod]
         public void ExtendedListChunk()
         {
             var baseLst = new List<int> { 1, 2, 3 };
