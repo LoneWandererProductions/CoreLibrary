@@ -48,34 +48,28 @@ namespace DataFormatter
                 return Encoding.Default; // Default ANSI code page if not enough bytes for BOM
             }
 
-            // Check for BOMs
-            if (buffer[0] == 0xef && bytesRead >= 3 && buffer[1] == 0xbb && buffer[2] == 0xbf)
+            switch (buffer[0])
             {
-                return Encoding.UTF8;
-            }
+                // Check for UTF-8 BOM
+                // Check for UTF-16 LE BOM
+                case 0xef when buffer[1] == 0xbb && buffer[2] == 0xbf:
+                    return Encoding.UTF8;
+                // Check for UTF-16 BE BOM
+                case 0xff when buffer[1] == 0xfe:
+                    return Encoding.Unicode; // UTF-16 LE
+                // Check for UTF-32 LE BOM
+                case 0xfe when buffer[1] == 0xff:
+                    return Encoding.BigEndianUnicode; // UTF-16 BE
+                // Check for UTF-32 BE BOM
+                case 0xff when buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00:
+                    return Encoding.UTF32; // UTF-32 LE
+                case 0x00 when buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff:
+                    return Encoding.GetEncoding(DataFormatterResources.EncodingUTF32); // UTF-32 BE
 
-            if (buffer[0] == 0xff && buffer[1] == 0xfe)
-            {
-                return Encoding.Unicode; // UTF-16 LE
+                default:
+                    // Default encoding (change this as per your requirements)
+                    return Encoding.Default; // Default ANSI code page
             }
-
-            if (buffer[0] == 0xfe && buffer[1] == 0xff)
-            {
-                return Encoding.BigEndianUnicode; // UTF-16 BE
-            }
-
-            if (buffer[0] == 0xff && bytesRead >= 4 && buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00)
-            {
-                return Encoding.UTF32; // UTF-32 LE
-            }
-
-            if (buffer[0] == 0x00 && bytesRead >= 4 && buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff)
-            {
-                return Encoding.GetEncoding("utf-32BE"); // UTF-32 BE
-            }
-
-            // Default encoding (change this as per your requirements)
-            return Encoding.Default; // Default ANSI code page
         }
     }
 }
