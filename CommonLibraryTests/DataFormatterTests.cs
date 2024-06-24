@@ -27,6 +27,11 @@ namespace CommonLibraryTests
         private readonly string _testFilePath = Path.Combine(Directory.GetCurrentDirectory(), "testFile.txt");
 
         /// <summary>
+        /// The test files path for encoding
+        /// </summary>
+        private static string encodingFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Encoding");
+
+        /// <summary>
         ///     Sets up.
         /// </summary>
         [TestInitialize]
@@ -100,6 +105,9 @@ namespace CommonLibraryTests
             CollectionAssert.AreEqual(expectedLines, actualLines);
         }
 
+        /// <summary>
+        /// Tests the read CSV.
+        /// </summary>
         [TestMethod]
         public void TestReadCsv()
         {
@@ -120,6 +128,28 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(456, result[1].Property1);
             Assert.AreEqual("World", result[1].Property2);
+        }
+
+        /// <summary>
+        /// Gets the file encoding ut f8 file returns ut f8 encoding.
+        /// </summary>
+        [TestMethod]
+        public void GetFileEncodingUTF8FileReturnsUTF8Encoding()
+        {
+            string filePath = Path.Combine(encodingFilesPath, "utf8.txt");
+            Encoding encoding = DataHelper.GetFileEncoding(filePath);
+            Assert.AreEqual(Encoding.UTF8.WebName, encoding.WebName);
+        }
+
+        /// <summary>
+        /// Gets the file encoding ut f8 file returns ansi8 encoding.
+        /// </summary>
+        [TestMethod]
+        public void GetFileEncodingUTF8FileReturnsAnsi8Encoding()
+        {
+            string filePath = Path.Combine(encodingFilesPath, "ansi.txt");
+            Encoding encoding = DataHelper.GetFileEncoding(filePath);
+            Assert.AreEqual(Encoding.Default, encoding);
         }
     }
 

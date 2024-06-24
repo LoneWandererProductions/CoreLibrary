@@ -19,6 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Encoding\ansi.txt" />
+    <None Remove="Encoding\UTF8.txt" />
     <None Remove="Images\Base.png" />
     <None Remove="Images\Color.png" />
     <None Remove="Images\ColorShade.png" />
@@ -29,6 +31,15 @@
     <None Remove="Images\Layertwo.png" />
     <None Remove="Images\ResultOne.png" />
     <None Remove="Images\Tile.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Encoding\ansi.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Encoding\UTF8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
