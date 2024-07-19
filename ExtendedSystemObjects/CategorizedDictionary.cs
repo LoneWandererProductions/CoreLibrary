@@ -9,6 +9,7 @@
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeInternal
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// The internal data of our custom Dictionary
         /// </summary>
-        private readonly Dictionary<K, (string Category, V Value)> _data = new Dictionary<K, (string Category, V Value)>();
+        private readonly Dictionary<K, (string Category, V Value)> _data = new();
 
         /// <summary>
         /// Adds a value to the dictionary under the specified category.
@@ -88,6 +89,18 @@ namespace ExtendedSystemObjects
             return _data.Values
                 .Select(entry => entry.Category)
                 .Distinct();
+        }
+
+        /// <summary>
+        /// Returns a string representation of the dictionary's contents.
+        /// </summary>
+        /// <returns>A string representing the dictionary's contents.</returns>
+        public override string ToString()
+        {
+            var entries = _data.Select(entry =>
+                $"Key: {entry.Key}, Category: {entry.Value.Category}, Value: {entry.Value.Value}");
+
+            return string.Join(Environment.NewLine, entries);
         }
     }
 }
