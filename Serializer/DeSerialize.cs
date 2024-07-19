@@ -13,10 +13,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using FileHandler;
-using System.Text;
 
 namespace Serializer
 {
@@ -27,8 +27,8 @@ namespace Serializer
     public static class DeSerialize
     {
         /// <summary>
-        /// Logs the provided message. For demonstration purposes, this logs to the console.
-        /// In a real application, use a proper logging framework.
+        ///     Logs the provided message. For demonstration purposes, this logs to the console.
+        ///     In a real application, use a proper logging framework.
         /// </summary>
         /// <param name="message">The message to log.</param>
         private static void Log(string message)
@@ -37,7 +37,7 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Validates that the file exists and is not empty.
+        ///     Validates that the file exists and is not empty.
         /// </summary>
         /// <param name="path">The file path.</param>
         private static void ValidateFilePath(string path)
@@ -54,7 +54,7 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Checks if the file has content.
+        ///     Checks if the file has content.
         /// </summary>
         /// <param name="path">The file path.</param>
         /// <returns>True if file has content, false otherwise.</returns>
@@ -131,7 +131,8 @@ namespace Serializer
                 var result = list.ToDictionary(
                     item => Deserialize<TKey>(item.Key),
                     item => Deserialize<TValue>(item.Value));
-                Log($"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully deserialized from {path}");
+                Log(
+                    $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully deserialized from {path}");
                 return result;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException

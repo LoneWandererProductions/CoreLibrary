@@ -85,7 +85,8 @@ namespace DataFormatter
 
                     foreach (var property in properties)
                     {
-                        var attribute = (CsvColumnAttribute)Attribute.GetCustomAttribute(property, typeof(CsvColumnAttribute));
+                        var attribute =
+                            (CsvColumnAttribute)Attribute.GetCustomAttribute(property, typeof(CsvColumnAttribute));
                         if (attribute == null)
                         {
                             continue;
@@ -121,7 +122,8 @@ namespace DataFormatter
         /// <param name="filepath">The filepath.</param>
         /// <param name="csv">The CSV data.</param>
         /// <param name="separator">Possible file splitter, if not set;</param>
-        public static void WriteCsv(string filepath, List<List<string>> csv, string separator = DataFormatterResources.Splitter)
+        public static void WriteCsv(string filepath, List<List<string>> csv,
+            string separator = DataFormatterResources.Splitter)
         {
             if (string.IsNullOrEmpty(filepath))
             {

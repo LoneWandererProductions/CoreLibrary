@@ -22,14 +22,14 @@ namespace CommonLibraryTests
     public class DataFormatterTests
     {
         /// <summary>
+        ///     The test files path for encoding
+        /// </summary>
+        private static readonly string encodingFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Encoding");
+
+        /// <summary>
         ///     The test file path
         /// </summary>
         private readonly string _testFilePath = Path.Combine(Directory.GetCurrentDirectory(), "testFile.txt");
-
-        /// <summary>
-        /// The test files path for encoding
-        /// </summary>
-        private static string encodingFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Encoding");
 
         /// <summary>
         ///     Sets up.
@@ -106,7 +106,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the read CSV.
+        ///     Tests the read CSV.
         /// </summary>
         [TestMethod]
         public void TestReadCsv()
@@ -117,7 +117,7 @@ namespace CommonLibraryTests
             const char separator = ',';
 
             // Act
-            List<MyCustomType> result = CsvHandler.ReadCsv<MyCustomType>(_testFilePath, separator);
+            var result = CsvHandler.ReadCsv<MyCustomType>(_testFilePath, separator);
 
             // Assert
             Assert.IsNotNull(result);
@@ -131,47 +131,47 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the file encoding ut f8 file returns ut f8 encoding.
+        ///     Gets the file encoding ut f8 file returns ut f8 encoding.
         /// </summary>
         [TestMethod]
         public void GetFileEncodingUTF8FileReturnsUTF8Encoding()
         {
-            string filePath = Path.Combine(encodingFilesPath, "utf8.txt");
-            Encoding encoding = DataHelper.GetFileEncoding(filePath);
+            var filePath = Path.Combine(encodingFilesPath, "utf8.txt");
+            var encoding = DataHelper.GetFileEncoding(filePath);
             Assert.AreEqual(Encoding.UTF8.WebName, encoding.WebName);
         }
 
         /// <summary>
-        /// Gets the file encoding ut f8 file returns ansi8 encoding.
+        ///     Gets the file encoding ut f8 file returns ansi8 encoding.
         /// </summary>
         [TestMethod]
         public void GetFileEncodingUTF8FileReturnsAnsi8Encoding()
         {
-            string filePath = Path.Combine(encodingFilesPath, "ansi.txt");
-            Encoding encoding = DataHelper.GetFileEncoding(filePath);
+            var filePath = Path.Combine(encodingFilesPath, "ansi.txt");
+            var encoding = DataHelper.GetFileEncoding(filePath);
             Assert.AreEqual(Encoding.Default, encoding);
         }
     }
 
     /// <summary>
-    /// Test Class
+    ///     Test Class
     /// </summary>
     internal class MyCustomType
     {
         /// <summary>
-        /// Gets or sets the property1.
+        ///     Gets or sets the property1.
         /// </summary>
         /// <value>
-        /// The property1.
+        ///     The property1.
         /// </value>
         [CsvColumn(0, typeof(IntAttributeConverter))]
         public int Property1 { get; set; }
 
         /// <summary>
-        /// Gets or sets the property2.
+        ///     Gets or sets the property2.
         /// </summary>
         /// <value>
-        /// The property2.
+        ///     The property2.
         /// </value>
         [CsvColumn(1, typeof(StringAttributeConverter))]
         public string Property2 { get; set; }

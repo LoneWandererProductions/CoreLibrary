@@ -14,9 +14,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Text;
 
 namespace Serializer
 {
@@ -26,16 +26,8 @@ namespace Serializer
     /// </summary>
     public static partial class Serialize
     {
-        /// <inheritdoc />
         /// <summary>
-        /// Custom exception for serialization errors.
-        /// </summary>
-        public sealed partial class SerializationException : Exception
-        {
-        }
-
-        /// <summary>
-        /// Ensures that the directory for the given path exists.
+        ///     Ensures that the directory for the given path exists.
         /// </summary>
         /// <param name="path">The file path.</param>
         private static void EnsureDirectoryExists(string path)
@@ -48,8 +40,8 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Logs the provided message. For demonstration purposes, this logs to the console.
-        /// In a real application, use a proper logging framework.
+        ///     Logs the provided message. For demonstration purposes, this logs to the console.
+        ///     In a real application, use a proper logging framework.
         /// </summary>
         /// <param name="message">The message to log.</param>
         private static void Log(string message)
@@ -136,7 +128,8 @@ namespace Serializer
                 );
 
                 SerializeDictionary(myDictionary, path);
-                Log($"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully serialized to {path}");
+                Log(
+                    $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully serialized to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
@@ -190,6 +183,14 @@ namespace Serializer
             {
                 throw new SerializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Custom exception for serialization errors.
+        /// </summary>
+        public sealed partial class SerializationException : Exception
+        {
         }
     }
 }

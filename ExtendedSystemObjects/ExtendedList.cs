@@ -96,7 +96,7 @@ namespace ExtendedSystemObjects
         /// <param name="range">Sequence with elements we want to add</param>
         public static void Union<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
         {
-            if(invert)
+            if (invert)
             {
                 lst.Difference(range);
             }
@@ -165,7 +165,8 @@ namespace ExtendedSystemObjects
         /// <param name="lst">Base list to modify</param>
         /// <param name="range">Sequence with elements to compare</param>
         /// <param name="invert">If true, keeps elements that are in both sequences</param>
-        public static void SymmetricDifference<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
+        public static void SymmetricDifference<TValue>(this List<TValue> lst, IEnumerable<TValue> range,
+            bool invert = false)
         {
             if (invert)
             {

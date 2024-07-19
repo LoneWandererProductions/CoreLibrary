@@ -184,7 +184,7 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Lus the decomposition.
+        ///     Lus the decomposition.
         /// </summary>
         /// <returns>Key Value Pair of L and U Matrix</returns>
         /// <exception cref="System.NotImplementedException"></exception>

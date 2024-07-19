@@ -29,6 +29,16 @@ namespace Interpreter
         private static string _nameSpace;
 
         /// <summary>
+        ///     The log
+        /// </summary>
+        private readonly Dictionary<int, string> _log;
+
+        /// <summary>
+        ///     The prompt
+        /// </summary>
+        private readonly Prompt _prompt;
+
+        /// <summary>
         ///     The send logs
         /// </summary>
         private readonly EventHandler<string> _sendLogs;
@@ -37,16 +47,6 @@ namespace Interpreter
         ///     Send selected Command to the Subscriber
         /// </summary>
         internal EventHandler<OutCommand> sendCommand;
-
-        /// <summary>
-        /// The prompt
-        /// </summary>
-        private readonly Prompt _prompt;
-
-        /// <summary>
-        ///     The log
-        /// </summary>
-        private readonly Dictionary<int, string> _log;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
@@ -152,10 +152,8 @@ namespace Interpreter
                 SetError();
                 return;
             }
-            else
-            {
-                key = (int)check;
-            }
+
+            key = (int)check;
 
             SetResult(key, parameter);
         }

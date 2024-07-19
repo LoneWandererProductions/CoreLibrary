@@ -9,12 +9,12 @@
 namespace DataFormatter
 {
     /// <summary>
-    /// Interface for AttributeConverter Converter
+    ///     Interface for AttributeConverter Converter
     /// </summary>
     internal interface IAttributeConverter
     {
         /// <summary>
-        /// Converts the specified value.
+        ///     Converts the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Generic return Type.</returns>
@@ -23,14 +23,14 @@ namespace DataFormatter
 
     /// <inheritdoc />
     /// <summary>
-    /// Implementation of AttributeConverter for int
+    ///     Implementation of AttributeConverter for int
     /// </summary>
     /// <seealso cref="T:DataFormatter.IAttributeConverter" />
     public sealed class IntAttributeConverter : IAttributeConverter
     {
         /// <inheritdoc />
         /// <summary>
-        /// Converts the specified value.
+        ///     Converts the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Converted to int</returns>
@@ -42,14 +42,14 @@ namespace DataFormatter
 
     /// <inheritdoc />
     /// <summary>
-    /// Implementation of AttributeConverter for string
+    ///     Implementation of AttributeConverter for string
     /// </summary>
     /// <seealso cref="T:DataFormatter.IAttributeConverter" />
     public sealed class StringAttributeConverter : IAttributeConverter
     {
         /// <inheritdoc />
         /// <summary>
-        /// Converts the specified value.
+        ///     Converts the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Converted to string</returns>

@@ -31,15 +31,15 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Helper function to detect the encoding of a file based on BOM
+        ///     Helper function to detect the encoding of a file based on BOM
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Type of Encoding</returns>
         internal static Encoding GetFileEncoding(string filePath)
         {
-            using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             // Read the first few bytes to detect the encoding
-            byte[] buffer = new byte[5];
+            var buffer = new byte[5];
             var bytesRead = fs.Read(buffer, 0, 5);
 
             // Check if the file is smaller than the BOM sizes we are checking

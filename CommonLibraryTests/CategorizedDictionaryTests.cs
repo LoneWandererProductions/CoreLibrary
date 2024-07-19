@@ -16,12 +16,12 @@ namespace CommonLibraryTests
     public class CategorizedDictionaryTests
     {
         /// <summary>
-        /// The dictionary
+        ///     The dictionary
         /// </summary>
         private CategorizedDictionary<string, string> _dict;
 
         /// <summary>
-        /// Sets up.
+        ///     Sets up.
         /// </summary>
         [TestInitialize]
         public void SetUp()
@@ -30,7 +30,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Adds the and retrieve value by key.
+        ///     Adds the and retrieve value by key.
         /// </summary>
         [TestMethod]
         public void AddAndRetrieveValueByKey()
@@ -43,7 +43,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Adds the and retrieve value by key in null category.
+        ///     Adds the and retrieve value by key in null category.
         /// </summary>
         [TestMethod]
         public void AddAndRetrieveValueByKeyInNullCategory()
@@ -56,7 +56,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the category and value by key.
+        ///     Gets the category and value by key.
         /// </summary>
         [TestMethod]
         public void GetCategoryAndValueByKey()
@@ -71,7 +71,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the category and value by non existing key.
+        ///     Gets the category and value by non existing key.
         /// </summary>
         [TestMethod]
         public void GetCategoryAndValueByNonExistingKey()
@@ -82,7 +82,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the values by category.
+        ///     Gets the values by category.
         /// </summary>
         [TestMethod]
         public void GetValuesByCategory()
@@ -99,7 +99,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the values by null category.
+        ///     Gets the values by null category.
         /// </summary>
         [TestMethod]
         public void GetValuesByNullCategory()
@@ -114,7 +114,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the categories.
+        ///     Gets the categories.
         /// </summary>
         [TestMethod]
         public void GetCategories()
@@ -132,7 +132,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the non existing key.
+        ///     Gets the non existing key.
         /// </summary>
         [TestMethod]
         public void GetNonExistingKey()

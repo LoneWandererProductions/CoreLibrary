@@ -14,23 +14,26 @@ using System;
 namespace Serializer
 {
     /// <summary>
-    /// Holds all Exceptions
+    ///     Holds all Exceptions
     /// </summary>
     public static partial class Serialize
     {
         /// <inheritdoc />
         /// <summary>
-        /// Serialization Exception
+        ///     Serialization Exception
         /// </summary>
         /// <seealso cref="T:System.Exception" />
         public sealed partial class SerializationException
         {
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
             /// </summary>
             /// <param name="message">The error message that explains the reason for the exception.</param>
-            /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+            /// <param name="innerException">
+            ///     The exception that is the cause of the current exception, or a null reference (
+            ///     <see langword="Nothing" /> in Visual Basic) if no inner exception is specified.
+            /// </param>
             internal SerializationException(string message, Exception innerException)
                 : base(message, innerException)
             {
@@ -38,7 +41,7 @@ namespace Serializer
 
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
             /// </summary>
             public SerializationException()
             {
@@ -46,7 +49,7 @@ namespace Serializer
 
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.SerializationException" /> class.
             /// </summary>
             /// <param name="message">The message that describes the error.</param>
             public SerializationException(string message) : base(message)
@@ -56,16 +59,19 @@ namespace Serializer
 
         /// <inheritdoc />
         /// <summary>
-        /// Custom exception for deserialization errors.
+        ///     Custom exception for deserialization errors.
         /// </summary>
         public sealed class DeserializationException : Exception
         {
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
             /// </summary>
             /// <param name="message">The error message that explains the reason for the exception.</param>
-            /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+            /// <param name="innerException">
+            ///     The exception that is the cause of the current exception, or a null reference (
+            ///     <see langword="Nothing" /> in Visual Basic) if no inner exception is specified.
+            /// </param>
             internal DeserializationException(string message, Exception innerException)
                 : base(message, innerException)
             {
@@ -73,7 +79,7 @@ namespace Serializer
 
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
             /// </summary>
             public DeserializationException()
             {
@@ -81,7 +87,7 @@ namespace Serializer
 
             /// <inheritdoc />
             /// <summary>
-            /// Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
+            ///     Initializes a new instance of the <see cref="T:Serializer.Serialize.DeserializationException" /> class.
             /// </summary>
             /// <param name="message">The message that describes the error.</param>
             public DeserializationException(string message) : base(message)
