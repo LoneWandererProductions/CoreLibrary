@@ -93,6 +93,23 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Updates the category of an existing entry.
+        /// </summary>
+        /// <param name="key">The key of the entry to update.</param>
+        /// <param name="newCategory">The new category to assign to the entry.</param>
+        /// <returns>True if the entry was updated, false if the key does not exist.</returns>
+        public bool SetCategory(TK key, string newCategory)
+        {
+            if (!_data.TryGetValue(key, out var entry))
+            {
+                return false;
+            }
+
+            _data[key] = (newCategory, entry.Value);
+            return true;
+        }
+
+        /// <summary>
         ///     Returns a string representation of the dictionary's contents.
         /// </summary>
         /// <returns>A string representing the dictionary's contents.</returns>

@@ -141,5 +141,51 @@ namespace CommonLibraryTests
 
             Assert.IsNull(result);
         }
+
+        /// <summary>
+        /// Sets the category should update category if key exists.
+        /// </summary>
+        [TestMethod]
+        public void SetCategoryShouldUpdateCategoryIfKeyExists()
+        {
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("Category1", 1, "Value1");
+
+            var updated = dict.SetCategory(1, "NewCategory");
+
+            Assert.IsTrue(updated);
+            var result = dict.GetCategoryAndValue(1);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("NewCategory", result?.Category);
+        }
+
+        /// <summary>
+        /// Sets the category should return false if key does not exist.
+        /// </summary>
+        [TestMethod]
+        public void SetCategoryShouldReturnFalseIfKeyDoesNotExist()
+        {
+            var dict = new CategorizedDictionary<int, string>();
+
+            var updated = dict.SetCategory(1, "NewCategory");
+
+            Assert.IsFalse(updated);
+        }
+
+        /// <summary>
+        /// Converts to string should return correct string representation.
+        /// </summary>
+        [TestMethod]
+        public void ToStringShouldReturnCorrectStringRepresentation()
+        {
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("Category1", 1, "Value1");
+            dict.Add("Category2", 2, "Value2");
+
+            var result = dict.ToString();
+            const string expected = "Key: 1, Category: Category1, Value: Value1\r\nKey: 2, Category: Category2, Value: Value2";
+
+            Assert.AreEqual(expected, result);
+        }
     }
 }
