@@ -173,6 +173,80 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        /// Tries the get category should return true and category when key exists.
+        /// </summary>
+        [TestMethod]
+        public void TryGetCategoryShouldReturnTrueAndCategoryWhenKeyExists()
+        {
+            // Arrange
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("COMMAND", 1, "Print(hello World)");
+            dict.Add("IF", 2, "if(condition)");
+
+            // Act
+            var result = dict.TryGetCategory(1, out string category);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual("COMMAND", category);
+        }
+
+        /// <summary>
+        /// Tries the get category should return false and null when key does not exist.
+        /// </summary>
+        [TestMethod]
+        public void TryGetCategoryShouldReturnFalseAndNullWhenKeyDoesNotExist()
+        {
+            // Arrange
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("COMMAND", 1, "Print(hello World)");
+
+            // Act
+            var result = dict.TryGetCategory(2, out string category);
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.IsNull(category);
+        }
+
+        /// <summary>
+        /// Tries the get value should return true and value when key exists.
+        /// </summary>
+        [TestMethod]
+        public void TryGetValueShouldReturnTrueAndValueWhenKeyExists()
+        {
+            // Arrange
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("COMMAND", 1, "Print(hello World)");
+            dict.Add("IF", 2, "if(condition)");
+
+            // Act
+            var result = dict.TryGetValue(1, out string value);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual("Print(hello World)", value);
+        }
+
+        /// <summary>
+        /// Tries the get value should return false and default value when key does not exist.
+        /// </summary>
+        [TestMethod]
+        public void TryGetValueShouldReturnFalseAndDefaultValueWhenKeyDoesNotExist()
+        {
+            // Arrange
+            var dict = new CategorizedDictionary<int, string>();
+            dict.Add("COMMAND", 1, "Print(hello World)");
+
+            // Act
+            var result = dict.TryGetValue(2, out string value);
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.IsNull(value);
+        }
+
+        /// <summary>
         /// Converts to string should return correct string representation.
         /// </summary>
         [TestMethod]

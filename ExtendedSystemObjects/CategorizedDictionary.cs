@@ -110,6 +110,42 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Tries to get the category for a given key.
+        /// </summary>
+        /// <param name="key">The key to search for.</param>
+        /// <param name="category">The category associated with the key.</param>
+        /// <returns>True if the key exists, otherwise false.</returns>
+        public bool TryGetCategory(TK key, out string category)
+        {
+            if (_data.TryGetValue(key, out var entry))
+            {
+                category = entry.Category;
+                return true;
+            }
+
+            category = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to get the value for a given key.
+        /// </summary>
+        /// <param name="key">The key to search for.</param>
+        /// <param name="value">The value associated with the key.</param>
+        /// <returns>True if the key exists, otherwise false.</returns>
+        public bool TryGetValue(TK key, out TV value)
+        {
+            if (_data.TryGetValue(key, out var entry))
+            {
+                value = entry.Value;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        /// <summary>
         ///     Returns a string representation of the dictionary's contents.
         /// </summary>
         /// <returns>A string representing the dictionary's contents.</returns>
