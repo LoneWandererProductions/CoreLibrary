@@ -11,6 +11,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace ExtendedSystemObjects
     /// </summary>
     /// <typeparam name="TK">Key Value</typeparam>
     /// <typeparam name="TV">Value with Category</typeparam>
-    public sealed class CategorizedDictionary<TK, TV>
+    public sealed class CategorizedDictionary<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
     {
         /// <summary>
         ///     The internal data of our custom Dictionary
@@ -155,6 +156,25 @@ namespace ExtendedSystemObjects
                 $"Key: {entry.Key}, Category: {entry.Value.Category}, Value: {entry.Value.Value}");
 
             return string.Join(Environment.NewLine, entries);
+        }
+
+        /// <summary>
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
+        {
+            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
