@@ -17,6 +17,7 @@ using System.Linq;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Dictionary with an category
     /// </summary>
@@ -28,6 +29,11 @@ namespace ExtendedSystemObjects
         ///     The internal data of our custom Dictionary
         /// </summary>
         private readonly Dictionary<TK, (string Category, TV Value)> _data = new();
+
+        /// <summary>
+        ///     Gets the number of elements contained in the CategorizedDictionary.
+        /// </summary>
+        public int Count => _data.Count;
 
         /// <summary>
         ///     Adds a value to the dictionary under the specified category.
