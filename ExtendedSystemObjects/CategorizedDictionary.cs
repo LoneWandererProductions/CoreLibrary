@@ -36,6 +36,12 @@ namespace ExtendedSystemObjects
         public int Count => _data.Count;
 
         /// <summary>
+        /// Gets the keys.
+        /// </summary>
+        /// <returns>List of Keys</returns>
+        public IEnumerable<TK> GetKeys() => _data.Keys;
+
+        /// <summary>
         ///     Adds a value to the dictionary under the specified category.
         /// </summary>
         /// <param name="category">The category under which to add the key-value pair. Can be null.</param>
