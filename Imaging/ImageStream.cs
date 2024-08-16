@@ -687,6 +687,21 @@ namespace Imaging
                     break;
                 case ImageFilter.Contour:
                     return ApplySobel(image);
+                case ImageFilter.Brightness:
+                    atr.SetColorMatrix(ImageRegister.Brightness);
+                    break;
+                case ImageFilter.Contrast:
+                    atr.SetColorMatrix(ImageRegister.Contrast);
+                    break;
+                case ImageFilter.HueShift:
+                    atr.SetColorMatrix(ImageRegister.HueShift);
+                    break;
+                case ImageFilter.ColorBalance:
+                    atr.SetColorMatrix(ImageRegister.ColorBalance);
+                    break;
+                case ImageFilter.Vintage:
+                    atr.SetColorMatrix(ImageRegister.Vintage);
+                    break;
                 // New convolution-based filters
                 case ImageFilter.Sharpen:
                     return ApplyFilter(image, ImageRegister.SharpenFilter);
