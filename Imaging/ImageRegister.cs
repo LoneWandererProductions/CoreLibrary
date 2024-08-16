@@ -25,6 +25,85 @@ namespace Imaging
     public static class ImageRegister
     {
         /// <summary>
+        /// The sharpen filter
+        /// </summary>
+        internal static readonly double[,] sharpenFilter = new double[,]
+        {
+            { 0, -1,  0 }, { -1,  5, -1 }, { 0, -1,  0 }
+        };
+
+        /// <summary>
+        /// The gaussian blur
+        /// </summary>
+        internal static readonly double[,] gaussianBlur = new double[,]
+        {
+            { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 }
+        };
+
+        /// <summary>
+        /// The emboss filter
+        /// </summary>
+        internal static readonly double[,] embossFilter = new double[,]
+        {
+            { -2, -1,  0 },
+            { -1,  1,  1 },
+            {  0,  1,  2 }
+        };
+
+        /// <summary>
+        /// The box blur
+        /// </summary>
+        internal static readonly double[,] boxBlur = new double[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        /// <summary>
+        /// The laplacian filter
+        /// </summary>
+        internal static readonly double[,] laplacianFilter = new double[,]
+        {
+            {  0, -1,  0 },
+            { -1,  4, -1 },
+            {  0, -1,  0 }
+        };
+
+        /// <summary>
+        /// The edge enhance
+        /// </summary>
+        internal static readonly double[,] edgeEnhance = new double[,]
+        {
+            {  0,  0,  0 },
+            { -1,  1,  0 },
+            {  0,  0,  0 }
+        };
+
+        /// <summary>
+        /// The motion blur
+        /// </summary>
+        internal static readonly double[,] motionBlur = new double[,]
+        {
+            { 1, 0, 0, 0, 0 },
+            { 0, 1, 0, 0, 0 },
+            { 0, 0, 1, 0, 0 },
+            { 0, 0, 0, 1, 0 },
+            { 0, 0, 0, 0, 1 }
+        };
+
+        /// <summary>
+        /// The unsharp mask
+        /// </summary>
+        internal static readonly double[,] unsharpMask = new double[,]
+        {
+            { -1, -1, -1 },
+            { -1,  9, -1 },
+            { -1, -1, -1 }
+        };
+
+
+        /// <summary>
         ///     the color matrix needed to GrayScale an image
         ///     Source:
         ///     https://archive.ph/hzR2W
@@ -173,6 +252,48 @@ namespace Imaging
         /// <summary>
         ///     The contour
         /// </summary>
-        Contour = 6
+        Contour = 6,
+
+        // New convolution-based filters
+
+        /// <summary>
+        /// The sharpen
+        /// </summary>
+        Sharpen = 7,
+
+        /// <summary>
+        /// The gaussian blur
+        /// </summary>
+        GaussianBlur = 8,
+
+        /// <summary>
+        /// The emboss
+        /// </summary>
+        Emboss = 9,
+
+        /// <summary>
+        /// The box blur
+        /// </summary>
+        BoxBlur = 10,
+
+        /// <summary>
+        /// The laplacian
+        /// </summary>
+        Laplacian = 11,
+
+        /// <summary>
+        /// The edge enhance
+        /// </summary>
+        EdgeEnhance = 12,
+
+        /// <summary>
+        /// The motion blur
+        /// </summary>
+        MotionBlur = 13,
+
+        /// <summary>
+        /// The unsharp mask
+        /// </summary>
+        UnsharpMask = 14
     }
 }

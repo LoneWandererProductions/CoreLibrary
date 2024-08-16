@@ -687,6 +687,23 @@ namespace Imaging
                     break;
                 case ImageFilter.Contour:
                     return ApplySobel(image);
+                // New convolution-based filters
+                case ImageFilter.Sharpen:
+                    return ApplyFilter(image, ImageRegister.sharpenFilter);
+                case ImageFilter.GaussianBlur:
+                    return ApplyFilter(image, ImageRegister.gaussianBlur, 1.0 / 16.0);
+                case ImageFilter.Emboss:
+                    return ApplyFilter(image, ImageRegister.embossFilter);
+                case ImageFilter.BoxBlur:
+                    return ApplyFilter(image, ImageRegister.boxBlur, 1.0 / 9.0);
+                case ImageFilter.Laplacian:
+                    return ApplyFilter(image, ImageRegister.laplacianFilter);
+                case ImageFilter.EdgeEnhance:
+                    return ApplyFilter(image, ImageRegister.edgeEnhance);
+                case ImageFilter.MotionBlur:
+                    return ApplyFilter(image, ImageRegister.motionBlur, 1.0 / 5.0);
+                case ImageFilter.UnsharpMask:
+                    return ApplyFilter(image, ImageRegister.unsharpMask);
                 default:
                     return null;
             }
@@ -1269,6 +1286,49 @@ namespace Imaging
 
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
         }
+
+        internal static Bitmap ApplyFilter(Bitmap sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
+        {
+            // Use DirectBitmap for easier and faster pixel manipulation
+            using DirectBitmap source = new DirectBitmap(sourceBitmap);
+            using DirectBitmap result = new DirectBitmap(source.Width, source.Height);
+
+            int filterWidth = filterMatrix.GetLength(1);
+            int filterHeight = filterMatrix.GetLength(0);
+            int filterOffset = filterWidth / 2;
+
+            for (int y = filterOffset; y < source.Height - filterOffset; y++)
+            {
+                for (int x = filterOffset; x < source.Width - filterOffset; x++)
+                {
+                    double blue = 0.0, green = 0.0, red = 0.0;
+
+                    for (int filterY = 0; filterY < filterHeight; filterY++)
+                    {
+                        for (int filterX = 0; filterX < filterWidth; filterX++)
+                        {
+                            int imageX = x + (filterX - filterOffset);
+                            int imageY = y + (filterY - filterOffset);
+
+                            Color pixelColor = source.GetPixel(imageX, imageY);
+
+                            blue += pixelColor.B * filterMatrix[filterY, filterX];
+                            green += pixelColor.G * filterMatrix[filterY, filterX];
+                            red += pixelColor.R * filterMatrix[filterY, filterX];
+                        }
+                    }
+
+                    int newBlue = Math.Min(Math.Max((int)(factor * blue + bias), 0), 255);
+                    int newGreen = Math.Min(Math.Max((int)(factor * green + bias), 0), 255);
+                    int newRed = Math.Min(Math.Max((int)(factor * red + bias), 0), 255);
+
+                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                }
+            }
+
+            return result.Bitmap;
+        }
+
 
         /// <summary>
         ///     Gets the average color.
