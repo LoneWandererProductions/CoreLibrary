@@ -144,12 +144,12 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the category should update category if key exists.
+        ///     Sets the category should update category if key exists.
         /// </summary>
         [TestMethod]
         public void SetCategoryShouldUpdateCategoryIfKeyExists()
         {
-            var dict = new CategorizedDictionary<int, string> {{"Category1", 1, "Value1"}};
+            var dict = new CategorizedDictionary<int, string> { { "Category1", 1, "Value1" } };
 
             var updated = dict.SetCategory(1, "NewCategory");
 
@@ -160,7 +160,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the category should return false if key does not exist.
+        ///     Sets the category should return false if key does not exist.
         /// </summary>
         [TestMethod]
         public void SetCategoryShouldReturnFalseIfKeyDoesNotExist()
@@ -173,7 +173,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tries the get category should return true and category when key exists.
+        ///     Tries the get category should return true and category when key exists.
         /// </summary>
         [TestMethod]
         public void TryGetCategoryShouldReturnTrueAndCategoryWhenKeyExists()
@@ -181,11 +181,11 @@ namespace CommonLibraryTests
             // Arrange
             var dict = new CategorizedDictionary<int, string>
             {
-                {"COMMAND", 1, "Print(hello World)"}, {"IF", 2, "if(condition)"}
+                { "COMMAND", 1, "Print(hello World)" }, { "IF", 2, "if(condition)" }
             };
 
             // Act
-            var result = dict.TryGetCategory(1, out string category);
+            var result = dict.TryGetCategory(1, out var category);
 
             // Assert
             Assert.IsTrue(result);
@@ -193,16 +193,16 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tries the get category should return false and null when key does not exist.
+        ///     Tries the get category should return false and null when key does not exist.
         /// </summary>
         [TestMethod]
         public void TryGetCategoryShouldReturnFalseAndNullWhenKeyDoesNotExist()
         {
             // Arrange
-            var dict = new CategorizedDictionary<int, string> {{"COMMAND", 1, "Print(hello World)"}};
+            var dict = new CategorizedDictionary<int, string> { { "COMMAND", 1, "Print(hello World)" } };
 
             // Act
-            var result = dict.TryGetCategory(2, out string category);
+            var result = dict.TryGetCategory(2, out var category);
 
             // Assert
             Assert.IsFalse(result);
@@ -210,7 +210,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tries the get value should return true and value when key exists.
+        ///     Tries the get value should return true and value when key exists.
         /// </summary>
         [TestMethod]
         public void TryGetValueShouldReturnTrueAndValueWhenKeyExists()
@@ -218,11 +218,11 @@ namespace CommonLibraryTests
             // Arrange
             var dict = new CategorizedDictionary<int, string>
             {
-                {"COMMAND", 1, "Print(hello World)"}, {"IF", 2, "if(condition)"}
+                { "COMMAND", 1, "Print(hello World)" }, { "IF", 2, "if(condition)" }
             };
 
             // Act
-            var result = dict.TryGetValue(1, out string value);
+            var result = dict.TryGetValue(1, out var value);
 
             // Assert
             Assert.IsTrue(result);
@@ -230,16 +230,16 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tries the get value should return false and default value when key does not exist.
+        ///     Tries the get value should return false and default value when key does not exist.
         /// </summary>
         [TestMethod]
         public void TryGetValueShouldReturnFalseAndDefaultValueWhenKeyDoesNotExist()
         {
             // Arrange
-            var dict = new CategorizedDictionary<int, string> {{"COMMAND", 1, "Print(hello World)"}};
+            var dict = new CategorizedDictionary<int, string> { { "COMMAND", 1, "Print(hello World)" } };
 
             // Act
-            var result = dict.TryGetValue(2, out string value);
+            var result = dict.TryGetValue(2, out var value);
 
             // Assert
             Assert.IsFalse(result);
@@ -247,15 +247,19 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Converts to string should return correct string representation.
+        ///     Converts to string should return correct string representation.
         /// </summary>
         [TestMethod]
         public void ToStringShouldReturnCorrectStringRepresentation()
         {
-            var dict = new CategorizedDictionary<int, string> {{"Category1", 1, "Value1"}, {"Category2", 2, "Value2"}};
+            var dict = new CategorizedDictionary<int, string>
+            {
+                { "Category1", 1, "Value1" }, { "Category2", 2, "Value2" }
+            };
 
             var result = dict.ToString();
-            const string expected = "Key: 1, Category: Category1, Value: Value1\r\nKey: 2, Category: Category2, Value: Value2";
+            const string expected =
+                "Key: 1, Category: Category1, Value: Value1\r\nKey: 2, Category: Category2, Value: Value2";
 
             Assert.AreEqual(expected, result);
         }
@@ -266,19 +270,14 @@ namespace CommonLibraryTests
             // Arrange
             var dict = new CategorizedDictionary<string, int>
             {
-                {"Category1", "Key1", 10}, {"Category2", "Key2", 20}, {"Category1", "Key3", 30}
+                { "Category1", "Key1", 10 }, { "Category2", "Key2", 20 }, { "Category1", "Key3", 30 }
             };
 
             // Act
             var keyValuePairs = dict.ToList();
 
             // Assert
-            var expected = new List<KeyValuePair<string, int>>
-            {
-                new("Key1", 10),
-                new("Key2", 20),
-                new("Key3", 30)
-            };
+            var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
 
             CollectionAssert.AreEqual(expected, keyValuePairs);
         }
@@ -289,19 +288,14 @@ namespace CommonLibraryTests
             // Arrange
             var dict = new CategorizedDictionary<string, int>
             {
-                {"CategoryA", "Key1", 100}, {"CategoryB", "Key2", 200}, {"CategoryA", "Key3", 300}
+                { "CategoryA", "Key1", 100 }, { "CategoryB", "Key2", 200 }, { "CategoryA", "Key3", 300 }
             };
 
             // Act
             var keyValuePairs = dict.ToList();
 
             // Assert
-            var expected = new List<KeyValuePair<string, int>>
-            {
-                new("Key1", 100),
-                new("Key2", 200),
-                new("Key3", 300)
-            };
+            var expected = new List<KeyValuePair<string, int>> { new("Key1", 100), new("Key2", 200), new("Key3", 300) };
 
             CollectionAssert.AreEqual(expected, keyValuePairs);
         }
@@ -325,7 +319,7 @@ namespace CommonLibraryTests
             // Arrange
             var dict = new CategorizedDictionary<string, int>
             {
-                {"Category1", "Key1", 10}, {"Category2", "Key2", 20}, {"Category3", "Key3", 30}
+                { "Category1", "Key1", 10 }, { "Category2", "Key2", 20 }, { "Category3", "Key3", 30 }
             };
 
             // Act
@@ -333,12 +327,7 @@ namespace CommonLibraryTests
             var keyValuePairs = dict.ToList();
 
             // Assert
-            var expected = new List<KeyValuePair<string, int>>
-            {
-                new("Key1", 10),
-                new("Key2", 20),
-                new("Key3", 30)
-            };
+            var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
 
             CollectionAssert.AreEqual(expected, keyValuePairs);
         }

@@ -36,10 +36,32 @@ namespace ExtendedSystemObjects
         public int Count => _data.Count;
 
         /// <summary>
-        /// Gets the keys.
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
+        {
+            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Gets the keys.
         /// </summary>
         /// <returns>List of Keys</returns>
-        public IEnumerable<TK> GetKeys() => _data.Keys;
+        public IEnumerable<TK> GetKeys()
+        {
+            return _data.Keys;
+        }
 
         /// <summary>
         ///     Adds a value to the dictionary under the specified category.
@@ -106,7 +128,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Updates the category of an existing entry.
+        ///     Updates the category of an existing entry.
         /// </summary>
         /// <param name="key">The key of the entry to update.</param>
         /// <param name="newCategory">The new category to assign to the entry.</param>
@@ -123,7 +145,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Tries to get the category for a given key.
+        ///     Tries to get the category for a given key.
         /// </summary>
         /// <param name="key">The key to search for.</param>
         /// <param name="category">The category associated with the key.</param>
@@ -141,7 +163,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Tries to get the value for a given key.
+        ///     Tries to get the value for a given key.
         /// </summary>
         /// <param name="key">The key to search for.</param>
         /// <param name="value">The value associated with the key.</param>
@@ -168,25 +190,6 @@ namespace ExtendedSystemObjects
                 $"Key: {entry.Key}, Category: {entry.Value.Category}, Value: {entry.Value.Value}");
 
             return string.Join(Environment.NewLine, entries);
-        }
-
-        /// <summary>
-        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
-        /// </summary>
-        /// <returns>An enumerator for the dictionary.</returns>
-        public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
-        {
-            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
-        /// </summary>
-        /// <returns>An enumerator for the dictionary.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

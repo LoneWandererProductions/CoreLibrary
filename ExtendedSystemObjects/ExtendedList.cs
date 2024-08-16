@@ -94,6 +94,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we add to</param>
         /// <param name="range">Sequence with elements we want to add</param>
+        /// <param name="invert">optional parameter invert result</param>
         public static void Union<TValue>(this List<TValue> lst, IEnumerable<TValue> range, bool invert = false)
         {
             if (invert)
