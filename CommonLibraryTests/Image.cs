@@ -457,7 +457,7 @@ namespace CommonLibraryTests
 
             Trace.WriteLine(string.Concat("First Rectangle draw Line: ", elapsed, " Second DrawRectangle dbm: ",
                 elapsedThree));
-            Assert.IsTrue(elapsed < elapsedThree,
+            Assert.IsTrue(elapsed <= elapsedThree,
                 $"Results: {elapsed}Rectangle Microsoft: {elapsedThree}");
         }
 

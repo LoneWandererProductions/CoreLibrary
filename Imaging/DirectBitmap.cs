@@ -159,20 +159,9 @@ namespace Imaging
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
             var colorArgb = color.ToArgb();
-            var vectorCount = Vector<int>.Count;
-
             for (var i = y; i < y + height && i < Height; i++)
             {
-                var startIndex = x + (i * Width);
-
-                // Handle pixels in chunks of vectorCount
-                for (int j = 0; j < vectorCount; j++)
-                {
-                    if (startIndex + j < Bits.Length)
-                    {
-                        Bits[startIndex + j] = colorArgb;
-                    }
-                }
+                Bits[x + (i * Width)] = colorArgb;
             }
         }
 
@@ -188,20 +177,25 @@ namespace Imaging
         {
             var colorArgb = color.ToArgb();
             var vectorCount = Vector<int>.Count;
+            var colorVector = new Vector<int>(colorArgb);
 
             for (var xPos = x; xPos < x + length && xPos < Width; xPos += vectorCount)
             {
                 var startIndex = xPos + (y * Width);
-
-                for (int j = 0; j < vectorCount; j++)
+                if (startIndex + vectorCount <= Bits.Length)
                 {
-                    if (startIndex + j < Bits.Length)
+                    colorVector.CopyTo(Bits, startIndex);
+                }
+                else
+                {
+                    for (int j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
                     {
                         Bits[startIndex + j] = colorArgb;
                     }
                 }
             }
         }
+
 
         /// <summary>
         ///     Draws the rectangle.
@@ -216,16 +210,20 @@ namespace Imaging
         {
             var colorArgb = color.ToArgb();
             var vectorCount = Vector<int>.Count;
+            var colorVector = new Vector<int>(colorArgb);
 
             for (var y = y2; y < y2 + height && y < Height; y++)
             {
                 for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
                 {
                     var startIndex = x + (y * Width);
-
-                    for (int j = 0; j < vectorCount; j++)
+                    if (startIndex + vectorCount <= Bits.Length)
                     {
-                        if (startIndex + j < Bits.Length)
+                        colorVector.CopyTo(Bits, startIndex);
+                    }
+                    else
+                    {
+                        for (int j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
                         {
                             Bits[startIndex + j] = colorArgb;
                         }
@@ -233,6 +231,7 @@ namespace Imaging
                 }
             }
         }
+
 
         /// <summary>
         ///     Sets the area.
@@ -245,19 +244,31 @@ namespace Imaging
             var indices = idList.ToArray();
             var vectorCount = Vector<int>.Count;
 
-            // Process indices in chunks of vectorCount
             for (int i = 0; i < indices.Length; i += vectorCount)
             {
-                // Calculate the actual number of elements to process in this chunk
                 var chunkSize = Math.Min(vectorCount, indices.Length - i);
 
-                // Create a vector of indices for this chunk
-                var indexVector = new Vector<int>(indices, i);
-
-                // Use SIMD to update pixels in the Bits array
-                for (int j = 0; j < chunkSize; j++)
+                if (chunkSize == vectorCount)
                 {
-                    Bits[indexVector[j]] = colorArgb;
+                    var indexVector = new Vector<int>(indices, i);
+
+                    for (int j = 0; j < chunkSize; j++)
+                    {
+                        if (indexVector[j] < Bits.Length)
+                        {
+                            Bits[indexVector[j]] = colorArgb;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int j = i; j < i + chunkSize; j++)
+                    {
+                        if (indices[j] < Bits.Length)
+                        {
+                            Bits[indices[j]] = colorArgb;
+                        }
+                    }
                 }
             }
         }
@@ -285,11 +296,9 @@ namespace Imaging
 
             for (int i = 0; i < pixelArray.Length; i += vectorCount)
             {
-                // Prepare arrays to hold indices and color values
                 var indices = new int[vectorCount];
                 var colors = new int[vectorCount];
 
-                // Populate arrays with pixel data for this chunk
                 for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
                 {
                     var (x, y, color) = pixelArray[i + j];
@@ -297,17 +306,13 @@ namespace Imaging
                     colors[j] = color.ToArgb();
                 }
 
-                // Create SIMD vectors
-                var indexVector = new Vector<int>(indices);
-                var colorVector = new Vector<int>(colors);
-
-                // Update pixel values in Bits array
                 for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
                 {
-                    Bits[indexVector[j]] = colorVector[j];
+                    Bits[indices[j]] = colors[j];
                 }
             }
         }
+
 
         /// <summary>
         ///     Gets the pixel.
