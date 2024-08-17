@@ -232,7 +232,6 @@ namespace Imaging
             }
         }
 
-
         /// <summary>
         ///     Sets the area.
         /// </summary>
@@ -287,6 +286,7 @@ namespace Imaging
 
         /// <summary>
         ///     Sets the pixels using SIMD for performance improvement.
+        ///     Be careful when to return values. The Bitmap might be premature disposed.
         /// </summary>
         /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
         public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
@@ -294,25 +294,44 @@ namespace Imaging
             var pixelArray = pixels.ToArray();
             var vectorCount = Vector<int>.Count;
 
+            // Ensure Bits array is properly initialized
+            if (Bits == null || Bits.Length < Width * Height)
+            {
+                throw new InvalidOperationException("Bits array is not properly initialized.");
+            }
+
             for (int i = 0; i < pixelArray.Length; i += vectorCount)
             {
                 var indices = new int[vectorCount];
                 var colors = new int[vectorCount];
 
-                for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
+                // Load data into vectors
+                for (int j = 0; j < vectorCount; j++)
                 {
-                    var (x, y, color) = pixelArray[i + j];
-                    indices[j] = x + (y * Width);
-                    colors[j] = color.ToArgb();
+                    if (i + j < pixelArray.Length)
+                    {
+                        var (x, y, color) = pixelArray[i + j];
+                        indices[j] = x + (y * Width);
+                        colors[j] = color.ToArgb();
+                    }
+                    else
+                    {
+                        // Handle cases where the remaining elements are less than vectorCount
+                        indices[j] = 0;
+                        colors[j] = Color.Transparent.ToArgb(); // Use a default color or handle it as needed
+                    }
                 }
 
-                for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
+                // Write data to Bits array
+                for (int j = 0; j < vectorCount; j++)
                 {
-                    Bits[indices[j]] = colors[j];
+                    if (i + j < pixelArray.Length)
+                    {
+                        Bits[indices[j]] = colors[j];
+                    }
                 }
             }
         }
-
 
         /// <summary>
         ///     Gets the pixel.
@@ -398,7 +417,12 @@ namespace Imaging
             {
                 // free managed resources
                 Bitmap?.Dispose();
-                BitsHandle.Free();
+
+                // Free the GCHandle if it is allocated
+                if (BitsHandle.IsAllocated)
+                {
+                    BitsHandle.Free();
+                }
             }
 
             Disposed = true;
