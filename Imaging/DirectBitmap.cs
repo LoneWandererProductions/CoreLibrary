@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Imaging
@@ -41,7 +43,6 @@ namespace Imaging
         {
             Width = width;
             Height = height;
-
             Initiate();
         }
 
@@ -57,12 +58,10 @@ namespace Imaging
         {
             Width = btm.Width;
             Height = btm.Height;
-
             Initiate();
 
             using var graph = Graphics.FromImage(Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height, GraphicsUnit.Pixel);
         }
 
         /// <summary>
@@ -71,7 +70,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        public int[] Bits { get; set; }
+        public int[] Bits { get; private set; }
 
         /// <summary>
         ///     Gets the bitmap.
@@ -79,7 +78,7 @@ namespace Imaging
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap Bitmap { get; set; }
+        public Bitmap Bitmap { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
@@ -132,8 +131,7 @@ namespace Imaging
         {
             Bits = new int[Width * Height];
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
-                BitsHandle.AddrOfPinnedObject());
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
         }
 
         /// <summary>
@@ -145,8 +143,7 @@ namespace Imaging
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
             using var graph = Graphics.FromImage(dbm.Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height, GraphicsUnit.Pixel);
 
             return dbm;
         }
@@ -161,16 +158,27 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++)
+            var colorArgb = color.ToArgb();
+            var vectorCount = Vector<int>.Count;
+
+            for (var i = y; i < y + height && i < Height; i++)
             {
-                SetPixel(x, i, color);
+                var startIndex = x + (i * Width);
+
+                // Handle pixels in chunks of vectorCount
+                for (int j = 0; j < vectorCount; j++)
+                {
+                    if (startIndex + j < Bits.Length)
+                    {
+                        Bits[startIndex + j] = colorArgb;
+                    }
+                }
             }
         }
 
         /// <summary>
         ///     Draws a horizontal line with a specified color.
         ///     For now Microsoft's Rectangle Method is faster in certain circumstances
-        ///     ///
         /// </summary>
         /// <param name="x">The x Coordinate.</param>
         /// <param name="y">The y Coordinate.</param>
@@ -178,9 +186,20 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++)
+            var colorArgb = color.ToArgb();
+            var vectorCount = Vector<int>.Count;
+
+            for (var xPos = x; xPos < x + length && xPos < Width; xPos += vectorCount)
             {
-                SetPixel(i, y, color);
+                var startIndex = xPos + (y * Width);
+
+                for (int j = 0; j < vectorCount; j++)
+                {
+                    if (startIndex + j < Bits.Length)
+                    {
+                        Bits[startIndex + j] = colorArgb;
+                    }
+                }
             }
         }
 
@@ -195,13 +214,22 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawRectangle(int x1, int y2, int width, int height, Color color)
         {
-            // Iterate over the pixels within the rectangle
+            var colorArgb = color.ToArgb();
+            var vectorCount = Vector<int>.Count;
+
             for (var y = y2; y < y2 + height && y < Height; y++)
             {
-                for (var x = x1; x < x1 + width && x < Width; x++)
+                for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
                 {
-                    // Set the color of each pixel
-                    SetPixel(x, y, color);
+                    var startIndex = x + (y * Width);
+
+                    for (int j = 0; j < vectorCount; j++)
+                    {
+                        if (startIndex + j < Bits.Length)
+                        {
+                            Bits[startIndex + j] = colorArgb;
+                        }
+                    }
                 }
             }
         }
@@ -213,9 +241,24 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
-            foreach (var index in idList)
+            var colorArgb = color.ToArgb();
+            var indices = idList.ToArray();
+            var vectorCount = Vector<int>.Count;
+
+            // Process indices in chunks of vectorCount
+            for (int i = 0; i < indices.Length; i += vectorCount)
             {
-                Bits[index] = color.ToArgb();
+                // Calculate the actual number of elements to process in this chunk
+                var chunkSize = Math.Min(vectorCount, indices.Length - i);
+
+                // Create a vector of indices for this chunk
+                var indexVector = new Vector<int>(indices, i);
+
+                // Use SIMD to update pixels in the Bits array
+                for (int j = 0; j < chunkSize; j++)
+                {
+                    Bits[indexVector[j]] = colorArgb;
+                }
             }
         }
 
@@ -229,6 +272,41 @@ namespace Imaging
         {
             var index = x + (y * Width);
             Bits[index] = color.ToArgb();
+        }
+
+        /// <summary>
+        ///     Sets the pixels using SIMD for performance improvement.
+        /// </summary>
+        /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
+        public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
+        {
+            var pixelArray = pixels.ToArray();
+            var vectorCount = Vector<int>.Count;
+
+            for (int i = 0; i < pixelArray.Length; i += vectorCount)
+            {
+                // Prepare arrays to hold indices and color values
+                var indices = new int[vectorCount];
+                var colors = new int[vectorCount];
+
+                // Populate arrays with pixel data for this chunk
+                for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
+                {
+                    var (x, y, color) = pixelArray[i + j];
+                    indices[j] = x + (y * Width);
+                    colors[j] = color.ToArgb();
+                }
+
+                // Create SIMD vectors
+                var indexVector = new Vector<int>(indices);
+                var colorVector = new Vector<int>(colors);
+
+                // Update pixel values in Bits array
+                for (int j = 0; j < vectorCount && i + j < pixelArray.Length; j++)
+                {
+                    Bits[indexVector[j]] = colorVector[j];
+                }
+            }
         }
 
         /// <summary>
@@ -256,9 +334,7 @@ namespace Imaging
             }
 
             var length = Height * Width;
-
             var array = new Color[length];
-
             var span = new Span<Color>(array, 0, length);
 
             for (var i = 0; i < length; i++)
@@ -316,7 +392,7 @@ namespace Imaging
             if (disposing)
             {
                 // free managed resources
-                Bitmap.Dispose();
+                Bitmap?.Dispose();
                 BitsHandle.Free();
             }
 
@@ -336,3 +412,4 @@ namespace Imaging
         }
     }
 }
+
