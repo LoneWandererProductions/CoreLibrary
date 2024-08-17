@@ -1303,16 +1303,19 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the filter.
+        ///     Applies the filter.
         /// </summary>
         /// <param name="sourceBitmap">The source bitmap.</param>
         /// <param name="filterMatrix">
         ///     The filter matrix.
-        ///     Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that defines how each pixel in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5, or 7x7.
+        ///     Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that defines how each pixel
+        ///     in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5, or 7x7.
         ///     Placement: Place the center of the convolution matrix on the target pixel in the image.
-        ///     Neighborhood Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the convolution matrix.
+        ///     Neighborhood Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the
+        ///     convolution matrix.
         ///     Summation: Sum all these products.
-        ///     Normalization: Often, the result is normalized (e.g., dividing by the sum of the matrix values) to ensure that pixel values remain within a valid range.
+        ///     Normalization: Often, the result is normalized (e.g., dividing by the sum of the matrix values) to ensure that
+        ///     pixel values remain within a valid range.
         ///     Pixel Update: The resulting value is assigned to the target pixel in the output image.
         ///     Matrix Size: The size of the matrix affects the area of the image that influences each output pixel. For example:
         ///     3x3 Matrix: Considers the pixel itself and its immediate 8 neighbors.
@@ -1350,7 +1353,9 @@ namespace Imaging
 
                             // Check bounds to prevent out-of-bounds access
                             if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
+                            {
                                 continue;
+                            }
 
                             var pixelColor = source.GetPixel(imageX, imageY);
 
@@ -1360,9 +1365,9 @@ namespace Imaging
                         }
                     }
 
-                    var newBlue = Math.Min(Math.Max((int) ((factor * blue) + bias), 0), 255);
-                    var newGreen = Math.Min(Math.Max((int) ((factor * green) + bias), 0), 255);
-                    var newRed = Math.Min(Math.Max((int) ((factor * red) + bias), 0), 255);
+                    var newBlue = Math.Min(Math.Max((int)((factor * blue) + bias), 0), 255);
+                    var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
+                    var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
 
                     // Instead of setting the pixel immediately, add it to the list
                     pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));

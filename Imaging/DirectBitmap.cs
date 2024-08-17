@@ -61,7 +61,8 @@ namespace Imaging
             Initiate();
 
             using var graph = Graphics.FromImage(Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height, GraphicsUnit.Pixel);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
+                GraphicsUnit.Pixel);
         }
 
         /// <summary>
@@ -131,7 +132,8 @@ namespace Imaging
         {
             Bits = new int[Width * Height];
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
+                BitsHandle.AddrOfPinnedObject());
         }
 
         /// <summary>
@@ -143,7 +145,8 @@ namespace Imaging
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
             using var graph = Graphics.FromImage(dbm.Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height, GraphicsUnit.Pixel);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
+                GraphicsUnit.Pixel);
 
             return dbm;
         }
@@ -188,7 +191,7 @@ namespace Imaging
                 }
                 else
                 {
-                    for (int j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
+                    for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
                     {
                         Bits[startIndex + j] = colorArgb;
                     }
@@ -223,7 +226,7 @@ namespace Imaging
                     }
                     else
                     {
-                        for (int j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
+                        for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
                         {
                             Bits[startIndex + j] = colorArgb;
                         }
@@ -243,7 +246,7 @@ namespace Imaging
             var indices = idList.ToArray();
             var vectorCount = Vector<int>.Count;
 
-            for (int i = 0; i < indices.Length; i += vectorCount)
+            for (var i = 0; i < indices.Length; i += vectorCount)
             {
                 var chunkSize = Math.Min(vectorCount, indices.Length - i);
 
@@ -251,7 +254,7 @@ namespace Imaging
                 {
                     var indexVector = new Vector<int>(indices, i);
 
-                    for (int j = 0; j < chunkSize; j++)
+                    for (var j = 0; j < chunkSize; j++)
                     {
                         if (indexVector[j] < Bits.Length)
                         {
@@ -261,7 +264,7 @@ namespace Imaging
                 }
                 else
                 {
-                    for (int j = i; j < i + chunkSize; j++)
+                    for (var j = i; j < i + chunkSize; j++)
                     {
                         if (indices[j] < Bits.Length)
                         {
@@ -300,13 +303,13 @@ namespace Imaging
                 throw new InvalidOperationException("Bits array is not properly initialized.");
             }
 
-            for (int i = 0; i < pixelArray.Length; i += vectorCount)
+            for (var i = 0; i < pixelArray.Length; i += vectorCount)
             {
                 var indices = new int[vectorCount];
                 var colors = new int[vectorCount];
 
                 // Load data into vectors
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {
@@ -323,7 +326,7 @@ namespace Imaging
                 }
 
                 // Write data to Bits array
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {
@@ -441,4 +444,3 @@ namespace Imaging
         }
     }
 }
-
