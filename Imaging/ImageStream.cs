@@ -1321,8 +1321,7 @@ namespace Imaging
         /// <param name="factor">The factor.</param>
         /// <param name="bias">The bias.</param>
         /// <returns>Image with applied filter</returns>
-        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
-            double bias = 0.0)
+        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
         {
             // Use DirectBitmap for easier and faster pixel manipulation
             using var source = new DirectBitmap(sourceBitmap);
@@ -1331,6 +1330,9 @@ namespace Imaging
             var filterWidth = filterMatrix.GetLength(1);
             var filterHeight = filterMatrix.GetLength(0);
             var filterOffset = filterWidth / 2;
+
+            // Prepare a list to store the pixels to set in bulk using SIMD
+            var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var y = filterOffset; y < source.Height - filterOffset; y++)
             {
@@ -1357,9 +1359,13 @@ namespace Imaging
                     var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
                     var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
 
-                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                    // Instead of setting the pixel immediately, add it to the list
+                    pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
                 }
             }
+
+            // Use SIMD to set all the pixels in bulk
+            result.SetPixelsSimd(pixelsToSet);
 
             return result.Bitmap;
         }
