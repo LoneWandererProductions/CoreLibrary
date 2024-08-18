@@ -243,7 +243,6 @@ namespace CommonDialogs
             }
 
             if (check)
-
             {
                 Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
             }

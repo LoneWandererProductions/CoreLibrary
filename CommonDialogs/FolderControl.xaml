@@ -89,7 +89,7 @@
 
         <!-- TreeView -->
         <TreeView x:Name="FoldersItem"
-                  SelectedItemChanged="FoldersItem_SelectedItemChanged"
+                  SelectedItemChanged="FoldersItemSelectedItemChanged"
                   Width="Auto"
                   Background="#FFFFFFFF"
                   BorderBrush="#FFFFFFFF"

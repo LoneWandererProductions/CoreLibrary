@@ -60,7 +60,9 @@ namespace CommonDialogs
             // Select the appropriate image based on the path string
             var imagePath = str.Contains(ComCtlResources.PathElement) && File.Exists(driveImagePath)
                 ? driveImagePath
-                : File.Exists(folderImagePath) ? folderImagePath : null;
+                : File.Exists(folderImagePath)
+                    ? folderImagePath
+                    : null;
 
             // Return the image if it exists
             return imagePath != null ? ImageStream.GetBitmapImageFileStream(imagePath) : null;

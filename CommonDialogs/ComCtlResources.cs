@@ -14,19 +14,9 @@ namespace CommonDialogs
     internal static class ComCtlResources
     {
         /// <summary>
-        ///     The path (const). Value: "\\".
-        /// </summary>
-        internal const string Path = "\\";
-
-        /// <summary>
         ///     The path element (const). Value: @"\".
         /// </summary>
         internal const string PathElement = @"\";
-
-        /// <summary>
-        ///     The Explorer (const). Value: "Explorer.exe".
-        /// </summary>
-        internal const string Explorer = "Explorer.exe";
 
         /// <summary>
         ///     The Image for the drive (const). @"System\drive.png".
@@ -104,15 +94,5 @@ namespace CommonDialogs
         ///     File Extension. Value: ".*".
         /// </summary>
         internal const string Appendix = ".*";
-
-        /// <summary>
-        ///     The Header for the Directory (const). Value: "Directory Name?".
-        /// </summary>
-        internal const string HeaderDirectoryName = "Directory Name?";
-
-        /// <summary>
-        ///     The description Text (const). Value: "Name of the Folder:".
-        /// </summary>
-        internal const string TextNameFolder = "Name of the Folder:";
     }
 }

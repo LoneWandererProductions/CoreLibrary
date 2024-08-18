@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34729.46
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{9B2741D2-443A-4136-B9A4-1191686DA4AD}"
 EndProject
@@ -62,8 +62,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginLoader", "PluginLoader\PluginLoader.csproj", "{501245AD-6550-4AAB-9D88-218CD5E90350}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqliteHelper", "SqliteHelper\SqliteHelper.csproj", "{AFB92519-38C1-4AE2-A985-572577C2B478}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayGround", "PlayGround\PlayGround.csproj", "{C741C992-76C4-45A4-A300-DCB2B3198FC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,10 +173,6 @@ Global
 		{AFB92519-38C1-4AE2-A985-572577C2B478}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFB92519-38C1-4AE2-A985-572577C2B478}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFB92519-38C1-4AE2-A985-572577C2B478}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C741C992-76C4-45A4-A300-DCB2B3198FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C741C992-76C4-45A4-A300-DCB2B3198FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C741C992-76C4-45A4-A300-DCB2B3198FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C741C992-76C4-45A4-A300-DCB2B3198FC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

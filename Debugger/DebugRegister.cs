@@ -26,29 +26,15 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        private static readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), DebuggerResources.ConfigFile);
+        private static readonly string _configPath =
+            Path.Combine(Directory.GetCurrentDirectory(), DebuggerResources.ConfigFile);
 
         /// <summary>
-        ///     The base options
+        ///     Static constructor to initialize the config.
         /// </summary>
-        private static ConfigExtended CreateBaseOptions()
+        static DebugRegister()
         {
-            return new ConfigExtended
-            {
-                DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
-                SecondsTick = 1,
-                MinutesTick = 0,
-                HourTick = 0,
-                ErrorColor = DebuggerResources.ErrorColor,
-                InformationColor = DebuggerResources.InformationColor,
-                ExternalColor = DebuggerResources.ExternalColor,
-                StandardColor = DebuggerResources.StandardColor,
-                WarningColor = DebuggerResources.WarningColor,
-                IsDumpActive = false,
-                ColorOptions = DebuggerResources.InitialOptions,
-                MaxFileSize = 5 * 1024 * 1024, // Default: 5 MB
-                MaxFileCount = 10 // Default: 10 files
-            };
+            LoadConfig();
         }
 
         /// <summary>
@@ -120,18 +106,18 @@ namespace Debugger
         internal static string FoundColor { get; set; } = DebuggerResources.FoundColor;
 
         /// <summary>
-        /// Gets the maximum size of the file.
+        ///     Gets the maximum size of the file.
         /// </summary>
         /// <value>
-        /// The maximum size of the file.
+        ///     The maximum size of the file.
         /// </value>
         public static long MaxFileSize { get; private set; } = 5 * 1024 * 1024;
 
         /// <summary>
-        /// Gets the maximum file count.
+        ///     Gets the maximum file count.
         /// </summary>
         /// <value>
-        /// The maximum file count.
+        ///     The maximum file count.
         /// </value>
         public static int MaxFileCount { get; private set; } = 10;
 
@@ -150,19 +136,36 @@ namespace Debugger
         internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
 
         /// <summary>
-        /// Static constructor to initialize the config.
+        ///     The base options
         /// </summary>
-        static DebugRegister()
+        private static ConfigExtended CreateBaseOptions()
         {
-            LoadConfig();
+            return new ConfigExtended
+            {
+                DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
+                SecondsTick = 1,
+                MinutesTick = 0,
+                HourTick = 0,
+                ErrorColor = DebuggerResources.ErrorColor,
+                InformationColor = DebuggerResources.InformationColor,
+                ExternalColor = DebuggerResources.ExternalColor,
+                StandardColor = DebuggerResources.StandardColor,
+                WarningColor = DebuggerResources.WarningColor,
+                IsDumpActive = false,
+                ColorOptions = DebuggerResources.InitialOptions,
+                MaxFileSize = 5 * 1024 * 1024, // Default: 5 MB
+                MaxFileCount = 10 // Default: 10 files
+            };
         }
 
         /// <summary>
-        /// Load the configuration settings.
+        ///     Load the configuration settings.
         /// </summary>
         private static void LoadConfig()
         {
-            Config = File.Exists(DebuggerResources.ConfigFile) ? DeserializeConfig() ?? CreateBaseOptions() : CreateBaseOptions();
+            Config = File.Exists(DebuggerResources.ConfigFile)
+                ? DeserializeConfig() ?? CreateBaseOptions()
+                : CreateBaseOptions();
             ApplyConfig(Config);
         }
 
@@ -175,7 +178,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Apply the configuration values from the loaded config.
+        ///     Apply the configuration values from the loaded config.
         /// </summary>
         /// <param name="config">The config object containing the settings.</param>
         private static void ApplyConfig(ConfigExtended config)
@@ -203,7 +206,7 @@ namespace Debugger
                 return serializer.Deserialize(tr) as ConfigExtended;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                or UnauthorizedAccessException or ArgumentException or IOException)
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }
@@ -243,7 +246,7 @@ namespace Debugger
                 serializer.Serialize(tr, data);
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                or UnauthorizedAccessException or ArgumentException or IOException)
+                                           or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }

@@ -29,17 +29,17 @@ namespace Debugger
         private static bool _isActive;
 
         /// <summary>
-        /// The processing task
+        ///     The processing task
         /// </summary>
-        private static Task _processingTask;
+        private static readonly Task _processingTask;
 
         /// <summary>
-        /// The write semaphore
+        ///     The write semaphore
         /// </summary>
         private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
         /// <summary>
-        /// The message queue
+        ///     The message queue
         /// </summary>
         private static readonly ConcurrentQueue<string> MessageQueue = new();
 
