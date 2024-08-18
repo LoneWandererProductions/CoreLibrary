@@ -3,7 +3,7 @@
 * PROJECT:     Debugger
 * FILE:        Debugger/DebugRegister.cs
 * PURPOSE:     Handle the internal Config files
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:   Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBeInternal
@@ -26,26 +26,30 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        private static readonly string ConfigPath = Path.Combine(Directory.GetCurrentDirectory(),
-            DebuggerResources.ConfigFile);
+        private static readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), DebuggerResources.ConfigFile);
 
         /// <summary>
         ///     The base options
         /// </summary>
-        private static readonly ConfigExtended BaseOptions = new()
+        private static ConfigExtended CreateBaseOptions()
         {
-            DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
-            SecondsTick = 1,
-            MinutesTick = 0,
-            HourTick = 0,
-            ErrorColor = DebuggerResources.ErrorColor,
-            InformationColor = DebuggerResources.InformationColor,
-            ExternalColor = DebuggerResources.ExternalColor,
-            StandardColor = DebuggerResources.StandardColor,
-            WarningColor = DebuggerResources.WarningColor,
-            IsDumpActive = false,
-            ColorOptions = DebuggerResources.InitialOptions
-        };
+            return new ConfigExtended
+            {
+                DebugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.FileName),
+                SecondsTick = 1,
+                MinutesTick = 0,
+                HourTick = 0,
+                ErrorColor = DebuggerResources.ErrorColor,
+                InformationColor = DebuggerResources.InformationColor,
+                ExternalColor = DebuggerResources.ExternalColor,
+                StandardColor = DebuggerResources.StandardColor,
+                WarningColor = DebuggerResources.WarningColor,
+                IsDumpActive = false,
+                ColorOptions = DebuggerResources.InitialOptions,
+                MaxFileSize = 5 * 1024 * 1024, // Default: 5 MB
+                MaxFileCount = 10 // Default: 10 files
+            };
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the Debugger is Running
@@ -55,8 +59,7 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        internal static string DebugPath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-            DebuggerResources.FileName);
+        internal static string DebugPath { get; set; }
 
         /// <summary>
         ///     Is dump active.
@@ -74,12 +77,12 @@ namespace Debugger
         internal static int SecondsTick { get; set; } = 1;
 
         /// <summary>
-        ///     Gets or sets the seconds tick.
+        ///     Gets or sets the hour tick.
         /// </summary>
         internal static int HourTick { get; set; }
 
         /// <summary>
-        ///     Gets or sets the seconds tick.
+        ///     Gets or sets the minutes tick.
         /// </summary>
         internal static int MinutesTick { get; set; }
 
@@ -117,6 +120,22 @@ namespace Debugger
         internal static string FoundColor { get; set; } = DebuggerResources.FoundColor;
 
         /// <summary>
+        /// Gets the maximum size of the file.
+        /// </summary>
+        /// <value>
+        /// The maximum size of the file.
+        /// </value>
+        public static long MaxFileSize { get; private set; } = 5 * 1024 * 1024;
+
+        /// <summary>
+        /// Gets the maximum file count.
+        /// </summary>
+        /// <value>
+        /// The maximum file count.
+        /// </value>
+        public static int MaxFileCount { get; private set; } = 10;
+
+        /// <summary>
         ///     Gets or sets the config.
         ///     This object will be saved in the file
         /// </summary>
@@ -131,72 +150,60 @@ namespace Debugger
         internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
 
         /// <summary>
+        /// Static constructor to initialize the config.
+        /// </summary>
+        static DebugRegister()
+        {
+            LoadConfig();
+        }
+
+        /// <summary>
+        /// Load the configuration settings.
+        /// </summary>
+        private static void LoadConfig()
+        {
+            Config = File.Exists(DebuggerResources.ConfigFile) ? DeserializeConfig() ?? CreateBaseOptions() : CreateBaseOptions();
+            ApplyConfig(Config);
+        }
+
+        /// <summary>
         ///     Resets this instance.
         /// </summary>
         internal static void Reset()
         {
-            Config = BaseOptions;
+            Config = CreateBaseOptions();
         }
 
         /// <summary>
-        ///     Read the config file and prepare the file, if it does not exist, create a new config and prepare it for saving.
+        /// Apply the configuration values from the loaded config.
         /// </summary>
-        internal static void ReadConfigFile()
+        /// <param name="config">The config object containing the settings.</param>
+        private static void ApplyConfig(ConfigExtended config)
         {
-            if (!File.Exists(DebuggerResources.ConfigFile))
-            {
-                Config = BaseOptions;
-            }
-            else
-            {
-                var config = SerializeConfig();
-                if (config == null)
-                {
-                    return;
-                }
-
-                //set file we want to read
-                //generic data in config
-                DebugPath = config.DebugPath;
-                DebugPath = config.DebugPath;
-                SecondsTick = config.SecondsTick;
-                MinutesTick = config.MinutesTick;
-                HourTick = config.HourTick;
-                IsDumpActive = config.IsDumpActive;
-
-                Config = new ConfigExtended
-                {
-                    DebugPath = config.DebugPath,
-                    //not saved in config
-                    IsRunning = IsRunning,
-                    SecondsTick = config.SecondsTick,
-                    MinutesTick = config.MinutesTick,
-                    HourTick = config.HourTick,
-                    ErrorColor = config.ErrorColor,
-                    InformationColor = config.InformationColor,
-                    ExternalColor = config.ExternalColor,
-                    StandardColor = config.StandardColor,
-                    WarningColor = config.WarningColor,
-                    ColorOptions = ColorOptions
-                };
-            }
+            DebugPath = config.DebugPath;
+            SecondsTick = config.SecondsTick;
+            MinutesTick = config.MinutesTick;
+            HourTick = config.HourTick;
+            IsDumpActive = config.IsDumpActive;
+            MaxFileSize = config.MaxFileSize;
+            MaxFileCount = config.MaxFileCount;
         }
 
         /// <summary>
-        ///     The serialize config.
+        ///     Deserialize the config file.
         /// </summary>
-        /// <returns>The <see cref="Config" />.</returns>
+        /// <returns>The <see cref="ConfigExtended" />.</returns>
         [return: MaybeNull]
-        private static ConfigExtended SerializeConfig()
+        private static ConfigExtended DeserializeConfig()
         {
             try
             {
                 var serializer = new XmlSerializer(typeof(ConfigExtended));
-                using Stream tr = File.OpenRead(ConfigPath);
+                using Stream tr = File.OpenRead(_configPath);
                 return serializer.Deserialize(tr) as ConfigExtended;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+                or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }
@@ -212,7 +219,6 @@ namespace Debugger
         /// <param name="options">The options.</param>
         internal static void XmlSerializerObject<T>(T serializeObject, List<ColorOption> options)
         {
-            //check if everything is in place
             if (serializeObject is not ConfigExtended data || options == null)
             {
                 return;
@@ -220,23 +226,24 @@ namespace Debugger
 
             ColorOptions = options;
 
-            //Add our Colors a bit of a hack but works for now
+            // Add our colors here
             data.ErrorColor = ErrorColor;
             data.WarningColor = WarningColor;
             data.InformationColor = InformationColor;
             data.ExternalColor = ExternalColor;
             data.StandardColor = StandardColor;
             data.ColorOptions = ColorOptions;
+            data.MaxFileSize = MaxFileSize;
+            data.MaxFileCount = MaxFileCount;
 
             try
             {
                 var serializer = new XmlSerializer(data.GetType());
-                using var tr =
-                    new StreamWriter(ConfigPath);
+                using var tr = new StreamWriter(_configPath);
                 serializer.Serialize(tr, data);
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+                or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Trace.WriteLine(ex);
             }

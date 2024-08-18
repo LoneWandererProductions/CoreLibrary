@@ -34,8 +34,6 @@ namespace CommonLibraryGuiTests
 
             var path = DebugRegister.DebugPath;
 
-            DebugRegister.ReadConfigFile();
-
             Trace.WriteLine(path);
 
             Assert.IsTrue(DebugRegister.IsDumpActive, "Dump loaded");

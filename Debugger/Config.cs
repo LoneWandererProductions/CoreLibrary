@@ -181,5 +181,15 @@ namespace Debugger
             get => DebugRegister.ColorOptions;
             set => DebugRegister.ColorOptions = value;
         }
+
+        /// <summary>
+        ///     Maximum size for each log file in bytes.
+        /// </summary>
+        public long MaxFileSize { get; set; } = 5 * 1024 * 1024; // Default: 5 MB
+
+        /// <summary>
+        ///     Maximum number of log files to retain.
+        /// </summary>
+        public int MaxFileCount { get; set; } = 10; // Default: 10
     }
 }

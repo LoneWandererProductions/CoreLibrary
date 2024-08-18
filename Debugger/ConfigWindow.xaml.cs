@@ -50,11 +50,6 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DebugRegister.Config == null)
-            {
-                DebugRegister.ReadConfigFile();
-            }
-
             ColorOptions.AddItemColors(DebugRegister.ColorOptions);
             DataContext = DebugRegister.Config;
         }

@@ -65,9 +65,6 @@ namespace Debugger
         /// <param name="e">The routed event arguments.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //load Config
-            DebugRegister.ReadConfigFile();
-
             //set Index and Counter
             _index = _counter = ReadLines(DebugRegister.DebugPath).Count();
 
@@ -176,7 +173,7 @@ namespace Debugger
         private void MenStop_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
-            DebugProcessing.StopDebugging();
+            _ = DebugProcessing.StopDebuggingAsync();
         }
 
         /// <summary>
@@ -261,7 +258,7 @@ namespace Debugger
         {
             _dispatcherTimer?.Stop();
 
-            DebugProcessing.StopDebugging();
+            _ = DebugProcessing.StopDebuggingAsync();
 
             Log.Document.Blocks.Clear();
 

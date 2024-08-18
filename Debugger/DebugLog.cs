@@ -38,7 +38,6 @@ namespace Debugger
         /// </summary>
         public void Start()
         {
-            DebugRegister.ReadConfigFile();
             DebugRegister.SuppressWindow = false;
             DebugProcessing.InitiateDebug();
         }
@@ -61,7 +60,7 @@ namespace Debugger
         public void StopDebugging()
         {
             DebugRegister.IsRunning = false;
-            DebugProcessing.StopDebugging();
+            _ = DebugProcessing.StopDebuggingAsync();
             CloseWindow();
         }
 
@@ -78,7 +77,7 @@ namespace Debugger
         /// </summary>
         internal static void Delete()
         {
-            DebugProcessing.StopDebugging();
+            _ = DebugProcessing.StopDebuggingAsync();
             try
             {
                 File.Delete(DebugRegister.DebugPath);

@@ -29,12 +29,17 @@ namespace Debugger
         private static bool _isActive;
 
         /// <summary>
-        ///     The lock object
+        /// The processing task
         /// </summary>
-        private static readonly string LockObject = string.Empty;
+        private static Task _processingTask;
 
         /// <summary>
-        ///     The message queue
+        /// The write semaphore
+        /// </summary>
+        private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
+
+        /// <summary>
+        /// The message queue
         /// </summary>
         private static readonly ConcurrentQueue<string> MessageQueue = new();
 
@@ -49,12 +54,33 @@ namespace Debugger
         private static readonly ManualResetEventSlim MessageQueuedEvent = new(false);
 
         /// <summary>
+        ///     The directory where log files are stored.
+        /// </summary>
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+
+        /// <summary>
+        ///     The log file name prefix.
+        /// </summary>
+        private static readonly string LogFileName = "debug_log";
+
+        /// <summary>
+        ///     The log file extension.
+        /// </summary>
+        private static readonly string LogFileExtension = ".log";
+
+        /// <summary>
         ///     Initializes the <see cref="DebugProcessing" /> class.
         /// </summary>
         static DebugProcessing()
         {
+            // Ensure log directory exists
+            if (!Directory.Exists(LogDirectory))
+            {
+                Directory.CreateDirectory(LogDirectory);
+            }
+
             // Start a background task to process the message queue
-            Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
+            _processingTask = Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
         }
 
         /// <summary>
@@ -262,9 +288,19 @@ namespace Debugger
         /// <summary>
         ///     Stop Debugging Window
         /// </summary>
-        internal static void StopDebugging()
+        internal static async Task StopDebuggingAsync()
         {
             DebugRegister.IsRunning = _isActive = false;
+
+            // Signal the cancellation token
+            CancellationTokenSource.Cancel();
+
+            // Await the background task to finish processing
+            if (_processingTask != null)
+            {
+                await _processingTask;
+            }
+
             Trace.Close();
         }
 
@@ -281,16 +317,16 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Processes the message queue asynchronous.
+        ///     Processes the message queue asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         private static async Task ProcessMessageQueueAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested || !MessageQueue.IsEmpty)
             {
                 try
                 {
-                    // Wait for a message to be enqueue or until cancellation is requested
+                    // Wait for a message to be enqueued or until cancellation is requested
                     MessageQueuedEvent.Wait(cancellationToken);
 
                     // Dequeue all messages and write them to the file
@@ -315,20 +351,69 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Writes to file asynchronous.
+        ///     Writes to file asynchronously, handling file size and rotation.
         /// </summary>
         /// <param name="message">The message.</param>
         private static async Task WriteToFileAsync(string message)
         {
-            // Ensure thread safety while writing to the file
-            lock (LockObject)
+            await WriteSemaphore.WaitAsync(); // Ensure thread safety using SemaphoreSlim
+
+            try
             {
-                // Append the message to the file
-                File.AppendAllText(DebugRegister.DebugPath, string.Concat(message, Environment.NewLine));
+                var filePath = GetLogFilePath();
+
+                // Check file size and rotate if necessary
+                if (new FileInfo(filePath).Length > DebugRegister.MaxFileSize)
+                {
+                    RotateLogFiles();
+                    filePath = GetLogFilePath(); // Update path after rotation
+                }
+
+                // Append the message to the file asynchronously
+                await File.AppendAllTextAsync(filePath, string.Concat(message, Environment.NewLine));
+            }
+            finally
+            {
+                WriteSemaphore.Release(); // Release the semaphore
             }
 
             // Simulate some delay (optional)
             await Task.Delay(DebuggerResources.Idle);
+        }
+
+        /// <summary>
+        ///     Gets the current log file path.
+        /// </summary>
+        /// <returns>The current log file path.</returns>
+        private static string GetLogFilePath()
+        {
+            return Path.Combine(LogDirectory, $"{LogFileName}{LogFileExtension}");
+        }
+
+        /// <summary>
+        ///     Rotates the log files by renaming the current log file and deleting the oldest one if necessary.
+        /// </summary>
+        private static void RotateLogFiles()
+        {
+            // Get all existing log files
+            var logFiles = Directory.GetFiles(LogDirectory, $"{LogFileName}*{LogFileExtension}");
+
+            // Rename each file to shift the versions
+            for (var i = logFiles.Length - 1; i >= 0; i--)
+            {
+                var newVersion = i + 1;
+                var newFilePath = Path.Combine(LogDirectory, $"{LogFileName}_{newVersion}{LogFileExtension}");
+
+                // If the new version exceeds the max number of files, delete it
+                if (newVersion > DebugRegister.MaxFileCount)
+                {
+                    File.Delete(logFiles[i]);
+                }
+                else
+                {
+                    File.Move(logFiles[i], newFilePath);
+                }
+            }
         }
     }
 }
