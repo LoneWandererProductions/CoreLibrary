@@ -19,21 +19,30 @@ using System.Windows.Controls;
 
 namespace CommonDialogs
 {
-    /// <inheritdoc cref="Window" />
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
-    ///     Folder View Control
-    ///     TODO add more Images, optional Files
+    /// Generic folder view
     /// </summary>
+    /// <seealso cref="T:System.Windows.Controls.UserControl" />
+    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+    /// <seealso cref="T:System.Windows.Controls.UserControl" />
+    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+    /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
     public sealed partial class FolderControl : INotifyPropertyChanged
     {
         /// <summary>
-        ///     The look up
+        /// The look up
         /// </summary>
         private string _lookUp;
 
+        /// <summary>
+        ///  Option to show files
+        /// </summary>
+        private readonly bool _showFiles;
+
         /// <inheritdoc />
         /// <summary>
-        ///     startup the control
+        /// Initializes a new instance of the <see cref="T:CommonDialogs.FolderControl" /> class.
         /// </summary>
         public FolderControl()
         {
@@ -41,28 +50,25 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     Gets the root.
+        /// Gets the root.
         /// </summary>
         /// <value>
-        ///     The root.
+        /// The root.
         /// </value>
-        public static string Root { get; private set; }
+        public static string? Root { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the path.
+        /// Gets or sets the paths.
         /// </summary>
         /// <value>
-        ///     The path.
+        /// The paths.
         /// </value>
-        public string Paths
+        public string? Paths
         {
             get => Root;
             set
             {
-                if (value == Root)
-                {
-                    return;
-                }
+                if (value == Root) return;
 
                 Root = value;
                 OnPropertyChanged(nameof(Paths));
@@ -70,20 +76,17 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     Gets or sets the look up.
+        /// Gets or sets the look up.
         /// </summary>
         /// <value>
-        ///     The look up.
+        /// The look up.
         /// </value>
         public string LookUp
         {
             get => _lookUp;
             set
             {
-                if (value == _lookUp)
-                {
-                    return;
-                }
+                if (value == _lookUp) return;
 
                 _lookUp = value;
                 OnPropertyChanged(nameof(LookUp));
@@ -92,74 +95,107 @@ namespace CommonDialogs
 
         /// <inheritdoc />
         /// <summary>
-        ///     Triggers if an Attribute gets changed
+        /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <inheritdoc cref="PropertyChangedEventArgs" />
         /// <summary>
-        ///     Called when [property changed].
+        /// Called when [property changed].
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
-        ///     Initiate Control
+        /// Main function to initiate the control with a specific path
+        /// Initiates the specified path.
         /// </summary>
-        /// <param name="path">target Folder</param>
+        /// <param name="path">The path.</param>
         public void Initiate(string path)
         {
             SetItems(path);
         }
 
         /// <summary>
-        ///     Set the items.
+        /// Sets the items asynchronous.
+        /// Function to set items (folders and files) asynchronously
         /// </summary>
+        /// <param name="path">The path.</param>
         private void SetItems(string path)
         {
-            string[] directory;
+            string[] directories;
+            string[] files = Array.Empty<string>();
 
-            if (!Directory.Exists(path))
+            if (Directory.Exists(path))
             {
-                directory = Directory.GetLogicalDrives();
-                if (directory.Length == 0)
-                {
-                    return;
-                }
+                // Get all directories in the current path
+                directories = Directory.GetDirectories(path);
 
-                path = directory[0];
+                // Optionally, get all files in the current path
+                if (_showFiles)
+                {
+                    files = Directory.GetFiles(path);
+                }
             }
             else
             {
-                directory = Directory.GetDirectories(path);
+                // If path does not exist, get logical drives
+                directories = Directory.GetLogicalDrives();
             }
 
-            //Clear
+            // Clear TreeView before repopulating
             FoldersItem.Items.Clear();
 
-            //Just get all HD
-            foreach (var item in directory.Select(s => new TreeViewItem
-                     {
-                         Header = s, Tag = s, FontWeight = FontWeights.Normal
-                     }))
+            // Add directories to the TreeView
+            foreach (var dir in directories)
             {
-                //add Method and dummy
-                _ = item.Items.Add(null);
-                item.Expanded += Folder_Expanded;
-                _ = FoldersItem.Items.Add(item);
+                var item = CreateTreeViewItem(dir);
+                FoldersItem.Items.Add(item);
             }
 
+            // Optionally add files to the TreeView
+            if (_showFiles)
+            {
+                foreach (var item in files.Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                {
+                    FoldersItem.Items.Add(item);
+                }
+            }
+
+            // Update Paths property with the current path
             Paths = path;
         }
 
         /// <summary>
-        ///     We clicked on expand Button
+        /// Creates the TreeView item.
+        /// Function to create a TreeViewItem for a directory
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>TreeViewItem</returns>
+        private TreeViewItem CreateTreeViewItem(string path)
+        {
+            var item = new TreeViewItem
+            {
+                Header = Path.GetFileName(path),
+                Tag = path,
+                FontWeight = FontWeights.Normal
+            };
+
+            // Placeholder for lazy loading of subdirectories
+            _ = item.Items.Add(null);
+            item.Expanded += FolderExpanded;
+            return item;
+        }
+
+        /// <summary>
+        /// Handles the Expanded event of the Folder control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private static void Folder_Expanded(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void FolderExpanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
             if (item.Items.Count != 1 || item.Items[0] != null)
@@ -171,64 +207,53 @@ namespace CommonDialogs
 
             try
             {
-                foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!).Select(path => new TreeViewItem
-                         {
-                             Header =
-                                 path[(path.LastIndexOf(ComCtlResources.Path, StringComparison.Ordinal) + 1)..],
-                             Tag = path,
-                             FontWeight = FontWeights.Normal
-                         }))
+                // Load subdirectories
+                foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!).Select(dir => CreateTreeViewItem(dir)))
                 {
-                    //add Method and dummy
-                    _ = subItem.Items.Add(null);
-                    subItem.Expanded += Folder_Expanded;
-                    _ = item.Items.Add(subItem);
+                    item.Items.Add(subItem);
+                }
+
+                // Optionally load files
+                if (!_showFiles)
+                {
+                    return;
+                }
+
+                foreach (var fileItem in Directory.GetFiles(item.Tag.ToString()!).Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                {
+                    item.Items.Add(fileItem);
                 }
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
                 Trace.WriteLine(ex);
             }
         }
 
         /// <summary>
-        ///     We select an item
+        /// Event handler for when a folder is selected
+        /// Handles the SelectedItemChanged event of the FoldersItem control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{System.Object}"/> instance containing the event data.</param>
         private void FoldersItem_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var tree = sender as TreeView;
-
-            var selection = (TreeViewItem)tree.SelectedItem;
-
-            if (selection != null)
+            if (tree?.SelectedItem is TreeViewItem selection)
             {
                 Paths = selection.Tag.ToString();
             }
         }
 
         /// <summary>
-        ///     The btn up click.
+        /// Button up click.
+        /// Navigate up one level in the directory tree
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnUp_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnUpClick(object sender, RoutedEventArgs e)
         {
             var path = Directory.GetParent(Paths);
-
             if (path != null)
             {
                 SetItems(path.ToString());
@@ -236,11 +261,12 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     The btn go click.
+        /// Handles the Click event of the BtnGo control.
+        /// Go to the directory specified in the LookUp text box
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnGo_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnGoClick(object sender, RoutedEventArgs e)
         {
             if (!Directory.Exists(LookUp))
             {
@@ -252,104 +278,104 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     The Button desktop click.
+        /// Navigate to the Desktop directory
+        /// Handles the Click event of the BtnDesktop control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnDesktop_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnDesktopClick(object sender, RoutedEventArgs e)
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
             SetItems(path);
         }
 
         /// <summary>
-        ///     The Button root click.
+        /// Navigate to the root directory (C:\)
+        /// Button root click.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnRoot_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnRootClick(object sender, RoutedEventArgs e)
         {
-            var dir = Directory.GetLogicalDrives();
-            if (dir.Length == 0)
-            {
-                return;
-            }
-
-            var path = dir[0];
-
-            SetItems(path);
+            SetItems(@"C:\");
         }
 
         /// <summary>
-        ///     The Button docs click.
+        /// Navigate to the Documents directory
+        /// Button docs click.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnDocs_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnDocsClick(object sender, RoutedEventArgs e)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
-
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             SetItems(path);
         }
 
         /// <summary>
-        ///     The Button personal click.
+        /// Navigate to the user's profile directory
+        /// Handles the Click event of the Personal Button control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnPersonal_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnPersonalClick(object sender, RoutedEventArgs e)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             SetItems(path);
         }
 
         /// <summary>
-        ///     Handles the Click event of the Button Picture control.
+        /// Navigate to the Pictures directory
+        /// Handles the Click event of the Picture Button control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnPicture_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnPictureClick(object sender, RoutedEventArgs e)
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-
             SetItems(path);
         }
 
+
         /// <summary>
-        ///     Handles the Click event of the BtnExplorer control.
+        /// Create a new folder in the current directory
+        /// Handles the Click event of the Folder Button control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnExplorer_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnFolderClick(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(Paths))
+            var newDirPath = Path.Combine(Paths, "New Folder");
+            var dirName = newDirPath;
+            int i = 1;
+
+            // Ensure the new folder name is unique
+            while (Directory.Exists(dirName))
             {
-                return;
+                dirName = $"{newDirPath} ({i++})";
             }
 
-            _ = Process.Start(ComCtlResources.Explorer, Paths);
+            // Create the new directory and refresh the TreeView
+            _ = Directory.CreateDirectory(dirName);
+            SetItems(Paths);
         }
 
         /// <summary>
-        ///     Handles the Click event of the Button Folder control.
-        ///     Create a new Folder here
+        /// Open the current directory in Windows Explorer
+        /// Handles the Click event of the Explorer Button control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnFolder_Click(object sender, RoutedEventArgs e)
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnExplorerClick(object sender, RoutedEventArgs e)
         {
-            var input = new InputBox(ComCtlResources.HeaderDirectoryName, ComCtlResources.TextNameFolder);
-            _ = input.ShowDialog();
-
-            if (string.IsNullOrEmpty(input.InputText))
+            if (!string.IsNullOrEmpty(Paths) && Directory.Exists(Paths))
             {
-                return;
+                _ = Process.Start(new ProcessStartInfo
+                {
+                    FileName = Paths,
+                    UseShellExecute = true
+                });
             }
-
-            var path = Path.Combine(Paths, input.InputText);
-            _ = Directory.CreateDirectory(path);
         }
     }
 }

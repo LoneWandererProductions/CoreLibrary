@@ -3,7 +3,7 @@
  * PROJECT:     CommonDialogs
  * FILE:        CommonDialogs/HeaderToImageConverter.cs
  * PURPOSE:     Needed for the FolderView Control, and FolderBrowser, converts Image into the tree Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal, same as usual we can not make it internal because we bind it to the window
@@ -20,9 +20,9 @@ namespace CommonDialogs
 {
     /// <inheritdoc />
     /// <summary>
-    ///     here we build in our Image Converter
+    ///     Here we build in our Image Converter
     /// </summary>
-    [ValueConversion(typeof(string), typeof(bool))]
+    [ValueConversion(typeof(string), typeof(BitmapImage))]
     public sealed class HeaderToImageConverter : IValueConverter
     {
         /// <summary>
@@ -34,58 +34,47 @@ namespace CommonDialogs
         /// <summary>
         ///     Return Image view
         /// </summary>
-        /// <param name="value">Value of Object, directly from the Wpf Form</param>
+        /// <param name="value">Value of Object, directly from the WPF Form</param>
         /// <param name="targetType">Type of Object</param>
         /// <param name="parameter">Parameter</param>
         /// <param name="culture">CultureInfo</param>
         /// <returns>Image</returns>
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var str = value as string;
+            if (value is not string str || string.IsNullOrEmpty(str))
+            {
+                return null;
+            }
 
+            // Get the directory where the executing assembly is located
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (root == null)
             {
                 return null;
             }
 
-            var drive = Path.Combine(root, ComCtlResources.DriveImage);
-            var folder = Path.Combine(root, ComCtlResources.FolderImage);
+            // Construct the full paths to the images
+            var driveImagePath = Path.Combine(root, ComCtlResources.DriveImage);
+            var folderImagePath = Path.Combine(root, ComCtlResources.FolderImage);
 
-            var source = new BitmapImage();
+            // Select the appropriate image based on the path string
+            var imagePath = str.Contains(ComCtlResources.PathElement) && File.Exists(driveImagePath)
+                ? driveImagePath
+                : File.Exists(folderImagePath) ? folderImagePath : null;
 
-            if (string.IsNullOrEmpty(str))
-            {
-                return source;
-            }
-
-            if (str.Contains(ComCtlResources.PathElement))
-            {
-                if (File.Exists(drive))
-                {
-                    return ImageStream.GetBitmapImageFileStream(drive);
-                }
-            }
-            else
-            {
-                if (File.Exists(folder))
-                {
-                    return ImageStream.GetBitmapImageFileStream(folder);
-                }
-            }
-
-            return source;
+            // Return the image if it exists
+            return imagePath != null ? ImageStream.GetBitmapImageFileStream(imagePath) : null;
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Try to Convert
+        ///     ConvertBack is not supported in this converter.
         /// </summary>
         /// <param name="value">Value of Object</param>
         /// <param name="targetType">Type of Object</param>
         /// <param name="parameter">Parameter</param>
         /// <param name="culture">CultureInfo</param>
-        /// <returns>Catch error</returns>
+        /// <returns>Throws NotSupportedException</returns>
         /// <exception cref="NotSupportedException"></exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
