@@ -31,9 +31,33 @@ namespace CommonDialogs
     public sealed partial class FolderControl : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Option to show files
+        ///     The dependency property for showing files
         /// </summary>
-        private readonly bool _showFiles;
+        public static readonly DependencyProperty ShowFilesProperty =
+            DependencyProperty.Register(nameof(ShowFiles), typeof(bool), typeof(FolderControl),
+                new PropertyMetadata(false, OnShowFilesChanged));
+
+        /// <summary>
+        ///     Gets or sets the ShowFiles dependency property.
+        /// </summary>
+        public bool ShowFiles
+        {
+            get => (bool)GetValue(ShowFilesProperty);
+            set => SetValue(ShowFilesProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [show files changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnShowFilesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FolderControl folderControl)
+            {
+                folderControl.SetItems(folderControl.Paths);
+            }
+        }
 
         /// <summary>
         ///     The look up
@@ -141,7 +165,7 @@ namespace CommonDialogs
                 directories = Directory.GetDirectories(path);
 
                 // Optionally, get all files in the current path
-                if (_showFiles)
+                if (ShowFiles)
                 {
                     files = Directory.GetFiles(path);
                 }
@@ -163,7 +187,7 @@ namespace CommonDialogs
             }
 
             // Optionally add files to the TreeView
-            if (_showFiles)
+            if (ShowFiles)
             {
                 foreach (var item in files.Select(file => new TreeViewItem
                          {
@@ -222,7 +246,7 @@ namespace CommonDialogs
                 }
 
                 // Optionally load files
-                if (!_showFiles)
+                if (!ShowFiles)
                 {
                     return;
                 }
