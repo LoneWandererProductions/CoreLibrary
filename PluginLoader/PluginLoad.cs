@@ -26,8 +26,14 @@ namespace PluginLoader
     /// </summary>
     public static class PluginLoad
     {
-        public static EventHandler<LoaderErrorEventArgs> LoadErrorEvent;
+        /// <summary>
+        /// The load error event
+        /// </summary>
+        public static EventHandler<LoaderErrorEventArgs> loadErrorEvent;
 
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
         private static IEventAggregator _eventAggregator;
 
         /// <summary>
@@ -51,6 +57,7 @@ namespace PluginLoader
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="extension">The extension for plugins.</param>
+        /// <param name="eventAggregator">Collector for the events</param>
         /// <returns>
         ///     Success Status
         /// </returns>
@@ -67,10 +74,8 @@ namespace PluginLoader
             PluginContainer = new List<IPlugin>();
             AsyncPluginContainer = new List<IAsyncPlugin>();
 
-            foreach (var pluginPath in pluginPaths)
+            foreach (var pluginAssembly in pluginPaths.Select(LoadPlugin))
             {
-                var pluginAssembly = LoadPlugin(pluginPath);
-
                 try
                 {
                     var syncPlugins = CreateCommands<IPlugin>(pluginAssembly).ToList();
@@ -81,11 +86,11 @@ namespace PluginLoader
                     }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
-                                               or ReflectionTypeLoadException or BadImageFormatException
-                                               or FileNotFoundException)
+                    or ReflectionTypeLoadException or BadImageFormatException
+                    or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
 
                 try
@@ -98,11 +103,11 @@ namespace PluginLoader
                     }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
-                                               or ReflectionTypeLoadException or BadImageFormatException
-                                               or FileNotFoundException)
+                    or ReflectionTypeLoadException or BadImageFormatException
+                    or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
+                    loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
             }
 
@@ -176,7 +181,8 @@ namespace PluginLoader
         ///     Adds References to the Commands
         ///     Can't find any type which implements IPlugin in {assembly} from {assembly.Location}.\n" +
         ///     $"Available types: {availableTypes}
-        ///     $"Available types: {availableTypes}</exception>
+        ///     $"Available types: {availableTypes}
+        /// </returns>
         ///     <exception cref="ArgumentException">Could not find the Plugin</exception>
         private static IEnumerable<T> CreateCommands<T>(Assembly assembly) where T : class
         {

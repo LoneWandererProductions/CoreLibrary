@@ -1,30 +1,34 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Plugin
+ * FILE:        Plugin/BaseAsyncPlugin.cs
+ * PURPOSE:     Basic abstract Plugin Implementation, in this case for async
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
+ *              https://medium.com/c-sharp-progarmming/wpf-application-with-plugin-architecture-30004f3319d3
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Plugin
 {
+    /// <inheritdoc />
     /// <summary>
     /// Abstract Implementation of Async Plugin
     /// The user can pick and choose what he needs in a cleaner way
     /// </summary>
-    /// <seealso cref="Plugin.IAsyncPlugin" />
+    /// <seealso cref="T:Plugin.IAsyncPlugin" />
     public abstract class BaseAsyncPlugin : IAsyncPlugin
     {
-        /// <summary>
-        /// The event aggregator
-        /// </summary>
-        private IEventAggregator _eventAggregator;
-
+        /// <inheritdoc />
         /// <summary>
         /// Gets or sets the event aggregator for the plugin.
         /// </summary>
-        public IEventAggregator EventAggregator
-        {
-            get => _eventAggregator;
-            set => _eventAggregator = value;
-        }
+        public IEventAggregator EventAggregator { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the name.
         /// This field must be equal to the file name.
@@ -34,6 +38,7 @@ namespace Plugin
         /// </value>
         public virtual string Name => "DefaultAsyncPlugin";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the type.
         /// This field is optional.
@@ -43,6 +48,7 @@ namespace Plugin
         /// </value>
         public virtual string Type => "DefaultAsyncType";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the description.
         /// This field is optional.
@@ -52,6 +58,7 @@ namespace Plugin
         /// </value>
         public virtual string Description => "DefaultAsyncDescription";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the version.
         /// This field is optional.
@@ -61,6 +68,7 @@ namespace Plugin
         /// </value>
         public virtual Version Version => new Version(1, 0);
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the commands.
         /// This field is optional.
@@ -70,12 +78,14 @@ namespace Plugin
         /// </value>
         public virtual List<Command> Commands => new List<Command>();
 
+        /// <inheritdoc />
         /// <summary>
         /// Executes this instance asynchronously.
         /// </summary>
         /// <returns>Status Code as async</returns>
         public abstract Task<int> ExecuteAsync();
 
+        /// <inheritdoc />
         /// <summary>
         /// Executes the command asynchronously.
         /// </summary>
@@ -87,6 +97,7 @@ namespace Plugin
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the plugin type asynchronously.
         /// </summary>
@@ -98,6 +109,7 @@ namespace Plugin
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the information.
         /// </summary>
@@ -108,6 +120,7 @@ namespace Plugin
             return "Default async plugin info";
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Closes this instance asynchronously.
         /// </summary>
@@ -118,13 +131,14 @@ namespace Plugin
             return Task.FromResult(0);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Publishes an event through the event aggregator.
         /// </summary>
         /// <param name="eventToPublish">The event to publish.</param>
         public void PublishEvent<TEvent>(TEvent eventToPublish)
         {
-            _eventAggregator?.Publish(eventToPublish);
+            EventAggregator?.Publish(eventToPublish);
         }
     }
 }

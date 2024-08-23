@@ -2,9 +2,10 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
  * FILE:        Plugin/BasePlugin.cs
- * PURPOSE:     Basic abstract Plugin Implemnentation
+ * PURPOSE:     Basic abstract Plugin Implementation
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
+ *              https://medium.com/c-sharp-progarmming/wpf-application-with-plugin-architecture-30004f3319d3
  */
 
 using System;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 
 namespace Plugin
 {
+    /// <inheritdoc />
     /// <summary>
     /// Abstract Implementation of Plugin
     /// The user can pick and choose what he needs in a cleaner ways
@@ -19,14 +21,13 @@ namespace Plugin
     /// <seealso cref="Plugin.IPlugin" />
     public abstract class BasePlugin : IPlugin
     {
-        private IEventAggregator _eventAggregator;
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the event aggregator for the plugin.
+        /// </summary>
+        public IEventAggregator EventAggregator { get; set; }
 
-        public IEventAggregator EventAggregator
-        {
-            get => _eventAggregator;
-            set => _eventAggregator = value;
-        }
-
+        /// <inheritdoc />
         /// <summary>
         /// Gets the name.
         /// This field must be equal to the file name.
@@ -36,6 +37,7 @@ namespace Plugin
         /// </value>
         public virtual string Name => "DefaultPlugin";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the type.
         /// This field is optional.
@@ -45,6 +47,7 @@ namespace Plugin
         /// </value>
         public virtual string Type => "DefaultType";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the description.
         /// This field is optional.
@@ -54,6 +57,7 @@ namespace Plugin
         /// </value>
         public virtual string Description => "DefaultDescription";
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the version.
         /// This field is optional.
@@ -63,6 +67,7 @@ namespace Plugin
         /// </value>
         public virtual Version Version => new Version(1, 0);
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the possible commands for the Plugin.
         /// This field is optional.
@@ -72,6 +77,7 @@ namespace Plugin
         /// </value>
         public virtual List<Command> Commands => new List<Command>();
 
+        /// <inheritdoc />
         /// <summary>
         /// Executes this instance.
         /// Absolute necessary.
@@ -81,6 +87,7 @@ namespace Plugin
         /// </returns>
         public abstract int Execute();
 
+        /// <inheritdoc />
         /// <summary>
         /// Executes the command.
         /// Returns the result as object.
@@ -103,6 +110,7 @@ namespace Plugin
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns the type of the plugin. Defined by the coder.
         /// As already mentioned in ExecuteCommand, we need to know what we can expect as return value from this Plugin.
@@ -120,6 +128,7 @@ namespace Plugin
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the basic information of the plugin human readable.
         /// This method is optional.
@@ -133,6 +142,7 @@ namespace Plugin
             return "Default plugin info";
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Closes this instance.
         /// This method is optional.
@@ -146,9 +156,15 @@ namespace Plugin
             return 0;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Method to publish an event through the event aggregator.
+        /// </summary>
+        /// <typeparam name="TEvent"></typeparam>
+        /// <param name="eventToPublish"></param>
         public void PublishEvent<TEvent>(TEvent eventToPublish)
         {
-            _eventAggregator?.Publish(eventToPublish);
+            EventAggregator?.Publish(eventToPublish);
         }
     }
 
