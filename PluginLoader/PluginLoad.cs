@@ -10,6 +10,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnassignedField.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Plugin;
+
 
 namespace PluginLoader
 {
@@ -29,7 +31,7 @@ namespace PluginLoader
         /// <summary>
         ///     The load error event
         /// </summary>
-        public static EventHandler<LoaderErrorEventArgs> loadErrorEvent;
+        public static EventHandler<LoaderErrorEventArgs> LoadErrorEvent { get; internal set; }
 
         /// <summary>
         ///     The event aggregator
@@ -79,8 +81,7 @@ namespace PluginLoader
             {
                 try
                 {
-                    var syncPlugins = CreateCommands<IPlugin>(pluginAssembly).ToList();
-                    foreach (var plugin in syncPlugins)
+                    foreach (var plugin in CreateCommands<IPlugin>(pluginAssembly).ToList())
                     {
                         plugin.EventAggregator = _eventAggregator;
                         PluginContainer.Add(plugin);
@@ -91,13 +92,12 @@ namespace PluginLoader
                                                or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
+                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
 
                 try
                 {
-                    var asyncPlugins = CreateCommands<IAsyncPlugin>(pluginAssembly).ToList();
-                    foreach (var plugin in asyncPlugins)
+                    foreach (var plugin in CreateCommands<IAsyncPlugin>(pluginAssembly).ToList())
                     {
                         plugin.EventAggregator = _eventAggregator;
                         AsyncPluginContainer.Add(plugin);
@@ -108,7 +108,7 @@ namespace PluginLoader
                                                or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
+                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
             }
 
@@ -121,7 +121,7 @@ namespace PluginLoader
         /// <param name="store">
         ///     Sets the environment variables of the base module
         ///     The idea is, the main module has documented Environment Variables, that the plugins can use.
-        ///     / This method sets these Variables.
+        ///     This method sets these Variables.
         /// </param>
         /// <returns>Success Status</returns>
         public static bool SetEnvironmentVariables(Dictionary<int, object> store)
@@ -180,9 +180,6 @@ namespace PluginLoader
         /// <param name="assembly">The assembly.</param>
         /// <returns>
         ///     Adds References to the Commands
-        ///     Can't find any type which implements IPlugin in {assembly} from {assembly.Location}.\n" +
-        ///     $"Available types: {availableTypes}
-        ///     $"Available types: {availableTypes}
         /// </returns>
         /// <exception cref="ArgumentException">Could not find the Plugin</exception>
         private static IEnumerable<T> CreateCommands<T>(Assembly assembly) where T : class
