@@ -14,19 +14,19 @@ namespace Plugin
 {
     /// <inheritdoc />
     /// <summary>
-    /// Collects all events of the plugins
+    ///     Collects all events of the plugins
     /// </summary>
     /// <seealso cref="Plugin.IEventAggregator" />
     public class EventAggregator : IEventAggregator
     {
         /// <summary>
-        /// The subscribers
+        ///     The subscribers
         /// </summary>
         private readonly ConcurrentDictionary<Type, ConcurrentBag<Action<object>>> _subscribers = new();
 
         /// <inheritdoc />
         /// <summary>
-        /// Publishes the specified event to publish.
+        ///     Publishes the specified event to publish.
         /// </summary>
         /// <typeparam name="TEvent">The type of the event.</typeparam>
         /// <param name="eventToPublish">The event to publish.</param>
@@ -53,7 +53,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Subscribes the specified event handler.
+        ///     Subscribes the specified event handler.
         /// </summary>
         /// <typeparam name="TEvent">The type of the event.</typeparam>
         /// <param name="eventHandler">The event handler.</param>
@@ -71,7 +71,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Unsubscribes the specified event handler.
+        ///     Unsubscribes the specified event handler.
         /// </summary>
         /// <typeparam name="TEvent">The type of the event.</typeparam>
         /// <param name="eventHandler">The event handler.</param>
@@ -89,15 +89,15 @@ namespace Plugin
             _subscribers[typeof(TEvent)] = new ConcurrentBag<Action<object>>(newHandlers);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// <summary>
-        /// Determines whether [is same handler] [the specified stored handler].
+        ///     Determines whether [is same handler] [the specified stored handler].
         /// </summary>
         /// <typeparam name="TEvent">The type of the event.</typeparam>
         /// <param name="storedHandler">The stored handler.</param>
         /// <param name="handlerToRemove">The handler to remove.</param>
         /// <returns>
-        ///   <c>true</c> if [is same handler] [the specified stored handler]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is same handler] [the specified stored handler]; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsSameHandler<TEvent>(Action<object> storedHandler, Action<TEvent> handlerToRemove)
         {

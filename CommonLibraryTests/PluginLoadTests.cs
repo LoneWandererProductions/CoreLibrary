@@ -24,7 +24,7 @@ namespace CommonLibraryTests
     public class PluginLoadTests
     {
         /// <summary>
-        /// Executes the command returns expected result.
+        ///     Executes the command returns expected result.
         /// </summary>
         [TestMethod]
         public void ExecuteCommandReturnsExpectedResult()
@@ -40,7 +40,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the plugin type returns expected identifier.
+        ///     Gets the plugin type returns expected identifier.
         /// </summary>
         [TestMethod]
         public void GetPluginTypeReturnsExpectedId()
@@ -57,7 +57,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Executes the asynchronous returns expected status.
+        ///     Executes the asynchronous returns expected status.
         /// </summary>
         [TestMethod]
         public async Task ExecuteAsyncReturnsExpectedStatus()
@@ -73,7 +73,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Executes the command asynchronous returns expected result.
+        ///     Executes the command asynchronous returns expected result.
         /// </summary>
         [TestMethod]
         public async Task ExecuteCommandAsyncReturnsExpectedResult()
@@ -89,7 +89,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the environment variables handles null store.
+        ///     Sets the environment variables handles null store.
         /// </summary>
         [TestMethod]
         public void SetEnvironmentVariablesHandlesNullStore()
@@ -102,7 +102,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the environment variables handles empty store.
+        ///     Sets the environment variables handles empty store.
         /// </summary>
         [TestMethod]
         public void SetEnvironmentVariablesHandlesEmptyStore()
@@ -259,7 +259,7 @@ namespace CommonLibraryTests
         /// <value>
         ///     The version.
         /// </value>
-        public override  Version Version => new(1, 0, 0);
+        public override Version Version => new(1, 0, 0);
 
         /// <summary>
         ///     Gets the possible commands for the Plugin.
@@ -298,7 +298,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Result object
         /// </returns>
-        public override  object ExecuteCommand(int id)
+        public override object ExecuteCommand(int id)
         {
             return null;
         }
@@ -325,7 +325,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Info about the plugin
         /// </returns>
-        public override  string GetInfo()
+        public override string GetInfo()
         {
             return "Mock plugin info";
         }
@@ -350,7 +350,7 @@ namespace CommonLibraryTests
     public class MockAsyncPlugin : IAsyncPlugin
     {
         /// <summary>
-        /// The event aggregator
+        ///     The event aggregator
         /// </summary>
         private IEventAggregator _eventAggregator;
 
@@ -395,7 +395,7 @@ namespace CommonLibraryTests
         public List<Command> Commands => new();
 
         /// <summary>
-        /// Gets or sets the event aggregator for the plugin.
+        ///     Gets or sets the event aggregator for the plugin.
         /// </summary>
         public IEventAggregator EventAggregator
         {

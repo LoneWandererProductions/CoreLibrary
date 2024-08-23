@@ -23,7 +23,7 @@ namespace Plugin
     public interface IAsyncPlugin
     {
         /// <summary>
-        /// Gets or sets the event aggregator for the plugin.
+        ///     Gets or sets the event aggregator for the plugin.
         /// </summary>
         IEventAggregator EventAggregator { get; set; }
 
@@ -70,7 +70,7 @@ namespace Plugin
         /// <summary>
         ///     Executes the asynchronous.
         /// </summary>
-        /// <returns>Status Code asnc</returns>
+        /// <returns>Status Code async</returns>
         Task<int> ExecuteAsync();
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Plugin
         ///     Gets the plugin type asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>Status Code asnc</returns>
+        /// <returns>Status Code async</returns>
         Task<int> GetPluginTypeAsync(int id);
 
         /// <summary>

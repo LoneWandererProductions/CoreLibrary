@@ -132,7 +132,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Returns all infos about the plugin
         /// </summary>
-        public override  string GetInfo()
+        public override string GetInfo()
         {
             return string.Concat(Type, Environment.NewLine, Version, Environment.NewLine, Description);
         }
@@ -144,7 +144,7 @@ namespace SQLiteGui
         /// <returns>
         ///     Status Code
         /// </returns>
-        public override  int Close()
+        public override int Close()
         {
             Win.Close();
             return 0;

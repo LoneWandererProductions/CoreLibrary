@@ -27,12 +27,12 @@ namespace PluginLoader
     public static class PluginLoad
     {
         /// <summary>
-        /// The load error event
+        ///     The load error event
         /// </summary>
         public static EventHandler<LoaderErrorEventArgs> loadErrorEvent;
 
         /// <summary>
-        /// The event aggregator
+        ///     The event aggregator
         /// </summary>
         private static IEventAggregator _eventAggregator;
 
@@ -61,7 +61,8 @@ namespace PluginLoader
         /// <returns>
         ///     Success Status
         /// </returns>
-        public static bool LoadAll(string path, string extension = PluginLoaderResources.FileExt, IEventAggregator eventAggregator = null)
+        public static bool LoadAll(string path, string extension = PluginLoaderResources.FileExt,
+            IEventAggregator eventAggregator = null)
         {
             _eventAggregator = eventAggregator;
             var pluginPaths = GetFilesByExtensionFullPath(path, extension);
@@ -86,8 +87,8 @@ namespace PluginLoader
                     }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
-                    or ReflectionTypeLoadException or BadImageFormatException
-                    or FileNotFoundException)
+                                               or ReflectionTypeLoadException or BadImageFormatException
+                                               or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
@@ -103,8 +104,8 @@ namespace PluginLoader
                     }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
-                    or ReflectionTypeLoadException or BadImageFormatException
-                    or FileNotFoundException)
+                                               or ReflectionTypeLoadException or BadImageFormatException
+                                               or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
@@ -183,7 +184,7 @@ namespace PluginLoader
         ///     $"Available types: {availableTypes}
         ///     $"Available types: {availableTypes}
         /// </returns>
-        ///     <exception cref="ArgumentException">Could not find the Plugin</exception>
+        /// <exception cref="ArgumentException">Could not find the Plugin</exception>
         private static IEnumerable<T> CreateCommands<T>(Assembly assembly) where T : class
         {
             var count = 0;

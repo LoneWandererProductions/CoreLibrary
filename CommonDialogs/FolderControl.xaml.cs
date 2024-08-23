@@ -38,28 +38,6 @@ namespace CommonDialogs
                 new PropertyMetadata(false, OnShowFilesChanged));
 
         /// <summary>
-        ///     Gets or sets the ShowFiles dependency property.
-        /// </summary>
-        public bool ShowFiles
-        {
-            get => (bool)GetValue(ShowFilesProperty);
-            set => SetValue(ShowFilesProperty, value);
-        }
-
-        /// <summary>
-        /// Called when [show files changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnShowFilesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is FolderControl folderControl)
-            {
-                folderControl.SetItems(folderControl.Paths);
-            }
-        }
-
-        /// <summary>
         ///     The look up
         /// </summary>
         private string _lookUp;
@@ -71,6 +49,15 @@ namespace CommonDialogs
         public FolderControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        ///     Gets or sets the ShowFiles dependency property.
+        /// </summary>
+        public bool ShowFiles
+        {
+            get => (bool)GetValue(ShowFilesProperty);
+            set => SetValue(ShowFilesProperty, value);
         }
 
         /// <summary>
@@ -128,6 +115,19 @@ namespace CommonDialogs
         ///     Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        ///     Called when [show files changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
+        private static void OnShowFilesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FolderControl folderControl)
+            {
+                folderControl.SetItems(folderControl.Paths);
+            }
+        }
 
         /// <inheritdoc cref="PropertyChangedEventArgs" />
         /// <summary>

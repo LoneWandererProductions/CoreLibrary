@@ -16,78 +16,78 @@ namespace Plugin
 {
     /// <inheritdoc />
     /// <summary>
-    /// Abstract Implementation of Async Plugin
-    /// The user can pick and choose what he needs in a cleaner way
+    ///     Abstract Implementation of Async Plugin
+    ///     The user can pick and choose what he needs in a cleaner way
     /// </summary>
     /// <seealso cref="T:Plugin.IAsyncPlugin" />
     public abstract class BaseAsyncPlugin : IAsyncPlugin
     {
         /// <inheritdoc />
         /// <summary>
-        /// Gets or sets the event aggregator for the plugin.
+        ///     Gets or sets the event aggregator for the plugin.
         /// </summary>
         public IEventAggregator EventAggregator { get; set; }
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the name.
-        /// This field must be equal to the file name.
+        ///     Gets the name.
+        ///     This field must be equal to the file name.
         /// </summary>
         /// <value>
-        /// The name.
+        ///     The name.
         /// </value>
         public virtual string Name => "DefaultAsyncPlugin";
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the type.
-        /// This field is optional.
+        ///     Gets the type.
+        ///     This field is optional.
         /// </summary>
         /// <value>
-        /// The type.
+        ///     The type.
         /// </value>
         public virtual string Type => "DefaultAsyncType";
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the description.
-        /// This field is optional.
+        ///     Gets the description.
+        ///     This field is optional.
         /// </summary>
         /// <value>
-        /// The description.
+        ///     The description.
         /// </value>
         public virtual string Description => "DefaultAsyncDescription";
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the version.
-        /// This field is optional.
+        ///     Gets the version.
+        ///     This field is optional.
         /// </summary>
         /// <value>
-        /// The version.
+        ///     The version.
         /// </value>
-        public virtual Version Version => new Version(1, 0);
+        public virtual Version Version => new(1, 0);
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the commands.
-        /// This field is optional.
+        ///     Gets the commands.
+        ///     This field is optional.
         /// </summary>
         /// <value>
-        /// The commands.
+        ///     The commands.
         /// </value>
-        public virtual List<Command> Commands => new List<Command>();
+        public virtual List<Command> Commands => new();
 
         /// <inheritdoc />
         /// <summary>
-        /// Executes this instance asynchronously.
+        ///     Executes this instance asynchronously.
         /// </summary>
         /// <returns>Status Code as async</returns>
         public abstract Task<int> ExecuteAsync();
 
         /// <inheritdoc />
         /// <summary>
-        /// Executes the command asynchronously.
+        ///     Executes the command asynchronously.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Result object, async.</returns>
@@ -99,7 +99,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the plugin type asynchronously.
+        ///     Gets the plugin type asynchronously.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Status Code async</returns>
@@ -111,7 +111,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the information.
+        ///     Gets the information.
         /// </summary>
         /// <returns>Info about the plugin</returns>
         public virtual string GetInfo()
@@ -122,7 +122,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Closes this instance asynchronously.
+        ///     Closes this instance asynchronously.
         /// </summary>
         /// <returns>Status Code</returns>
         public virtual Task<int> CloseAsync()
@@ -133,7 +133,7 @@ namespace Plugin
 
         /// <inheritdoc />
         /// <summary>
-        /// Publishes an event through the event aggregator.
+        ///     Publishes an event through the event aggregator.
         /// </summary>
         /// <param name="eventToPublish">The event to publish.</param>
         public void PublishEvent<TEvent>(TEvent eventToPublish)

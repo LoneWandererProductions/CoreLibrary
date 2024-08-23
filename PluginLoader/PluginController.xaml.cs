@@ -123,16 +123,7 @@ namespace PluginLoader
                 return;
             }
 
-            bool check;
-
-            if (!string.IsNullOrEmpty(Extension))
-            {
-                check = PluginLoad.LoadAll(path, Extension);
-            }
-            else
-            {
-                check = PluginLoad.LoadAll(path);
-            }
+            var check = !string.IsNullOrEmpty(Extension) ? PluginLoad.LoadAll(path, Extension) : PluginLoad.LoadAll(path);
 
             if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
             {
