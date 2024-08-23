@@ -19,21 +19,13 @@ namespace Plugin
     /// <seealso cref="Plugin.IPlugin" />
     public abstract class BasePlugin : IPlugin
     {
-        /// <summary>
-        /// Event that plugins can use to notify about certain actions.
-        /// </summary>
-        public event EventHandler<PluginEventArgs> PluginEventOccurred = delegate { };
+        private IEventAggregator _eventAggregator;
 
-        /// <summary>
-        /// Raises the <see cref="E:PluginEventOccurred" /> event.
-        /// </summary>
-        /// <param name="e">The <see cref="PluginEventArgs"/> instance containing the event data.</param>
-        protected void OnPluginEventOccurred(PluginEventArgs e)
+        public IEventAggregator EventAggregator
         {
-            PluginEventOccurred?.Invoke(this, e);
+            get => _eventAggregator;
+            set => _eventAggregator = value;
         }
-
-        // Default implementations for other IPlugin members
 
         /// <summary>
         /// Gets the name.
@@ -152,6 +144,11 @@ namespace Plugin
         {
             // Default implementation
             return 0;
+        }
+
+        public void PublishEvent<TEvent>(TEvent eventToPublish)
+        {
+            _eventAggregator?.Publish(eventToPublish);
         }
     }
 

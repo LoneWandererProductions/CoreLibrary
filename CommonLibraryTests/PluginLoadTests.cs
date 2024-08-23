@@ -350,6 +350,11 @@ namespace CommonLibraryTests
     public class MockAsyncPlugin : IAsyncPlugin
     {
         /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private IEventAggregator _eventAggregator;
+
+        /// <summary>
         ///     Gets the name.
         /// </summary>
         /// <value>
@@ -388,6 +393,15 @@ namespace CommonLibraryTests
         ///     The commands.
         /// </value>
         public List<Command> Commands => new();
+
+        /// <summary>
+        /// Gets or sets the event aggregator for the plugin.
+        /// </summary>
+        public IEventAggregator EventAggregator
+        {
+            get => _eventAggregator;
+            set => _eventAggregator = value;
+        }
 
         /// <summary>
         ///     Executes the asynchronous.

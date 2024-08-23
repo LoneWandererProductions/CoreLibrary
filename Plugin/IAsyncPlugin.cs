@@ -23,6 +23,11 @@ namespace Plugin
     public interface IAsyncPlugin
     {
         /// <summary>
+        /// Gets or sets the event aggregator for the plugin.
+        /// </summary>
+        IEventAggregator EventAggregator { get; set; }
+
+        /// <summary>
         ///     Gets the name.
         /// </summary>
         /// <value>

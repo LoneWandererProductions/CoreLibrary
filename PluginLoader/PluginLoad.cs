@@ -5,6 +5,7 @@
  * PURPOSE:     Basic Plugin Support, Load all Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
+ *              https://medium.com/c-sharp-progarmming/wpf-application-with-plugin-architecture-30004f3319d3
  */
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -25,10 +26,9 @@ namespace PluginLoader
     /// </summary>
     public static class PluginLoad
     {
-        /// <summary>
-        ///     The load error event
-        /// </summary>
-        public static EventHandler loadErrorEvent;
+        public static EventHandler<LoaderErrorEventArgs> LoadErrorEvent;
+
+        private static IEventAggregator _eventAggregator;
 
         /// <summary>
         ///     Gets or sets the plugin container.
@@ -54,8 +54,9 @@ namespace PluginLoader
         /// <returns>
         ///     Success Status
         /// </returns>
-        public static bool LoadAll(string path, string extension = PluginLoaderResources.FileExt)
+        public static bool LoadAll(string path, string extension = PluginLoaderResources.FileExt, IEventAggregator eventAggregator = null)
         {
+            _eventAggregator = eventAggregator;
             var pluginPaths = GetFilesByExtensionFullPath(path, extension);
 
             if (pluginPaths == null)
@@ -73,29 +74,35 @@ namespace PluginLoader
                 try
                 {
                     var syncPlugins = CreateCommands<IPlugin>(pluginAssembly).ToList();
-
-                    PluginContainer.AddRange(syncPlugins);
+                    foreach (var plugin in syncPlugins)
+                    {
+                        plugin.EventAggregator = _eventAggregator;
+                        PluginContainer.Add(plugin);
+                    }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
                                                or ReflectionTypeLoadException or BadImageFormatException
                                                or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
 
                 try
                 {
                     var asyncPlugins = CreateCommands<IAsyncPlugin>(pluginAssembly).ToList();
-
-                    AsyncPluginContainer.AddRange(asyncPlugins);
+                    foreach (var plugin in asyncPlugins)
+                    {
+                        plugin.EventAggregator = _eventAggregator;
+                        AsyncPluginContainer.Add(plugin);
+                    }
                 }
                 catch (Exception ex) when (ex is ArgumentException or FileLoadException or ApplicationException
                                                or ReflectionTypeLoadException or BadImageFormatException
                                                or FileNotFoundException)
                 {
                     Trace.WriteLine(ex);
-                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                    LoadErrorEvent?.Invoke(null, new LoaderErrorEventArgs(ex.ToString()));
                 }
             }
 
@@ -122,13 +129,6 @@ namespace PluginLoader
             DataRegister.Store = store;
 
             return true;
-        }
-
-        private static void OnPluginEventOccurred(object sender, PluginEventArgs e)
-        {
-            //TODO add more stuff
-            // Forward the event to the main application or handle it here
-            Trace.WriteLine($"Event from plugin: {e.Message}");
         }
 
         /// <summary>
