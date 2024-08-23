@@ -20,7 +20,7 @@ namespace SQLiteGui
     ///     Plugin Entry
     /// </summary>
     /// <seealso cref="IPlugin" />
-    public class SqLiteGuiPlugin : IPlugin
+    public class SqLiteGuiPlugin : BasePlugin
     {
         /// <summary>
         ///     Gets or sets the win.
@@ -37,7 +37,7 @@ namespace SQLiteGui
         /// <value>
         ///     The name.
         /// </value>
-        public string Name { get; } = nameof(SqliteUtility);
+        public override string Name { get; } = nameof(SqliteUtility);
 
         /// <inheritdoc />
         /// <summary>
@@ -47,7 +47,7 @@ namespace SQLiteGui
         /// <value>
         ///     The type.
         /// </value>
-        public string Type { get; } = SqLiteGuiResource.Type;
+        public override string Type { get; } = SqLiteGuiResource.Type;
 
         /// <inheritdoc />
         /// <summary>
@@ -57,7 +57,7 @@ namespace SQLiteGui
         /// <value>
         ///     The description.
         /// </value>
-        public string Description { get; } = SqLiteGuiResource.Description;
+        public override string Description { get; } = SqLiteGuiResource.Description;
 
         /// <inheritdoc />
         /// <summary>
@@ -66,7 +66,7 @@ namespace SQLiteGui
         /// <value>
         ///     The version.
         /// </value>
-        public Version Version { get; } = GetVersion();
+        public override Version Version { get; } = GetVersion();
 
         /// <inheritdoc />
         /// <summary>
@@ -77,14 +77,14 @@ namespace SQLiteGui
         /// <value>
         ///     The commands that the main module can call from the plugin.
         /// </value>
-        public List<Command> Commands { get; }
+        public override List<Command> Commands { get; }
 
         /// <inheritdoc />
         /// <summary>
         ///     Executes this instance.
         /// </summary>
         /// <returns>Status</returns>
-        public int Execute()
+        public override int Execute()
         {
             Win = new SqLiteGuiWindow();
             Win.Show();
@@ -107,7 +107,7 @@ namespace SQLiteGui
         /// <returns>
         ///     Status Code
         /// </returns>
-        public object ExecuteCommand(int id)
+        public override object ExecuteCommand(int id)
         {
             return 0;
         }
@@ -123,7 +123,7 @@ namespace SQLiteGui
         /// <returns>
         ///     int as Id, can be used by the dev to define or get the type of Plugin this is
         /// </returns>
-        public int GetPluginType(int id)
+        public override int GetPluginType(int id)
         {
             return 0;
         }
@@ -132,7 +132,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Returns all infos about the plugin
         /// </summary>
-        public string GetInfo()
+        public override  string GetInfo()
         {
             return string.Concat(Type, Environment.NewLine, Version, Environment.NewLine, Description);
         }
@@ -144,7 +144,7 @@ namespace SQLiteGui
         /// <returns>
         ///     Status Code
         /// </returns>
-        public int Close()
+        public override  int Close()
         {
             Win.Close();
             return 0;

@@ -21,6 +21,11 @@ namespace Plugin
     public interface IPlugin
     {
         /// <summary>
+        ///     Event that plugins can use to notify about certain actions.
+        /// </summary>
+        event EventHandler<PluginEventArgs> PluginEventOccurred;
+
+        /// <summary>
         ///     Gets the name.
         ///     This field must be equal to the file name.
         /// </summary>

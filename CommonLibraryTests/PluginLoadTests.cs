@@ -24,6 +24,101 @@ namespace CommonLibraryTests
     public class PluginLoadTests
     {
         /// <summary>
+        /// Executes the command returns expected result.
+        /// </summary>
+        [TestMethod]
+        public void ExecuteCommandReturnsExpectedResult()
+        {
+            // Arrange
+            var plugin = new MockPlugin();
+
+            // Act
+            var result = plugin.ExecuteCommand(1);
+
+            // Assert
+            Assert.IsNull(result); // Based on MockPlugin implementation
+        }
+
+        /// <summary>
+        /// Gets the plugin type returns expected identifier.
+        /// </summary>
+        [TestMethod]
+        public void GetPluginTypeReturnsExpectedId()
+        {
+            // Arrange
+            var plugin = new MockPlugin();
+
+            // Act
+            var typeId = plugin.GetPluginType(1);
+
+            // Assert
+            Assert.AreEqual(0, typeId); // Based on MockPlugin implementation
+        }
+
+
+        /// <summary>
+        /// Executes the asynchronous returns expected status.
+        /// </summary>
+        [TestMethod]
+        public async Task ExecuteAsyncReturnsExpectedStatus()
+        {
+            // Arrange
+            var plugin = new MockAsyncPlugin();
+
+            // Act
+            var status = await plugin.ExecuteAsync();
+
+            // Assert
+            Assert.AreEqual(0, status); // Based on MockAsyncPlugin implementation
+        }
+
+        /// <summary>
+        /// Executes the command asynchronous returns expected result.
+        /// </summary>
+        [TestMethod]
+        public async Task ExecuteCommandAsyncReturnsExpectedResult()
+        {
+            // Arrange
+            var plugin = new MockAsyncPlugin();
+
+            // Act
+            var result = await plugin.ExecuteCommandAsync(1);
+
+            // Assert
+            Assert.IsNull(result); // Based on MockAsyncPlugin implementation
+        }
+
+        /// <summary>
+        /// Sets the environment variables handles null store.
+        /// </summary>
+        [TestMethod]
+        public void SetEnvironmentVariablesHandlesNullStore()
+        {
+            // Act
+            var result = PluginLoad.SetEnvironmentVariables(null);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Sets the environment variables handles empty store.
+        /// </summary>
+        [TestMethod]
+        public void SetEnvironmentVariablesHandlesEmptyStore()
+        {
+            // Arrange
+            var store = new Dictionary<int, object>();
+
+            // Act
+            var result = PluginLoad.SetEnvironmentVariables(store);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(store, DataRegister.Store);
+        }
+
+        /// <summary>
         ///     Creates the commands invalid assembly throws argument exception.
         /// </summary>
         [TestMethod]
@@ -128,7 +223,7 @@ namespace CommonLibraryTests
     ///     Plugin for tests
     /// </summary>
     /// <seealso cref="Plugin.IPlugin" />
-    public class MockPlugin : IPlugin
+    public class MockPlugin : BasePlugin
     {
         /// <summary>
         ///     Gets the name.
@@ -137,7 +232,7 @@ namespace CommonLibraryTests
         /// <value>
         ///     The name.
         /// </value>
-        public string Name => "MockPlugin";
+        public override string Name => "MockPlugin";
 
         /// <summary>
         ///     Gets the type.
@@ -146,7 +241,7 @@ namespace CommonLibraryTests
         /// <value>
         ///     The type.
         /// </value>
-        public string Type => "MockType";
+        public override string Type => "MockType";
 
         /// <summary>
         ///     Gets the description.
@@ -155,7 +250,7 @@ namespace CommonLibraryTests
         /// <value>
         ///     The description.
         /// </value>
-        public string Description => "Mock plugin for testing";
+        public override string Description => "Mock plugin for testing";
 
         /// <summary>
         ///     Gets the version.
@@ -164,7 +259,7 @@ namespace CommonLibraryTests
         /// <value>
         ///     The version.
         /// </value>
-        public Version Version => new(1, 0, 0);
+        public override  Version Version => new(1, 0, 0);
 
         /// <summary>
         ///     Gets the possible commands for the Plugin.
@@ -173,7 +268,8 @@ namespace CommonLibraryTests
         /// <value>
         ///     The commands that the main module can call from the plugin.
         /// </value>
-        public List<Command> Commands => new();
+        public override List<Command> Commands => new();
+
 
         /// <summary>
         ///     Executes this instance.
@@ -182,7 +278,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Status Code
         /// </returns>
-        public int Execute()
+        public override int Execute()
         {
             return 0;
         }
@@ -202,7 +298,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Result object
         /// </returns>
-        public object ExecuteCommand(int id)
+        public override  object ExecuteCommand(int id)
         {
             return null;
         }
@@ -217,7 +313,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     int as Id, can be used by the dev to define or get the type of Plugin this is
         /// </returns>
-        public int GetPluginType(int id)
+        public override int GetPluginType(int id)
         {
             return 0;
         }
@@ -229,7 +325,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Info about the plugin
         /// </returns>
-        public string GetInfo()
+        public override  string GetInfo()
         {
             return "Mock plugin info";
         }
@@ -241,7 +337,7 @@ namespace CommonLibraryTests
         /// <returns>
         ///     Status Code
         /// </returns>
-        public int Close()
+        public override int Close()
         {
             return 0;
         }

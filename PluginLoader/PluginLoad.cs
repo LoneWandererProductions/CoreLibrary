@@ -124,6 +124,13 @@ namespace PluginLoader
             return true;
         }
 
+        private static void OnPluginEventOccurred(object sender, PluginEventArgs e)
+        {
+            //TODO add more stuff
+            // Forward the event to the main application or handle it here
+            Trace.WriteLine($"Event from plugin: {e.Message}");
+        }
+
         /// <summary>
         ///     Gets the files by extension full path.
         ///     Adopted from FileHandler to decrease dependencies
