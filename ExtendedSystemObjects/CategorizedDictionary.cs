@@ -23,7 +23,7 @@ namespace ExtendedSystemObjects
     /// </summary>
     /// <typeparam name="TK">Key Value</typeparam>
     /// <typeparam name="TV">Value with Category</typeparam>
-    public sealed class CategorizedDictionary<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
+    public sealed class CategorizedDictionary<TK, TV> : IEnumerable
     {
         /// <summary>
         ///     The internal data of our custom Dictionary
@@ -34,15 +34,6 @@ namespace ExtendedSystemObjects
         ///     Gets the number of elements contained in the CategorizedDictionary.
         /// </summary>
         public int Count => _data.Count;
-
-        /// <summary>
-        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
-        /// </summary>
-        /// <returns>An enumerator for the dictionary.</returns>
-        public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
-        {
-            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).GetEnumerator();
-        }
 
         /// <inheritdoc />
         /// <summary>
@@ -135,10 +126,7 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry))
-            {
-                return false;
-            }
+            if (!_data.TryGetValue(key, out var entry)) return false;
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -181,6 +169,16 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Converts to key value list.
+        /// </summary>
+        /// <returns>A key value list of: id and value</returns>
+        public List<KeyValuePair<TK, TV>> ToKeyValueList()
+        {
+            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Returns a string representation of the dictionary's contents.
         /// </summary>
         /// <returns>A string representing the dictionary's contents.</returns>
@@ -190,6 +188,15 @@ namespace ExtendedSystemObjects
                 $"Key: {entry.Key}, Category: {entry.Value.Category}, Value: {entry.Value.Value}");
 
             return string.Join(Environment.NewLine, entries);
+        }
+
+        /// <summary>
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        private IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
+        {
+            return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
         }
     }
 }

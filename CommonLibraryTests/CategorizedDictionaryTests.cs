@@ -274,7 +274,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            var keyValuePairs = dict.ToList();
+            var keyValuePairs = dict.ToKeyValueList();
 
             // Assert
             var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
@@ -292,7 +292,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            var keyValuePairs = dict.ToList();
+            var keyValuePairs = dict.ToKeyValueList();
 
             // Assert
             var expected = new List<KeyValuePair<string, int>> { new("Key1", 100), new("Key2", 200), new("Key3", 300) };
@@ -307,7 +307,7 @@ namespace CommonLibraryTests
             var dict = new CategorizedDictionary<string, int>();
 
             // Act
-            var keyValuePairs = dict.ToList();
+            var keyValuePairs = dict.ToKeyValueList();
 
             // Assert
             Assert.AreEqual(0, keyValuePairs.Count);
@@ -324,7 +324,7 @@ namespace CommonLibraryTests
 
             // Act
             // Modify dictionary
-            var keyValuePairs = dict.ToList();
+            var keyValuePairs = dict.ToKeyValueList();
 
             // Assert
             var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
