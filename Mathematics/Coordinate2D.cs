@@ -13,6 +13,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Mathematics
 {
@@ -20,7 +21,7 @@ namespace Mathematics
     /// <summary>
     ///     Coordinate 2d Helper Class
     /// </summary>
-    public class Coordinate2D : ICloneable
+    public sealed class Coordinate2D : ICloneable
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
@@ -171,6 +172,7 @@ namespace Mathematics
             return second is not null && first is not null && (first.X != second.X || first.Y != second.Y);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
@@ -187,6 +189,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="width">The width.</param>
         /// <returns>The id of the coordinate</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int CalculateId(int width)
         {
             return CalculateId(X, Y, width);
@@ -199,6 +202,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         /// <param name="width">The width.</param>
         /// <returns>The id of the coordinate</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int CalculateId(int x, int y, int width)
         {
             return (y * width) + x;
@@ -210,6 +214,7 @@ namespace Mathematics
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
         /// <returns>From id to X Coordinate</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int IdToX(int masterId, int width)
         {
             return masterId % width;
@@ -221,6 +226,7 @@ namespace Mathematics
         /// <param name="masterId">The master identifier.</param>
         /// <param name="width">The width.</param>
         /// <returns>From id to Y Coordinate</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int IdToY(int masterId, int width)
         {
             return masterId / width;

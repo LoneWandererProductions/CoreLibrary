@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Imaging
@@ -281,6 +282,7 @@ namespace Imaging
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="color">The color.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
             var index = x + (y * Width);
@@ -342,6 +344,7 @@ namespace Imaging
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <returns>Color of the Pixel</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
             var index = x + (y * Width);

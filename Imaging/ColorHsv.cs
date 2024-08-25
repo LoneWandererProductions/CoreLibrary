@@ -303,6 +303,15 @@ namespace Imaging
         }
 
         /// <summary>
+        ///     Gets the color of the drawing.
+        /// </summary>
+        /// <returns>Color as System.Drawing</returns>
+        public System.Drawing.Color GetDrawingColor()
+        {
+            return System.Drawing.Color.FromArgb(A, R, G, B);
+        }
+
+        /// <summary>
         ///     Override Equals
         /// </summary>
         /// <param name="obj">ColorHsv Object</param>
