@@ -131,7 +131,7 @@ namespace Plugin
             return Task.FromResult(0);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="Action" />
         /// <summary>
         ///     Publishes an event through the event aggregator.
         /// </summary>

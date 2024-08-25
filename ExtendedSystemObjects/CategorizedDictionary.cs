@@ -126,7 +126,10 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry)) return false;
+            if (!_data.TryGetValue(key, out var entry))
+            {
+                return false;
+            }
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -169,7 +172,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts to key value list.
+        ///     Converts to key value list.
         /// </summary>
         /// <returns>A key value list of: id and value</returns>
         public List<KeyValuePair<TK, TV>> ToKeyValueList()

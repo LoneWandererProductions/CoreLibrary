@@ -20,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 using Plugin;
 
-
 namespace PluginLoader
 {
     /// <summary>
@@ -29,14 +28,14 @@ namespace PluginLoader
     public static class PluginLoad
     {
         /// <summary>
-        ///     The load error event
-        /// </summary>
-        public static EventHandler<LoaderErrorEventArgs> LoadErrorEvent { get; internal set; }
-
-        /// <summary>
         ///     The event aggregator
         /// </summary>
         private static IEventAggregator _eventAggregator;
+
+        /// <summary>
+        ///     The load error event
+        /// </summary>
+        public static EventHandler<LoaderErrorEventArgs> LoadErrorEvent { get; internal set; }
 
         /// <summary>
         ///     Gets or sets the plugin container.

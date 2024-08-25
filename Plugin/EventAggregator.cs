@@ -89,7 +89,7 @@ namespace Plugin
             _subscribers[typeof(TEvent)] = new ConcurrentBag<Action<object>>(newHandlers);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Action" />
         /// <summary>
         ///     Determines whether [is same handler] [the specified stored handler].
         /// </summary>

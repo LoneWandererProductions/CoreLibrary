@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Numerics;
+
+// ReSharper disable UnusedMember.Local
 
 namespace Imaging
 {
@@ -11,6 +12,18 @@ namespace Imaging
         private const int NoiseHeight = 240; // Height for noise generation
         private static readonly double[,] Noise = new double[NoiseHeight, NoiseWidth];
 
+        /// <summary>
+        ///     Generates the noise bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="minValue">The minimum value.</param>
+        /// <param name="maxValue">The maximum value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="useSmoothNoise">if set to <c>true</c> [use smooth noise].</param>
+        /// <param name="useTurbulence">if set to <c>true</c> [use turbulence].</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <returns></returns>
         public static Bitmap GenerateNoiseBitmap(
             int width,
             int height,
@@ -66,7 +79,16 @@ namespace Imaging
             return noiseBitmap.Bitmap;
         }
 
-
+        /// <summary>
+        ///     Generates the clouds bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="minValue">The minimum value.</param>
+        /// <param name="maxValue">The maximum value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <returns></returns>
         public static Bitmap GenerateCloudsBitmap(
             int width,
             int height,
@@ -99,7 +121,17 @@ namespace Imaging
             return cloudsBitmap.Bitmap;
         }
 
-
+        /// <summary>
+        ///     Generates the marble bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="xPeriod">The x period.</param>
+        /// <param name="yPeriod">The y period.</param>
+        /// <param name="turbPower">The turb power.</param>
+        /// <param name="turbSize">Size of the turb.</param>
+        /// <param name="baseColor">Color of the base.</param>
+        /// <returns></returns>
         public static Bitmap GenerateMarbleBitmap(
             int width,
             int height,
@@ -139,6 +171,16 @@ namespace Imaging
         }
 
 
+        /// <summary>
+        ///     Generates the wood bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="xyPeriod">The xy period.</param>
+        /// <param name="turbPower">The turb power.</param>
+        /// <param name="turbSize">Size of the turb.</param>
+        /// <param name="baseColor">Color of the base.</param>
+        /// <returns></returns>
         public static Bitmap GenerateWoodBitmap(
             int width,
             int height,
@@ -179,6 +221,15 @@ namespace Imaging
             return woodBitmap.Bitmap;
         }
 
+        /// <summary>
+        ///     Generates the wave bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="xyPeriod">The xy period.</param>
+        /// <param name="turbPower">The turb power.</param>
+        /// <param name="turbSize">Size of the turb.</param>
+        /// <returns></returns>
         public static Bitmap GenerateWaveBitmap(
             int width,
             int height,
@@ -216,6 +267,17 @@ namespace Imaging
         }
 
 
+        /// <summary>
+        ///     Validates the parameters.
+        /// </summary>
+        /// <param name="minValue">The minimum value.</param>
+        /// <param name="maxValue">The maximum value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <exception cref="ArgumentException">
+        ///     minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.
+        ///     or
+        ///     Alpha must be between 0 and 255.
+        /// </exception>
         private static void ValidateParameters(int minValue, int maxValue, int alpha)
         {
             if (minValue is < 0 or > 255 || maxValue is < 0 or > 255 || minValue > maxValue)
@@ -230,6 +292,9 @@ namespace Imaging
             }
         }
 
+        /// <summary>
+        ///     Generates the base noise.
+        /// </summary>
         private static void GenerateBaseNoise()
         {
             var random = new Random();
@@ -242,271 +307,13 @@ namespace Imaging
             }
         }
 
-        private static void GenerateNoise(DirectBitmap bitmap, int width, int height, int minValue, int maxValue,
-            int alpha, bool useSmoothNoise, bool useTurbulence, double turbulenceSize)
-        {
-            var vectorCount = Vector<int>.Count;
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x += vectorCount)
-                {
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            double value;
-
-                            if (useTurbulence)
-                            {
-                                value = Turbulence(x + j, y, turbulenceSize);
-                            }
-                            else if (useSmoothNoise)
-                            {
-                                value = SmoothNoise(x + j, y);
-                            }
-                            else
-                            {
-                                value = Noise[y % NoiseHeight, (x + j) % NoiseWidth];
-                            }
-
-                            var colorValue = minValue + (int)((maxValue - minValue) * value);
-                            colorValue = Math.Max(minValue, Math.Min(maxValue, colorValue));
-                            var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
-
-                            indices[j] = x + j + (y * width);
-                            colors[j] = color.ToArgb();
-                        }
-                        else
-                        {
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb();
-                        }
-                    }
-
-                    // Write data to Bits array
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            bitmap.SetPixel(x + j, y, Color.FromArgb(colors[j]));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void GenerateClouds(DirectBitmap bitmap, int width, int height, int minValue, int maxValue,
-            int alpha, double turbulenceSize)
-        {
-            var vectorCount = Vector<int>.Count;
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x += vectorCount)
-                {
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            var value = Turbulence(x + j, y, turbulenceSize);
-                            var L = minValue + (int)(value / 4.0);
-                            L = Math.Max(minValue, Math.Min(maxValue, L)); // Clamp L value
-
-                            var color = Color.FromArgb(alpha, L, L, L);
-
-                            indices[j] = x + j + (y * width);
-                            colors[j] = color.ToArgb();
-                        }
-                        else
-                        {
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb();
-                        }
-                    }
-
-                    // Write data to Bits array
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            bitmap.SetPixel(x + j, y, Color.FromArgb(colors[j]));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void GenerateMarble(DirectBitmap bitmap, int width, int height, double xPeriod, double yPeriod,
-            double turbPower, double turbSize, Color baseColor)
-        {
-            var vectorCount = Vector<int>.Count;
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x += vectorCount)
-                {
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            var xyValue = ((x + j) * xPeriod / NoiseWidth) + (y * yPeriod / NoiseHeight) +
-                                          (turbPower * Turbulence(x + j, y, turbSize) / 256.0);
-                            var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
-
-                            var r = baseColor.R + (int)sineValue;
-                            var g = baseColor.G + (int)sineValue;
-                            var b = baseColor.B + (int)sineValue;
-
-                            r = Math.Max(0, Math.Min(255, r));
-                            g = Math.Max(0, Math.Min(255, g));
-                            b = Math.Max(0, Math.Min(255, b));
-
-                            var color = Color.FromArgb(255, r, g, b);
-
-                            indices[j] = x + j + (y * width);
-                            colors[j] = color.ToArgb();
-                        }
-                        else
-                        {
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb();
-                        }
-                    }
-
-                    // Write data to Bits array
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            bitmap.SetPixel(x + j, y, Color.FromArgb(colors[j]));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void GenerateWood(DirectBitmap bitmap, int width, int height, double xyPeriod, double turbPower,
-            double turbSize, Color baseColor)
-        {
-            var vectorCount = Vector<int>.Count;
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x += vectorCount)
-                {
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            var xValue = (x + j - (width / 2.0)) / width;
-                            var yValue = (y - (height / 2.0)) / height;
-                            var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
-                                            (turbPower * Turbulence(x + j, y, turbSize) / 256.0);
-                            var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
-
-                            var r = baseColor.R + (int)sineValue;
-                            var g = baseColor.G + (int)sineValue;
-                            var b = (int)baseColor.B;
-
-                            r = Math.Max(0, Math.Min(255, r));
-                            g = Math.Max(0, Math.Min(255, g));
-                            b = Math.Max(0, Math.Min(255, b));
-
-                            var color = Color.FromArgb(255, r, g, b);
-
-                            indices[j] = x + j + (y * width);
-                            colors[j] = color.ToArgb();
-                        }
-                        else
-                        {
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb();
-                        }
-                    }
-
-                    // Write data to Bits array
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            bitmap.SetPixel(x + j, y, Color.FromArgb(colors[j]));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void GenerateWave(DirectBitmap bitmap, int width, int height, double xyPeriod, double turbPower,
-            double turbSize)
-        {
-            var vectorCount = Vector<int>.Count;
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x += vectorCount)
-                {
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            var xValue = ((x + j - (width / 2.0)) / width) +
-                                         (turbPower * Turbulence(x + j, y, turbSize) / 256.0);
-                            var yValue = ((y - (height / 2.0)) / height) +
-                                         (turbPower * Turbulence(height - y, width - (x + j), turbSize) / 256.0);
-
-                            var sineValue = 22.0 * Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
-                                                            Math.Sin(xyPeriod * yValue * Math.PI));
-
-                            var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, 255);
-
-                            indices[j] = x + j + (y * width);
-                            colors[j] = hsvColor.GetDrawingColor().ToArgb();
-                        }
-                        else
-                        {
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb();
-                        }
-                    }
-
-                    // Write data to Bits array
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (x + j < width)
-                        {
-                            bitmap.SetPixel(x + j, y, Color.FromArgb(colors[j]));
-                        }
-                    }
-                }
-            }
-        }
-
+        /// <summary>
+        ///     Turbulences the specified x.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="size">The size.</param>
+        /// <returns></returns>
         private static double Turbulence(int x, int y, double size)
         {
             var value = 0.0;
@@ -520,6 +327,12 @@ namespace Imaging
             return Math.Abs(value / initialSize);
         }
 
+        /// <summary>
+        ///     Smoothes the noise.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns></returns>
         private static double SmoothNoise(double x, double y)
         {
             var intX = (int)x;
@@ -538,6 +351,13 @@ namespace Imaging
             return Interpolate(i1, i2, fracY);
         }
 
+        /// <summary>
+        ///     Interpolates the specified a.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="t">The t.</param>
+        /// <returns></returns>
         private static double Interpolate(double a, double b, double t)
         {
             return (a * (1 - t)) + (b * t);

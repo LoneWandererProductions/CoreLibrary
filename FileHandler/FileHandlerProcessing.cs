@@ -44,10 +44,8 @@ namespace FileHandler
         /// <exception cref="ArgumentException">Thrown when any of the input paths are invalid.</exception>
         internal static string GetSubFolder(string element, string root, string target)
         {
-            var elementDir = Path.GetFullPath(element) ??
-                             throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(element));
-            var rootDir = Path.GetFullPath(root) ??
-                          throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(root));
+            var elementDir = Path.GetFullPath(element);
+            var rootDir = Path.GetFullPath(root);
 
             if (!elementDir.StartsWith(rootDir, StringComparison.OrdinalIgnoreCase))
             {
