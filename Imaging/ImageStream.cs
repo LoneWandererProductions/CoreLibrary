@@ -1521,27 +1521,47 @@ namespace Imaging
         /// <summary>
         /// Subtracts the images.
         /// </summary>
-        /// <param name="img1">The img1.</param>
-        /// <param name="img2">The img2.</param>
+        /// <param name="imgOne">The img1.</param>
+        /// <param name="imgTwo">The img2.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap SubtractImages(Bitmap img1, Bitmap img2)
+        private static Bitmap SubtractImages(Bitmap imgOne, Bitmap imgTwo)
         {
-            var result = new Bitmap(img1.Width, img1.Height);
-            for (int y = 0; y < img1.Height; y++)
+            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
+            // Prepare a list to store the pixels to set in bulk using SIMD
+            var pixelsToSet = new List<(int x, int y, Color color)>();
+
+            var dbmOne = new DirectBitmap(imgOne);
+            var dbmTwo = new DirectBitmap(imgTwo);
+
+            for (var y = 0; y < dbmOne.Height; y++)
             {
-                for (int x = 0; x < img1.Width; x++)
+                for (var x = 0; x < dbmOne.Width; x++)
                 {
-                    Color color1 = img1.GetPixel(x, y);
-                    Color color2 = img2.GetPixel(x, y);
+                    var color1 = dbmOne.GetPixel(x, y);
+                    var color2 = dbmTwo.GetPixel(x, y);
 
-                    int r = Math.Max(0, color1.R - color2.R);
-                    int g = Math.Max(0, color1.G - color2.G);
-                    int b = Math.Max(0, color1.B - color2.B);
+                    var r = Math.Max(0, color1.R - color2.R);
+                    var g = Math.Max(0, color1.G - color2.G);
+                    var b = Math.Max(0, color1.B - color2.B);
 
-                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
+                    // Instead of setting the pixel immediately, add it to the list
+                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
                 }
             }
-            return result;
+
+            // Use SIMD to set all the pixels in bulk
+            try
+            {
+                result.SetPixelsSimd(pixelsToSet);
+
+                return result.Bitmap;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -1614,22 +1634,43 @@ namespace Imaging
         /// <returns>Filtered Image</returns>
         private static Bitmap CombineImages(Bitmap imgOne, Bitmap imgTwo)
         {
-            var result = new Bitmap(imgOne.Width, imgOne.Height);
-            for (int y = 0; y < imgOne.Height; y++)
+            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
+
+            // Prepare a list to store the pixels to set in bulk using SIMD
+            var pixelsToSet = new List<(int x, int y, Color color)>();
+
+            var dbmOne = new DirectBitmap(imgOne);
+            var dbmTwo = new DirectBitmap(imgTwo);
+
+            for (int y = 0; y < dbmOne.Height; y++)
             {
-                for (int x = 0; x < imgOne.Width; x++)
+                for (int x = 0; x < dbmOne.Width; x++)
                 {
-                    Color color1 = imgOne.GetPixel(x, y);
-                    Color color2 = imgTwo.GetPixel(x, y);
+                    Color color1 = dbmOne.GetPixel(x, y);
+                    Color color2 = dbmTwo.GetPixel(x, y);
 
                     int r = Math.Min(255, color1.R + color2.R);
                     int g = Math.Min(255, color1.G + color2.G);
                     int b = Math.Min(255, color1.B + color2.B);
 
-                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
+                    // Instead of setting the pixel immediately, add it to the list
+                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
                 }
             }
-            return result;
+
+            // Use SIMD to set all the pixels in bulk
+            try
+            {
+                result.SetPixelsSimd(pixelsToSet);
+
+                return result.Bitmap;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+            }
+
+            return null;
         }
 
         /// <summary>
