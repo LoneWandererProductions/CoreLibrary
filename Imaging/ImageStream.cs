@@ -1328,7 +1328,7 @@ namespace Imaging
         /// <param name="factor">The factor.</param>
         /// <param name="bias">The bias.</param>
         /// <returns>Image with applied filter</returns>
-        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+        internal static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Initialize DirectBitmap instances
@@ -1443,6 +1443,7 @@ namespace Imaging
         // Roberts Cross
         // Laplacian
         // Laplacian of Gaussain
+        // Anisotropic Kuwahara
 
         /// <summary>
         ///     Applies the Sobel.
