@@ -1461,6 +1461,9 @@ namespace Imaging
             int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
             int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 
+            // Prepare a list to store the pixels to set in bulk using SIMD
+            var pixelsToSet = new List<(int x, int y, Color color)>();
+
             var dbmBase = new DirectBitmap(greyscaleImage);
             var dbmResult = new DirectBitmap(resultImage);
 
@@ -1488,13 +1491,24 @@ namespace Imaging
                 magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
                 magnitude = Math.Min(255, Math.Max(0, magnitude));
 
-                // Set the result pixel color
-                dbmResult.SetPixel(x, y, Color.FromArgb(magnitude, magnitude, magnitude));
+                // Instead of setting the pixel immediately, add it to the list
+                pixelsToSet.Add((x, y, Color.FromArgb(magnitude, magnitude, magnitude)));
             }
 
-            dbmBase.Dispose();
+            // Use SIMD to set all the pixels in bulk
+            try
+            {
+                dbmResult.SetPixelsSimd(pixelsToSet);
+                dbmBase.Dispose();
 
-            return dbmResult.Bitmap;
+                return dbmResult.Bitmap;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+            }
+
+            return null;
         }
 
         /// <summary>
