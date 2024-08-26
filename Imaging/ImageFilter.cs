@@ -118,6 +118,16 @@ namespace Imaging
         /// <summary>
         ///     The unsharp mask filter
         /// </summary>
-        UnsharpMask = 19
+        UnsharpMask = 19,
+
+        /// <summary>
+        /// The difference of gaussians
+        /// </summary>
+        DifferenceOfGaussians = 20,
+
+        /// <summary>
+        /// The crosshatch
+        /// </summary>
+        Crosshatch = 21
     }
 }

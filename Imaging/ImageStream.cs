@@ -719,6 +719,11 @@ namespace Imaging
                     return ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
                 case ImageFilter.UnsharpMask:
                     return ApplyFilter(image, ImageRegister.UnsharpMask);
+                // custom Filter
+                case ImageFilter.DifferenceOfGaussians:
+                    return ApplyDifferenceOfGaussians(image);
+                case ImageFilter.Crosshatch:
+                    return ApplyCrosshatch(image);
                 default:
                     return null;
             }
@@ -1138,7 +1143,6 @@ namespace Imaging
             return btm;
         }
 
-
         /// <summary>
         ///     Pixelate the specified input image.
         /// </summary>
@@ -1491,6 +1495,141 @@ namespace Imaging
             dbmBase.Dispose();
 
             return dbmResult.Bitmap;
+        }
+
+        /// <summary>
+        /// Applies the difference of gaussians.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Filtered Image</returns>
+        private static Bitmap ApplyDifferenceOfGaussians(Bitmap image)
+        {
+            // Gaussian blur with small sigma
+            double[,] gaussianBlurSmall = GenerateGaussianKernel(1.0, 5);
+
+            // Gaussian blur with larger sigma
+            double[,] gaussianBlurLarge = GenerateGaussianKernel(2.0, 5);
+
+            // Apply both Gaussian blurs to the image
+            Bitmap blurredSmall = ApplyFilter(image, gaussianBlurSmall, 1.0 / 16.0);
+            Bitmap blurredLarge = ApplyFilter(image, gaussianBlurLarge, 1.0 / 16.0);
+
+            // Subtract the two blurred images to get the DoG result
+            return SubtractImages(blurredSmall, blurredLarge);
+        }
+
+        /// <summary>
+        /// Subtracts the images.
+        /// </summary>
+        /// <param name="img1">The img1.</param>
+        /// <param name="img2">The img2.</param>
+        /// <returns>Filtered Image</returns>
+        private static Bitmap SubtractImages(Bitmap img1, Bitmap img2)
+        {
+            var result = new Bitmap(img1.Width, img1.Height);
+            for (int y = 0; y < img1.Height; y++)
+            {
+                for (int x = 0; x < img1.Width; x++)
+                {
+                    Color color1 = img1.GetPixel(x, y);
+                    Color color2 = img2.GetPixel(x, y);
+
+                    int r = Math.Max(0, color1.R - color2.R);
+                    int g = Math.Max(0, color1.G - color2.G);
+                    int b = Math.Max(0, color1.B - color2.B);
+
+                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Generates the gaussian kernel.
+        /// </summary>
+        /// <param name="sigma">The sigma.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>Filtered Image</returns>
+        private static double[,] GenerateGaussianKernel(double sigma, int size)
+        {
+            double[,] kernel = new double[size, size];
+            double mean = size / 2.0;
+            double sum = 0.0;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    kernel[y, x] = Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
+                                  / (2 * Math.PI * sigma * sigma);
+                    sum += kernel[y, x];
+                }
+            }
+
+            // Normalize the kernel
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    kernel[y, x] /= sum;
+                }
+            }
+
+            return kernel;
+        }
+
+        /// <summary>
+        /// Applies the crosshatch.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Filtered Image</returns>
+        private static Bitmap ApplyCrosshatch(Bitmap image)
+        {
+            // Define directional edge detection kernels for crosshatching
+            double[,] kernel45Degrees = {
+            { -1, -1, 2 },
+            { -1, 2, -1 },
+            { 2, -1, -1 }
+        };
+
+            double[,] kernel135Degrees = {
+            { 2, -1, -1 },
+            { -1, 2, -1 },
+            { -1, -1, 2 }
+        };
+
+            // Apply the 45-degree and 135-degree filters
+            Bitmap hatch45 = ApplyFilter(image, kernel45Degrees, 1.0);
+            Bitmap hatch135 = ApplyFilter(image, kernel135Degrees, 1.0);
+
+            // Combine the two hatching directions
+            return CombineImages(hatch45, hatch135);
+        }
+
+        /// <summary>
+        /// Combines the images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>Filtered Image</returns>
+        private static Bitmap CombineImages(Bitmap imgOne, Bitmap imgTwo)
+        {
+            var result = new Bitmap(imgOne.Width, imgOne.Height);
+            for (int y = 0; y < imgOne.Height; y++)
+            {
+                for (int x = 0; x < imgOne.Width; x++)
+                {
+                    Color color1 = imgOne.GetPixel(x, y);
+                    Color color2 = imgTwo.GetPixel(x, y);
+
+                    int r = Math.Min(255, color1.R + color2.R);
+                    int g = Math.Min(255, color1.G + color2.G);
+                    int b = Math.Min(255, color1.B + color2.B);
+
+                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
+                }
+            }
+            return result;
         }
 
         /// <summary>
