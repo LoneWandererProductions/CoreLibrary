@@ -135,7 +135,7 @@ namespace ImageCompare
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             //get greyscale
-            bitmap = Render.FilterImage(bitmap, ImageFilter.GrayScale);
+            bitmap = Render.FilterImage(bitmap, ImageFilters.GrayScale);
 
             //Get array Map for comparison
             dbm = DirectBitmap.GetInstance(bitmap);

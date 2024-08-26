@@ -13,6 +13,7 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 
+using System;
 using System.Drawing.Imaging;
 
 namespace Imaging

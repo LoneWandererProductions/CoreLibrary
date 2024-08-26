@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageFilter.cs
+ * FILE:        Imaging/ImageFilters.cs
  * PURPOSE:     Enum that holds all possible Filter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Enum of possible Filter
     /// </summary>
-    public enum ImageFilter
+    public enum ImageFilters
     {
         /// <summary>
         ///     No Filter
@@ -128,6 +128,6 @@ namespace Imaging
         /// <summary>
         /// The crosshatch
         /// </summary>
-        Crosshatch = 21
+        Crosshatch = 21,
     }
 }

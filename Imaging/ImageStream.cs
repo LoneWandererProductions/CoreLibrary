@@ -648,7 +648,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
         [return: MaybeNull]
-        internal static Bitmap FilterImage(Bitmap image, ImageFilter filter)
+        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
             if (image == null)
             {
@@ -670,60 +670,60 @@ namespace Imaging
             //set the color matrix attribute
             switch (filter)
             {
-                case ImageFilter.GrayScale:
+                case ImageFilters.GrayScale:
                     atr.SetColorMatrix(ImageRegister.GrayScale);
                     break;
-                case ImageFilter.Invert:
+                case ImageFilters.Invert:
                     atr.SetColorMatrix(ImageRegister.Invert);
                     break;
-                case ImageFilter.Sepia:
+                case ImageFilters.Sepia:
                     atr.SetColorMatrix(ImageRegister.Sepia);
                     break;
-                case ImageFilter.BlackAndWhite:
+                case ImageFilters.BlackAndWhite:
                     atr.SetColorMatrix(ImageRegister.BlackAndWhite);
                     break;
-                case ImageFilter.Polaroid:
+                case ImageFilters.Polaroid:
                     atr.SetColorMatrix(ImageRegister.Polaroid);
                     break;
-                case ImageFilter.Contour:
-                    return ApplySobel(image);
-                case ImageFilter.Brightness:
+                case ImageFilters.Contour:
+                    return ImageFilterStream.ApplySobel(image);
+                case ImageFilters.Brightness:
                     atr.SetColorMatrix(ImageRegister.Brightness);
                     break;
-                case ImageFilter.Contrast:
+                case ImageFilters.Contrast:
                     atr.SetColorMatrix(ImageRegister.Contrast);
                     break;
-                case ImageFilter.HueShift:
+                case ImageFilters.HueShift:
                     atr.SetColorMatrix(ImageRegister.HueShift);
                     break;
-                case ImageFilter.ColorBalance:
+                case ImageFilters.ColorBalance:
                     atr.SetColorMatrix(ImageRegister.ColorBalance);
                     break;
-                case ImageFilter.Vintage:
+                case ImageFilters.Vintage:
                     atr.SetColorMatrix(ImageRegister.Vintage);
                     break;
                 // New convolution-based filters
-                case ImageFilter.Sharpen:
-                    return ApplyFilter(image, ImageRegister.SharpenFilter);
-                case ImageFilter.GaussianBlur:
-                    return ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
-                case ImageFilter.Emboss:
-                    return ApplyFilter(image, ImageRegister.EmbossFilter);
-                case ImageFilter.BoxBlur:
-                    return ApplyFilter(image, ImageRegister.BoxBlur, 1.0 / 9.0);
-                case ImageFilter.Laplacian:
-                    return ApplyFilter(image, ImageRegister.LaplacianFilter);
-                case ImageFilter.EdgeEnhance:
-                    return ApplyFilter(image, ImageRegister.EdgeEnhance);
-                case ImageFilter.MotionBlur:
-                    return ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
-                case ImageFilter.UnsharpMask:
-                    return ApplyFilter(image, ImageRegister.UnsharpMask);
+                case ImageFilters.Sharpen:
+                    return ImageFilterStream.ApplyFilter(image,ImageRegister.SharpenFilter);
+                case ImageFilters.GaussianBlur:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
+                case ImageFilters.Emboss:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.EmbossFilter);
+                case ImageFilters.BoxBlur:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.BoxBlur, 1.0 / 9.0);
+                case ImageFilters.Laplacian:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.LaplacianFilter);
+                case ImageFilters.EdgeEnhance:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.EdgeEnhance);
+                case ImageFilters.MotionBlur:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
+                case ImageFilters.UnsharpMask:
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.UnsharpMask);
                 // custom Filter
-                case ImageFilter.DifferenceOfGaussians:
-                    return ApplyDifferenceOfGaussians(image);
-                case ImageFilter.Crosshatch:
-                    return ApplyCrosshatch(image);
+                case ImageFilters.DifferenceOfGaussians:
+                    return ImageFilterStream.ApplyDifferenceOfGaussians(image);
+                case ImageFilters.Crosshatch:
+                    return ImageFilterStream.ApplyCrosshatch(image);
                 default:
                     return null;
             }
@@ -1144,42 +1144,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Pixelate the specified input image.
-        /// </summary>
-        /// <param name="image">The input image.</param>
-        /// <param name="stepWidth">Width of the step.</param>
-        /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Bitmap image, int stepWidth)
-        {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(ConvertWhiteToTransparent),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
-
-            // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(image);
-            // Create a new bitmap to store the processed image
-            var processedImage = new Bitmap(dbm.Width, dbm.Height);
-
-
-            // Iterate over the image with the specified step width
-            for (var y = 0; y < dbm.Height; y += stepWidth)
-            for (var x = 0; x < dbm.Width; x += stepWidth)
-            {
-                // Get the color of the current rectangle
-                var averageColor = GetAverageColor(image, x, y, stepWidth, stepWidth);
-
-                using var g = Graphics.FromImage(processedImage);
-                using var brush = new SolidBrush(averageColor);
-                g.FillRectangle(brush, x, y, stepWidth, stepWidth);
-            }
-
-            return processedImage;
-        }
-
-        /// <summary>
         ///     Gets the pixel.
         /// </summary>
         /// <param name="image">The image.</param>
@@ -1306,92 +1270,6 @@ namespace Imaging
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
         }
 
-        /// <summary>
-        ///     Applies the filter.
-        /// </summary>
-        /// <param name="sourceBitmap">The source bitmap.</param>
-        /// <param name="filterMatrix">
-        ///     The filter matrix.
-        ///     Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that defines how each pixel
-        ///     in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5, or 7x7.
-        ///     Placement: Place the center of the convolution matrix on the target pixel in the image.
-        ///     Neighborhood Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the
-        ///     convolution matrix.
-        ///     Summation: Sum all these products.
-        ///     Normalization: Often, the result is normalized (e.g., dividing by the sum of the matrix values) to ensure that
-        ///     pixel values remain within a valid range.
-        ///     Pixel Update: The resulting value is assigned to the target pixel in the output image.
-        ///     Matrix Size: The size of the matrix affects the area of the image that influences each output pixel. For example:
-        ///     3x3 Matrix: Considers the pixel itself and its immediate 8 neighbors.
-        ///     5x5 Matrix: Considers a larger area, including 24 neighbors and the pixel itself.
-        /// </param>
-        /// <param name="factor">The factor.</param>
-        /// <param name="bias">The bias.</param>
-        /// <returns>Image with applied filter</returns>
-        internal static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
-            double bias = 0.0)
-        {
-            // Initialize DirectBitmap instances
-            var source = new DirectBitmap(sourceBitmap);
-            var result = new DirectBitmap(source.Width, source.Height);
-
-            var filterWidth = filterMatrix.GetLength(1);
-            var filterHeight = filterMatrix.GetLength(0);
-            var filterOffset = filterWidth / 2;
-
-            // Prepare a list to store the pixels to set in bulk using SIMD
-            var pixelsToSet = new List<(int x, int y, Color color)>();
-
-            for (var y = filterOffset; y < source.Height - filterOffset; y++)
-            {
-                for (var x = filterOffset; x < source.Width - filterOffset; x++)
-                {
-                    double blue = 0.0, green = 0.0, red = 0.0;
-
-                    for (var filterY = 0; filterY < filterHeight; filterY++)
-                    {
-                        for (var filterX = 0; filterX < filterWidth; filterX++)
-                        {
-                            var imageX = x + (filterX - filterOffset);
-                            var imageY = y + (filterY - filterOffset);
-
-                            // Check bounds to prevent out-of-bounds access
-                            if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
-                            {
-                                continue;
-                            }
-
-                            var pixelColor = source.GetPixel(imageX, imageY);
-
-                            blue += pixelColor.B * filterMatrix[filterY, filterX];
-                            green += pixelColor.G * filterMatrix[filterY, filterX];
-                            red += pixelColor.R * filterMatrix[filterY, filterX];
-                        }
-                    }
-
-                    var newBlue = Math.Min(Math.Max((int)((factor * blue) + bias), 0), 255);
-                    var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
-                    var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
-
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
-                }
-            }
-
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
-
-                return result.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
-            }
-
-            return null;
-        }
 
         /// <summary>
         ///     Gets the average color.
@@ -1402,7 +1280,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Average Color of the Area</returns>
-        private static Color GetAverageColor(Image inputImage, int startX, int startY, int width, int height)
+        internal static Color GetAverageColor(Image inputImage, int startX, int startY, int width, int height)
         {
             var totalRed = 0;
             var totalGreen = 0;
@@ -1436,256 +1314,6 @@ namespace Imaging
 
             // Return the average color
             return Color.FromArgb(averageRed, averageGreen, averageBlue);
-        }
-
-        // TODO add:
-        // Prewitt
-        // Roberts Cross
-        // Laplacian
-        // Laplacian of Gaussain
-        // Anisotropic Kuwahara
-
-        /// <summary>
-        ///     Applies the Sobel.
-        /// </summary>
-        /// <param name="originalImage">The original image.</param>
-        /// <returns>Contour of an Image</returns>
-        private static Bitmap ApplySobel(Bitmap originalImage)
-        {
-            // Convert the original image to greyscale
-            var greyscaleImage = FilterImage(originalImage, ImageFilter.GrayScale);
-
-            // Create a new bitmap to store the result of Sobel operator
-            var resultImage = new Bitmap(greyscaleImage.Width, greyscaleImage.Height);
-
-            // Sobel masks for gradient calculation
-            int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-            int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
-
-            // Prepare a list to store the pixels to set in bulk using SIMD
-            var pixelsToSet = new List<(int x, int y, Color color)>();
-
-            var dbmBase = new DirectBitmap(greyscaleImage);
-            var dbmResult = new DirectBitmap(resultImage);
-
-            // Apply Sobel operator to each pixel in the image
-            for (var x = 1; x < greyscaleImage.Width - 1; x++)
-            for (var y = 1; y < greyscaleImage.Height - 1; y++)
-            {
-                var gx = 0;
-                var gy = 0;
-
-                // Convolve the image with the Sobel masks
-                for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
-                {
-                    var pixel = dbmBase.GetPixel(x + i, y + j);
-                    int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
-                    gx += sobelX[i + 1, j + 1] * grayValue;
-                    gy += sobelY[i + 1, j + 1] * grayValue;
-                }
-
-                // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
-
-                // Normalize the magnitude to fit within the range of 0-255
-                magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
-                magnitude = Math.Min(255, Math.Max(0, magnitude));
-
-                // Instead of setting the pixel immediately, add it to the list
-                pixelsToSet.Add((x, y, Color.FromArgb(magnitude, magnitude, magnitude)));
-            }
-
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                dbmResult.SetPixelsSimd(pixelsToSet);
-                dbmBase.Dispose();
-
-                return dbmResult.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Applies the difference of gaussians.
-        /// </summary>
-        /// <param name="image">The image.</param>
-        /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyDifferenceOfGaussians(Bitmap image)
-        {
-            // Gaussian blur with small sigma
-            double[,] gaussianBlurSmall = GenerateGaussianKernel(1.0, 5);
-
-            // Gaussian blur with larger sigma
-            double[,] gaussianBlurLarge = GenerateGaussianKernel(2.0, 5);
-
-            // Apply both Gaussian blurs to the image
-            Bitmap blurredSmall = ApplyFilter(image, gaussianBlurSmall, 1.0 / 16.0);
-            Bitmap blurredLarge = ApplyFilter(image, gaussianBlurLarge, 1.0 / 16.0);
-
-            // Subtract the two blurred images to get the DoG result
-            return SubtractImages(blurredSmall, blurredLarge);
-        }
-
-        /// <summary>
-        /// Subtracts the images.
-        /// </summary>
-        /// <param name="imgOne">The img1.</param>
-        /// <param name="imgTwo">The img2.</param>
-        /// <returns>Filtered Image</returns>
-        private static Bitmap SubtractImages(Bitmap imgOne, Bitmap imgTwo)
-        {
-            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
-            // Prepare a list to store the pixels to set in bulk using SIMD
-            var pixelsToSet = new List<(int x, int y, Color color)>();
-
-            var dbmOne = new DirectBitmap(imgOne);
-            var dbmTwo = new DirectBitmap(imgTwo);
-
-            for (var y = 0; y < dbmOne.Height; y++)
-            {
-                for (var x = 0; x < dbmOne.Width; x++)
-                {
-                    var color1 = dbmOne.GetPixel(x, y);
-                    var color2 = dbmTwo.GetPixel(x, y);
-
-                    var r = Math.Max(0, color1.R - color2.R);
-                    var g = Math.Max(0, color1.G - color2.G);
-                    var b = Math.Max(0, color1.B - color2.B);
-
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                }
-            }
-
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
-
-                return result.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Generates the gaussian kernel.
-        /// </summary>
-        /// <param name="sigma">The sigma.</param>
-        /// <param name="size">The size.</param>
-        /// <returns>Filtered Image</returns>
-        private static double[,] GenerateGaussianKernel(double sigma, int size)
-        {
-            double[,] kernel = new double[size, size];
-            double mean = size / 2.0;
-            double sum = 0.0;
-
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    kernel[y, x] = Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
-                                  / (2 * Math.PI * sigma * sigma);
-                    sum += kernel[y, x];
-                }
-            }
-
-            // Normalize the kernel
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    kernel[y, x] /= sum;
-                }
-            }
-
-            return kernel;
-        }
-
-        /// <summary>
-        /// Applies the crosshatch.
-        /// </summary>
-        /// <param name="image">The image.</param>
-        /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyCrosshatch(Bitmap image)
-        {
-            // Define directional edge detection kernels for crosshatching
-            double[,] kernel45Degrees = {
-            { -1, -1, 2 },
-            { -1, 2, -1 },
-            { 2, -1, -1 }
-        };
-
-            double[,] kernel135Degrees = {
-            { 2, -1, -1 },
-            { -1, 2, -1 },
-            { -1, -1, 2 }
-        };
-
-            // Apply the 45-degree and 135-degree filters
-            Bitmap hatch45 = ApplyFilter(image, kernel45Degrees, 1.0);
-            Bitmap hatch135 = ApplyFilter(image, kernel135Degrees, 1.0);
-
-            // Combine the two hatching directions
-            return CombineImages(hatch45, hatch135);
-        }
-
-        /// <summary>
-        /// Combines the images.
-        /// </summary>
-        /// <param name="imgOne">The first image.</param>
-        /// <param name="imgTwo">The second image.</param>
-        /// <returns>Filtered Image</returns>
-        private static Bitmap CombineImages(Bitmap imgOne, Bitmap imgTwo)
-        {
-            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
-
-            // Prepare a list to store the pixels to set in bulk using SIMD
-            var pixelsToSet = new List<(int x, int y, Color color)>();
-
-            var dbmOne = new DirectBitmap(imgOne);
-            var dbmTwo = new DirectBitmap(imgTwo);
-
-            for (int y = 0; y < dbmOne.Height; y++)
-            {
-                for (int x = 0; x < dbmOne.Width; x++)
-                {
-                    Color color1 = dbmOne.GetPixel(x, y);
-                    Color color2 = dbmTwo.GetPixel(x, y);
-
-                    int r = Math.Min(255, color1.R + color2.R);
-                    int g = Math.Min(255, color1.G + color2.G);
-                    int b = Math.Min(255, color1.B + color2.B);
-
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                }
-            }
-
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
-
-                return result.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
-            }
-
-            return null;
         }
 
         /// <summary>

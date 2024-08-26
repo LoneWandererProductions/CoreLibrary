@@ -106,7 +106,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
         [return: MaybeNull]
-        public Bitmap FilterImage(Bitmap image, ImageFilter filter)
+        public Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
             return ImageStream.FilterImage(image, filter);
         }
@@ -362,7 +362,7 @@ namespace Imaging
         /// </returns>
         public Bitmap Pixelate(Bitmap image, int stepWidth = 2)
         {
-            return ImageStream.Pixelate(image, stepWidth);
+            return ImageFilterStream.Pixelate(image, stepWidth);
         }
 
         /// <inheritdoc />

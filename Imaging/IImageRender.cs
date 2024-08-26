@@ -86,7 +86,7 @@ namespace Imaging
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-        Bitmap FilterImage(Bitmap image, ImageFilter filter);
+        Bitmap FilterImage(Bitmap image, ImageFilters filter);
 
         /// <summary>
         ///     Combines the bitmaps overlays them and merges them into one Image
