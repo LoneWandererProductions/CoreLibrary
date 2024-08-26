@@ -16,22 +16,22 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Class that generates Textures
+    ///     Class that generates Textures
     /// </summary>
     internal static class Texture
     {
         /// <summary>
-        /// The noise width
+        ///     The noise width
         /// </summary>
         private const int NoiseWidth = 320; // Width for noise generation
 
         /// <summary>
-        /// The noise height
+        ///     The noise height
         /// </summary>
         private const int NoiseHeight = 240; // Height for noise generation
 
         /// <summary>
-        /// The noise
+        ///     The noise
         /// </summary>
         private static readonly double[,] Noise = new double[NoiseHeight, NoiseWidth];
 
@@ -131,8 +131,8 @@ namespace Imaging
                 for (var x = 0; x < width; x++)
                 {
                     var value = Turbulence(x, y, turbulenceSize);
-                    var L = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
-                    var color = Color.FromArgb(alpha, L, L, L);
+                    var l = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
+                    var color = Color.FromArgb(alpha, l, l, l);
                     pixelData.Add((x, y, color));
                 }
             }
@@ -145,18 +145,18 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Generates the marble bitmap.
+        ///     Generates the marble bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="xPeriod">The x period.</param>
         /// <param name="yPeriod">The y period.</param>
         /// <param name="alpha">The alpha.</param>
-        /// <param name="turbPower">The turb power.</param>
-        /// <param name="turbulenceSize">Size of the turb.</param>
+        /// <param name="turbulencePower">The turbulence power.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <param name="baseColor">Color of the base.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
         internal static Bitmap GenerateMarbleBitmap(
             int width,
@@ -164,7 +164,7 @@ namespace Imaging
             double xPeriod = 5.0,
             double yPeriod = 10.0,
             int alpha = 255,
-            double turbPower = 5.0,
+            double turbulencePower = 5.0,
             double turbulenceSize = 32.0,
             Color baseColor = default)
         {
@@ -179,7 +179,7 @@ namespace Imaging
                 for (var x = 0; x < width; x++)
                 {
                     var xyValue = (x * xPeriod / NoiseWidth) + (y * yPeriod / NoiseHeight) +
-                                   (turbPower * Turbulence(x, y, turbulenceSize) / 256.0);
+                                  (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
                     var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
                     var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
                     var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
@@ -198,24 +198,24 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Generates the wood bitmap.
+        ///     Generates the wood bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="alpha">The alpha.</param>
         /// <param name="xyPeriod">The xy period.</param>
-        /// <param name="turbPower">The turb power.</param>
-        /// <param name="turbulenceSize">Size of the turb.</param>
+        /// <param name="turbulencePower">The turbulence power.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <param name="baseColor">Color of the base.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
         internal static Bitmap GenerateWoodBitmap(
             int width,
             int height,
             int alpha = 255,
             double xyPeriod = 12.0,
-            double turbPower = 0.1,
+            double turbulencePower = 0.1,
             double turbulenceSize = 32.0,
             Color baseColor = default)
         {
@@ -232,7 +232,7 @@ namespace Imaging
                     var xValue = (x - (width / 2.0)) / width;
                     var yValue = (y - (height / 2.0)) / height;
                     var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
-                                    (turbPower * Turbulence(x, y, turbulenceSize) / 256.0);
+                                    (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
                     var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
                     var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
@@ -252,20 +252,23 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Generates the wave bitmap.
+        /// Generates the wave bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
+        /// <param name="alpha">The alpha.</param>
         /// <param name="xyPeriod">The xy period.</param>
-        /// <param name="turbPower">The turb power.</param>
-        /// <param name="turbulenceSize">Size of the turb.</param>
-        /// <returns>Texture Bitmap</returns>
+        /// <param name="turbulencePower">The turbulence power.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <returns>
+        /// Texture Bitmap
+        /// </returns>
         internal static Bitmap GenerateWaveBitmap(
             int width,
             int height,
             int alpha = 255,
             double xyPeriod = 12.0,
-            double turbPower = 0.1,
+            double turbulencePower = 0.1,
             double turbulenceSize = 32.0)
         {
             GenerateBaseNoise();
@@ -277,9 +280,9 @@ namespace Imaging
             {
                 for (var x = 0; x < width; x++)
                 {
-                    var xValue = ((x - (width / 2.0)) / width) + (turbPower * Turbulence(x, y, turbulenceSize) / 256.0);
+                    var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
                     var yValue = ((y - (height / 2.0)) / height) +
-                                  (turbPower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+                                 (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 
                     var sineValue = 22.0 *
                                     Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
@@ -338,7 +341,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Turbulences the specified x.
+        ///     Turbulence the specified x.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -358,7 +361,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Smoothes the noise.
+        ///     Smooths the noise.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>

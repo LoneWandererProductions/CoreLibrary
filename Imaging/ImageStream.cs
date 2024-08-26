@@ -704,7 +704,7 @@ namespace Imaging
                     break;
                 // New convolution-based filters
                 case ImageFilters.Sharpen:
-                    return ImageFilterStream.ApplyFilter(image,ImageRegister.SharpenFilter);
+                    return ImageFilterStream.ApplyFilter(image, ImageRegister.SharpenFilter);
                 case ImageFilters.GaussianBlur:
                     return ImageFilterStream.ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
                 case ImageFilters.Emboss:

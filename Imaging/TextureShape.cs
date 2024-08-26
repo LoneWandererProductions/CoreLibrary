@@ -11,22 +11,22 @@
 namespace Imaging
 {
     /// <summary>
-    /// Texture Shapes
+    ///     Texture Shapes
     /// </summary>
     public enum TextureShape
     {
         /// <summary>
-        /// The rectangle
+        ///     The rectangle
         /// </summary>
         Rectangle,
 
         /// <summary>
-        /// The circle
+        ///     The circle
         /// </summary>
         Circle,
 
         /// <summary>
-        /// The polygon
+        ///     The polygon
         /// </summary>
         Polygon
     }

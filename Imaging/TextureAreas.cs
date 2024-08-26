@@ -6,18 +6,19 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
  */
+
 using System;
 using System.Drawing;
 
 namespace Imaging
 {
     /// <summary>
-    /// Apply textures to certain areas
+    ///     Apply textures to certain areas
     /// </summary>
     internal static class TextureAreas
     {
         /// <summary>
-        /// Generates the texture.
+        ///     Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -31,9 +32,9 @@ namespace Imaging
         /// <param name="baseColor">Color of the base.</param>
         /// <returns>Generates a filter for a certain area</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// filter - null
-        /// or
-        /// shape - null
+        ///     filter - null
+        ///     or
+        ///     shape - null
         /// </exception>
         internal static Bitmap GenerateTexture(
             int width,
@@ -48,25 +49,29 @@ namespace Imaging
             Color? baseColor = null)
         {
             // Create a bitmap to apply the texture
-            Bitmap textureBitmap = null;
+            Bitmap textureBitmap;
 
             // Generate texture based on the selected filter
             switch (filter)
             {
                 case TextureType.Noise:
-                    textureBitmap = Texture.GenerateNoiseBitmap(width, height, minValue, maxValue, alpha, useSmoothNoise: true, useTurbulence: true, turbulenceSize: turbulenceSize);
+                    textureBitmap = Texture.GenerateNoiseBitmap(width, height, minValue, maxValue, alpha, true, true,
+                        turbulenceSize);
                     break;
 
                 case TextureType.Clouds:
-                    textureBitmap = Texture.GenerateCloudsBitmap(width, height, minValue, maxValue, alpha, turbulenceSize);
+                    textureBitmap =
+                        Texture.GenerateCloudsBitmap(width, height, minValue, maxValue, alpha, turbulenceSize);
                     break;
 
                 case TextureType.Marble:
-                    textureBitmap = Texture.GenerateMarbleBitmap(width, height, alpha, baseColor: baseColor ?? Color.FromArgb(30, 10, 0));
+                    textureBitmap = Texture.GenerateMarbleBitmap(width, height, alpha,
+                        baseColor: baseColor ?? Color.FromArgb(30, 10, 0));
                     break;
 
                 case TextureType.Wood:
-                    textureBitmap = Texture.GenerateWoodBitmap(width, height, alpha, baseColor: baseColor ?? Color.FromArgb(80, 30, 30));
+                    textureBitmap = Texture.GenerateWoodBitmap(width, height, alpha,
+                        baseColor: baseColor ?? Color.FromArgb(80, 30, 30));
                     break;
 
                 case TextureType.Wave:
@@ -95,7 +100,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the rectangle mask.
+        ///     Applies the rectangle mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="width">The width.</param>
@@ -104,43 +109,43 @@ namespace Imaging
         private static Bitmap ApplyRectangleMask(Bitmap bitmap, int width, int height)
         {
             // In this case, the rectangle shape means applying the texture as-is
+
+            //Todo add area
             return bitmap;
         }
 
         /// <summary>
-        /// Applies the circle mask.
+        ///     Applies the circle mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Circle Bitmap</returns>
-        private static Bitmap ApplyCircleMask(Bitmap bitmap, int width, int height)
+        private static Bitmap ApplyCircleMask(Image bitmap, int width, int height)
         {
             var circleBitmap = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(circleBitmap))
-            {
-                g.Clear(Color.Transparent);
-                using TextureBrush brush = new TextureBrush(bitmap);
-                g.FillEllipse(brush, 0, 0, width, height);
-            }
+            using var g = Graphics.FromImage(circleBitmap);
+            g.Clear(Color.Transparent);
+            using var brush = new TextureBrush(bitmap);
+            g.FillEllipse(brush, 0, 0, width, height);
+
             return circleBitmap;
         }
 
         /// <summary>
-        /// Applies the polygon mask.
+        ///     Applies the polygon mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="points">The points.</param>
         /// <returns>Polygon Bitmap</returns>
-        private static Bitmap ApplyPolygonMask(Bitmap bitmap, Point[] points)
+        private static Bitmap ApplyPolygonMask(Image bitmap, Point[] points)
         {
             var polyBitmap = new Bitmap(bitmap.Width, bitmap.Height);
-            using (Graphics g = Graphics.FromImage(polyBitmap))
-            {
-                g.Clear(Color.Transparent);
-                using TextureBrush brush = new TextureBrush(bitmap);
-                g.FillPolygon(brush, points);
-            }
+            using var g = Graphics.FromImage(polyBitmap);
+            g.Clear(Color.Transparent);
+            using var brush = new TextureBrush(bitmap);
+            g.FillPolygon(brush, points);
+
             return polyBitmap;
         }
     }

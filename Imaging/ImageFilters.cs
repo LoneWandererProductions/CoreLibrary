@@ -121,13 +121,13 @@ namespace Imaging
         UnsharpMask = 19,
 
         /// <summary>
-        /// The difference of gaussians
+        ///     The difference of gaussians
         /// </summary>
         DifferenceOfGaussians = 20,
 
         /// <summary>
-        /// The crosshatch
+        ///     The crosshatch
         /// </summary>
-        Crosshatch = 21,
+        Crosshatch = 21
     }
 }

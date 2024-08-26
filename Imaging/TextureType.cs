@@ -11,32 +11,32 @@
 namespace Imaging
 {
     /// <summary>
-    /// Type of Textures
+    ///     Type of Textures
     /// </summary>
     public enum TextureType
-        {
+    {
         /// <summary>
-        /// The noise
+        ///     The noise
         /// </summary>
         Noise,
 
         /// <summary>
-        /// The clouds
+        ///     The clouds
         /// </summary>
         Clouds,
 
         /// <summary>
-        /// The marble
+        ///     The marble
         /// </summary>
         Marble,
 
         /// <summary>
-        /// The wood
+        ///     The wood
         /// </summary>
         Wood,
 
         /// <summary>
-        /// The wave
+        ///     The wave
         /// </summary>
         Wave
     }
