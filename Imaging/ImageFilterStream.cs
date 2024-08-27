@@ -550,6 +550,53 @@ namespace Imaging
             return ApplyFilter(dbmBase.Bitmap, gaussianKernel);
         }
 
+        public static Bitmap PencilSketchEffect(Bitmap originalImage)
+        {
+            // Step 1: Convert to Grayscale
+            Bitmap grayscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
+
+            // Step 2: Invert the Grayscale Image
+            Bitmap invertedImage = FilterImage(grayscaleImage, ImageFilters.Invert);
+
+            // Step 3: Apply Gaussian Blur to the Inverted Image
+            Bitmap blurredImage = FilterImage(invertedImage, ImageFilters.GaussianBlur);
+
+            // Step 4: Blend Grayscale Image with the Blurred, Inverted Image using Color Dodge
+            Bitmap sketchImage = ColorDodgeBlend(grayscaleImage, blurredImage);
+
+            // Step 5: Optional - Adjust Contrast/Brightness if necessary
+            // sketchImage = AdjustContrastAndBrightness(sketchImage);
+
+            return sketchImage;
+        }
+
+
+        /// <summary>
+        /// Colors the dodge blend.
+        /// </summary>
+        /// <param name="baseImage">The base image.</param>
+        /// <param name="blendImage">The blend image.</param>
+        /// <returns>Color blended Image</returns>
+        private static Bitmap ColorDodgeBlend(Bitmap baseImage, Bitmap blendImage)
+        {
+            Bitmap result = new Bitmap(baseImage.Width, baseImage.Height);
+            for (int y = 0; y < baseImage.Height; y++)
+            {
+                for (int x = 0; x < baseImage.Width; x++)
+                {
+                    Color baseColor = baseImage.GetPixel(x, y);
+                    Color blendColor = blendImage.GetPixel(x, y);
+
+                    int r = blendColor.R == 255 ? 255 : Math.Min(255, (baseColor.R << 8) / (255 - blendColor.R));
+                    int g = blendColor.G == 255 ? 255 : Math.Min(255, (baseColor.G << 8) / (255 - blendColor.G));
+                    int b = blendColor.B == 255 ? 255 : Math.Min(255, (baseColor.B << 8) / (255 - blendColor.B));
+
+                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
+                }
+            }
+            return result;
+        }
+
         /// <summary>
         ///     Determines the region size and shape.
         /// </summary>
