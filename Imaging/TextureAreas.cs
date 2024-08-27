@@ -18,36 +18,29 @@ namespace Imaging
     internal static class TextureAreas
     {
         /// <summary>
-        ///     Generates the texture.
+        /// Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
-        /// <param name="minValue">The minimum value.</param>
-        /// <param name="maxValue">The maximum value.</param>
-        /// <param name="alpha">The alpha.</param>
-        /// <param name="turbulenceSize">Size of the turbulence.</param>
-        /// <param name="baseColor">Color of the base.</param>
-        /// <returns>Generates a filter for a certain area</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        ///     filter - null
-        ///     or
-        ///     shape - null
-        /// </exception>
+        /// <returns>
+        /// Generates a filter for a certain area
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
         internal static Bitmap GenerateTexture(
             int width,
             int height,
             TextureType filter,
             TextureShape shape,
-            object shapeParams = null,
-            int minValue = 0,
-            int maxValue = 255,
-            int alpha = 255,
-            double turbulenceSize = 64,
-            Color? baseColor = null)
+            object shapeParams = null)
         {
+            // Retrieve the settings for the specified filter
+            var settings = ImageRegister.GetSettings(filter);
+
             // Create a bitmap to apply the texture
             Bitmap textureBitmap;
 
@@ -55,27 +48,45 @@ namespace Imaging
             switch (filter)
             {
                 case TextureType.Noise:
-                    textureBitmap = Texture.GenerateNoiseBitmap(width, height, minValue, maxValue, alpha, true, true,
-                        turbulenceSize);
+                    textureBitmap = Texture.GenerateNoiseBitmap(
+                        width,
+                        height,
+                        settings.MinValue,
+                        settings.MaxValue,
+                        settings.Alpha,
+                        settings.IsMonochrome,
+                        settings.IsTiled,
+                        settings.TurbulenceSize);
                     break;
 
                 case TextureType.Clouds:
-                    textureBitmap =
-                        Texture.GenerateCloudsBitmap(width, height, minValue, maxValue, alpha, turbulenceSize);
+                    textureBitmap = Texture.GenerateCloudsBitmap(
+                        width,
+                        height,
+                        settings.MinValue,
+                        settings.MaxValue,
+                        settings.Alpha,
+                        settings.TurbulenceSize);
                     break;
 
                 case TextureType.Marble:
-                    textureBitmap = Texture.GenerateMarbleBitmap(width, height, alpha,
-                        baseColor: baseColor ?? Color.FromArgb(30, 10, 0));
+                    textureBitmap = Texture.GenerateMarbleBitmap(
+                        width,
+                        height,
+                        settings.Alpha,
+                        baseColor: settings.BaseColor);
                     break;
 
                 case TextureType.Wood:
-                    textureBitmap = Texture.GenerateWoodBitmap(width, height, alpha,
-                        baseColor: baseColor ?? Color.FromArgb(80, 30, 30));
+                    textureBitmap = Texture.GenerateWoodBitmap(
+                        width,
+                        height,
+                        settings.Alpha,
+                        baseColor: settings.BaseColor);
                     break;
 
                 case TextureType.Wave:
-                    textureBitmap = Texture.GenerateWaveBitmap(width, height, alpha);
+                    textureBitmap = Texture.GenerateWaveBitmap(width, height, settings.Alpha);
                     break;
 
                 default:

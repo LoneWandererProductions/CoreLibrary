@@ -14,6 +14,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Concurrent;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Imaging
@@ -26,25 +27,38 @@ namespace Imaging
         /// <summary>
         /// The settings for our Filter
         /// </summary>
-        private static readonly ConcurrentDictionary<ImageFilters, ImageFilterConfig> Settings = new();
+        private static readonly ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings = new();
+
+        /// <summary>
+        /// The texture setting
+        /// </summary>
+        private static readonly ConcurrentDictionary<TextureType, TextureConfig> TextureSetting = new();
 
         /// <summary>
         /// Initializes the <see cref="ImageRegister" /> class.
         /// </summary>
         static ImageRegister()
         {
-            // Initialize default settings
-            Settings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
-            Settings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
-            Settings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
-            Settings[ImageFilters.Sharpen] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            Settings[ImageFilters.Emboss] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            Settings[ImageFilters.Laplacian] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            Settings[ImageFilters.EdgeEnhance] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            Settings[ImageFilters.UnsharpMask] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            Settings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
-            Settings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
-            Settings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
+            // Initialize default Filter settings
+            FilterSettings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.Sharpen] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.Emboss] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.Laplacian] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.EdgeEnhance] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.UnsharpMask] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
+            FilterSettings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
+            FilterSettings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
+            // Add more default settings as needed
+
+            // Initialize default Texture settings
+            TextureSetting[TextureType.Noise] = new TextureConfig { MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64 };
+            TextureSetting[TextureType.Clouds] = new TextureConfig { MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64 };
+            TextureSetting[TextureType.Marble] = new TextureConfig { Alpha = 255, BaseColor = Color.FromArgb(30, 10, 0) };
+            TextureSetting[TextureType.Wood] = new TextureConfig { Alpha = 255, BaseColor = Color.FromArgb(80, 30, 30) };
+            TextureSetting[TextureType.Wave] = new TextureConfig { Alpha = 255 };
             // Add more default settings as needed
         }
 
@@ -55,7 +69,7 @@ namespace Imaging
         /// <returns>Return the current config</returns>
         internal static ImageFilterConfig GetSettings(ImageFilters filter)
         {
-            return Settings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
+            return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
         }
 
         /// <summary>
@@ -65,9 +79,28 @@ namespace Imaging
         /// <param name="config">The configuration.</param>
         public static void SetSettings(ImageFilters filter, ImageFilterConfig config)
         {
-            Settings[filter] = config;
+            FilterSettings[filter] = config;
         }
 
+        /// <summary>
+        /// Gets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public static TextureConfig GetSettings(TextureType filter)
+        {
+            return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfig();
+        }
+
+        /// <summary>
+        /// Sets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <param name="config">The configuration.</param>
+        public static void SetSettings(TextureType filter, TextureConfig config)
+        {
+            TextureSetting[filter] = config;
+        }
 
         /// <summary>
         ///     The sharpen filter
