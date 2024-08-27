@@ -108,7 +108,7 @@ namespace Imaging
         [return: MaybeNull]
         public Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
-            return ImageStream.FilterImage(image, filter);
+            return ImageFilterStream.FilterImage(image, filter);
         }
 
         /// <inheritdoc />

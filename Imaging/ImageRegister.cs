@@ -53,17 +53,17 @@ namespace Imaging
         internal static readonly double[,] EdgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
 
         /// <summary>
+        ///     The unsharp mask
+        /// </summary>
+        internal static readonly double[,] UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+
+        /// <summary>
         ///     The motion blur
         /// </summary>
         internal static readonly double[,] MotionBlur =
         {
             { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
         };
-
-        /// <summary>
-        ///     The unsharp mask
-        /// </summary>
-        internal static readonly double[,] UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image

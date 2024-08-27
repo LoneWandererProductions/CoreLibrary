@@ -33,48 +33,6 @@ namespace Imaging
         /// <summary>
         ///     Loads File one Time
         ///     Can only used to load an Image Once
-        /// </summary>
-        /// <param name="path">path to the File</param>
-        /// <returns>An Image as <see cref="BitmapImage" />.</returns>
-        /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-        /// <exception cref="IOException">Could not find the File</exception>
-        public static BitmapImage GetBitmapImage(string path)
-        {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
-
-            try
-            {
-                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.UriSource = new Uri(path);
-                bmp.EndInit();
-                return bmp;
-            }
-            catch (UriFormatException ex)
-            {
-                throw new UriFormatException(path, ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException(ex.Message);
-            }
-            catch (NotSupportedException ex)
-            {
-                throw new NotSupportedException(ex.Message);
-            }
-        }
-
-        /// <summary>
-        ///     Loads File one Time
-        ///     Can only used to load an Image Once
         ///     Use this for huge amounts of image that will be resized, else we will break memory limits
         /// </summary>
         /// <param name="path">path to the File</param>
@@ -87,38 +45,28 @@ namespace Imaging
         /// <exception cref="UriFormatException"></exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        public static BitmapImage GetBitmapImage(string path, int width, int height)
+        public static BitmapImage LoadBitmapImage(string path, int width = 0, int height = 0)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
-
+            ValidateFilePath(path);
             try
-            {
+            { 
                 var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
-                bmp.DecodePixelHeight = height;
-                bmp.DecodePixelWidth = width;
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
                 bmp.UriSource = new Uri(path);
+                if (width > 0 && height > 0)
+                {
+                    bmp.DecodePixelWidth = width;
+                    bmp.DecodePixelHeight = height;
+                }
                 bmp.EndInit();
                 return bmp;
             }
-            catch (UriFormatException ex)
+            catch (Exception ex)
             {
-                throw new UriFormatException(path, ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException(ex.Message);
-            }
-            catch (NotSupportedException ex)
-            {
-                throw new NotSupportedException(ex.Message);
+                ImageHelper.HandleException(ex);
+                // Optionally, rethrow or handle further as needed
+                throw;  // This will preserve the original stack trace and exception details
             }
         }
 
@@ -135,13 +83,7 @@ namespace Imaging
         /// <exception cref="IOException">Could not find the File</exception>
         public static BitmapImage GetBitmapImageFileStream(string path)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
+            ValidateFilePath(path);
 
             var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
@@ -155,21 +97,11 @@ namespace Imaging
 
                 return bmp;
             }
-            catch (ArgumentException e)
+            catch (Exception ex)
             {
-                throw new ArgumentException(e.ToString());
-            }
-            catch (NotSupportedException e)
-            {
-                throw new NotSupportedException(e.ToString());
-            }
-            catch (IOException e)
-            {
-                throw new IOException(e.ToString());
-            }
-            catch (InvalidOperationException e)
-            {
-                throw new InvalidOperationException(e.ToString());
+                ImageHelper.HandleException(ex);
+                // Optionally, rethrow or handle further as needed
+                throw;  // This will preserve the original stack trace and exception details
             }
         }
 
@@ -195,13 +127,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         public static BitmapImage GetBitmapImageFileStream(string path, int width, int height)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
+            ValidateFilePath(path);
 
             var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
@@ -217,26 +143,16 @@ namespace Imaging
 
                 return bmp;
             }
-            catch (ArgumentException e)
+            catch (FileFormatException ex)
             {
-                throw new ArgumentException(e.ToString());
-            }
-            catch (NotSupportedException e)
-            {
-                throw new NotSupportedException(e.ToString());
-            }
-            catch (FileFormatException e)
-            {
-                Trace.Write(e.ToString());
+                Trace.Write(ex.ToString());
                 return null;
             }
-            catch (IOException e)
+            catch (Exception ex)
             {
-                throw new IOException(e.ToString());
-            }
-            catch (InvalidOperationException e)
-            {
-                throw new InvalidOperationException(e.ToString());
+                ImageHelper.HandleException(ex);
+                // Optionally, rethrow or handle further as needed
+                throw;  // This will preserve the original stack trace and exception details
             }
         }
 
@@ -251,15 +167,9 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                return new Bitmap(path, true);
-            }
+            ValidateFilePath(path);
 
-            var innerException = path != null
-                ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                : new IOException(nameof(path));
-            throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+            return new Bitmap(path, true);
         }
 
         /// <summary>
@@ -277,13 +187,7 @@ namespace Imaging
         /// <exception cref="InvalidOperationException"></exception>
         internal static Bitmap GetOriginalBitmap(string path)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
+            ValidateFilePath(path);
 
             try
             {
@@ -306,21 +210,11 @@ namespace Imaging
 
                 return bmp;
             }
-            catch (ArgumentException e)
+            catch (Exception ex)
             {
-                throw new ArgumentException(e.ToString());
-            }
-            catch (NotSupportedException e)
-            {
-                throw new NotSupportedException(e.ToString());
-            }
-            catch (IOException e)
-            {
-                throw new IOException(e.ToString());
-            }
-            catch (InvalidOperationException e)
-            {
-                throw new InvalidOperationException(e.ToString());
+                ImageHelper.HandleException(ex);
+                // Optionally, rethrow or handle further as needed
+                throw;  // This will preserve the original stack trace and exception details
             }
         }
 
@@ -339,13 +233,7 @@ namespace Imaging
         /// <exception cref="InsufficientMemoryException"></exception>
         public static Bitmap BitmapScaling(Bitmap image, int width, int height)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(BitmapScaling), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(BitmapScaling), image);
 
             var btm = new Bitmap(width, height);
             //fix Resolution
@@ -363,20 +251,22 @@ namespace Imaging
                 graph.DrawImage(image, 0, 0, width, height);
                 return new Bitmap(btm);
             }
+
             catch (InsufficientMemoryException ex)
             {
                 Trace.WriteLine(ex);
                 throw new InsufficientMemoryException(ex.Message);
             }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                throw new ArgumentException(ex.Message);
-            }
             catch (OutOfMemoryException ex)
             {
                 Trace.WriteLine(ex);
                 throw;
+            }
+            catch (Exception ex)
+            {
+                ImageHelper.HandleException(ex);
+                // Optionally, rethrow or handle further as needed
+                throw;  // This will preserve the original stack trace and exception details
             }
         }
 
@@ -391,13 +281,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         internal static Bitmap BitmapScaling(Bitmap image, float scaling)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(BitmapScaling), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(BitmapScaling), image);
 
             var width = (int)(image.Width * scaling);
             var height = (int)(image.Height * scaling);
@@ -498,20 +382,15 @@ namespace Imaging
         /// <summary>
         ///     Combines the bitmaps.
         /// </summary>
-        /// <param name="original">The original image.</param>
+        /// <param name="image">The original image.</param>
         /// <param name="overlay">The overlay image.</param>
         /// <param name="x">The x position.</param>
         /// <param name="y">The y position.</param>
         /// <returns>Combined Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+        internal static Bitmap CombineBitmap(Bitmap image, Bitmap overlay, int x, int y)
         {
-            if (original == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap),
-                    ImagingResources.Spacing, nameof(original)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(CombineBitmap), image);
 
             if (overlay == null)
             {
@@ -521,12 +400,12 @@ namespace Imaging
             }
 
             //get a graphics object from the image so we can draw on it
-            using var graph = Graphics.FromImage(original);
+            using var graph = Graphics.FromImage(image);
 
             graph.DrawImage(overlay,
                 new Rectangle(x, y, overlay.Width, overlay.Height));
 
-            return original;
+            return image;
         }
 
         /// <summary>
@@ -541,13 +420,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(
-                        string.Concat(nameof(CutBitmaps), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(CutBitmap), image);
 
             if (height == 0 || width == 0)
             {
@@ -584,13 +457,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         public static List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(
-                        string.Concat(nameof(CutBitmaps), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(CutBitmaps), image);
 
             //read all images into memory
             var images = new List<Bitmap>(x * y);
@@ -617,12 +484,8 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         public static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
         {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(EraseRectangle),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+
+            ValidateImage(nameof(EraseRectangle), image);
 
             using var graph = Graphics.FromImage(image);
 
@@ -633,116 +496,6 @@ namespace Imaging
             graph.FillRectangle(br, new Rectangle(x, y, width, height));
 
             return image;
-        }
-
-        /// <summary>
-        ///     Converts an image to gray scale
-        ///     Source:
-        ///     https://web.archive.org/web/20110525014754/http://www.switchonthecode.com/tutorials/csharp-tutorial-convert-a-color-image-to-grayscale
-        /// </summary>
-        /// <param name="image">The image to gray scale</param>
-        /// <param name="filter">Image Filter</param>
-        /// <returns>
-        ///     A filtered version of the image
-        /// </returns>
-        /// <exception cref="ArgumentNullException">if Image is null</exception>
-        /// <exception cref="OutOfMemoryException"></exception>
-        [return: MaybeNull]
-        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter)
-        {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(FilterImage), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
-
-            //create a blank bitmap the same size as original
-            var btm = new Bitmap(image.Width, image.Height);
-            btm.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            //get a graphics object from the new image
-            using var graph = Graphics.FromImage(btm);
-            //create some image attributes
-            using var atr = new ImageAttributes();
-
-            //set the color matrix attribute
-            switch (filter)
-            {
-                case ImageFilters.GrayScale:
-                    atr.SetColorMatrix(ImageRegister.GrayScale);
-                    break;
-                case ImageFilters.Invert:
-                    atr.SetColorMatrix(ImageRegister.Invert);
-                    break;
-                case ImageFilters.Sepia:
-                    atr.SetColorMatrix(ImageRegister.Sepia);
-                    break;
-                case ImageFilters.BlackAndWhite:
-                    atr.SetColorMatrix(ImageRegister.BlackAndWhite);
-                    break;
-                case ImageFilters.Polaroid:
-                    atr.SetColorMatrix(ImageRegister.Polaroid);
-                    break;
-                case ImageFilters.Contour:
-                    return ImageFilterStream.ApplySobel(image);
-                case ImageFilters.Brightness:
-                    atr.SetColorMatrix(ImageRegister.Brightness);
-                    break;
-                case ImageFilters.Contrast:
-                    atr.SetColorMatrix(ImageRegister.Contrast);
-                    break;
-                case ImageFilters.HueShift:
-                    atr.SetColorMatrix(ImageRegister.HueShift);
-                    break;
-                case ImageFilters.ColorBalance:
-                    atr.SetColorMatrix(ImageRegister.ColorBalance);
-                    break;
-                case ImageFilters.Vintage:
-                    atr.SetColorMatrix(ImageRegister.Vintage);
-                    break;
-                // New convolution-based filters
-                case ImageFilters.Sharpen:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.SharpenFilter);
-                case ImageFilters.GaussianBlur:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
-                case ImageFilters.Emboss:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.EmbossFilter);
-                case ImageFilters.BoxBlur:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.BoxBlur, 1.0 / 9.0);
-                case ImageFilters.Laplacian:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.LaplacianFilter);
-                case ImageFilters.EdgeEnhance:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.EdgeEnhance);
-                case ImageFilters.MotionBlur:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
-                case ImageFilters.UnsharpMask:
-                    return ImageFilterStream.ApplyFilter(image, ImageRegister.UnsharpMask);
-                // custom Filter
-                case ImageFilters.DifferenceOfGaussians:
-                    return ImageFilterStream.ApplyDifferenceOfGaussians(image);
-                case ImageFilters.Crosshatch:
-                    return ImageFilterStream.ApplyCrosshatch(image);
-                default:
-                    return null;
-            }
-
-            try
-            {
-                //draw the original image on the new image
-                //using the gray scale color matrix
-                graph.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height),
-                    0, 0, image.Width, image.Height, GraphicsUnit.Pixel, atr);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                throw;
-            }
-
-            //convert to BitmapImage
-            return btm;
         }
 
         /// <summary>
@@ -782,12 +535,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         internal static BitmapImage BitmapToBitmapImage(Bitmap image)
         {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapToBitmapImage),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(BitmapToBitmapImage), image);
 
             using var memory = new MemoryStream();
             image.Save(memory, ImageFormat.Png);
@@ -815,18 +563,12 @@ namespace Imaging
         /// <exception cref="OverflowException">Degrees have a certain allowed radius</exception>
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
+            ValidateImage(nameof(RotateImage), image);
+
             //no need to do anything
             if (degree is 360 or 0)
             {
                 return image;
-            }
-
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(RotateImage), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             if (degree is > 360 or < -360)
@@ -893,13 +635,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(CropImage), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(CropImage), image);
 
             var first = new Point();
             var second = new Point();
@@ -918,7 +654,7 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
+                    if (ImageHelper.CheckTransparent(color))
                     {
                         continue;
                     }
@@ -940,7 +676,7 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
+                    if (ImageHelper.CheckTransparent(color))
                     {
                         continue;
                     }
@@ -962,7 +698,7 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
+                    if (ImageHelper.CheckTransparent(color))
                     {
                         continue;
                     }
@@ -984,7 +720,7 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
+                    if (ImageHelper.CheckTransparent(color))
                     {
                         continue;
                     }
@@ -1039,19 +775,13 @@ namespace Imaging
         /// <exception cref="ExternalException">Errors with the Path</exception>
         public static void SaveBitmap(Bitmap image, string path, ImageFormat format)
         {
+            ValidateImage(nameof(SaveBitmap), image);
+
             if (format == null)
             {
                 var innerException =
                     new ArgumentNullException(string.Concat(nameof(SaveBitmap), ImagingResources.Spacing,
                         nameof(format)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
-
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(
-                        string.Concat(nameof(SaveBitmap), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -1106,12 +836,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         internal static Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold)
         {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(ConvertWhiteToTransparent),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -1155,12 +880,7 @@ namespace Imaging
         /// <exception cref="System.ArgumentOutOfRangeException">Point was out of bound.</exception>
         internal static Color GetPixel(Bitmap image, Point point)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ValidateImage(nameof(GetPixel), image);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
             {
@@ -1202,7 +922,7 @@ namespace Imaging
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
             }
 
-            var points = GetCirclePoints(point, radius, image.Height, image.Width);
+            var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
             if (points.Count == 0)
             {
@@ -1265,94 +985,41 @@ namespace Imaging
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
-            var points = GetCirclePoints(point, radius, image.Height, image.Width);
+            var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
         }
 
-
         /// <summary>
-        ///     Gets the average color.
+        /// Validates the file path.
         /// </summary>
-        /// <param name="inputImage">The bitmap.</param>
-        /// <param name="startX">The start x.</param>
-        /// <param name="startY">The start y.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <returns>Average Color of the Area</returns>
-        internal static Color GetAverageColor(Image inputImage, int startX, int startY, int width, int height)
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.IO.IOException"></exception>
+        private static void ValidateFilePath(string path)
         {
-            var totalRed = 0;
-            var totalGreen = 0;
-            var totalBlue = 0;
-            var pixelCount = 0;
-
-            // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(inputImage);
-
-            // Iterate over the specified rectangle in the image
-            for (var y = startY; y < startY + height && y < dbm.Height; y++)
-            for (var x = startX; x < startX + width && x < dbm.Width; x++)
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                // Get the color of the current pixel
-                var pixelColor = dbm.GetPixel(x, y);
-
-                // Accumulate the color components
-                totalRed += pixelColor.R;
-                totalGreen += pixelColor.G;
-                totalBlue += pixelColor.B;
-                pixelCount++;
+                var innerException = path != null
+                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
+                    : new IOException(nameof(path));
+                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
             }
-
-            //cleanup
-            dbm.Dispose();
-
-            // Calculate the average color components
-            var averageRed = totalRed / pixelCount;
-            var averageGreen = totalGreen / pixelCount;
-            var averageBlue = totalBlue / pixelCount;
-
-            // Return the average color
-            return Color.FromArgb(averageRed, averageGreen, averageBlue);
         }
 
         /// <summary>
-        ///     Checks if the Color is  transparent.
+        /// Validates the image.
         /// </summary>
-        /// <param name="color">The color.</param>
-        /// <returns>True if conditions are met</returns>
-        private static bool CheckTransparent(Color color)
+        /// <param name="method">The method.</param>
+        /// <param name="image">The image.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        private static void ValidateImage(string method, Bitmap image)
         {
-            //0,0,0 is Black or Transparent
-            return color.R == 0 && color.G == 0 && color.B == 0;
-        }
-
-        /// <summary>
-        ///     Gets all points in a Circle.
-        ///     Uses the  Bresenham's circle drawing algorithm.
-        ///     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
-        /// </summary>
-        /// <param name="center">The center point.</param>
-        /// <param name="radius">The radius.</param>
-        /// <param name="length">The length.</param>
-        /// <param name="width">The height.</param>
-        /// <returns>List of Points</returns>
-        private static List<Point> GetCirclePoints(Point center, int radius, int length, int width)
-        {
-            var points = new List<Point>();
-
-            for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
+            if (image == null)
             {
-                var dx = x - center.X;
-                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
-
-                for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
-                {
-                    points.Add(new Point(x, y));
-                }
+                var innerException =
+                    new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
-
-            return points;
         }
     }
 }
