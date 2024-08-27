@@ -18,7 +18,7 @@ namespace Imaging
     internal static class TextureAreas
     {
         /// <summary>
-        /// Generates the texture.
+        ///     Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -31,11 +31,13 @@ namespace Imaging
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <param name="baseColor">Color of the base.</param>
         /// <returns>
-        /// Generates a filter for a certain area
+        ///     Generates a filter for a certain area
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         internal static Bitmap GenerateTexture(
             int width,
             int height,

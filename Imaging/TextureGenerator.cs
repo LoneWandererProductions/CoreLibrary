@@ -73,7 +73,8 @@ namespace Imaging
         public Bitmap GenerateMarbleBitmap(int width, int height, double xPeriod = 5, double yPeriod = 10,
             int alpha = 255, double turbulencePower = 5, double turbulenceSize = 32, Color baseColor = default)
         {
-            return Texture.GenerateMarbleBitmap(width, height, xPeriod, yPeriod, alpha, turbulencePower, turbulenceSize, baseColor);
+            return Texture.GenerateMarbleBitmap(width, height, xPeriod, yPeriod, alpha, turbulencePower, turbulenceSize,
+                baseColor);
         }
 
         /// <inheritdoc />
@@ -108,7 +109,8 @@ namespace Imaging
         public Bitmap GenerateWoodBitmap(int width, int height, int alpha = 255, double xyPeriod = 12,
             double turbulencePower = 0.1, double turbulenceSize = 32, Color baseColor = default)
         {
-            return Texture.GenerateWoodBitmap(width, height, alpha, xyPeriod, turbulencePower, turbulenceSize, baseColor);
+            return Texture.GenerateWoodBitmap(width, height, alpha, xyPeriod, turbulencePower, turbulenceSize,
+                baseColor);
         }
 
         /// <inheritdoc />

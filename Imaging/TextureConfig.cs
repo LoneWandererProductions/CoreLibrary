@@ -12,17 +12,16 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Attributes for our texture generators
+    ///     Attributes for our texture generators
     /// </summary>
     public class TextureConfig
     {
-        public int MinValue { get; set; } = 0;
-        public int MaxValue { get; set; } = 255;
-        public int Alpha { get; set; } = 255;
-        public double TurbulenceSize { get; set; } = 64;
-        public Color BaseColor { get; set; } = Color.White;
+        public int MinValue { get; init; } = 0;
+        public int MaxValue { get; init; } = 255;
+        public int Alpha { get; init; } = 255;
+        public double TurbulenceSize { get; init; } = 64;
+        public Color BaseColor { get; init; } = Color.White;
         public bool IsMonochrome { get; set; } = true;
         public bool IsTiled { get; set; } = true;
     }
-
 }

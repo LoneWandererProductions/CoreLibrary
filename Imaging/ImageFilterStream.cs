@@ -24,7 +24,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Media.Media3D;
 
 namespace Imaging
 {
@@ -182,7 +181,7 @@ namespace Imaging
         /// <param name="factor">The factor.</param>
         /// <param name="bias">The bias.</param>
         /// <returns>Image with applied filter</returns>
-        internal static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Initialize DirectBitmap instances
@@ -270,16 +269,16 @@ namespace Imaging
 
             // Iterate over the image with the specified step width
             for (var y = 0; y < dbm.Height; y += stepWidth)
-                for (var x = 0; x < dbm.Width; x += stepWidth)
-                {
-                    // Get the color of the current rectangle
-                    var rectacngle = new Rectangle(x, y, stepWidth, stepWidth);
-                    var averageColor = ImageHelper.GetMeanColor(dbm, rectacngle);
+            for (var x = 0; x < dbm.Width; x += stepWidth)
+            {
+                // Get the color of the current rectangle
+                var rectacngle = new Rectangle(x, y, stepWidth, stepWidth);
+                var averageColor = ImageHelper.GetMeanColor(dbm, rectacngle);
 
-                    using var g = Graphics.FromImage(processedImage);
-                    using var brush = new SolidBrush(averageColor);
-                    g.FillRectangle(brush, x, y, stepWidth, stepWidth);
-                }
+                using var g = Graphics.FromImage(processedImage);
+                using var brush = new SolidBrush(averageColor);
+                g.FillRectangle(brush, x, y, stepWidth, stepWidth);
+            }
 
             return processedImage;
         }
@@ -289,7 +288,7 @@ namespace Imaging
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
-        internal static Bitmap ApplySobel(Bitmap originalImage)
+        private static Bitmap ApplySobel(Bitmap originalImage)
         {
             // Convert the original image to greyscale
             var greyscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
@@ -393,7 +392,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the anisotropic kuwahara.
+        ///     Applies the anisotropic kuwahara.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="baseWindowSize">Size of the base window.</param>
@@ -413,7 +412,8 @@ namespace Imaging
                 for (var x = halfBaseWindow; x < dbmBase.Width - halfBaseWindow; x++)
                 {
                     // Determine region size and shape based on local image characteristics
-                    DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth, out var regionHeight);
+                    DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth,
+                        out var regionHeight);
 
                     var bestColor = ComputeBestRegionColor(dbmBase, x, y, regionWidth, regionHeight);
 
@@ -439,7 +439,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the floyd steinberg dithering.
+        ///     Applies the floyd steinberg dithering.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Filtered Image</returns>
@@ -482,7 +482,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the supersampling antialiasing.
+        ///     Applies the supersampling antialiasing.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="scale">The scale.</param>
@@ -533,7 +533,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the post processing antialiasing.
+        ///     Applies the post processing antialiasing.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="sigma">The sigma.</param>
@@ -551,7 +551,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Determines the region size and shape.
+        ///     Determines the region size and shape.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -570,7 +570,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Computes the color of the best region.
+        ///     Computes the color of the best region.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -605,7 +605,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Defines the regions.
+        ///     Defines the regions.
         /// </summary>
         /// <param name="centerX">The center x.</param>
         /// <param name="centerY">The center y.</param>
@@ -626,7 +626,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Calculates the variance.
+        ///     Calculates the variance.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         /// <param name="meanColor">Color of the mean.</param>
@@ -645,7 +645,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the color of the nearest.
+        ///     Gets the color of the nearest.
         /// </summary>
         /// <param name="intensity">The intensity.</param>
         /// <param name="palette">The palette.</param>
@@ -669,7 +669,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Distributes the error.
+        ///     Distributes the error.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>

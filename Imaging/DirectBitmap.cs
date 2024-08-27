@@ -180,33 +180,36 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            if (y < 0 || y >= Height || length <= 0) return;
+            if (y < 0 || y >= Height || length <= 0)
+            {
+                return;
+            }
 
             var colorArgb = color.ToArgb();
             var vectorCount = Vector<int>.Count;
             var colorVector = new Vector<int>(colorArgb);
 
-            int endX = Math.Min(x + length, Width);
+            var endX = Math.Min(x + length, Width);
 
             // Align start position to the next multiple of vectorCount if possible
-            int startX = (x + vectorCount - 1) & ~(vectorCount - 1);
+            var startX = (x + vectorCount - 1) & ~(vectorCount - 1);
 
             // Fill initial non-aligned part
             for (var i = x; i < startX && i < endX; i++)
             {
-                Bits[i + y * Width] = colorArgb;
+                Bits[i + (y * Width)] = colorArgb;
             }
 
             // Fill aligned part with SIMD
             for (var xPos = startX; xPos + vectorCount <= endX; xPos += vectorCount)
             {
-                colorVector.CopyTo(Bits, xPos + y * Width);
+                colorVector.CopyTo(Bits, xPos + (y * Width));
             }
 
             // Fill final non-aligned part
             for (var i = endX - vectorCount; i < endX; i++)
             {
-                Bits[i + y * Width] = colorArgb;
+                Bits[i + (y * Width)] = colorArgb;
             }
         }
 
@@ -323,7 +326,7 @@ namespace Imaging
             // Process pixels in parallel (optional, can be commented out if unnecessary)
             Parallel.For(0, (totalPixels + vectorCount - 1) / vectorCount, k =>
             {
-                int i = k * vectorCount;
+                var i = k * vectorCount;
 
                 // Load data into vectors
                 for (var j = 0; j < vectorCount && i + j < totalPixels; j++)
