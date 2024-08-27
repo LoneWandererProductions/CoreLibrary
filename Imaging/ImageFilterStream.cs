@@ -59,6 +59,8 @@ namespace Imaging
             //create some image attributes
             using var atr = new ImageAttributes();
 
+            var settings = new ImageFilterConfig();
+
             //set the color matrix attribute
             switch (filter)
             {
@@ -96,21 +98,29 @@ namespace Imaging
                     break;
                 // New convolution-based filters
                 case ImageFilters.Sharpen:
-                    return ApplyFilter(image, ImageRegister.SharpenFilter);
+                    settings = ImageRegister.GetSettings(ImageFilters.Sharpen);
+                    return ApplyFilter(image, ImageRegister.SharpenFilter, settings.Factor, settings.Bias);
                 case ImageFilters.GaussianBlur:
-                    return ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
+                    settings = ImageRegister.GetSettings(ImageFilters.GaussianBlur);
+                    return ApplyFilter(image, ImageRegister.GaussianBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Emboss:
-                    return ApplyFilter(image, ImageRegister.EmbossFilter);
+                    settings = ImageRegister.GetSettings(ImageFilters.Emboss);
+                    return ApplyFilter(image, ImageRegister.EmbossFilter, settings.Factor, settings.Bias);
                 case ImageFilters.BoxBlur:
-                    return ApplyFilter(image, ImageRegister.BoxBlur, 1.0 / 9.0);
+                    settings = ImageRegister.GetSettings(ImageFilters.BoxBlur);
+                    return ApplyFilter(image, ImageRegister.BoxBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Laplacian:
-                    return ApplyFilter(image, ImageRegister.LaplacianFilter);
+                    settings = ImageRegister.GetSettings(ImageFilters.Laplacian);
+                    return ApplyFilter(image, ImageRegister.LaplacianFilter, settings.Factor, settings.Bias);
                 case ImageFilters.EdgeEnhance:
-                    return ApplyFilter(image, ImageRegister.EdgeEnhance);
+                    settings = ImageRegister.GetSettings(ImageFilters.EdgeEnhance);
+                    return ApplyFilter(image, ImageRegister.EdgeEnhance, settings.Factor, settings.Bias);
                 case ImageFilters.MotionBlur:
-                    return ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
+                    settings = ImageRegister.GetSettings(ImageFilters.MotionBlur);
+                    return ApplyFilter(image, ImageRegister.MotionBlur, settings.Factor, settings.Bias);
                 case ImageFilters.UnsharpMask:
-                    return ApplyFilter(image, ImageRegister.UnsharpMask);
+                    settings = ImageRegister.GetSettings(ImageFilters.UnsharpMask);
+                    return ApplyFilter(image, ImageRegister.UnsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
                 case ImageFilters.DifferenceOfGaussians:
                     return ApplyDifferenceOfGaussians(image);

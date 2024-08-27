@@ -13,6 +13,7 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 
+using System.Collections.Concurrent;
 using System.Drawing.Imaging;
 
 namespace Imaging
@@ -22,6 +23,49 @@ namespace Imaging
     /// </summary>
     public static class ImageRegister
     {
+        /// <summary>
+        /// The settings for our Filter
+        /// </summary>
+        private static readonly ConcurrentDictionary<ImageFilters, ImageFilterConfig> Settings = new();
+
+        /// <summary>
+        /// Initializes the <see cref="ImageRegister" /> class.
+        /// </summary>
+        static ImageRegister()
+        {
+            // Initialize default settings
+            Settings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
+            Settings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
+            Settings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
+            Settings[ImageFilters.Sharpen] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            Settings[ImageFilters.Emboss] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            Settings[ImageFilters.Laplacian] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            Settings[ImageFilters.EdgeEnhance] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            Settings[ImageFilters.UnsharpMask] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            // Add more default settings as needed
+        }
+
+        /// <summary>
+        /// Gets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns>Return the current config</returns>
+        internal static ImageFilterConfig GetSettings(ImageFilters filter)
+        {
+            return Settings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
+        }
+
+        /// <summary>
+        /// Sets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <param name="config">The configuration.</param>
+        public static void SetSettings(ImageFilters filter, ImageFilterConfig config)
+        {
+            Settings[filter] = config;
+        }
+
+
         /// <summary>
         ///     The sharpen filter
         /// </summary>
