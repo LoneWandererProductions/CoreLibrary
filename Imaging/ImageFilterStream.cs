@@ -131,11 +131,14 @@ namespace Imaging
                 case ImageFilters.None:
                     break;
                 case ImageFilters.AnisotropicKuwahara:
-                    return ApplyAnisotropicKuwahara(image);
+                    settings = ImageRegister.GetSettings(ImageFilters.AnisotropicKuwahara);
+                    return ApplyAnisotropicKuwahara(image, settings.BaseWindowSize);
                 case ImageFilters.SupersamplingAntialiasing:
-                    return ApplySupersamplingAntialiasing(image);
+                    settings = ImageRegister.GetSettings(ImageFilters.SupersamplingAntialiasing);
+                    return ApplySupersamplingAntialiasing(image, settings.Scale);
                 case ImageFilters.PostProcessingAntialiasing:
-                    return ApplyPostProcessingAntialiasing(image);
+                    settings = ImageRegister.GetSettings(ImageFilters.PostProcessingAntialiasing);
+                    return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 default:
                     return null;
             }

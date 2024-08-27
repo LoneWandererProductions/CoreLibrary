@@ -42,6 +42,9 @@ namespace Imaging
             Settings[ImageFilters.Laplacian] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
             Settings[ImageFilters.EdgeEnhance] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
             Settings[ImageFilters.UnsharpMask] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            Settings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
+            Settings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
+            Settings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
             // Add more default settings as needed
         }
 

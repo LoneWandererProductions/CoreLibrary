@@ -32,5 +32,28 @@ namespace Imaging
         /// </value>
         public double Bias { get; set; } = 0.0;
 
+        /// <summary>
+        /// Gets or sets the sigma.
+        /// </summary>
+        /// <value>
+        /// The sigma.
+        /// </value>
+        public double Sigma { get; set; } = 1.0;
+        
+        /// <summary>
+        /// Gets or sets the size of the base window.
+        /// </summary>
+        /// <value>
+        /// The size of the base window.
+        /// </value>
+        public int BaseWindowSize { get; set; } = 5;
+
+        /// <summary>
+        /// Gets or sets the scale.
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
+        public int Scale { get; set; } = 1;
     }
 }
