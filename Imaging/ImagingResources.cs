@@ -106,27 +106,37 @@ namespace Imaging
         /// <summary>
         ///     The error, interface is null (const). Value: "Error: Interface is Null."
         /// </summary>
-        public const string ErrorInterface = "Error: Interface is Null.";
+        internal const string ErrorInterface = "Error: Interface is Null.";
 
         /// <summary>
         ///     The error, image is null (const). Value: "Error: Image is Null."
         /// </summary>
-        public const string ErrorImage = "Error: Image is Null.";
+        internal const string ErrorImage = "Error: Image is Null.";
 
         /// <summary>
         ///     The error, Radius is smaller null (const). Value: "Error: Radius cannot be negative."
         /// </summary>
-        public const string ErrorRadius = "Error: Radius cannot be negative.";
+        internal const string ErrorRadius = "Error: Radius cannot be negative.";
 
         /// <summary>
-        ///     The error out of bounds (const). Value: "Error: Point is outside the bounds of the image.."
+        ///     The error out of bounds (const). Value: "Error: Point is outside the bounds of the image."
         /// </summary>
-        public const string ErrorOutOfBounds = "Error: Point is outside the bounds of the image.";
+        internal const string ErrorOutOfBounds = "Error: Point is outside the bounds of the image.";
+
+        /// <summary>
+        ///     The error Invalid Operation (const). Value: "Error: Bits array is not properly initialized."
+        /// </summary>
+        internal const string ErrorInvalidOperation = "Error: Bits array is not properly initialized.";
+
+        /// <summary>
+        ///     The error for Pixel Operation (const). Value: "Error setting pixels: "
+        /// </summary>
+        internal const string ErrorPixel = "Error setting pixels: ";
 
         /// <summary>
         ///     The error, Path is null (const). Value: "Error: Path is Null."
         /// </summary>
-        public const string ErrorPath = "Error: Path is Null.";
+        internal const string ErrorPath = "Error: Path is Null.";
 
         /// <summary>
         ///     The File Appendix

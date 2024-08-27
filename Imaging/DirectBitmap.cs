@@ -21,6 +21,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Imaging
 {
@@ -179,27 +180,35 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
+            if (y < 0 || y >= Height || length <= 0) return;
+
             var colorArgb = color.ToArgb();
             var vectorCount = Vector<int>.Count;
             var colorVector = new Vector<int>(colorArgb);
 
-            for (var xPos = x; xPos < x + length && xPos < Width; xPos += vectorCount)
+            int endX = Math.Min(x + length, Width);
+
+            // Align start position to the next multiple of vectorCount if possible
+            int startX = (x + vectorCount - 1) & ~(vectorCount - 1);
+
+            // Fill initial non-aligned part
+            for (var i = x; i < startX && i < endX; i++)
             {
-                var startIndex = xPos + (y * Width);
-                if (startIndex + vectorCount <= Bits.Length)
-                {
-                    colorVector.CopyTo(Bits, startIndex);
-                }
-                else
-                {
-                    for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
-                    {
-                        Bits[startIndex + j] = colorArgb;
-                    }
-                }
+                Bits[i + y * Width] = colorArgb;
+            }
+
+            // Fill aligned part with SIMD
+            for (var xPos = startX; xPos + vectorCount <= endX; xPos += vectorCount)
+            {
+                colorVector.CopyTo(Bits, xPos + y * Width);
+            }
+
+            // Fill final non-aligned part
+            for (var i = endX - vectorCount; i < endX; i++)
+            {
+                Bits[i + y * Width] = colorArgb;
             }
         }
-
 
         /// <summary>
         ///     Draws the rectangle.
@@ -302,40 +311,37 @@ namespace Imaging
             // Ensure Bits array is properly initialized
             if (Bits == null || Bits.Length < Width * Height)
             {
-                throw new InvalidOperationException("Bits array is not properly initialized.");
+                throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
             }
 
-            for (var i = 0; i < pixelArray.Length; i += vectorCount)
+            var totalPixels = pixelArray.Length;
+
+            // Pre-allocate buffers
+            var indices = new int[vectorCount];
+            var colors = new int[vectorCount];
+
+            // Process pixels in parallel (optional, can be commented out if unnecessary)
+            Parallel.For(0, (totalPixels + vectorCount - 1) / vectorCount, k =>
             {
-                var indices = new int[vectorCount];
-                var colors = new int[vectorCount];
+                int i = k * vectorCount;
 
                 // Load data into vectors
-                for (var j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount && i + j < totalPixels; j++)
                 {
-                    if (i + j < pixelArray.Length)
-                    {
-                        var (x, y, color) = pixelArray[i + j];
-                        indices[j] = x + (y * Width);
-                        colors[j] = color.ToArgb();
-                    }
-                    else
-                    {
-                        // Handle cases where the remaining elements are less than vectorCount
-                        indices[j] = 0;
-                        colors[j] = Color.Transparent.ToArgb(); // Use a default color or handle it as needed
-                    }
+                    var (x, y, color) = pixelArray[i + j];
+                    indices[j] = x + (y * Width);
+                    colors[j] = color.ToArgb();
                 }
 
-                // Write data to Bits array
-                for (var j = 0; j < vectorCount; j++)
+                // Write data to Bits array using SIMD where possible
+                var indexVector = new Vector<int>(indices);
+                var colorVector = new Vector<int>(colors);
+
+                for (var j = 0; j < vectorCount && i + j < totalPixels; j++)
                 {
-                    if (i + j < pixelArray.Length)
-                    {
-                        Bits[indices[j]] = colors[j];
-                    }
+                    Bits[indexVector[j]] = colorVector[j];
                 }
-            }
+            });
         }
 
         /// <summary>
