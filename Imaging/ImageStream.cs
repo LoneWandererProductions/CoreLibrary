@@ -45,7 +45,7 @@ namespace Imaging
         /// <exception cref="UriFormatException"></exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        public static BitmapImage LoadBitmapImage(string path, int width = 0, int height = 0)
+        public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
         {
             ValidateFilePath(path);
             try
@@ -60,41 +60,6 @@ namespace Imaging
                     bmp.DecodePixelHeight = height;
                 }
                 bmp.EndInit();
-                return bmp;
-            }
-            catch (Exception ex)
-            {
-                ImageHelper.HandleException(ex);
-                // Optionally, rethrow or handle further as needed
-                throw;  // This will preserve the original stack trace and exception details
-            }
-        }
-
-        /// <summary>
-        ///     Loads File in a Stream
-        ///     takes longer but can be changed on Runtime
-        /// </summary>
-        /// <param name="path">path to the File</param>
-        /// <returns>An Image as <see cref="BitmapImage" />.</returns>
-        /// <exception cref="ArgumentException">No Correct Argument were provided</exception>
-        /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        /// <exception cref="IOException">Error while we try to access the File</exception>
-        /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-        /// <exception cref="IOException">Could not find the File</exception>
-        public static BitmapImage GetBitmapImageFileStream(string path)
-        {
-            ValidateFilePath(path);
-
-            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
-
-            try
-            {
-                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.StreamSource = flStream;
-                bmp.EndInit();
-
                 return bmp;
             }
             catch (Exception ex)
@@ -125,7 +90,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        public static BitmapImage GetBitmapImageFileStream(string path, int width, int height)
+        public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
         {
             ValidateFilePath(path);
 
@@ -136,8 +101,12 @@ namespace Imaging
                 using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
                 bmp.BeginInit();
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.DecodePixelHeight = height;
-                bmp.DecodePixelWidth = width;
+
+                if (width > 0 && height > 0)
+                {
+                    bmp.DecodePixelWidth = width;
+                    bmp.DecodePixelHeight = height;
+                }
                 bmp.StreamSource = flStream;
                 bmp.EndInit();
 
@@ -231,9 +200,9 @@ namespace Imaging
         /// <exception cref="ArgumentException">
         /// </exception>
         /// <exception cref="InsufficientMemoryException"></exception>
-        public static Bitmap BitmapScaling(Bitmap image, int width, int height)
+        internal static Bitmap BitmapScaling(Bitmap image, int width, int height)
         {
-            ValidateImage(nameof(BitmapScaling), image);
+            ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
             var btm = new Bitmap(width, height);
             //fix Resolution
@@ -281,7 +250,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         internal static Bitmap BitmapScaling(Bitmap image, float scaling)
         {
-            ValidateImage(nameof(BitmapScaling), image);
+            ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
             var width = (int)(image.Width * scaling);
             var height = (int)(image.Height * scaling);
@@ -390,7 +359,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CombineBitmap(Bitmap image, Bitmap overlay, int x, int y)
         {
-            ValidateImage(nameof(CombineBitmap), image);
+            ImageHelper.ValidateImage(nameof(CombineBitmap), image);
 
             if (overlay == null)
             {
@@ -420,14 +389,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width)
         {
-            ValidateImage(nameof(CutBitmap), image);
-
-            if (height == 0 || width == 0)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap),
-                    ImagingResources.Spacing, nameof(height), ImagingResources.Spacing, nameof(width)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(CutBitmap), image);
 
             var btm = new Bitmap(width, height);
 
@@ -455,9 +417,9 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <returns>List of cut Images</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width)
+        internal static List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width)
         {
-            ValidateImage(nameof(CutBitmaps), image);
+            ImageHelper.ValidateImage(nameof(CutBitmaps), image);
 
             //read all images into memory
             var images = new List<Bitmap>(x * y);
@@ -482,10 +444,10 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <returns>Original Image with the erased area</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
+        internal static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
         {
 
-            ValidateImage(nameof(EraseRectangle), image);
+            ImageHelper.ValidateImage(nameof(EraseRectangle), image);
 
             using var graph = Graphics.FromImage(image);
 
@@ -535,7 +497,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         internal static BitmapImage BitmapToBitmapImage(Bitmap image)
         {
-            ValidateImage(nameof(BitmapToBitmapImage), image);
+            ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
 
             using var memory = new MemoryStream();
             image.Save(memory, ImageFormat.Png);
@@ -563,7 +525,7 @@ namespace Imaging
         /// <exception cref="OverflowException">Degrees have a certain allowed radius</exception>
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
-            ValidateImage(nameof(RotateImage), image);
+            ImageHelper.ValidateImage(nameof(RotateImage), image);
 
             //no need to do anything
             if (degree is 360 or 0)
@@ -635,133 +597,23 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            ValidateImage(nameof(CropImage), image);
+            if (image == null) throw new ArgumentNullException(nameof(image));
 
-            var first = new Point();
-            var second = new Point();
+            var bounds = ImageHelper.GetNonTransparentBounds(image);
 
-            var dbm = DirectBitmap.GetInstance(image);
-
-            // determine new left
-            var left = -1;
-            var right = -1;
-            var top = -1;
-            var bottom = -1;
-
-            //Get the Top
-            for (var x = 0; x < image.Width; x++)
+            if (bounds.Width <= 0 || bounds.Height <= 0)
             {
-                for (var y = 0; y < image.Height; y++)
-                {
-                    var color = dbm.GetPixel(x, y);
-                    if (ImageHelper.CheckTransparent(color))
-                    {
-                        continue;
-                    }
-
-                    // this pixel is either not white or not fully transparent
-                    top = x;
-                    break;
-                }
-
-                if (top != -1)
-                {
-                    break;
-                }
+                // Return an empty image or handle this case as needed
+                return new Bitmap(1, 1);
             }
 
-            //Get the Bottom
-            for (var x = image.Width - 1; x >= 0; --x)
+            var croppedBitmap = new Bitmap(bounds.Width, bounds.Height);
+            using (var graphics = Graphics.FromImage(croppedBitmap))
             {
-                for (var y = image.Height - 1; y >= 0; --y)
-                {
-                    var color = dbm.GetPixel(x, y);
-                    if (ImageHelper.CheckTransparent(color))
-                    {
-                        continue;
-                    }
-
-                    // this pixel is either not white or not fully transparent
-                    bottom = x;
-                    break;
-                }
-
-                if (bottom != -1)
-                {
-                    break;
-                }
+                graphics.DrawImage(image, 0, 0, bounds, GraphicsUnit.Pixel);
             }
 
-            //Get the left
-            for (var x = 0; x < image.Width; x++)
-            {
-                for (var y = image.Height - 1; y >= 0; --y)
-                {
-                    var color = dbm.GetPixel(x, y);
-                    if (ImageHelper.CheckTransparent(color))
-                    {
-                        continue;
-                    }
-
-                    // this pixel is either not white or not fully transparent
-                    left = x;
-                    break;
-                }
-
-                if (left != -1)
-                {
-                    break;
-                }
-            }
-
-            //Get the right
-            for (var x = image.Width - 1; x >= 0; --x)
-            {
-                for (var y = 0; y < image.Height; y++)
-                {
-                    var color = dbm.GetPixel(x, y);
-                    if (ImageHelper.CheckTransparent(color))
-                    {
-                        continue;
-                    }
-
-                    // this pixel is either not white or not fully transparent
-                    right = x;
-                    break;
-                }
-
-                if (right != -1)
-                {
-                    break;
-                }
-            }
-
-            first.X = left;
-            first.Y = top;
-
-            second.X = right;
-            second.Y = bottom;
-
-            //calculate the measures
-            var width = Math.Abs(second.X - first.X);
-            var height = Math.Abs(second.Y - first.Y);
-
-            // Create a new bitmap from the crop rectangle, cut out the image
-            var cropRectangle = new Rectangle(first.X, first.Y, width, height);
-            var btm = new Bitmap(width, height);
-            //fix Resolution
-            btm.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            //draw the cut out onto a new image
-            using (var graph = Graphics.FromImage(btm))
-            {
-                graph.DrawImage(image, 0, 0, cropRectangle, GraphicsUnit.Pixel);
-            }
-
-            //clear up
-            dbm.Dispose();
-
-            return btm;
+            return croppedBitmap;
         }
 
         /// <summary>
@@ -773,9 +625,9 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        public static void SaveBitmap(Bitmap image, string path, ImageFormat format)
+        internal static void SaveBitmap(Bitmap image, string path, ImageFormat format)
         {
-            ValidateImage(nameof(SaveBitmap), image);
+            ImageHelper.ValidateImage(nameof(SaveBitmap), image);
 
             if (format == null)
             {
@@ -836,7 +688,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         internal static Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold)
         {
-            ValidateImage(nameof(ConvertWhiteToTransparent), image);
+            ImageHelper.ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -880,7 +732,7 @@ namespace Imaging
         /// <exception cref="System.ArgumentOutOfRangeException">Point was out of bound.</exception>
         internal static Color GetPixel(Bitmap image, Point point)
         {
-            ValidateImage(nameof(GetPixel), image);
+            ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
             {
@@ -1003,22 +855,6 @@ namespace Imaging
                     ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
                     : new IOException(nameof(path));
                 throw new IOException(ImagingResources.ErrorMissingFile, innerException);
-            }
-        }
-
-        /// <summary>
-        /// Validates the image.
-        /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="image">The image.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        private static void ValidateImage(string method, Bitmap image)
-        {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
         }
     }

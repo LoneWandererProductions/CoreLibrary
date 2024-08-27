@@ -160,6 +160,45 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Gets the non transparent bounds.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Area as rectangle that is not transparent anymore</returns>
+        internal static Rectangle GetNonTransparentBounds(Bitmap image)
+        {
+            var minX = image.Width;
+            var maxX = 0;
+            var minY = image.Height;
+            var maxY = 0;
+
+            bool hasNonTransparentPixel = false;
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    var pixel = image.GetPixel(x, y);
+                    if (pixel.A != 0) // Not fully transparent
+                    {
+                        hasNonTransparentPixel = true;
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+            }
+
+            if (!hasNonTransparentPixel)
+            {
+                // If all pixels are transparent, return a zero-sized rectangle
+                return new Rectangle(0, 0, 0, 0);
+            }
+
+            return new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+        }
+
+        /// <summary>
         /// Handles the exception.
         /// </summary>
         /// <param name="ex">The ex.</param>
@@ -175,6 +214,22 @@ namespace Imaging
             if (ex is ArgumentException || ex is InvalidOperationException || ex is NotSupportedException || ex is UriFormatException || ex is IOException)
             {
                 throw new ApplicationException("An error occurred while processing the image.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Validates the image.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="image">The image.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        internal static void ValidateImage(string method, Bitmap image)
+        {
+            if (image == null)
+            {
+                var innerException =
+                    new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
         }
 

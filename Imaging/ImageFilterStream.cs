@@ -48,13 +48,7 @@ namespace Imaging
         [return: MaybeNull]
         internal static Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(FilterImage), ImagingResources.Spacing,
-                        nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(FilterImage), image);
 
             //create a blank bitmap the same size as original
             var btm = new Bitmap(image.Width, image.Height);
