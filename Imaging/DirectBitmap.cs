@@ -306,6 +306,11 @@ namespace Imaging
         ///     Be careful when to return values. The Bitmap might be premature disposed.
         /// </summary>
         /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
+        /// <summary>
+        ///     Sets the pixels using SIMD for performance improvement.
+        ///     Be careful when to return values. The Bitmap might be premature disposed.
+        /// </summary>
+        /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
         public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
         {
             var pixelArray = pixels.ToArray();
@@ -317,34 +322,37 @@ namespace Imaging
                 throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
             }
 
-            var totalPixels = pixelArray.Length;
-
-            // Pre-allocate buffers
-            var indices = new int[vectorCount];
-            var colors = new int[vectorCount];
-
-            // Process pixels in parallel (optional, can be commented out if unnecessary)
-            Parallel.For(0, (totalPixels + vectorCount - 1) / vectorCount, k =>
+            for (int i = 0; i < pixelArray.Length; i += vectorCount)
             {
-                var i = k * vectorCount;
+                var indices = new int[vectorCount];
+                var colors = new int[vectorCount];
 
                 // Load data into vectors
-                for (var j = 0; j < vectorCount && i + j < totalPixels; j++)
+                for (int j = 0; j < vectorCount; j++)
                 {
-                    var (x, y, color) = pixelArray[i + j];
-                    indices[j] = x + (y * Width);
-                    colors[j] = color.ToArgb();
+                    if (i + j < pixelArray.Length)
+                    {
+                        var (x, y, color) = pixelArray[i + j];
+                        indices[j] = x + (y * Width);
+                        colors[j] = color.ToArgb();
+                    }
+                    else
+                    {
+                        // Handle cases where the remaining elements are less than vectorCount
+                        indices[j] = 0;
+                        colors[j] = Color.Transparent.ToArgb(); // Use a default color or handle it as needed
+                    }
                 }
 
-                // Write data to Bits array using SIMD where possible
-                var indexVector = new Vector<int>(indices);
-                var colorVector = new Vector<int>(colors);
-
-                for (var j = 0; j < vectorCount && i + j < totalPixels; j++)
+                // Write data to Bits array
+                for (int j = 0; j < vectorCount; j++)
                 {
-                    Bits[indexVector[j]] = colorVector[j];
+                    if (i + j < pixelArray.Length)
+                    {
+                        Bits[indices[j]] = colors[j];
+                    }
                 }
-            });
+            }
         }
 
         /// <summary>
