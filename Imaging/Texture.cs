@@ -252,7 +252,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Generates the wave bitmap.
+        ///     Generates the wave bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -261,7 +261,7 @@ namespace Imaging
         /// <param name="turbulencePower">The turbulence power.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
         internal static Bitmap GenerateWaveBitmap(
             int width,
@@ -280,7 +280,8 @@ namespace Imaging
             {
                 for (var x = 0; x < width; x++)
                 {
-                    var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
+                    var xValue = ((x - (width / 2.0)) / width) +
+                                 (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
                     var yValue = ((y - (height / 2.0)) / height) +
                                  (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 

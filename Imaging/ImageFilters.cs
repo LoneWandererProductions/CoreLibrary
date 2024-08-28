@@ -12,7 +12,7 @@
 namespace Imaging
 {
     /// <summary>
-    /// Enum of possible Filter
+    ///     Enum of possible Filter
     /// </summary>
     public enum ImageFilters
     {
@@ -131,23 +131,23 @@ namespace Imaging
         Crosshatch = 21,
 
         /// <summary>
-        /// The floyd steinberg dithering
+        ///     The floyd steinberg dithering
         /// </summary>
         FloydSteinbergDithering = 22,
 
         /// <summary>
-        /// The anisotropic kuwahara
+        ///     The anisotropic kuwahara
         /// </summary>
         AnisotropicKuwahara = 23,
 
 
         /// <summary>
-        /// The supersampling antialiasing
+        ///     The supersampling antialiasing
         /// </summary>
         SupersamplingAntialiasing = 24,
 
         /// <summary>
-        /// The post processing antialiasing
+        ///     The post processing antialiasing
         /// </summary>
         PostProcessingAntialiasing = 25
     }

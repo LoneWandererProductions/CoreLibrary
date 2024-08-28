@@ -49,7 +49,7 @@ namespace Imaging
         {
             ValidateFilePath(path);
             try
-            { 
+            {
                 var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
@@ -59,6 +59,7 @@ namespace Imaging
                     bmp.DecodePixelWidth = width;
                     bmp.DecodePixelHeight = height;
                 }
+
                 bmp.EndInit();
                 return bmp;
             }
@@ -66,7 +67,7 @@ namespace Imaging
             {
                 ImageHelper.HandleException(ex);
                 // Optionally, rethrow or handle further as needed
-                throw;  // This will preserve the original stack trace and exception details
+                throw; // This will preserve the original stack trace and exception details
             }
         }
 
@@ -107,6 +108,7 @@ namespace Imaging
                     bmp.DecodePixelWidth = width;
                     bmp.DecodePixelHeight = height;
                 }
+
                 bmp.StreamSource = flStream;
                 bmp.EndInit();
 
@@ -121,7 +123,7 @@ namespace Imaging
             {
                 ImageHelper.HandleException(ex);
                 // Optionally, rethrow or handle further as needed
-                throw;  // This will preserve the original stack trace and exception details
+                throw; // This will preserve the original stack trace and exception details
             }
         }
 
@@ -183,7 +185,7 @@ namespace Imaging
             {
                 ImageHelper.HandleException(ex);
                 // Optionally, rethrow or handle further as needed
-                throw;  // This will preserve the original stack trace and exception details
+                throw; // This will preserve the original stack trace and exception details
             }
         }
 
@@ -235,7 +237,7 @@ namespace Imaging
             {
                 ImageHelper.HandleException(ex);
                 // Optionally, rethrow or handle further as needed
-                throw;  // This will preserve the original stack trace and exception details
+                throw; // This will preserve the original stack trace and exception details
             }
         }
 
@@ -446,7 +448,6 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
         {
-
             ImageHelper.ValidateImage(nameof(EraseRectangle), image);
 
             using var graph = Graphics.FromImage(image);
@@ -597,7 +598,10 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            if (image == null) throw new ArgumentNullException(nameof(image));
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
 
             var bounds = ImageHelper.GetNonTransparentBounds(image);
 
@@ -608,10 +612,8 @@ namespace Imaging
             }
 
             var croppedBitmap = new Bitmap(bounds.Width, bounds.Height);
-            using (var graphics = Graphics.FromImage(croppedBitmap))
-            {
-                graphics.DrawImage(image, 0, 0, bounds, GraphicsUnit.Pixel);
-            }
+            using var graphics = Graphics.FromImage(croppedBitmap);
+            graphics.DrawImage(image, 0, 0, bounds, GraphicsUnit.Pixel);
 
             return croppedBitmap;
         }
@@ -843,7 +845,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Validates the file path.
+        ///     Validates the file path.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <exception cref="System.IO.IOException"></exception>

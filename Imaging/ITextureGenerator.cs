@@ -7,6 +7,8 @@
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
  */
 
+// ReSharper disable UnusedMember.Global
+
 using System.Drawing;
 
 namespace Imaging
