@@ -38,6 +38,11 @@ namespace Imaging
         /// <summary>
         ///     The wave
         /// </summary>
-        Wave
+        Wave,
+
+        /// <summary>
+        ///     The crosshatch
+        /// </summary>
+        Crosshatch
     }
 }

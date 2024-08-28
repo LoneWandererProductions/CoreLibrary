@@ -301,6 +301,90 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Generates a crosshatch texture bitmap.
+        /// </summary>
+        /// <param name="width">The width of the texture.</param>
+        /// <param name="height">The height of the texture.</param>
+        /// <param name="lineSpacing">The spacing between lines.</param>
+        /// <param name="lineColor">The color of the lines.</param>
+        /// <param name="lineThickness">The thickness of the lines.</param>
+        /// <param name="angle1">The angle of the first set of lines, in degrees.</param>
+        /// <param name="angle2">The angle of the second set of lines, in degrees.</param>
+        /// <param name="alpha">The alpha value for the color.</param>
+        /// <returns>Texture Bitmap</returns>
+        internal static Bitmap GenerateCrosshatchBitmap(
+            int width,
+            int height,
+            int lineSpacing = 10,
+            Color lineColor = default,
+            int lineThickness = 1,
+            double angle1 = 45.0,
+            double angle2 = 135.0,
+            int alpha = 255)
+        {
+            lineColor = lineColor == default ? Color.Black : lineColor;
+
+            var crosshatchBitmap = new Bitmap(width, height);
+            using (var graphics = Graphics.FromImage(crosshatchBitmap))
+            {
+                graphics.Clear(Color.White); // Background color
+
+                using (var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness))
+                {
+                    // Convert angles from degrees to radians
+                    double radAngle1 = angle1 * Math.PI / 180.0;
+                    double radAngle2 = angle2 * Math.PI / 180.0;
+
+                    // Calculate the line direction vectors
+                    double dx1 = Math.Cos(radAngle1);
+                    double dy1 = Math.Sin(radAngle1);
+                    double dx2 = Math.Cos(radAngle2);
+                    double dy2 = Math.Sin(radAngle2);
+
+                    // Draw first set of lines
+                    for (int y = 0; y < height; y += lineSpacing)
+                    {
+                        graphics.DrawLine(
+                            pen,
+                            0, y,
+                            (int)(width * dx1 + width * dy1),
+                            (int)(y * dx1 + width * dy1));
+                    }
+
+                    for (int x = 0; x < width; x += lineSpacing)
+                    {
+                        graphics.DrawLine(
+                            pen,
+                            x, 0,
+                            (int)(x * dx1 + height * dx1),
+                            (int)(height * dx1 + height * dy1));
+                    }
+
+                    // Draw second set of lines
+                    for (int y = 0; y < height; y += lineSpacing)
+                    {
+                        graphics.DrawLine(
+                            pen,
+                            0, y,
+                            (int)(width * dx2 + height * dy2),
+                            (int)(y * dx2 + height * dy2));
+                    }
+
+                    for (int x = 0; x < width; x += lineSpacing)
+                    {
+                        graphics.DrawLine(
+                            pen,
+                            x, 0,
+                            (int)(x * dx2 + width * dx2),
+                            (int)(width * dx2 + height * dy2));
+                    }
+                }
+            }
+
+            return crosshatchBitmap;
+        }
+
+        /// <summary>
         ///     Validates the parameters.
         /// </summary>
         /// <param name="minValue">The minimum value.</param>

@@ -14,6 +14,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -25,82 +26,97 @@ namespace Imaging
     public static class ImageRegister
     {
         /// <summary>
-        /// The settings for our Filter
+        ///     The settings for our Filter
         /// </summary>
-        private static readonly ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings = new();
+        public static ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings { get; set; } = new();
 
         /// <summary>
-        /// The texture setting
+        ///     The texture setting
         /// </summary>
-        private static readonly ConcurrentDictionary<TextureType, TextureConfig> TextureSetting = new();
+        public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
 
-        /// <summary>
-        /// Initializes the <see cref="ImageRegister" /> class.
+       /// <summary>
+        /// The filter property map
+        /// Mapping of filters to their used properties
         /// </summary>
-        static ImageRegister()
+        private static readonly Dictionary<ImageFilters, HashSet<string>> FilterPropertyMap = new()
         {
-            // Initialize default Filter settings
-            FilterSettings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.Sharpen] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.Emboss] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.Laplacian] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.EdgeEnhance] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.UnsharpMask] = new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
-            FilterSettings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
-            FilterSettings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
-            // Add more default settings as needed
-
-            // Initialize default Texture settings
-            TextureSetting[TextureType.Noise] = new TextureConfig { MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64 };
-            TextureSetting[TextureType.Clouds] = new TextureConfig { MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64 };
-            TextureSetting[TextureType.Marble] = new TextureConfig { Alpha = 255, BaseColor = Color.FromArgb(30, 10, 0) };
-            TextureSetting[TextureType.Wood] = new TextureConfig { Alpha = 255, BaseColor = Color.FromArgb(80, 30, 30) };
-            TextureSetting[TextureType.Wave] = new TextureConfig { Alpha = 255 };
-            // Add more default settings as needed
-        }
+            { ImageFilters.GaussianBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.BoxBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.MotionBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.Sharpen, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.Emboss, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.Laplacian, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.EdgeEnhance, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
+            { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
+            { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
+            // Add other filters as necessary
+        };
 
         /// <summary>
-        /// Gets the settings.
+        /// The texture property map
+        /// Mapping of textures to their used properties
         /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <returns>Return the current config</returns>
-        internal static ImageFilterConfig GetSettings(ImageFilters filter)
+        private static readonly Dictionary<TextureType, HashSet<string>> TexturePropertyMap = new()
         {
-            return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
-        }
-
-        /// <summary>
-        /// Sets the settings.
-        /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <param name="config">The configuration.</param>
-        public static void SetSettings(ImageFilters filter, ImageFilterConfig config)
-        {
-            FilterSettings[filter] = config;
-        }
-
-        /// <summary>
-        /// Gets the settings.
-        /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <returns></returns>
-        public static TextureConfig GetSettings(TextureType filter)
-        {
-            return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfig();
-        }
-
-        /// <summary>
-        /// Sets the settings.
-        /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <param name="config">The configuration.</param>
-        public static void SetSettings(TextureType filter, TextureConfig config)
-        {
-            TextureSetting[filter] = config;
-        }
+            { TextureType.Noise, new HashSet<string>
+                {
+                    nameof(TextureConfig.MinValue),
+                    nameof(TextureConfig.MaxValue),
+                    nameof(TextureConfig.Alpha),
+                    nameof(TextureConfig.UseSmoothNoise),
+                    nameof(TextureConfig.UseTurbulence),
+                    nameof(TextureConfig.TurbulenceSize)
+                }
+            },
+            { TextureType.Clouds, new HashSet<string>
+                {
+                    nameof(TextureConfig.MinValue),
+                    nameof(TextureConfig.MaxValue),
+                    nameof(TextureConfig.Alpha),
+                    nameof(TextureConfig.TurbulenceSize)
+                }
+            },
+            { TextureType.Marble, new HashSet<string>
+                {
+                    nameof(TextureConfig.Alpha),
+                    nameof(TextureConfig.XPeriod),
+                    nameof(TextureConfig.YPeriod),
+                    nameof(TextureConfig.TurbulencePower),
+                    nameof(TextureConfig.TurbulenceSize),
+                    nameof(TextureConfig.BaseColor)
+                }
+            },
+            { TextureType.Wave, new HashSet<string>
+                {
+                    nameof(TextureConfig.Alpha),
+                    nameof(TextureConfig.XYPeriod),
+                    nameof(TextureConfig.TurbulencePower),
+                    nameof(TextureConfig.TurbulenceSize)
+                }
+            },
+            { TextureType.Wood, new HashSet<string>
+                {
+                    nameof(TextureConfig.Alpha),
+                    nameof(TextureConfig.XYPeriod),
+                    nameof(TextureConfig.TurbulencePower),
+                    nameof(TextureConfig.TurbulenceSize),
+                    nameof(TextureConfig.BaseColor)
+                }
+            },
+            { TextureType.Crosshatch, new HashSet<string>
+                {
+                    nameof(TextureConfig.LineSpacing),
+                    nameof(TextureConfig.LineColor),
+                    nameof(TextureConfig.LineThickness),
+                    nameof(TextureConfig.Angle1),
+                    nameof(TextureConfig.Angle2)
+                }
+            }
+            // Add other textures as necessary
+        };
 
         /// <summary>
         ///     The sharpen filter
@@ -263,11 +279,165 @@ namespace Imaging
         });
 
         /// <summary>
+        ///     Initializes the <see cref="ImageRegister" /> class.
+        /// </summary>
+        static ImageRegister()
+        {
+            // Initialize default Filter settings
+            FilterSettings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
+            FilterSettings[ImageFilters.Sharpen] =
+                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.Emboss] =
+                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.Laplacian] =
+                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.EdgeEnhance] =
+                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.UnsharpMask] =
+                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
+            FilterSettings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
+            FilterSettings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
+            // Add more default settings as needed
+
+            // Initialize default Texture settings
+            TextureSetting[TextureType.Noise] = new TextureConfig
+            {
+                MinValue = 0,
+                MaxValue = 255,
+                Alpha = 255,
+                TurbulenceSize = 64,
+                UseSmoothNoise = false,
+                UseTurbulence = false
+            };
+
+            TextureSetting[TextureType.Clouds] = new TextureConfig
+            {
+                MinValue = 0,
+                MaxValue = 255,
+                Alpha = 255,
+                TurbulenceSize = 64
+            };
+
+            TextureSetting[TextureType.Marble] = new TextureConfig
+            {
+                Alpha = 255,
+                XPeriod = 5.0,
+                YPeriod = 10.0,
+                TurbulencePower = 5.0,
+                TurbulenceSize = 32.0,
+                BaseColor = Color.FromArgb(30, 10, 0)
+            };
+
+            TextureSetting[TextureType.Wave] = new TextureConfig
+            {
+                Alpha = 255,
+                XYPeriod = 12.0,
+                TurbulencePower = 0.1,
+                TurbulenceSize = 32.0
+            };
+
+            TextureSetting[TextureType.Wood] = new TextureConfig
+            {
+                Alpha = 255,
+                XYPeriod = 12.0,
+                TurbulencePower = 0.1,
+                TurbulenceSize = 32.0,
+                BaseColor = Color.FromArgb(80, 30, 30)
+            };
+
+            TextureSetting[TextureType.Crosshatch] = new TextureConfig
+                {
+                    LineSpacing = 2,
+                    LineColor = Color.Black,
+                    LineThickness = 1,
+                    Angle1 = 45.0f,
+                    Angle2 = 135.0f
+                };
+            
+            // Add more default settings as needed
+        }
+
+        /// <summary>
         ///     Gets or sets the count of retries.
         /// </summary>
         /// <value>
         ///     The count.
         /// </value>
         internal static int Count { get; set; }
+
+        /// <summary>
+        ///     Gets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns>Return the current config</returns>
+        public static ImageFilterConfig GetSettings(ImageFilters filter)
+        {
+            return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
+        }
+
+        /// <summary>
+        ///     Sets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <param name="config">The configuration.</param>
+        public static void SetSettings(ImageFilters filter, ImageFilterConfig config)
+        {
+            FilterSettings[filter] = config;
+        }
+
+        /// <summary>
+        /// Gets the available filters.
+        /// </summary>
+        /// <returns>List of available Filters</returns>
+        public static IEnumerable<ImageFilters> GetAvailableFilters()
+        {
+            return FilterSettings.Keys;
+        }
+
+        /// <summary>
+        /// Gets the used properties.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns>List of properties needed for our Filters</returns>
+        public static HashSet<string> GetUsedProperties(ImageFilters filter)
+        {
+            return FilterPropertyMap.TryGetValue(filter, out var properties) ? properties : new HashSet<string>();
+        }
+
+        /// <summary>
+        ///     Gets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public static TextureConfig GetSettings(TextureType filter)
+        {
+            return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfig();
+        }
+
+        /// <summary>
+        ///     Sets the settings.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <param name="config">The configuration.</param>
+        public static void SetSettings(TextureType filter, TextureConfig config)
+        {
+            TextureSetting[filter] = config;
+        }
+
+        /// <summary>
+        /// Gets the used properties.
+        /// Method to get the used properties for a specific texture type
+        /// </summary>
+        /// <param name="textureType">Type of the texture.</param>
+        /// <returns>List of properties needed for our Textures</returns>
+        public static HashSet<string> GetUsedProperties(TextureType textureType)
+        {
+            return TexturePropertyMap.TryGetValue(textureType, out var properties)
+                ? properties
+                : new HashSet<string>();
+        }
     }
 }
