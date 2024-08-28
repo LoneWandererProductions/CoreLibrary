@@ -58,7 +58,7 @@ namespace Imaging
             //create some image attributes
             using var atr = new ImageAttributes();
 
-            var settings = new ImageFilterConfig();
+            ImageFilterConfig settings;
 
             //set the color matrix attribute
             switch (filter)
@@ -555,16 +555,16 @@ namespace Imaging
         public static Bitmap PencilSketchEffect(Bitmap originalImage)
         {
             // Step 1: Convert to Grayscale
-            Bitmap grayscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
+            var grayscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
 
             // Step 2: Invert the Grayscale Image
-            Bitmap invertedImage = FilterImage(grayscaleImage, ImageFilters.Invert);
+            var invertedImage = FilterImage(grayscaleImage, ImageFilters.Invert);
 
             // Step 3: Apply Gaussian Blur to the Inverted Image
-            Bitmap blurredImage = FilterImage(invertedImage, ImageFilters.GaussianBlur);
+            var blurredImage = FilterImage(invertedImage, ImageFilters.GaussianBlur);
 
             // Step 4: Blend Grayscale Image with the Blurred, Inverted Image using Color Dodge
-            Bitmap sketchImage = ColorDodgeBlend(grayscaleImage, blurredImage);
+            var sketchImage = ColorDodgeBlend(grayscaleImage, blurredImage);
 
             // Step 5: Optional - Adjust Contrast/Brightness if necessary
             // sketchImage = AdjustContrastAndBrightness(sketchImage);
@@ -574,24 +574,24 @@ namespace Imaging
 
 
         /// <summary>
-        /// Colors the dodge blend.
+        ///     Colors the dodge blend.
         /// </summary>
         /// <param name="baseImage">The base image.</param>
         /// <param name="blendImage">The blend image.</param>
         /// <returns>Color blended Image</returns>
         private static Bitmap ColorDodgeBlend(Bitmap baseImage, Bitmap blendImage)
         {
-            Bitmap result = new Bitmap(baseImage.Width, baseImage.Height);
-            for (int y = 0; y < baseImage.Height; y++)
+            var result = new Bitmap(baseImage.Width, baseImage.Height);
+            for (var y = 0; y < baseImage.Height; y++)
             {
-                for (int x = 0; x < baseImage.Width; x++)
+                for (var x = 0; x < baseImage.Width; x++)
                 {
-                    Color baseColor = baseImage.GetPixel(x, y);
-                    Color blendColor = blendImage.GetPixel(x, y);
+                    var baseColor = baseImage.GetPixel(x, y);
+                    var blendColor = blendImage.GetPixel(x, y);
 
-                    int r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
-                    int g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
-                    int b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
+                    var r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
+                    var g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
+                    var b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
 
                     result.SetPixel(x, y, Color.FromArgb(r, g, b));
                 }

@@ -15,7 +15,7 @@ namespace Imaging
     /// <summary>
     ///     Settings for the Filter
     /// </summary>
-    public class ImageFilterConfig
+    public sealed class ImageFilterConfig
     {
         /// <summary>
         ///     Gets or sets the factor.
@@ -23,7 +23,7 @@ namespace Imaging
         /// <value>
         ///     The factor.
         /// </value>
-        public double Factor { get; set; } = 1.0;
+        public double Factor { get; init; } = 1.0;
 
         /// <summary>
         ///     Gets or sets the bias.
@@ -31,7 +31,7 @@ namespace Imaging
         /// <value>
         ///     The bias.
         /// </value>
-        public double Bias { get; set; } = 0.0;
+        public double Bias { get; init; } = 0.0;
 
         /// <summary>
         ///     Gets or sets the sigma.
@@ -39,7 +39,7 @@ namespace Imaging
         /// <value>
         ///     The sigma.
         /// </value>
-        public double Sigma { get; set; } = 1.0;
+        public double Sigma { get; init; } = 1.0;
 
         /// <summary>
         ///     Gets or sets the size of the base window.
@@ -47,7 +47,7 @@ namespace Imaging
         /// <value>
         ///     The size of the base window.
         /// </value>
-        public int BaseWindowSize { get; set; } = 5;
+        public int BaseWindowSize { get; init; } = 5;
 
         /// <summary>
         ///     Gets or sets the scale.
@@ -55,6 +55,6 @@ namespace Imaging
         /// <value>
         ///     The scale.
         /// </value>
-        public int Scale { get; set; } = 1;
+        public int Scale { get; init; } = 1;
     }
 }

@@ -27,29 +27,35 @@ namespace Imaging
     public static class ImageRegister
     {
         /// <summary>
-        ///     The settings for our Filter
-        /// </summary>
-        public static ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings { get; set; } = new();
-
-        /// <summary>
-        ///     The texture setting
-        /// </summary>
-        public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
-
-        /// <summary>
-        /// The filter property map
-        /// Mapping of filters to their used properties
+        ///     The filter property map
+        ///     Mapping of filters to their used properties
         /// </summary>
         private static readonly Dictionary<ImageFilters, HashSet<string>> FilterPropertyMap = new()
         {
-            { ImageFilters.GaussianBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.BoxBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.MotionBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.Sharpen, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.Emboss, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.Laplacian, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.EdgeEnhance, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
-            { ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
+            {
+                ImageFilters.GaussianBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.BoxBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.MotionBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.Sharpen, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.Emboss, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.Laplacian, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.EdgeEnhance, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
+            {
+                ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+            },
             { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
             { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } },
@@ -58,12 +64,13 @@ namespace Imaging
         };
 
         /// <summary>
-        /// The texture property map
-        /// Mapping of textures to their used properties
+        ///     The texture property map
+        ///     Mapping of textures to their used properties
         /// </summary>
         private static readonly Dictionary<TextureType, HashSet<string>> TexturePropertyMap = new()
         {
-            { TextureType.Noise, new HashSet<string>
+            {
+                TextureType.Noise, new HashSet<string>
                 {
                     nameof(TextureConfig.MinValue),
                     nameof(TextureConfig.MaxValue),
@@ -73,7 +80,8 @@ namespace Imaging
                     nameof(TextureConfig.TurbulenceSize)
                 }
             },
-            { TextureType.Clouds, new HashSet<string>
+            {
+                TextureType.Clouds, new HashSet<string>
                 {
                     nameof(TextureConfig.MinValue),
                     nameof(TextureConfig.MaxValue),
@@ -81,7 +89,8 @@ namespace Imaging
                     nameof(TextureConfig.TurbulenceSize)
                 }
             },
-            { TextureType.Marble, new HashSet<string>
+            {
+                TextureType.Marble, new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
                     nameof(TextureConfig.XPeriod),
@@ -91,24 +100,27 @@ namespace Imaging
                     nameof(TextureConfig.BaseColor)
                 }
             },
-            { TextureType.Wave, new HashSet<string>
+            {
+                TextureType.Wave, new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.XYPeriod),
+                    nameof(TextureConfig.XyPeriod),
                     nameof(TextureConfig.TurbulencePower),
                     nameof(TextureConfig.TurbulenceSize)
                 }
             },
-            { TextureType.Wood, new HashSet<string>
+            {
+                TextureType.Wood, new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.XYPeriod),
+                    nameof(TextureConfig.XyPeriod),
                     nameof(TextureConfig.TurbulencePower),
                     nameof(TextureConfig.TurbulenceSize),
                     nameof(TextureConfig.BaseColor)
                 }
             },
-            { TextureType.Crosshatch, new HashSet<string>
+            {
+                TextureType.Crosshatch, new HashSet<string>
                 {
                     nameof(TextureConfig.LineSpacing),
                     nameof(TextureConfig.LineColor),
@@ -181,8 +193,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix GrayScale = new(new[]
         {
-            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -192,8 +203,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Invert = new(new[]
         {
-            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
+            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
         });
 
         /// <summary>
@@ -203,8 +213,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Sepia = new(new[]
         {
-            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
-            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 }, new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -214,8 +223,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Polaroid = new(new[]
         {
-            new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
-            new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
+            new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 }, new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
             new[] { 0.03f, 0.05f, -0.02f, 0, 1 }
         });
 
@@ -226,8 +234,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix BlackAndWhite = new(new[]
         {
-            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
+            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
         });
 
         /// <summary>
@@ -236,8 +243,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Brightness = new(new[]
         {
-            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -246,8 +252,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Contrast = new(new[]
         {
-            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -256,8 +261,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix HueShift = new(new[]
         {
-            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
-            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -266,8 +270,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix ColorBalance = new(new[]
         {
-            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -276,8 +279,7 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Vintage = new(new[]
         {
-            new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 },
-            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 }, new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -318,10 +320,7 @@ namespace Imaging
 
             TextureSetting[TextureType.Clouds] = new TextureConfig
             {
-                MinValue = 0,
-                MaxValue = 255,
-                Alpha = 255,
-                TurbulenceSize = 64
+                MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64
             };
 
             TextureSetting[TextureType.Marble] = new TextureConfig
@@ -336,16 +335,13 @@ namespace Imaging
 
             TextureSetting[TextureType.Wave] = new TextureConfig
             {
-                Alpha = 255,
-                XYPeriod = 12.0,
-                TurbulencePower = 0.1,
-                TurbulenceSize = 32.0
+                Alpha = 255, XyPeriod = 12.0, TurbulencePower = 0.1, TurbulenceSize = 32.0
             };
 
             TextureSetting[TextureType.Wood] = new TextureConfig
             {
                 Alpha = 255,
-                XYPeriod = 12.0,
+                XyPeriod = 12.0,
                 TurbulencePower = 0.1,
                 TurbulenceSize = 32.0,
                 BaseColor = Color.FromArgb(80, 30, 30)
@@ -362,6 +358,16 @@ namespace Imaging
 
             // Add more default settings as needed
         }
+
+        /// <summary>
+        ///     The settings for our Filter
+        /// </summary>
+        public static ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings { get; set; } = new();
+
+        /// <summary>
+        ///     The texture setting
+        /// </summary>
+        public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the count of retries.
@@ -392,7 +398,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the available filters.
+        ///     Gets the available filters.
         /// </summary>
         /// <returns>List of available Filters</returns>
         public static IEnumerable<ImageFilters> GetAvailableFilters()
@@ -401,7 +407,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the used properties.
+        ///     Gets the used properties.
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>List of properties needed for our Filters</returns>
@@ -431,8 +437,8 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the used properties.
-        /// Method to get the used properties for a specific texture type
+        ///     Gets the used properties.
+        ///     Method to get the used properties for a specific texture type
         /// </summary>
         /// <param name="textureType">Type of the texture.</param>
         /// <returns>List of properties needed for our Textures</returns>

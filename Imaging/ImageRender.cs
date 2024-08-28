@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
-using Point = System.Drawing.Point;
 
 namespace Imaging
 {
@@ -434,7 +433,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>

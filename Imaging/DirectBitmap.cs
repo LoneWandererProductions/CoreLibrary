@@ -21,7 +21,6 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Imaging
 {
@@ -305,12 +304,13 @@ namespace Imaging
         ///     Sets the pixels using SIMD for performance improvement.
         ///     Be careful when to return values. The Bitmap might be premature disposed.
         /// </summary>
-        /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
+        /// <param name="pixels">
+        ///     An IEnumerable of pixels, each defined by x, y coordinates and a Color.
+        /// </param>
         /// <summary>
         ///     Sets the pixels using SIMD for performance improvement.
         ///     Be careful when to return values. The Bitmap might be premature disposed.
         /// </summary>
-        /// <param name="pixels">An IEnumerable of pixels, each defined by x, y coordinates and a Color.</param>
         public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
         {
             var pixelArray = pixels.ToArray();
@@ -322,13 +322,13 @@ namespace Imaging
                 throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
             }
 
-            for (int i = 0; i < pixelArray.Length; i += vectorCount)
+            for (var i = 0; i < pixelArray.Length; i += vectorCount)
             {
                 var indices = new int[vectorCount];
                 var colors = new int[vectorCount];
 
                 // Load data into vectors
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {
@@ -345,7 +345,7 @@ namespace Imaging
                 }
 
                 // Write data to Bits array
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {

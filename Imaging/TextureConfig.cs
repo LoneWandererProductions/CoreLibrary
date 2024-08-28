@@ -17,173 +17,173 @@ namespace Imaging
     public class TextureConfig
     {
         /// <summary>
-        /// Gets or sets the minimum value.
+        ///     Gets or sets the minimum value.
         /// </summary>
         /// <value>
-        /// The minimum value.
+        ///     The minimum value.
         /// </value>
-        public int MinValue { get; set; } = 0;
+        public int MinValue { get; init; } = 0;
 
         /// <summary>
-        /// Gets or sets the maximum value.
+        ///     Gets or sets the maximum value.
         /// </summary>
         /// <value>
-        /// The maximum value.
+        ///     The maximum value.
         /// </value>
-        public int MaxValue { get; set; } = 255;
+        public int MaxValue { get; init; } = 255;
 
         /// <summary>
-        /// Gets or sets the alpha.
+        ///     Gets or sets the alpha.
         /// </summary>
         /// <value>
-        /// The alpha.
+        ///     The alpha.
         /// </value>
-        public int Alpha { get; set; } = 255;
+        public int Alpha { get; init; } = 255;
 
         /// <summary>
-        /// Gets or sets the x period.
+        ///     Gets or sets the x period.
         /// </summary>
         /// <value>
-        /// The x period.
+        ///     The x period.
         /// </value>
-        public double XPeriod { get; set; } = 5.0;
+        public double XPeriod { get; init; } = 5.0;
 
         /// <summary>
-        /// Gets or sets the y period.
+        ///     Gets or sets the y period.
         /// </summary>
         /// <value>
-        /// The y period.
+        ///     The y period.
         /// </value>
-        public double YPeriod { get; set; } = 10.0;
+        public double YPeriod { get; init; } = 10.0;
 
         /// <summary>
-        /// Gets or sets the turbulence power.
+        ///     Gets or sets the turbulence power.
         /// </summary>
         /// <value>
-        /// The turbulence power.
+        ///     The turbulence power.
         /// </value>
-        public double TurbulencePower { get; set; } = 5.0;
+        public double TurbulencePower { get; init; } = 5.0;
 
         /// <summary>
-        /// Gets or sets the size of the turbulence.
+        ///     Gets or sets the size of the turbulence.
         /// </summary>
         /// <value>
-        /// The size of the turbulence.
+        ///     The size of the turbulence.
         /// </value>
-        public double TurbulenceSize { get; set; } = 64.0;
+        public double TurbulenceSize { get; init; } = 64.0;
 
         /// <summary>
-        /// Gets or sets the color of the base.
+        ///     Gets or sets the color of the base.
         /// </summary>
         /// <value>
-        /// The color of the base.
+        ///     The color of the base.
         /// </value>
-        public Color BaseColor { get; set; } = Color.White;
+        public Color BaseColor { get; init; } = Color.White;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is monochrome.
+        ///     Gets or sets a value indicating whether this instance is monochrome.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
         /// </value>
         public bool IsMonochrome { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is tiled.
+        ///     Gets or sets a value indicating whether this instance is tiled.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
         /// </value>
         public bool IsTiled { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use smooth noise.
+        ///     Gets or sets a value indicating whether to use smooth noise.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [use smooth noise]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [use smooth noise]; otherwise, <c>false</c>.
         /// </value>
-        public bool UseSmoothNoise { get; set; } = false;
+        public bool UseSmoothNoise { get; init; } = false;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use turbulence.
+        ///     Gets or sets a value indicating whether to use turbulence.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [use turbulence]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [use turbulence]; otherwise, <c>false</c>.
         /// </value>
-        public bool UseTurbulence { get; set; } = false;
+        public bool UseTurbulence { get; init; } = false;
 
         /// <summary>
-        /// Gets or sets the xy period, used for wave and wood textures.
+        ///     Gets or sets the xy period, used for wave and wood textures.
         /// </summary>
         /// <value>
-        /// The xy period.
+        ///     The xy period.
         /// </value>
-        public double XYPeriod { get; set; } = 12.0;
+        public double XyPeriod { get; init; } = 12.0;
 
         /// <summary>
-        /// Gets or sets the filter type for generating textures.
+        ///     Gets or sets the filter type for generating textures.
         /// </summary>
         /// <value>
-        /// The filter type.
+        ///     The filter type.
         /// </value>
         public TextureType Filter { get; set; } = TextureType.Noise;
 
         /// <summary>
-        /// Gets or sets the shape of the texture.
+        ///     Gets or sets the shape of the texture.
         /// </summary>
         /// <value>
-        /// The texture shape.
+        ///     The texture shape.
         /// </value>
         public TextureShape Shape { get; set; } = TextureShape.Rectangle;
 
         /// <summary>
-        /// Gets or sets the shape parameters.
+        ///     Gets or sets the shape parameters.
         /// </summary>
         /// <value>
-        /// The shape parameters.
+        ///     The shape parameters.
         /// </value>
         public object ShapeParams { get; set; } = null;
 
         // New parameters for crosshatch texture
 
         /// <summary>
-        /// Gets or sets the spacing between lines for crosshatch texture.
+        ///     Gets or sets the spacing between lines for crosshatch texture.
         /// </summary>
         /// <value>
-        /// The spacing between lines.
+        ///     The spacing between lines.
         /// </value>
-        public int LineSpacing { get; set; } = 10;
+        public int LineSpacing { get; init; } = 10;
 
         /// <summary>
-        /// Gets or sets the color of the lines for crosshatch texture.
+        ///     Gets or sets the color of the lines for crosshatch texture.
         /// </summary>
         /// <value>
-        /// The color of the lines.
+        ///     The color of the lines.
         /// </value>
-        public Color LineColor { get; set; } = Color.Black;
+        public Color LineColor { get; init; } = Color.Black;
 
         /// <summary>
-        /// Gets or sets the thickness of the lines for crosshatch texture.
+        ///     Gets or sets the thickness of the lines for crosshatch texture.
         /// </summary>
         /// <value>
-        /// The thickness of the lines.
+        ///     The thickness of the lines.
         /// </value>
-        public int LineThickness { get; set; } = 1;
+        public int LineThickness { get; init; } = 1;
 
         /// <summary>
-        /// Gets or sets the angle of the first set of lines for crosshatch texture, in degrees.
+        ///     Gets or sets the angle of the first set of lines for crosshatch texture, in degrees.
         /// </summary>
         /// <value>
-        /// The angle of the first set of lines.
+        ///     The angle of the first set of lines.
         /// </value>
-        public double Angle1 { get; set; } = 45.0;
+        public double Angle1 { get; init; } = 45.0;
 
         /// <summary>
-        /// Gets or sets the angle of the second set of lines for crosshatch texture, in degrees.
+        ///     Gets or sets the angle of the second set of lines for crosshatch texture, in degrees.
         /// </summary>
         /// <value>
-        /// The angle of the second set of lines.
+        ///     The angle of the second set of lines.
         /// </value>
-        public double Angle2 { get; set; } = 135.0;
+        public double Angle2 { get; init; } = 135.0;
     }
 }

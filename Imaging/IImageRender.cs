@@ -328,7 +328,7 @@ namespace Imaging
         Bitmap SetPixel(Bitmap image, Point point, Color color, int radius);
 
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>

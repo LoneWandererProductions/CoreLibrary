@@ -814,7 +814,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
@@ -828,16 +828,16 @@ namespace Imaging
             var source = new DirectBitmap(image);
             var result = new DirectBitmap(source.Width, source.Height);
 
-            for (int y = 0; y < source.Height; y++)
+            for (var y = 0; y < source.Height; y++)
             {
-                for (int x = 0; x < source.Width; x++)
+                for (var x = 0; x < source.Width; x++)
                 {
                     var pixelColor = source.GetPixel(x, y);
 
                     // Adjust brightness by multiplying each color component by the brightness factor
-                    int newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
-                    int newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
-                    int newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
+                    var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
+                    var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
+                    var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
 
                     result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
                 }

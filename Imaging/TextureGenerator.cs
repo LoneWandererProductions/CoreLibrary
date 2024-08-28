@@ -1,4 +1,15 @@
-﻿using System.Drawing;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Imaging
+ * FILE:        Imaging/TextureGenerator.cs
+ * PURPOSE:     Generate some textures
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * Sources:     https://lodev.org/cgtutor/randomnoise.html
+ */
+
+// ReSharper disable UnusedType.Global
+
+using System.Drawing;
 
 namespace Imaging
 {
@@ -87,7 +98,7 @@ namespace Imaging
                 width,
                 height,
                 config.Alpha,
-                config.XYPeriod,
+                config.XyPeriod,
                 config.TurbulencePower,
                 config.TurbulenceSize
             );
@@ -107,7 +118,7 @@ namespace Imaging
                 width,
                 height,
                 config.Alpha,
-                config.XYPeriod,
+                config.XyPeriod,
                 config.TurbulencePower,
                 config.TurbulenceSize,
                 config.BaseColor
@@ -124,20 +135,15 @@ namespace Imaging
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>Texture Bitmap</returns>
-        public Bitmap GenerateTexture(int width, int height, TextureType filter, TextureShape shape, object shapeParams = null)
+        public Bitmap GenerateTexture(int width, int height, TextureType filter, TextureShape shape,
+            object shapeParams = null)
         {
-            var config = ImageRegister.GetSettings(filter);
             return TextureAreas.GenerateTexture(
                 width,
                 height,
                 filter,
                 shape,
-                shapeParams,
-                config.MinValue,
-                config.MaxValue,
-                config.Alpha,
-                config.TurbulenceSize,
-                config.BaseColor
+                shapeParams
             );
         }
 

@@ -68,7 +68,7 @@ namespace Imaging
             int height);
 
         /// <summary>
-        /// Generates the crosshatch bitmap.
+        ///     Generates the crosshatch bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>

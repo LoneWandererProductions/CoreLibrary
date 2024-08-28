@@ -302,7 +302,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Generates a crosshatch texture bitmap.
+        ///     Generates a crosshatch texture bitmap.
         /// </summary>
         /// <param name="width">The width of the texture.</param>
         /// <param name="height">The height of the texture.</param>
@@ -333,51 +333,51 @@ namespace Imaging
                 using (var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness))
                 {
                     // Convert angles from degrees to radians
-                    double radAngle1 = angle1 * Math.PI / 180.0;
-                    double radAngle2 = angle2 * Math.PI / 180.0;
+                    var radAngle1 = angle1 * Math.PI / 180.0;
+                    var radAngle2 = angle2 * Math.PI / 180.0;
 
                     // Calculate the line direction vectors
-                    double dx1 = Math.Cos(radAngle1);
-                    double dy1 = Math.Sin(radAngle1);
-                    double dx2 = Math.Cos(radAngle2);
-                    double dy2 = Math.Sin(radAngle2);
+                    var dx1 = Math.Cos(radAngle1);
+                    var dy1 = Math.Sin(radAngle1);
+                    var dx2 = Math.Cos(radAngle2);
+                    var dy2 = Math.Sin(radAngle2);
 
                     // Draw first set of lines
-                    for (int y = 0; y < height; y += lineSpacing)
+                    for (var y = 0; y < height; y += lineSpacing)
                     {
                         graphics.DrawLine(
                             pen,
                             0, y,
-                            (int)(width * dx1 + width * dy1),
-                            (int)(y * dx1 + width * dy1));
+                            (int)((width * dx1) + (width * dy1)),
+                            (int)((y * dx1) + (width * dy1)));
                     }
 
-                    for (int x = 0; x < width; x += lineSpacing)
+                    for (var x = 0; x < width; x += lineSpacing)
                     {
                         graphics.DrawLine(
                             pen,
                             x, 0,
-                            (int)(x * dx1 + height * dx1),
-                            (int)(height * dx1 + height * dy1));
+                            (int)((x * dx1) + (height * dx1)),
+                            (int)((height * dx1) + (height * dy1)));
                     }
 
                     // Draw second set of lines
-                    for (int y = 0; y < height; y += lineSpacing)
+                    for (var y = 0; y < height; y += lineSpacing)
                     {
                         graphics.DrawLine(
                             pen,
                             0, y,
-                            (int)(width * dx2 + height * dy2),
-                            (int)(y * dx2 + height * dy2));
+                            (int)((width * dx2) + (height * dy2)),
+                            (int)((y * dx2) + (height * dy2)));
                     }
 
-                    for (int x = 0; x < width; x += lineSpacing)
+                    for (var x = 0; x < width; x += lineSpacing)
                     {
                         graphics.DrawLine(
                             pen,
                             x, 0,
-                            (int)(x * dx2 + width * dx2),
-                            (int)(width * dx2 + height * dy2));
+                            (int)((x * dx2) + (width * dx2)),
+                            (int)((width * dx2) + (height * dy2)));
                     }
                 }
             }

@@ -25,11 +25,6 @@ namespace Imaging
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
-        /// <param name="minValue">The minimum value.</param>
-        /// <param name="maxValue">The maximum value.</param>
-        /// <param name="alpha">The alpha.</param>
-        /// <param name="turbulenceSize">Size of the turbulence.</param>
-        /// <param name="baseColor">Color of the base.</param>
         /// <returns>
         ///     Generates a filter for a certain area
         /// </returns>
@@ -43,12 +38,7 @@ namespace Imaging
             int height,
             TextureType filter,
             TextureShape shape,
-            object shapeParams = null,
-            int minValue = 0,
-            int maxValue = 255,
-            int alpha = 255,
-            double turbulenceSize = 64,
-            Color? baseColor = null)
+            object shapeParams = null)
         {
             // Retrieve the settings for the specified filter
             var settings = ImageRegister.GetSettings(filter);

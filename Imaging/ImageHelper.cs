@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
  * FILE:        Imaging/ImageHelper.cs
- * PURPOSE:     Here I try to minimise the footprint of my class and pool all shared methods
+ * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -59,17 +59,6 @@ namespace Imaging
                 Trace.WriteLine($"Error setting pixels: {ex.Message}");
                 return null;
             }
-        }
-
-        /// <summary>
-        ///     Checks if the Color is  transparent.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        /// <returns>True if conditions are met</returns>
-        internal static bool CheckTransparent(Color color)
-        {
-            //0,0,0 is Black or Transparent
-            return color.R == 0 && color.G == 0 && color.B == 0;
         }
 
         /// <summary>
@@ -276,8 +265,6 @@ namespace Imaging
                 }
             }
 
-            Color? meanColor = null;
-
             if (!calculateMeanColor || count <= 0)
             {
                 return (pixels, null);
@@ -286,13 +273,13 @@ namespace Imaging
             var averageRed = rSum / count;
             var averageGreen = gSum / count;
             var averageBlue = bSum / count;
-            meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
+            Color? meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
 
             return (pixels, meanColor);
         }
 
         /// <summary>
-        /// Clamps the specified value.
+        ///     Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Value that is within the color range</returns>
