@@ -761,10 +761,7 @@ namespace Imaging
         /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
-            }
+            ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             if (radius < 0)
             {
@@ -807,12 +804,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
         internal static Bitmap SetPixel(Bitmap image, Point point, Color color)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(SetPixel), image);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -820,6 +812,41 @@ namespace Imaging
 
             return dbm.Bitmap;
         }
+
+        /// <summary>
+        /// Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>
+        ///     The changed image as Bitmap
+        /// </returns>
+        internal static Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        {
+            ImageHelper.ValidateImage(nameof(GetPixel), image);
+
+            var source = new DirectBitmap(image);
+            var result = new DirectBitmap(source.Width, source.Height);
+
+            for (int y = 0; y < source.Height; y++)
+            {
+                for (int x = 0; x < source.Width; x++)
+                {
+                    var pixelColor = source.GetPixel(x, y);
+
+                    // Adjust brightness by multiplying each color component by the brightness factor
+                    int newRed = Math.Min(Math.Max((int)(pixelColor.R * brightnessFactor), 0), 255);
+                    int newGreen = Math.Min(Math.Max((int)(pixelColor.G * brightnessFactor), 0), 255);
+                    int newBlue = Math.Min(Math.Max((int)(pixelColor.B * brightnessFactor), 0), 255);
+
+                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                }
+            }
+
+            return result.Bitmap;
+        }
+
+
 
         /// <summary>
         ///     Sets the pixel.
@@ -832,12 +859,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
         internal static Bitmap SetPixel(Bitmap image, Point point, Color color, int radius)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(SetPixel), image);
 
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 

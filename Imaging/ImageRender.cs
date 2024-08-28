@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -429,6 +430,20 @@ namespace Imaging
         public Bitmap SetPixel(Bitmap image, Point point, Color color, int radius)
         {
             return ImageStream.SetPixel(image, point, color, radius);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>
+        ///     The changed image as Bitmap
+        /// </returns>
+        public Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        {
+            return ImageStream.AdjustBrightness(image, brightnessFactor);
         }
 
         /// <inheritdoc />
