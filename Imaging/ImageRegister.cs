@@ -12,6 +12,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global, should be viewed external, since this is the config
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Imaging
         /// </summary>
         public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
 
-       /// <summary>
+        /// <summary>
         /// The filter property map
         /// Mapping of filters to their used properties
         /// </summary>
@@ -51,7 +52,8 @@ namespace Imaging
             { ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) } },
             { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
-            { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
+            { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } },
+            { ImageFilters.PencilSketchEffect, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
             // Add other filters as necessary
         };
 
@@ -300,6 +302,7 @@ namespace Imaging
             FilterSettings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
             FilterSettings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
             FilterSettings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
+            FilterSettings[ImageFilters.PencilSketchEffect] = new ImageFilterConfig { Sigma = 1.0 };
             // Add more default settings as needed
 
             // Initialize default Texture settings
@@ -349,14 +352,14 @@ namespace Imaging
             };
 
             TextureSetting[TextureType.Crosshatch] = new TextureConfig
-                {
-                    LineSpacing = 2,
-                    LineColor = Color.Black,
-                    LineThickness = 1,
-                    Angle1 = 45.0f,
-                    Angle2 = 135.0f
-                };
-            
+            {
+                LineSpacing = 2,
+                LineColor = Color.Black,
+                LineThickness = 1,
+                Angle1 = 45.0f,
+                Angle2 = 135.0f
+            };
+
             // Add more default settings as needed
         }
 

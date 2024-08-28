@@ -149,6 +149,11 @@ namespace Imaging
         /// <summary>
         ///     The post processing antialiasing
         /// </summary>
-        PostProcessingAntialiasing = 25
+        PostProcessingAntialiasing = 25,
+
+        /// <summary>
+        /// The pencil sketch effect
+        /// </summary>
+        PencilSketchEffect = 26
     }
 }

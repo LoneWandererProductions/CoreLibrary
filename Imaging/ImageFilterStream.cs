@@ -138,6 +138,9 @@ namespace Imaging
                 case ImageFilters.PostProcessingAntialiasing:
                     settings = ImageRegister.GetSettings(ImageFilters.PostProcessingAntialiasing);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
+                case ImageFilters.PencilSketchEffect:
+                    settings = ImageRegister.GetSettings(ImageFilters.PencilSketchEffect);
+                    return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 default:
                     return null;
             }
@@ -222,9 +225,9 @@ namespace Imaging
                         }
                     }
 
-                    var newBlue = Math.Min(Math.Max((int)((factor * blue) + bias), 0), 255);
-                    var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
-                    var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
+                    var newBlue = ImageHelper.Clamp((factor * blue) + bias);
+                    var newGreen = ImageHelper.Clamp((factor * green) + bias);
+                    var newRed = ImageHelper.Clamp((factor * red) + bias);
 
                     // Instead of setting the pixel immediately, add it to the list
                     pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
@@ -240,7 +243,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
 
             return null;
@@ -327,8 +330,7 @@ namespace Imaging
                 var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
 
                 // Normalize the magnitude to fit within the range of 0-255
-                magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
-                magnitude = Math.Min(255, Math.Max(0, magnitude));
+                magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
 
                 // Instead of setting the pixel immediately, add it to the list
                 pixelsToSet.Add((x, y, Color.FromArgb(magnitude, magnitude, magnitude)));
@@ -355,7 +357,7 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Filtered Image</returns>
-        internal static Bitmap ApplyDifferenceOfGaussians(Image image)
+        private static Bitmap ApplyDifferenceOfGaussians(Image image)
         {
             // Gaussian blur with small sigma
             var gaussianBlurSmall = ImageHelper.GenerateGaussianKernel(1.0, 5);
@@ -587,13 +589,14 @@ namespace Imaging
                     Color baseColor = baseImage.GetPixel(x, y);
                     Color blendColor = blendImage.GetPixel(x, y);
 
-                    int r = blendColor.R == 255 ? 255 : Math.Min(255, (baseColor.R << 8) / (255 - blendColor.R));
-                    int g = blendColor.G == 255 ? 255 : Math.Min(255, (baseColor.G << 8) / (255 - blendColor.G));
-                    int b = blendColor.B == 255 ? 255 : Math.Min(255, (baseColor.B << 8) / (255 - blendColor.B));
+                    int r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
+                    int g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
+                    int b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
 
                     result.SetPixel(x, y, Color.FromArgb(r, g, b));
                 }
             }
+
             return result;
         }
 
@@ -739,8 +742,7 @@ namespace Imaging
                     {
                         var pixel = dbmBase.GetPixel(nx, ny);
                         var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                        var newIntensity = oldIntensity + (error * ditherMatrix[dy, dx] / 16);
-                        newIntensity = Math.Max(0, Math.Min(255, newIntensity));
+                        var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
                         var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
                         dbmBase.SetPixel(nx, ny, newColor);
                     }

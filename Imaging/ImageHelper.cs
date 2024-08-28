@@ -40,9 +40,9 @@ namespace Imaging
                         var color1 = dbmOne.GetPixel(x, y);
                         var color2 = dbmTwo.GetPixel(x, y);
 
-                        var r = Math.Min(255, color1.R + color2.R);
-                        var g = Math.Min(255, color1.G + color2.G);
-                        var b = Math.Min(255, color1.B + color2.B);
+                        var r = Clamp(color1.R + color2.R);
+                        var g = Clamp(color1.G + color2.G);
+                        var b = Clamp(color1.B + color2.B);
 
                         pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
                     }
@@ -277,15 +277,28 @@ namespace Imaging
             }
 
             Color? meanColor = null;
-            if (calculateMeanColor && count > 0)
+
+            if (!calculateMeanColor || count <= 0)
             {
-                var averageRed = rSum / count;
-                var averageGreen = gSum / count;
-                var averageBlue = bSum / count;
-                meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
+                return (pixels, null);
             }
 
+            var averageRed = rSum / count;
+            var averageGreen = gSum / count;
+            var averageBlue = bSum / count;
+            meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
+
             return (pixels, meanColor);
+        }
+
+        /// <summary>
+        /// Clamps the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Value that is within the color range</returns>
+        public static int Clamp(double value)
+        {
+            return (int)Math.Max(0, Math.Min(value, 255));
         }
     }
 }

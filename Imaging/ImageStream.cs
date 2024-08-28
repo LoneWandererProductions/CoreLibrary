@@ -835,9 +835,9 @@ namespace Imaging
                     var pixelColor = source.GetPixel(x, y);
 
                     // Adjust brightness by multiplying each color component by the brightness factor
-                    int newRed = Math.Min(Math.Max((int)(pixelColor.R * brightnessFactor), 0), 255);
-                    int newGreen = Math.Min(Math.Max((int)(pixelColor.G * brightnessFactor), 0), 255);
-                    int newBlue = Math.Min(Math.Max((int)(pixelColor.B * brightnessFactor), 0), 255);
+                    int newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
+                    int newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
+                    int newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
 
                     result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
                 }
@@ -845,8 +845,6 @@ namespace Imaging
 
             return result.Bitmap;
         }
-
-
 
         /// <summary>
         ///     Sets the pixel.
