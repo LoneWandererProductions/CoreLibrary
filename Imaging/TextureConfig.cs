@@ -12,7 +12,7 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Attributes for our texture generators
+    ///     Attributes for our texture generators
     /// </summary>
     public class TextureConfig
     {
