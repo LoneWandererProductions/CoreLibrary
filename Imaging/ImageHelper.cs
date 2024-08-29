@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Imaging
 {
@@ -207,6 +208,7 @@ namespace Imaging
         /// </summary>
         /// <param name="ex">The ex.</param>
         /// <exception cref="System.ApplicationException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void HandleException(Exception ex)
         {
             // Log the exception details (implementation may vary)
@@ -228,6 +230,7 @@ namespace Imaging
         /// <param name="method">The method.</param>
         /// <param name="image">The image.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap image)
         {
             if (image == null)
@@ -283,6 +286,7 @@ namespace Imaging
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Value that is within the color range</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(double value)
         {
             return (int)Math.Max(0, Math.Min(value, 255));
