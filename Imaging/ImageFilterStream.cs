@@ -617,18 +617,18 @@ namespace Imaging
             regionHeight = baseHalfWindow * 2;
 
             // Compute gradient magnitude using Sobel operators
-            double gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
-            double gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
-            double gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
+            var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
+            var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
+            var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
 
             // Compute local variance
-            double variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
+            var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
 
             // Compute saliency value
-            double saliency = GetSaliencyValue(dbmBase, x, y);
+            var saliency = GetSaliencyValue(dbmBase, x, y);
 
             // Combine metrics to adjust region size
-            double scale = (1.0 / (1.0 + gradientMagnitude)) * (1.0 / (1.0 + variance)) * (1.0 / (1.0 + saliency));
+            var scale = (1.0 / (1.0 + gradientMagnitude)) * (1.0 / (1.0 + variance)) * (1.0 / (1.0 + saliency));
             regionWidth = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
             regionHeight = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
         }
@@ -643,17 +643,17 @@ namespace Imaging
         /// <returns>Converted dbm</returns>
         private static double ApplyKernel(DirectBitmap dbmBase, int x, int y, int[,] kernel)
         {
-            int kernelSize = kernel.GetLength(0);
-            int halfKernelSize = kernelSize / 2;
-            double sum = 0.0;
+            var kernelSize = kernel.GetLength(0);
+            var halfKernelSize = kernelSize / 2;
+            var sum = 0.0;
 
-            for (int ky = -halfKernelSize; ky <= halfKernelSize; ky++)
+            for (var ky = -halfKernelSize; ky <= halfKernelSize; ky++)
             {
-                for (int kx = -halfKernelSize; kx <= halfKernelSize; kx++)
+                for (var kx = -halfKernelSize; kx <= halfKernelSize; kx++)
                 {
-                    int pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
-                    int pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
-                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                    var pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
+                    var pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
+                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
                     sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
                 }
             }
@@ -671,17 +671,17 @@ namespace Imaging
         /// <returns>Converted dbm</returns>
         private static double ComputeLocalVariance(DirectBitmap dbmBase, int x, int y, int halfWindowSize)
         {
-            double sum = 0.0;
-            double sumSquared = 0.0;
-            int count = 0;
+            var sum = 0.0;
+            var sumSquared = 0.0;
+            var count = 0;
 
-            for (int dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
             {
-                for (int dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+                for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
                 {
-                    int pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                    int pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                    var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                    var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
                     sum += intensity;
                     sumSquared += intensity * intensity;
@@ -689,8 +689,8 @@ namespace Imaging
                 }
             }
 
-            double mean = sum / count;
-            double variance = (sumSquared / count) - (mean * mean);
+            var mean = sum / count;
+            var variance = (sumSquared / count) - (mean * mean);
 
             return variance;
         }
@@ -704,19 +704,19 @@ namespace Imaging
         /// <returns>Converted dbm</returns>
         private static double GetSaliencyValue(DirectBitmap dbmBase, int x, int y)
         {
-            double localIntensity = GetPixelIntensity(dbmBase, x, y);
+            var localIntensity = GetPixelIntensity(dbmBase, x, y);
 
-            int halfWindowSize = DefaultHalfWindowSize;
-            double sum = 0.0;
-            int count = 0;
+            var halfWindowSize = DefaultHalfWindowSize;
+            var sum = 0.0;
+            var count = 0;
 
-            for (int dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
             {
-                for (int dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+                for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
                 {
-                    int pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                    int pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                    var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                    var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
                     sum += Math.Abs(localIntensity - intensity);
                     count++;
@@ -735,7 +735,7 @@ namespace Imaging
         /// <returns>Converted dbm</returns>
         private static double GetPixelIntensity(DirectBitmap dbmBase, int x, int y)
         {
-            Color pixelColor = dbmBase.GetPixel(x, y);
+            var pixelColor = dbmBase.GetPixel(x, y);
             return (pixelColor.R + pixelColor.G + pixelColor.B) / 3.0;
         }
 
@@ -784,13 +784,24 @@ namespace Imaging
         /// <returns>Area of the image</returns>
         private static IEnumerable<Rectangle> DefineRegions(int centerX, int centerY, int width, int height)
         {
-            // Example logic to generate multiple regions
-            // This is a placeholder and should be replaced with logic to adapt the shape and size based on local image characteristics
             var regions = new List<Rectangle>
             {
-                new(centerX - (width / 2), centerY - (height / 2), width, height)
-                // Add more regions if needed, e.g., smaller regions, different orientations
+                // Base region
+                new Rectangle(centerX - (width / 2), centerY - (height / 2), width, height)
             };
+
+            // Additional regions with different sizes or orientations
+            var offset = 10; // Example offset value
+            var step = 5; // Example step for size variation
+            for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
+            {
+                var newWidth = width - i * step;
+                var newHeight = height - i * step;
+                if (newWidth > 0 && newHeight > 0)
+                {
+                    regions.Add(new Rectangle(centerX - (newWidth / 2) + offset * i, centerY - (newHeight / 2) + offset * i, newWidth, newHeight));
+                }
+            }
 
             return regions;
         }
@@ -850,6 +861,7 @@ namespace Imaging
         {
             var matrixHeight = ditherMatrix.GetLength(0);
             var matrixWidth = ditherMatrix.GetLength(1);
+            var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var dy = 0; dy < matrixHeight; dy++)
             {
@@ -864,9 +876,19 @@ namespace Imaging
                         var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
                         var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
                         var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
-                        dbmBase.SetPixel(nx, ny, newColor);
+
+                        pixelsToSet.Add((nx, ny, newColor));
                     }
                 }
+            }
+
+            try
+            {
+                dbmBase.SetPixelsSimd(pixelsToSet);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error setting pixels: {ex.Message}");
             }
         }
 
