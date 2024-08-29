@@ -8,6 +8,7 @@
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable BadBracesSpaces
 
 // TODO add:
 // Prewitt
@@ -22,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace Imaging
 {
@@ -30,7 +32,6 @@ namespace Imaging
     /// </summary>
     internal static class ImageFilterStream
     {
-
         /// <summary>
         /// The default half window size
         /// </summary>
@@ -279,8 +280,8 @@ namespace Imaging
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
                 // Get the color of the current rectangle
-                var rectacngle = new Rectangle(x, y, stepWidth, stepWidth);
-                var averageColor = ImageHelper.GetMeanColor(dbm, rectacngle);
+                var rectangle = new Rectangle(x, y, stepWidth, stepWidth);
+                var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
 
                 using var g = Graphics.FromImage(processedImage);
                 using var brush = new SolidBrush(averageColor);
@@ -610,12 +611,8 @@ namespace Imaging
         /// <param name="regionWidth">Width of the region.</param>
         /// <param name="regionHeight">Height of the region.</param>
         private static void DetermineRegionSizeAndShape(DirectBitmap dbmBase, int x, int y, int baseHalfWindow,
-                   out int regionWidth, out int regionHeight)
+            out int regionWidth, out int regionHeight)
         {
-            // Fixed region size (placeholder logic)
-            regionWidth = baseHalfWindow * 2;
-            regionHeight = baseHalfWindow * 2;
-
             // Compute gradient magnitude using Sobel operators
             var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
             var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
@@ -812,15 +809,9 @@ namespace Imaging
         /// <param name="pixels">The pixels.</param>
         /// <param name="meanColor">Color of the mean.</param>
         /// <returns>Variance</returns>
-        private static double CalculateVariance(List<Color> pixels, Color meanColor)
+        private static double CalculateVariance(IReadOnlyCollection<Color> pixels, Color meanColor)
         {
-            var variance = 0.0;
-
-            foreach (var pixel in pixels)
-            {
-                variance += Math.Pow(pixel.R - meanColor.R, 2) + Math.Pow(pixel.G - meanColor.G, 2) +
-                            Math.Pow(pixel.B - meanColor.B, 2);
-            }
+            var variance = pixels.Sum(pixel => Math.Pow(pixel.R - meanColor.R, 2) + Math.Pow(pixel.G - meanColor.G, 2) + Math.Pow(pixel.B - meanColor.B, 2));
 
             return variance / pixels.Count;
         }
@@ -888,7 +879,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
         }
 

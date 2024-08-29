@@ -57,7 +57,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
                 return null;
             }
         }
@@ -194,13 +194,8 @@ namespace Imaging
                 }
             }
 
-            if (!hasNonTransparentPixel)
-            {
-                // If all pixels are transparent, return a zero-sized rectangle
-                return new Rectangle(0, 0, 0, 0);
-            }
-
-            return new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+            // If all pixels are transparent, return a zero-sized rectangle
+            return !hasNonTransparentPixel ? new Rectangle(0, 0, 0, 0) : new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
         }
 
         /// <summary>
@@ -217,8 +212,7 @@ namespace Imaging
             Trace.WriteLine($"Stack Trace: {ex.StackTrace}");
 
             // Optionally, rethrow or handle further
-            if (ex is ArgumentException || ex is InvalidOperationException || ex is NotSupportedException ||
-                ex is UriFormatException || ex is IOException)
+            if (ex is ArgumentException or InvalidOperationException or NotSupportedException or UriFormatException or IOException)
             {
                 throw new ApplicationException("An error occurred while processing the image.", ex);
             }
@@ -233,12 +227,14 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap image)
         {
-            if (image == null)
+            if (image != null)
             {
-                var innerException =
-                    new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+                return;
             }
+
+            var innerException =
+                new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+            throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
         }
 
         /// <summary>
