@@ -189,8 +189,25 @@ namespace Imaging
         /// Defines directional edge detection kernel for crosshatching
         /// </summary>
         internal static readonly double[,] Kernel135Degrees =
-{
+        {
             { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 }
+        };
+
+
+        /// <summary>
+        /// The sobel x kernel
+        /// </summary>
+        internal static readonly int[,] SobelX =
+        { 
+            { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } 
+        };
+
+        /// <summary>
+        /// The sobel y kernel
+        /// </summary>
+        internal static readonly int[,] SobelY =
+        { 
+            { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } 
         };
 
         /// <summary>

@@ -12,9 +12,7 @@
 // TODO add:
 // Prewitt
 // Roberts Cross
-// Laplacian
 // Laplacian of Gaussain
-// Anisotropic Kuwahara
 
 
 using System;
@@ -32,6 +30,12 @@ namespace Imaging
     /// </summary>
     internal static class ImageFilterStream
     {
+
+        /// <summary>
+        /// The default half window size
+        /// </summary>
+        private const int DefaultHalfWindowSize = 5;
+
         /// <summary>
         ///     Converts an image to gray scale
         ///     Source:
@@ -299,10 +303,6 @@ namespace Imaging
             // Create a new bitmap to store the result of Sobel operator
             var resultImage = new Bitmap(greyscaleImage.Width, greyscaleImage.Height);
 
-            // Sobel masks for gradient calculation
-            int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-            int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
-
             // Prepare a list to store the pixels to set in bulk using SIMD
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
@@ -322,8 +322,9 @@ namespace Imaging
                 {
                     var pixel = dbmBase.GetPixel(x + i, y + j);
                     int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
-                    gx += sobelX[i + 1, j + 1] * grayValue;
-                    gy += sobelY[i + 1, j + 1] * grayValue;
+                    // Sobel masks for gradient calculation
+                    gx += ImageRegister.SobelX[i + 1, j + 1] * grayValue;
+                    gy += ImageRegister.SobelY[i + 1, j + 1] * grayValue;
                 }
 
                 // Calculate gradient magnitude
@@ -547,6 +548,11 @@ namespace Imaging
             return ApplyFilter(dbmBase.Bitmap, gaussianKernel);
         }
 
+        /// <summary>
+        /// Pencils the sketch effect.
+        /// </summary>
+        /// <param name="originalImage">The original image.</param>
+        /// <returns>Filtered Image</returns>
         public static Bitmap PencilSketchEffect(Bitmap originalImage)
         {
             // Step 1: Convert to Grayscale
@@ -566,7 +572,6 @@ namespace Imaging
 
             return sketchImage;
         }
-
 
         /// <summary>
         ///     Colors the dodge blend.
@@ -596,7 +601,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Determines the region size and shape.
+        /// Determines the region size and shape.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -605,14 +610,133 @@ namespace Imaging
         /// <param name="regionWidth">Width of the region.</param>
         /// <param name="regionHeight">Height of the region.</param>
         private static void DetermineRegionSizeAndShape(DirectBitmap dbmBase, int x, int y, int baseHalfWindow,
-            out int regionWidth, out int regionHeight)
+                   out int regionWidth, out int regionHeight)
         {
-            //TODO replace
-            // Placeholder logic to determine region size and shape
-            // This is an example, you may need to adjust this based on your specific needs
-            // For simplicity, let's assume a fixed size for regions, but in practice, this should be adaptive
+            // Fixed region size (placeholder logic)
             regionWidth = baseHalfWindow * 2;
             regionHeight = baseHalfWindow * 2;
+
+            // Compute gradient magnitude using Sobel operators
+            double gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
+            double gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
+            double gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
+
+            // Compute local variance
+            double variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
+
+            // Compute saliency value
+            double saliency = GetSaliencyValue(dbmBase, x, y);
+
+            // Combine metrics to adjust region size
+            double scale = (1.0 / (1.0 + gradientMagnitude)) * (1.0 / (1.0 + variance)) * (1.0 / (1.0 + saliency));
+            regionWidth = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
+            regionHeight = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
+        }
+
+        /// <summary>
+        /// Applies the kernel.
+        /// </summary>
+        /// <param name="dbmBase">The DBM base.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="kernel">The kernel.</param>
+        /// <returns>Converted dbm</returns>
+        private static double ApplyKernel(DirectBitmap dbmBase, int x, int y, int[,] kernel)
+        {
+            int kernelSize = kernel.GetLength(0);
+            int halfKernelSize = kernelSize / 2;
+            double sum = 0.0;
+
+            for (int ky = -halfKernelSize; ky <= halfKernelSize; ky++)
+            {
+                for (int kx = -halfKernelSize; kx <= halfKernelSize; kx++)
+                {
+                    int pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
+                    int pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
+                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                    sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
+                }
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Computes the local variance.
+        /// </summary>
+        /// <param name="dbmBase">The DBM base.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="halfWindowSize">Size of the half window.</param>
+        /// <returns>Converted dbm</returns>
+        private static double ComputeLocalVariance(DirectBitmap dbmBase, int x, int y, int halfWindowSize)
+        {
+            double sum = 0.0;
+            double sumSquared = 0.0;
+            int count = 0;
+
+            for (int dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            {
+                for (int dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+                {
+                    int pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                    int pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+
+                    sum += intensity;
+                    sumSquared += intensity * intensity;
+                    count++;
+                }
+            }
+
+            double mean = sum / count;
+            double variance = (sumSquared / count) - (mean * mean);
+
+            return variance;
+        }
+
+        /// <summary>
+        /// Gets the saliency value.
+        /// </summary>
+        /// <param name="dbmBase">The DBM base.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns>Converted dbm</returns>
+        private static double GetSaliencyValue(DirectBitmap dbmBase, int x, int y)
+        {
+            double localIntensity = GetPixelIntensity(dbmBase, x, y);
+
+            int halfWindowSize = DefaultHalfWindowSize;
+            double sum = 0.0;
+            int count = 0;
+
+            for (int dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            {
+                for (int dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+                {
+                    int pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                    int pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                    double intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+
+                    sum += Math.Abs(localIntensity - intensity);
+                    count++;
+                }
+            }
+
+            return sum / count;
+        }
+
+        /// <summary>
+        /// Gets the pixel intensity.
+        /// </summary>
+        /// <param name="dbmBase">The DBM base.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns>Converted dbm</returns>
+        private static double GetPixelIntensity(DirectBitmap dbmBase, int x, int y)
+        {
+            Color pixelColor = dbmBase.GetPixel(x, y);
+            return (pixelColor.R + pixelColor.G + pixelColor.B) / 3.0;
         }
 
         /// <summary>
