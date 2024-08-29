@@ -463,22 +463,10 @@ namespace Imaging
             var v3 = Noise[(intY + 1) % NoiseHeight, intX % NoiseWidth];
             var v4 = Noise[(intY + 1) % NoiseHeight, (intX + 1) % NoiseWidth];
 
-            var i1 = Interpolate(v1, v2, fracX);
-            var i2 = Interpolate(v3, v4, fracX);
+            var i1 = ImageHelper.Interpolate(v1, v2, fracX);
+            var i2 = ImageHelper.Interpolate(v3, v4, fracX);
 
-            return Interpolate(i1, i2, fracY);
-        }
-
-        /// <summary>
-        ///     Interpolates the specified a.
-        /// </summary>
-        /// <param name="a">a.</param>
-        /// <param name="b">The b.</param>
-        /// <param name="t">The t.</param>
-        /// <returns>Interpolation</returns>
-        private static double Interpolate(double a, double b, double t)
-        {
-            return (a * (1 - t)) + (b * t);
+            return ImageHelper.Interpolate(i1, i2, fracY);
         }
     }
 }

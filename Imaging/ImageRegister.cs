@@ -176,6 +176,24 @@ namespace Imaging
         };
 
         /// <summary>
+        /// The kernel 45 degrees
+        /// Defines directional edge detection kernel for crosshatching
+        /// </summary>
+        internal static readonly double[,] Kernel45Degrees =
+        {
+             { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 }
+        };
+
+        /// <summary>
+        /// The kernel 135 degrees
+        /// Defines directional edge detection kernel for crosshatching
+        /// </summary>
+        internal static readonly double[,] Kernel135Degrees =
+{
+            { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 }
+        };
+
+        /// <summary>
         ///     the color matrix needed to GrayScale an image
         ///     Source:
         ///     https://archive.ph/hzR2W

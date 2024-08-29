@@ -282,6 +282,19 @@ namespace Imaging
         }
 
         /// <summary>
+        ///     Interpolates the specified a.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="t">The t.</param>
+        /// <returns>Interpolation</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static double Interpolate(double a, double b, double t)
+        {
+            return a * (1 - t) + b * t;
+        }
+
+        /// <summary>
         ///     Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
