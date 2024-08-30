@@ -752,9 +752,7 @@ namespace Imaging
             var bestVariance = double.MaxValue;
 
             // Define regions within the current window
-            var regions = DefineRegions(x, y, regionWidth, regionHeight);
-
-            foreach (var region in regions)
+            foreach (var region in DefineRegions(x, y, regionWidth, regionHeight))
             {
                 var (pixels, meanColor) = ImageHelper.GetRegionPixelsAndMeanColor(dbmBase, region);
 
@@ -772,14 +770,19 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Defines the regions.
+        /// Defines the regions.
         /// </summary>
         /// <param name="centerX">The center x.</param>
         /// <param name="centerY">The center y.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <returns>Area of the image</returns>
-        private static IEnumerable<Rectangle> DefineRegions(int centerX, int centerY, int width, int height)
+        /// <param name="numAdditionalRegions">The number additional regions.</param>
+        /// <param name="step">The step, 5 is an example step for size variation, optional.</param>
+        /// <param name="offset">The offset. 10 is an example offset value, optional.</param>
+        /// <returns>
+        /// Area of the image
+        /// </returns>
+        private static IEnumerable<Rectangle> DefineRegions(int centerX, int centerY, int width, int height, int numAdditionalRegions = 3, int step = 5, int offset = 10)
         {
             var regions = new List<Rectangle>
             {
@@ -787,9 +790,6 @@ namespace Imaging
                 new Rectangle(centerX - (width / 2), centerY - (height / 2), width, height)
             };
 
-            // Additional regions with different sizes or orientations
-            var offset = 10; // Example offset value
-            var step = 5; // Example step for size variation
             for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
             {
                 var newWidth = width - i * step;
