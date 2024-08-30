@@ -300,5 +300,48 @@ namespace Imaging
         {
             return (int)Math.Max(0, Math.Min(value, 255));
         }
+
+        /// <summary>
+        ///     Validates the file path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.IO.IOException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateFilePath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                var innerException = path != null
+                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
+                    : new IOException(nameof(path));
+                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+            }
+        }
+
+        /// <summary>
+        ///     Validates the parameters.
+        /// </summary>
+        /// <param name="minValue">The minimum value.</param>
+        /// <param name="maxValue">The maximum value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <exception cref="ArgumentException">
+        ///     minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.
+        ///     or
+        ///     Alpha must be between 0 and 255.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateParameters(int minValue, int maxValue, int alpha)
+        {
+            if (minValue is < 0 or > 255 || maxValue is < 0 or > 255 || minValue > maxValue)
+            {
+                throw new ArgumentException(
+                    ImagingResources.ErrorColorRange);
+            }
+
+            if (alpha is < 0 or > 255)
+            {
+                throw new ArgumentException(ImagingResources.ErrorColorRange);
+            }
+        }
     }
 }

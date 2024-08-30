@@ -433,6 +433,20 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Floods the fill scan line stack.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="newColor">The new color.</param>
+        /// <returns>Bitmap with filled area</returns>
+        public Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor)
+        {
+            return ImageStream.FloodFillScanLineStack(image, x, y, newColor);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>

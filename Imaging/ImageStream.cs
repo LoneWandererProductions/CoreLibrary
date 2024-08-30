@@ -4,6 +4,7 @@
  * FILE:        Imaging/ImageStream.cs
  * PURPOSE:     Does all the leg work for the Image operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -47,7 +48,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
             try
             {
                 var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
@@ -93,7 +94,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
 
             var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
@@ -138,7 +139,7 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
 
             return new Bitmap(path, true);
         }
@@ -158,7 +159,7 @@ namespace Imaging
         /// <exception cref="InvalidOperationException"></exception>
         internal static Bitmap GetOriginalBitmap(string path)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
 
             try
             {
@@ -865,19 +866,79 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Validates the file path.
+        /// Floods the fill scan line stack.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <exception cref="System.IO.IOException"></exception>
-        private static void ValidateFilePath(string path)
+        /// <param name="image">The image.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="newColor">The new color.</param>
+        /// <returns>Bitmap with filled area</returns>
+        internal static Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            // Create a new bitmap to store the processed image
+            var dbm = new DirectBitmap(image);
+            var result = new DirectBitmap(image);
+
+            var oldColor = dbm.GetPixel(x, y);
+            if (oldColor == newColor)
+                return image; // Return original image if the color is the same
+
+            var pixelData = new List<(int x, int y, Color color)>();
+
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            stack.Push((x, y));
+
+            while (stack.Count > 0)
             {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+                (x, y) = stack.Pop();
+                var x1 = x;
+
+                // Move to the left boundary
+                while (x1 >= 0 && dbm.GetPixel(x1, y) == oldColor)
+                    x1--;
+
+                x1++;
+                bool spanBelow;
+                var spanAbove = spanBelow = false;
+
+                // Move to the right boundary
+                while (x1 < dbm.Width && dbm.GetPixel(x1, y) == oldColor)
+                {
+                    pixelData.Add((x1, y, newColor));
+
+                    // Check above
+                    if (!spanAbove && y > 0 && dbm.GetPixel(x1, y - 1) == oldColor)
+                    {
+                        stack.Push((x1, y - 1));
+                        spanAbove = true;
+                    }
+                    else if (spanAbove && y > 0 && dbm.GetPixel(x1, y - 1) != oldColor)
+                    {
+                        spanAbove = false;
+                    }
+
+                    // Check below
+                    if (!spanBelow && y < dbm.Height - 1 && dbm.GetPixel(x1, y + 1) == oldColor)
+                    {
+                        stack.Push((x1, y + 1));
+                        spanBelow = true;
+                    }
+                    else if (spanBelow && y < dbm.Height - 1 && dbm.GetPixel(x1, y + 1) != oldColor)
+                    {
+                        spanBelow = false;
+                    }
+
+                    x1++;
+                }
             }
+
+            // Convert list to array for SIMD processing
+            var pixelArray = pixelData.ToArray();
+            result.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
+
+            // Return the modified image as a Bitmap
+            return result.Bitmap;
         }
     }
 }

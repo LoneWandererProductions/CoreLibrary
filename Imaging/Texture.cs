@@ -58,7 +58,7 @@ namespace Imaging
             double turbulenceSize = 64)
         {
             // Validate parameters
-            ValidateParameters(minValue, maxValue, alpha);
+            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
 
             // Generate base noise
             GenerateBaseNoise();
@@ -120,7 +120,7 @@ namespace Imaging
             int alpha = 255,
             double turbulenceSize = 64)
         {
-            ValidateParameters(minValue, maxValue, alpha);
+            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
             GenerateBaseNoise();
 
             var cloudsBitmap = new DirectBitmap(width, height);
@@ -140,6 +140,7 @@ namespace Imaging
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             cloudsBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return cloudsBitmap.Bitmap;
         }
@@ -193,6 +194,7 @@ namespace Imaging
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             marbleBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return marbleBitmap.Bitmap;
         }
@@ -247,6 +249,7 @@ namespace Imaging
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             woodBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return woodBitmap.Bitmap;
         }
@@ -280,10 +283,9 @@ namespace Imaging
             {
                 for (var x = 0; x < width; x++)
                 {
-                    var xValue = ((x - (width / 2.0)) / width) +
-                                 (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
-                    var yValue = ((y - (height / 2.0)) / height) +
-                                 (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+                    var turbulenceValue = Turbulence(x, y, turbulenceSize);
+                    var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
+                    var yValue = ((y - (height / 2.0)) / height) + (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 
                     var sineValue = 22.0 *
                                     Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
@@ -297,6 +299,7 @@ namespace Imaging
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             waveBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return waveBitmap.Bitmap;
         }
@@ -326,88 +329,59 @@ namespace Imaging
             lineColor = lineColor == default ? Color.Black : lineColor;
 
             var crosshatchBitmap = new Bitmap(width, height);
-            using (var graphics = Graphics.FromImage(crosshatchBitmap))
+            using var graphics = Graphics.FromImage(crosshatchBitmap);
+            graphics.Clear(Color.White); // Background color
+
+            using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
+            // Convert angles from degrees to radians
+            var radAngle1 = angle1 * Math.PI / 180.0;
+            var radAngle2 = angle2 * Math.PI / 180.0;
+
+            // Calculate the line direction vectors
+            var dx1 = Math.Cos(radAngle1);
+            var dy1 = Math.Sin(radAngle1);
+            var dx2 = Math.Cos(radAngle2);
+            var dy2 = Math.Sin(radAngle2);
+
+            // Draw first set of lines
+            for (var y = 0; y < height; y += lineSpacing)
             {
-                graphics.Clear(Color.White); // Background color
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)((width * dx1) + (width * dy1)),
+                    (int)((y * dx1) + (width * dy1)));
+            }
 
-                using (var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness))
-                {
-                    // Convert angles from degrees to radians
-                    var radAngle1 = angle1 * Math.PI / 180.0;
-                    var radAngle2 = angle2 * Math.PI / 180.0;
+            for (var x = 0; x < width; x += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)((x * dx1) + (height * dx1)),
+                    (int)((height * dx1) + (height * dy1)));
+            }
 
-                    // Calculate the line direction vectors
-                    var dx1 = Math.Cos(radAngle1);
-                    var dy1 = Math.Sin(radAngle1);
-                    var dx2 = Math.Cos(radAngle2);
-                    var dy2 = Math.Sin(radAngle2);
+            // Draw second set of lines
+            for (var y = 0; y < height; y += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)((width * dx2) + (height * dy2)),
+                    (int)((y * dx2) + (height * dy2)));
+            }
 
-                    // Draw first set of lines
-                    for (var y = 0; y < height; y += lineSpacing)
-                    {
-                        graphics.DrawLine(
-                            pen,
-                            0, y,
-                            (int)((width * dx1) + (width * dy1)),
-                            (int)((y * dx1) + (width * dy1)));
-                    }
-
-                    for (var x = 0; x < width; x += lineSpacing)
-                    {
-                        graphics.DrawLine(
-                            pen,
-                            x, 0,
-                            (int)((x * dx1) + (height * dx1)),
-                            (int)((height * dx1) + (height * dy1)));
-                    }
-
-                    // Draw second set of lines
-                    for (var y = 0; y < height; y += lineSpacing)
-                    {
-                        graphics.DrawLine(
-                            pen,
-                            0, y,
-                            (int)((width * dx2) + (height * dy2)),
-                            (int)((y * dx2) + (height * dy2)));
-                    }
-
-                    for (var x = 0; x < width; x += lineSpacing)
-                    {
-                        graphics.DrawLine(
-                            pen,
-                            x, 0,
-                            (int)((x * dx2) + (width * dx2)),
-                            (int)((width * dx2) + (height * dy2)));
-                    }
-                }
+            for (var x = 0; x < width; x += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)((x * dx2) + (width * dx2)),
+                    (int)((width * dx2) + (height * dy2)));
             }
 
             return crosshatchBitmap;
-        }
-
-        /// <summary>
-        ///     Validates the parameters.
-        /// </summary>
-        /// <param name="minValue">The minimum value.</param>
-        /// <param name="maxValue">The maximum value.</param>
-        /// <param name="alpha">The alpha.</param>
-        /// <exception cref="ArgumentException">
-        ///     minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.
-        ///     or
-        ///     Alpha must be between 0 and 255.
-        /// </exception>
-        private static void ValidateParameters(int minValue, int maxValue, int alpha)
-        {
-            if (minValue is < 0 or > 255 || maxValue is < 0 or > 255 || minValue > maxValue)
-            {
-                throw new ArgumentException(
-                    "minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.");
-            }
-
-            if (alpha is < 0 or > 255)
-            {
-                throw new ArgumentException("Alpha must be between 0 and 255.");
-            }
         }
 
         /// <summary>
