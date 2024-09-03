@@ -81,7 +81,6 @@ namespace Imaging
         /// <exception cref="ArgumentException">No Correct Argument were provided</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-        /// <exception cref="IOException">Error while we try to access the File</exception>
         public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
@@ -118,7 +117,6 @@ namespace Imaging
             }
         }
 
-
         /// <summary>
         ///     Bitmaps the image2 bitmap.
         /// </summary>
@@ -129,12 +127,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         internal static Bitmap BitmapImageToBitmap(BitmapImage image)
         {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapImageToBitmap),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
 
             using var outStream = new MemoryStream();
             var enc = new BmpBitmapEncoder();

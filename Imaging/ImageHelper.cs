@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
@@ -226,6 +227,25 @@ namespace Imaging
         /// <exception cref="System.ArgumentNullException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap image)
+        {
+            if (image != null)
+            {
+                return;
+            }
+
+            var innerException =
+                new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+            throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+        }
+
+        /// <summary>
+        ///     Validates the BitmapImage.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="image">The BitmapImage.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateImage(string method, BitmapImage image)
         {
             if (image != null)
             {

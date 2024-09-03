@@ -7,6 +7,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
@@ -133,10 +134,10 @@ namespace CommonLibrarySqlLiteTests
 
             var cache = _target.GetConnectionDetails();
 
-            Assert.AreEqual("Name of Db", cache.DbName,
+            Assert.AreEqual("SqlLiteDB.db", cache.DbName,
                 "Test failed Wrong Data: " + cache.DbName);
 
-            Assert.AreEqual("Path", cache.Location,
+            Assert.IsTrue( cache.Location.Contains(@"\CoreLibrary\CommonLibrarySqlLiteTests\bin\Debug\"),
                 "Test failed Wrong Data: " + cache.Location);
 
             Assert.AreEqual(3, cache.DbVersion,

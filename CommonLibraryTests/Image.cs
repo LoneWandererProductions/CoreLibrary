@@ -196,7 +196,7 @@ namespace CommonLibraryTests
             // Ensure the image exists
             Assert.IsTrue(File.Exists(imagePath), $"File does not exist: {imagePath}");
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
             var lst = ImageStream.CutBitmaps(btm, 2, 2, 50, 50);
 
@@ -264,7 +264,7 @@ namespace CommonLibraryTests
             // Ensure the image exists
             Assert.IsTrue(File.Exists(imagePath), $"File does not exist: {imagePath}");
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             using var btm = image.ToBitmap();
             using var cutOut = ImageStream.CutBitmap(btm, 22, 10, 50, 50);
 
@@ -316,7 +316,7 @@ namespace CommonLibraryTests
         {
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
 
             var point = new Point { X = 51, Y = 51 };
@@ -588,7 +588,7 @@ namespace CommonLibraryTests
 
             FileHandleDelete.DeleteFile(resultPathUnCompressed);
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
 
             /*
@@ -636,7 +636,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(85, color.G, "done");
 
             //var clean slate
-            image = ImageStream.GetBitmapImageFileStream(imagePath);
+            image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             btm = image.ToBitmap();
 
             data = CifProcessing.ConvertToCifFromBitmap(btm);
@@ -678,7 +678,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(85, color.G, "done");
 
             //var clean slate
-            image = ImageStream.GetBitmapImageFileStream(imagePath);
+            image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             btm = image.ToBitmap();
 
             //check if our system can also handle non compressed files!
@@ -732,7 +732,7 @@ namespace CommonLibraryTests
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
             var cifPath = Path.Combine(SampleImagesFolder.FullName, "base.cif");
 
-            var image = ImageStream.GetBitmapImageFileStream(imagePath);
+            var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
 
             //convert to cif
