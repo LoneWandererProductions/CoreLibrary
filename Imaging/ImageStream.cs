@@ -566,6 +566,7 @@ namespace Imaging
                 //replace Value under the threshold with pure White
                 pixelsToSet.Add((x, y, replacementColor));
             }
+
             try
             {
                 result.SetPixelsSimd(pixelsToSet);

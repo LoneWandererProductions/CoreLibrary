@@ -348,6 +348,71 @@ namespace Imaging
         Bitmap AdjustBrightness(Bitmap image, float brightnessFactor);
 
         /// <summary>
+        ///     Combines two images by averaging their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the average of the two images, or null if an error occurs.</returns>
+        Bitmap AverageImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Combines two images by adding their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the addition of the two images, or null if an error occurs.</returns>
+        Bitmap AddImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Combines two images by subtracting the pixel values of the first image from the second image.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the subtraction of the two images, or null if an error occurs.</returns>
+        Bitmap SubtractImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Combines two images by multiplying their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the multiplication of the two images, or null if an error occurs.</returns>
+        Bitmap MultiplyImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Cross-fades between two images based on the given factor.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <param name="factor">The blending factor (0.0 to 1.0).</param>
+        /// <returns>A bitmap resulting from the cross-fading of the two images, or null if an error occurs.</returns>
+        Bitmap CrossFadeImages(Image imgOne, Image imgTwo, float factor);
+
+        /// <summary>
+        ///     Finds the minimum color values from two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the minimum values of the two images, or null if an error occurs.</returns>
+        Bitmap MinImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Finds the maximum color values from two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the maximum values of the two images, or null if an error occurs.</returns>
+        Bitmap MaxImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
+        ///     Calculates the amplitude of the pixel values between two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>A bitmap resulting from the amplitude of the two images, or null if an error occurs.</returns>
+        Bitmap AmplitudeImages(Image imgOne, Image imgTwo);
+
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

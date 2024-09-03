@@ -4,6 +4,7 @@
  * FILE:        Imaging/ImageHelper.cs
  * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
 
 using System;
@@ -21,47 +22,7 @@ namespace Imaging
     /// </summary>
     internal static class ImageHelper
     {
-        /// <summary>
-        ///     Combines two images by adding their pixel values.
-        /// </summary>
-        /// <param name="imgOne">The first image.</param>
-        /// <param name="imgTwo">The second image.</param>
-        /// <returns>A bitmap resulting from the combination of the two images, or null if an error occurs.</returns>
-        internal static Bitmap CombineImages(Image imgOne, Image imgTwo)
-        {
-            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
-            var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            using (var dbmOne = new DirectBitmap(imgOne))
-            using (var dbmTwo = new DirectBitmap(imgTwo))
-            {
-                for (var y = 0; y < dbmOne.Height; y++)
-                {
-                    for (var x = 0; x < dbmOne.Width; x++)
-                    {
-                        var color1 = dbmOne.GetPixel(x, y);
-                        var color2 = dbmTwo.GetPixel(x, y);
-
-                        var r = Clamp(color1.R + color2.R);
-                        var g = Clamp(color1.G + color2.G);
-                        var b = Clamp(color1.B + color2.B);
-
-                        pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                    }
-                }
-            }
-
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
-                return result.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
-                return null;
-            }
-        }
 
         /// <summary>
         ///     Gets all points in a Circle.

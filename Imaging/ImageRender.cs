@@ -461,6 +461,119 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Combines two images by averaging their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the average of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap AverageImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.AverageImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Combines two images by adding their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the addition of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap AddImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.AddImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Combines two images by subtracting the pixel values of the first image from the second image.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the subtraction of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap SubtractImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.SubtractImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Combines two images by multiplying their pixel values.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the multiplication of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap MultiplyImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.MultiplyImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Cross-fades between two images based on the given factor.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <param name="factor">The blending factor (0.0 to 1.0).</param>
+        /// <returns>
+        /// A bitmap resulting from the cross-fading of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap CrossFadeImages(Image imgOne, Image imgTwo, float factor)
+        {
+            return ImageOverlays.CrossFadeImages(imgOne, imgTwo, factor);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Finds the minimum color values from two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the minimum values of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap MinImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.MinImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Finds the maximum color values from two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the maximum values of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap MaxImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.MaxImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Calculates the amplitude of the pixel values between two images.
+        /// </summary>
+        /// <param name="imgOne">The first image.</param>
+        /// <param name="imgTwo">The second image.</param>
+        /// <returns>
+        /// A bitmap resulting from the amplitude of the two images, or null if an error occurs.
+        /// </returns>
+        public Bitmap AmplitudeImages(Image imgOne, Image imgTwo)
+        {
+            return ImageOverlays.AmplitudeImages(imgOne, imgTwo);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

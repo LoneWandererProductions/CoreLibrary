@@ -387,7 +387,7 @@ namespace Imaging
             var hatch135 = ApplyFilter(image, ImageRegister.Kernel135Degrees);
 
             // Combine the two hatching directions
-            return ImageHelper.CombineImages(hatch45, hatch135);
+            return ImageOverlays.AddImages(hatch45, hatch135);
         }
 
         /// <summary>
