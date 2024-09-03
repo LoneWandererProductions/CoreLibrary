@@ -39,10 +39,13 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap GetBitmapFile(string path)
+        internal static Bitmap LoadBitmapFromFile(string path)
         {
             ImageHelper.ValidateFilePath(path);
 
+            // Load the bitmap from the file
+            using var originalBitmap = new Bitmap(path);
+            // Return a defensive copy
             return new Bitmap(path, true);
         }
 
@@ -543,15 +546,16 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
             //use our new Format
-            var dbm = DirectBitmap.GetInstance(image);
+            var result = DirectBitmap.GetInstance(image);
 
             //255,255,255 is White
             var replacementColor = Color.FromArgb(255, 255, 255);
+            var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            for (var x = 0; x < dbm.Width; x++)
-            for (var y = 0; y < dbm.Height; y++)
+            for (var x = 0; x < result.Width; x++)
+            for (var y = 0; y < result.Height; y++)
             {
-                var color = dbm.GetPixel(x, y);
+                var color = result.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
                 if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
@@ -560,16 +564,25 @@ namespace Imaging
                 }
 
                 //replace Value under the threshold with pure White
-                dbm.SetPixel(x, y, replacementColor);
+                pixelsToSet.Add((x, y, replacementColor));
             }
+            try
+            {
+                result.SetPixelsSimd(pixelsToSet);
 
-            //get the Bitmap
-            var btm = new Bitmap(dbm.Bitmap);
-            //make Transparent
-            btm.MakeTransparent(replacementColor);
-            //cleanup
-            dbm.Dispose();
-            return btm;
+                //get the Bitmap
+                var btm = new Bitmap(result.Bitmap);
+                //make Transparent
+                btm.MakeTransparent(replacementColor);
+                //cleanup
+                result.Dispose();
+                return btm;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>

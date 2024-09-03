@@ -39,7 +39,7 @@ namespace Imaging
         /// <exception cref="IOException"></exception>
         public Bitmap GetBitmapFile(string path)
         {
-            return ImageStream.GetBitmapFile(path);
+            return ImageStream.LoadBitmapFromFile(path);
         }
 
         /// <inheritdoc />
