@@ -9,15 +9,15 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
     /// <summary>
-    /// Handle the more newer wpf Libraries
+    ///     Handle the more newer wpf Libraries
     /// </summary>
     public static class ImageStreamMedia
     {
@@ -164,6 +164,5 @@ namespace Imaging
 
             return bitmapImage;
         }
-
     }
 }

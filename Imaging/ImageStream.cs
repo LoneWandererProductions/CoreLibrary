@@ -729,7 +729,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Floods the fill scan line stack.
+        ///     Floods the fill scan line stack.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="x">The x.</param>
@@ -744,11 +744,13 @@ namespace Imaging
 
             var oldColor = dbm.GetPixel(x, y);
             if (oldColor == newColor)
+            {
                 return image; // Return original image if the color is the same
+            }
 
             var pixelData = new List<(int x, int y, Color color)>();
 
-            Stack<(int, int)> stack = new Stack<(int, int)>();
+            var stack = new Stack<(int, int)>();
             stack.Push((x, y));
 
             while (stack.Count > 0)
@@ -758,7 +760,9 @@ namespace Imaging
 
                 // Move to the left boundary
                 while (x1 >= 0 && dbm.GetPixel(x1, y) == oldColor)
+                {
                     x1--;
+                }
 
                 x1++;
                 bool spanBelow;

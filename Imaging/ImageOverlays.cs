@@ -15,7 +15,7 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Combine two Images in various ways
+    ///     Combine two Images in various ways
     /// </summary>
     internal static class ImageOverlays
     {
@@ -149,9 +149,9 @@ namespace Imaging
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
-                var r = (int)Math.Sqrt(color1.R * color1.R + color2.R * color2.R);
-                var g = (int)Math.Sqrt(color1.G * color1.G + color2.G * color2.G);
-                var b = (int)Math.Sqrt(color1.B * color1.B + color2.B * color2.B);
+                var r = (int)Math.Sqrt((color1.R * color1.R) + (color2.R * color2.R));
+                var g = (int)Math.Sqrt((color1.G * color1.G) + (color2.G * color2.G));
+                var b = (int)Math.Sqrt((color1.B * color1.B) + (color2.B * color2.B));
                 return Color.FromArgb(ImageHelper.Clamp(r), ImageHelper.Clamp(g), ImageHelper.Clamp(b));
             });
         }

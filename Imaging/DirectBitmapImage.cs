@@ -6,7 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -14,27 +17,27 @@ using System.Windows.Media.Imaging;
 namespace Imaging
 {
     /// <summary>
-    /// Similar to DirectBitmap generate a pixel Image, should be slightly faster
+    ///     Similar to DirectBitmap generate a pixel Image, should be slightly faster
     /// </summary>
     public class DirectBitmapImage
     {
         /// <summary>
-        /// The width
-        /// </summary>
-        private readonly int _width;
-
-        /// <summary>
-        /// The height
-        /// </summary>
-        private readonly int _height;
-
-        /// <summary>
-        /// The bitmap
+        ///     The bitmap
         /// </summary>
         private readonly WriteableBitmap _bitmap;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DirectBitmapImage"/> class.
+        ///     The height
+        /// </summary>
+        private readonly int _height;
+
+        /// <summary>
+        ///     The width
+        /// </summary>
+        private readonly int _width;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DirectBitmapImage" /> class.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -49,7 +52,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Imaging.DirectBitmapImage" /> class.
+        ///     Initializes a new instance of the <see cref="T:Imaging.DirectBitmapImage" /> class.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -60,7 +63,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the pixels.
+        ///     Sets the pixels.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         public void SetPixels(IEnumerable<PixelData> pixels)
@@ -70,12 +73,12 @@ namespace Imaging
             unsafe
             {
                 // Get a pointer to the back buffer
-                byte* dataPointer = (byte*)_bitmap.BackBuffer.ToPointer();
+                var dataPointer = (byte*)_bitmap.BackBuffer.ToPointer();
 
                 foreach (var pixel in pixels)
                 {
                     // Calculate the index in the back buffer
-                    int pixelIndex = (pixel.Y * _width + pixel.X) * 4; // 4 bytes per pixel (BGRA)
+                    var pixelIndex = ((pixel.Y * _width) + pixel.X) * 4; // 4 bytes per pixel (BGRA)
 
                     // Set the pixel data
                     dataPointer[pixelIndex + 0] = pixel.B; // Blue
@@ -91,21 +94,21 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the bitmap image.
+        ///     Gets the bitmap image.
         /// </summary>
         /// <returns></returns>
         public BitmapImage GetBitmapImage()
         {
             // Convert WriteableBitmap to BitmapImage
-            BitmapImage bitmapImage = new BitmapImage();
+            var bitmapImage = new BitmapImage();
 
-            using var memoryStream = new System.IO.MemoryStream();
+            using var memoryStream = new MemoryStream();
             // Encode WriteableBitmap as a PNG to the memory stream
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(_bitmap));
             encoder.Save(memoryStream);
 
-            memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
             // Load the BitmapImage from the memory stream
             bitmapImage.BeginInit();

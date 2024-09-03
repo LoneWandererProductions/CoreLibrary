@@ -22,7 +22,7 @@ namespace Imaging
         /// <value>
         ///     The minimum value.
         /// </value>
-        public int MinValue { get; init; } = 0;
+        public int MinValue { get; init; }
 
         /// <summary>
         ///     Gets or sets the maximum value.
@@ -102,7 +102,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if [use smooth noise]; otherwise, <c>false</c>.
         /// </value>
-        public bool UseSmoothNoise { get; init; } = false;
+        public bool UseSmoothNoise { get; init; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether to use turbulence.
@@ -110,7 +110,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if [use turbulence]; otherwise, <c>false</c>.
         /// </value>
-        public bool UseTurbulence { get; init; } = false;
+        public bool UseTurbulence { get; init; }
 
         /// <summary>
         ///     Gets or sets the xy period, used for wave and wood textures.

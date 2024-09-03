@@ -328,7 +328,7 @@ namespace Imaging
         Bitmap SetPixel(Bitmap image, Point point, Color color, int radius);
 
         /// <summary>
-        /// Floods the fill scan line stack.
+        ///     Floods the fill scan line stack.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="x">The x.</param>

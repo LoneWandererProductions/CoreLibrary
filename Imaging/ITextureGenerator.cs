@@ -78,11 +78,16 @@ namespace Imaging
             int height);
 
         /// <summary>
-        ///     Generates the texture.
+        /// Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <returns>Texture Bitmap</returns>
+        /// <param name="filter">The filter.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <returns>
+        /// Texture Bitmap
+        /// </returns>
         Bitmap GenerateTexture(
             int width,
             int height,

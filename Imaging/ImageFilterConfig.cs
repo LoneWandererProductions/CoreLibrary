@@ -31,7 +31,7 @@ namespace Imaging
         /// <value>
         ///     The bias.
         /// </value>
-        public double Bias { get; init; } = 0.0;
+        public double Bias { get; init; }
 
         /// <summary>
         ///     Gets or sets the sigma.

@@ -139,7 +139,8 @@ namespace Imaging
         internal const string ErrorPath = "Error: Path is Null.";
 
         /// <summary>
-        ///     The error, min/ max value exceeded 0 or 255 (const). Value: "Error: minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue."
+        ///     The error, min/ max value exceeded 0 or 255 (const). Value: "Error: minValue and maxValue must be between 0 and
+        ///     255, and minValue must not be greater than maxValue."
         /// </summary>
         internal const string ErrorColorRange =
             "Error: minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.";

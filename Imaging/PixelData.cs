@@ -9,66 +9,66 @@
 namespace Imaging
 {
     /// <summary>
-    /// Pixel Data Container
+    ///     Pixel Data Container
     /// </summary>
     public struct PixelData
     {
         /// <summary>
-        /// Gets or sets the x.
-        ///  X-coordinate
+        ///     Gets or sets the x.
+        ///     X-coordinate
         /// </summary>
         /// <value>
-        /// The x.
+        ///     The x.
         /// </value>
         public int X { get; set; }
 
         /// <summary>
-        /// Gets or sets the y.
-        ///  Y-coordinate
+        ///     Gets or sets the y.
+        ///     Y-coordinate
         /// </summary>
         /// <value>
-        /// The y.
+        ///     The y.
         /// </value>
         public int Y { get; set; }
 
         /// <summary>
-        /// Gets or sets the r.
-        ///  Red component
+        ///     Gets or sets the r.
+        ///     Red component
         /// </summary>
         /// <value>
-        /// The r.
+        ///     The r.
         /// </value>
         public byte R { get; set; }
 
         /// <summary>
-        /// Gets or sets the g.
-        ///  Green component
+        ///     Gets or sets the g.
+        ///     Green component
         /// </summary>
         /// <value>
-        /// The g.
+        ///     The g.
         /// </value>
         public byte G { get; set; }
 
         /// <summary>
-        /// Gets or sets the b.
-        ///  Blue component
+        ///     Gets or sets the b.
+        ///     Blue component
         /// </summary>
         /// <value>
-        /// The b.
+        ///     The b.
         /// </value>
         public byte B { get; set; }
 
         /// <summary>
-        /// Gets or sets a.
-        /// Alpha component
+        ///     Gets or sets a.
+        ///     Alpha component
         /// </summary>
         /// <value>
-        /// a.
+        ///     a.
         /// </value>
         public byte A { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PixelData"/> struct.
+        ///     Initializes a new instance of the <see cref="PixelData" /> struct.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -86,5 +86,4 @@ namespace Imaging
             A = a;
         }
     }
-
 }

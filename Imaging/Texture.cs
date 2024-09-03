@@ -285,7 +285,8 @@ namespace Imaging
                 {
                     var turbulenceValue = Turbulence(x, y, turbulenceSize);
                     var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
-                    var yValue = ((y - (height / 2.0)) / height) + (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+                    var yValue = ((y - (height / 2.0)) / height) +
+                                 (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 
                     var sineValue = 22.0 *
                                     Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +

@@ -22,8 +22,6 @@ namespace Imaging
     /// </summary>
     internal static class ImageHelper
     {
-
-
         /// <summary>
         ///     Gets all points in a Circle.
         ///     Uses the  Bresenham's circle drawing algorithm.
@@ -157,7 +155,9 @@ namespace Imaging
             }
 
             // If all pixels are transparent, return a zero-sized rectangle
-            return !hasNonTransparentPixel ? new Rectangle(0, 0, 0, 0) : new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+            return !hasNonTransparentPixel
+                ? new Rectangle(0, 0, 0, 0)
+                : new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
         }
 
         /// <summary>
@@ -174,7 +174,8 @@ namespace Imaging
             Trace.WriteLine($"Stack Trace: {ex.StackTrace}");
 
             // Optionally, rethrow or handle further
-            if (ex is ArgumentException or InvalidOperationException or NotSupportedException or UriFormatException or IOException)
+            if (ex is ArgumentException or InvalidOperationException or NotSupportedException or UriFormatException
+                or IOException)
             {
                 throw new ApplicationException("An error occurred while processing the image.", ex);
             }
@@ -268,7 +269,7 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static double Interpolate(double a, double b, double t)
         {
-            return a * (1 - t) + b * t;
+            return (a * (1 - t)) + (b * t);
         }
 
         /// <summary>

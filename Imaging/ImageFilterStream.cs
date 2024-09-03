@@ -33,7 +33,7 @@ namespace Imaging
     internal static class ImageFilterStream
     {
         /// <summary>
-        /// The default half window size
+        ///     The default half window size
         /// </summary>
         private const int DefaultHalfWindowSize = 5;
 
@@ -550,7 +550,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Pencils the sketch effect.
+        ///     Pencils the sketch effect.
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Filtered Image</returns>
@@ -602,7 +602,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Determines the region size and shape.
+        ///     Determines the region size and shape.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -616,7 +616,7 @@ namespace Imaging
             // Compute gradient magnitude using Sobel operators
             var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
             var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
-            var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
+            var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
 
             // Compute local variance
             var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
@@ -625,13 +625,13 @@ namespace Imaging
             var saliency = GetSaliencyValue(dbmBase, x, y);
 
             // Combine metrics to adjust region size
-            var scale = (1.0 / (1.0 + gradientMagnitude)) * (1.0 / (1.0 + variance)) * (1.0 / (1.0 + saliency));
+            var scale = 1.0 / (1.0 + gradientMagnitude) * (1.0 / (1.0 + variance)) * (1.0 / (1.0 + saliency));
             regionWidth = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
             regionHeight = Math.Max(1, (int)(baseHalfWindow * 2 * scale));
         }
 
         /// <summary>
-        /// Applies the kernel.
+        ///     Applies the kernel.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -659,7 +659,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Computes the local variance.
+        ///     Computes the local variance.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -693,7 +693,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the saliency value.
+        ///     Gets the saliency value.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -724,7 +724,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the pixel intensity.
+        ///     Gets the pixel intensity.
         /// </summary>
         /// <param name="dbmBase">The DBM base.</param>
         /// <param name="x">The x.</param>
@@ -770,7 +770,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Defines the regions.
+        ///     Defines the regions.
         /// </summary>
         /// <param name="centerX">The center x.</param>
         /// <param name="centerY">The center y.</param>
@@ -780,23 +780,25 @@ namespace Imaging
         /// <param name="step">The step, 5 is an example step for size variation, optional.</param>
         /// <param name="offset">The offset. 10 is an example offset value, optional.</param>
         /// <returns>
-        /// Area of the image
+        ///     Area of the image
         /// </returns>
-        private static IEnumerable<Rectangle> DefineRegions(int centerX, int centerY, int width, int height, int numAdditionalRegions = 3, int step = 5, int offset = 10)
+        private static IEnumerable<Rectangle> DefineRegions(int centerX, int centerY, int width, int height,
+            int numAdditionalRegions = 3, int step = 5, int offset = 10)
         {
             var regions = new List<Rectangle>
             {
                 // Base region
-                new Rectangle(centerX - (width / 2), centerY - (height / 2), width, height)
+                new(centerX - (width / 2), centerY - (height / 2), width, height)
             };
 
             for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
             {
-                var newWidth = width - i * step;
-                var newHeight = height - i * step;
+                var newWidth = width - (i * step);
+                var newHeight = height - (i * step);
                 if (newWidth > 0 && newHeight > 0)
                 {
-                    regions.Add(new Rectangle(centerX - (newWidth / 2) + offset * i, centerY - (newHeight / 2) + offset * i, newWidth, newHeight));
+                    regions.Add(new Rectangle(centerX - (newWidth / 2) + (offset * i),
+                        centerY - (newHeight / 2) + (offset * i), newWidth, newHeight));
                 }
             }
 
@@ -811,7 +813,9 @@ namespace Imaging
         /// <returns>Variance</returns>
         private static double CalculateVariance(IReadOnlyCollection<Color> pixels, Color meanColor)
         {
-            var variance = pixels.Sum(pixel => Math.Pow(pixel.R - meanColor.R, 2) + Math.Pow(pixel.G - meanColor.G, 2) + Math.Pow(pixel.B - meanColor.B, 2));
+            var variance = pixels.Sum(pixel =>
+                Math.Pow(pixel.R - meanColor.R, 2) + Math.Pow(pixel.G - meanColor.G, 2) +
+                Math.Pow(pixel.B - meanColor.B, 2));
 
             return variance / pixels.Count;
         }

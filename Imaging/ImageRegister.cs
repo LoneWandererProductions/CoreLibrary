@@ -33,28 +33,36 @@ namespace Imaging
         private static readonly Dictionary<ImageFilters, HashSet<string>> FilterPropertyMap = new()
         {
             {
-                ImageFilters.GaussianBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.GaussianBlur,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.BoxBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.BoxBlur,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.MotionBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.MotionBlur,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Sharpen, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Sharpen,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Emboss, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Emboss,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Laplacian, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Laplacian,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.EdgeEnhance, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.EdgeEnhance,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.UnsharpMask,
+                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
@@ -70,7 +78,8 @@ namespace Imaging
         private static readonly Dictionary<TextureType, HashSet<string>> TexturePropertyMap = new()
         {
             {
-                TextureType.Noise, new HashSet<string>
+                TextureType.Noise,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.MinValue),
                     nameof(TextureConfig.MaxValue),
@@ -81,7 +90,8 @@ namespace Imaging
                 }
             },
             {
-                TextureType.Clouds, new HashSet<string>
+                TextureType.Clouds,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.MinValue),
                     nameof(TextureConfig.MaxValue),
@@ -90,7 +100,8 @@ namespace Imaging
                 }
             },
             {
-                TextureType.Marble, new HashSet<string>
+                TextureType.Marble,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
                     nameof(TextureConfig.XPeriod),
@@ -101,7 +112,8 @@ namespace Imaging
                 }
             },
             {
-                TextureType.Wave, new HashSet<string>
+                TextureType.Wave,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
                     nameof(TextureConfig.XyPeriod),
@@ -110,7 +122,8 @@ namespace Imaging
                 }
             },
             {
-                TextureType.Wood, new HashSet<string>
+                TextureType.Wood,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.Alpha),
                     nameof(TextureConfig.XyPeriod),
@@ -120,7 +133,8 @@ namespace Imaging
                 }
             },
             {
-                TextureType.Crosshatch, new HashSet<string>
+                TextureType.Crosshatch,
+                new HashSet<string>
                 {
                     nameof(TextureConfig.LineSpacing),
                     nameof(TextureConfig.LineColor),
@@ -176,39 +190,27 @@ namespace Imaging
         };
 
         /// <summary>
-        /// The kernel 45 degrees
-        /// Defines directional edge detection kernel for crosshatching
+        ///     The kernel 45 degrees
+        ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal static readonly double[,] Kernel45Degrees =
-        {
-             { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 }
-        };
+        internal static readonly double[,] Kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
 
         /// <summary>
-        /// The kernel 135 degrees
-        /// Defines directional edge detection kernel for crosshatching
+        ///     The kernel 135 degrees
+        ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal static readonly double[,] Kernel135Degrees =
-        {
-            { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 }
-        };
+        internal static readonly double[,] Kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
 
 
         /// <summary>
-        /// The sobel x kernel
+        ///     The sobel x kernel
         /// </summary>
-        internal static readonly int[,] SobelX =
-        { 
-            { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } 
-        };
+        internal static readonly int[,] SobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
         /// <summary>
-        /// The sobel y kernel
+        ///     The sobel y kernel
         /// </summary>
-        internal static readonly int[,] SobelY =
-        { 
-            { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } 
-        };
+        internal static readonly int[,] SobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image
@@ -228,7 +230,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix GrayScale = new(new[]
         {
-            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -238,7 +241,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Invert = new(new[]
         {
-            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
+            new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
         });
 
         /// <summary>
@@ -248,7 +252,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Sepia = new(new[]
         {
-            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 }, new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
+            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -258,7 +263,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Polaroid = new(new[]
         {
-            new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 }, new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
+            new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
+            new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
             new[] { 0.03f, 0.05f, -0.02f, 0, 1 }
         });
 
@@ -269,7 +275,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix BlackAndWhite = new(new[]
         {
-            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
+            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
         });
 
         /// <summary>
@@ -278,7 +285,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Brightness = new(new[]
         {
-            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -287,7 +295,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Contrast = new(new[]
         {
-            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -296,7 +305,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix HueShift = new(new[]
         {
-            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
+            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -305,7 +315,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix ColorBalance = new(new[]
         {
-            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
@@ -314,7 +325,8 @@ namespace Imaging
         /// </summary>
         internal static readonly ColorMatrix Vintage = new(new[]
         {
-            new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 }, new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+            new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 },
+            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
