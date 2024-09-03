@@ -204,7 +204,7 @@ namespace Imaging
         /// <exception cref="IOException">Could not find the File</exception>
         public BitmapImage GetBitmapImage(string path)
         {
-            return ImageStream.GetBitmapImage(path);
+            return ImageStreamMedia.GetBitmapImage(path);
         }
 
         /// <inheritdoc />
@@ -225,7 +225,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         public BitmapImage GetBitmapImage(string path, int width, int height)
         {
-            return ImageStream.GetBitmapImage(path, width, height);
+            return ImageStreamMedia.GetBitmapImage(path, width, height);
         }
 
         /// <inheritdoc />
@@ -242,7 +242,7 @@ namespace Imaging
         /// <exception cref="IOException">Could not find the File</exception>
         public BitmapImage GetBitmapImageFileStream(string path)
         {
-            return ImageStream.GetBitmapImageFileStream(path);
+            return ImageStreamMedia.GetBitmapImageFileStream(path);
         }
 
         /// <inheritdoc />
@@ -263,7 +263,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         public BitmapImage GetBitmapImageFileStream(string path, int width, int height)
         {
-            return ImageStream.GetBitmapImageFileStream(path, width, height);
+            return ImageStreamMedia.GetBitmapImageFileStream(path, width, height);
         }
 
         /// <inheritdoc />
@@ -277,7 +277,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         public BitmapImage BitmapToBitmapImage(Bitmap image)
         {
-            return ImageStream.BitmapToBitmapImage(image);
+            return ImageStreamMedia.BitmapToBitmapImage(image);
         }
 
         /// <inheritdoc />
@@ -291,7 +291,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         public Bitmap BitmapImageToBitmap(BitmapImage image)
         {
-            return ImageStream.BitmapImageToBitmap(image);
+            return ImageStreamMedia.BitmapImageToBitmap(image);
         }
 
         /// <inheritdoc />

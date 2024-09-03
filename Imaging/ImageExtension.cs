@@ -18,7 +18,7 @@ namespace Imaging
         /// </returns>
         public static BitmapImage ToBitmapImage(this Bitmap bmp)
         {
-            return ImageStream.BitmapToBitmapImage(bmp);
+            return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Imaging
         /// </returns>
         public static Bitmap ToBitmap(this BitmapImage bmp)
         {
-            return ImageStream.BitmapImageToBitmap(bmp);
+            return ImageStreamMedia.BitmapImageToBitmap(bmp);
         }
 
         /// <summary>
