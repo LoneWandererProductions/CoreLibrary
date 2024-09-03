@@ -122,22 +122,22 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void ConfigConnection()
         {
-            _target = new SqliteDatabase("Path", "Name of Db", 2);
+            var config = new SqliteDatabase("Path", "Name of Db", 2);
 
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+            config.SendMessage += SharedHelperClass.DebugPrints;
 
-            _target.DbVersion = 3;
+            config.DbVersion = 3;
 
-            _target.MaxLinesError = 10;
+            config.MaxLinesError = 10;
 
-            _target.MaxLinesLog = 20;
+            config.MaxLinesLog = 20;
 
-            var cache = _target.GetConnectionDetails();
+            var cache = config.GetConnectionDetails();
 
-            Assert.AreEqual("SqlLiteDB.db", cache.DbName,
+            Assert.AreEqual("Name of Db", cache.DbName,
                 "Test failed Wrong Data: " + cache.DbName);
 
-            Assert.IsTrue( cache.Location.Contains(@"\CoreLibrary\CommonLibrarySqlLiteTests\bin\Debug\"),
+            Assert.IsTrue( cache.Location.Contains(@"Path"),
                 "Test failed Wrong Data: " + cache.Location);
 
             Assert.AreEqual(3, cache.DbVersion,
