@@ -574,6 +574,66 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Adjusts the hue.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="hueShift">The hue shift.</param>
+        /// <returns>
+        /// Bitmap with adjusted Hue.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Bitmap AdjustHue(Bitmap image, double hueShift)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Adjusts the saturation.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="saturationFactor">The saturation factor.</param>
+        /// <returns>
+        /// Bitmap with adjusted Saturation.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
+        {
+            return ImageStreamHsv.AdjustSaturation(image, saturationFactor);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>
+        /// Bitmap with adjusted brightness.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
+        {
+           return ImageStreamHsv.AdjustBrightness(image, brightnessFactor);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Applies the gamma correction.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="gamma">The gamma.</param>
+        /// <returns>
+        /// Bitmap with adjusted Gamma.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
+        {
+            return ImageStreamHsv.ApplyGammaCorrection(image, gamma);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

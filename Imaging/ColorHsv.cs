@@ -97,17 +97,17 @@ namespace Imaging
         /// <summary>
         ///     The Hue Value, in our Case x.
         /// </summary>
-        public int R { get; private set; }
+        public int R { get; internal set; }
 
         /// <summary>
         ///     The s Value, saturation.
         /// </summary>
-        public int G { get; private set; }
+        public int G { get; internal set; }
 
         /// <summary>
         ///     The v, value
         /// </summary>
-        public int B { get; private set; }
+        public int B { get; internal set; }
 
         /// <summary>
         ///     The A, value, Alpha Channel
@@ -347,8 +347,8 @@ namespace Imaging
         /// <summary>
         ///     Overwrite not equal
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">The left Operator</param>
+        /// <param name="right">The right Operator</param>
         /// <returns>Check if it is not equal</returns>
         public static bool operator !=(ColorHsv left, ColorHsv right)
         {
@@ -358,8 +358,8 @@ namespace Imaging
         /// <summary>
         ///     Overwrite smaller as
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">The left Operator</param>
+        /// <param name="right">The right Operator</param>
         /// <returns>Check if smaller</returns>
         public static bool operator <(ColorHsv left, ColorHsv right)
         {
@@ -369,8 +369,8 @@ namespace Imaging
         /// <summary>
         ///     Overwrite bigger as
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">The left Operator</param>
+        /// <param name="right">The right Operator</param>
         /// <returns>Check if bigger</returns>
         public static bool operator >(ColorHsv left, ColorHsv right)
         {

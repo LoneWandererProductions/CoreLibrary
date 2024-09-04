@@ -413,6 +413,38 @@ namespace Imaging
         Bitmap AmplitudeImages(Image imgOne, Image imgTwo);
 
         /// <summary>
+        /// Adjusts the hue.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="hueShift">The hue shift.</param>
+        /// <returns>Bitmap with adjusted Hue.</returns>
+        Bitmap AdjustHue(Bitmap image, double hueShift);
+
+        /// <summary>
+        /// Adjusts the saturation.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="saturationFactor">The saturation factor.</param>
+        /// <returns>Bitmap with adjusted Saturation.</returns>
+        Bitmap AdjustSaturation(Bitmap image, double saturationFactor);
+
+        /// <summary>
+        /// Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>Bitmap with adjusted brightness.</returns>
+        Bitmap AdjustBrightness(Bitmap image, double brightnessFactor);
+
+        /// <summary>
+        /// Applies the gamma correction.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="gamma">The gamma.</param>
+        /// <returns>Bitmap with adjusted Gamma.</returns>
+        Bitmap ApplyGammaCorrection(Bitmap image, double gamma);
+
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

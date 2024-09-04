@@ -273,14 +273,16 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Clamps the specified value.
+        /// Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <returns>Value that is within the color range</returns>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Clamp(double value)
+        internal static int Clamp(double value, double min = 0, double max = 255)
         {
-            return (int)Math.Max(0, Math.Min(value, 255));
+            return (int)Math.Max(min, Math.Min(max, value));
         }
 
         /// <summary>
