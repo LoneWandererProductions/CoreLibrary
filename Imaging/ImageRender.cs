@@ -584,7 +584,7 @@ namespace Imaging
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap AdjustHue(Bitmap image, double hueShift)
         {
-            throw new NotImplementedException();
+            return ImageStreamHsv.AdjustHue(image, hueShift);
         }
 
         /// <inheritdoc />
