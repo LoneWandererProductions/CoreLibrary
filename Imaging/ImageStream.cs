@@ -5,6 +5,7 @@
  * PURPOSE:     Does all the leg work for the Image operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
+ *              https://www.csharphelper.com/howtos/howto_colorize2.html
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -807,5 +808,9 @@ namespace Imaging
             // Return the modified image as a Bitmap
             return result.Bitmap;
         }
+
+
+        //TODO ADD Recolor:
+        //https://www.csharphelper.com/howtos/howto_colorize2.html
     }
 }
