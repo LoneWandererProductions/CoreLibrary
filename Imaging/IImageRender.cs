@@ -445,6 +445,15 @@ namespace Imaging
         Bitmap ApplyGammaCorrection(Bitmap image, double gamma);
 
         /// <summary>
+        /// Adjusts the color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>Color adjusted Bitmap</returns>
+        Bitmap AdjustColor(Bitmap image, Color sourceColor, Color targetColor);
+
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

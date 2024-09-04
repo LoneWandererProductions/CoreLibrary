@@ -809,8 +809,52 @@ namespace Imaging
             return result.Bitmap;
         }
 
+        /// <summary>
+        /// Adjusts the color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>Color Adjusted Bitmap</returns>
+        internal static Bitmap AdjustColor(Bitmap image, Color sourceColor, Color targetColor)
+        {
+            // Create a ColorMatrix that transforms sourceColor into targetColor
+            ColorMatrix cm = CreateColorMatrix(sourceColor, targetColor);
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(cm);
 
-        //TODO ADD Recolor:
-        //https://www.csharphelper.com/howtos/howto_colorize2.html
+            // Create a new image to hold the adjusted image.
+            Bitmap result = new Bitmap(image.Width, image.Height);
+            using Graphics g = Graphics.FromImage(result);
+            // Draw the original image on the new image using the color matrix.
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+            g.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates the color matrix.
+        /// </summary>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>The color matrix</returns>
+        private static ColorMatrix CreateColorMatrix(Color sourceColor, Color targetColor)
+        {
+            // Calculate the difference between source and target colors for each channel
+            float rRatio = targetColor.R / 255f - sourceColor.R / 255f;
+            float gRatio = targetColor.G / 255f - sourceColor.G / 255f;
+            float bRatio = targetColor.B / 255f - sourceColor.B / 255f;
+
+            return new ColorMatrix(new float[][]
+            {
+                new float[] {1 + rRatio, gRatio, bRatio, 0, 0},  // Red
+                new float[] {rRatio, 1 + gRatio, bRatio, 0, 0},  // Green
+                new float[] {rRatio, gRatio, 1 + bRatio, 0, 0},  // Blue
+                new float[] {0, 0, 0, 1, 0}, // Alpha
+                new float[] {0, 0, 0, 0, 1} // Translation
+            });
+        }
+
     }
 }

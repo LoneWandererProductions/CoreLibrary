@@ -615,7 +615,7 @@ namespace Imaging
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
         {
-           return ImageStreamHsv.AdjustBrightness(image, brightnessFactor);
+            return ImageStreamHsv.AdjustBrightness(image, brightnessFactor);
         }
 
         /// <inheritdoc />
@@ -631,6 +631,21 @@ namespace Imaging
         public Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
         {
             return ImageStreamHsv.ApplyGammaCorrection(image, gamma);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Adjusts the color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>
+        /// Color adjusted Bitmap
+        /// </returns>
+        public Bitmap AdjustColor(Bitmap image, Color sourceColor, Color targetColor)
+        {
+            return ImageStream.AdjustColor(image, sourceColor, targetColor);
         }
 
         /// <inheritdoc />

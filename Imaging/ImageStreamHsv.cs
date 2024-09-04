@@ -43,11 +43,7 @@ namespace Imaging
         /// <returns>Processed Image</returns>
         internal static Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
         {
-            return ProcessImage(image, (colorHsv) =>
-            {
-                // Adjust saturation
-                colorHsv.S = ImageHelper.Clamp(colorHsv.S * saturationFactor, 0, 1);
-            });
+            return ProcessImage(image, (colorHsv) => colorHsv.S = ImageHelper.Clamp(colorHsv.S * saturationFactor, 0, 1));
         }
 
         /// <summary>
@@ -58,11 +54,7 @@ namespace Imaging
         /// <returns>Processed Image</returns>
         internal static Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
         {
-            return ProcessImage(image, (colorHsv) =>
-            {
-                // Adjust brightness (value)
-                colorHsv.V = ImageHelper.Clamp(colorHsv.V * brightnessFactor, 0, 1);
-            });
+            return ProcessImage(image, (colorHsv) => colorHsv.V = ImageHelper.Clamp(colorHsv.V * brightnessFactor, 0, 1));
         }
 
         /// <summary>
