@@ -30,42 +30,6 @@ namespace Imaging
             return cifLayers;
         }
 
-        // Generate a Bitmap image from LIF layers
-        internal static Bitmap? GenerateImageFromLif(string path)
-        {
-            var layers = LoadLif(path);
-            if (layers.Count == 0) return null;
-
-            var baseLayer = layers.FirstOrDefault();
-
-            if (baseLayer == null) return null;
-
-            var width = layers.Max(layer => layer.Values.SelectMany(s => s).Max() % width + 1);
-            var height = layers.Max(layer => layer.Values.SelectMany(s => s).Max() / width + 1);
-            var image = new Bitmap(width, height);
-            var dbm = DirectBitmap.GetInstance(image);
-
-            // Apply base layer
-            foreach (var (color, ids) in baseLayer)
-            {
-                dbm.SetArea(ids, color);
-            }
-
-            // Apply subsequent delta layers
-            foreach (var layer in layers.Skip(1))
-            {
-                if (layer == null) continue;
-
-                // Apply changes from delta layer
-                foreach (var (color, ids) in layer)
-                {
-                    dbm.SetArea(ids, color);
-                }
-            }
-
-            return dbm.Bitmap;
-        }
-
         // Save an image as a LIF file
         internal static void SaveImageAsLif(Bitmap image, string path)
         {
