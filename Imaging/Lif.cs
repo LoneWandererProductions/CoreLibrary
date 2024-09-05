@@ -1,42 +1,64 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/Lif.cs
- * PURPOSE:     Custom Image Format object, an extension of Cif, I'd like to create an layered Cif
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable MemberCanBePrivate.Global
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using Imaging;
 
-namespace Imaging
+public class Lif
 {
-    public class Lif
+    public List<Cif> Layers { get; set; } = new List<Cif>();
+    public List<LayerSettings> LayerSettings { get; set; } = new List<LayerSettings>();
+
+    public Lif() { }
+
+    public Lif(List<Cif> layers, List<LayerSettings> layerSettings)
     {
-        public List<Bitmap> Layers { get; set; } = new List<Bitmap>();
+        Layers = layers;
+        LayerSettings = layerSettings;
+    }
 
-        public Lif() { }
+    // Merge all visible layers to create the final image
+    public Bitmap MergeLayers()
+    {
+        if (Layers.Count == 0) return null;
 
-        public Lif(List<Bitmap> layers)
+        // Start with base layer (always visible)
+        Cif finalImage = Layers[0];
+
+        for (int i = 1; i < Layers.Count; i++)
         {
-            Layers = layers;
+            var settings = LayerSettings[i];
+            if (settings.IsVisible)
+            {
+                Cif deltaLayer = Layers[i];
+                //ApplyDelta(finalImage, deltaLayer, settings);
+            }
         }
 
-        // Convert Lif to a Bitmap
-        public List<Dictionary<Color, SortedSet<int>>> ToBitmap(string lifPath)
-        {
-            // Generate final bitmap from LIF
-            return LifProcessing.LoadLif(lifPath);
-        }
+        return finalImage.GetImage();
+    }
 
-        // Save Lif to a file
-        public void Save(string path, List<Bitmap> Layers)
+    // Apply delta logic for combining Cif layers
+    private void ApplyDelta(Cif baseImage, Cif deltaLayer, LayerSettings settings)
+    {
+        foreach (var (color, pixels) in deltaLayer.CifImage)
         {
+            foreach (var pixel in pixels)
+            {
+                var x = pixel % baseImage.Width;
+                var y = pixel / baseImage.Width;
+
+                //var baseColor = baseImage.GetPixel(x, y);
+                //var blendedColor = ApplyAlpha(baseColor, color, settings.Alpha);
+
+                //baseImage.SetPixel(x, y, blendedColor);
+            }
         }
+    }
+
+    private Color ApplyAlpha(Color baseColor, Color deltaColor, float alpha)
+    {
+        int r = (int)(deltaColor.R * alpha + baseColor.R * (1 - alpha));
+        int g = (int)(deltaColor.G * alpha + baseColor.G * (1 - alpha));
+        int b = (int)(deltaColor.B * alpha + baseColor.B * (1 - alpha));
+        return Color.FromArgb(r, g, b);
     }
 }

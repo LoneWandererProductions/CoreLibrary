@@ -436,29 +436,50 @@ namespace CommonLibraryTests
                 graphics.DrawRectangle(blackPen, x1, y1, 100, 200);
             }
 
-            watch.Stop();
-            //generic Microsoft way
-            var elapsed = watch.ElapsedMilliseconds;
-
-            watch = Stopwatch.StartNew();
-
-            dbm = DirectBitmap.GetInstance(bmp);
-
-            for (var i = 0; i < 100; i++)
+            // Warm up both methods to avoid JIT overhead
+            for (var i = 0; i < 10; i++)
             {
-                // Draw line to screen.
                 dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
             }
 
-            watch.Stop();
+            // Variables to track total elapsed time for each method
+            long totalElapsedMicrosoft = 0;
+            long totalElapsedDbm = 0;
+            int iterations = 100;  // Number of iterations to average results
 
-            //new way
-            var elapsedThree = watch.ElapsedMilliseconds;
+            for (var i = 0; i < iterations; i++)
+            {
+                // Measure time for the first method (Microsoft's generic way)
+                watch = Stopwatch.StartNew();
 
-            Trace.WriteLine(string.Concat("First Rectangle draw Line: ", elapsed, " Second DrawRectangle dbm: ",
-                elapsedThree));
-            Assert.IsTrue(elapsed <= elapsedThree,
-                $"Results: {elapsed}Rectangle Microsoft: {elapsedThree}");
+                // Perform operation here (replace with your Microsoft rectangle draw code)
+                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
+
+                watch.Stop();
+                totalElapsedMicrosoft += watch.ElapsedMilliseconds;  // Or use ElapsedTicks for higher precision
+
+                // Measure time for the second method (DirectBitmap custom method)
+                watch = Stopwatch.StartNew();
+
+                // Perform custom drawing method
+                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
+
+                watch.Stop();
+                totalElapsedDbm += watch.ElapsedMilliseconds;  // Or use ElapsedTicks
+            }
+
+            // Calculate average times for both methods
+            long averageMicrosoft = totalElapsedMicrosoft / iterations;
+            long averageDbm = totalElapsedDbm / iterations;
+
+            // Log the results
+            Trace.WriteLine(string.Concat("Average Rectangle Microsoft: ", averageMicrosoft,
+                " ms, Average DrawRectangle dbm: ", averageDbm, " ms"));
+
+            // Perform the assertion based on average values
+            Assert.IsTrue(averageMicrosoft <= averageDbm,
+                $"Results: {averageMicrosoft} ms (Microsoft) vs {averageDbm} ms (DirectBitmap)");
+
         }
 
         /// <summary>

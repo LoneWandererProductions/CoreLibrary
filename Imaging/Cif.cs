@@ -319,7 +319,7 @@ namespace Imaging
         /// </summary>
         /// <returns>Cif Converted to Image</returns>
         [return: MaybeNull]
-        public Image GetImage()
+        public Bitmap GetImage()
         {
             if (CifImage == null)
             {
