@@ -9,11 +9,11 @@ namespace Imaging
 {
     public static class LifProcessing
     {
-        //TODO use for detlta!
+        //TODO use for delta!
 
         /// <summary>
         /// Ares the color counts similar.
-        /// A Color Histogram needed for delta calculation if it is even usefull
+        /// A Color Histogram needed for delta calculation if it is even useful
         /// </summary>
         /// <param name="colorCount1">The color count1.</param>
         /// <param name="colorCount2">The color count2.</param>
