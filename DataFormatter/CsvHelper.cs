@@ -44,6 +44,21 @@ namespace DataFormatter
         }
 
         /// <summary>
+        /// Writes the content of the file.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="separator">The separator.</param>
+        /// <returns>Split string</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static List<List<string>> WriteFileContent(string input, char separator)
+        {
+            var lines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return lines
+                .Select(line => SplitLine(line, separator))
+                .ToList();
+        }
+
+        /// <summary>
         /// Shared method to split line by separator
         /// </summary>
         /// <param name="line">The line.</param>

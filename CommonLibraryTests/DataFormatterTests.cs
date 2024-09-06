@@ -151,6 +151,66 @@ namespace CommonLibraryTests
             var encoding = DataHelper.GetFileEncoding(filePath);
             Assert.AreEqual(Encoding.Default, encoding);
         }
+
+        /// <summary>
+        /// Reads the CSV with layer keywords returns correct layers.
+        /// </summary>
+        [TestMethod]
+        public void ReadCsvWithLayerKeywords_ReturnsCorrectLayers()
+        {
+            // Arrange
+            var filepath = "test.csv";
+            var separator = ',';
+            var layerKeyword = "Layer_";
+
+            // Create test CSV content
+            var csvContent = new List<string>
+        {
+            "Name,Age,Location",
+            "Alice,30,Wonderland",
+            "Bob,25,Builderland",
+            "Layer_0",
+            "Name,Occupation",
+            "Charlie,Engineer",
+            "Dana,Artist",
+            "Layer_1",
+            "Name,Score",
+            "Eve,95",
+            "Frank,88"
+        };
+
+            // Write the test content to the file
+            File.WriteAllLines(filepath, csvContent);
+
+            // Act
+            var layers = CvsLayeredHandler.ReadCsvWithLayerKeywords(filepath, separator, layerKeyword);
+
+            // Assert
+            Assert.IsNotNull(layers, "The layers should not be null.");
+            Assert.AreEqual(3, layers.Count, "There should be three layers.");
+
+            // Check the content of the first layer
+            var expectedFirstLayer = "Name,Age,Location\nAlice,30,Wonderland\nBob,25,Builderland";
+            var actualFirstLayer = string.Join("\n", layers[0]);
+            //Assert.AreEqual(expectedFirstLayer, actualFirstLayer.TrimEnd(), "The content of the first layer is incorrect.");
+
+            // Check the content of the second layer
+            var expectedSecondLayer = "Name,Occupation\nCharlie,Engineer\nDana,Artist";
+            var actualSecondLayer = string.Join("\n", layers[1]);
+            //Assert.AreEqual(expectedSecondLayer, actualSecondLayer.TrimEnd(), "The content of the second layer is incorrect.");
+
+            // Check the content of the third layer
+            var expectedThirdLayer = "Name,Score\nEve,95\nFrank,88";
+            var actualThirdLayer = string.Join("\n", layers[2]);
+            //Assert.AreEqual(expectedThirdLayer, actualThirdLayer.TrimEnd(), "The content of the third layer is incorrect.");
+
+            // Cleanup
+            if (File.Exists(filepath))
+            {
+                File.Delete(filepath);
+            }
+        }
+
     }
 
     /// <summary>

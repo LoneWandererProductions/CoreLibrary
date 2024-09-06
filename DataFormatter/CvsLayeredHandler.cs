@@ -47,29 +47,36 @@ namespace DataFormatter
         /// <param name="separator">The separator.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of oure special format file</returns>
-        public static List<List<List<string>>> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
+        public static List<string> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
         {
             var lst = CsvHelper.ReadFileContent(filepath);
             if (lst == null) return null;
 
-            var layers = new List<List<List<string>>>();
-            var currentLayer = new List<List<string>>();
+            var layers = new List<string>();
+            var currentLayer = new StringBuilder(); // Use StringBuilder to accumulate lines for each layer
 
             foreach (var line in lst)
             {
+                // When the layer keyword is encountered, store the current layer
                 if (line.StartsWith(layerKeyword))
                 {
-                    layers.Add(currentLayer);
-                    currentLayer = new List<List<string>>();
+                    if (currentLayer.Length > 0)
+                    {
+                        layers.Add(currentLayer.ToString().TrimEnd()); // Add the current layer string and trim the last newline
+                    }
+                    currentLayer = new StringBuilder(); // Start a new layer
                 }
                 else
                 {
-                    var parts = CsvHelper.SplitLine(line, separator);
-                    currentLayer.Add(parts);
+                    currentLayer.AppendLine(line); // Append the line to the current layer with a newline
                 }
             }
 
-            if (currentLayer.Any()) layers.Add(currentLayer);
+            // Add the last layer if there are any remaining lines
+            if (currentLayer.Length > 0)
+            {
+                layers.Add(currentLayer.ToString().TrimEnd()); // Trim the trailing newline
+            }
 
             return layers;
         }
