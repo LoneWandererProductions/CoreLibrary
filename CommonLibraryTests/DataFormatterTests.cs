@@ -192,23 +192,45 @@ namespace CommonLibraryTests
             // Check the content of the first layer
             var expectedFirstLayer = "Name,Age,Location\nAlice,30,Wonderland\nBob,25,Builderland";
             var actualFirstLayer = string.Join("\n", layers[0]);
-            //Assert.AreEqual(expectedFirstLayer, actualFirstLayer.TrimEnd(), "The content of the first layer is incorrect.");
+            Assert.AreEqual(
+                NormalizeLineEndings(expectedFirstLayer).TrimEnd(),
+                NormalizeLineEndings(actualFirstLayer).TrimEnd(),
+                "The content of the first layer is incorrect."
+            );
 
             // Check the content of the second layer
             var expectedSecondLayer = "Name,Occupation\nCharlie,Engineer\nDana,Artist";
             var actualSecondLayer = string.Join("\n", layers[1]);
-            //Assert.AreEqual(expectedSecondLayer, actualSecondLayer.TrimEnd(), "The content of the second layer is incorrect.");
+            Assert.AreEqual(
+                NormalizeLineEndings(expectedSecondLayer).TrimEnd(),
+                NormalizeLineEndings(actualSecondLayer).TrimEnd(),
+                "The content of the second layer is incorrect."
+            );
 
             // Check the content of the third layer
             var expectedThirdLayer = "Name,Score\nEve,95\nFrank,88";
             var actualThirdLayer = string.Join("\n", layers[2]);
-            //Assert.AreEqual(expectedThirdLayer, actualThirdLayer.TrimEnd(), "The content of the third layer is incorrect.");
+            Assert.AreEqual(
+                NormalizeLineEndings(expectedThirdLayer).TrimEnd(),
+                NormalizeLineEndings(actualThirdLayer).TrimEnd(),
+                "The content of the third layer is incorrect."
+            );
 
             // Cleanup
             if (File.Exists(filepath))
             {
                 File.Delete(filepath);
             }
+        }
+
+        /// <summary>
+        /// Normalizes the line endings.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>Unify Newline stuff</returns>
+        private string NormalizeLineEndings(string input)
+        {
+            return input.Replace("\r\n", "\n").Replace("\r", "\n");
         }
 
     }
