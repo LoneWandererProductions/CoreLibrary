@@ -1,8 +1,15 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     DataFormatter
+ * FILE:        DataFormatter/CsvHandler.cs
+ * PURPOSE:     SImple Csv reader/writer
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -22,32 +29,10 @@ namespace DataFormatter
         [return: MaybeNull]
         public static List<List<string>> ReadCsv(string filepath, char separator)
         {
-            if (string.IsNullOrEmpty(filepath))
-            {
-                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
-            }
+            var lst = CsvHelper.ReadFileContent(filepath);
+            if (lst == null) return null;
 
-            try
-            {
-                var lst = ReadText.ReadFile(filepath);
-                if (lst == null)
-                {
-                    return null;
-                }
-
-                var enums = new List<List<string>>(lst.Count);
-
-                enums.AddRange(lst.Select(item => DataHelper.GetParts(item, separator))
-                    .Select(subs => subs.ConvertAll(s => s.Trim())));
-
-                return enums;
-            }
-            catch (Exception ex)
-            {
-                // Log exception or handle it as needed
-                Trace.WriteLine(string.Concat(DataFormatterResources.ErrorFileEmpty, ex.Message));
-                return null;
-            }
+            return lst.ConvertAll(item => CsvHelper.SplitLine(item, separator));
         }
 
         /// <summary>
@@ -122,46 +107,17 @@ namespace DataFormatter
         /// <param name="filepath">The filepath.</param>
         /// <param name="csv">The CSV data.</param>
         /// <param name="separator">Possible file splitter, if not set;</param>
-        public static void WriteCsv(string filepath, List<List<string>> csv,
-            string separator = DataFormatterResources.Splitter)
+        public static void WriteCsv(string filepath, List<List<string>> csv, string separator = ",")
         {
-            if (string.IsNullOrEmpty(filepath))
+            var file = new StringBuilder();
+
+            foreach (var row in csv)
             {
-                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
+                var line = string.Join(separator, row);
+                file.AppendLine(line);
             }
 
-            if (csv == null)
-            {
-                throw new ArgumentNullException(nameof(csv), DataFormatterResources.ErrorDataEmpty);
-            }
-
-            try
-            {
-                var file = new StringBuilder();
-
-                for (var i = 0; i < csv.Count; i++)
-                {
-                    var row = csv[i];
-                    var line = string.Empty;
-
-                    for (var j = 0; j < row.Count; j++)
-                    {
-                        var cache = row[j];
-                        line = j != row.Count - 1
-                            ? string.Concat(line, cache, separator)
-                            : string.Concat(line, cache);
-                    }
-
-                    _ = i != row.Count - 1 ? file.Append(line).Append(Environment.NewLine) : file.Append(line);
-                }
-
-                File.WriteAllText(filepath, file.ToString());
-            }
-            catch (Exception ex)
-            {
-                // Log exception or handle it as needed
-                Trace.WriteLine($"Error writing CSV file: {ex.Message}");
-            }
+            CsvHelper.WriteContentToFile(filepath, file);
         }
     }
 }
