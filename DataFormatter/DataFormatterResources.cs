@@ -60,6 +60,8 @@ namespace DataFormatter
         /// </summary>
         internal const string ErrorDataEmpty = "CSV data cannot be null.";
 
+        internal const string ErrorWritingToFile = "Error writing to file: ";
+
         /// <summary>
         ///     Throw Message, file was empty (const). Value: "File path cannot be null or empty.".
         /// </summary>

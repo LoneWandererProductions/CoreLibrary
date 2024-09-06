@@ -228,7 +228,7 @@ namespace CommonLibraryTests
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Unify Newline stuff</returns>
-        private string NormalizeLineEndings(string input)
+        private static string NormalizeLineEndings(string input)
         {
             return input.Replace("\r\n", "\n").Replace("\r", "\n");
         }

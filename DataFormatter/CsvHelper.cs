@@ -29,7 +29,7 @@ namespace DataFormatter
         {
             if (string.IsNullOrEmpty(filepath))
             {
-                throw new ArgumentException("File path is empty", nameof(filepath));
+                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
             }
 
             try
@@ -38,7 +38,7 @@ namespace DataFormatter
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error reading file: {ex.Message}");
+                Trace.WriteLine($"{DataFormatterResources.ErrorFileEmpty} {ex.Message}");
                 return null;
             }
         }
@@ -84,7 +84,7 @@ namespace DataFormatter
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error writing to file: {ex.Message}");
+                Trace.WriteLine($"{DataFormatterResources.ErrorWritingToFile} {ex.Message}");
             }
         }
     }
