@@ -426,7 +426,6 @@ namespace CommonLibraryTests
 
             watch.Stop();
 
-            watch = Stopwatch.StartNew();
             // the code that you want to measure comes here
 
             for (var i = 0; i < 1000; i++)
@@ -445,7 +444,7 @@ namespace CommonLibraryTests
             // Variables to track total elapsed time for each method
             long totalElapsedMicrosoft = 0;
             long totalElapsedDbm = 0;
-            int iterations = 100;  // Number of iterations to average results
+            const int iterations = 100; // Number of iterations to average results
 
             for (var i = 0; i < iterations; i++)
             {

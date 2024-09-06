@@ -1,12 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Imaging
 {
     public static class LifProcessing
     {
+        //TODO use for detlta!
+
+        /// <summary>
+        /// Ares the color counts similar.
+        /// A Color Histogram needed for delta calculation if it is even usefull
+        /// </summary>
+        /// <param name="colorCount1">The color count1.</param>
+        /// <param name="colorCount2">The color count2.</param>
+        /// <param name="threshold">The threshold.</param>
+        /// <returns>Similarity</returns>
+        public static bool AreColorCountsSimilar(Dictionary<Color, int> colorCount1, Dictionary<Color, int> colorCount2, double threshold = 0.95)
+        {
+            int totalPixels1 = colorCount1.Values.Sum();
+            int totalPixels2 = colorCount2.Values.Sum();
+
+            int similarPixels = 0;
+
+            foreach (var color in colorCount1.Keys)
+            {
+                if (colorCount2.ContainsKey(color))
+                {
+                    similarPixels += Math.Min(colorCount1[color], colorCount2[color]);
+                }
+            }
+
+            double similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
+            return similarity >= threshold;
+        }
+
+
         // Save the Lif object (layers and settings) to a binary file
         public static void SaveLif(Lif lif, string path)
         {
