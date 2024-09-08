@@ -168,6 +168,16 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        /// <summary>
+        /// Converts to key value list.
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair<TK, TV>> ToKeyValueList()
+        {
+            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
+        }
+
+
         /// <inheritdoc />
         /// <summary>
         ///     Returns a string representation of the dictionary's contents.
