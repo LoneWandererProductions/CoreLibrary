@@ -126,10 +126,7 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry))
-            {
-                return false;
-            }
+            if (!_data.TryGetValue(key, out var entry)) return false;
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -171,15 +168,6 @@ namespace ExtendedSystemObjects
             return false;
         }
 
-        /// <summary>
-        ///     Converts to key value list.
-        /// </summary>
-        /// <returns>A key value list of: id and value</returns>
-        public List<KeyValuePair<TK, TV>> ToKeyValueList()
-        {
-            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Returns a string representation of the dictionary's contents.
@@ -197,7 +185,7 @@ namespace ExtendedSystemObjects
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
         /// </summary>
         /// <returns>An enumerator for the dictionary.</returns>
-        private IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
+        public IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
         {
             return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
         }
