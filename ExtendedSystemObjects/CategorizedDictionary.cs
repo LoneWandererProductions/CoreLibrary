@@ -1,4 +1,12 @@
-﻿// ReSharper disable UnusedMethodReturnValue.Global
+﻿/*
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     ExtendedSystemObjects
+* FILE:        ExtendedSystemObjects/CategorizedDictionary.cs
+* PURPOSE:     Extended Dictionary with an Category.
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
+
+// ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -249,6 +257,43 @@ namespace ExtendedSystemObjects
         public IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
         {
             return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CategorizedDictionary<TK, TV>);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = 17;
+
+                foreach (var (key, category, value) in this)
+                {
+                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = hashCode * 23 + ((category?.GetHashCode()) ?? 0);
+                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
+                }
+
+                return hashCode;
+            }
         }
     }
 }
