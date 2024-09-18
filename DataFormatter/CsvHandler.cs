@@ -8,16 +8,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DataFormatter
 {
-    /// <summary>
-    ///     Basic CSV Reader/Writer
-    /// </summary>
     public static class CsvHandler
     {
         /// <summary>
@@ -30,74 +27,89 @@ namespace DataFormatter
         public static List<List<string>> ReadCsv(string filepath, char separator)
         {
             var lst = CsvHelper.ReadFileContent(filepath);
-            if (lst == null) return null;
-
-            return lst.ConvertAll(item => CsvHelper.SplitLine(item, separator));
+            return lst?.ConvertAll(item => CsvHelper.SplitLine(item, separator));
         }
 
         /// <summary>
-        ///     Reads a CSV file and maps it to a list of objects of type T.
+        ///     Parses the entire CSV file as a list of objects of type T.
         /// </summary>
-        /// <typeparam name="T">The type of objects to create.</typeparam>
+        /// <typeparam name="T">The type of objects to parse.</typeparam>
         /// <param name="filepath">The path of the CSV file.</param>
         /// <param name="separator">The separator character.</param>
         /// <returns>A list of objects of type T.</returns>
         public static List<T> ReadCsv<T>(string filepath, char separator) where T : new()
         {
-            if (string.IsNullOrEmpty(filepath))
+            return ReadCsvRange(filepath, separator, typeof(T), 0, int.MaxValue).Cast<T>().ToList();
+        }
+
+        /// <summary>
+        ///     Parses a CSV file with specified types for different line ranges.
+        /// </summary>
+        /// <param name="filepath">The path of the CSV file.</param>
+        /// <param name="separator">The separator character.</param>
+        /// <param name="ranges">The list of line ranges and corresponding types.</param>
+        /// <returns>A list of parsed objects for each range.</returns>
+        public static List<object> ParseCsvWithRanges(string filepath, char separator, List<(Type type, int startLine, int endLine)> ranges)
+        {
+            var result = new List<object>();
+
+            foreach (var (type, startLine, endLine) in ranges)
             {
-                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
+                result.AddRange(ReadCsvRange(filepath, separator, type, startLine, endLine));
             }
 
-            try
+            return result;
+        }
+
+        /// <summary>
+        ///     Helper method that parses a CSV file within a specific line range as objects of a given type.
+        /// </summary>
+        /// <param name="filepath">The path of the CSV file.</param>
+        /// <param name="separator">The separator character.</param>
+        /// <param name="type">The type of objects to parse.</param>
+        /// <param name="startLine">The starting line (inclusive).</param>
+        /// <param name="endLine">The ending line (inclusive).</param>
+        /// <returns>A list of parsed objects of the specified type.</returns>
+        private static List<object> ReadCsvRange(string filepath, char separator, Type type, int startLine, int endLine)
+        {
+            var lst = ReadText.ReadFile(filepath);
+            if (lst == null || lst.Count == 0 || startLine > endLine || startLine >= lst.Count)
             {
-                var lst = ReadText.ReadFile(filepath);
-                if (lst == null)
-                {
-                    return null;
-                }
-
-                var result = new List<T>(lst.Count);
-                var properties = typeof(T).GetProperties()
-                    .Where(p => Attribute.IsDefined(p, typeof(CsvColumnAttribute)))
-                    .ToArray();
-
-                foreach (var item in lst)
-                {
-                    var parts = DataHelper.GetParts(item, separator);
-                    var trimmedParts = parts.ConvertAll(s => s.Trim());
-                    var obj = new T();
-
-                    foreach (var property in properties)
-                    {
-                        var attribute =
-                            (CsvColumnAttribute)Attribute.GetCustomAttribute(property, typeof(CsvColumnAttribute));
-                        if (attribute == null)
-                        {
-                            continue;
-                        }
-
-                        var converter = (IAttributeConverter)Activator.CreateInstance(attribute.ConverterType);
-
-                        if (converter == null)
-                        {
-                            continue;
-                        }
-
-                        var value = converter.Convert(trimmedParts[attribute.Index]);
-                        property.SetValue(obj, value);
-                    }
-
-                    result.Add(obj);
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                // Log exception or handle it as needed
-                Trace.WriteLine(string.Concat(DataFormatterResources.ErrorFileEmpty, ex.Message));
                 return null;
+            }
+
+            var result = new List<object>();
+
+            var properties = type.GetProperties()
+                .Where(p => Attribute.IsDefined(p, typeof(CsvColumnAttribute)))
+                .ToArray();
+
+            for (int i = startLine; i <= Math.Min(endLine, lst.Count - 1); i++)
+            {
+                var parts = DataHelper.GetParts(lst[i], separator).ConvertAll(s => s.Trim());
+                var obj = Activator.CreateInstance(type);
+                MapPartsToObject(parts, obj, properties);
+                result.Add(obj);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Helper method to map CSV parts to object properties.
+        /// </summary>
+        private static void MapPartsToObject(List<string> parts, object obj, PropertyInfo[] properties)
+        {
+            foreach (var property in properties)
+            {
+                var attribute = (CsvColumnAttribute)Attribute.GetCustomAttribute(property, typeof(CsvColumnAttribute));
+                if (attribute == null) continue;
+
+                var converter = (IAttributeConverter)Activator.CreateInstance(attribute.ConverterType);
+                if (converter == null) continue;
+
+                var value = converter.Convert(parts[attribute.Index]);
+                property.SetValue(obj, value);
             }
         }
 
@@ -107,13 +119,12 @@ namespace DataFormatter
         /// <param name="filepath">The filepath.</param>
         /// <param name="csv">The CSV data.</param>
         /// <param name="separator">Possible file splitter, if not set;</param>
-        public static void WriteCsv(string filepath, List<List<string>> csv, string separator = ",")
+        public static void WriteCsv(string filepath, IEnumerable<List<string>> csv, string separator = ",")
         {
             var file = new StringBuilder();
 
-            foreach (var row in csv)
+            foreach (var line in csv.Select(row => string.Join(separator, row)))
             {
-                var line = string.Join(separator, row);
                 file.AppendLine(line);
             }
 
@@ -121,3 +132,4 @@ namespace DataFormatter
         }
     }
 }
+
