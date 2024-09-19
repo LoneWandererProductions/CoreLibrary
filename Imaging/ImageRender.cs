@@ -575,12 +575,12 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Adjusts the hue.
+        ///     Adjusts the hue.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="hueShift">The hue shift.</param>
         /// <returns>
-        /// Bitmap with adjusted Hue.
+        ///     Bitmap with adjusted Hue.
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap AdjustHue(Bitmap image, double hueShift)
@@ -590,12 +590,12 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Adjusts the saturation.
+        ///     Adjusts the saturation.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="saturationFactor">The saturation factor.</param>
         /// <returns>
-        /// Bitmap with adjusted Saturation.
+        ///     Bitmap with adjusted Saturation.
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
@@ -605,12 +605,12 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
         /// <returns>
-        /// Bitmap with adjusted brightness.
+        ///     Bitmap with adjusted brightness.
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
@@ -620,12 +620,12 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Applies the gamma correction.
+        ///     Applies the gamma correction.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="gamma">The gamma.</param>
         /// <returns>
-        /// Bitmap with adjusted Gamma.
+        ///     Bitmap with adjusted Gamma.
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
@@ -635,13 +635,13 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Adjusts the color.
+        ///     Adjusts the color.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="sourceColor">Color of the source.</param>
         /// <param name="targetColor">Color of the target.</param>
         /// <returns>
-        /// Color adjusted Bitmap
+        ///     Color adjusted Bitmap
         /// </returns>
         public Bitmap AdjustColor(Bitmap image, Color sourceColor, Color targetColor)
         {

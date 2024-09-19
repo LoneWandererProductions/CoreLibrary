@@ -6,20 +6,20 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace DataFormatter
 {
     internal static class CsvHelper
     {
         /// <summary>
-        /// Shared method to read file content
+        ///     Shared method to read file content
         /// </summary>
         /// <param name="filepath">The filepath.</param>
         /// <returns>Content of File</returns>
@@ -44,7 +44,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Writes the content of the file.
+        ///     Writes the content of the file.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="separator">The separator.</param>
@@ -59,7 +59,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Shared method to split line by separator
+        ///     Shared method to split line by separator
         /// </summary>
         /// <param name="line">The line.</param>
         /// <param name="separator">The separator.</param>
@@ -71,7 +71,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Shared method to write content to file
+        ///     Shared method to write content to file
         /// </summary>
         /// <param name="filepath">The filepath.</param>
         /// <param name="content">The content.</param>

@@ -15,19 +15,19 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Another round of minor Image manipulations
+    ///     Another round of minor Image manipulations
     /// </summary>
     internal static class ImageStreamHsv
     {
         /// <summary>
-        /// Adjusts the hue.
+        ///     Adjusts the hue.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="hueShift">The hue shift.</param>
         /// <returns>Processed Image</returns>
         internal static Bitmap AdjustHue(Bitmap image, double hueShift)
         {
-            return ProcessImage(image, (colorHsv) =>
+            return ProcessImage(image, colorHsv =>
             {
                 // Adjust hue
                 colorHsv.H = (colorHsv.H + hueShift) % 360;
@@ -36,29 +36,29 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Adjusts the saturation.
+        ///     Adjusts the saturation.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="saturationFactor">The saturation factor.</param>
         /// <returns>Processed Image</returns>
         internal static Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
         {
-            return ProcessImage(image, (colorHsv) => colorHsv.S = ImageHelper.Clamp(colorHsv.S * saturationFactor, 0, 1));
+            return ProcessImage(image, colorHsv => colorHsv.S = ImageHelper.Clamp(colorHsv.S * saturationFactor, 0, 1));
         }
 
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
         /// <returns>Processed Image</returns>
         internal static Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
         {
-            return ProcessImage(image, (colorHsv) => colorHsv.V = ImageHelper.Clamp(colorHsv.V * brightnessFactor, 0, 1));
+            return ProcessImage(image, colorHsv => colorHsv.V = ImageHelper.Clamp(colorHsv.V * brightnessFactor, 0, 1));
         }
 
         /// <summary>
-        /// Applies the gamma correction.
+        ///     Applies the gamma correction.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="gamma">The gamma.</param>
@@ -66,10 +66,13 @@ namespace Imaging
         /// <exception cref="System.ArgumentOutOfRangeException">gamma - Gamma must be greater than 0.</exception>
         internal static Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
         {
-            if (gamma <= 0) throw new ArgumentOutOfRangeException(nameof(gamma), "Gamma must be greater than 0.");
+            if (gamma <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(gamma), "Gamma must be greater than 0.");
+            }
 
-            double gammaCorrection = 1.0 / gamma;
-            return ProcessImage(image, (colorHsv) =>
+            var gammaCorrection = 1.0 / gamma;
+            return ProcessImage(image, colorHsv =>
             {
                 colorHsv.R = ImageHelper.Clamp(Math.Pow(colorHsv.R / 255.0, gammaCorrection) * 255);
                 colorHsv.G = ImageHelper.Clamp(Math.Pow(colorHsv.G / 255.0, gammaCorrection) * 255);
@@ -78,7 +81,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Processes the image.
+        ///     Processes the image.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="pixelOperation">The pixel operation.</param>
@@ -110,7 +113,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Applies the pixel changes.
+        ///     Applies the pixel changes.
         /// </summary>
         /// <param name="result">The result.</param>
         /// <param name="pixelsToSet">The pixels to set.</param>

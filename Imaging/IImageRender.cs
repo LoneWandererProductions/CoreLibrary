@@ -413,7 +413,7 @@ namespace Imaging
         Bitmap AmplitudeImages(Image imgOne, Image imgTwo);
 
         /// <summary>
-        /// Adjusts the hue.
+        ///     Adjusts the hue.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="hueShift">The hue shift.</param>
@@ -421,7 +421,7 @@ namespace Imaging
         Bitmap AdjustHue(Bitmap image, double hueShift);
 
         /// <summary>
-        /// Adjusts the saturation.
+        ///     Adjusts the saturation.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="saturationFactor">The saturation factor.</param>
@@ -429,7 +429,7 @@ namespace Imaging
         Bitmap AdjustSaturation(Bitmap image, double saturationFactor);
 
         /// <summary>
-        /// Adjusts the brightness.
+        ///     Adjusts the brightness.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
@@ -437,7 +437,7 @@ namespace Imaging
         Bitmap AdjustBrightness(Bitmap image, double brightnessFactor);
 
         /// <summary>
-        /// Applies the gamma correction.
+        ///     Applies the gamma correction.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="gamma">The gamma.</param>
@@ -445,7 +445,7 @@ namespace Imaging
         Bitmap ApplyGammaCorrection(Bitmap image, double gamma);
 
         /// <summary>
-        /// Adjusts the color.
+        ///     Adjusts the color.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="sourceColor">Color of the source.</param>

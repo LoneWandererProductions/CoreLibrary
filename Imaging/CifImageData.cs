@@ -17,29 +17,16 @@ namespace Imaging
     internal sealed class CifImageData
     {
         /// <summary>
-        /// Gets or sets the color.
-        /// </summary>
-        /// <value>
-        /// The color.
-        /// </value>
-        internal Color Color { get; init; }
-
-        /// <summary>
-        /// Gets or sets the coordinates.
-        /// </summary>
-        /// <value>
-        /// The coordinates.
-        /// </value>
-        internal List<int>? Coordinates { get; init; }
-
-        /// <summary>
-        /// Define a converter delegate for image data parsing
-        /// The converter
+        ///     Define a converter delegate for image data parsing
+        ///     The converter
         /// </summary>
         internal static readonly Func<List<string>, CifImageData> Converter = parts =>
         {
             var hex = parts[0];
-            if (!int.TryParse(parts[1], out var a)) return null;
+            if (!int.TryParse(parts[1], out var a))
+            {
+                return null;
+            }
 
             var converter = new ColorHsv(hex, a);
             var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G, (byte)converter.B);
@@ -72,12 +59,24 @@ namespace Imaging
                 }
             }
 
-            return new CifImageData
-            {
-                Color = color,
-                Coordinates = coordinates
-            };
+            return new CifImageData { Color = color, Coordinates = coordinates };
         };
+
+        /// <summary>
+        ///     Gets or sets the color.
+        /// </summary>
+        /// <value>
+        ///     The color.
+        /// </value>
+        internal Color Color { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the coordinates.
+        /// </summary>
+        /// <value>
+        ///     The coordinates.
+        /// </value>
+        internal List<int>? Coordinates { get; init; }
 
         /// <returns>start and End Point as Tuple</returns>
         /// <summary>
@@ -86,12 +85,15 @@ namespace Imaging
         /// <returns>A tuple representing the start and end points, or null if parsing fails.</returns>
         private static (int? Start, int? End)? GetStartEndPoint(IReadOnlyList<string> lst)
         {
-            if (lst.Count < 2) return null;
+            if (lst.Count < 2)
+            {
+                return null;
+            }
 
             var checkStart = int.TryParse(lst[0], out var start);
             var checkEnd = int.TryParse(lst[1], out var end);
 
-            return checkStart && checkEnd ? (start, end) : (null);
+            return checkStart && checkEnd ? (start, end) : null;
         }
     }
 }

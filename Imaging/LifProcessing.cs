@@ -12,19 +12,20 @@ namespace Imaging
         //TODO use for delta!
 
         /// <summary>
-        /// Ares the color counts similar.
-        /// A Color Histogram needed for delta calculation if it is even useful
+        ///     Ares the color counts similar.
+        ///     A Color Histogram needed for delta calculation if it is even useful
         /// </summary>
         /// <param name="colorCount1">The color count1.</param>
         /// <param name="colorCount2">The color count2.</param>
         /// <param name="threshold">The threshold.</param>
         /// <returns>Similarity</returns>
-        public static bool AreColorCountsSimilar(Dictionary<Color, int> colorCount1, Dictionary<Color, int> colorCount2, double threshold = 0.95)
+        public static bool AreColorCountsSimilar(Dictionary<Color, int> colorCount1, Dictionary<Color, int> colorCount2,
+            double threshold = 0.95)
         {
-            int totalPixels1 = colorCount1.Values.Sum();
-            int totalPixels2 = colorCount2.Values.Sum();
+            var totalPixels1 = colorCount1.Values.Sum();
+            var totalPixels2 = colorCount2.Values.Sum();
 
-            int similarPixels = 0;
+            var similarPixels = 0;
 
             foreach (var color in colorCount1.Keys)
             {
@@ -34,7 +35,7 @@ namespace Imaging
                 }
             }
 
-            double similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
+            var similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
             return similarity >= threshold;
         }
 
@@ -42,9 +43,9 @@ namespace Imaging
         // Save the Lif object (layers and settings) to a binary file
         public static void SaveLif(Lif lif, string path)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            using (var fs = new FileStream(path, FileMode.Create))
             {
-                BinaryFormatter formatter = new BinaryFormatter();
+                var formatter = new BinaryFormatter();
                 formatter.Serialize(fs, lif);
             }
         }
@@ -52,9 +53,9 @@ namespace Imaging
         // Load the Lif object (layers and settings) from a binary file
         public static Lif LoadLif(string path)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (var fs = new FileStream(path, FileMode.Open))
             {
-                BinaryFormatter formatter = new BinaryFormatter();
+                var formatter = new BinaryFormatter();
                 return (Lif)formatter.Deserialize(fs);
             }
         }
@@ -62,14 +63,14 @@ namespace Imaging
         // Convert a Bitmap to a CIF (Compressed Image Format) dictionary
         public static Dictionary<Color, List<int>> ConvertToCifFromBitmap(Bitmap bitmap)
         {
-            Dictionary<Color, List<int>> cif = new Dictionary<Color, List<int>>();
+            var cif = new Dictionary<Color, List<int>>();
 
-            for (int y = 0; y < bitmap.Height; y++)
+            for (var y = 0; y < bitmap.Height; y++)
             {
-                for (int x = 0; x < bitmap.Width; x++)
+                for (var x = 0; x < bitmap.Width; x++)
                 {
-                    Color pixelColor = bitmap.GetPixel(x, y);
-                    int pixelIndex = y * bitmap.Width + x;
+                    var pixelColor = bitmap.GetPixel(x, y);
+                    var pixelIndex = (y * bitmap.Width) + x;
 
                     // Group pixels by color
                     if (!cif.ContainsKey(pixelColor))
@@ -87,17 +88,17 @@ namespace Imaging
         // Convert a CIF dictionary back into a Bitmap object
         public static Bitmap ConvertToBitmapFromCif(Dictionary<Color, List<int>> cif, int width, int height)
         {
-            Bitmap bitmap = new Bitmap(width, height);
+            var bitmap = new Bitmap(width, height);
 
             foreach (var entry in cif)
             {
-                Color color = entry.Key;
-                List<int> pixels = entry.Value;
+                var color = entry.Key;
+                var pixels = entry.Value;
 
-                foreach (int pixel in pixels)
+                foreach (var pixel in pixels)
                 {
-                    int x = pixel % width;
-                    int y = pixel / width;
+                    var x = pixel % width;
+                    var y = pixel / width;
                     bitmap.SetPixel(x, y, color);
                 }
             }

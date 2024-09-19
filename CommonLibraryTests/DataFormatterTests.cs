@@ -128,7 +128,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Reads the CSV with layer keywords returns correct layers.
+        ///     Reads the CSV with layer keywords returns correct layers.
         /// </summary>
         [TestMethod]
         public void ReadCsvWithLayerKeywords_ReturnsCorrectLayers()
@@ -199,7 +199,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Normalizes the line endings.
+        ///     Normalizes the line endings.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Unify Newline stuff</returns>
@@ -209,7 +209,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test for reading a specific range of lines in the CSV file.
+        ///     Test for reading a specific range of lines in the CSV file.
         /// </summary>
         [TestMethod]
         public void ReadCsvRangeReadsSpecifiedLinesOnly()
@@ -217,17 +217,12 @@ namespace CommonLibraryTests
             // Arrange
             const string filepath = "test_range.csv";
             const char separator = ',';
-            var csvContent = new List<string>
-            {
-                "ID,Name",
-                "1,Alice",
-                "2,Bob",
-                "3,Charlie"
-            };
+            var csvContent = new List<string> { "ID,Name", "1,Alice", "2,Bob", "3,Charlie" };
             File.WriteAllLines(filepath, csvContent);
 
             // Act
-            var result = CsvHandler.ReadCsvRange(filepath, separator, parts => new { Id = parts[0], Name = parts[1] }, 1, 2);
+            var result = CsvHandler.ReadCsvRange(filepath, separator, parts => new { Id = parts[0], Name = parts[1] },
+                1, 2);
 
             // Assert
             Assert.AreEqual(2, result.Count, "Should return two lines.");
@@ -239,7 +234,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test for writing CSV with a custom separator.
+        ///     Test for writing CSV with a custom separator.
         /// </summary>
         [TestMethod]
         public void WriteCsvCustomSeparatorWritesCorrectly()
@@ -247,12 +242,7 @@ namespace CommonLibraryTests
             // Arrange
             const string filepath = "test_custom_separator.csv";
             const char customSeparator = ';';
-            var lst = new List<List<string>>
-            {
-                new List<string> { "ID", "Name" },
-                new List<string> { "1", "Alice" },
-                new List<string> { "2", "Bob" }
-            };
+            var lst = new List<List<string>> { new() { "ID", "Name" }, new() { "1", "Alice" }, new() { "2", "Bob" } };
 
             // Act
             CsvHandler.WriteCsv(filepath, lst, customSeparator.ToString());
@@ -267,7 +257,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test reading a CSV into a custom object using CsvColumn attributes.
+        ///     Test reading a CSV into a custom object using CsvColumn attributes.
         /// </summary>
         [TestMethod]
         public void ReadCsvWithCustomTypeReturnsCorrectObject()
@@ -275,19 +265,12 @@ namespace CommonLibraryTests
             // Arrange
             var filepath = "test_custom_type.csv";
             var separator = ',';
-            var csvContent = new List<string>
-            {
-                "1,Alice",
-                "2,Bob"
-            };
+            var csvContent = new List<string> { "1,Alice", "2,Bob" };
             File.WriteAllLines(filepath, csvContent);
 
             // Act
-            var result = CsvHandler.ReadCsv(filepath, separator, parts => new MyCustomType
-            {
-                Property1 = int.Parse(parts[0]),
-                Property2 = parts[1]
-            });
+            var result = CsvHandler.ReadCsv(filepath, separator,
+                parts => new MyCustomType { Property1 = int.Parse(parts[0]), Property2 = parts[1] });
 
             // Assert
             Assert.AreEqual(2, result.Count, "Should return two objects.");

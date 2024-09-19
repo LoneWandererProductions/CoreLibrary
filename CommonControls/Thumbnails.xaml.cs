@@ -453,7 +453,8 @@ namespace CommonControls
                 {
                     myBitmapCell = ImageStreamMedia.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
                 }
-                catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or InvalidOperationException)
+                catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
+                                               or InvalidOperationException)
                 {
                     Trace.WriteLine(ex);
                 }

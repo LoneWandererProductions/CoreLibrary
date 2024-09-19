@@ -273,7 +273,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Clamps the specified value.
+        ///     Clamps the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="min">The minimum.</param>

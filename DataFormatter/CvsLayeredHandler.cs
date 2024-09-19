@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace DataFormatter
@@ -15,13 +14,14 @@ namespace DataFormatter
     public static class CvsLayeredHandler
     {
         /// <summary>
-        /// Writes the CSV with layer keywords.
+        ///     Writes the CSV with layer keywords.
         /// </summary>
         /// <param name="filepath">The filepath.</param>
         /// <param name="separator">The separator.</param>
         /// <param name="csvLayers">The CSV layers.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
-        public static void WriteCsvWithLayerKeywords(string filepath, char separator, List<List<string>> csvLayers, string layerKeyword)
+        public static void WriteCsvWithLayerKeywords(string filepath, char separator, List<List<string>> csvLayers,
+            string layerKeyword)
         {
             var file = new StringBuilder();
 
@@ -41,7 +41,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Reads the CSV with layer keywords.
+        ///     Reads the CSV with layer keywords.
         /// </summary>
         /// <param name="filepath">The filepath.</param>
         /// <param name="separator">The separator.</param>
@@ -50,7 +50,10 @@ namespace DataFormatter
         public static List<string> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
         {
             var lst = CsvHelper.ReadFileContent(filepath);
-            if (lst == null) return null;
+            if (lst == null)
+            {
+                return null;
+            }
 
             var layers = new List<string>();
             var currentLayer = new StringBuilder(); // Use StringBuilder to accumulate lines for each layer
@@ -62,8 +65,10 @@ namespace DataFormatter
                 {
                     if (currentLayer.Length > 0)
                     {
-                        layers.Add(currentLayer.ToString().TrimEnd()); // Add the current layer string and trim the last newline
+                        layers.Add(currentLayer.ToString()
+                            .TrimEnd()); // Add the current layer string and trim the last newline
                     }
+
                     currentLayer = new StringBuilder(); // Start a new layer
                 }
                 else

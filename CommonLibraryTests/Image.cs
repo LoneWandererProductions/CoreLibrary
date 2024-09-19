@@ -455,7 +455,7 @@ namespace CommonLibraryTests
                 dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
 
                 watch.Stop();
-                totalElapsedMicrosoft += watch.ElapsedMilliseconds;  // Or use ElapsedTicks for higher precision
+                totalElapsedMicrosoft += watch.ElapsedMilliseconds; // Or use ElapsedTicks for higher precision
 
                 // Measure time for the second method (DirectBitmap custom method)
                 watch = Stopwatch.StartNew();
@@ -464,12 +464,12 @@ namespace CommonLibraryTests
                 dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
 
                 watch.Stop();
-                totalElapsedDbm += watch.ElapsedMilliseconds;  // Or use ElapsedTicks
+                totalElapsedDbm += watch.ElapsedMilliseconds; // Or use ElapsedTicks
             }
 
             // Calculate average times for both methods
-            long averageMicrosoft = totalElapsedMicrosoft / iterations;
-            long averageDbm = totalElapsedDbm / iterations;
+            var averageMicrosoft = totalElapsedMicrosoft / iterations;
+            var averageDbm = totalElapsedDbm / iterations;
 
             // Log the results
             Trace.WriteLine(string.Concat("Average Rectangle Microsoft: ", averageMicrosoft,
@@ -478,7 +478,6 @@ namespace CommonLibraryTests
             // Perform the assertion based on average values
             Assert.IsTrue(averageMicrosoft <= averageDbm,
                 $"Results: {averageMicrosoft} ms (Microsoft) vs {averageDbm} ms (DirectBitmap)");
-
         }
 
         /// <summary>

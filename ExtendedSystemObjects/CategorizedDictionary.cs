@@ -46,6 +46,38 @@ namespace ExtendedSystemObjects
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Checks for equality between two CategorizedDictionary instances.
+        /// </summary>
+        /// <param name="other">The other CategorizedDictionary to compare.</param>
+        /// <returns>True if equal, otherwise false.</returns>
+        public bool Equals(CategorizedDictionary<TK, TV> other)
+        {
+            if (other == null || Count != other.Count)
+            {
+                return false;
+            }
+
+            foreach (var (key, category, value) in this)
+            {
+                if (!other.TryGetValue(key, out var otherValue))
+                {
+                    return false;
+                }
+
+                var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
+
+                if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
+                    !EqualityComparer<TV>.Default.Equals(value, otherValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         /// <summary>
         ///     Gets the keys.
         /// </summary>
@@ -132,7 +164,10 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry)) return false;
+            if (!_data.TryGetValue(key, out var entry))
+            {
+                return false;
+            }
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -175,7 +210,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Converts to key value list.
+        ///     Converts to key value list.
         /// </summary>
         /// <returns>A list of Keys and Values</returns>
         public List<KeyValuePair<TK, TV>> ToKeyValueList()
@@ -183,35 +218,8 @@ namespace ExtendedSystemObjects
             return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Checks for equality between two CategorizedDictionary instances.
-        /// </summary>
-        /// <param name="other">The other CategorizedDictionary to compare.</param>
-        /// <returns>True if equal, otherwise false.</returns>
-        public bool Equals(CategorizedDictionary<TK, TV> other)
-        {
-            if (other == null || Count != other.Count) return false;
-
-            foreach (var (key, category, value) in this)
-            {
-                if (!other.TryGetValue(key, out var otherValue))
-                    return false;
-
-                var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
-
-                if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
-                    !EqualityComparer<TV>.Default.Equals(value, otherValue))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Checks if two CategorizedDictionary instances are equal and provides a message.
+        ///     Checks if two CategorizedDictionary instances are equal and provides a message.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -219,7 +227,8 @@ namespace ExtendedSystemObjects
         /// <param name="actual">The actual dictionary.</param>
         /// <param name="message">The message.</param>
         /// <returns>True if dictionaries are equal, otherwise false.</returns>
-        public static bool AreEqual<TKey, TValue>(CategorizedDictionary<TKey, TValue> expected, CategorizedDictionary<TKey, TValue> actual, out string message)
+        public static bool AreEqual<TKey, TValue>(CategorizedDictionary<TKey, TValue> expected,
+            CategorizedDictionary<TKey, TValue> actual, out string message)
         {
             if (expected == null || actual == null)
             {
@@ -245,7 +254,8 @@ namespace ExtendedSystemObjects
         public override string ToString()
         {
             var entries = _data.Select(entry =>
-                string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category, entry.Value.Value));
+                string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
+                    entry.Value.Value));
 
             return string.Join(Environment.NewLine, entries);
         }
@@ -261,11 +271,11 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        ///     Determines whether the specified <see cref="System.Object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -274,22 +284,22 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns a hash code for this instance.
+        ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
             unchecked
             {
-                int hashCode = 17;
+                var hashCode = 17;
 
                 foreach (var (key, category, value) in this)
                 {
-                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
-                    hashCode = hashCode * 23 + ((category?.GetHashCode()) ?? 0);
-                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
+                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
                 }
 
                 return hashCode;

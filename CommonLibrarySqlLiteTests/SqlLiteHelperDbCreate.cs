@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
@@ -38,7 +37,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The SqlLite Interface.
         /// </summary>
-        private static SqliteDatabase _target = new();
+        private static readonly SqliteDatabase _target = new();
 
         /// <summary>
         ///     Test if we can create a Database
@@ -137,7 +136,7 @@ namespace CommonLibrarySqlLiteTests
             Assert.AreEqual("Name of Db", cache.DbName,
                 "Test failed Wrong Data: " + cache.DbName);
 
-            Assert.IsTrue( cache.Location.Contains(@"Path"),
+            Assert.IsTrue(cache.Location.Contains(@"Path"),
                 "Test failed Wrong Data: " + cache.Location);
 
             Assert.AreEqual(3, cache.DbVersion,

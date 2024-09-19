@@ -5,16 +5,16 @@
  * PURPOSE:     Simple Csv reader/writer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace DataFormatter
 {
     /// <summary>
-    /// Handle all operations related to CSV reading and writing.
+    ///     Handle all operations related to CSV reading and writing.
     /// </summary>
     public static class CsvHandler
     {
@@ -38,7 +38,8 @@ namespace DataFormatter
         /// <param name="separator">The separator character.</param>
         /// <param name="converter">The converter function that maps CSV data to an object.</param>
         /// <returns>A list of objects of type T.</returns>
-        public static List<T> ReadCsv<T>(string filepath, char separator, Func<List<string>, T> converter) where T : new()
+        public static List<T> ReadCsv<T>(string filepath, char separator, Func<List<string>, T> converter)
+            where T : new()
         {
             return ReadCsvRange(filepath, separator, converter).ToList();
         }
@@ -53,7 +54,8 @@ namespace DataFormatter
         /// <param name="startLine">The starting line (inclusive). Optional, defaults to 0.</param>
         /// <param name="endLine">The ending line (inclusive). Optional, defaults to all lines.</param>
         /// <returns>A list of parsed objects of the specified type.</returns>
-        public static List<T> ReadCsvRange<T>(string filepath, char separator, Func<List<string>, T> converter, int startLine = 0, int endLine = int.MaxValue)
+        public static List<T> ReadCsvRange<T>(string filepath, char separator, Func<List<string>, T> converter,
+            int startLine = 0, int endLine = int.MaxValue)
         {
             var lst = ReadText.ReadFile(filepath);
             if (lst == null || lst.Count == 0 || startLine > endLine || startLine >= lst.Count)
@@ -63,7 +65,7 @@ namespace DataFormatter
 
             var result = new List<T>();
 
-            for (int i = startLine; i <= Math.Min(endLine, lst.Count - 1); i++)
+            for (var i = startLine; i <= Math.Min(endLine, lst.Count - 1); i++)
             {
                 var parts = DataHelper.GetParts(lst[i], separator).ConvertAll(s => s.Trim());
                 var obj = converter(parts);
@@ -77,7 +79,7 @@ namespace DataFormatter
         }
 
         /// <summary>
-        /// Writes the CSV data into a file.
+        ///     Writes the CSV data into a file.
         /// </summary>
         /// <param name="filepath">The file path.</param>
         /// <param name="csv">The CSV data.</param>

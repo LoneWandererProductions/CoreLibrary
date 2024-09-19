@@ -44,22 +44,22 @@ namespace ExtendedSystemObjects
         internal const string Separator = " , ";
 
         /// <summary>
-        /// The null dictionaries. (const). Value: "One or both dictionaries are null.".
+        ///     The null dictionaries. (const). Value: "One or both dictionaries are null.".
         /// </summary>
         internal const string NullDictionaries = "One or both dictionaries are null.";
 
         /// <summary>
-        /// The dictionaries equal (const). Value: "Dictionaries are equal.".
+        ///     The dictionaries equal (const). Value: "Dictionaries are equal.".
         /// </summary>
         internal const string DictionariesEqual = "Dictionaries are equal.";
 
         /// <summary>
-        /// The dictionaries comparison failed (const). Value: "Dictionaries are not equal.".
+        ///     The dictionaries comparison failed (const). Value: "Dictionaries are not equal.".
         /// </summary>
         internal const string DictionaryComparisonFailed = "Dictionaries are not equal.";
 
         /// <summary>
-        /// The key category value format (const). Value:  "Key: {0}, Category: {1}, Value: {2}".
+        ///     The key category value format (const). Value:  "Key: {0}, Category: {1}, Value: {2}".
         /// </summary>
         internal const string KeyCategoryValueFormat = "Key: {0}, Category: {1}, Value: {2}";
     }

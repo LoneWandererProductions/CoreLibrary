@@ -94,13 +94,17 @@ namespace Imaging
 
             foreach (var (converter, startLine, endLine) in ranges)
             {
-                csvData.AddRange(CsvHandler.ReadCsvRange(path, ImagingResources.Separator, converter, startLine, endLine));
+                csvData.AddRange(CsvHandler.ReadCsvRange(path, ImagingResources.Separator, converter, startLine,
+                    endLine));
             }
 
             var meta = csvData.OfType<CifMetadata>().FirstOrDefault();
             var imageData = csvData.OfType<CifImageData>().ToList();
 
-            if (meta == null) return null;
+            if (meta == null)
+            {
+                return null;
+            }
 
             var cif = new Cif
             {
