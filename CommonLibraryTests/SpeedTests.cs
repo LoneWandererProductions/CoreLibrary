@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using ExtendedSystemObjects;
-using Imaging;
 using Mathematics;
 
 namespace CommonLibraryTests
@@ -192,53 +191,6 @@ namespace CommonLibraryTests
             }
 
             return lst;
-        }
-
-        /// <summary>
-        ///     Gets the information.
-        /// </summary>
-        /// <param name="csv">The CSV.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>All needed values for our Image</returns>
-        private static bool? GetInfo(IReadOnlyList<string> csv, ref int height, ref int width)
-        {
-            //get image size
-            var check = int.TryParse(csv[0], out var h);
-            if (!check)
-            {
-                return null;
-            }
-
-            height = h;
-
-            check = int.TryParse(csv[1], out var w);
-            if (!check)
-            {
-                return null;
-            }
-
-            width = w;
-
-            return csv[2] == ImagingResources.CifCompressed;
-        }
-
-        /// <summary>
-        ///     Gets the start end point.
-        /// </summary>
-        /// <param name="lst">The LST.</param>
-        /// <returns>start and End Point as Tuple</returns>
-        private static CifProcessing.StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
-        {
-            var check = int.TryParse(lst[0], out var start);
-            if (!check)
-            {
-                return null;
-            }
-
-            check = int.TryParse(lst[1], out var end);
-
-            return !check ? null : new CifProcessing.StartEndPoint(start, end);
         }
     }
 }

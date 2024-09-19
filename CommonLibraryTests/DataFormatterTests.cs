@@ -106,31 +106,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Tests the read CSV.
-        /// </summary>
-        [TestMethod]
-        public void TestReadCsv()
-        {
-            // Arrange
-            const string csvContent = "123,Hello\n456,World";
-            File.WriteAllText(_testFilePath, csvContent);
-            const char separator = ',';
-
-            // Act
-            var result = CsvHandler.ReadCsv<MyCustomType>(_testFilePath, separator);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count);
-
-            Assert.AreEqual(123, result[0].Property1);
-            Assert.AreEqual("Hello", result[0].Property2);
-
-            Assert.AreEqual(456, result[1].Property1);
-            Assert.AreEqual("World", result[1].Property2);
-        }
-
-        /// <summary>
         ///     Gets the file encoding ut f8 file returns ut f8 encoding.
         /// </summary>
         [TestMethod]
@@ -165,19 +140,19 @@ namespace CommonLibraryTests
 
             // Create test CSV content
             var csvContent = new List<string>
-        {
-            "Name,Age,Location",
-            "Alice,30,Wonderland",
-            "Bob,25,Builderland",
-            "Layer_0",
-            "Name,Occupation",
-            "Charlie,Engineer",
-            "Dana,Artist",
-            "Layer_1",
-            "Name,Score",
-            "Eve,95",
-            "Frank,88"
-        };
+            {
+                "Name,Age,Location",
+                "Alice,30,Wonderland",
+                "Bob,25,Builderland",
+                "Layer_0",
+                "Name,Occupation",
+                "Charlie,Engineer",
+                "Dana,Artist",
+                "Layer_1",
+                "Name,Score",
+                "Eve,95",
+                "Frank,88"
+            };
 
             // Write the test content to the file
             File.WriteAllLines(filepath, csvContent);
@@ -233,6 +208,95 @@ namespace CommonLibraryTests
             return input.Replace("\r\n", "\n").Replace("\r", "\n");
         }
 
+        /// <summary>
+        /// Test for reading a specific range of lines in the CSV file.
+        /// </summary>
+        [TestMethod]
+        public void ReadCsvRangeReadsSpecifiedLinesOnly()
+        {
+            // Arrange
+            const string filepath = "test_range.csv";
+            const char separator = ',';
+            var csvContent = new List<string>
+            {
+                "ID,Name",
+                "1,Alice",
+                "2,Bob",
+                "3,Charlie"
+            };
+            File.WriteAllLines(filepath, csvContent);
+
+            // Act
+            var result = CsvHandler.ReadCsvRange(filepath, separator, parts => new { Id = parts[0], Name = parts[1] }, 1, 2);
+
+            // Assert
+            Assert.AreEqual(2, result.Count, "Should return two lines.");
+            Assert.AreEqual("1", result[0].Id, "First ID should be '1'.");
+            Assert.AreEqual("Alice", result[0].Name, "First name should be 'Alice'.");
+
+            // Cleanup
+            File.Delete(filepath);
+        }
+
+        /// <summary>
+        /// Test for writing CSV with a custom separator.
+        /// </summary>
+        [TestMethod]
+        public void WriteCsvCustomSeparatorWritesCorrectly()
+        {
+            // Arrange
+            const string filepath = "test_custom_separator.csv";
+            const char customSeparator = ';';
+            var lst = new List<List<string>>
+            {
+                new List<string> { "ID", "Name" },
+                new List<string> { "1", "Alice" },
+                new List<string> { "2", "Bob" }
+            };
+
+            // Act
+            CsvHandler.WriteCsv(filepath, lst, customSeparator.ToString());
+
+            // Assert
+            var lines = File.ReadAllLines(filepath);
+            Assert.AreEqual("ID;Name", lines[0], "Header should be separated by semicolon.");
+            Assert.AreEqual("1;Alice", lines[1], "Data should be separated by semicolon.");
+
+            // Cleanup
+            File.Delete(filepath);
+        }
+
+        /// <summary>
+        /// Test reading a CSV into a custom object using CsvColumn attributes.
+        /// </summary>
+        [TestMethod]
+        public void ReadCsvWithCustomTypeReturnsCorrectObject()
+        {
+            // Arrange
+            var filepath = "test_custom_type.csv";
+            var separator = ',';
+            var csvContent = new List<string>
+            {
+                "1,Alice",
+                "2,Bob"
+            };
+            File.WriteAllLines(filepath, csvContent);
+
+            // Act
+            var result = CsvHandler.ReadCsv(filepath, separator, parts => new MyCustomType
+            {
+                Property1 = int.Parse(parts[0]),
+                Property2 = parts[1]
+            });
+
+            // Assert
+            Assert.AreEqual(2, result.Count, "Should return two objects.");
+            Assert.AreEqual(1, result[0].Property1, "First Property1 should be 1.");
+            Assert.AreEqual("Alice", result[0].Property2, "First Property2 should be 'Alice'.");
+
+            // Cleanup
+            File.Delete(filepath);
+        }
     }
 
     /// <summary>

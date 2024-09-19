@@ -7,6 +7,7 @@
  */
 
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -81,117 +82,44 @@ namespace Imaging
         /// <returns>
         ///     Cif Image
         /// </returns>
-        internal static Cif? CifFromFile(string path)
+        public static Cif? CifFromFile(string path)
         {
-            var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
-
-            if (csv == null)
+            var ranges = new List<(Func<List<string>, object> converter, int startLine, int endLine)>
             {
-                return null;
+                (CifMetadata.Converter, 0, 0), // First line for metadata
+                (CifImageData.Converter, 1, int.MaxValue) // Rest for image data
+            };
+
+            var csvData = new List<object>();
+
+            foreach (var (converter, startLine, endLine) in ranges)
+            {
+                csvData.AddRange(CsvHandler.ReadCsvRange(path, ImagingResources.Separator, converter, startLine, endLine));
             }
 
-            int height = 0, width = 0;
+            var meta = csvData.OfType<CifMetadata>().FirstOrDefault();
+            var imageData = csvData.OfType<CifImageData>().ToList();
 
-            var compressed = GetInfo(csv[0], ref height, ref width);
-
-            if (compressed == null)
-            {
-                return null;
-            }
-
-            //remove the Height, length csv
-            csv.RemoveAt(0);
+            if (meta == null) return null;
 
             var cif = new Cif
             {
-                Height = height,
-                Width = width,
-                Compressed = false,
+                Height = meta.Height,
+                Width = meta.Width,
+                Compressed = meta.Compressed,
                 CifImage = new Dictionary<Color, SortedSet<int>>()
             };
 
-            if (compressed == true)
+            foreach (var data in imageData)
             {
-                foreach (var line in csv)
+                if (!cif.CifImage.ContainsKey(data.Color))
                 {
-                    var hex = line[0];
-
-                    var check = int.TryParse(line[1], out var a);
-
-                    if (!check)
-                    {
-                        continue;
-                    }
-
-                    var converter = new ColorHsv(hex, a);
-
-                    var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G,
-                        (byte)converter.B);
-
-                    //get coordinates
-                    for (var i = 2; i < line.Count; i++)
-                    {
-                        if (line[i].Contains(ImagingResources.IntervalSplitter))
-                        {
-                            //split get start and end
-                            var lst = line[i].Split(ImagingResources.CifSeparator).ToList();
-
-                            var sequence = GetStartEndPoint(lst);
-
-                            if (sequence == null)
-                            {
-                                continue;
-                            }
-
-                            //paint area
-                            for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
-                            {
-                                cif.CifImage.Add(color, idMaster);
-                            }
-                        }
-                        else
-                        {
-                            check = int.TryParse(line[i], out var idMaster);
-
-                            if (!check)
-                            {
-                                continue;
-                            }
-
-                            cif.CifImage.Add(color, idMaster);
-                        }
-                    }
+                    cif.CifImage[data.Color] = new SortedSet<int>();
                 }
-            }
-            else
-            {
-                foreach (var line in csv)
+
+                foreach (var coordinates in data.Coordinates)
                 {
-                    var hex = line[0];
-
-                    var check = int.TryParse(line[1], out var a);
-
-                    if (!check)
-                    {
-                        continue;
-                    }
-
-                    var converter = new ColorHsv(hex, a);
-
-                    var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G,
-                        (byte)converter.B);
-
-                    //get coordinates
-                    for (var i = 2; i < line.Count; i++)
-                    {
-                        check = int.TryParse(line[i], out var idMaster);
-                        if (!check)
-                        {
-                            continue;
-                        }
-
-                        cif.CifImage.Add(color, idMaster);
-                    }
+                    cif.CifImage[data.Color].Add(coordinates);
                 }
             }
 
@@ -302,86 +230,6 @@ namespace Imaging
             master[0].Add(master.Count.ToString());
 
             return master;
-        }
-
-        /// <summary>
-        ///     Gets the information.
-        /// </summary>
-        /// <param name="csv">The CSV.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>All needed values for our Image</returns>
-        private static bool? GetInfo(IReadOnlyList<string> csv, ref int height, ref int width)
-        {
-            //get image size
-            var check = int.TryParse(csv[0], out var h);
-            if (!check)
-            {
-                return null;
-            }
-
-            height = h;
-
-            check = int.TryParse(csv[1], out var w);
-            if (!check)
-            {
-                return null;
-            }
-
-            width = w;
-
-            return csv[2] == ImagingResources.CifCompressed;
-        }
-
-        /// <summary>
-        ///     Gets the start end point.
-        /// </summary>
-        /// <param name="lst">The LST.</param>
-        /// <returns>start and End Point as Tuple</returns>
-        private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
-        {
-            var check = int.TryParse(lst[0], out var start);
-            if (!check)
-            {
-                return null;
-            }
-
-            check = int.TryParse(lst[1], out var end);
-
-            return !check ? null : new StartEndPoint(start, end);
-        }
-
-        /// <summary>
-        ///     Start and end points of a Sequence
-        /// </summary>
-        internal sealed class StartEndPoint
-        {
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="StartEndPoint" /> class.
-            /// </summary>
-            /// <param name="start">The start.</param>
-            /// <param name="end">The end.</param>
-            internal StartEndPoint(int start, int end)
-            {
-                Start = start;
-                End = end;
-            }
-
-            /// <summary>
-            ///     Gets the start.
-            /// </summary>
-            /// <value>
-            ///     The start.
-            /// </value>
-            internal int Start { get; }
-
-            /// <summary>
-            ///     Gets the end.
-            /// </summary>
-            /// <value>
-            ///     The end.
-            /// </value>
-            internal int End { get; }
         }
     }
 }
