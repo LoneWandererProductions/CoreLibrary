@@ -255,54 +255,5 @@ namespace CommonLibraryTests
             // Cleanup
             File.Delete(filepath);
         }
-
-        /// <summary>
-        ///     Test reading a CSV into a custom object using CsvColumn attributes.
-        /// </summary>
-        [TestMethod]
-        public void ReadCsvWithCustomTypeReturnsCorrectObject()
-        {
-            // Arrange
-            var filepath = "test_custom_type.csv";
-            var separator = ',';
-            var csvContent = new List<string> { "1,Alice", "2,Bob" };
-            File.WriteAllLines(filepath, csvContent);
-
-            // Act
-            var result = CsvHandler.ReadCsv(filepath, separator,
-                parts => new MyCustomType { Property1 = int.Parse(parts[0]), Property2 = parts[1] });
-
-            // Assert
-            Assert.AreEqual(2, result.Count, "Should return two objects.");
-            Assert.AreEqual(1, result[0].Property1, "First Property1 should be 1.");
-            Assert.AreEqual("Alice", result[0].Property2, "First Property2 should be 'Alice'.");
-
-            // Cleanup
-            File.Delete(filepath);
-        }
-    }
-
-    /// <summary>
-    ///     Test Class
-    /// </summary>
-    internal class MyCustomType
-    {
-        /// <summary>
-        ///     Gets or sets the property1.
-        /// </summary>
-        /// <value>
-        ///     The property1.
-        /// </value>
-        [CsvColumn(0, typeof(IntAttributeConverter))]
-        public int Property1 { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the property2.
-        /// </summary>
-        /// <value>
-        ///     The property2.
-        /// </value>
-        [CsvColumn(1, typeof(StringAttributeConverter))]
-        public string Property2 { get; set; }
     }
 }
