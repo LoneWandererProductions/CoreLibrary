@@ -24,9 +24,14 @@ namespace CommonControls
         internal const string ErrorColorSelection = "Error selecting color";
 
         /// <summary>
-        ///     Error, Color switching parameters (const). Value: ""Error switching color".
+        ///     Error, Color switching parameters (const). Value:"Error switching color".
         /// </summary>
         internal const string ErrorSwitchingColor = "Error switching color";
+
+        /// <summary>
+        /// The error could not load image (const). Value: "Error could not load Image:".
+        /// </summary>
+        internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
 
         /// <summary>
         ///     Error, Color Selection initializing parameters (const). Value: "Error initializing color selection control"

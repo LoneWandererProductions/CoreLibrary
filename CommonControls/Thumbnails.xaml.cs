@@ -16,17 +16,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using ExtendedSystemObjects;
-using Imaging;
 using Mathematics;
 
 namespace CommonControls
@@ -100,6 +98,14 @@ namespace CommonControls
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
             typeof(Dictionary<int, string>),
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
+
+        /// <summary>
+        /// Gets the image items.
+        /// </summary>
+        /// <value>
+        /// The image items.
+        /// </value>
+        public ObservableCollection<ThumbImageData> ImageItems { get; } = new ObservableCollection<ThumbImageData>();
 
         /// <summary>
         ///     The refresh
@@ -332,18 +338,18 @@ namespace CommonControls
         /// <summary>
         ///     Loads the images.
         /// </summary>
-        private void LoadImages()
+        private async void LoadImages()
         {
-            if (ItemsSource.IsNullOrEmpty())
+            if (ItemsSource?.Any() != true)
             {
-                Thb.Children.Clear();
+                ImageItems.Clear();
                 return;
             }
 
             var timer = new Stopwatch();
             timer.Start();
 
-            //Initiate all Values
+            // Initiate all values
             ExtendedGrid.CellSize = ThumbCellSize;
             var pics = new Dictionary<int, string>(ItemsSource);
 
@@ -356,7 +362,7 @@ namespace CommonControls
                 ChkBox = new Dictionary<int, CheckBox>(pics.Count);
             }
 
-            //Handle some special cases
+            // Handle special cases
             if (ThumbCellSize == 0)
             {
                 ThumbCellSize = 100;
@@ -367,8 +373,6 @@ namespace CommonControls
                 ThumbHeight = 1;
             }
 
-            //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
-            //catch on reload
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
                 if (ThumbWidth == 1)
@@ -388,36 +392,85 @@ namespace CommonControls
                 }
             }
 
+            // Setup the grid layout
             var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
             Thb.Children.Clear();
             _ = Thb.Children.Add(exGrid);
 
-            for (var y = 0; y < ThumbHeight; y++)
-            for (var x = 0; x < ThumbWidth; x++)
+            var tasks = new List<Task>();
+            foreach (var (key, name) in pics)
             {
-                //everything empty? well bail out, if not well we have work
-                if (pics.Count == 0)
+                tasks.Add(LoadImageAsync(key, name, exGrid));
+
+                // Limit the number of concurrent tasks to avoid overloading
+                if (tasks.Count >= 10)
                 {
-                    continue;
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
                 }
+            }
 
-                var (key, name) = pics.First();
+            // Wait for all remaining tasks
+            await Task.WhenAll(tasks);
 
-                //Create new Image with Click Handler
-                var images = new Image();
-                images.Height = images.Width = ThumbCellSize;
-                images.Name = string.Concat(ComCtlResources.ImageAdd, key);
+            timer.Stop();
+            Trace.WriteLine("End: " + timer.Elapsed);
+
+            // Notify that loading is finished
+            ImageLoaded?.Invoke();
+        }
+
+        private async Task LoadImageAsync(int key, string name, Grid exGrid)
+        {
+            BitmapImage myBitmapCell = null;
+
+            // Create the image placeholder
+            var images = new Image
+            {
+                Height = ThumbCellSize,
+                Width = ThumbCellSize,
+                Name = string.Concat(ComCtlResources.ImageAdd, key)
+            };
+
+            // Add image click handler (this should run on the UI thread)
+            images.MouseDown += ImageClick_MouseDown;
+
+            // Add to dictionaries and grid on the UI thread
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 Keys.Add(images.Name, key);
                 ImageDct.Add(images.Name, images);
-                images.MouseDown += ImageClick_MouseDown;
-
-                //Add Image to Canvas
-                Grid.SetRow(images, y);
-                Grid.SetColumn(images, x);
+                Grid.SetRow(images, key / ThumbWidth);
+                Grid.SetColumn(images, key % ThumbWidth);
                 _ = exGrid.Children.Add(images);
+            });
 
-                //add an overlay here to get a selection frame
-                if (SelectBox)
+            // Try loading the bitmap image
+            try
+            {
+                myBitmapCell = await GetBitmapImageFileStreamAsync(name, ThumbCellSize, ThumbCellSize);
+            }
+            catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or InvalidOperationException)
+            {
+                Trace.WriteLine(ex);
+            }
+
+            if (myBitmapCell == null)
+            {
+                return;
+            }
+
+            // Set the image source on the UI thread
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                images.ToolTip = name;
+                images.Source = myBitmapCell;
+            });
+
+            if (SelectBox)
+            {
+                // Handle checkboxes for selection on the UI thread
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
 
@@ -430,7 +483,6 @@ namespace CommonControls
                         IsChecked = IsCheckBoxSelected
                     };
 
-                    //add to our List of selected Items
                     if (IsCheckBoxSelected)
                     {
                         Selection.Add(key);
@@ -441,42 +493,50 @@ namespace CommonControls
                     ChkBox.Add(key, checkbox);
 
                     checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
-                    Grid.SetRow(checkbox, y);
-                    Grid.SetColumn(checkbox, x);
+                    Grid.SetRow(checkbox, key / ThumbWidth);
+                    Grid.SetColumn(checkbox, key % ThumbWidth);
                     _ = exGrid.Children.Add(checkbox);
-                }
-
-                _ = pics.Reduce();
-                BitmapImage myBitmapCell = null;
-
-                try
-                {
-                    myBitmapCell = ImageStreamMedia.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
-                }
-                catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
-                    or InvalidOperationException)
-                {
-                    Trace.WriteLine(ex);
-                }
-
-                //handle error gracefully
-                if (myBitmapCell == null)
-                {
-                    continue;
-                }
-
-                images.ToolTip = name;
-
-                //Source:
-                //http://blog.andreweichacker.com/2008/10/just-a-bit-loading-images-asynchronously-in-wpf/
-
-                _ = images.Dispatcher?.BeginInvoke(DispatcherPriority.Loaded,
-                    (ThreadStart)(() => images.Source = myBitmapCell));
+                });
             }
+        }
 
-            timer.Stop();
+        /// <summary>
+        /// Gets the bitmap image file stream asynchronous.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The loaded and resized Image</returns>
+        private static async Task<BitmapImage> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
+        {
+            return string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)
+                ? null
+                : await Task.Run(() =>
+                {
+                    BitmapImage bitmapImage = null;
 
-            Trace.WriteLine("End: " + timer.Elapsed);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            bitmapImage = new BitmapImage();
+                            using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                            bitmapImage.BeginInit();
+                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmapImage.DecodePixelWidth = width;
+                            bitmapImage.DecodePixelHeight = height;
+                            bitmapImage.StreamSource = stream;
+                            bitmapImage.EndInit();
+                            bitmapImage.Freeze(); // Make it cross-thread safe
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
+                        }
+                    });
+
+                    return bitmapImage;
+                });
         }
 
         /// <summary>
