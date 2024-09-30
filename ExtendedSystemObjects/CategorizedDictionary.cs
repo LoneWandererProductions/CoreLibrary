@@ -30,7 +30,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The internal data of our custom Dictionary
         /// </summary>
-        private readonly Dictionary<TK, (string Category, TV Value)> _data = new();
+        private readonly Dictionary<TK, (string Category, TV Value)> _data;
 
         /// <summary>
         /// The lock for thread safety
@@ -203,7 +203,7 @@ namespace ExtendedSystemObjects
         {
             _lock.EnterReadLock();
             try
-            { 
+            {
                 return _data.TryGetValue(key, out var entry) ? entry : null;
             }
             finally
