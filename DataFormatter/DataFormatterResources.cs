@@ -70,6 +70,6 @@ namespace DataFormatter
         /// <summary>
         ///     Encoding Parameter (const). Value: "UTF-32BE".
         /// </summary>
-        internal const string EncodingUTF32 = "UTF-32BE";
+        internal const string EncodingUtf32 = "UTF-32BE";
     }
 }

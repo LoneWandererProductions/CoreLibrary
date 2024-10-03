@@ -61,7 +61,7 @@ namespace DataFormatter
                 case 0xff when buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00:
                     return Encoding.UTF32; // UTF-32 LE
                 case 0x00 when buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff:
-                    return Encoding.GetEncoding(DataFormatterResources.EncodingUTF32); // UTF-32 BE
+                    return Encoding.GetEncoding(DataFormatterResources.EncodingUtf32); // UTF-32 BE
 
                 default:
                     // Default encoding (change this as per your requirements)

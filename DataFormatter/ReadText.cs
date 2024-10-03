@@ -26,18 +26,17 @@ namespace DataFormatter
         /// <summary>
         ///     Reads a file line for line
         /// </summary>
-        /// <param name="filepath">path of the file</param>
+        /// <param name="filePath">path of the file</param>
         /// <returns>the values as String[]. Can return null.</returns>
         [return: MaybeNull]
-        public static List<string> ReadFile(string filepath)
+        public static List<string> ReadFile(string filePath)
         {
             var parts = new List<string>();
             try
             {
-                var encoding = DataHelper.GetFileEncoding(filepath);
-                using var reader = new StreamReader(filepath, encoding);
-                string line;
-                while ((line = reader.ReadLine()) != null) parts.Add(line);
+                var encoding = DataHelper.GetFileEncoding(filePath);
+                using var reader = new StreamReader(filePath, encoding);
+                while (reader.ReadLine() is { } line) parts.Add(line);
             }
             catch (IOException ex)
             {
