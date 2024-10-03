@@ -484,10 +484,9 @@ namespace CommonLibraryTests
         ///     Compares the colors.
         /// </summary>
         [TestMethod]
-        public void CompareColors()
+        public void CompareImageColors()
         {
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "Color.png");
-
             using var btm = new Bitmap(imagePath);
 
             var imageData = ImageProcessing.GenerateData(btm, 0);
@@ -501,13 +500,18 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(2, color.Count, "Done");
-
             Assert.AreEqual(imagePath, color[0], "Done");
+
             imagePath = Path.Combine(SampleImagesFolder.FullName, "ColorShade.png");
             Assert.AreEqual(imagePath, color[1], "Done");
+        }
 
-            //compare and Similar Images
-
+        /// <summary>
+        /// Compares the duplicate images.
+        /// </summary>
+        [TestMethod]
+        public void CompareDuplicateImages()
+        {
             var images = Compare.GetDuplicateImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix);
 
             if (images == null)
@@ -518,31 +522,48 @@ namespace CommonLibraryTests
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(2, images[0].Count, "Done");
 
-            imagePath = Path.Combine(SampleImagesFolder.FullName, "Compare.png");
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "Compare.png");
             var cache = images[0];
             Assert.AreEqual(imagePath, cache[0], "Done");
+
             imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareCopy.png");
             Assert.AreEqual(imagePath, cache[1], "Done");
+        }
 
-            images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
+        /// <summary>
+        /// Compares the similar images.
+        /// </summary>
+        [TestMethod]
+        public void CompareSimilarImages()
+        {
+            var images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
 
             if (images == null)
             {
-                Assert.Fail("image was null");
+                Assert.Fail("images was null");
             }
 
             Assert.AreEqual(1, images.Count, "Done");
             Assert.AreEqual(3, images[0].Count, "Done");
 
-            imagePath = Path.Combine(SampleImagesFolder.FullName, "Compare.png");
-            cache = images[0];
-            Assert.IsTrue(cache.Contains(imagePath), "Done");
-            imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareCopy.png");
-            Assert.IsTrue(cache.Contains(imagePath), "Done");
-            imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareSimilar.png");
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "Compare.png");
+            var cache = images[0];
             Assert.IsTrue(cache.Contains(imagePath), "Done");
 
-            //Check Content
+            imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareCopy.png");
+            Assert.IsTrue(cache.Contains(imagePath), "Done");
+
+            imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareSimilar.png");
+            Assert.IsTrue(cache.Contains(imagePath), "Done");
+        }
+
+        /// <summary>
+        /// Checks the image content details.
+        /// </summary>
+        [TestMethod]
+        public void CheckImageContentDetails()
+        {
+            var imagePath = Path.Combine(SampleImagesFolder.FullName, "CompareSimilar.png");
             var data = Analysis.GetImageDetails(imagePath);
 
             if (data == null)
@@ -551,19 +572,21 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(26, data.R, "Done");
-
             Assert.AreEqual(72, data.G, "Done");
-
             Assert.AreEqual(124, data.B, "Done");
-
             Assert.AreEqual(3075, data.Size, "Done");
-
             Assert.AreEqual(100, data.Height, "Done");
-
             Assert.AreEqual(100, data.Width, "Done");
-
             Assert.AreEqual(".png", data.Extension, "Done");
+        }
 
+        /// <summary>
+        /// Checks the image list details.
+        /// </summary>
+        [TestMethod]
+        public void CheckImageListDetails()
+        {
+            var images = Compare.GetSimilarImages(SampleImagesFolder.FullName, false, ImagingResources.Appendix, 80);
             var dataList = Analysis.GetImageDetails(images[0]);
 
             if (dataList == null)
@@ -572,19 +595,17 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(26, dataList[0].R, "Done");
-
             Assert.AreEqual(72, dataList[0].G, "Done");
-
             Assert.AreEqual(124, dataList[0].B, "Done");
+            Assert.AreEqual(3086, dataList[0].Size, "Done");
 
-            Assert.AreEqual(3075, data.Size, "Done");
-
-            //should be around 99%
+            // Similarity should be around 99%
             Assert.AreEqual(100, Math.Round(dataList[2].Similarity, 0),
                 $"Done: {dataList[2].Similarity}");
 
             Trace.WriteLine(dataList[2].Similarity);
         }
+
 
         /// <summary>
         ///     Test save and convert to Cif Files
