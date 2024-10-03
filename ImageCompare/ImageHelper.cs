@@ -47,14 +47,10 @@ namespace ImageCompare
         internal static ImageCompareData CompareImages(string first, string second)
         {
             if (!File.Exists(first))
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, first));
-            }
 
             if (!File.Exists(second))
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, second));
-            }
 
             var one = new Bitmap(first);
             var two = new Bitmap(second);

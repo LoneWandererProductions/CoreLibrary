@@ -15,8 +15,8 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,22 +24,26 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Mathematics;
 
 namespace CommonControls
 {
-    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Basic Image Thumbnails
+    /// Basic Image Thumbnails
     /// </summary>
+    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
+    /// <inheritdoc cref="Window" />
     public sealed partial class Thumbnails
     {
         /// <summary>
         ///     The selection change delegate.
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="itemId">The itemId.</param>
-        public delegate void DelegateImage(ImageEventArgs itemId);
+        public delegate void DelegateImage(object sender, ImageEventArgs itemId);
 
         /// <summary>
         ///     The selection change delegate.
@@ -71,7 +75,7 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        ///     The Thumb Cell Size
+        ///     The dependency thumb grid
         /// </summary>
         public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(
             nameof(DependencyThumbGrid),
@@ -79,33 +83,27 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        ///     The Thumb Cell Size
+        ///     The selection box
         /// </summary>
         public static readonly DependencyProperty SelectionBox = DependencyProperty.Register(nameof(SelectionBox),
             typeof(bool),
             typeof(Thumbnails), null);
 
+
         /// <summary>
-        ///     The Thumb Cell Size
+        ///     The is selected
         /// </summary>
         public static readonly DependencyProperty IsSelected = DependencyProperty.Register(nameof(IsSelected),
             typeof(bool),
             typeof(Thumbnails), null);
 
+
         /// <summary>
-        ///     The Thumb Cell Size
+        ///     The items source property
         /// </summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
             typeof(Dictionary<int, string>),
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
-
-        /// <summary>
-        /// Gets the image items.
-        /// </summary>
-        /// <value>
-        /// The image items.
-        /// </value>
-        public ObservableCollection<ThumbImageData> ImageItems { get; } = new ObservableCollection<ThumbImageData>();
 
         /// <summary>
         ///     The refresh
@@ -126,6 +124,16 @@ namespace CommonControls
         ///     The selection
         /// </summary>
         private int _selection;
+
+        /// <summary>
+        /// The current selected border
+        /// </summary>
+        private Border _currentSelectedBorder;
+
+        /// <summary>
+        /// The previous selected border
+        /// </summary>
+        private Border _previousSelectedBorder;
 
         /// <inheritdoc />
         /// <summary>
@@ -218,7 +226,6 @@ namespace CommonControls
         ///     <c>true</c> if [thumb grid]; otherwise, <c>false</c>.
         /// </value>
         public Dictionary<int, string> ItemsSource
-
         {
             get => (Dictionary<int, string>)GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
@@ -230,7 +237,7 @@ namespace CommonControls
         /// <value>
         ///     The Id of the Key
         /// </value>
-        private Dictionary<string, int> Keys { get; set; }
+        private ConcurrentDictionary<string, int> Keys { get; set; }
 
         /// <summary>
         ///     Gets or sets the image Dictionary.
@@ -238,15 +245,15 @@ namespace CommonControls
         /// <value>
         ///     The image Dictionary.
         /// </value>
-        private Dictionary<string, Image> ImageDct { get; set; }
+        private ConcurrentDictionary<string, Image> ImageDct { get; set; }
 
         /// <summary>
-        ///     Gets or sets the CHK box.
+        ///     Gets or sets the CheckBox.
         /// </summary>
         /// <value>
-        ///     The CHK box.
+        ///     The CheckBox.
         /// </value>
-        private Dictionary<int, CheckBox> ChkBox { get; set; }
+        private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
         ///     Gets or sets the selection.
@@ -274,11 +281,8 @@ namespace CommonControls
         private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as Thumbnails;
-            // add an Can Execute
-            if (!_refresh)
-            {
-                return;
-            }
+            if (e.NewValue == e.OldValue) return;
+            if (!_refresh) return;
 
             control?.OnItemsSourceChanged();
         }
@@ -291,17 +295,11 @@ namespace CommonControls
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id))
-            {
-                return;
-            }
+            if (!ItemsSource.ContainsKey(id)) return;
 
             var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-            if (image != null)
-            {
-                image.Source = null;
-            }
+            if (image != null) image.Source = null;
 
             _ = ItemsSource.Remove(id);
 
@@ -315,6 +313,9 @@ namespace CommonControls
         {
             ThumbWidth = _originalWidth;
             ThumbHeight = _originalHeight;
+
+            // Clear existing images from the grid
+            Thb.Children.Clear();
 
             LoadImages();
 
@@ -340,11 +341,7 @@ namespace CommonControls
         /// </summary>
         private async void LoadImages()
         {
-            if (ItemsSource?.Any() != true)
-            {
-                ImageItems.Clear();
-                return;
-            }
+            if (ItemsSource?.Any() != true) return;
 
             var timer = new Stopwatch();
             timer.Start();
@@ -353,37 +350,22 @@ namespace CommonControls
             ExtendedGrid.CellSize = ThumbCellSize;
             var pics = new Dictionary<int, string>(ItemsSource);
 
-            Keys = new Dictionary<string, int>(pics.Count);
-            ImageDct = new Dictionary<string, Image>(pics.Count);
+            Keys = new ConcurrentDictionary<string, int>();
+            ImageDct = new ConcurrentDictionary<string, Image>();
             Selection = new List<int>();
 
-            if (SelectBox)
-            {
-                ChkBox = new Dictionary<int, CheckBox>(pics.Count);
-            }
+            if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
             // Handle special cases
-            if (ThumbCellSize == 0)
-            {
-                ThumbCellSize = 100;
-            }
+            if (ThumbCellSize == 0) ThumbCellSize = 100;
 
-            if (ThumbHeight == 0 && ThumbWidth == 0)
-            {
-                ThumbHeight = 1;
-            }
+            if (ThumbHeight == 0 && ThumbWidth == 0) ThumbHeight = 1;
 
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
-                if (ThumbWidth == 1)
-                {
-                    ThumbHeight = pics.Count;
-                }
+                if (ThumbWidth == 1) ThumbHeight = pics.Count;
 
-                if (ThumbHeight == 1)
-                {
-                    ThumbWidth = pics.Count;
-                }
+                if (ThumbHeight == 1) ThumbWidth = pics.Count;
 
                 if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
@@ -394,7 +376,7 @@ namespace CommonControls
 
             // Setup the grid layout
             var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
-            Thb.Children.Clear();
+
             _ = Thb.Children.Add(exGrid);
 
             var tasks = new List<Task>();
@@ -420,7 +402,14 @@ namespace CommonControls
             ImageLoaded?.Invoke();
         }
 
-        private async Task LoadImageAsync(int key, string name, Grid exGrid)
+        /// <summary>
+        ///     Loads the image asynchronous.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="exGrid">The ex grid.</param>
+        /// <returns>Load all images async</returns>
+        private async Task LoadImageAsync(int key, string name, Panel exGrid)
         {
             BitmapImage myBitmapCell = null;
 
@@ -432,17 +421,26 @@ namespace CommonControls
                 Name = string.Concat(ComCtlResources.ImageAdd, key)
             };
 
+            // Create a border around the image
+            var border = new Border
+            {
+                Child = images, // Set the image as the child of the border
+                BorderThickness = new Thickness(0), // Initially no border
+                BorderBrush = Brushes.Transparent, // Initially transparent
+                Margin = new Thickness(1) // Optionally add some margin for spacing
+            };
+
             // Add image click handler (this should run on the UI thread)
             images.MouseDown += ImageClick_MouseDown;
 
             // Add to dictionaries and grid on the UI thread
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Keys.Add(images.Name, key);
-                ImageDct.Add(images.Name, images);
-                Grid.SetRow(images, key / ThumbWidth);
-                Grid.SetColumn(images, key % ThumbWidth);
-                _ = exGrid.Children.Add(images);
+                Keys.TryAdd(images.Name, key);
+                ImageDct.TryAdd(images.Name, images);
+                Grid.SetRow(border, key / ThumbWidth); // Use the border instead of the image
+                Grid.SetColumn(border, key % ThumbWidth);
+                _ = exGrid.Children.Add(border); // Add the border to the grid
             });
 
             // Try loading the bitmap image
@@ -450,15 +448,13 @@ namespace CommonControls
             {
                 myBitmapCell = await GetBitmapImageFileStreamAsync(name, ThumbCellSize, ThumbCellSize);
             }
-            catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or InvalidOperationException)
+            catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
+                or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
             }
 
-            if (myBitmapCell == null)
-            {
-                return;
-            }
+            if (myBitmapCell == null) return;
 
             // Set the image source on the UI thread
             Application.Current.Dispatcher.Invoke(() =>
@@ -483,14 +479,11 @@ namespace CommonControls
                         IsChecked = IsCheckBoxSelected
                     };
 
-                    if (IsCheckBoxSelected)
-                    {
-                        Selection.Add(key);
-                    }
+                    if (IsCheckBoxSelected) Selection.Add(key);
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
-                    ChkBox.Add(key, checkbox);
+                    ChkBox.TryAdd(key, checkbox);
 
                     checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
                     Grid.SetRow(checkbox, key / ThumbWidth);
@@ -501,7 +494,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the bitmap image file stream asynchronous.
+        ///     Gets the bitmap image file stream asynchronous.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="width">The width.</param>
@@ -546,22 +539,37 @@ namespace CommonControls
         /// <param name="e">Name of Image</param>
         private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            // Get the image that was clicked
+            if (sender is not Image clickedImage) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedImage.Name)) return;
 
-            var id = Keys[clickedButton.Name];
+            var id = Keys[clickedImage.Name];
 
-            //create new click Object
+            // Create new click object
             var args = new ImageEventArgs { Id = id };
-            OnImageThumbClicked(args);
+            OnImageThumbClicked(args); // Trigger the event with the selected image ID
+
+            // Get the parent border (since we wrapped the image in a Border)
+            var clickedBorder = clickedImage.Parent as Border;
+            if (clickedBorder == null) return;
+
+            // Clear previous selection highlight if any
+            if (_previousSelectedBorder != null)
+            {
+                _previousSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border highlight
+                _previousSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
+            }
+
+            // Highlight the currently clicked thumbnail
+            clickedBorder.BorderBrush = Brushes.Blue; // Highlight with blue border
+            clickedBorder.BorderThickness = new Thickness(2); // Set border thickness
+
+            // Update the currently selected border
+            _currentSelectedBorder = clickedBorder;
+
+            // Update the previous selected border to the current one
+            _previousSelectedBorder = _currentSelectedBorder;
         }
 
         /// <summary>
@@ -572,15 +580,9 @@ namespace CommonControls
         private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            if (sender is not Image clickedButton) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedButton.Name)) return;
 
             _selection = Keys[clickedButton.Name];
 
@@ -615,15 +617,9 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0)
-            {
-                return;
-            }
+            if (Selection.Count == 0) return;
 
-            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
-            {
-                check.IsChecked = false;
-            }
+            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id])) check.IsChecked = false;
         }
 
         /// <summary>
@@ -634,15 +630,9 @@ namespace CommonControls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -657,15 +647,9 @@ namespace CommonControls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -679,7 +663,7 @@ namespace CommonControls
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
-            ImageClicked?.Invoke(args);
+            ImageClicked?.Invoke(this, args);
         }
     }
 

@@ -4,7 +4,9 @@ using Imaging;
 
 public class Lif
 {
-    public Lif() { }
+    public Lif()
+    {
+    }
 
     public Lif(List<Cif> layers, List<LayerSettings> layerSettings)
     {
@@ -18,10 +20,7 @@ public class Lif
     // Merge all visible layers to create the final image
     public Bitmap MergeLayers()
     {
-        if (Layers.Count == 0)
-        {
-            return null;
-        }
+        if (Layers.Count == 0) return null;
 
         // Start with base layer (always visible)
         var finalImage = Layers[0];
@@ -43,25 +42,23 @@ public class Lif
     private void ApplyDelta(Cif baseImage, Cif deltaLayer, LayerSettings settings)
     {
         foreach (var (color, pixels) in deltaLayer.CifImage)
+        foreach (var pixel in pixels)
         {
-            foreach (var pixel in pixels)
-            {
-                var x = pixel % baseImage.Width;
-                var y = pixel / baseImage.Width;
+            var x = pixel % baseImage.Width;
+            var y = pixel / baseImage.Width;
 
-                //var baseColor = baseImage.GetPixel(x, y);
-                //var blendedColor = ApplyAlpha(baseColor, color, settings.Alpha);
+            //var baseColor = baseImage.GetPixel(x, y);
+            //var blendedColor = ApplyAlpha(baseColor, color, settings.Alpha);
 
-                //baseImage.SetPixel(x, y, blendedColor);
-            }
+            //baseImage.SetPixel(x, y, blendedColor);
         }
     }
 
     private Color ApplyAlpha(Color baseColor, Color deltaColor, float alpha)
     {
-        var r = (int)((deltaColor.R * alpha) + (baseColor.R * (1 - alpha)));
-        var g = (int)((deltaColor.G * alpha) + (baseColor.G * (1 - alpha)));
-        var b = (int)((deltaColor.B * alpha) + (baseColor.B * (1 - alpha)));
+        var r = (int)(deltaColor.R * alpha + baseColor.R * (1 - alpha));
+        var g = (int)(deltaColor.G * alpha + baseColor.G * (1 - alpha));
+        var b = (int)(deltaColor.B * alpha + baseColor.B * (1 - alpha));
         return Color.FromArgb(r, g, b);
     }
 }

@@ -66,10 +66,7 @@ namespace Imaging
         /// <exception cref="System.ArgumentOutOfRangeException">gamma - Gamma must be greater than 0.</exception>
         internal static Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
         {
-            if (gamma <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(gamma), "Gamma must be greater than 0.");
-            }
+            if (gamma <= 0) throw new ArgumentOutOfRangeException(nameof(gamma), "Gamma must be greater than 0.");
 
             var gammaCorrection = 1.0 / gamma;
             return ProcessImage(image, colorHsv =>
@@ -95,18 +92,16 @@ namespace Imaging
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < source.Height; y++)
+            for (var x = 0; x < source.Width; x++)
             {
-                for (var x = 0; x < source.Width; x++)
-                {
-                    var pixelColor = source.GetPixel(x, y);
-                    var colorHsv = new ColorHsv(pixelColor.R, pixelColor.G, pixelColor.B, pixelColor.A);
+                var pixelColor = source.GetPixel(x, y);
+                var colorHsv = new ColorHsv(pixelColor.R, pixelColor.G, pixelColor.B, pixelColor.A);
 
-                    // Apply the pixel operation (adjustments)
-                    pixelOperation(colorHsv);
+                // Apply the pixel operation (adjustments)
+                pixelOperation(colorHsv);
 
-                    // Add modified pixel to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(colorHsv.A, colorHsv.R, colorHsv.G, colorHsv.B)));
-                }
+                // Add modified pixel to the list
+                pixelsToSet.Add((x, y, Color.FromArgb(colorHsv.A, colorHsv.R, colorHsv.G, colorHsv.B)));
             }
 
             return ApplyPixelChanges(result, pixelsToSet);

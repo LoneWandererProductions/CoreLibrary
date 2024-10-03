@@ -204,39 +204,32 @@ namespace Imaging
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var y = filterOffset; y < source.Height - filterOffset; y++)
+            for (var x = filterOffset; x < source.Width - filterOffset; x++)
             {
-                for (var x = filterOffset; x < source.Width - filterOffset; x++)
+                double blue = 0.0, green = 0.0, red = 0.0;
+
+                for (var filterY = 0; filterY < filterHeight; filterY++)
+                for (var filterX = 0; filterX < filterWidth; filterX++)
                 {
-                    double blue = 0.0, green = 0.0, red = 0.0;
+                    var imageX = x + (filterX - filterOffset);
+                    var imageY = y + (filterY - filterOffset);
 
-                    for (var filterY = 0; filterY < filterHeight; filterY++)
-                    {
-                        for (var filterX = 0; filterX < filterWidth; filterX++)
-                        {
-                            var imageX = x + (filterX - filterOffset);
-                            var imageY = y + (filterY - filterOffset);
+                    // Check bounds to prevent out-of-bounds access
+                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height) continue;
 
-                            // Check bounds to prevent out-of-bounds access
-                            if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
-                            {
-                                continue;
-                            }
+                    var pixelColor = source.GetPixel(imageX, imageY);
 
-                            var pixelColor = source.GetPixel(imageX, imageY);
-
-                            blue += pixelColor.B * filterMatrix[filterY, filterX];
-                            green += pixelColor.G * filterMatrix[filterY, filterX];
-                            red += pixelColor.R * filterMatrix[filterY, filterX];
-                        }
-                    }
-
-                    var newBlue = ImageHelper.Clamp((factor * blue) + bias);
-                    var newGreen = ImageHelper.Clamp((factor * green) + bias);
-                    var newRed = ImageHelper.Clamp((factor * red) + bias);
-
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
+                    blue += pixelColor.B * filterMatrix[filterY, filterX];
+                    green += pixelColor.G * filterMatrix[filterY, filterX];
+                    red += pixelColor.R * filterMatrix[filterY, filterX];
                 }
+
+                var newBlue = ImageHelper.Clamp(factor * blue + bias);
+                var newGreen = ImageHelper.Clamp(factor * green + bias);
+                var newRed = ImageHelper.Clamp(factor * red + bias);
+
+                // Instead of setting the pixel immediately, add it to the list
+                pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
             }
 
             // Use SIMD to set all the pixels in bulk
@@ -329,7 +322,7 @@ namespace Imaging
                 }
 
                 // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
+                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
 
                 // Normalize the magnitude to fit within the range of 0-255
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
@@ -407,18 +400,16 @@ namespace Imaging
 
 
             for (var y = halfBaseWindow; y < dbmBase.Height - halfBaseWindow; y++)
+            for (var x = halfBaseWindow; x < dbmBase.Width - halfBaseWindow; x++)
             {
-                for (var x = halfBaseWindow; x < dbmBase.Width - halfBaseWindow; x++)
-                {
-                    // Determine region size and shape based on local image characteristics
-                    DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth,
-                        out var regionHeight);
+                // Determine region size and shape based on local image characteristics
+                DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth,
+                    out var regionHeight);
 
-                    var bestColor = ComputeBestRegionColor(dbmBase, x, y, regionWidth, regionHeight);
+                var bestColor = ComputeBestRegionColor(dbmBase, x, y, regionWidth, regionHeight);
 
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, bestColor));
-                }
+                // Instead of setting the pixel immediately, add it to the list
+                pixelsToSet.Add((x, y, bestColor));
             }
 
             // Use SIMD to set all the pixels in bulk
@@ -458,23 +449,21 @@ namespace Imaging
 
             // Apply dithering
             for (var y = 0; y < grayBitmap.Height; y++)
+            for (var x = 0; x < grayBitmap.Width; x++)
             {
-                for (var x = 0; x < grayBitmap.Width; x++)
-                {
-                    // Get the original grayscale pixel value
-                    var oldColor = grayBitmap.GetPixel(x, y);
-                    var oldIntensity = oldColor.R; // Since it's grayscale, R=G=B
+                // Get the original grayscale pixel value
+                var oldColor = grayBitmap.GetPixel(x, y);
+                var oldIntensity = oldColor.R; // Since it's grayscale, R=G=B
 
-                    // Find the closest color in the palette
-                    var newColor = GetNearestColor(oldIntensity, palette);
-                    result.SetPixel(x, y, newColor);
+                // Find the closest color in the palette
+                var newColor = GetNearestColor(oldIntensity, palette);
+                result.SetPixel(x, y, newColor);
 
-                    // Calculate the quantization error
-                    var error = oldIntensity - newColor.R;
+                // Calculate the quantization error
+                var error = oldIntensity - newColor.R;
 
-                    // Distribute the error to neighboring pixels
-                    DistributeError(dbmBase, x, y, error, ditherMatrix);
-                }
+                // Distribute the error to neighboring pixels
+                DistributeError(dbmBase, x, y, error, ditherMatrix);
             }
 
             return result.Bitmap;
@@ -501,31 +490,27 @@ namespace Imaging
             var scaledDbm = new DirectBitmap(scaledBitmap);
 
             for (var y = 0; y < resultBitmap.Height; y++)
+            for (var x = 0; x < resultBitmap.Width; x++)
             {
-                for (var x = 0; x < resultBitmap.Width; x++)
+                var startX = x * scale;
+                var startY = y * scale;
+
+                // Average the color values of the sample region
+                int sumR = 0, sumG = 0, sumB = 0;
+                for (var dy = 0; dy < scale; dy++)
+                for (var dx = 0; dx < scale; dx++)
                 {
-                    var startX = x * scale;
-                    var startY = y * scale;
-
-                    // Average the color values of the sample region
-                    int sumR = 0, sumG = 0, sumB = 0;
-                    for (var dy = 0; dy < scale; dy++)
-                    {
-                        for (var dx = 0; dx < scale; dx++)
-                        {
-                            var pixelColor = scaledDbm.GetPixel(startX + dx, startY + dy);
-                            sumR += pixelColor.R;
-                            sumG += pixelColor.G;
-                            sumB += pixelColor.B;
-                        }
-                    }
-
-                    var avgR = sumR / (scale * scale);
-                    var avgG = sumG / (scale * scale);
-                    var avgB = sumB / (scale * scale);
-
-                    resultBitmap.SetPixel(x, y, Color.FromArgb(avgR, avgG, avgB));
+                    var pixelColor = scaledDbm.GetPixel(startX + dx, startY + dy);
+                    sumR += pixelColor.R;
+                    sumG += pixelColor.G;
+                    sumB += pixelColor.B;
                 }
+
+                var avgR = sumR / (scale * scale);
+                var avgG = sumG / (scale * scale);
+                var avgB = sumB / (scale * scale);
+
+                resultBitmap.SetPixel(x, y, Color.FromArgb(avgR, avgG, avgB));
             }
 
             return resultBitmap.Bitmap;
@@ -584,18 +569,16 @@ namespace Imaging
         {
             var result = new Bitmap(baseImage.Width, baseImage.Height);
             for (var y = 0; y < baseImage.Height; y++)
+            for (var x = 0; x < baseImage.Width; x++)
             {
-                for (var x = 0; x < baseImage.Width; x++)
-                {
-                    var baseColor = baseImage.GetPixel(x, y);
-                    var blendColor = blendImage.GetPixel(x, y);
+                var baseColor = baseImage.GetPixel(x, y);
+                var blendColor = blendImage.GetPixel(x, y);
 
-                    var r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
-                    var g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
-                    var b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
+                var r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
+                var g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
+                var b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
 
-                    result.SetPixel(x, y, Color.FromArgb(r, g, b));
-                }
+                result.SetPixel(x, y, Color.FromArgb(r, g, b));
             }
 
             return result;
@@ -616,7 +599,7 @@ namespace Imaging
             // Compute gradient magnitude using Sobel operators
             var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
             var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
-            var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
+            var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
 
             // Compute local variance
             var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
@@ -645,14 +628,12 @@ namespace Imaging
             var sum = 0.0;
 
             for (var ky = -halfKernelSize; ky <= halfKernelSize; ky++)
+            for (var kx = -halfKernelSize; kx <= halfKernelSize; kx++)
             {
-                for (var kx = -halfKernelSize; kx <= halfKernelSize; kx++)
-                {
-                    var pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
-                    var pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
-                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
-                    sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
-                }
+                var pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
+                var pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
+                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
             }
 
             return sum;
@@ -673,21 +654,19 @@ namespace Imaging
             var count = 0;
 
             for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
             {
-                for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
-                {
-                    var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                    var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
-                    sum += intensity;
-                    sumSquared += intensity * intensity;
-                    count++;
-                }
+                sum += intensity;
+                sumSquared += intensity * intensity;
+                count++;
             }
 
             var mean = sum / count;
-            var variance = (sumSquared / count) - (mean * mean);
+            var variance = sumSquared / count - mean * mean;
 
             return variance;
         }
@@ -708,16 +687,14 @@ namespace Imaging
             var count = 0;
 
             for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
+            for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
             {
-                for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
-                {
-                    var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                    var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                    var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+                var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+                var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
-                    sum += Math.Abs(localIntensity - intensity);
-                    count++;
-                }
+                sum += Math.Abs(localIntensity - intensity);
+                count++;
             }
 
             return sum / count;
@@ -788,18 +765,16 @@ namespace Imaging
             var regions = new List<Rectangle>
             {
                 // Base region
-                new(centerX - (width / 2), centerY - (height / 2), width, height)
+                new(centerX - width / 2, centerY - height / 2, width, height)
             };
 
             for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
             {
-                var newWidth = width - (i * step);
-                var newHeight = height - (i * step);
+                var newWidth = width - i * step;
+                var newHeight = height - i * step;
                 if (newWidth > 0 && newHeight > 0)
-                {
-                    regions.Add(new Rectangle(centerX - (newWidth / 2) + (offset * i),
-                        centerY - (newHeight / 2) + (offset * i), newWidth, newHeight));
-                }
+                    regions.Add(new Rectangle(centerX - newWidth / 2 + offset * i,
+                        centerY - newHeight / 2 + offset * i, newWidth, newHeight));
             }
 
             return regions;
@@ -859,21 +834,19 @@ namespace Imaging
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var dy = 0; dy < matrixHeight; dy++)
+            for (var dx = 0; dx < matrixWidth; dx++)
             {
-                for (var dx = 0; dx < matrixWidth; dx++)
+                var nx = x + dx - 1;
+                var ny = y + dy;
+
+                if (nx >= 0 && nx < dbmBase.Width && ny >= 0 && ny < dbmBase.Height)
                 {
-                    var nx = x + dx - 1;
-                    var ny = y + dy;
+                    var pixel = dbmBase.GetPixel(nx, ny);
+                    var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
+                    var newIntensity = ImageHelper.Clamp(oldIntensity + error * ditherMatrix[dy, dx] / 16);
+                    var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
 
-                    if (nx >= 0 && nx < dbmBase.Width && ny >= 0 && ny < dbmBase.Height)
-                    {
-                        var pixel = dbmBase.GetPixel(nx, ny);
-                        var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                        var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
-                        var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
-
-                        pixelsToSet.Add((nx, ny, newColor));
-                    }
+                    pixelsToSet.Add((nx, ny, newColor));
                 }
             }
 
@@ -903,19 +876,17 @@ namespace Imaging
             var dbmTwo = new DirectBitmap(imgTwo);
 
             for (var y = 0; y < dbmOne.Height; y++)
+            for (var x = 0; x < dbmOne.Width; x++)
             {
-                for (var x = 0; x < dbmOne.Width; x++)
-                {
-                    var color1 = dbmOne.GetPixel(x, y);
-                    var color2 = dbmTwo.GetPixel(x, y);
+                var color1 = dbmOne.GetPixel(x, y);
+                var color2 = dbmTwo.GetPixel(x, y);
 
-                    var r = Math.Max(0, color1.R - color2.R);
-                    var g = Math.Max(0, color1.G - color2.G);
-                    var b = Math.Max(0, color1.B - color2.B);
+                var r = Math.Max(0, color1.R - color2.R);
+                var g = Math.Max(0, color1.G - color2.G);
+                var b = Math.Max(0, color1.B - color2.B);
 
-                    // Instead of setting the pixel immediately, add it to the list
-                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                }
+                // Instead of setting the pixel immediately, add it to the list
+                pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
             }
 
             // Use SIMD to set all the pixels in bulk

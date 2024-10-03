@@ -24,6 +24,7 @@ namespace Imaging
         /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
+        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>
         ///     Generates a filter for a certain area
@@ -38,8 +39,12 @@ namespace Imaging
             int height,
             TextureType filter,
             TextureShape shape,
+            Point? startPoint = null,
             object shapeParams = null)
         {
+            // If no start point is provided, default to (0, 0)
+            var actualStartPoint = startPoint ?? new Point(0, 0);
+
             // Retrieve the settings for the specified filter
             var settings = ImageRegister.GetSettings(filter);
 
@@ -99,10 +104,10 @@ namespace Imaging
             switch (shape)
             {
                 case TextureShape.Rectangle:
-                    return ApplyRectangleMask(textureBitmap, width, height);
+                    return ApplyRectangleMask(textureBitmap, width, height, actualStartPoint);
 
                 case TextureShape.Circle:
-                    return ApplyCircleMask(textureBitmap, width, height);
+                    return ApplyCircleMask(textureBitmap, width, height, actualStartPoint);
 
                 case TextureShape.Polygon:
                     return ApplyPolygonMask(textureBitmap, (Point[])shapeParams);
@@ -116,31 +121,48 @@ namespace Imaging
         ///     Applies the rectangle mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
+        /// <param name="width">The width of the rectangle.</param>
+        /// <param name="height">The height of the rectangle.</param>
+        /// <param name="startPoint">The starting point (top-left corner) of the rectangle.</param>
         /// <returns>Rectangle Bitmap</returns>
-        private static Bitmap ApplyRectangleMask(Bitmap bitmap, int width, int height)
+        private static Bitmap ApplyRectangleMask(Image bitmap, int width, int height, Point startPoint)
         {
-            // In this case, the rectangle shape means applying the texture as-is
+            // Create a new bitmap to work on
+            var rectBitmap = new Bitmap(bitmap.Width, bitmap.Height);
 
-            //Todo add area
-            return bitmap;
+            // Use graphics to apply the mask
+            using var g = Graphics.FromImage(rectBitmap);
+            // Clear the background to transparent
+            g.Clear(Color.Transparent);
+
+            // Create a texture brush with the original bitmap
+            using var brush = new TextureBrush(bitmap);
+            // Fill a rectangle starting from the given start point
+            g.FillRectangle(brush, new Rectangle(startPoint.X, startPoint.Y, width, height));
+
+            return rectBitmap;
         }
 
+
         /// <summary>
-        ///     Applies the circle mask.
+        /// Applies the circle mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <returns>Circle Bitmap</returns>
-        private static Bitmap ApplyCircleMask(Image bitmap, int width, int height)
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        /// Circle Bitmap
+        /// </returns>
+        private static Bitmap ApplyCircleMask(Image bitmap, int width, int height, Point startPoint)
         {
-            var circleBitmap = new Bitmap(width, height);
+            var circleBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             using var g = Graphics.FromImage(circleBitmap);
             g.Clear(Color.Transparent);
             using var brush = new TextureBrush(bitmap);
-            g.FillEllipse(brush, 0, 0, width, height);
+
+            // Fill the ellipse starting at the specified start point
+            g.FillEllipse(brush, startPoint.X, startPoint.Y, width, height);
 
             return circleBitmap;
         }

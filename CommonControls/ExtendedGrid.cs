@@ -165,7 +165,7 @@ namespace CommonControls
                 Height = _height * Rows,
 #if DEBUG
                 //for Debugging Purposes, yes it should hurt the eyes!
-                Background = Brushes.Pink
+                Background = Brushes.Gray
 #endif
             };
 
@@ -214,7 +214,7 @@ namespace CommonControls
                 ShowGridLines = gridLines,
 #if DEBUG
                 //for Debugging Purposes, yes it should hurt the eyes!
-                Background = Brushes.Pink
+                Background = Brushes.Gray
 #endif
             };
 

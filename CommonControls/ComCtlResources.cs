@@ -29,7 +29,7 @@ namespace CommonControls
         internal const string ErrorSwitchingColor = "Error switching color";
 
         /// <summary>
-        /// The error could not load image (const). Value: "Error could not load Image:".
+        ///     The error could not load image (const). Value: "Error could not load Image:".
         /// </summary>
         internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
 

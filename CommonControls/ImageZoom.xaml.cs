@@ -12,7 +12,7 @@
 
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,6 +25,11 @@ namespace CommonControls
     /// </summary>
     public sealed partial class ImageZoom
     {
+        /// <summary>
+        /// The selection adorner
+        /// </summary>
+        private SelectionAdorner _selectionAdorner;
+
         /// <summary>
         ///     Delegate for Image Frame
         /// </summary>
@@ -94,10 +99,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -210,6 +212,12 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            AttachAdorner(ZoomTool);
         }
 
         /// <summary>
@@ -220,10 +228,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -241,7 +246,35 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            AttachAdorner(ZoomTool);
         }
+
+        /// <summary>
+        /// Attaches the adorner.
+        /// </summary>
+        /// <param name="tool">The tool.</param>
+        private void AttachAdorner(SelectionTools tool)
+        {
+            if (_selectionAdorner == null)
+            {
+                // Get the adorner layer for the BtmImage instead of the MainCanvas
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                _selectionAdorner = new SelectionAdorner(BtmImage, tool);
+                adornerLayer?.Add(_selectionAdorner);
+            }
+            else
+            {
+                // Clear points and reset for the new selection tool
+                _selectionAdorner?.ClearFreeFormPoints();
+                _selectionAdorner.Tool = tool; // Update the tool if necessary
+            }
+        }
+
 
         /// <summary>
         ///     Handles the MouseDown event of the Grid control.
@@ -257,6 +290,8 @@ namespace CommonControls
             _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
             _ = MainCanvas.CaptureMouse();
 
+            AttachAdorner(ZoomTool); // Attach Adorner based on current tool
+
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
@@ -267,18 +302,12 @@ namespace CommonControls
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
                 {
-                    // Get the Position on the Image
-                    _imageStartPoint = e.GetPosition(BtmImage);
-
-                    // Initial placement of the drag selection box.
-                    Canvas.SetLeft(SelectionBox, _startPoint.X);
-                    Canvas.SetTop(SelectionBox, _startPoint.Y);
-                    SelectionBox.Width = 0;
-                    SelectionBox.Height = 0;
-
-                    // Make the drag selection box visible.
-                    SelectionBox.Visibility = Visibility.Visible;
                 }
+                    break;
+                case SelectionTools.SelectEllipse:
+                    break;
+                case SelectionTools.FreeForm:
+                    _imageStartPoint = e.GetPosition(BtmImage);
                     break;
                 default:
                     // nothing
@@ -297,11 +326,7 @@ namespace CommonControls
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-            // Hide the drag selection box.
-            SelectionBox.Visibility = Visibility.Collapsed;
-
             //clicked Endpoint
-            Point endpoint;
 
             switch (ZoomTool)
             {
@@ -312,79 +337,44 @@ namespace CommonControls
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
                 {
-                    SelectionBox.Visibility = Visibility.Collapsed;
-
-                    // Get the Position on the Image
-                    endpoint = e.GetPosition(BtmImage);
-                    var frame = new SelectionFrame();
-
-                    if (_imageStartPoint.X < endpoint.X)
-                    {
-                        frame.X = (int)_imageStartPoint.X;
-                        frame.Width = (int)(endpoint.X - _imageStartPoint.X);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.X;
-                        frame.Width = (int)(_imageStartPoint.X - endpoint.X);
-                    }
-
-                    if (_startPoint.Y < endpoint.Y)
-                    {
-                        frame.Y = (int)_startPoint.Y;
-                        frame.Height = (int)(endpoint.Y - _imageStartPoint.Y);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.Y;
-                        frame.Height = (int)(_imageStartPoint.Y - endpoint.Y);
-                    }
-                    //cleanups, In case we overstepped the boundaries
-
-                    if (frame.X < 0)
-                    {
-                        frame.X = 0;
-                    }
-
-                    if (frame.Y < 0)
-                    {
-                        frame.Y = 0;
-                    }
-
-                    if (frame.Width > ItemsSource.Width)
-                    {
-                        frame.Width = (int)ItemsSource.Width;
-                    }
-
-                    if (frame.Height < 0)
-                    {
-                        frame.Height = (int)ItemsSource.Height;
-                    }
-
+                    var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                 }
                     break;
                 case SelectionTools.SelectPixel:
-                    endpoint = e.GetPosition(BtmImage);
+                    var endpoint = e.GetPosition(BtmImage);
                     SelectedPoint?.Invoke(endpoint);
                     break;
                 default:
                     // nothing
                     return;
             }
+
+            if (_selectionAdorner != null)
+            {
+                // Get the AdornerLayer for the image
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+
+                if (adornerLayer != null)
+                {
+                    // Remove the SelectionAdorner
+                    adornerLayer.Remove(_selectionAdorner);
+                    _selectionAdorner = null;  // Clear the reference
+                }
+            }
         }
 
         /// <summary>
-        ///     Handles the MouseMove event of the Canvas control.
+        /// Handles the MouseMove event of the Canvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
+
+            // Get the mouse position relative to the image instead of the canvas
+            var mousePos = e.GetPosition(BtmImage);
 
             switch (ZoomTool)
             {
@@ -395,43 +385,42 @@ namespace CommonControls
                     matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
                     matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
                     BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+                    _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                     break;
                 }
 
                 case SelectionTools.SelectRectangle:
+                case SelectionTools.SelectEllipse:
+                {
+                    // Update the adorner for rectangle or ellipse selection
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+
+                    break;
+                }
+
+                case SelectionTools.FreeForm:
+                {
+                    // Update the adorner for free form selection by adding points
+                    _selectionAdorner?.AddFreeFormPoint(mousePos);
+
+                    break;
+                }
+
+                case SelectionTools.SelectPixel:
+                    // Handle pixel selection if needed
+                    break;
+
                 case SelectionTools.Erase:
                 {
-                    // When the mouse is held down, reposition the drag selection box.
+                    // Similar to rectangle selection, but intended for erasing
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                    var mousePos = e.GetPosition(MainCanvas);
-
-                    if (_startPoint.X < mousePos.X)
-                    {
-                        Canvas.SetLeft(SelectionBox, _startPoint.X);
-                        SelectionBox.Width = mousePos.X - _startPoint.X;
-                    }
-                    else
-                    {
-                        Canvas.SetLeft(SelectionBox, mousePos.X);
-                        SelectionBox.Width = _startPoint.X - mousePos.X;
-                    }
-
-                    if (_startPoint.Y < mousePos.Y)
-                    {
-                        Canvas.SetTop(SelectionBox, _startPoint.Y);
-                        SelectionBox.Height = mousePos.Y - _startPoint.Y;
-                    }
-                    else
-                    {
-                        Canvas.SetTop(SelectionBox, mousePos.Y);
-                        SelectionBox.Height = _startPoint.Y - mousePos.Y;
-                    }
+                    break;
                 }
-                    break;
-                case SelectionTools.SelectPixel:
-                    break;
+
                 default:
-                    // nothing
+                    // Nothing
                     return;
             }
         }
@@ -455,70 +444,8 @@ namespace CommonControls
                 Scale.ScaleX /= 1.1;
                 Scale.ScaleY /= 1.1;
             }
+
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
-    }
-
-    /// <summary>
-    ///     The Selection Frame on the Image
-    /// </summary>
-    public sealed class SelectionFrame
-    {
-        /// <summary>
-        ///     Gets or sets the x.
-        /// </summary>
-        /// <value>
-        ///     The x.
-        /// </value>
-        public int X { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the y.
-        /// </summary>
-        /// <value>
-        ///     The y.
-        /// </value>
-        public int Y { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
-        public int Width { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
-        public int Height { get; internal set; }
-    }
-
-    /// <summary>
-    ///     The possible Selection Tools
-    /// </summary>
-    public enum SelectionTools
-    {
-        /// <summary>
-        ///     The move
-        /// </summary>
-        Move = 0,
-
-        /// <summary>
-        ///     The select rectangle
-        /// </summary>
-        SelectRectangle = 1,
-
-        /// <summary>
-        ///     The select Color of Point
-        /// </summary>
-        SelectPixel = 2,
-
-        /// <summary>
-        ///     The erase
-        /// </summary>
-        Erase = 3
     }
 }

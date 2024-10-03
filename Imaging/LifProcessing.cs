@@ -28,12 +28,8 @@ namespace Imaging
             var similarPixels = 0;
 
             foreach (var color in colorCount1.Keys)
-            {
                 if (colorCount2.ContainsKey(color))
-                {
                     similarPixels += Math.Min(colorCount1[color], colorCount2[color]);
-                }
-            }
 
             var similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
             return similarity >= threshold;
@@ -43,21 +39,17 @@ namespace Imaging
         // Save the Lif object (layers and settings) to a binary file
         public static void SaveLif(Lif lif, string path)
         {
-            using (var fs = new FileStream(path, FileMode.Create))
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(fs, lif);
-            }
+            using var fs = new FileStream(path, FileMode.Create);
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(fs, lif);
         }
 
         // Load the Lif object (layers and settings) from a binary file
         public static Lif LoadLif(string path)
         {
-            using (var fs = new FileStream(path, FileMode.Open))
-            {
-                var formatter = new BinaryFormatter();
-                return (Lif)formatter.Deserialize(fs);
-            }
+            using var fs = new FileStream(path, FileMode.Open);
+            var formatter = new BinaryFormatter();
+            return (Lif)formatter.Deserialize(fs);
         }
 
         // Convert a Bitmap to a CIF (Compressed Image Format) dictionary
@@ -66,20 +58,15 @@ namespace Imaging
             var cif = new Dictionary<Color, List<int>>();
 
             for (var y = 0; y < bitmap.Height; y++)
+            for (var x = 0; x < bitmap.Width; x++)
             {
-                for (var x = 0; x < bitmap.Width; x++)
-                {
-                    var pixelColor = bitmap.GetPixel(x, y);
-                    var pixelIndex = (y * bitmap.Width) + x;
+                var pixelColor = bitmap.GetPixel(x, y);
+                var pixelIndex = y * bitmap.Width + x;
 
-                    // Group pixels by color
-                    if (!cif.ContainsKey(pixelColor))
-                    {
-                        cif[pixelColor] = new List<int>();
-                    }
+                // Group pixels by color
+                if (!cif.ContainsKey(pixelColor)) cif[pixelColor] = new List<int>();
 
-                    cif[pixelColor].Add(pixelIndex);
-                }
+                cif[pixelColor].Add(pixelIndex);
             }
 
             return cif;

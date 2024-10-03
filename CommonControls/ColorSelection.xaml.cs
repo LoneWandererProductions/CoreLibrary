@@ -128,10 +128,7 @@ namespace CommonControls
         {
             try
             {
-                if (CmbColor?.SelectedItem is not PropertyInfo property)
-                {
-                    return;
-                }
+                if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
                 var selectedColor = (Color)property.GetValue(null, null);
                 StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
@@ -184,10 +181,7 @@ namespace CommonControls
         /// </summary>
         private void SwitchToStartColor()
         {
-            if (string.IsNullOrEmpty(StartColor))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(StartColor)) return;
 
             CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
         }

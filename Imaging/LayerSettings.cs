@@ -2,7 +2,9 @@
 {
     public class LayerSettings
     {
-        public LayerSettings() { }
+        public LayerSettings()
+        {
+        }
 
         public LayerSettings(bool isVisible, float alpha)
         {

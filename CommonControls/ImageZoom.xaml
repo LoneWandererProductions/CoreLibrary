@@ -27,11 +27,7 @@
                             <ScaleTransform x:Name="Scale" />
                         </imag:ImageGif.LayoutTransform>
                     </imag:ImageGif>
-                    <Rectangle
-                        x:Name="SelectionBox"
-                        Visibility="Collapsed"
-                        Stroke="Black"
-                        StrokeThickness="1" />
+
                 </Canvas>
             </Canvas>
         </ScrollViewer>

@@ -81,66 +81,66 @@ namespace Imaging
                 TextureType.Noise,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.MinValue),
-                    nameof(TextureConfig.MaxValue),
-                    nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.UseSmoothNoise),
-                    nameof(TextureConfig.UseTurbulence),
-                    nameof(TextureConfig.TurbulenceSize)
+                    nameof(TextureConfiguration.MinValue),
+                    nameof(TextureConfiguration.MaxValue),
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.UseSmoothNoise),
+                    nameof(TextureConfiguration.UseTurbulence),
+                    nameof(TextureConfiguration.TurbulenceSize)
                 }
             },
             {
                 TextureType.Clouds,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.MinValue),
-                    nameof(TextureConfig.MaxValue),
-                    nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.TurbulenceSize)
+                    nameof(TextureConfiguration.MinValue),
+                    nameof(TextureConfiguration.MaxValue),
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.TurbulenceSize)
                 }
             },
             {
                 TextureType.Marble,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.XPeriod),
-                    nameof(TextureConfig.YPeriod),
-                    nameof(TextureConfig.TurbulencePower),
-                    nameof(TextureConfig.TurbulenceSize),
-                    nameof(TextureConfig.BaseColor)
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.XPeriod),
+                    nameof(TextureConfiguration.YPeriod),
+                    nameof(TextureConfiguration.TurbulencePower),
+                    nameof(TextureConfiguration.TurbulenceSize),
+                    nameof(TextureConfiguration.BaseColor)
                 }
             },
             {
                 TextureType.Wave,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.XyPeriod),
-                    nameof(TextureConfig.TurbulencePower),
-                    nameof(TextureConfig.TurbulenceSize)
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.XyPeriod),
+                    nameof(TextureConfiguration.TurbulencePower),
+                    nameof(TextureConfiguration.TurbulenceSize)
                 }
             },
             {
                 TextureType.Wood,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.Alpha),
-                    nameof(TextureConfig.XyPeriod),
-                    nameof(TextureConfig.TurbulencePower),
-                    nameof(TextureConfig.TurbulenceSize),
-                    nameof(TextureConfig.BaseColor)
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.XyPeriod),
+                    nameof(TextureConfiguration.TurbulencePower),
+                    nameof(TextureConfiguration.TurbulenceSize),
+                    nameof(TextureConfiguration.BaseColor)
                 }
             },
             {
                 TextureType.Crosshatch,
                 new HashSet<string>
                 {
-                    nameof(TextureConfig.LineSpacing),
-                    nameof(TextureConfig.LineColor),
-                    nameof(TextureConfig.LineThickness),
-                    nameof(TextureConfig.Angle1),
-                    nameof(TextureConfig.Angle2)
+                    nameof(TextureConfiguration.LineSpacing),
+                    nameof(TextureConfiguration.LineColor),
+                    nameof(TextureConfiguration.LineThickness),
+                    nameof(TextureConfiguration.Angle1),
+                    nameof(TextureConfiguration.Angle2)
                 }
             }
             // Add other textures as necessary
@@ -355,7 +355,7 @@ namespace Imaging
             // Add more default settings as needed
 
             // Initialize default Texture settings
-            TextureSetting[TextureType.Noise] = new TextureConfig
+            TextureSetting[TextureType.Noise] = new TextureConfiguration
             {
                 MinValue = 0,
                 MaxValue = 255,
@@ -365,12 +365,12 @@ namespace Imaging
                 UseTurbulence = false
             };
 
-            TextureSetting[TextureType.Clouds] = new TextureConfig
+            TextureSetting[TextureType.Clouds] = new TextureConfiguration
             {
                 MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64
             };
 
-            TextureSetting[TextureType.Marble] = new TextureConfig
+            TextureSetting[TextureType.Marble] = new TextureConfiguration
             {
                 Alpha = 255,
                 XPeriod = 5.0,
@@ -380,12 +380,12 @@ namespace Imaging
                 BaseColor = Color.FromArgb(30, 10, 0)
             };
 
-            TextureSetting[TextureType.Wave] = new TextureConfig
+            TextureSetting[TextureType.Wave] = new TextureConfiguration
             {
                 Alpha = 255, XyPeriod = 12.0, TurbulencePower = 0.1, TurbulenceSize = 32.0
             };
 
-            TextureSetting[TextureType.Wood] = new TextureConfig
+            TextureSetting[TextureType.Wood] = new TextureConfiguration
             {
                 Alpha = 255,
                 XyPeriod = 12.0,
@@ -394,7 +394,7 @@ namespace Imaging
                 BaseColor = Color.FromArgb(80, 30, 30)
             };
 
-            TextureSetting[TextureType.Crosshatch] = new TextureConfig
+            TextureSetting[TextureType.Crosshatch] = new TextureConfiguration
             {
                 LineSpacing = 2,
                 LineColor = Color.Black,
@@ -414,7 +414,7 @@ namespace Imaging
         /// <summary>
         ///     The texture setting
         /// </summary>
-        public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
+        public static ConcurrentDictionary<TextureType, TextureConfiguration> TextureSetting { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the count of retries.
@@ -467,10 +467,10 @@ namespace Imaging
         ///     Gets the settings.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        /// <returns></returns>
-        public static TextureConfig GetSettings(TextureType filter)
+        /// <returns>Get the Setting based on Filter</returns>
+        public static TextureConfiguration GetSettings(TextureType filter)
         {
-            return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfig();
+            return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfiguration();
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public static void SetSettings(TextureType filter, TextureConfig config)
+        public static void SetSettings(TextureType filter, TextureConfiguration config)
         {
             TextureSetting[filter] = config;
         }

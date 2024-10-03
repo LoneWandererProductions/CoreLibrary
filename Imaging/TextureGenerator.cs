@@ -133,16 +133,21 @@ namespace Imaging
         /// <param name="height">The height.</param>
         /// <param name="filter">The texture type filter.</param>
         /// <param name="shape">The shape.</param>
+        /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>Texture Bitmap</returns>
-        public Bitmap GenerateTexture(int width, int height, TextureType filter, TextureShape shape,
+        public Bitmap GenerateTexture(int width, int height, TextureType filter, TextureShape shape, Point? startPoint = null,
             object shapeParams = null)
         {
+            // If no start point is provided, default to (0, 0)
+            var actualStartPoint = startPoint ?? new Point(0, 0);
+
             return TextureAreas.GenerateTexture(
                 width,
                 height,
                 filter,
                 shape,
+                actualStartPoint,
                 shapeParams
             );
         }
