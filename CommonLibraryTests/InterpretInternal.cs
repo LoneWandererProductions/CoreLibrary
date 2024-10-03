@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Interpreter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InterpreteTests
+namespace CommonLibraryTests
 {
     /// <summary>
     ///     Interpreter unit test class. Internal functions

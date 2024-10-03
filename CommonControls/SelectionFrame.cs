@@ -46,10 +46,10 @@ namespace CommonControls
         public int Height { get; internal set; }
 
         /// <summary>
-        /// Gets the tool.
+        ///     Gets the tool.
         /// </summary>
         /// <value>
-        /// The tool.
+        ///     The tool.
         /// </value>
         public string Tool { get; internal init; }
     }

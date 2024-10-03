@@ -28,8 +28,12 @@ namespace Imaging
             var similarPixels = 0;
 
             foreach (var color in colorCount1.Keys)
+            {
                 if (colorCount2.ContainsKey(color))
+                {
                     similarPixels += Math.Min(colorCount1[color], colorCount2[color]);
+                }
+            }
 
             var similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
             return similarity >= threshold;
@@ -61,10 +65,13 @@ namespace Imaging
             for (var x = 0; x < bitmap.Width; x++)
             {
                 var pixelColor = bitmap.GetPixel(x, y);
-                var pixelIndex = y * bitmap.Width + x;
+                var pixelIndex = (y * bitmap.Width) + x;
 
                 // Group pixels by color
-                if (!cif.ContainsKey(pixelColor)) cif[pixelColor] = new List<int>();
+                if (!cif.ContainsKey(pixelColor))
+                {
+                    cif[pixelColor] = new List<int>();
+                }
 
                 cif[pixelColor].Add(pixelIndex);
             }

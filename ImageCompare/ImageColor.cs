@@ -102,11 +102,20 @@ namespace ImageCompare
         /// </returns>
         public int CompareTo(ImageColor other)
         {
-            if (!other.R.Interval(R, Threshold)) return 0;
+            if (!other.R.Interval(R, Threshold))
+            {
+                return 0;
+            }
 
-            if (!other.G.Interval(G, Threshold)) return 0;
+            if (!other.G.Interval(G, Threshold))
+            {
+                return 0;
+            }
 
-            if (!other.B.Interval(B, Threshold)) return 0;
+            if (!other.B.Interval(B, Threshold))
+            {
+                return 0;
+            }
 
             return 1;
         }
@@ -122,11 +131,20 @@ namespace ImageCompare
         /// </returns>
         public bool Equals(ImageColor other)
         {
-            if (!other.R.Interval(R, Threshold)) return false;
+            if (!other.R.Interval(R, Threshold))
+            {
+                return false;
+            }
 
-            if (!other.G.Interval(G, Threshold)) return false;
+            if (!other.G.Interval(G, Threshold))
+            {
+                return false;
+            }
 
-            if (!other.B.Interval(B, Threshold)) return false;
+            if (!other.B.Interval(B, Threshold))
+            {
+                return false;
+            }
 
             return true;
         }

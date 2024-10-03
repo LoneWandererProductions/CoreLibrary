@@ -33,9 +33,28 @@ namespace ExtendedSystemObjects
         private readonly Dictionary<TK, (string Category, TV Value)> _data;
 
         /// <summary>
-        /// The lock for thread safety
+        ///     The lock for thread safety
         /// </summary>
         private readonly ReaderWriterLockSlim _lock;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}" /> class.
+        /// </summary>
+        public CategorizedDictionary()
+        {
+            _data = new Dictionary<TK, (string Category, TV Value)>();
+            _lock = new ReaderWriterLockSlim();
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}" /> class.
+        /// </summary>
+        /// <param name="count">The count.</param>
+        public CategorizedDictionary(int count)
+        {
+            _data = new Dictionary<TK, (string Category, TV Value)>(count);
+            _lock = new ReaderWriterLockSlim();
+        }
 
         /// <summary>
         ///     Gets the number of elements contained in the CategorizedDictionary.
@@ -54,25 +73,6 @@ namespace ExtendedSystemObjects
                     _lock.ExitReadLock();
                 }
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
-        /// </summary>
-        public CategorizedDictionary()
-        {
-            _data = new();
-            _lock = new ReaderWriterLockSlim();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
-        /// </summary>
-        /// <param name="count">The count.</param>
-        public CategorizedDictionary(int count)
-        {
-            _data = new(count);
-            _lock = new ReaderWriterLockSlim();
         }
 
         /// <inheritdoc />
@@ -384,7 +384,8 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
+                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key,
+                        entry.Value.Category,
                         entry.Value.Value));
 
                 return string.Join(Environment.NewLine, entries);

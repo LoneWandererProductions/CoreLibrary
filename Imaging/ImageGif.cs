@@ -97,6 +97,31 @@ namespace Imaging
             set => SetValue(GifSourceProperty, value);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Dispose method for releasing resources.
+        /// </summary>
+        public void Dispose()
+        {
+            StopAnimation();
+            // Optionally clear image resources
+            if (_imageList != null)
+            {
+                foreach (var img in _imageList)
+                {
+                    if (img is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
+
+                _imageList.Clear();
+            }
+
+            _imageList = null;
+            _animation = null;
+        }
+
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
@@ -114,19 +139,24 @@ namespace Imaging
                 var info = ImageGifHandler.GetImageInfo(GifSource);
 
                 // Handle possible error
-                if (info == null || !info.IsAnimated) return;
+                if (info == null || !info.IsAnimated)
+                {
+                    return;
+                }
 
                 _imageList = ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
 
                 var time = Math.Max(1, info.Frames / 10);
                 _animation = new Int32Animation(0, info.Frames - 1,
-                        new Duration(new TimeSpan(0, 0, 0, time)))
-                { RepeatBehavior = RepeatBehavior.Forever };
+                    new Duration(new TimeSpan(0, 0, 0, time))) { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
 
-                if (AutoStart) StartAnimation();
+                if (AutoStart)
+                {
+                    StartAnimation();
+                }
             }
             catch (Exception ex)
             {
@@ -140,9 +170,13 @@ namespace Imaging
         private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if ((Visibility)e.NewValue == Visibility.Visible)
+            {
                 ((ImageGif)sender).StartAnimation();
+            }
             else
+            {
                 ((ImageGif)sender).StopAnimation();
+            }
         }
 
         /// <summary>
@@ -150,7 +184,7 @@ namespace Imaging
         /// </summary>
         private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
         {
-            if (obj is ImageGif {AutoStart: true} gifImage)
+            if (obj is ImageGif { AutoStart: true } gifImage)
             {
                 var newIndex = (int)ev.NewValue;
                 if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
@@ -181,7 +215,11 @@ namespace Imaging
         /// </summary>
         private void StartAnimation()
         {
-            if (!_isInitialized) Initialize();
+            if (!_isInitialized)
+            {
+                Initialize();
+            }
+
             BeginAnimation(FrameIndexProperty, _animation);
         }
 
@@ -191,28 +229,6 @@ namespace Imaging
         public void StopAnimation()
         {
             BeginAnimation(FrameIndexProperty, null);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Dispose method for releasing resources.
-        /// </summary>
-        public void Dispose()
-        {
-            StopAnimation();
-            // Optionally clear image resources
-            if (_imageList != null)
-            {
-                foreach (var img in _imageList)
-                {
-                    if (img is IDisposable disposable)
-                        disposable.Dispose();
-                }
-                _imageList.Clear();
-            }
-
-            _imageList = null;
-            _animation = null;
         }
     }
 }

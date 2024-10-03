@@ -31,7 +31,7 @@ namespace Debugger
         /// <summary>
         ///     The processing task
         /// </summary>
-        private static readonly Task _processingTask;
+        private static readonly Task ProcessingTask;
 
         /// <summary>
         ///     The write semaphore
@@ -80,7 +80,7 @@ namespace Debugger
             }
 
             // Start a background task to process the message queue
-            _processingTask = Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
+            ProcessingTask = Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
         }
 
         /// <summary>
@@ -296,9 +296,9 @@ namespace Debugger
             CancellationTokenSource.Cancel();
 
             // Await the background task to finish processing
-            if (_processingTask != null)
+            if (ProcessingTask != null)
             {
-                await _processingTask;
+                await ProcessingTask;
             }
 
             Trace.Close();

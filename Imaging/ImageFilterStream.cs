@@ -215,7 +215,10 @@ namespace Imaging
                     var imageY = y + (filterY - filterOffset);
 
                     // Check bounds to prevent out-of-bounds access
-                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height) continue;
+                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
+                    {
+                        continue;
+                    }
 
                     var pixelColor = source.GetPixel(imageX, imageY);
 
@@ -224,9 +227,9 @@ namespace Imaging
                     red += pixelColor.R * filterMatrix[filterY, filterX];
                 }
 
-                var newBlue = ImageHelper.Clamp(factor * blue + bias);
-                var newGreen = ImageHelper.Clamp(factor * green + bias);
-                var newRed = ImageHelper.Clamp(factor * red + bias);
+                var newBlue = ImageHelper.Clamp((factor * blue) + bias);
+                var newGreen = ImageHelper.Clamp((factor * green) + bias);
+                var newRed = ImageHelper.Clamp((factor * red) + bias);
 
                 // Instead of setting the pixel immediately, add it to the list
                 pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
@@ -322,7 +325,7 @@ namespace Imaging
                 }
 
                 // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
+                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
 
                 // Normalize the magnitude to fit within the range of 0-255
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
@@ -599,7 +602,7 @@ namespace Imaging
             // Compute gradient magnitude using Sobel operators
             var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
             var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
-            var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
+            var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
 
             // Compute local variance
             var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
@@ -666,7 +669,7 @@ namespace Imaging
             }
 
             var mean = sum / count;
-            var variance = sumSquared / count - mean * mean;
+            var variance = (sumSquared / count) - (mean * mean);
 
             return variance;
         }
@@ -765,16 +768,18 @@ namespace Imaging
             var regions = new List<Rectangle>
             {
                 // Base region
-                new(centerX - width / 2, centerY - height / 2, width, height)
+                new(centerX - (width / 2), centerY - (height / 2), width, height)
             };
 
             for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
             {
-                var newWidth = width - i * step;
-                var newHeight = height - i * step;
+                var newWidth = width - (i * step);
+                var newHeight = height - (i * step);
                 if (newWidth > 0 && newHeight > 0)
-                    regions.Add(new Rectangle(centerX - newWidth / 2 + offset * i,
-                        centerY - newHeight / 2 + offset * i, newWidth, newHeight));
+                {
+                    regions.Add(new Rectangle(centerX - (newWidth / 2) + (offset * i),
+                        centerY - (newHeight / 2) + (offset * i), newWidth, newHeight));
+                }
             }
 
             return regions;
@@ -843,7 +848,7 @@ namespace Imaging
                 {
                     var pixel = dbmBase.GetPixel(nx, ny);
                     var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                    var newIntensity = ImageHelper.Clamp(oldIntensity + error * ditherMatrix[dy, dx] / 16);
+                    var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
                     var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
 
                     pixelsToSet.Add((nx, ny, newColor));

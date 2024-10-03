@@ -36,7 +36,7 @@ namespace ImageCompare
         /// <returns>
         ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public readonly override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Image);
         }
@@ -113,13 +113,25 @@ namespace ImageCompare
         /// </returns>
         public readonly int CompareTo(ImageSimilar other)
         {
-            if (Image == null) return 0;
+            if (Image == null)
+            {
+                return 0;
+            }
 
-            if (!other.R.Interval(R, ImageResources.ColorThreshold)) return 0;
+            if (!other.R.Interval(R, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.G.Interval(G, ImageResources.ColorThreshold)) return 0;
+            if (!other.G.Interval(G, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.B.Interval(B, ImageResources.ColorThreshold)) return 0;
+            if (!other.B.Interval(B, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
             return 1;
         }

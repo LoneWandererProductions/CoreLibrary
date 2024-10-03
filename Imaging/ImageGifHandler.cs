@@ -47,9 +47,15 @@ namespace Imaging
                 info.Name = Path.GetFileName(path);
                 info.Size = image.Size;
 
-                if (!image.RawFormat.Equals(ImageFormat.Gif)) return null;
+                if (!image.RawFormat.Equals(ImageFormat.Gif))
+                {
+                    return null;
+                }
 
-                if (!ImageAnimator.CanAnimate(image)) return info;
+                if (!ImageAnimator.CanAnimate(image))
+                {
+                    return info;
+                }
 
                 var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
 
@@ -166,7 +172,10 @@ namespace Imaging
             //collect and convert all images
             var btm = lst.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty()) return;
+            if (btm.IsNullOrEmpty())
+            {
+                return;
+            }
 
             CreateGif(btm, target);
         }
@@ -176,7 +185,10 @@ namespace Imaging
             //collect and convert all images
             var btm = path.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty()) return;
+            if (btm.IsNullOrEmpty())
+            {
+                return;
+            }
 
             CreateGif(btm, target);
         }
@@ -200,7 +212,9 @@ namespace Imaging
                              IntPtr.Zero,
                              Int32Rect.Empty,
                              BitmapSizeOptions.FromEmptyOptions())))
+            {
                 gEnc.Frames.Add(BitmapFrame.Create(src));
+            }
 
             using var ms = new MemoryStream();
             gEnc.Save(ms);

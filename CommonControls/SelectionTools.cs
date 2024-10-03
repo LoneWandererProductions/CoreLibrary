@@ -50,5 +50,4 @@ namespace CommonControls
         /// </summary>
         FreeForm = 5
     }
-
 }

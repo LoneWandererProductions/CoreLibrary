@@ -78,7 +78,7 @@ namespace Imaging
                 foreach (var pixel in pixels)
                 {
                     // Calculate the index in the back buffer
-                    var pixelIndex = (pixel.Y * _width + pixel.X) * 4; // 4 bytes per pixel (BGRA)
+                    var pixelIndex = ((pixel.Y * _width) + pixel.X) * 4; // 4 bytes per pixel (BGRA)
 
                     // Set the pixel data
                     dataPointer[pixelIndex + 0] = pixel.B; // Blue

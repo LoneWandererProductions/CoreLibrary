@@ -24,7 +24,7 @@ namespace CommonLibraryTests
         /// <summary>
         ///     The test files path for encoding
         /// </summary>
-        private static readonly string encodingFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Encoding");
+        private static readonly string EncodingFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Encoding");
 
         /// <summary>
         ///     The test file path
@@ -109,9 +109,9 @@ namespace CommonLibraryTests
         ///     Gets the file encoding ut f8 file returns ut f8 encoding.
         /// </summary>
         [TestMethod]
-        public void GetFileEncodingUTF8FileReturnsUTF8Encoding()
+        public void GetFileEncodingUtf8FileReturnsUtf8Encoding()
         {
-            var filePath = Path.Combine(encodingFilesPath, "utf8.txt");
+            var filePath = Path.Combine(EncodingFilesPath, "utf8.txt");
             var encoding = DataHelper.GetFileEncoding(filePath);
             Assert.AreEqual(Encoding.UTF8.WebName, encoding.WebName);
         }
@@ -120,9 +120,9 @@ namespace CommonLibraryTests
         ///     Gets the file encoding ut f8 file returns ansi8 encoding.
         /// </summary>
         [TestMethod]
-        public void GetFileEncodingUTF8FileReturnsAnsi8Encoding()
+        public void GetFileEncodingUtf8FileReturnsAnsi8Encoding()
         {
-            var filePath = Path.Combine(encodingFilesPath, "ansi.txt");
+            var filePath = Path.Combine(EncodingFilesPath, "ansi.txt");
             var encoding = DataHelper.GetFileEncoding(filePath);
             Assert.AreEqual(Encoding.Default, encoding);
         }

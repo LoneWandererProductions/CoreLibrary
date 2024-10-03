@@ -26,11 +26,6 @@ namespace CommonControls
     public sealed partial class ImageZoom
     {
         /// <summary>
-        /// The selection adorner
-        /// </summary>
-        private SelectionAdorner _selectionAdorner;
-
-        /// <summary>
         ///     Delegate for Image Frame
         /// </summary>
         /// <param name="frame">The frame.</param>
@@ -88,6 +83,11 @@ namespace CommonControls
         private Point _originPoint;
 
         /// <summary>
+        ///     The selection adorner
+        /// </summary>
+        private SelectionAdorner _selectionAdorner;
+
+        /// <summary>
         ///     The mouse down position
         /// </summary>
         private Point _startPoint;
@@ -99,7 +99,10 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null) return;
+            if (BtmImage.Source == null)
+            {
+                return;
+            }
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -228,7 +231,10 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null) return;
+            if (BtmImage.Source == null)
+            {
+                return;
+            }
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -255,7 +261,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Attaches the adorner.
+        ///     Attaches the adorner.
         /// </summary>
         /// <param name="tool">The tool.</param>
         private void AttachAdorner(SelectionTools tool)
@@ -359,19 +365,22 @@ namespace CommonControls
                 {
                     // Remove the SelectionAdorner
                     adornerLayer.Remove(_selectionAdorner);
-                    _selectionAdorner = null;  // Clear the reference
+                    _selectionAdorner = null; // Clear the reference
                 }
             }
         }
 
         /// <summary>
-        /// Handles the MouseMove event of the Canvas control.
+        ///     Handles the MouseMove event of the Canvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown) return;
+            if (!_mouseDown)
+            {
+                return;
+            }
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);

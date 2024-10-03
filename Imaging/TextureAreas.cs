@@ -145,14 +145,14 @@ namespace Imaging
 
 
         /// <summary>
-        /// Applies the circle mask.
+        ///     Applies the circle mask.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="startPoint">The start point.</param>
         /// <returns>
-        /// Circle Bitmap
+        ///     Circle Bitmap
         /// </returns>
         private static Bitmap ApplyCircleMask(Image bitmap, int width, int height, Point startPoint)
         {

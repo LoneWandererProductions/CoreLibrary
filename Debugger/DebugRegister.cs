@@ -26,7 +26,7 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        private static readonly string _configPath =
+        private static readonly string ConfigPath =
             Path.Combine(Directory.GetCurrentDirectory(), DebuggerResources.ConfigFile);
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Debugger
             try
             {
                 var serializer = new XmlSerializer(typeof(ConfigExtended));
-                using Stream tr = File.OpenRead(_configPath);
+                using Stream tr = File.OpenRead(ConfigPath);
                 return serializer.Deserialize(tr) as ConfigExtended;
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
@@ -242,7 +242,7 @@ namespace Debugger
             try
             {
                 var serializer = new XmlSerializer(data.GetType());
-                using var tr = new StreamWriter(_configPath);
+                using var tr = new StreamWriter(ConfigPath);
                 serializer.Serialize(tr, data);
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
