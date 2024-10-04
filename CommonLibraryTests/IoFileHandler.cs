@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -154,13 +155,13 @@ namespace CommonLibraryTests
         ///     Simple Check if Folders are in the right place and created correctly
         /// </summary>
         [TestMethod]
-        public void DeleteFolderContentsByExtension()
+        public async Task DeleteFolderContentsByExtensionAsync()
         {
             //create dummy files
             HelperMethods.CreateFiles(_path, ResourcesGeneral.FileExtList);
 
             FileHandlerRegister.ClearLog();
-            var isDone = FileHandleDelete.DeleteFolderContentsByExtension(_path, ResourcesGeneral.FileExtList, false);
+            var isDone = await FileHandleDelete.DeleteFolderContentsByExtension(_path, ResourcesGeneral.FileExtList, false);
 
             var error = string.Empty;
             if (!FileHandlerRegister.ErrorLog.IsNullOrEmpty())
@@ -175,7 +176,7 @@ namespace CommonLibraryTests
         ///     Complete package still some bugs, we don't seem to get exclusive access to the files
         /// </summary>
         [TestMethod]
-        public void CompleteFileHandler()
+        public async Task CompleteFileHandlerAsync()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Copy");
             var isDone = FileHandleDelete.DeleteCompleteFolder(path);
@@ -207,7 +208,8 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
 
             //delete File
-            FileHandleDelete.DeleteFile(file);
+            _ = await FileHandleDelete.DeleteFile(file);
+
             Assert.IsFalse(FileHandleSearch.CheckIfFolderContainsElement(path), "File was not deleted");
 
             //create File
@@ -232,7 +234,7 @@ namespace CommonLibraryTests
         ///     Test the rename feature
         /// </summary>
         [TestMethod]
-        public void RenameFile()
+        public async Task RenameFileAsync()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_renamePath);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -247,13 +249,13 @@ namespace CommonLibraryTests
 
             //rename a single file
 
-            isDone = FileHandleRename.RenameFile(file, target);
+            isDone = await FileHandleRename.RenameFile(file, target);
             Assert.IsTrue(isDone, "Wrong return value for File Renaming");
             Assert.IsTrue(File.Exists(target), "File not renamed");
 
             //check directory move
             target = Path.Combine(Directory.GetCurrentDirectory(), "test_new");
-            isDone = FileHandleRename.RenameDirectory(_renamePath, target);
+            isDone = await FileHandleRename.RenameDirectory(_renamePath, target);
             Assert.IsTrue(isDone, "Wrong return value");
             Assert.IsTrue(Directory.Exists(target), "Folder not cleaned");
             isDone = FileHandleDelete.DeleteCompleteFolder(target);
@@ -264,7 +266,7 @@ namespace CommonLibraryTests
         ///     Test the Rename feature with appendages
         /// </summary>
         [TestMethod]
-        public void AppendageOfFile()
+        public async Task AppendageOfFileAsync()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_renamePath);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -290,7 +292,7 @@ namespace CommonLibraryTests
             HelperMethods.CreateFile(fileFifth);
 
             //Rename, remove "_"
-            var count = FileNameConverter.RemoveAppendage("_", _renamePath, false);
+            var count = await FileNameConverter.RemoveAppendage("_", _renamePath, false);
             Assert.AreEqual(3, count, "Not enough files renamed");
 
             var check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "second__"));
@@ -300,7 +302,7 @@ namespace CommonLibraryTests
             Assert.AreEqual("second__", file, "File not correctly renamed");
 
             //Rename, add "_"
-            count = FileNameConverter.AddAppendage("_", _renamePath, false);
+            count = await FileNameConverter.AddAppendage("_", _renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
             check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "_second__"));
@@ -311,7 +313,7 @@ namespace CommonLibraryTests
             Assert.AreEqual("_second__", file, "File not correctly renamed");
 
             //Rename, remove string "_"
-            count = FileNameConverter.ReplacePart("_", string.Empty, _renamePath, false);
+            count = await FileNameConverter.ReplacePart("_", string.Empty, _renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
             check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "second"));
@@ -321,7 +323,7 @@ namespace CommonLibraryTests
             Assert.AreEqual("second", file, "File not correctly renamed");
 
             //Rename, reorder Numbers
-            count = FileNameConverter.ReOrderNumbers(_renamePath, false);
+            count = await FileNameConverter.ReOrderNumbers(_renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
             check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "fifth_234234234"));
@@ -783,7 +785,7 @@ namespace CommonLibraryTests
         ///     Compressions this instance.
         /// </summary>
         [TestMethod]
-        public void Compression()
+        public async Task CompressionAsync()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Compress");
             FileHandleDelete.DeleteCompleteFolder(path);
@@ -800,7 +802,7 @@ namespace CommonLibraryTests
             HelperMethods.CreateFile(file);
 
             file = Path.Combine(path, "compressed.zip");
-            var check = FileHandleCompress.SaveZip(file, lst, true);
+            var check = await FileHandleCompress.SaveZip(file, lst, true);
             Assert.IsTrue(check, "Could not compress");
 
             var files = FileHandleSearch.GetAllFiles(path, false);
@@ -812,7 +814,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, files.Count, "Compressed File created and or files were not deleted");
 
-            check = FileHandleCompress.OpenZip(file, path, true);
+            check = await FileHandleCompress.OpenZip(file, path, true);
             Assert.IsTrue(check, "Could not decompress");
         }
 

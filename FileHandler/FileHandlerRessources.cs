@@ -88,6 +88,12 @@ namespace FileHandler
         /// </summary>
         internal const string ErrorEqualPath = "Paths are equal Input.";
 
+
+        /// <summary>
+        ///     The error file already exists (const). Value: "Error File already exists:".
+        /// </summary>
+        internal const string ErrorFileAlreadyExists = "Error File already exists:";
+
         /// <summary>
         ///     The error file not found (const). Value: "File not found: ".
         /// </summary>

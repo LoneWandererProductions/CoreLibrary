@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 
 // ReSharper disable UnusedMember.Global
 
@@ -31,20 +32,15 @@ namespace FileHandler
         /// <param name="fileToAdd">The file(s) to add.</param>
         /// <param name="delele">if set to <c>true</c> [delele] Source Files.</param>
         /// <returns>Operation Success</returns>
-        public static bool SaveZip(string zipPath, List<string> fileToAdd, bool delele)
+        public static async Task<bool> SaveZip(string zipPath, List<string> fileToAdd, bool delele)
         {
-            var check = true;
-
             try
             {
                 using var archive = ZipFile.Open(zipPath, ZipArchiveMode.Update);
                 foreach (var file in fileToAdd)
                 {
                     //does not exist? Well next one
-                    if (!FileHandleSearch.FileExists(file))
-                    {
-                        continue;
-                    }
+                    if (!FileHandleSearch.FileExists(file)) continue;
 
                     // Add the entry for each file
                     var fileInfo = new FileInfo(file);
@@ -62,17 +58,12 @@ namespace FileHandler
             }
 
             //shall we delete old files?
-            if (!delele)
-            {
-                return true;
-            }
+            if (!delele) return true;
 
-            foreach (var unused in fileToAdd.Select(FileHandleDelete.DeleteFile).Where(cache => !cache))
-            {
-                check = false;
-            }
+            var deleteTasks = fileToAdd.Select(async file => await FileHandleDelete.DeleteFile(file));
+            var results = await Task.WhenAll(deleteTasks);
 
-            return check;
+            return results.All(result => result);
         }
 
         /// <summary>
@@ -83,12 +74,10 @@ namespace FileHandler
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         /// <returns>Operation Success</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static bool OpenZip(string zipPath, string extractPath, bool delete)
+        public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete)
         {
             if (!FileHandleSearch.FileExists(zipPath))
-            {
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
-            }
 
             try
             {
@@ -103,8 +92,8 @@ namespace FileHandler
                 return false;
             }
 
-            //shall we delete old files?
-            return !delete || FileHandleDelete.DeleteFile(zipPath);
+            // Shall we delete old files?
+            return !delete || await FileHandleDelete.DeleteFile(zipPath);
         }
     }
 }

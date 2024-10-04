@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,7 +35,7 @@ namespace CommonLibraryTests
         ///     Simple Check for getting files Contains in a Folder
         /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionWithExtension()
+        public async Task GetFilesByExtensionWithExtensionAsync()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -59,7 +60,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(list[0], PathOperations + ResourcesGeneral.TstExt, "Correct File");
 
-            check = FileHandleDelete.DeleteFile(file);
+            check = await FileHandleDelete.DeleteFile(file);
 
             Assert.IsTrue(check, "Did not delete File");
         }
@@ -68,7 +69,7 @@ namespace CommonLibraryTests
         ///     Simple Check for getting files Contains in a Folder
         /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionWithoutExtension()
+        public async Task GetFilesByExtensionWithoutExtensionAsync()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -139,7 +140,7 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(check, "Correct Number of files");
 
-            check = FileHandleDelete.DeleteFile(file);
+            check = await FileHandleDelete.DeleteFile(file);
 
             Assert.IsTrue(check, "Did not delete File");
         }
@@ -179,7 +180,7 @@ namespace CommonLibraryTests
         ///     Gets the file information.
         /// </summary>
         [TestMethod]
-        public void GetFileInformation()
+        public async Task GetFileInformationAsync()
         {
             var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
             HelperMethods.CreateFile(file);
@@ -193,7 +194,7 @@ namespace CommonLibraryTests
             Assert.AreEqual("IO.txt", info.FileName, "Correct FileName");
             //the rest is null because it is a fresh created file no need to check it.
 
-            _ = FileHandleDelete.DeleteFile(file);
+            _ = await FileHandleDelete.DeleteFile(file);
             var check = FileHandleSearch.FileExists(file);
             Assert.IsFalse(check, "File not deleted");
         }
@@ -205,7 +206,7 @@ namespace CommonLibraryTests
         ///     Set Retries
         /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionFullPath()
+        public async Task GetFilesByExtensionFullPathAsync()
         {
             var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
             Assert.IsTrue(isDone, "Could not cleanup");
@@ -245,10 +246,12 @@ namespace CommonLibraryTests
 
             Assert.IsFalse(FileHandleDelete.IsFileLocked(file), "File was not Locked");
 
-            Assert.IsTrue(FileHandleDelete.DeleteFile(file), "Deleted File");
+            var check = await FileHandleDelete.DeleteFile(file);
+
+            Assert.IsTrue(check, "Deleted File");
 
             _ = FileHandleDelete.DeleteFile(file);
-            var check = FileHandleSearch.FileExists(file);
+            check = FileHandleSearch.FileExists(file);
             Assert.IsFalse(check, "File not deleted");
         }
     }

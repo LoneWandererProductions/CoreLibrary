@@ -267,13 +267,14 @@ namespace FileHandler
                 }
             }
 
+            if (!Directory.Exists(target))
+            {
+                _ = Directory.CreateDirectory(target);
+            }
+
             foreach (var subDir in dirs)
             {
                 var tempPath = Path.Combine(target, subDir.Name);
-                if (!Directory.Exists(target))
-                {
-                    _ = Directory.CreateDirectory(target);
-                }
 
                 if (File.Exists(tempPath))
                 {
