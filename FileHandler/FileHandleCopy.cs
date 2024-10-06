@@ -31,10 +31,10 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">Full qualified location Path</param>
         /// <param name="target">Full qualified target Path</param>
-        /// <param name="overwrite">Is overwrite allowed</param>
+        /// <param name="overwrite">Is overwrite allowed, optional, default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFiles(string source, string target, bool overwrite)
+        public static bool CopyFiles(string source, string target, bool overwrite = true)
         {
             FileHandlerProcessing.ValidatePaths(source, target);
 
@@ -80,10 +80,10 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">Full qualified location Path</param>
         /// <param name="target">List of Files</param>
-        /// <param name="overwrite">Is overwrite allowed</param>
+        /// <param name="overwrite">Is overwrite allowed, optional, default true.</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFiles(List<string> source, string target, bool overwrite)
+        public static bool CopyFiles(List<string> source, string target, bool overwrite = true)
         {
             if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
             {

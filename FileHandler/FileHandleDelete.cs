@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileHandler
@@ -88,7 +87,7 @@ namespace FileHandler
         ///     Status if we encountered any problems
         /// </returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool DeleteFiles(List<string> paths, CancellationToken cancellationToken = default)
+        public static bool DeleteFiles(List<string> paths)
         {
             if (paths == null || paths.Count == 0)
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyList);
@@ -127,10 +126,10 @@ namespace FileHandler
         ///     Deletes the contents of a Folder, (optional) includes sub folder
         /// </summary>
         /// <param name="path">Target Folder</param>
-        /// <param name="subdirectories">Include Sub-folders</param>
+        /// <param name="subdirectories">Include Sub-folders, optional as default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool DeleteAllContents(string path, bool subdirectories)
+        public static bool DeleteAllContents(string path, bool subdirectories = true)
         {
             if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
@@ -171,10 +170,10 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target Folder</param>
         /// <param name="fileExtList">List of file Extensions</param>
-        /// <param name="subdirectories">Include Sub-folders</param>
+        /// <param name="subdirectories">Include Sub-folders, optional, default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList, bool subdirectories)
+        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList, bool subdirectories = true)
         {
             if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
@@ -187,10 +186,10 @@ namespace FileHandler
             var myFiles = new List<string>();
 
             foreach (var files
-                     in
-                     fileExtList.Select(
-                         appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
-                    )
+                in
+                fileExtList.Select(
+                    appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
+            )
             {
                 if (files == null) return false;
 

@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileHandler
 {
@@ -195,15 +196,19 @@ namespace FileHandler
         /// <param name="path">Target Path</param>
         /// <returns>True if we find Something</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CheckIfFolderContainsElement(string path)
+        public static async Task<bool> CheckIfFolderContainsElement(string path)
         {
             if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
             if (!Directory.Exists(path)) return false;
 
-            var fileCheck = Directory.GetFiles(path).FirstOrDefault();
-            return fileCheck != null;
+            return await Task.Run(() =>
+            {
+                var fileCheck = Directory.GetFiles(path).FirstOrDefault();
+                return fileCheck != null;
+            });
         }
+
 
         /// <summary>
         ///     Get the files that contain this sub string. If Invert is true, files that don't contain it.

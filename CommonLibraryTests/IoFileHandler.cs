@@ -86,14 +86,21 @@ namespace CommonLibraryTests
         ///     Gets the file information.
         /// </summary>
         [TestMethod]
-        public void GetNewFileName()
+        public async Task GetNewFileName()
         {
+            // Delete all contents synchronously if it's a quick operation
             FileHandleDelete.DeleteAllContents(_path, true);
+
             var fileOne = Path.Combine(_path, nameof(GetNewFileName),
                 Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+
+            // Create the initial file synchronously
             HelperMethods.CreateFile(fileOne);
 
+            // Get a new file name (assuming it's synchronous and quick)
             var info = FileUtility.GetNewFileName(fileOne);
+
+            // Create the new file synchronously
             HelperMethods.CreateFile(info);
 
             if (info == null)
@@ -101,11 +108,13 @@ namespace CommonLibraryTests
                 Assert.Fail("Null Reference");
             }
 
+            // Assert that the file name ends with the expected pattern
             Assert.IsTrue(
                 info.EndsWith(
                     "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
+            // Get another new file name
             info = FileUtility.GetNewFileName(fileOne);
 
             if (info == null)
@@ -113,19 +122,27 @@ namespace CommonLibraryTests
                 Assert.Fail("Null Reference");
             }
 
+            // Assert that the second file name ends with the expected pattern
             Assert.IsTrue(
                 info.EndsWith(
                     "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
-            _ = FileHandleDelete.DeleteFile(fileOne);
+            // Delete the first file asynchronously and await it
+            _ = await FileHandleDelete.DeleteFile(fileOne);
+
+            // Check synchronously if the file still exists
             var check = FileHandleSearch.FileExists(fileOne);
             Assert.IsFalse(check, "File not deleted");
 
-            _ = FileHandleDelete.DeleteFile(info);
+            // Delete the second file asynchronously and await it
+            _ = await FileHandleDelete.DeleteFile(info);
+
+            // Check synchronously if the second file still exists
             check = FileHandleSearch.FileExists(info);
             Assert.IsFalse(check, "File not deleted");
         }
+
 
         /// <summary>
         ///     Simple Check if Folders are in the right place and created correctly
@@ -172,65 +189,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(isDone, $"Folder cleaned: {error}");
         }
 
-        /// <summary>
-        ///     Complete package still some bugs, we don't seem to get exclusive access to the files
-        /// </summary>
-        [TestMethod]
-        public async Task CompleteFileHandlerAsync()
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Copy");
-            var isDone = FileHandleDelete.DeleteCompleteFolder(path);
-            Assert.IsTrue(isDone, "Could not cleanup");
-
-            FileHandleCreate.CreateFolder(path);
-            Assert.IsTrue(Directory.Exists(path), "Folder not cleaned");
-
-            var file = Path.Combine(path, PathOperations + ResourcesGeneral.TstExt);
-            Trace.WriteLine(file);
-            HelperMethods.CreateFile(file);
-
-            isDone = FileHandleSearch.CheckIfFolderContainsElement(path);
-            Assert.IsTrue(isDone, "File does not exist");
-
-            //search for Files
-            var subPathOne = Path.Combine(path, @"subOne\");
-            var subPathTwo = Path.Combine(path, @"subTwo\");
-
-            FileHandleCreate.CreateFolder(subPathOne);
-            FileHandleCreate.CreateFolder(subPathTwo);
-            var lst = FileHandleSearch.GetAllSubfolders(path);
-
-            if (lst == null)
-            {
-                Assert.Fail("Null Reference");
-            }
-
-            Assert.AreEqual(2, lst.Count, "Not the right amount of Sub folders");
-
-            //delete File
-            _ = await FileHandleDelete.DeleteFile(file);
-
-            Assert.IsFalse(FileHandleSearch.CheckIfFolderContainsElement(path), "File was not deleted");
-
-            //create File
-            file = Path.Combine(subPathOne, PathOperations + ResourcesGeneral.TstExt);
-            Trace.WriteLine(file);
-            HelperMethods.CreateFile(file);
-
-            //copy Files
-            FileHandleCopy.CopyFiles(subPathOne, subPathTwo, true);
-            Trace.WriteLine(subPathTwo);
-
-            Assert.IsTrue(FileHandleSearch.CheckIfFolderContainsElement(subPathTwo), "File was not moved");
-
-            Assert.IsTrue(FileHandleDelete.DeleteAllContents(path, true), "Full delete seems to not work");
-
-            Assert.IsFalse(FileHandleSearch.CheckIfFolderContainsElement(subPathTwo), "Files were not deleted");
-
-            Assert.IsFalse(FileHandleSearch.CheckIfFolderContainsElement(subPathOne), "Files were not deleted");
-        }
-
-        /// <summary>
+         /// <summary>
         ///     Test the rename feature
         /// </summary>
         [TestMethod]

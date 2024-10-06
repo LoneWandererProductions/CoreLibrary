@@ -30,9 +30,9 @@ namespace FileHandler
         /// </summary>
         /// <param name="zipPath">The path of the zip.</param>
         /// <param name="fileToAdd">The file(s) to add.</param>
-        /// <param name="delele">if set to <c>true</c> [delele] Source Files.</param>
+        /// <param name="delele">if set to <c>true</c> [delele] Source Files. Optional, default true.</param>
         /// <returns>Operation Success</returns>
-        public static async Task<bool> SaveZip(string zipPath, List<string> fileToAdd, bool delele)
+        public static async Task<bool> SaveZip(string zipPath, List<string> fileToAdd, bool delele = true)
         {
             try
             {
@@ -71,10 +71,10 @@ namespace FileHandler
         /// </summary>
         /// <param name="zipPath">The zip path.</param>
         /// <param name="extractPath">The extract path.</param>
-        /// <param name="delete">if set to <c>true</c> [delete].</param>
+        /// <param name="delete">if set to <c>true</c> [delete]. Optional, default true.</param>
         /// <returns>Operation Success</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete)
+        public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete = true)
         {
             if (!FileHandleSearch.FileExists(zipPath))
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
