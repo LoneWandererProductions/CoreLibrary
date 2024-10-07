@@ -73,7 +73,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual("9", lst[2][9], "Right Element");
 
-            FileHandleDelete.DeleteFile(_testFilePath);
+            _ = FileHandleDelete.DeleteFile(_testFilePath);
         }
 
         /// <summary>
