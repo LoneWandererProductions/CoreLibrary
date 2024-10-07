@@ -29,6 +29,16 @@ namespace Imaging
     /// </summary>
     public sealed class ColorHsv : IEquatable<ColorHsv>
     {
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorHsv"/> class.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        public ColorHsv(int color)
+        {
+            ColorToHsv(color);
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
         /// </summary>
@@ -269,6 +279,31 @@ namespace Imaging
             S = max == 0 ? 0 : 1d - (1d * min / max);
             V = max / 255d;
 
+            GetHex();
+        }
+
+        /// <summary>
+        /// Gets the RGBA values from an int.
+        /// </summary>
+        /// <returns>A tuple containing the RGBA values.</returns>
+        public void ColorToHsv(int color)
+        {
+            // Extract ARGB values from the integer
+            A = (color >> 24) & 0xFF; // Alpha
+            R = (color >> 16) & 0xFF; // Red
+            G = (color >> 8) & 0xFF;  // Green
+            B = color & 0xFF;         // Blue
+
+            // Calculate max and min values for HSV conversion
+            var max = Math.Max(R, Math.Max(G, B));
+            var min = Math.Min(R, Math.Min(G, B));
+
+            // Calculate the hue, saturation, and value
+            H = GetHue(R, G, B);
+            S = max == 0 ? 0 : 1d - (1d * min / max);
+            V = max / 255d;
+
+            // Update the hex representation of the color
             GetHex();
         }
 
