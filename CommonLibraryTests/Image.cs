@@ -70,6 +70,7 @@ namespace CommonLibraryTests
         /// </summary>
         private static readonly CustomImageFormat Custom = new();
 
+
         /// <summary>
         ///     Test the custom DirectBitmap and how it works
         /// </summary>

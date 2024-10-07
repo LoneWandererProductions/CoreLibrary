@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -51,7 +52,7 @@ namespace Imaging
         /// <summary>
         /// Gets the bits.
         /// </summary>
-        public int[] Bits { get; }
+        public uint[] Bits { get; }
 
         /// <summary>
         /// GCHandle to manage the memory of the bits array
@@ -74,7 +75,7 @@ namespace Imaging
             _height = height;
 
             // Initialize the Bits array and pin it for direct access
-            Bits = new int[width * height];
+            Bits = new uint[width * height];
             _bitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
             // Initialize WriteableBitmap
@@ -105,11 +106,14 @@ namespace Imaging
                     // Calculate the index in the back buffer
                     var pixelIndex = ((pixel.Y * _width) + pixel.X) * 4; // 4 bytes per pixel (BGRA)
 
-                    // Set the pixel data
+                    // Set the pixel data in the back buffer
                     dataPointer[pixelIndex + 0] = pixel.B; // Blue
                     dataPointer[pixelIndex + 1] = pixel.G; // Green
                     dataPointer[pixelIndex + 2] = pixel.R; // Red
                     dataPointer[pixelIndex + 3] = pixel.A; // Alpha
+
+                    // Store the pixel data as ARGB in the Bits array
+                    Bits[pixel.Y * _width + pixel.X] = Bits[pixel.Y * _width + pixel.X] = (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B); ; // This will be fine as long as A, R, G, B are 0-255
                 }
             }
 
@@ -127,9 +131,15 @@ namespace Imaging
             // Create a new WriteableBitmap
             var bitmap = new WriteableBitmap(_width, _height, 96, 96, PixelFormats.Bgra32, null);
 
-            // Copy the bits directly into the WriteableBitmap's back buffer
+            // Create a byte array to hold the byte representation of the Bits
+            byte[] byteArray = new byte[Bits.Length * sizeof(uint)];
+
+            // Fill the byte array with data from the Bits array
+            Buffer.BlockCopy(Bits, 0, byteArray, 0, byteArray.Length);
+
+            // Copy the byte array to the WriteableBitmap's back buffer
             bitmap.Lock();
-            Marshal.Copy(Bits, 0, bitmap.BackBuffer, Bits.Length);
+            Marshal.Copy(byteArray, 0, bitmap.BackBuffer, byteArray.Length);
             bitmap.AddDirtyRect(new Int32Rect(0, 0, _width, _height));
             bitmap.Unlock();
 
@@ -170,18 +180,16 @@ namespace Imaging
                 var color = Bits[i];
 
                 // Extract ARGB values from the color
-                var converter = new ColorHsv(color);
+                var converter = new ColorHsv((int)color);
 
-                // Apply the color matrix with precomputed values
+                // Initialize new color values
                 float newR = 0, newG = 0, newB = 0, newA = 0;
 
-                for (int j = 0; j < 4; j++)
-                {
-                    newR += converter.R * matrix[0][j];
-                    newG += converter.G * matrix[1][j];
-                    newB += converter.B * matrix[2][j];
-                    newA += converter.A * matrix[3][j];
-                }
+                // Apply the color matrix
+                newR = converter.R * matrix[0][0] + converter.G * matrix[0][1] + converter.B * matrix[0][2] + converter.A * matrix[0][3];
+                newG = converter.R * matrix[1][0] + converter.G * matrix[1][1] + converter.B * matrix[1][2] + converter.A * matrix[1][3];
+                newB = converter.R * matrix[2][0] + converter.G * matrix[2][1] + converter.B * matrix[2][2] + converter.A * matrix[2][3];
+                newA = converter.R * matrix[3][0] + converter.G * matrix[3][1] + converter.B * matrix[3][2] + converter.A * matrix[3][3];
 
                 // Add the bias
                 newR += matrix[4][0];
@@ -189,14 +197,33 @@ namespace Imaging
                 newB += matrix[4][2];
                 newA += matrix[4][3];
 
-                // Clamp the values and create new color
+                // Print debug information
+                Trace.WriteLine($"Pixel {i}: Original R={converter.R}, G={converter.G}, B={converter.B}, A={converter.A}");
+                Trace.WriteLine($"Matrix Applied: New Color (R={newR}, G={newG}, B={newB}, A={newA})");
+
+                // After applying the color matrix
+                Trace.WriteLine($"Transformed before clamping: R={newR}, G={newG}, B={newB}, A={newA}");
+
+                // Clamp the values to [0, 255]
+                newR = ImageHelper.Clamp(newR);
+                newG = ImageHelper.Clamp(newG);
+                newB = ImageHelper.Clamp(newB);
+                newA = ImageHelper.Clamp(newA);
+
+                // Log clamped values
+                Trace.WriteLine($"Clamped: R={newR}, G={newG}, B={newB}, A={newA}");
+
+                // Create new color
                 var newColor = new Color()
                 {
-                    A = (byte)ImageHelper.Clamp(newA),
-                    R = (byte)ImageHelper.Clamp(newR),
-                    G = (byte)ImageHelper.Clamp(newG),
-                    B = (byte)ImageHelper.Clamp(newB)
+                    A = (byte)newA,
+                    R = (byte)newR,
+                    G = (byte)newG,
+                    B = (byte)newB
                 };
+
+                // Log final color
+                Trace.WriteLine($"Final Color: (A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B})");
 
                 // Calculate the x and y positions
                 var x = i % _width;
@@ -253,7 +280,7 @@ namespace Imaging
                 {
                     if (i + j < pixelArray.Length)
                     {
-                        Bits[indices[j]] = colors[j];
+                        Bits[indices[j]] = (uint)colors[j];
                     }
                 }
             }
@@ -265,10 +292,19 @@ namespace Imaging
         public void UpdateBitmapFromBits()
         {
             _bitmap.Lock();
-            Marshal.Copy(Bits, 0, _bitmap.BackBuffer, Bits.Length);
+
+            // Create a byte array to hold the byte representation of the Bits
+            byte[] byteArray = new byte[Bits.Length * sizeof(uint)];
+
+            // Fill the byte array with data from the Bits array
+            Buffer.BlockCopy(Bits, 0, byteArray, 0, byteArray.Length);
+
+            // Copy the byte array to the WriteableBitmap's back buffer
+            Marshal.Copy(byteArray, 0, _bitmap.BackBuffer, byteArray.Length);
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, _width, _height));
             _bitmap.Unlock();
         }
+
 
         /// <inheritdoc />
         /// <summary>
