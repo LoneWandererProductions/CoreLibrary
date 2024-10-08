@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Mathematics;
 
 namespace Imaging
 {
@@ -172,6 +173,7 @@ namespace Imaging
         /// <param name="matrix">The matrix.</param>
         public void ApplyColorMatrix(float[][] matrix)
         {
+            // Initialize transformedColors to hold the transformed pixel colors
             var transformedColors = new (int x, int y, Color color)[Bits.Length];
 
             // Loop through the Bits array and apply the color matrix
@@ -181,49 +183,55 @@ namespace Imaging
 
                 // Extract ARGB values from the color
                 var converter = new ColorHsv((int)color);
+                Debug.WriteLine($"Original color for pixel {i}: ARGB({converter.A}, {converter.R}, {converter.G}, {converter.B})");
 
-                // Initialize new color values
-                float newR = 0, newG = 0, newB = 0, newA = 0;
+                // Create a vector for the color (ARGB)
+                float[] colorVector = new float[4]
+                {
+                    converter.R,
+                    converter.G,
+                    converter.B,
+                    converter.A
+                };
 
-                // Apply the color matrix
-                newR = converter.R * matrix[0][0] + converter.G * matrix[0][1] + converter.B * matrix[0][2] + converter.A * matrix[0][3];
-                newG = converter.R * matrix[1][0] + converter.G * matrix[1][1] + converter.B * matrix[1][2] + converter.A * matrix[1][3];
-                newB = converter.R * matrix[2][0] + converter.G * matrix[2][1] + converter.B * matrix[2][2] + converter.A * matrix[2][3];
-                newA = converter.R * matrix[3][0] + converter.G * matrix[3][1] + converter.B * matrix[3][2] + converter.A * matrix[3][3];
+                // Initialize a new result array for transformed colors
+                float[] result = new float[4];
 
-                // Add the bias
-                newR += matrix[4][0];
-                newG += matrix[4][1];
-                newB += matrix[4][2];
-                newA += matrix[4][3];
+                // Perform the matrix multiplication
+                result[0] = (matrix[0][0] * colorVector[0]) + (matrix[0][1] * colorVector[1]) + (matrix[0][2] * colorVector[2]) + (matrix[0][3] * colorVector[3]);
+                result[1] = (matrix[1][0] * colorVector[0]) + (matrix[1][1] * colorVector[1]) + (matrix[1][2] * colorVector[2]) + (matrix[1][3] * colorVector[3]);
+                result[2] = (matrix[2][0] * colorVector[0]) + (matrix[2][1] * colorVector[1]) + (matrix[2][2] * colorVector[2]) + (matrix[2][3] * colorVector[3]);
+                result[3] = (matrix[3][0] * colorVector[0]) + (matrix[3][1] * colorVector[1]) + (matrix[3][2] * colorVector[2]) + (matrix[3][3] * colorVector[3]);
 
-                // Print debug information
-                Trace.WriteLine($"Pixel {i}: Original R={converter.R}, G={converter.G}, B={converter.B}, A={converter.A}");
-                Trace.WriteLine($"Matrix Applied: New Color (R={newR}, G={newG}, B={newB}, A={newA})");
+                // Log transformed color before adding bias
+                Debug.WriteLine($"Transformed color for pixel {i} (before bias): R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
-                // After applying the color matrix
-                Trace.WriteLine($"Transformed before clamping: R={newR}, G={newG}, B={newB}, A={newA}");
+                // Add the bias from the last row of the matrix
+                result[0] += matrix[4][0]; // Bias for R
+                result[1] += matrix[4][1]; // Bias for G
+                result[2] += matrix[4][2]; // Bias for B
+                result[3] += matrix[4][3]; // Bias for A
+
+                // Log color after bias addition
+                Debug.WriteLine($"After adding bias: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
                 // Clamp the values to [0, 255]
-                newR = ImageHelper.Clamp(newR);
-                newG = ImageHelper.Clamp(newG);
-                newB = ImageHelper.Clamp(newB);
-                newA = ImageHelper.Clamp(newA);
+                result[0] = Math.Clamp(result[0], 0, 255);
+                result[1] = Math.Clamp(result[1], 0, 255);
+                result[2] = Math.Clamp(result[2], 0, 255);
+                result[3] = Math.Clamp(result[3], 0, 255);
 
                 // Log clamped values
-                Trace.WriteLine($"Clamped: R={newR}, G={newG}, B={newB}, A={newA}");
+                Debug.WriteLine($"Clamped values: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
                 // Create new color
                 var newColor = new Color()
                 {
-                    A = (byte)newA,
-                    R = (byte)newR,
-                    G = (byte)newG,
-                    B = (byte)newB
+                    A = (byte)result[3],
+                    R = (byte)result[0],
+                    G = (byte)result[1],
+                    B = (byte)result[2]
                 };
-
-                // Log final color
-                Trace.WriteLine($"Final Color: (A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B})");
 
                 // Calculate the x and y positions
                 var x = i % _width;
@@ -231,10 +239,12 @@ namespace Imaging
 
                 // Store the transformed pixel color
                 transformedColors[i] = (x, y, newColor);
+                Debug.WriteLine($"Transformed pixel position ({x}, {y}) with new color: ARGB({newColor.A}, {newColor.R}, {newColor.G}, {newColor.B})");
             }
 
             // Use SetPixelsSimd to apply the transformed pixel colors
             SetPixelsSimd(transformedColors.Where(p => p.color.A != 0)); // Filter out default colors
+            Debug.WriteLine($"Applied transformed colors to pixels.");
         }
 
         /// <summary>

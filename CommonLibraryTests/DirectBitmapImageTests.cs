@@ -52,6 +52,24 @@ namespace CommonLibraryTests
             Assert.AreEqual(unchecked((uint)(255 << 24 | 0 << 16 | 0 << 8 | 255)), _bitmapImage.Bits[Width * 2 + 2]); // Blue
         }
 
+        [TestMethod]
+        public void SetPixelsSimd_TwoInputs_ShouldSetCorrectPixels()
+        {
+            // Arrange
+            var pixels = new List<(int x, int y, System.Windows.Media.Color color)>
+        {
+            (0, 0, new System.Windows.Media.Color { A = 255, R = 255, G = 0, B = 0 }), // Red pixel
+            (1, 0, new System.Windows.Media.Color { A = 255, R = 0, G = 255, B = 0 })  // Green pixel
+        };
+
+            // Act
+            _bitmapImage.SetPixelsSimd(pixels);
+
+            // Assert
+            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)), _bitmapImage.Bits[0]); // Red pixel ARGB
+            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)), _bitmapImage.Bits[1]); // Green pixel ARGB
+        }
+
         /// <summary>
         /// Applies the color matrix valid matrix transforms colors.
         /// </summary>
