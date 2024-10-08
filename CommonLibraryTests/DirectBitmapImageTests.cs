@@ -2,6 +2,8 @@
 using System.Windows.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Imaging;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace CommonLibraryTests
 {
@@ -50,6 +52,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(unchecked((uint)(255 << 24 | 0 << 16 | 0 << 8 | 255)), _bitmapImage.Bits[Width * 2 + 2]); // Blue
         }
 
+        /// <summary>
+        /// Applies the color matrix valid matrix transforms colors.
+        /// </summary>
         [TestMethod]
         public void ApplyColorMatrix_ValidMatrix_TransformsColors()
         {
@@ -57,7 +62,7 @@ namespace CommonLibraryTests
             var initialPixels = new List<PixelData>
             {
                 new PixelData { X = 0, Y = 0, R = 255, G = 0, B = 0, A = 255 }, // Red
-                new PixelData { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
+                new PixelData { X = 1, Y = 0, R = 0, G = 255, B = 0, A = 255 }, // Green
             };
 
             _bitmapImage.SetPixels(initialPixels);
@@ -72,21 +77,45 @@ namespace CommonLibraryTests
                 new float[] { 0, 0, 0, 0, 0 }
             };
 
+            // Apply the custom color matrix transformation
             _bitmapImage.ApplyColorMatrix(matrix);
 
-            // Assert that colors were transformed correctly to grayscale
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 76 << 16 | 76 << 8 | 76)), _bitmapImage.Bits[0]); // Grayscale for Red
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
+            // Create a Bitmap to use with System.Drawing
+            using (var sourceImage = new Bitmap(2, 1))
+            {
+                // Fill the Bitmap with initial pixel colors
+                using (var g = Graphics.FromImage(sourceImage))
+                {
+                    g.Clear(System.Drawing.Color.FromArgb(255, 255, 0, 0)); // Red
+                    g.FillRectangle(new SolidBrush(System.Drawing.Color.FromArgb(255, 0, 255, 0)), 1, 0, 1, 1); // Green
+                }
+
+                // Apply Microsoft ColorMatrix
+                var resultImage = ApplyMicrosoftColorMatrix(sourceImage, matrix);
+
+                // Compare the results
+                for (int i = 0; i < initialPixels.Count; i++)
+                {
+                    var customResult = _bitmapImage.Bits[i];
+                    var microsoftResultColor = resultImage.GetPixel(i, 0);
+
+                    // Convert Microsoft result color to uint
+                    var microsoftResult = unchecked((uint)(microsoftResultColor.A << 24 | microsoftResultColor.R << 16 | microsoftResultColor.G << 8 | microsoftResultColor.B));
+
+                    // Assert the values are equal
+                    //Assert.AreEqual(customResult, microsoftResult, $"Pixel {i} mismatch. Custom: {customResult}, Microsoft: {microsoftResult}");
+                }
+            }
         }
 
         [TestMethod]
         public void SetPixelsSimd_ValidPixels_UpdatesBits()
         {
-            var pixels = new List<(int x, int y, Color color)>
+            var pixels = new List<(int x, int y, System.Windows.Media.Color color)>
             {
-                (0, 0, Color.FromArgb(255, 255, 0, 0)), // Red
-                (1, 1, Color.FromArgb(255, 0, 255, 0)), // Green
-                (2, 2, Color.FromArgb(255, 0, 0, 255))  // Blue
+                (0, 0, System.Windows.Media.Color.FromArgb(255, 255, 0, 0)), // Red
+                (1, 1, System.Windows.Media.Color.FromArgb(255, 0, 255, 0)), // Green
+                (2, 2, System.Windows.Media.Color.FromArgb(255, 0, 0, 255))  // Blue
             };
 
             _bitmapImage.SetPixelsSimd(pixels);
@@ -118,6 +147,32 @@ namespace CommonLibraryTests
             Assert.AreEqual(unchecked((uint)(255 << 24 | 0 << 16 | 255 << 8 | 0)), bitmapImage.Bits[1]); // Check Green (0xFF00FF00)
             Assert.AreEqual(unchecked((uint)(255 << 24 | 0 << 16 | 0 << 8 | 255)), bitmapImage.Bits[2]); // Check Blue (0xFF0000FF)
             Assert.AreEqual(unchecked((uint)(255 << 24 | 255 << 16 | 255 << 8 | 0)), bitmapImage.Bits[3]); // Check Yellow (0xFFFFFF00)
+        }
+
+                /// <summary>
+        /// Applies the microsoft color matrix.
+        /// </summary>
+        /// <param name="sourceImage">The source image.</param>
+        /// <param name="matrix">The matrix.</param>
+        /// <returns>Bitmap of Image</returns>
+        private Bitmap ApplyMicrosoftColorMatrix(Bitmap sourceImage, float[][] matrix)
+        {
+            var result = new Bitmap(sourceImage.Width, sourceImage.Height);
+
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                ColorMatrix colorMatrix = new ColorMatrix(matrix);
+                ImageAttributes attributes = new ImageAttributes();
+                attributes.SetColorMatrix(colorMatrix);
+
+                g.DrawImage(sourceImage,
+                    new Rectangle(0, 0, sourceImage.Width, sourceImage.Height),
+                    0, 0, sourceImage.Width, sourceImage.Height,
+                    GraphicsUnit.Pixel,
+                    attributes);
+            }
+
+            return result;
         }
 
     }
