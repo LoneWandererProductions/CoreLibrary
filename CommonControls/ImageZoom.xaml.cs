@@ -68,11 +68,6 @@ namespace CommonControls
             typeof(ImageZoom), null);
 
         /// <summary>
-        ///     The image Start Point
-        /// </summary>
-        private Point _imageStartPoint;
-
-        /// <summary>
         ///     The mouse down
         ///     Set to 'true' when mouse is held down.
         /// </summary>
@@ -100,7 +95,10 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null) return;
+            if (BtmImage.Source == null)
+            {
+                return;
+            }
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -239,7 +237,10 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null) return;
+            if (BtmImage.Source == null)
+            {
+                return;
+            }
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -312,13 +313,13 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                    {
-                    }
+                {
+                }
                     break;
                 case SelectionTools.SelectEllipse:
                     break;
                 case SelectionTools.FreeForm:
-                    _imageStartPoint = e.GetPosition(BtmImage);
+                    e.GetPosition(BtmImage);
                     break;
                 default:
                     // nothing
@@ -347,10 +348,10 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                    {
-                        var frame = _selectionAdorner.CurrentSelectionFrame;
-                        SelectedFrame?.Invoke(frame);
-                    }
+                {
+                    var frame = _selectionAdorner.CurrentSelectionFrame;
+                    SelectedFrame?.Invoke(frame);
+                }
                     break;
                 case SelectionTools.SelectPixel:
                     var endpoint = e.GetPosition(BtmImage);
@@ -382,7 +383,10 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown) return;
+            if (!_mouseDown)
+            {
+                return;
+            }
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
@@ -390,45 +394,45 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                    {
-                        var position = e.GetPosition(MainCanvas);
-                        var matrix = BtmImage.RenderTransform.Value;
-                        matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-                        matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-                        BtmImage.RenderTransform = new MatrixTransform(matrix);
+                {
+                    var position = e.GetPosition(MainCanvas);
+                    var matrix = BtmImage.RenderTransform.Value;
+                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
+                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
+                    BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                        _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                        break;
-                    }
+                    _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                    break;
+                }
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.SelectEllipse:
-                    {
-                        // Update the adorner for rectangle or ellipse selection
-                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                {
+                    // Update the adorner for rectangle or ellipse selection
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                        break;
-                    }
+                    break;
+                }
 
                 case SelectionTools.FreeForm:
-                    {
-                        // Update the adorner for free form selection by adding points
-                        _selectionAdorner?.AddFreeFormPoint(mousePos);
+                {
+                    // Update the adorner for free form selection by adding points
+                    _selectionAdorner?.AddFreeFormPoint(mousePos);
 
-                        break;
-                    }
+                    break;
+                }
 
                 case SelectionTools.SelectPixel:
                     // Handle pixel selection if needed
                     break;
 
                 case SelectionTools.Erase:
-                    {
-                        // Similar to rectangle selection, but intended for erasing
-                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                {
+                    // Similar to rectangle selection, but intended for erasing
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                        break;
-                    }
+                    break;
+                }
 
                 default:
                     // Nothing
