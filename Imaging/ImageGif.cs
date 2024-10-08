@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageGif.cs
- * PURPOSE:     Extends the Image Control and adds Gif Support via SourceGif Property
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     Imaging
+* FILE:        Imaging/ImageGif.cs
+* PURPOSE:     Extends the Image Control and adds Gif Support via SourceGif Property
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,8 @@ namespace Imaging
     /// <seealso cref="Image" />
     public sealed class ImageGif : Image, IDisposable
     {
+        public event EventHandler ImageLoaded;
+
         /// <summary>
         ///     The frame index property
         /// </summary>
@@ -57,14 +59,14 @@ namespace Imaging
         private List<ImageSource> _imageList;
 
         /// <summary>
-        ///     The is disposed
-        /// </summary>
-        private bool _isDisposed;
-
-        /// <summary>
         ///     The is initialized
         /// </summary>
         private bool _isInitialized;
+
+        /// <summary>
+        /// The is disposed
+        /// </summary>
+        private bool _isDisposed;
 
         /// <inheritdoc />
         /// <summary>
@@ -103,31 +105,6 @@ namespace Imaging
             set => SetValue(GifSourceProperty, value);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Loads the GIF asynchronous.
-        /// </summary>
-        /// <returns>if Gif was sucessful loaded.</returns>
-        public async Task<bool> LoadGifAsync()
-        {
-            if (_isInitialized)
-            {
-                return true;
-            }
-
-            await InitializeAsync();
-            return _isInitialized;
-        }
-
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
@@ -136,33 +113,29 @@ namespace Imaging
             // Check if the image exists
             if (!File.Exists(GifSource))
                 // Log or show an error message
-            {
                 return;
-            }
 
             try
             {
                 var info = ImageGifHandler.GetImageInfo(GifSource);
 
                 // Handle possible error
-                if (info is not { IsAnimated: true })
-                {
-                    return;
-                }
+                if (info is not { IsAnimated: true }) return;
 
                 _imageList = await ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
 
                 var time = Math.Max(1, info.Frames / 10);
                 _animation = new Int32Animation(0, info.Frames - 1,
-                    new Duration(new TimeSpan(0, 0, 0, time))) { RepeatBehavior = RepeatBehavior.Forever };
+                        new Duration(new TimeSpan(0, 0, 0, time)))
+                { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
 
-                if (AutoStart)
-                {
-                    StartAnimation();
-                }
+                // Fire the ImageLoaded event to notify that the GIF is ready
+                ImageLoaded?.Invoke(this, EventArgs.Empty);
+
+                if (AutoStart) StartAnimation();
             }
             catch (Exception ex)
             {
@@ -176,13 +149,9 @@ namespace Imaging
         private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if ((Visibility)e.NewValue == Visibility.Visible)
-            {
                 ((ImageGif)sender).StartAnimation();
-            }
             else
-            {
                 ((ImageGif)sender).StopAnimation();
-            }
         }
 
         /// <summary>
@@ -193,10 +162,8 @@ namespace Imaging
             if (obj is ImageGif { AutoStart: true } gifImage)
             {
                 var newIndex = (int)ev.NewValue;
-                if (newIndex >= 0 && newIndex < gifImage._imageList?.Count)
-                {
+                if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
                     gifImage.Source = gifImage._imageList[newIndex];
-                }
             }
         }
 
@@ -211,10 +178,9 @@ namespace Imaging
         /// <summary>
         ///     GIFs the source property changed.
         /// </summary>
-        private static async void GifSourcePropertyChanged(DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
+        private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            await (sender as ImageGif)?.InitializeAsync();
+            (sender as ImageGif)?.InitializeAsync();
         }
 
         /// <summary>
@@ -222,11 +188,7 @@ namespace Imaging
         /// </summary>
         private void StartAnimation()
         {
-            if (!_isInitialized)
-            {
-                _ = InitializeAsync();
-            }
-
+            if (!_isInitialized) _ = InitializeAsync();
             BeginAnimation(FrameIndexProperty, _animation);
         }
 
@@ -238,29 +200,28 @@ namespace Imaging
             BeginAnimation(FrameIndexProperty, null);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Disposes the specified disposing.
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the specified disposing.
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> [disposing].</param>
         private void Dispose(bool disposing)
         {
-            if (_isDisposed)
-            {
-                return;
-            }
+            if (_isDisposed) return;
 
             if (disposing)
             {
                 // Free managed resources
                 StopAnimation();
-
-                _imageList?.ForEach(image =>
-                {
-                    if (image is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
-                });
                 _imageList?.Clear();
             }
 
@@ -268,7 +229,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Finalizes this instance.
+        /// Finalizes this instance.
         /// </summary>
         /// <returns>Freed Resources</returns>
         ~ImageGif()

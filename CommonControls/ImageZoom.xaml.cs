@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/ImageZoom.xaml.cs
- * PURPOSE:     Image View Control, that can handle some tools
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     CommonControls
+* FILE:        CommonControls/ImageZoom.xaml.cs
+* PURPOSE:     Image View Control, that can handle some tools
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable EventNeverSubscribedTo.Global, only used outside of the dll
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
@@ -12,7 +12,6 @@
 
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -52,8 +51,7 @@ namespace CommonControls
         public static readonly DependencyProperty ImageGifSourceProperty = DependencyProperty.Register(
             nameof(ImageGifPath),
             typeof(string),
-            typeof(ImageZoom),
-            new PropertyMetadata(OnImageGifSourcePropertyChanged)); // Use synchronous method
+            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChanged));
 
         /// <summary>
         ///     The zoom tools
@@ -102,10 +100,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -189,17 +184,13 @@ namespace CommonControls
             DependencyPropertyChangedEventArgs e)
         {
             var control = sender as ImageZoom;
-            if (control != null)
-            {
-                // Call the async method but do not await it
-                _ = control.OnImageSourceGifChangedAsync();
-            }
+            control?.OnImageSourceGifChanged();
         }
 
         /// <summary>
         ///     Called when [image source GIF changed].
         /// </summary>
-        private async Task OnImageSourceGifChangedAsync()
+        private void OnImageSourceGifChanged()
         {
             if (!File.Exists(ImageGifPath))
             {
@@ -208,44 +199,27 @@ namespace CommonControls
                 return;
             }
 
-            // Reset position
+            //reset position
             var matrix = BtmImage.RenderTransform.Value;
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-            // Reset Scrollbar
+            //reset Scrollbar
             ScrollView.ScrollToTop();
             ScrollView.UpdateLayout();
 
-            // Load GIF asynchronously and check if initialization was successful
-            var isInitialized = await BtmImage.LoadGifAsync();
-            if (!isInitialized)
-            {
-                // Handle failure to load GIF (e.g., log error, show message, etc.)
-                return;
-            }
-
-            // Once GIF is loaded, update the canvas
-            MainCanvas.Height = BtmImage.Source.Height;
-            MainCanvas.Width = BtmImage.Source.Width;
-
-            // Update the adorner with the new image transform
-            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-
-            // Reattach adorner for the new image
-            AttachAdorner(ZoomTool);
+            // Set GifSource and subscribe to the ImageLoaded event
+            BtmImage.ImageLoaded += BtmImage_ImageLoaded;
+            BtmImage.GifSource = ImageGifPath;
         }
 
-        /// <summary>
-        ///     Event handler for when the GIF has finished loading
-        ///     Handles the ImageLoaded event of the BtmImage control.
-        ///     Sadly needed on heavy load.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void BtmImageImageLoaded(object sender, EventArgs e)
+        // Event handler for when the GIF has finished loading
+        private void BtmImage_ImageLoaded(object sender, EventArgs e)
         {
+            // Unsubscribe to prevent memory leaks
+            BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+
             // Now the source is fully loaded, you can safely access it
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -265,10 +239,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -341,8 +312,8 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                {
-                }
+                    {
+                    }
                     break;
                 case SelectionTools.SelectEllipse:
                     break;
@@ -376,10 +347,10 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                {
-                    var frame = _selectionAdorner.CurrentSelectionFrame;
-                    SelectedFrame?.Invoke(frame);
-                }
+                    {
+                        var frame = _selectionAdorner.CurrentSelectionFrame;
+                        SelectedFrame?.Invoke(frame);
+                    }
                     break;
                 case SelectionTools.SelectPixel:
                     var endpoint = e.GetPosition(BtmImage);
@@ -411,10 +382,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
@@ -422,45 +390,45 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                {
-                    var position = e.GetPosition(MainCanvas);
-                    var matrix = BtmImage.RenderTransform.Value;
-                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-                    BtmImage.RenderTransform = new MatrixTransform(matrix);
+                    {
+                        var position = e.GetPosition(MainCanvas);
+                        var matrix = BtmImage.RenderTransform.Value;
+                        matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
+                        matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
+                        BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                    _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                    break;
-                }
+                        _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                        break;
+                    }
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.SelectEllipse:
-                {
-                    // Update the adorner for rectangle or ellipse selection
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                    {
+                        // Update the adorner for rectangle or ellipse selection
+                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                    break;
-                }
+                        break;
+                    }
 
                 case SelectionTools.FreeForm:
-                {
-                    // Update the adorner for free form selection by adding points
-                    _selectionAdorner?.AddFreeFormPoint(mousePos);
+                    {
+                        // Update the adorner for free form selection by adding points
+                        _selectionAdorner?.AddFreeFormPoint(mousePos);
 
-                    break;
-                }
+                        break;
+                    }
 
                 case SelectionTools.SelectPixel:
                     // Handle pixel selection if needed
                     break;
 
                 case SelectionTools.Erase:
-                {
-                    // Similar to rectangle selection, but intended for erasing
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                    {
+                        // Similar to rectangle selection, but intended for erasing
+                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                    break;
-                }
+                        break;
+                    }
 
                 default:
                     // Nothing
