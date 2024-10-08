@@ -86,7 +86,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
         /// </value>
-        public bool IsMonochrome { get; set; } = true;
+        public bool IsMonochrome { get; init; } = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is tiled.
@@ -94,7 +94,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
         /// </value>
-        public bool IsTiled { get; set; } = true;
+        public bool IsTiled { get; init; } = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether to use smooth noise.

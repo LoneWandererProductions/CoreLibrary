@@ -4,7 +4,6 @@
  * FILE:        CommonControls/SelectionAdorner.cs
  * PURPOSE:     Extensions for ImageZoom, handle all the selection Tools.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
- * SOURCES:     https://learn.microsoft.com/de-de/dotnet/desktop/wpf/controls/how-to-bind-an-adorner-to-an-element?view=netframeworkdesktop-4.8
  */
 
 using System.Collections.Generic;

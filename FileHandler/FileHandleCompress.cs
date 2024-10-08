@@ -40,7 +40,10 @@ namespace FileHandler
                 foreach (var file in fileToAdd)
                 {
                     //does not exist? Well next one
-                    if (!FileHandleSearch.FileExists(file)) continue;
+                    if (!FileHandleSearch.FileExists(file))
+                    {
+                        continue;
+                    }
 
                     // Add the entry for each file
                     var fileInfo = new FileInfo(file);
@@ -58,7 +61,10 @@ namespace FileHandler
             }
 
             //shall we delete old files?
-            if (!delele) return true;
+            if (!delele)
+            {
+                return true;
+            }
 
             var deleteTasks = fileToAdd.Select(async file => await FileHandleDelete.DeleteFile(file));
             var results = await Task.WhenAll(deleteTasks);
@@ -77,7 +83,9 @@ namespace FileHandler
         public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete = true)
         {
             if (!FileHandleSearch.FileExists(zipPath))
+            {
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
+            }
 
             try
             {

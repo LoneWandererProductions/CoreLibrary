@@ -41,6 +41,7 @@ namespace Imaging
 
 
         // Save the Lif object (layers and settings) to a binary file
+        [Obsolete("Obsolete")]
         public static void SaveLif(Lif lif, string path)
         {
             using var fs = new FileStream(path, FileMode.Create);
@@ -49,6 +50,7 @@ namespace Imaging
         }
 
         // Load the Lif object (layers and settings) from a binary file
+        [Obsolete("Obsolete")]
         public static Lif LoadLif(string path)
         {
             using var fs = new FileStream(path, FileMode.Open);

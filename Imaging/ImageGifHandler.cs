@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -89,7 +90,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif</returns>
-        internal static List<Bitmap> SplitGif(string path)
+        internal static async Task<List<Bitmap>> SplitGifAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
@@ -110,11 +111,15 @@ namespace Imaging
                 for (var i = 0; i < numberOfFrames; i++)
                 {
                     image.SelectActiveFrame(FrameDimension.Time, i);
-                    var bmp = new Bitmap(image);
-                    lst.Add(bmp);
+
+                    // Process each frame asynchronously
+                    await Task.Run(() =>
+                    {
+                        var bmp = new Bitmap(image);
+                        lst.Add(bmp);
+                    });
                 }
             }
-            //try to handle potential Memory problem, a bit of a hack
             catch (OutOfMemoryException ex)
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -123,14 +128,13 @@ namespace Imaging
                 Trace.WriteLine(string.Concat(ex, ImagingResources.Separator, ImagingResources.ErrorMemory,
                     memorySize));
                 lst.Clear();
-                //enforce clean up and hope for the best
                 GC.Collect();
 
                 ImageRegister.Count++;
 
                 if (ImageRegister.Count < 3)
                 {
-                    SplitGif(path);
+                    await SplitGifAsync(path);
                 }
                 else
                 {
@@ -142,17 +146,21 @@ namespace Imaging
             return lst;
         }
 
+
         /// <summary>
         ///     Loads the GIF.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif as ImageSource</returns>
-        internal static List<ImageSource> LoadGif(string path)
+        internal static async Task<List<ImageSource>> LoadGif(string path)
         {
-            var list = SplitGif(path);
+            // Await the result from the async SplitGifAsync method
+            var bitmapList = await SplitGifAsync(path);
 
-            return list.Select(image => image.ToBitmapImage()).Cast<ImageSource>().ToList();
+            // Convert each Bitmap to ImageSource and return the list
+            return bitmapList.Select(image => image.ToBitmapImage()).Cast<ImageSource>().ToList();
         }
+
 
         /// <summary>
         ///     Creates the gif.
@@ -180,6 +188,11 @@ namespace Imaging
             CreateGif(btm, target);
         }
 
+        /// <summary>
+        ///     Creates the GIF.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="target">The target.</param>
         internal static void CreateGif(List<string> path, string target)
         {
             //collect and convert all images

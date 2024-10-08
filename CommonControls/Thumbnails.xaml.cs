@@ -496,8 +496,8 @@ namespace CommonControls
             });
 
             if (SelectBox)
-            {
                 // Handle checkboxes for selection on the UI thread
+            {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;

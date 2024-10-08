@@ -10,7 +10,9 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -50,7 +52,8 @@ namespace CommonControls
         public static readonly DependencyProperty ImageGifSourceProperty = DependencyProperty.Register(
             nameof(ImageGifPath),
             typeof(string),
-            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChanged));
+            typeof(ImageZoom),
+            new PropertyMetadata(OnImageGifSourcePropertyChanged)); // Use synchronous method
 
         /// <summary>
         ///     The zoom tools
@@ -186,13 +189,17 @@ namespace CommonControls
             DependencyPropertyChangedEventArgs e)
         {
             var control = sender as ImageZoom;
-            control?.OnImageSourceGifChanged();
+            if (control != null)
+            {
+                // Call the async method but do not await it
+                _ = control.OnImageSourceGifChangedAsync();
+            }
         }
 
         /// <summary>
         ///     Called when [image source GIF changed].
         /// </summary>
-        private void OnImageSourceGifChanged()
+        private async Task OnImageSourceGifChangedAsync()
         {
             if (!File.Exists(ImageGifPath))
             {
@@ -201,25 +208,52 @@ namespace CommonControls
                 return;
             }
 
-            //reset position
+            // Reset position
             var matrix = BtmImage.RenderTransform.Value;
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-            //reset Scrollbar
+            // Reset Scrollbar
             ScrollView.ScrollToTop();
             ScrollView.UpdateLayout();
 
-            BtmImage.GifSource = ImageGifPath;
+            // Load GIF asynchronously and check if initialization was successful
+            var isInitialized = await BtmImage.LoadGifAsync();
+            if (!isInitialized)
+            {
+                // Handle failure to load GIF (e.g., log error, show message, etc.)
+                return;
+            }
 
+            // Once GIF is loaded, update the canvas
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
 
             // Update the adorner with the new image transform
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
-            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            // Reattach adorner for the new image
+            AttachAdorner(ZoomTool);
+        }
+
+        /// <summary>
+        ///     Event handler for when the GIF has finished loading
+        ///     Handles the ImageLoaded event of the BtmImage control.
+        ///     Sadly needed on heavy load.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        private void BtmImageImageLoaded(object sender, EventArgs e)
+        {
+            // Now the source is fully loaded, you can safely access it
+            MainCanvas.Height = BtmImage.Source.Height;
+            MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for the new image (ensures correct behavior)
             AttachAdorner(ZoomTool);
         }
 

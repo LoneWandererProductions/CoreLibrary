@@ -29,9 +29,8 @@ namespace Imaging
     /// </summary>
     public sealed class ColorHsv : IEquatable<ColorHsv>
     {
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorHsv"/> class.
+        ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
         /// </summary>
         /// <param name="color">The color.</param>
         public ColorHsv(int color)
@@ -283,7 +282,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Gets the RGBA values from an int.
+        ///     Gets the RGBA values from an int.
         /// </summary>
         /// <returns>A tuple containing the RGBA values.</returns>
         public void ColorToHsv(int color)
@@ -291,8 +290,8 @@ namespace Imaging
             // Extract ARGB values from the unsigned integer
             A = (byte)((color >> 24) & 0xFF); // Alpha
             R = (byte)((color >> 16) & 0xFF); // Red
-            G = (byte)((color >> 8) & 0xFF);  // Green
-            B = (byte)(color & 0xFF);         // Blue
+            G = (byte)((color >> 8) & 0xFF); // Green
+            B = (byte)(color & 0xFF); // Blue
 
             // Calculate max and min values for HSV conversion
             var max = Math.Max(R, Math.Max(G, B));

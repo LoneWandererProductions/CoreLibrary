@@ -28,10 +28,14 @@ namespace FileHandler
         public static bool DeleteFile(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             if (!File.Exists(path))
+            {
                 return false;
+            }
 
             if (!WaitForFileUnlock(path))
             {
@@ -69,7 +73,7 @@ namespace FileHandler
         /// <returns>True if the file is unlocked; otherwise, false.</returns>
         private static bool WaitForFileUnlock(string path)
         {
-            int attempts = 0;
+            var attempts = 0;
 
             while (FileHandleDelete.IsFileLocked(path) && attempts < FileHandlerRegister.Tries)
             {

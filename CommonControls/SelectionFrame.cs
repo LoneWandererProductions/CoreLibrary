@@ -19,7 +19,7 @@ namespace CommonControls
         /// <value>
         ///     The x.
         /// </value>
-        public int X { get; internal set; }
+        public int X { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the y.
@@ -27,7 +27,7 @@ namespace CommonControls
         /// <value>
         ///     The y.
         /// </value>
-        public int Y { get; internal set; }
+        public int Y { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the width.
@@ -35,7 +35,7 @@ namespace CommonControls
         /// <value>
         ///     The width.
         /// </value>
-        public int Width { get; internal set; }
+        public int Width { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the height.
@@ -43,7 +43,7 @@ namespace CommonControls
         /// <value>
         ///     The height.
         /// </value>
-        public int Height { get; internal set; }
+        public int Height { get; internal init; }
 
         /// <summary>
         ///     Gets the tool.

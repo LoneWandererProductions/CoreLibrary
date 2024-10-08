@@ -89,7 +89,7 @@ namespace CommonLibraryTests
         public async Task GetNewFileName()
         {
             // Delete all contents synchronously if it's a quick operation
-            FileHandleDelete.DeleteAllContents(_path, true);
+            FileHandleDelete.DeleteAllContents(_path);
 
             var fileOne = Path.Combine(_path, nameof(GetNewFileName),
                 Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
@@ -178,7 +178,8 @@ namespace CommonLibraryTests
             HelperMethods.CreateFiles(_path, ResourcesGeneral.FileExtList);
 
             FileHandlerRegister.ClearLog();
-            var isDone = await FileHandleDelete.DeleteFolderContentsByExtension(_path, ResourcesGeneral.FileExtList, false);
+            var isDone =
+                await FileHandleDelete.DeleteFolderContentsByExtension(_path, ResourcesGeneral.FileExtList, false);
 
             var error = string.Empty;
             if (!FileHandlerRegister.ErrorLog.IsNullOrEmpty())
@@ -189,7 +190,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(isDone, $"Folder cleaned: {error}");
         }
 
-         /// <summary>
+        /// <summary>
         ///     Test the rename feature
         /// </summary>
         [TestMethod]
@@ -326,7 +327,7 @@ namespace CommonLibraryTests
             HelperMethods.CreateFile(file);
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathTwo, ".*", true);
 
-            isDone = FileHandleCopy.CopyFiles(lst, subPathOne, true);
+            isDone = FileHandleCopy.CopyFiles(lst, subPathOne);
 
             Assert.IsTrue(isDone, "File were not moved");
             lst = FileHandleSearch.GetFilesByExtensionFullPath(subPathOne, ".*", true);
@@ -452,7 +453,7 @@ namespace CommonLibraryTests
             File.WriteAllText(sourceFilePath, "Test Content");
             var fileList = new List<string> { sourceFilePath };
 
-            var result = FileHandleCopy.CopyFiles(fileList, TestTargetDir, true);
+            var result = FileHandleCopy.CopyFiles(fileList, TestTargetDir);
 
             Assert.IsTrue(result);
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
@@ -521,7 +522,7 @@ namespace CommonLibraryTests
             File.WriteAllText(file2, "Content Two");
 
             var filesToCopy = new List<string> { file1, file2 };
-            var result = FileHandleCopy.CopyFiles(filesToCopy, subPathOne, true);
+            var result = FileHandleCopy.CopyFiles(filesToCopy, subPathOne);
 
             Assert.IsTrue(result);
 
@@ -761,7 +762,7 @@ namespace CommonLibraryTests
             HelperMethods.CreateFile(file);
 
             file = Path.Combine(path, "compressed.zip");
-            var check = await FileHandleCompress.SaveZip(file, lst, true);
+            var check = await FileHandleCompress.SaveZip(file, lst);
             Assert.IsTrue(check, "Could not compress");
 
             var files = FileHandleSearch.GetAllFiles(path, false);
@@ -773,7 +774,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, files.Count, "Compressed File created and or files were not deleted");
 
-            check = await FileHandleCompress.OpenZip(file, path, true);
+            check = await FileHandleCompress.OpenZip(file, path);
             Assert.IsTrue(check, "Could not decompress");
         }
 

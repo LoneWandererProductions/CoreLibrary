@@ -43,7 +43,7 @@ namespace FileHandler
         private Dictionary<string, string[]> Table { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FilePathStruct"/> struct.
+        ///     Initializes a new instance of the <see cref="FilePathStruct" /> struct.
         /// </summary>
         /// <param name="path">The full path of the file.</param>
         public FilePathStruct(string path)
@@ -56,19 +56,25 @@ namespace FileHandler
 
         /// <inheritdoc />
         /// <summary>
-        ///     Compares this instance with another <see cref="FilePathStruct"/> for sorting purposes.
+        ///     Compares this instance with another <see cref="FilePathStruct" /> for sorting purposes.
         /// </summary>
         /// <param name="other">The other instance to compare to.</param>
         /// <returns>
-        ///     A negative number if this instance precedes <paramref name="other"/>, 
-        ///     zero if they are equal, 
-        ///     and a positive number if this instance follows <paramref name="other"/>.
+        ///     A negative number if this instance precedes <paramref name="other" />,
+        ///     zero if they are equal,
+        ///     and a positive number if this instance follows <paramref name="other" />.
         /// </returns>
         public int CompareTo(FilePathStruct other)
         {
-            if (File.Equals(other.File, StringComparison.OrdinalIgnoreCase)) return 0;
+            if (File.Equals(other.File, StringComparison.OrdinalIgnoreCase))
+            {
+                return 0;
+            }
 
-            if (string.IsNullOrEmpty(File) || string.IsNullOrEmpty(other.File)) return 0;
+            if (string.IsNullOrEmpty(File) || string.IsNullOrEmpty(other.File))
+            {
+                return 0;
+            }
 
             if (!Table.TryGetValue(File, out var xBase))
             {
@@ -83,8 +89,12 @@ namespace FileHandler
             }
 
             for (var i = 0; i < xBase.Length && i < yBase.Length; i++)
+            {
                 if (xBase[i] != yBase[i])
+                {
                     return PartCompare(xBase[i], yBase[i]);
+                }
+            }
 
             return yBase.Length > xBase.Length ? 1 : -1;
         }
@@ -95,10 +105,14 @@ namespace FileHandler
         private static int PartCompare(string left, string right)
         {
             if (!int.TryParse(left, out var x))
+            {
                 return string.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+            }
 
             if (!int.TryParse(right, out var y))
+            {
                 return string.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+            }
 
             return x.CompareTo(y);
         }

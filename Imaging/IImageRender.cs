@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -459,7 +460,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif</returns>
         /// <exception cref="IOException">Could not find the File</exception>
-        List<Bitmap> SplitGif(string path);
+        Task<List<Bitmap>> SplitGif(string path);
 
         /// <summary>
         ///     Loads the GIF.
@@ -467,7 +468,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif as ImageSource</returns>
         /// <exception cref="IOException">Could not find the File</exception>
-        List<ImageSource> LoadGif(string path);
+        Task<List<ImageSource>> LoadGifAsync(string path);
 
         /// <summary>
         ///     Creates a gif.

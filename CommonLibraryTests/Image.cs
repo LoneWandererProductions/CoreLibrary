@@ -508,7 +508,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compares the duplicate images.
+        ///     Compares the duplicate images.
         /// </summary>
         [TestMethod]
         public void CompareDuplicateImages()
@@ -532,7 +532,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compares the similar images.
+        ///     Compares the similar images.
         /// </summary>
         [TestMethod]
         public void CompareSimilarImages()
@@ -559,7 +559,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Checks the image content details.
+        ///     Checks the image content details.
         /// </summary>
         [TestMethod]
         public void CheckImageContentDetails()
@@ -582,7 +582,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Checks the image list details.
+        ///     Checks the image list details.
         /// </summary>
         [TestMethod]
         public void CheckImageListDetails()
