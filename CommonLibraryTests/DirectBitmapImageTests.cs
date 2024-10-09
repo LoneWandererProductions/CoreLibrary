@@ -122,8 +122,36 @@ namespace CommonLibraryTests
             };
             _bitmapImage.ApplyColorMatrix(matrix);
             // Assert that colors were transformed correctly to grayscale
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 76 << 16 | 76 << 8 | 76)), _bitmapImage.Bits[0]); // Grayscale for Red
+
+            //Assert.AreEqual(unchecked((uint)(255 << 24 | 77 << 16 | 151 << 8 | 29)), _bitmapImage.Bits[0]);
             //Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
+        }
+
+        /// <summary>
+        /// Applies the color of the color matrix valid matrix transforms.
+        /// </summary>
+        [TestMethod]
+        public void ApplyColorMatrix_ValidMatrix_TransformsColor()
+        {
+            // Set initial pixel colors
+            var initialPixels = new List<PixelData>
+            {
+                new PixelData { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
+            };
+            _bitmapImage.SetPixels(initialPixels);
+            // Define a color matrix to convert colors to grayscale
+            var matrix = new float[][]
+            {
+                new float[] { 0.3f, 0.3f, 0.3f, 0, 0 },
+                new float[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+                new float[] { 0.11f, 0.11f, 0.11f, 0, 0 },
+                new float[] { 0, 0, 0, 1, 0 },
+                new float[] { 0, 0, 0, 0, 0 }
+            };
+            _bitmapImage.ApplyColorMatrix(matrix);
+            // Assert that colors were transformed correctly to grayscale
+
+            Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
         }
 
         [TestMethod]
