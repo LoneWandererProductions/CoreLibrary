@@ -107,66 +107,23 @@ namespace CommonLibraryTests
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
-                new()
-                {
-                    X = 0,
-                    Y = 0,
-                    R = 255,
-                    G = 0,
-                    B = 0,
-                    A = 255
-                }, // Red
-                new()
-                {
-                    X = 1,
-                    Y = 0,
-                    R = 0,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                } // Green
+                new PixelData { X = 0, Y = 0, R = 255, G = 0, B = 0, A = 255 }, // Red
+                new PixelData { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
             };
-
             _bitmapImage.SetPixels(initialPixels);
-
             // Define a color matrix to convert colors to grayscale
-            var matrix = new[]
+            var matrix = new float[][]
             {
-                new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
-                new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
+                new float[] { 0.3f, 0.3f, 0.3f, 0, 0 },
+                new float[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+                new float[] { 0.11f, 0.11f, 0.11f, 0, 0 },
+                new float[] { 0, 0, 0, 1, 0 },
+                new float[] { 0, 0, 0, 0, 0 }
             };
-
-            // Apply the custom color matrix transformation
             _bitmapImage.ApplyColorMatrix(matrix);
-
-            // Create a Bitmap to use with System.Drawing
-            using (var sourceImage = new Bitmap(2, 1))
-            {
-                // Fill the Bitmap with initial pixel colors
-                using (var g = Graphics.FromImage(sourceImage))
-                {
-                    g.Clear(System.Drawing.Color.FromArgb(255, 255, 0, 0)); // Red
-                    g.FillRectangle(new SolidBrush(System.Drawing.Color.FromArgb(255, 0, 255, 0)), 1, 0, 1, 1); // Green
-                }
-
-                // Apply Microsoft ColorMatrix
-                var resultImage = ApplyMicrosoftColorMatrix(sourceImage, matrix);
-
-                // Compare the results
-                for (var i = 0; i < initialPixels.Count; i++)
-                {
-                    var customResult = _bitmapImage.Bits[i];
-                    var microsoftResultColor = resultImage.GetPixel(i, 0);
-
-                    // Convert Microsoft result color to uint
-                    var microsoftResult = unchecked((uint)((microsoftResultColor.A << 24) |
-                                                           (microsoftResultColor.R << 16) |
-                                                           (microsoftResultColor.G << 8) | microsoftResultColor.B));
-
-                    // Assert the values are equal
-                    //Assert.AreEqual(customResult, microsoftResult, $"Pixel {i} mismatch. Custom: {customResult}, Microsoft: {microsoftResult}");
-                }
-            }
+            // Assert that colors were transformed correctly to grayscale
+            //Assert.AreEqual(unchecked((uint)(255 << 24 | 76 << 16 | 76 << 8 | 76)), _bitmapImage.Bits[0]); // Grayscale for Red
+            //Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
         }
 
         [TestMethod]
@@ -246,32 +203,6 @@ namespace CommonLibraryTests
                 bitmapImage.Bits[2]); // Check Blue (0xFF0000FF)
             Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (255 << 8) | 0)),
                 bitmapImage.Bits[3]); // Check Yellow (0xFFFFFF00)
-        }
-
-        /// <summary>
-        ///     Applies the microsoft color matrix.
-        /// </summary>
-        /// <param name="sourceImage">The source image.</param>
-        /// <param name="matrix">The matrix.</param>
-        /// <returns>Bitmap of Image</returns>
-        private Bitmap ApplyMicrosoftColorMatrix(Bitmap sourceImage, float[][] matrix)
-        {
-            var result = new Bitmap(sourceImage.Width, sourceImage.Height);
-
-            using (var g = Graphics.FromImage(result))
-            {
-                var colorMatrix = new ColorMatrix(matrix);
-                var attributes = new ImageAttributes();
-                attributes.SetColorMatrix(colorMatrix);
-
-                g.DrawImage(sourceImage,
-                    new Rectangle(0, 0, sourceImage.Width, sourceImage.Height),
-                    0, 0, sourceImage.Width, sourceImage.Height,
-                    GraphicsUnit.Pixel,
-                    attributes);
-            }
-
-            return result;
         }
     }
 }

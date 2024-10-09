@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using DataFormatter;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,7 +48,7 @@ namespace CommonLibraryTests
         ///     Check if the whole cvs stuff works.
         /// </summary>
         [TestMethod]
-        public void Cvs()
+        public async Task CvsAsync()
         {
             var lst = new List<List<string>>();
 
@@ -73,7 +74,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual("9", lst[2][9], "Right Element");
 
-            _ = FileHandleDelete.DeleteFile(_testFilePath);
+            _ = await FileHandleDelete.DeleteFile(_testFilePath);
         }
 
         /// <summary>

@@ -226,11 +226,11 @@ namespace Imaging
                 // Log color after bias addition
                 Debug.WriteLine($"After adding bias: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
-                // Clamp the values to [0, 255]
-                result[0] = Math.Clamp(result[0], 0, 255);
-                result[1] = Math.Clamp(result[1], 0, 255);
-                result[2] = Math.Clamp(result[2], 0, 255);
-                result[3] = Math.Clamp(result[3], 0, 255);
+                // Clamp the values to [0, 255] and round down
+                result[0] = (int)Math.Ceiling(Math.Clamp(result[0], 0, 255));
+                result[1] = (int)Math.Ceiling(Math.Clamp(result[1], 0, 255));
+                result[2] = (int)Math.Ceiling(Math.Clamp(result[2], 0, 255));
+                result[3] = (int)Math.Ceiling(Math.Clamp(result[3], 0, 255));
 
                 // Log clamped values
                 Debug.WriteLine($"Clamped values: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
