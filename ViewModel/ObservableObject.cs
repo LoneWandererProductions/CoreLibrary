@@ -8,7 +8,6 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace ViewModel
 {
@@ -30,18 +29,7 @@ namespace ViewModel
         /// <param name="propertyName">The name of the property that changed.</param>
         protected void RaisePropertyChangedEvent([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                if (Application.Current.Dispatcher.CheckAccess())
-                {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                }
-                else
-                {
-                    Application.Current.Dispatcher.Invoke(() => RaisePropertyChangedEvent(propertyName));
-                }
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
