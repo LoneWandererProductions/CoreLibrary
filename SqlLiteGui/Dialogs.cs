@@ -16,14 +16,16 @@ namespace SQLiteGui
     internal static class Dialogs
     {
         /// <summary>
-        ///     Looks up a file, optional Ask if we want to overwrite
-        ///     Returns the FilePath
-        ///     No Start Folder
+        /// Looks up a file, optional Ask if we want to overwrite
+        /// Returns the FilePath
+        /// No Start Folder
         /// </summary>
-        /// <param name="appendage"></param>
-        /// <param name="loader">If True we search a file if not we just ask if we want to overwrite a file</param>
-        /// <returns>String of target File</returns>
-        public static string HandleFile(string appendage, bool loader)
+        /// <param name="appendage">The appendage.</param>
+        /// <param name="loader">If True we search a file if not we just ask if we want to overwrite a file, optional.</param>
+        /// <returns>
+        /// String of target File
+        /// </returns>
+        public static string HandleFile(string appendage, bool loader = true)
         {
             var root = string.Empty;
 

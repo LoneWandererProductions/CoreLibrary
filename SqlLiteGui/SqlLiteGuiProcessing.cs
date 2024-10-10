@@ -453,5 +453,24 @@ namespace SQLiteGui
         {
             _dbInfo.SetData(e);
         }
+
+        /// <summary>
+        /// Loads the CSV.
+        /// </summary>
+        /// <param name="csvData">The CSV data.</param>
+        /// <returns>Success Status.</returns>
+        internal static bool LoadCsv(List<List<string>> csvData)
+        {
+            return _db.LoadCsv(Register.TableAlias, csvData, true);
+        }
+
+        /// <summary>
+        /// Exports the CVS.
+        /// </summary>
+        /// <returns>The table Data in our csv format</returns>
+        internal static List<List<string>> ExportCvs()
+        {
+            return _db.ExportCvs(Register.TableAlias,true);
+        }
     }
 }

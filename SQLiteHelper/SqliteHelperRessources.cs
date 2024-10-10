@@ -39,6 +39,11 @@ namespace SqliteHelper
         internal const string StandardName = "SqlLiteDB.db";
 
         /// <summary>
+        /// The column name (const). Value: "Column".
+        /// </summary>
+        internal const string ColumnName = "Column";
+
+        /// <summary>
         ///     The bracket open (const). Value: " (".
         /// </summary>
         internal const string BracketOpen = " ( ";

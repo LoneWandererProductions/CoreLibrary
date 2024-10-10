@@ -641,6 +641,11 @@ namespace SqliteHelper
         public bool LoadCsv(string tableAlias, DictionaryTableColumns tableHeaders, List<List<string>> csv,
             bool headers)
         {
+            if (csv == null || csv.Count == 0)
+            {
+                return false;
+            }
+
             var check = _execute.CreateTable(tableAlias, tableHeaders);
             if (!check)
             {
@@ -648,6 +653,69 @@ namespace SqliteHelper
             }
 
             var table = SqliteHelper.LoadCsv(csv, headers);
+            return _execute.InsertMultipleRow(tableAlias, table, true);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Loads the CSV.
+        /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
+        /// <param name="csv">The CSV.</param>
+        /// <param name="headers">if set to <c>true</c> [headers].</param>
+        /// <returns>
+        ///     Loads the csv File into an existing Database
+        /// </returns>
+        public bool LoadCsv(string tableAlias, List<List<string>> csv, bool headers)
+        {
+            if (csv == null || csv.Count == 0)
+            {
+                return false;
+            }
+
+            // If 'headers' is true, the first row of the CSV will be treated as headers
+            var tableHeaders = new DictionaryTableColumns();
+
+            if (headers)
+            {
+                var headerRow = csv[0];  // First row as headers
+                for (int i = 0; i < headerRow.Count; i++)
+                {
+                    var columnName = headerRow[i];
+                    tableHeaders.DColumns.Add(columnName, new TableColumns
+                    {
+                        DataType = SqLiteDataTypes.Text,  // Assuming TEXT as default data type
+                        Unique = false,  // Default value
+                        PrimaryKey = false,  // Default value
+                        NotNull = false,  // Default value
+                    });
+                }
+                csv.RemoveAt(0);  // Remove the header row from CSV data
+            }
+            else
+            {
+                // Handle case where headers are not included in the CSV (You may define default column names)
+                for (int i = 0; i < csv[0].Count; i++)
+                {
+                    tableHeaders.DColumns.Add($"{SqliteHelperResources.ColumnName}{i + 1}", new TableColumns
+                    {
+                        DataType = SqLiteDataTypes.Text,  // Default data type
+                        Unique = false,  // Default value
+                        PrimaryKey = false,  // Default value
+                        NotNull = false,  // Default value
+                    });
+                }
+            }
+
+            // Create the table using the inferred or provided headers
+            var check = _execute.CreateTable(tableAlias, tableHeaders);
+            if (!check)
+            {
+                return false;
+            }
+
+            // Load the CSV data into a DataTable (or equivalent structure)
+            var table = SqliteHelper.LoadCsv(csv, headers: false);  // Now 'headers' is false since we removed the first row if headers were used
             return _execute.InsertMultipleRow(tableAlias, table, true);
         }
 

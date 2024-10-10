@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Color = System.Windows.Media.Color;

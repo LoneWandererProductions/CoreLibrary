@@ -2,12 +2,11 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
  * FILE:        SQLiteGui/SQLiteGuiWindow.xaml.cs
- * PURPOSE:     SqlLite graphical Front-end
+ * PURPOSE:     SqlLite graphical Front-end, not yet complety cleared out into an View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System;
-using System.IO;
 using System.Windows;
 
 namespace SQLiteGui
@@ -28,73 +27,19 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Operations done, wen die Window is loaded
+        /// Handles the Loaded event of the SqLiteGuiWindow control.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void SqLiteGuiWindowLoaded(object sender, RoutedEventArgs e)
         {
+            // Subscribe to events for TableView and TableDetailView
             TableView.listBoxSelectionChanged += TableViewListBoxSelectionChanged;
-
-            TableView.refreshTable += RefreshTable;
             TableDetailView.RefreshTable += RefreshTable;
             TableView.refreshDatabase += RefreshDatabase;
 
-            //TODO improve
+            // Initialize your processing here if needed
             _ = new SqLiteGuiProcessing(DbInfo);
-        }
-
-        /// <summary>
-        ///     Create a new Database
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void NewDatabase_Click(object sender, RoutedEventArgs e)
-        {
-            var path = Dialogs.HandleFile(SqLiteGuiResource.DbFilter, false);
-            //nothing was selected
-            if (path.Length == 0)
-            {
-                return;
-            }
-
-            var location = Directory.GetParent(path)?.ToString();
-            var dbName = Path.GetFileName(path);
-
-            //Clean our Register
-            Register.StartNew();
-            SqLiteGuiProcessing.CreateDatabase(location, dbName);
-        }
-
-        /// <summary>
-        ///     Open the Database
-        /// </summary>
-        /// <param name="sender">Object</param>
-        /// <param name="e">Type</param>
-        private void OpenDatabase_Click(object sender, RoutedEventArgs e)
-        {
-            Register.ActiveDb = Dialogs.HandleFile(SqLiteGuiResource.DbFilter, true);
-            LoadDatabase();
-        }
-
-        /// <summary>
-        ///     Display the logs of the Current Database
-        /// </summary>
-        /// <param name="sender">Object</param>
-        /// <param name="e">Type</param>
-        private void ViewLogs_Click(object sender, RoutedEventArgs e)
-        {
-            SqLiteGuiProcessing.ShowLogs();
-        }
-
-        /// <summary>
-        ///     Close Windows
-        /// </summary>
-        /// <param name="sender">Object</param>
-        /// <param name="e">Type</param>
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         /// <summary>
@@ -104,7 +49,7 @@ namespace SQLiteGui
         /// <param name="e">Type</param>
         private void TableViewListBoxSelectionChanged(object sender, TableDetails e)
         {
-            //Load the table
+            // Load the table
             SqLiteGuiProcessing.SelectTable(e.TableAlias);
             TableDetailView.SetData();
         }
@@ -116,7 +61,7 @@ namespace SQLiteGui
         /// <param name="e">Type</param>
         private void RefreshTable(object sender, EventArgs e)
         {
-            //Refresh the table
+            // Refresh the table
             SqLiteGuiProcessing.SelectTable(Register.TableAlias);
             TableDetailView.SetData();
         }
@@ -129,24 +74,24 @@ namespace SQLiteGui
         private void RefreshDatabase(object sender, EventArgs e)
         {
             SqLiteGuiProcessing.OpenDatabase(Register.ActiveDb);
-            //Refresh Data table
+            // Refresh Data table
             LoadDatabase();
-            //Clean Table Overview
+            // Clean Table Overview
             TableView.SetData();
-            //Clean Detail View
+            // Clean Detail View
             TableDetailView.SetData();
         }
 
         /// <summary>
-        ///     Load/Reload Database, doesn't work quite right with drop Table
+        ///     Load/Reload Database
         /// </summary>
         private void LoadDatabase()
         {
-            //Open our Database
+            // Open our Database
             SqLiteGuiProcessing.OpenDatabase(Register.ActiveDb);
-            //Clean our Register
+            // Clean our Register
             Register.StartNew();
-            //Load into ViewModel
+            // Load into ViewModel
             TableView.SetData();
         }
     }
