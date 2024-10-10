@@ -101,5 +101,44 @@ namespace Imaging
 
             return bitmap;
         }
+
+        public static Dictionary<Color, List<int>> CompressCif(Dictionary<Color, List<int>> cif1, Dictionary<Color, List<int>> cif2, double threshold)
+        {
+            if (!AreColorCountsSimilar(GetColorCount(cif1), GetColorCount(cif2), threshold))
+            {
+                return cif2; // No compression possible, return the second CIF as is
+            }
+
+            var compressedCif = new Dictionary<Color, List<int>>();
+
+            // Store the base CIF data
+            foreach (var entry in cif1)
+            {
+                compressedCif[entry.Key] = new List<int>(entry.Value); // Copy existing pixels
+            }
+
+            // Apply delta logic for similar colors
+            foreach (var entry in cif2)
+            {
+                if (!compressedCif.ContainsKey(entry.Key))
+                {
+                    compressedCif[entry.Key] = new List<int>();
+                }
+                else
+                {
+                    // Only add new pixels if the color already exists
+                    compressedCif[entry.Key].AddRange(entry.Value);
+                }
+            }
+
+            return compressedCif;
+        }
+
+        // Helper method to get color counts
+        private static Dictionary<Color, int> GetColorCount(Dictionary<Color, List<int>> cif)
+        {
+            return cif.ToDictionary(entry => entry.Key, entry => entry.Value.Count);
+        }
+
     }
 }
