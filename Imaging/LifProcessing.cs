@@ -102,7 +102,8 @@ namespace Imaging
             return bitmap;
         }
 
-        public static Dictionary<Color, List<int>> CompressCif(Dictionary<Color, List<int>> cif1, Dictionary<Color, List<int>> cif2, double threshold)
+        public static Dictionary<Color, List<int>> CompressCif(Dictionary<Color, List<int>> cif1,
+            Dictionary<Color, List<int>> cif2, double threshold)
         {
             if (!AreColorCountsSimilar(GetColorCount(cif1), GetColorCount(cif2), threshold))
             {
@@ -139,6 +140,5 @@ namespace Imaging
         {
             return cif.ToDictionary(entry => entry.Key, entry => entry.Value.Count);
         }
-
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Media;
 using Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Color = System.Windows.Media.Color;
 
 namespace CommonLibraryTests
 {
@@ -105,18 +105,31 @@ namespace CommonLibraryTests
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
-                new PixelData { X = 0, Y = 0, R = 255, G = 0, B = 0, A = 255 }, // Red
-                new PixelData { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
+                new()
+                {
+                    X = 0,
+                    Y = 0,
+                    R = 255,
+                    G = 0,
+                    B = 0,
+                    A = 255
+                }, // Red
+                new()
+                {
+                    X = 1,
+                    Y = 1,
+                    R = 0,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                } // Green
             };
             _bitmapImage.SetPixels(initialPixels);
             // Define a color matrix to convert colors to grayscale
-            var matrix = new float[][]
+            var matrix = new[]
             {
-                new float[] { 0.3f, 0.3f, 0.3f, 0, 0 },
-                new float[] { 0.59f, 0.59f, 0.59f, 0, 0 },
-                new float[] { 0.11f, 0.11f, 0.11f, 0, 0 },
-                new float[] { 0, 0, 0, 1, 0 },
-                new float[] { 0, 0, 0, 0, 0 }
+                new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+                new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
             };
             _bitmapImage.ApplyColorMatrix(matrix);
             // Assert that colors were transformed correctly to grayscale
@@ -126,7 +139,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the color of the color matrix valid matrix transforms.
+        ///     Applies the color of the color matrix valid matrix transforms.
         /// </summary>
         [TestMethod]
         public void ApplyColorMatrix_ValidMatrix_TransformsColor()
@@ -134,17 +147,22 @@ namespace CommonLibraryTests
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
-                new PixelData { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
+                new()
+                {
+                    X = 1,
+                    Y = 1,
+                    R = 0,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                } // Green
             };
             _bitmapImage.SetPixels(initialPixels);
             // Define a color matrix to convert colors to grayscale
-            var matrix = new float[][]
+            var matrix = new[]
             {
-                new float[] { 0.3f, 0.3f, 0.3f, 0, 0 },
-                new float[] { 0.59f, 0.59f, 0.59f, 0, 0 },
-                new float[] { 0.11f, 0.11f, 0.11f, 0, 0 },
-                new float[] { 0, 0, 0, 1, 0 },
-                new float[] { 0, 0, 0, 0, 0 }
+                new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+                new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
             };
             _bitmapImage.ApplyColorMatrix(matrix);
             // Assert that colors were transformed correctly to grayscale

@@ -368,7 +368,7 @@ namespace SqliteHelper
         bool LoadCsv(string tableAlias, DictionaryTableColumns tableHeaders, List<List<string>> csv, bool headers);
 
         /// <summary>
-        /// Loads the CSV.
+        ///     Loads the CSV.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <param name="csv">The CSV.</param>

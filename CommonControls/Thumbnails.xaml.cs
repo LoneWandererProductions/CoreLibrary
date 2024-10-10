@@ -111,10 +111,21 @@ namespace CommonControls
         /// </summary>
         private static bool _refresh = true;
 
+
+        /// <summary>
+        ///     The cancellation token source
+        /// </summary>
+        private CancellationTokenSource _cancellationTokenSource;
+
         /// <summary>
         ///     The current selected border
         /// </summary>
         private Border _currentSelectedBorder;
+
+        /// <summary>
+        ///     The disposed
+        /// </summary>
+        private bool _disposed;
 
         /// <summary>
         ///     The original height
@@ -135,17 +146,6 @@ namespace CommonControls
         ///     The selection
         /// </summary>
         private int _selection;
-
-
-        /// <summary>
-        /// The cancellation token source
-        /// </summary>
-        private CancellationTokenSource _cancellationTokenSource;
-
-        /// <summary>
-        /// The disposed
-        /// </summary>
-        private bool _disposed;
 
         /// <inheritdoc />
         /// <summary>
@@ -274,6 +274,15 @@ namespace CommonControls
         ///     The selection.
         /// </value>
         public List<int> Selection { get; private set; }
+
+        /// <summary>
+        ///     Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>
         ///     An Image was clicked <see cref="DelegateImage" />.
@@ -428,7 +437,10 @@ namespace CommonControls
             var tasks = new List<Task>();
             foreach (var (key, name) in pics)
             {
-                if (token.IsCancellationRequested) return;
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
 
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
@@ -460,7 +472,10 @@ namespace CommonControls
         private async Task LoadImageAsync(int key, string name, Panel exGrid)
         {
             var token = _cancellationTokenSource.Token;
-            if (token.IsCancellationRequested) return;
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             BitmapImage myBitmapCell = null;
 
@@ -586,7 +601,6 @@ namespace CommonControls
                         {
                             stream?.Dispose();
                         }
-
                     });
 
                     return bitmapImage;
@@ -761,22 +775,15 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the specified disposing.
+        ///     Disposes the specified disposing.
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> [disposing].</param>
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
             {
@@ -786,6 +793,7 @@ namespace CommonControls
                 {
                     image.Source = null; // Release image source
                 }
+
                 Thb.Children.Clear(); // Clear children from the UI element
             }
 
@@ -795,7 +803,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Finalizes this instance.
+        ///     Finalizes this instance.
         /// </summary>
         /// <returns></returns>
         ~Thumbnails()

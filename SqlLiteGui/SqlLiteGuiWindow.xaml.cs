@@ -27,10 +27,10 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Handles the Loaded event of the SqLiteGuiWindow control.
+        ///     Handles the Loaded event of the SqLiteGuiWindow control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void SqLiteGuiWindowLoaded(object sender, RoutedEventArgs e)
         {
             // Subscribe to events for TableView and TableDetailView

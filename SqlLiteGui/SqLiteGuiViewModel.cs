@@ -15,60 +15,12 @@ using ViewModel;
 namespace SQLiteGui
 {
     /// <summary>
-    /// View Model
+    ///     View Model
     /// </summary>
     public class SqLiteGuiViewModel
     {
         /// <summary>
-        /// Creates new databasecommand.
-        /// </summary>
-        /// <value>
-        /// The new database command.
-        /// </value>
-        public DelegateCommand<object> NewDatabaseCommand { get; }
-
-        /// <summary>
-        /// Gets the open database command.
-        /// </summary>
-        /// <value>
-        /// The open database command.
-        /// </value>
-        public DelegateCommand<object> OpenDatabaseCommand { get; }
-
-        /// <summary>
-        /// Gets the view logs command.
-        /// </summary>
-        /// <value>
-        /// The view logs command.
-        /// </value>
-        public DelegateCommand<object> ViewLogsCommand { get; }
-
-        /// <summary>
-        /// Gets the close command.
-        /// </summary>
-        /// <value>
-        /// The close command.
-        /// </value>
-        public DelegateCommand<object> CloseCommand { get; }
-
-        /// <summary>
-        /// Gets the import CSV command.
-        /// </summary>
-        /// <value>
-        /// The import CSV command.
-        /// </value>
-        public DelegateCommand<object> ImportCsvCommand { get; }
-
-        /// <summary>
-        /// Gets the export CSV command.
-        /// </summary>
-        /// <value>
-        /// The export CSV command.
-        /// </value>
-        public DelegateCommand<object> ExportCsvCommand { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqLiteGuiViewModel"/> class.
+        ///     Initializes a new instance of the <see cref="SqLiteGuiViewModel" /> class.
         /// </summary>
         public SqLiteGuiViewModel()
         {
@@ -81,13 +33,64 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Creates new database_click.
+        ///     Creates new databasecommand.
+        /// </summary>
+        /// <value>
+        ///     The new database command.
+        /// </value>
+        public DelegateCommand<object> NewDatabaseCommand { get; }
+
+        /// <summary>
+        ///     Gets the open database command.
+        /// </summary>
+        /// <value>
+        ///     The open database command.
+        /// </value>
+        public DelegateCommand<object> OpenDatabaseCommand { get; }
+
+        /// <summary>
+        ///     Gets the view logs command.
+        /// </summary>
+        /// <value>
+        ///     The view logs command.
+        /// </value>
+        public DelegateCommand<object> ViewLogsCommand { get; }
+
+        /// <summary>
+        ///     Gets the close command.
+        /// </summary>
+        /// <value>
+        ///     The close command.
+        /// </value>
+        public DelegateCommand<object> CloseCommand { get; }
+
+        /// <summary>
+        ///     Gets the import CSV command.
+        /// </summary>
+        /// <value>
+        ///     The import CSV command.
+        /// </value>
+        public DelegateCommand<object> ImportCsvCommand { get; }
+
+        /// <summary>
+        ///     Gets the export CSV command.
+        /// </summary>
+        /// <value>
+        ///     The export CSV command.
+        /// </value>
+        public DelegateCommand<object> ExportCsvCommand { get; }
+
+        /// <summary>
+        ///     Creates new database_click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void NewDatabaseClick(object parameter)
         {
             var path = Dialogs.HandleFile(SqLiteGuiResource.DbFilter, false);
-            if (path.Length == 0) return;
+            if (path.Length == 0)
+            {
+                return;
+            }
 
             var location = Directory.GetParent(path)?.ToString();
             var dbName = Path.GetFileName(path);
@@ -97,17 +100,17 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Opens the database click.
+        ///     Opens the database click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void OpenDatabaseClick(object parameter)
         {
-            Register.ActiveDb = Dialogs.HandleFile(SqLiteGuiResource.DbFilter, true);
+            Register.ActiveDb = Dialogs.HandleFile(SqLiteGuiResource.DbFilter);
             LoadDatabase();
         }
 
         /// <summary>
-        /// Views the logs click.
+        ///     Views the logs click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void ViewLogsClick(object parameter)
@@ -116,7 +119,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Closes the click.
+        ///     Closes the click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void CloseClick(object parameter)
@@ -125,13 +128,16 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Imports the CSV click.
+        ///     Imports the CSV click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void ImportCsvClick(object parameter)
         {
-            var csvFilePath = Dialogs.HandleFile("CSV files|*.csv", true);
-            if (string.IsNullOrWhiteSpace(csvFilePath)) return;
+            var csvFilePath = Dialogs.HandleFile("CSV files|*.csv");
+            if (string.IsNullOrWhiteSpace(csvFilePath))
+            {
+                return;
+            }
 
             try
             {
@@ -149,13 +155,16 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Exports the CSV click.
+        ///     Exports the CSV click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void ExportCsvClick(object parameter)
         {
             var savePath = Dialogs.HandleFile("CSV files|*.csv", false);
-            if (string.IsNullOrWhiteSpace(savePath)) return;
+            if (string.IsNullOrWhiteSpace(savePath))
+            {
+                return;
+            }
 
             try
             {
@@ -177,7 +186,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Loads the database.
+        ///     Loads the database.
         /// </summary>
         private void LoadDatabase()
         {

@@ -30,11 +30,6 @@ namespace SQLiteGui
         /// </summary>
         internal EventHandler refreshDatabase;
 
-        /// <summary>
-        ///     Element added,deleted,updated
-        /// </summary>
-        internal EventHandler refreshTable;
-
         /// <inheritdoc />
         /// <summary>
         ///     Initiate Table Overview
@@ -73,7 +68,7 @@ namespace SQLiteGui
             var check = SqLiteGuiProcessing.TruncateTable();
             if (check)
             {
-                refreshTable?.Invoke(this, EventArgs.Empty);
+                refreshDatabase?.Invoke(this, EventArgs.Empty);
             }
         }
 

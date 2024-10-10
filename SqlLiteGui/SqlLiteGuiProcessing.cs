@@ -455,7 +455,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Loads the CSV.
+        ///     Loads the CSV.
         /// </summary>
         /// <param name="csvData">The CSV data.</param>
         /// <returns>Success Status.</returns>
@@ -465,12 +465,12 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Exports the CVS.
+        ///     Exports the CVS.
         /// </summary>
         /// <returns>The table Data in our csv format</returns>
         internal static List<List<string>> ExportCvs()
         {
-            return _db.ExportCvs(Register.TableAlias,true);
+            return _db.ExportCvs(Register.TableAlias, true);
         }
     }
 }

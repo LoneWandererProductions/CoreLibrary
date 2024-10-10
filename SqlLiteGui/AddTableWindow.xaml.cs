@@ -86,10 +86,10 @@ namespace SQLiteGui
         /// <summary>
         ///     Our Table overview
         /// </summary>
-        public ObservableCollection<TableColumnsExtended> TableElements { get; set; }
+        public ObservableCollection<TableColumnsExtended> TableElements { get; }
 
         /// <summary>
-        ///     Gets the table infos.
+        ///     Gets the table info.
         /// </summary>
         internal static TableObject TableInfos { get; private set; }
 

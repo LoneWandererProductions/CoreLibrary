@@ -39,7 +39,7 @@ namespace SqliteHelper
         internal const string StandardName = "SqlLiteDB.db";
 
         /// <summary>
-        /// The column name (const). Value: "Column".
+        ///     The column name (const). Value: "Column".
         /// </summary>
         internal const string ColumnName = "Column";
 

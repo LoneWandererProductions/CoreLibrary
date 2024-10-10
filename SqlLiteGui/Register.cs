@@ -70,12 +70,12 @@ namespace SQLiteGui
         /// <summary>
         ///     Table Selected
         /// </summary>
-        /// <param name="tablealias">Name of the Table</param>
+        /// <param name="tableAlias">Name of the Table</param>
         /// <param name="uniqueIndex">Unique Index if it exists, else empty String</param>
-        internal static void SelectedTable(string tablealias, string uniqueIndex)
+        internal static void SelectedTable(string tableAlias, string uniqueIndex)
         {
             PrimaryKey = uniqueIndex;
-            TableAlias = tablealias;
+            TableAlias = tableAlias;
         }
 
         /// <summary>

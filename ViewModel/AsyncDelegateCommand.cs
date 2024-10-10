@@ -21,14 +21,14 @@ namespace ViewModel
     public sealed class AsyncDelegateCommand<T> : ICommand
     {
         /// <summary>
-        /// The action to execute.
-        /// </summary>
-        private readonly Func<T, Task> _execute;
-
-        /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
         private readonly Predicate<T> _canExecute;
+
+        /// <summary>
+        ///     The action to execute.
+        /// </summary>
+        private readonly Func<T, Task> _execute;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncDelegateCommand{T}" /> class.

@@ -658,7 +658,7 @@ namespace SqliteHelper
 
         /// <inheritdoc />
         /// <summary>
-        /// Loads the CSV.
+        ///     Loads the CSV.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <param name="csv">The CSV.</param>
@@ -678,31 +678,31 @@ namespace SqliteHelper
 
             if (headers)
             {
-                var headerRow = csv[0];  // First row as headers
-                for (int i = 0; i < headerRow.Count; i++)
+                var headerRow = csv[0]; // First row as headers
+                foreach (var columnName in headerRow)
                 {
-                    var columnName = headerRow[i];
                     tableHeaders.DColumns.Add(columnName, new TableColumns
                     {
-                        DataType = SqLiteDataTypes.Text,  // Assuming TEXT as default data type
-                        Unique = false,  // Default value
-                        PrimaryKey = false,  // Default value
-                        NotNull = false,  // Default value
+                        DataType = SqLiteDataTypes.Text, // Assuming TEXT as default data type
+                        Unique = false, // Default value
+                        PrimaryKey = false, // Default value
+                        NotNull = false // Default value
                     });
                 }
-                csv.RemoveAt(0);  // Remove the header row from CSV data
+
+                csv.RemoveAt(0); // Remove the header row from CSV data
             }
             else
             {
                 // Handle case where headers are not included in the CSV (You may define default column names)
-                for (int i = 0; i < csv[0].Count; i++)
+                for (var i = 0; i < csv[0].Count; i++)
                 {
                     tableHeaders.DColumns.Add($"{SqliteHelperResources.ColumnName}{i + 1}", new TableColumns
                     {
-                        DataType = SqLiteDataTypes.Text,  // Default data type
-                        Unique = false,  // Default value
-                        PrimaryKey = false,  // Default value
-                        NotNull = false,  // Default value
+                        DataType = SqLiteDataTypes.Text, // Default data type
+                        Unique = false, // Default value
+                        PrimaryKey = false, // Default value
+                        NotNull = false // Default value
                     });
                 }
             }
@@ -715,7 +715,8 @@ namespace SqliteHelper
             }
 
             // Load the CSV data into a DataTable (or equivalent structure)
-            var table = SqliteHelper.LoadCsv(csv, headers: false);  // Now 'headers' is false since we removed the first row if headers were used
+            var table = SqliteHelper.LoadCsv(csv,
+                false); // Now 'headers' is false since we removed the first row if headers were used
             return _execute.InsertMultipleRow(tableAlias, table, true);
         }
 
