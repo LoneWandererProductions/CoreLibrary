@@ -160,6 +160,53 @@ namespace Imaging
             }
         }
 
+
+        //private async Task InitializeAsync()
+        //{
+        //    if (!File.Exists(GifSource))
+        //    {
+        //        return;  // Log or show an error if needed
+        //    }
+
+        //    try
+        //    {
+        //        // Run both operations in parallel
+        //        var infoTask = Task.Run(() => ImageGifHandler.GetImageInfo(GifSource));
+        //        var imagesTask = Task.Run(() => ImageGifHandler.LoadGif(GifSource));
+
+        //        // Await the tasks and get the results
+        //        var info = await infoTask;
+        //        _imageList = await imagesTask;
+
+        //        // Check if the GIF is animated
+        //        if (info is not { IsAnimated: true })
+        //        {
+        //            return;
+        //        }
+
+        //        // Set the source to the first frame
+        //        Source = _imageList[0];
+
+        //        // Calculate animation timing
+        //        var time = Math.Max(1, info.Frames / 10);
+        //        _animation = new Int32Animation(0, info.Frames - 1,
+        //            new Duration(new TimeSpan(0, 0, time)))
+        //        { RepeatBehavior = RepeatBehavior.Forever };
+
+        //        _isInitialized = true;
+
+        //        if (AutoStart)
+        //        {
+        //            StartAnimation();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Trace.Write(ex);
+        //    }
+        //}
+
+
         /// <summary>
         ///     Visibilities the property changed.
         /// </summary>

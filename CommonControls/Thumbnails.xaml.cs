@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,7 +37,7 @@ namespace CommonControls
     /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     /// <inheritdoc cref="Window" />
-    public sealed partial class Thumbnails
+    public sealed partial class Thumbnails : IDisposable
     {
         /// <summary>
         ///     The selection change delegate.
@@ -134,6 +135,17 @@ namespace CommonControls
         ///     The selection
         /// </summary>
         private int _selection;
+
+
+        /// <summary>
+        /// The cancellation token source
+        /// </summary>
+        private CancellationTokenSource _cancellationTokenSource;
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
 
         /// <inheritdoc />
         /// <summary>
@@ -359,6 +371,9 @@ namespace CommonControls
                 return;
             }
 
+            _cancellationTokenSource = new CancellationTokenSource();
+            var token = _cancellationTokenSource.Token;
+
             var timer = new Stopwatch();
             timer.Start();
 
@@ -413,10 +428,12 @@ namespace CommonControls
             var tasks = new List<Task>();
             foreach (var (key, name) in pics)
             {
+                if (token.IsCancellationRequested) return;
+
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count >= 10)
+                if (tasks.Count >= 4)
                 {
                     await Task.WhenAll(tasks);
                     tasks.Clear();
@@ -442,6 +459,9 @@ namespace CommonControls
         /// <returns>Load all images async</returns>
         private async Task LoadImageAsync(int key, string name, Panel exGrid)
         {
+            var token = _cancellationTokenSource.Token;
+            if (token.IsCancellationRequested) return;
+
             BitmapImage myBitmapCell = null;
 
             // Create the image placeholder
@@ -545,22 +565,28 @@ namespace CommonControls
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        FileStream stream = null;
                         try
                         {
                             bitmapImage = new BitmapImage();
-                            using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                            stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                             bitmapImage.BeginInit();
                             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                             bitmapImage.DecodePixelWidth = width;
                             bitmapImage.DecodePixelHeight = height;
                             bitmapImage.StreamSource = stream;
                             bitmapImage.EndInit();
-                            bitmapImage.Freeze(); // Make it cross-thread safe
+                            bitmapImage.Freeze();
                         }
                         catch (Exception ex)
                         {
                             Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
                         }
+                        finally
+                        {
+                            stream?.Dispose();
+                        }
+
                     });
 
                     return bitmapImage;
@@ -732,6 +758,49 @@ namespace CommonControls
         private void OnImageThumbClicked(ImageEventArgs args)
         {
             ImageClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the specified disposing.
+        /// </summary>
+        /// <param name="disposing">if set to <c>true</c> [disposing].</param>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                // Dispose managed resources
+                // e.g., unsubscribe from events, dispose of Image objects, etc.
+                foreach (var image in Thb.Children.OfType<Image>())
+                {
+                    image.Source = null; // Release image source
+                }
+                Thb.Children.Clear(); // Clear children from the UI element
+            }
+
+            // Dispose unmanaged resources if any...
+
+            _disposed = true;
+        }
+
+        /// <summary>
+        /// Finalizes this instance.
+        /// </summary>
+        /// <returns></returns>
+        ~Thumbnails()
+        {
+            Dispose(false);
         }
     }
 

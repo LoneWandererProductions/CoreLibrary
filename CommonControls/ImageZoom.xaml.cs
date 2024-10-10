@@ -24,7 +24,7 @@ namespace CommonControls
     /// <summary>
     ///     ImageZoom Image
     /// </summary>
-    public sealed partial class ImageZoom
+    public sealed partial class ImageZoom : IDisposable
     {
         /// <summary>
         ///     Delegate for Image Frame
@@ -87,6 +87,16 @@ namespace CommonControls
         ///     The mouse down position
         /// </summary>
         private Point _startPoint;
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
+        /// The lock
+        /// </summary>
+        private readonly object _lock = new object();
 
         /// <inheritdoc />
         /// <summary>
@@ -212,7 +222,12 @@ namespace CommonControls
             BtmImage.GifSource = ImageGifPath;
         }
 
-        // Event handler for when the GIF has finished loading
+        /// <summary>
+        /// Handles the ImageLoaded event of the BtmImage control.
+        /// Event handler for when the GIF has finished loading
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BtmImage_ImageLoaded(object sender, EventArgs e)
         {
             // Unsubscribe to prevent memory leaks
@@ -447,20 +462,87 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            //TODO add a Lock here for the Image change
-
-            if (e.Delta > 0)
+            lock (_lock)
             {
-                Scale.ScaleX *= 1.1;
-                Scale.ScaleY *= 1.1;
-            }
-            else
-            {
-                Scale.ScaleX /= 1.1;
-                Scale.ScaleY /= 1.1;
-            }
+                if (e.Delta > 0)
+                {
+                    Scale.ScaleX *= 1.1;
+                    Scale.ScaleY *= 1.1;
+                }
+                else
+                {
+                    Scale.ScaleX /= 1.1;
+                    Scale.ScaleY /= 1.1;
+                }
 
-            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            }
+        }
+
+        /// <summary>
+        /// Implementation of IDisposable interface.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); // Prevent finalizer from running.
+        }
+
+        /// <summary>
+        ///     Clean up managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">Whether the method was called by Dispose or the finalizer.</param>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed) return; // Early exit if already disposed
+
+            lock (_lock) // Ensure thread-safety
+            {
+                if (_disposed) return; // Double-check in case Dispose was called by another thread
+
+                if (disposing)
+                {
+                    // Managed resource cleanup
+
+                    // Unsubscribe event handlers
+                    if (SelectedFrame != null)
+                    {
+                        foreach (var d in SelectedFrame.GetInvocationList())
+                            SelectedFrame -= (DelegateFrame)d;
+                    }
+
+                    if (SelectedPoint != null)
+                    {
+                        foreach (var d in SelectedPoint.GetInvocationList())
+                            SelectedPoint -= (DelegatePoint)d;
+                    }
+
+                    // Dispose image resources
+                    BtmImage?.StopAnimation();
+                    BtmImage.Source = null;
+                    BtmImage.GifSource = null;
+
+                    // Remove adorner
+                    var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                    adornerLayer?.Remove(_selectionAdorner);
+                    _selectionAdorner = null;
+
+                    // Release UI interaction resources
+                    MainCanvas.ReleaseMouseCapture();
+                }
+
+                // If there are unmanaged resources, clean them here
+
+                _disposed = true; // Mark as disposed
+            }
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ImageZoom"/> class.
+        /// </summary>
+        ~ImageZoom()
+        {
+            Dispose(false); // Finalizer calls Dispose(false)
         }
     }
 }
