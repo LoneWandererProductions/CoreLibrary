@@ -28,7 +28,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Name of the Last selected Table
         /// </summary>
-        internal static string TableAlias { get; private set; }
+        internal static string TableAlias { get; set; }
 
         /// <summary>
         ///     Table Details

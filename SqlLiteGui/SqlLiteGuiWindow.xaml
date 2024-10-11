@@ -8,7 +8,7 @@
     xmlns:vm="clr-namespace:SQLiteGui"
     x:Class="SQLiteGui.SqLiteGuiWindow"
     mc:Ignorable="d"
-    Title="SQLiteGuiWindow" Height="400" Width="500" Loaded="SqLiteGuiWindowLoaded">
+    Title="SQLiteGuiWindow" Height="400" Width="500">
 
     <Window.DataContext>
         <vm:SqLiteGuiViewModel />
@@ -46,11 +46,30 @@
             </MenuItem>
         </Menu>
 
-        <local:TableOverview x:Name="TableView" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2"
-                             VerticalAlignment="Stretch" />
-        <local:DataOverview x:Name="TableDetailView" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="2"
-                            VerticalAlignment="Stretch" />
-        <local:DbInfo x:Name="DbInfo" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch"
-                      Grid.Column="1" Grid.ColumnSpan="3" />
+        <!-- Table Overview Control -->
+        <local:TableOverview 
+            x:Name="TableView" 
+            Grid.Column="1" 
+            HorizontalAlignment="Stretch" 
+            Grid.Row="2" 
+            VerticalAlignment="Stretch" 
+            DataContext="{Binding TableOverviewViewModel}" />
+
+        <!-- Data Overview Control -->
+        <local:DataOverview 
+            x:Name="TableDetailView" 
+            Grid.Column="3" 
+            HorizontalAlignment="Stretch" 
+            Grid.Row="2" 
+            VerticalAlignment="Stretch" />
+
+        <!-- Database Info Control -->
+        <local:DbInfo 
+            x:Name="DbInfo" 
+            HorizontalAlignment="Stretch" 
+            Grid.Row="4" 
+            VerticalAlignment="Stretch" 
+            Grid.Column="1" 
+            Grid.ColumnSpan="3" />
     </Grid>
 </Window>

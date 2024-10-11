@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -267,14 +268,36 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Delete Table Content
+        /// Truncates the table.
         /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool TruncateTable()
+        internal static bool TruncateTable(string tableAlias)
         {
+            Register.TableAlias = tableAlias;
+
             if (Register.TableAlias.Length != 0)
             {
-                return _db.TruncateTable(Register.TableAlias);
+                return _db.TruncateTable(tableAlias);
+            }
+
+            _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
+            return false;
+        }
+
+
+        /// <summary>
+        /// Drops the table.
+        /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
+        /// <returns>Success Status</returns>
+        internal static bool DropTable(string tableAlias)
+        {
+            Register.TableAlias = tableAlias;
+
+            if (Register.TableAlias.Length != 0)
+            {
+                return _db.DropTable(tableAlias);
             }
 
             _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
@@ -282,26 +305,14 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Delete Table
+        /// Copies the table.
         /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool DropTable()
+        internal static bool CopyTable(string tableAlias)
         {
-            if (Register.TableAlias.Length != 0)
-            {
-                return _db.DropTable(Register.TableAlias);
-            }
+            Register.TableAlias = tableAlias;
 
-            _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
-            return false;
-        }
-
-        /// <summary>
-        ///     Copy Table
-        /// </summary>
-        /// <returns>Success Status</returns>
-        internal static bool CopyTable()
-        {
             var inputwin = new InputBinaryWindow
             (
                 SQLiteGuiStringResource.InputWindowTitleCopy,
@@ -318,18 +329,21 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Rename Table
+        /// Renames the table.
         /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool RenameTable()
+        internal static bool RenameTable(string tableAlias)
         {
+            Register.TableAlias = tableAlias;
+
             var inputwin = new InputBinaryWindow
             (
                 SQLiteGuiStringResource.InputWindowTitleRename,
                 SQLiteGuiStringResource.InputLblDescriptionRename,
                 SQLiteGuiStringResource.InputLblFirstSourceRename,
                 SQLiteGuiStringResource.InputLblSecondTargetRename,
-                Register.TableAlias
+                tableAlias
             );
 
             _ = inputwin.ShowDialog();
@@ -366,11 +380,13 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Generate an Item we want to Update
+        /// Generate an Item we want to Update
         /// </summary>
-        /// <param name="tableSet"></param>
+        /// <param name="tableSet">The table set.</param>
         /// <param name="pragma">Table Info</param>
-        /// <returns>Item we will Replace</returns>
+        /// <returns>
+        /// Item we will Replace
+        /// </returns>
         private static IEnumerable<UpdateItem> GenerateUpdateItem(DataSet tableSet, DictionaryTableColumns pragma)
         {
             var lst = GenerateUpdateItem(pragma);

@@ -1,16 +1,13 @@
-﻿<!-- ReSharper disable once MemberCanBeInternal -->
-<UserControl x:Class="SQLiteGui.TableOverview"
+﻿<UserControl x:Class="SQLiteGui.TableOverview"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SQLiteGui"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300"
-             xmlns:local="clr-namespace:SQLiteGui">
-    <UserControl.DataContext>
-        <local:TableDetails />
-    </UserControl.DataContext>
+             d:DesignWidth="300">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
@@ -33,8 +30,11 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
+
+        <!-- DataGrid for Tables -->
         <DataGrid x:Name="Tables"
-                  SelectionChanged="DataGrd_SelectionChanged"
+                  ItemsSource="{Binding Tables}"
+                  SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
                   CanUserAddRows="False"
                   IsReadOnly="True"
                   Grid.Column="1"
@@ -43,14 +43,21 @@
                 <DataGridTextColumn Header="Table Name" Binding="{Binding TableAlias}" Width="*" />
             </DataGrid.Columns>
             <DataGrid.Resources>
-                <ContextMenu x:Key="RowMenu"
-                             DataContext="{Binding PlacementTarget.(local:TableOverview.DataContext),
-                    RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Truncate Table" Click="TableTruncate_Click" />
-                    <MenuItem Header="Drop Table" Click="TableDrop_Click" />
-                    <MenuItem Header="Copy Table" Click="TableCopy_Click" />
-                    <MenuItem Header="Rename Table" Click="TableRename_Click" />
-                    <MenuItem Header="Add Table" Click="AddTable_Click" />
+                <ContextMenu x:Key="RowMenu">
+                    <MenuItem Header="Truncate Table" 
+                              Command="{Binding TruncateTableCommand}" 
+                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                    <MenuItem Header="Drop Table" 
+                              Command="{Binding DropTableCommand}" 
+                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                    <MenuItem Header="Copy Table" 
+                              Command="{Binding CopyTableCommand}" 
+                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                    <MenuItem Header="Rename Table" 
+                              Command="{Binding RenameTableCommand}" 
+                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                    <MenuItem Header="Add Table" 
+                              Command="{Binding AddTableCommand}" />
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
@@ -59,35 +66,26 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <Button Content="Truncate"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.Row="1"
-                Grid.Column="3"
-                Click="TableTruncate_Click" />
-        <Button Content="Drop"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.Row="5"
-                Grid.Column="3"
-                Click="TableDrop_Click" />
-        <Button Content="Copy"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.Row="3"
-                Grid.Column="3"
-                Click="TableCopy_Click" />
-        <Button Content="Rename"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.Row="7"
-                Grid.Column="3"
-                Click="TableRename_Click" />
-        <Button Content="Add Table"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.Row="7"
-                Grid.Column="3"
-                Click="AddTable_Click" />
+
+        <!-- Buttons -->
+        <Button Content="Truncate" 
+                Command="{Binding TruncateTableCommand}" 
+                CommandParameter="{Binding SelectedTable}" 
+                Grid.Row="1" Grid.Column="3" />
+        <Button Content="Drop" 
+                Command="{Binding DropTableCommand}" 
+                CommandParameter="{Binding SelectedTable}" 
+                Grid.Row="5" Grid.Column="3" />
+        <Button Content="Copy" 
+                Command="{Binding CopyTableCommand}" 
+                CommandParameter="{Binding SelectedTable}" 
+                Grid.Row="3" Grid.Column="3" />
+        <Button Content="Rename" 
+                Command="{Binding RenameTableCommand}" 
+                CommandParameter="{Binding SelectedTable}" 
+                Grid.Row="7" Grid.Column="3" />
+        <Button Content="Add Table" 
+                Command="{Binding AddTableCommand}" 
+                Grid.Row="9" Grid.Column="3" />
     </Grid>
 </UserControl>
