@@ -8,25 +8,23 @@
 
 // ReSharper disable MemberCanBeInternal, no not possible for User-control
 
-using System;
-using System.Diagnostics;
-using System.Windows;
-
 namespace SQLiteGui
 {
-    /// <inheritdoc cref="Window" />
     /// <summary>
     ///     The data base info class.
     /// </summary>
     internal sealed partial class DbInfo
     {
-        /// <inheritdoc />
+        public DbInfoViewModel ViewModel { get; }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:SQLiteGui.DbInfo" /> class.
         /// </summary>
         public DbInfo()
         {
             InitializeComponent();
+            ViewModel = new DbInfoViewModel();
+            DataContext = ViewModel; // Set DataContext to ViewModel
         }
 
         /// <summary>
@@ -35,8 +33,7 @@ namespace SQLiteGui
         /// <param name="message">Messages from the system</param>
         internal void SetData(string message)
         {
-            Trace.WriteLine(string.Concat(message, Environment.NewLine));
-            TxtBoxInfo.AppendText(string.Concat(message, Environment.NewLine));
+            ViewModel.AppendInfo(message); // Use ViewModel to handle data
         }
     }
 }

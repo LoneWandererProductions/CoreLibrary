@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        MenuBand.xaml.cs
+ * FILE:        SQLiteGui/TableOverviewViewModel.cs
  * PURPOSE:     View Model for TableOverview
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
