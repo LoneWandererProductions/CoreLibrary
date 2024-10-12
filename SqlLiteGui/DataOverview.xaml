@@ -24,8 +24,8 @@
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
 
-        <DataGrid x:Name="TableData"
-                  ItemsSource="{Binding Raw}"
+        <DataGrid
+            ItemsSource="{Binding Raw}"
                   SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                   CanUserAddRows="False"
                   AutoGenerateColumns="True"
@@ -43,9 +43,11 @@
                 <ContextMenu x:Key="RowMenu"
                              DataContext="{Binding PlacementTarget.(sqLiteGui:DataOverview.DataContext),
                     RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Update Item" Command="{Binding UpdateCommand}" CommandParameter="{Binding SelectedItem}" />
+                    <MenuItem Header="Update Item" Command="{Binding UpdateCommand}"
+                              CommandParameter="{Binding SelectedItem}" />
                     <MenuItem Header="Add Item" Command="{Binding AddCommand}" />
-                    <MenuItem Header="Delete Item" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem}" />
+                    <MenuItem Header="Delete Item" Command="{Binding DeleteCommand}"
+                              CommandParameter="{Binding SelectedItem}" />
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
@@ -55,25 +57,25 @@
             </DataGrid.RowStyle>
         </DataGrid>
 
-        <Button Content="Update" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch" 
-                Grid.Row="1" 
-                Grid.Column="2" 
-                Command="{Binding UpdateCommand}" 
+        <Button Content="Update"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.Row="1"
+                Grid.Column="2"
+                Command="{Binding UpdateCommand}"
                 CommandParameter="{Binding SelectedItem}" />
-        <Button Content="Delete" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch" 
-                Grid.Row="3" 
-                Grid.Column="2" 
-                Command="{Binding DeleteCommand}" 
+        <Button Content="Delete"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.Row="3"
+                Grid.Column="2"
+                Command="{Binding DeleteCommand}"
                 CommandParameter="{Binding SelectedItem}" />
-        <Button Content="Add" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch" 
-                Grid.Row="5" 
-                Grid.Column="2" 
+        <Button Content="Add"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.Row="5"
+                Grid.Column="2"
                 Command="{Binding AddCommand}" />
     </Grid>
 </UserControl>

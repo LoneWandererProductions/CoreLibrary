@@ -41,10 +41,10 @@ namespace SQLiteGui
         internal static string PrimaryKey { get; private set; }
 
         /// <summary>
-        /// Gets or sets the information.
+        ///     Gets or sets the information.
         /// </summary>
         /// <value>
-        /// The information.
+        ///     The information.
         /// </value>
         public static DbInfoViewModel Info { get; set; }
 

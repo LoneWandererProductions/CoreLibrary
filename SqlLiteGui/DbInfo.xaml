@@ -1,4 +1,4 @@
-﻿<UserControl xmlns:sqLiteGui="clr-namespace:SQLiteGui" 
+﻿<UserControl xmlns:sqLiteGui="clr-namespace:SQLiteGui"
              x:Class="SQLiteGui.DbInfo"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,6 @@
              d:DesignHeight="300" d:DesignWidth="300" x:ClassModifier="internal">
     <Grid>
         <sqLiteGui:ScrollingTextBox
-            x:Name="TxtBoxInfo"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ScrollViewer.CanContentScroll="True"

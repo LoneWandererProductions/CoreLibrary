@@ -12,19 +12,19 @@ namespace ViewModel
 {
     /// <inheritdoc />
     /// <summary>
-    /// Basic stuff for my View Models
+    ///     Basic stuff for my View Models
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         /// <inheritdoc />
         /// <summary>
-        /// Occurs when a property value changes.
+        ///     Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Called when [property changed].
+        ///     Called when [property changed].
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         protected void OnPropertyChanged(string propertyName)

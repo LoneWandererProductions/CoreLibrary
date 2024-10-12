@@ -14,85 +14,25 @@ namespace SQLiteGui
 {
     /// <inheritdoc />
     /// <summary>
-    /// View Model for the Table Data
+    ///     View Model for the Table Data
     /// </summary>
     /// <seealso cref="T:ViewModel.ViewModelBase" />
     public sealed class DataOverviewViewModel : ViewModelBase
     {
         /// <summary>
-        /// Gets or sets the raw.
+        ///     The current table
         /// </summary>
-        /// <value>
-        /// The raw.
-        /// </value>
-        public DataView Raw
-        {
-            get => _raw;
-            set
-            {
-                if (_raw == value) return;
-
-                _raw = value;
-                OnPropertyChanged(nameof(Raw)); // Notify UI of changes
-            }
-        }
+        private string _currentTable;
 
         private DataView _raw;
 
         /// <summary>
-        /// The selected item
+        ///     The selected item
         /// </summary>
         private DataRowView _selectedItem;
 
         /// <summary>
-        /// The current table
-        /// </summary>
-        private string _currentTable;
-
-        /// <summary>
-        /// Gets or sets the selected item.
-        /// </summary>
-        /// <value>
-        /// The selected item.
-        /// </value>
-        public DataRowView SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                if (_selectedItem.Equals(value)) return;
-
-                _selectedItem = value;
-                OnPropertyChanged(nameof(SelectedItem)); // Notify UI when selection changes
-            }
-        }
-
-        /// <summary>
-        /// Gets the update command.
-        /// </summary>
-        /// <value>
-        /// The update command.
-        /// </value>
-        public ICommand UpdateCommand { get; }
-
-        /// <summary>
-        /// Gets the delete command.
-        /// </summary>
-        /// <value>
-        /// The delete command.
-        /// </value>
-        public ICommand DeleteCommand { get; }
-
-        /// <summary>
-        /// Gets the add command.
-        /// </summary>
-        /// <value>
-        /// The add command.
-        /// </value>
-        public ICommand AddCommand { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DataOverviewViewModel"/> class.
+        ///     Initializes a new instance of the <see cref="DataOverviewViewModel" /> class.
         /// </summary>
         public DataOverviewViewModel()
         {
@@ -102,7 +42,73 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Change Data.
+        ///     Gets or sets the raw.
+        /// </summary>
+        /// <value>
+        ///     The raw.
+        /// </value>
+        public DataView Raw
+        {
+            get => _raw;
+            set
+            {
+                if (_raw == value)
+                {
+                    return;
+                }
+
+                _raw = value;
+                OnPropertyChanged(nameof(Raw)); // Notify UI of changes
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected item.
+        /// </summary>
+        /// <value>
+        ///     The selected item.
+        /// </value>
+        public DataRowView SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (_selectedItem.Equals(value))
+                {
+                    return;
+                }
+
+                _selectedItem = value;
+                OnPropertyChanged(nameof(SelectedItem)); // Notify UI when selection changes
+            }
+        }
+
+        /// <summary>
+        ///     Gets the update command.
+        /// </summary>
+        /// <value>
+        ///     The update command.
+        /// </value>
+        public ICommand UpdateCommand { get; }
+
+        /// <summary>
+        ///     Gets the delete command.
+        /// </summary>
+        /// <value>
+        ///     The delete command.
+        /// </value>
+        public ICommand DeleteCommand { get; }
+
+        /// <summary>
+        ///     Gets the add command.
+        /// </summary>
+        /// <value>
+        ///     The add command.
+        /// </value>
+        public ICommand AddCommand { get; }
+
+        /// <summary>
+        ///     Change Data.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         internal void DataChanged(TableDetails selectedTable)
@@ -113,17 +119,20 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Update View
+        ///     Update View
         /// </summary>
         private void DataChanged()
         {
-            if (string.IsNullOrWhiteSpace(_currentTable)) return;
+            if (string.IsNullOrWhiteSpace(_currentTable))
+            {
+                return;
+            }
 
             Raw = SqLiteGuiProcessing.SelectTable(_currentTable);
         }
 
         /// <summary>
-        /// Updates the item.
+        ///     Updates the item.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void UpdateItem(object parameter)
@@ -138,11 +147,11 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Determines whether this instance [can update item] the specified parameter.
+        ///     Determines whether this instance [can update item] the specified parameter.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <returns>
-        ///   <c>true</c> if this instance [can update item] the specified parameter; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance [can update item] the specified parameter; otherwise, <c>false</c>.
         /// </returns>
         private bool CanEditItem(object parameter)
         {
@@ -152,7 +161,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Deletes the item.
+        ///     Deletes the item.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         private void DeleteItem(object parameter)
@@ -168,7 +177,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Adds the item.
+        ///     Adds the item.
         /// </summary>
         /// <param name="item">The item.</param>
         private void AddItem(DataView item)

@@ -14,7 +14,6 @@ using System.Windows;
 using DataFormatter;
 using ViewModel;
 
-
 namespace SQLiteGui
 {
     /// <inheritdoc />
@@ -24,30 +23,6 @@ namespace SQLiteGui
     /// <seealso cref="ViewModel.ViewModelBase" />
     public sealed class SqLiteGuiViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Gets the database information view model.
-        /// </summary>
-        /// <value>
-        /// The database information view model.
-        /// </value>
-        public DbInfoViewModel DbInfoViewModel { get; }
-
-        /// <summary>
-        /// Gets the data overview view model.
-        /// </summary>
-        /// <value>
-        /// The data overview view model.
-        /// </value>
-        public DataOverviewViewModel DataOverviewViewModel { get; }
-
-        /// <summary>
-        /// Gets the table overview view model.
-        /// </summary>
-        /// <value>
-        /// The table overview view model.
-        /// </value>
-        public TableOverviewViewModel TableOverviewViewModel { get; }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqLiteGuiViewModel" /> class.
         /// </summary>
@@ -65,6 +40,30 @@ namespace SQLiteGui
             DataOverviewViewModel = new DataOverviewViewModel();
             TableOverviewViewModel = new TableOverviewViewModel(DataOverviewViewModel);
         }
+
+        /// <summary>
+        ///     Gets the database information view model.
+        /// </summary>
+        /// <value>
+        ///     The database information view model.
+        /// </value>
+        public DbInfoViewModel DbInfoViewModel { get; }
+
+        /// <summary>
+        ///     Gets the data overview view model.
+        /// </summary>
+        /// <value>
+        ///     The data overview view model.
+        /// </value>
+        public DataOverviewViewModel DataOverviewViewModel { get; }
+
+        /// <summary>
+        ///     Gets the table overview view model.
+        /// </summary>
+        /// <value>
+        ///     The table overview view model.
+        /// </value>
+        public TableOverviewViewModel TableOverviewViewModel { get; }
 
         /// <summary>
         ///     Creates new database command.

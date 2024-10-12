@@ -47,31 +47,28 @@
         </Menu>
 
         <!-- Table Overview Control -->
-        <local:TableOverview 
-            x:Name="TableView" 
-            Grid.Column="1" 
-            HorizontalAlignment="Stretch" 
-            Grid.Row="2" 
-            VerticalAlignment="Stretch" 
+        <local:TableOverview
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            Grid.Row="2"
+            VerticalAlignment="Stretch"
             DataContext="{Binding TableOverviewViewModel}" />
 
         <!-- Data Overview Control -->
-        <local:DataOverview 
-            x:Name="TableDetailView" 
-            Grid.Column="3" 
-            HorizontalAlignment="Stretch" 
-            Grid.Row="2" 
-            VerticalAlignment="Stretch" 
+        <local:DataOverview
+            Grid.Column="3"
+            HorizontalAlignment="Stretch"
+            Grid.Row="2"
+            VerticalAlignment="Stretch"
             DataContext="{Binding DataOverviewViewModel}" />
 
         <!-- Database Info Control -->
-        <local:DbInfo 
-            x:Name="DbInfo" 
-            HorizontalAlignment="Stretch" 
-            Grid.Row="4" 
-            VerticalAlignment="Stretch" 
-            Grid.Column="1" 
-            Grid.ColumnSpan="3"             
+        <local:DbInfo
+            HorizontalAlignment="Stretch"
+            Grid.Row="4"
+            VerticalAlignment="Stretch"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
             DataContext="{Binding DbInfoViewModel}" />
     </Grid>
 </Window>

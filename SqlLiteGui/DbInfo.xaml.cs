@@ -10,13 +10,13 @@
 
 namespace SQLiteGui
 {
+    /// <inheritdoc />
     /// <summary>
     ///     The data base info class.
     /// </summary>
     internal sealed partial class DbInfo
     {
-        public DbInfoViewModel ViewModel { get; }
-
+        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:SQLiteGui.DbInfo" /> class.
         /// </summary>
@@ -28,12 +28,11 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     User Output
+        /// Gets the view model.
         /// </summary>
-        /// <param name="message">Messages from the system</param>
-        internal void SetData(string message)
-        {
-            ViewModel.AppendInfo(message); // Use ViewModel to handle data
-        }
+        /// <value>
+        /// The view model.
+        /// </value>
+        private DbInfoViewModel ViewModel { get; }
     }
 }

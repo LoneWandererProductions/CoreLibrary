@@ -17,114 +17,23 @@ namespace SQLiteGui
 {
     /// <inheritdoc />
     /// <summary>
-    /// View Model
+    ///     View Model
     /// </summary>
     /// <seealso cref="ViewModel.ViewModelBase" />
     public sealed class TableOverviewViewModel : ViewModelBase
     {
         /// <summary>
-        /// Gets the data overview view model.
-        /// </summary>
-        /// <value>
-        /// The data overview view model.
-        /// </value>
-        public DataOverviewViewModel DataOverviewViewModel { get; }
-
-        /// <summary>
-        /// Gets or sets the tables.
-        /// </summary>
-        /// <value>
-        /// The tables.
-        /// </value>
-        public ObservableCollection<TableDetails> Tables
-        {
-            get => _tables;
-            set
-            {
-                if (_tables == value) return;
-
-                _tables = value;
-                OnPropertyChanged(nameof(Tables)); // Notify that the collection has changed
-            }
-        }
-
-        /// <summary>
-        /// The tables
-        /// </summary>
-        private ObservableCollection<TableDetails> _tables;
-
-        /// <summary>
-        /// The selected table
+        ///     The selected table
         /// </summary>
         private TableDetails _selectedTable;
 
         /// <summary>
-        /// Gets or sets the selected table.
+        ///     The tables
         /// </summary>
-        public TableDetails SelectedTable
-        {
-            get => _selectedTable;
-            set
-            {
-                if (_selectedTable == value) return;
-
-                _selectedTable = value;
-                OnPropertyChanged(nameof(SelectedTable));
-                OnSelectedTableChanged(); // Custom logic when selection changes
-            }
-        }
+        private ObservableCollection<TableDetails> _tables;
 
         /// <summary>
-        /// Sets the tables.
-        /// </summary>
-        /// <param name="tables">The tables.</param>
-        internal void SetTables(IEnumerable<TableDetails> tables)
-        {
-            Tables = new ObservableCollection<TableDetails>(tables);
-        }
-
-        /// <summary>
-        /// Gets the truncate table command.
-        /// </summary>
-        /// <value>
-        /// The truncate table command.
-        /// </value>
-        public ICommand TruncateTableCommand { get; }
-
-        /// <summary>
-        /// Gets the drop table command.
-        /// </summary>
-        /// <value>
-        /// The drop table command.
-        /// </value>
-        public ICommand DropTableCommand { get; }
-
-        /// <summary>
-        /// Gets the copy table command.
-        /// </summary>
-        /// <value>
-        /// The copy table command.
-        /// </value>
-        public ICommand CopyTableCommand { get; }
-
-        /// <summary>
-        /// Gets the rename table command.
-        /// </summary>
-        /// <value>
-        /// The rename table command.
-        /// </value>
-        public ICommand RenameTableCommand { get; }
-
-        /// <summary>
-        /// Gets the add table command.
-        /// </summary>
-        /// <value>
-        /// The add table command.
-        /// </value>
-        public ICommand AddTableCommand { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TableOverviewViewModel" /> class.
+        ///     Initializes a new instance of the <see cref="TableOverviewViewModel" /> class.
         /// </summary>
         /// <param name="dataOverviewViewModel">The data overview view model.</param>
         public TableOverviewViewModel(DataOverviewViewModel dataOverviewViewModel)
@@ -143,12 +52,109 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Determines whether this instance [can execute command] the specified selected table.
-        /// Enable or disable the commands based on the selected table
+        ///     Gets the data overview view model.
+        /// </summary>
+        /// <value>
+        ///     The data overview view model.
+        /// </value>
+        public DataOverviewViewModel DataOverviewViewModel { get; }
+
+        /// <summary>
+        ///     Gets or sets the tables.
+        /// </summary>
+        /// <value>
+        ///     The tables.
+        /// </value>
+        public ObservableCollection<TableDetails> Tables
+        {
+            get => _tables;
+            set
+            {
+                if (_tables == value)
+                {
+                    return;
+                }
+
+                _tables = value;
+                OnPropertyChanged(nameof(Tables)); // Notify that the collection has changed
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected table.
+        /// </summary>
+        public TableDetails SelectedTable
+        {
+            get => _selectedTable;
+            set
+            {
+                if (_selectedTable == value)
+                {
+                    return;
+                }
+
+                _selectedTable = value;
+                OnPropertyChanged(nameof(SelectedTable));
+                OnSelectedTableChanged(); // Custom logic when selection changes
+            }
+        }
+
+        /// <summary>
+        ///     Gets the truncate table command.
+        /// </summary>
+        /// <value>
+        ///     The truncate table command.
+        /// </value>
+        public ICommand TruncateTableCommand { get; }
+
+        /// <summary>
+        ///     Gets the drop table command.
+        /// </summary>
+        /// <value>
+        ///     The drop table command.
+        /// </value>
+        public ICommand DropTableCommand { get; }
+
+        /// <summary>
+        ///     Gets the copy table command.
+        /// </summary>
+        /// <value>
+        ///     The copy table command.
+        /// </value>
+        public ICommand CopyTableCommand { get; }
+
+        /// <summary>
+        ///     Gets the rename table command.
+        /// </summary>
+        /// <value>
+        ///     The rename table command.
+        /// </value>
+        public ICommand RenameTableCommand { get; }
+
+        /// <summary>
+        ///     Gets the add table command.
+        /// </summary>
+        /// <value>
+        ///     The add table command.
+        /// </value>
+        public ICommand AddTableCommand { get; }
+
+        /// <summary>
+        ///     Sets the tables.
+        /// </summary>
+        /// <param name="tables">The tables.</param>
+        internal void SetTables(IEnumerable<TableDetails> tables)
+        {
+            Tables = new ObservableCollection<TableDetails>(tables);
+        }
+
+        /// <summary>
+        ///     Determines whether this instance [can execute command] the specified selected table.
+        ///     Enable or disable the commands based on the selected table
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         /// <returns>
-        ///   <c>true</c> if this instance [can execute command] the specified selected table; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance [can execute command] the specified selected table; otherwise, <c>false</c>.
         /// </returns>
         private bool CanExecuteCommand(TableDetails selectedTable)
         {
@@ -156,7 +162,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Truncates the table.
+        ///     Truncates the table.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         private void TruncateTable(TableDetails selectedTable)
@@ -169,7 +175,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Drops the table.
+        ///     Drops the table.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         private void DropTable(TableDetails selectedTable)
@@ -182,7 +188,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Copies the table.
+        ///     Copies the table.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         private void CopyTable(TableDetails selectedTable)
@@ -194,7 +200,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Renames the table.
+        ///     Renames the table.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
         private void RenameTable(TableDetails selectedTable)
@@ -205,7 +211,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Adds the table.
+        ///     Adds the table.
         /// </summary>
         /// <param name="param">The parameter.</param>
         private void AddTable(object param)
@@ -216,7 +222,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Updates the View of the Tables
+        ///     Updates the View of the Tables
         /// </summary>
         private void DataChanged()
         {
@@ -225,8 +231,8 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Called when [selected table changed].
-        /// This method is called whenever the SelectedTable changes
+        ///     Called when [selected table changed].
+        ///     This method is called whenever the SelectedTable changes
         /// </summary>
         private void OnSelectedTableChanged()
         {

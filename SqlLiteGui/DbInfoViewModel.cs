@@ -13,7 +13,7 @@ namespace SQLiteGui
 {
     /// <inheritdoc />
     /// <summary>
-    /// View Model for DbInfo
+    ///     View Model for DbInfo
     /// </summary>
     /// <seealso cref="T:ViewModel.ViewModelBase" />
     public sealed class DbInfoViewModel : ViewModelBase
@@ -21,17 +21,20 @@ namespace SQLiteGui
         private string _infoText;
 
         /// <summary>
-        /// Gets or sets the information text.
+        ///     Gets or sets the information text.
         /// </summary>
         /// <value>
-        /// The information text.
+        ///     The information text.
         /// </value>
         public string InfoText
         {
             get => _infoText;
             set
             {
-                if (_infoText == value) return;
+                if (_infoText == value)
+                {
+                    return;
+                }
 
                 _infoText = value;
                 OnPropertyChanged(nameof(InfoText));
@@ -39,7 +42,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Appends the information.
+        ///     Appends the information.
         /// </summary>
         /// <param name="message">The message.</param>
         internal void AppendInfo(string message)
