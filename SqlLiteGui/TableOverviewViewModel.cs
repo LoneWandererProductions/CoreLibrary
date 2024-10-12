@@ -6,33 +6,29 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
+// ReSharper disable MemberCanBePrivate.Global
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows.Input;
 using ViewModel;
 
 namespace SQLiteGui
 {
+    /// <inheritdoc />
     /// <summary>
     /// View Model
     /// </summary>
-    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
-    public class TableOverviewViewModel : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    public sealed class TableOverviewViewModel : ViewModelBase
     {
         /// <summary>
-        /// Occurs when a property value changes.
+        /// Gets the data overview view model.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        /// <value>
+        /// The data overview view model.
+        /// </value>
+        public DataOverviewViewModel DataOverviewViewModel { get; }
 
         /// <summary>
         /// Gets or sets the tables.
@@ -40,7 +36,22 @@ namespace SQLiteGui
         /// <value>
         /// The tables.
         /// </value>
-        internal ObservableCollection<TableDetails> Tables { get; set; }
+        public ObservableCollection<TableDetails> Tables
+        {
+            get => _tables;
+            set
+            {
+                if (_tables == value) return;
+
+                _tables = value;
+                OnPropertyChanged(nameof(Tables)); // Notify that the collection has changed
+            }
+        }
+
+        /// <summary>
+        /// The tables
+        /// </summary>
+        private ObservableCollection<TableDetails> _tables;
 
         /// <summary>
         /// The selected table
@@ -50,25 +61,27 @@ namespace SQLiteGui
         /// <summary>
         /// Gets or sets the selected table.
         /// </summary>
-        internal TableDetails SelectedTable
+        public TableDetails SelectedTable
         {
             get => _selectedTable;
             set
             {
-                if (_selectedTable != value)
-                {
-                    _selectedTable = value;
-                    OnPropertyChanged(nameof(SelectedTable));
-                }
+                if (_selectedTable == value) return;
+
+                _selectedTable = value;
+                OnPropertyChanged(nameof(SelectedTable));
+                OnSelectedTableChanged(); // Custom logic when selection changes
             }
         }
 
         /// <summary>
-        /// Element added,deleted,updated
+        /// Sets the tables.
         /// </summary>
-        internal EventHandler refreshDatabase;
-
-        // Commands
+        /// <param name="tables">The tables.</param>
+        internal void SetTables(IEnumerable<TableDetails> tables)
+        {
+            Tables = new ObservableCollection<TableDetails>(tables);
+        }
 
         /// <summary>
         /// Gets the truncate table command.
@@ -111,19 +124,22 @@ namespace SQLiteGui
         public ICommand AddTableCommand { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TableOverviewViewModel"/> class.
+        /// Initializes a new instance of the <see cref="TableOverviewViewModel" /> class.
         /// </summary>
-        public TableOverviewViewModel()
+        /// <param name="dataOverviewViewModel">The data overview view model.</param>
+        public TableOverviewViewModel(DataOverviewViewModel dataOverviewViewModel)
         {
             // Initialize collections and commands
             Tables = new ObservableCollection<TableDetails>();
+            //add our Reference to the Data Overview
+            DataOverviewViewModel = dataOverviewViewModel;
 
             // Pass the selected table as a parameter to each command
             TruncateTableCommand = new DelegateCommand<TableDetails>(TruncateTable, CanExecuteCommand);
             DropTableCommand = new DelegateCommand<TableDetails>(DropTable, CanExecuteCommand);
             CopyTableCommand = new DelegateCommand<TableDetails>(CopyTable, CanExecuteCommand);
             RenameTableCommand = new DelegateCommand<TableDetails>(RenameTable, CanExecuteCommand);
-            AddTableCommand = new DelegateCommand<object>(AddTable);
+            AddTableCommand = new DelegateCommand<TableDetails>(AddTable);
         }
 
         /// <summary>
@@ -145,15 +161,11 @@ namespace SQLiteGui
         /// <param name="selectedTable">The selected table.</param>
         private void TruncateTable(TableDetails selectedTable)
         {
-            if (selectedTable != null)
-            {
-                // Logic to truncate the table
-                var check = SqLiteGuiProcessing.TruncateTable(selectedTable.TableAlias);
-                if (check)
-                {
-                    refreshDatabase?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            // Logic to truncate the table
+            var check = SqLiteGuiProcessing.TruncateTable(selectedTable.TableAlias);
+
+            Register.Info.AppendInfo(check ? "Table was truncated." : "Table was not truncated.");
+            DataChanged();
         }
 
         /// <summary>
@@ -162,15 +174,11 @@ namespace SQLiteGui
         /// <param name="selectedTable">The selected table.</param>
         private void DropTable(TableDetails selectedTable)
         {
-            if (selectedTable != null)
-            {
-                // Logic to drop the table
-                var check = SqLiteGuiProcessing.DropTable(selectedTable.TableAlias);
-                if (check)
-                {
-                    refreshDatabase?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            // Logic to drop the table
+            var check = SqLiteGuiProcessing.DropTable(selectedTable.TableAlias);
+
+            Register.Info.AppendInfo(check ? "Table was dropped." : "Table was not dropped.");
+            DataChanged();
         }
 
         /// <summary>
@@ -179,15 +187,10 @@ namespace SQLiteGui
         /// <param name="selectedTable">The selected table.</param>
         private void CopyTable(TableDetails selectedTable)
         {
-            if (selectedTable != null)
-            {
-                // Logic to copy the table
-                var check = SqLiteGuiProcessing.CopyTable(selectedTable.TableAlias);
-                if (check)
-                {
-                    refreshDatabase?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            // Logic to copy the table
+            var check = SqLiteGuiProcessing.CopyTable(selectedTable.TableAlias);
+            Register.Info.AppendInfo(check ? "Table was copied." : "Table was not copied.");
+            DataChanged();
         }
 
         /// <summary>
@@ -196,14 +199,9 @@ namespace SQLiteGui
         /// <param name="selectedTable">The selected table.</param>
         private void RenameTable(TableDetails selectedTable)
         {
-            if (selectedTable != null)
-            {
-                var check = SqLiteGuiProcessing.RenameTable(selectedTable.TableAlias);
-                if (check)
-                {
-                    refreshDatabase?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            var check = SqLiteGuiProcessing.RenameTable(selectedTable.TableAlias);
+            Register.Info.AppendInfo(check ? "Table was renamed." : "Table was not renamed.");
+            DataChanged();
         }
 
         /// <summary>
@@ -213,9 +211,28 @@ namespace SQLiteGui
         private void AddTable(object param)
         {
             var check = SqLiteGuiProcessing.AddTable();
-            if (check)
+            Register.Info.AppendInfo(check ? "Table was added." : "Table was not added.");
+            DataChanged();
+        }
+
+        /// <summary>
+        /// Updates the View of the Tables
+        /// </summary>
+        private void DataChanged()
+        {
+            var tables = SqLiteGuiProcessing.GetTableDetails();
+            Tables = new ObservableCollection<TableDetails>(tables);
+        }
+
+        /// <summary>
+        /// Called when [selected table changed].
+        /// This method is called whenever the SelectedTable changes
+        /// </summary>
+        private void OnSelectedTableChanged()
+        {
+            if (SelectedTable != null)
             {
-                refreshDatabase?.Invoke(this, EventArgs.Empty);
+                DataOverviewViewModel.DataChanged(SelectedTable);
             }
         }
     }

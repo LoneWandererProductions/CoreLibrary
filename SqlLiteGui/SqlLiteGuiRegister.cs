@@ -9,8 +9,6 @@
 // ReSharper disable UnusedMember.Global, they are used but as described as observable Object so no need to complain
 // ReSharper disable MemberCanBeInternal, Problem here is these need to be public to be visible as observable Object
 
-using System.Collections.Generic;
-using System.Data;
 using SqliteHelper;
 
 namespace SQLiteGui
@@ -18,26 +16,13 @@ namespace SQLiteGui
     /// <summary>
     ///     All Items we use for Data-binding
     /// </summary>
-    internal sealed class TableDetails
+    public sealed class TableDetails
     {
         /// <summary>
         ///     Name of the Table
         ///     Public although Class is internal, don't ask
         /// </summary>
         public string TableAlias { get; internal set; }
-    }
-
-    /// <summary>
-    ///     Table Details View
-    ///     Item for DataView so we can Display Data
-    ///     TableInfos contains Infos about The Alias and the Unique Index
-    /// </summary>
-    internal static class TableViewModel
-    {
-        /// <summary>
-        ///     Gets or sets the item.
-        /// </summary>
-        internal static DataView Item { get; set; }
     }
 
     /// <inheritdoc />
@@ -81,17 +66,6 @@ namespace SQLiteGui
                 RaisePropertyChangedEvent(nameof(Value));
             }
         }
-    }
-
-    /// <summary>
-    ///     Here we Display all the Tables in the Database
-    /// </summary>
-    internal static class TablesViewModel
-    {
-        /// <summary>
-        ///     Gets or sets the item.
-        /// </summary>
-        internal static List<TableDetails> Item { get; set; }
     }
 
     /// <inheritdoc />

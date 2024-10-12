@@ -41,6 +41,14 @@ namespace SQLiteGui
         internal static string PrimaryKey { get; private set; }
 
         /// <summary>
+        /// Gets or sets the information.
+        /// </summary>
+        /// <value>
+        /// The information.
+        /// </value>
+        public static DbInfoViewModel Info { get; set; }
+
+        /// <summary>
         ///     Get Item by Column Header
         /// </summary>
         /// <param name="item">Column Header Name</param>

@@ -61,7 +61,8 @@
             Grid.Column="3" 
             HorizontalAlignment="Stretch" 
             Grid.Row="2" 
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Stretch" 
+            DataContext="{Binding DataOverviewViewModel}" />
 
         <!-- Database Info Control -->
         <local:DbInfo 
@@ -70,6 +71,7 @@
             Grid.Row="4" 
             VerticalAlignment="Stretch" 
             Grid.Column="1" 
-            Grid.ColumnSpan="3" />
+            Grid.ColumnSpan="3"             
+            DataContext="{Binding DbInfoViewModel}" />
     </Grid>
 </Window>

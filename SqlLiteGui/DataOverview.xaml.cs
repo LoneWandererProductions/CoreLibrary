@@ -18,8 +18,6 @@ namespace SQLiteGui
     /// </summary>
     public sealed partial class DataOverview
     {
-
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:SQLiteGui.DataOverview" /> class.

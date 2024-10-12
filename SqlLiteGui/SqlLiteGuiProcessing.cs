@@ -8,22 +8,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using SqliteHelper;
+using DataSet = SqliteHelper.DataSet;
 
 namespace SQLiteGui
 {
     /// <summary>
     ///     Basic Database Activities
     /// </summary>
-    internal sealed class SqLiteGuiProcessing
+    internal static class SqLiteGuiProcessing
     {
-        /// <summary>
-        ///     Used for Information generation
-        /// </summary>
-        private static DbInfo _dbInfo;
-
         /// <summary>
         ///     Database Handler
         /// </summary>
@@ -35,39 +32,33 @@ namespace SQLiteGui
         private static Binary _paramsClause;
 
         /// <summary>
-        ///     Just needed to activate our Messenger
-        /// </summary>
-        /// <param name="dbInfo">Info Panel</param>
-        internal SqLiteGuiProcessing(DbInfo dbInfo)
-        {
-            _dbInfo = dbInfo;
-            if (_db != null)
-            {
-                _db.SendMessage += SendMessage;
-            }
-        }
-
-        /// <summary>
         ///     Create a Database
         /// </summary>
         /// <param name="location">Local location of the Database</param>
         /// <param name="dbName">Name of Database</param>
         internal static void CreateDatabase(string location, string dbName)
         {
-            if (string.IsNullOrEmpty(location))
+            try
             {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidPath);
-                return;
-            }
+                if (string.IsNullOrEmpty(location))
+                {
+                    Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidPath);
+                    return;
+                }
 
-            if (string.IsNullOrEmpty(dbName))
+                if (string.IsNullOrEmpty(dbName))
+                {
+                    Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidDbName);
+                    return;
+                }
+
+                var check = _db.CreateDatabase(location, dbName, true);
+                Register.Info.AppendInfo(check ? SqLiteGuiResource.InfoCreateDb : SqLiteGuiResource.ErrorCreateDb);
+            }
+            catch (Exception ex)
             {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidDbName);
-                return;
+                Register.Info.AppendInfo($"Error creating database: {ex.Message}");
             }
-
-            var check = _db.CreateDatabase(location, dbName, true);
-            _dbInfo.SetData(check ? SqLiteGuiResource.InfoCreateDb : SqLiteGuiResource.ErrorCreateDb);
         }
 
         /// <summary>
@@ -76,16 +67,10 @@ namespace SQLiteGui
         /// <param name="path">Target Path to Database</param>
         internal static void OpenDatabase(string path)
         {
-            //Clean Detail View
-            if (TableViewModel.Item != null)
-            {
-                TableViewModel.Item = null;
-            }
-
             //Check if Path is Correct
             if (string.IsNullOrEmpty(path))
             {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidPath);
+                Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidPath);
                 return;
             }
 
@@ -95,25 +80,30 @@ namespace SQLiteGui
 
             _db = new SqliteDatabase(location, dbName);
 
+            if (Register.Info != null) Register.Info.AppendInfo(_db.GetDatabaseInfos());
+        }
+
+        /// <summary>
+        ///     Gets the table details.
+        /// </summary>
+        /// <returns>List of tables</returns>
+        internal static IEnumerable<TableDetails> GetTableDetails()
+        {
+            if (_db == null)
+            {
+                if (Register.Info != null) Register.Info.AppendInfo("No Database Connection provided.");
+                return null;
+            }
+
             //Get Tables
             var lst = _db.GetTables();
 
-            _dbInfo.SetData(_db.GetDatabaseInfos());
-
             //No Tables Catch and Process
-            if (lst == null)
-            {
-                //clean Display needed for reload
-                TablesViewModel.Item = null;
-                //Print Information
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoTables);
-                return;
-            }
+            if (lst != null) return lst.ConvertAll(tab => new TableDetails {TableAlias = tab});
 
-            //Else Display the Table
-            var table = lst.ConvertAll(tab => new TableDetails { TableAlias = tab });
-
-            TablesViewModel.Item = table;
+            //Print Information
+            Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoTables);
+            return null;
         }
 
         /// <summary>
@@ -122,56 +112,53 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool DeleteItem()
         {
-            if (!GetWhereClause())
+            if (_db == null)
             {
+                Register.Info.AppendInfo("Database not initialized.");
                 return false;
             }
 
-            //Remove selected Item
-            var count = _db.DeleteRows(Register.TableAlias, _paramsClause.Where, _paramsClause.Value);
+            if (!GetWhereClause()) return false;
 
-            _dbInfo.SetData(SqLiteGuiResource.InfoRows + count);
+            var count = _db.DeleteRows(Register.TableAlias, _paramsClause.Where, _paramsClause.Value);
+            Register.Info.AppendInfo(SqLiteGuiResource.InfoRows + count);
 
             return count != -1;
         }
 
+
         /// <summary>
         ///     Select a Table
         /// </summary>
-        /// <param name="tablealias">Name of the Table</param>
-        internal static void SelectTable(string tablealias)
+        /// <param name="tableAlias">Name of the Table</param>
+        internal static DataView SelectTable(string tableAlias)
         {
-            if (tablealias.Length == 0)
-            {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidTableName);
-            }
+            if (tableAlias.Length == 0) Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidTableName);
 
-            var data = _db.Primary_Key_list(tablealias);
+            var data = _db.Primary_Key_list(tableAlias);
             var uniqueIndex = string.Empty;
 
             if (data.Count != 0)
             {
                 uniqueIndex = data[0];
 
-                _dbInfo.SetData(SqLiteGuiResource.InfoPrimaryKey + uniqueIndex);
+                Register.Info.AppendInfo(SqLiteGuiResource.InfoPrimaryKey + uniqueIndex);
             }
             else
             {
-                _dbInfo.SetData(SqLiteGuiResource.WarningNoPrimaryKey);
+                Register.Info.AppendInfo(SqLiteGuiResource.WarningNoPrimaryKey);
             }
 
             //Load Data into our Table Details
-            var db = _db.SimpleSelect(tablealias);
-            TableViewModel.Item = db?.Raw;
+            var db = _db.SimpleSelect(tableAlias);
 
             //get some basic Infos about our Database
-            var tableInfo = _db.Pragma_TableInfo(tablealias);
+            var tableInfo = _db.Pragma_TableInfo(tableAlias);
 
-            _dbInfo.SetData(SqLiteGuiResource.Header);
+            Register.Info.AppendInfo(SqLiteGuiResource.Header);
 
             foreach (var item in tableInfo.DColumns)
-            {
-                _dbInfo.SetData(string.Concat(
+                Register.Info.AppendInfo(string.Concat(
                     item.Key,
                     SqLiteGuiResource.Separator,
                     item.Value.DataType,
@@ -179,10 +166,18 @@ namespace SQLiteGui
                     item.Value.Unique,
                     SqLiteGuiResource.Separator,
                     item.Value.PrimaryKey));
-            }
 
             //Set Register with infos about current Table Selection
-            Register.SelectedTable(tablealias, uniqueIndex);
+            Register.SelectedTable(tableAlias, uniqueIndex);
+
+
+            if (db == null)
+            {
+                Register.Info.AppendInfo("Table was empty.");
+                return null;
+            }
+
+            return db.Raw;
         }
 
         /// <summary>
@@ -192,7 +187,7 @@ namespace SQLiteGui
         {
             if (string.IsNullOrEmpty(Register.ActiveDb))
             {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidDatabaseName);
+                Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidDatabaseName);
                 return;
             }
 
@@ -206,23 +201,16 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool UpdateItem()
         {
-            if (Register.TableAlias.Length == 0)
-            {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
-                return false;
-            }
+            if (!CheckTableAlias()) return false;
 
-            if (!GetWhereClause())
-            {
-                return false;
-            }
+            if (!GetWhereClause()) return false;
 
             var data = _db.SimpleSelect(Register.TableAlias, _paramsClause.Where,
                 CompareOperator.Equal, _paramsClause.Value);
 
             if (data == null)
             {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
+                Register.Info.AppendInfo(SqLiteGuiResource.ErrorEmptySelect);
                 return false;
             }
 
@@ -230,13 +218,10 @@ namespace SQLiteGui
 
             var item = GenerateUpdateItem(data, pragma);
 
-            var inputwin = new InputUpdateWindow(item);
-            _ = inputwin.ShowDialog();
+            var inputWin = new InputUpdateWindow(item);
+            _ = inputWin.ShowDialog();
 
-            if (InputUpdateWindow.TableRow == null)
-            {
-                return false;
-            }
+            if (InputUpdateWindow.TableRow == null) return false;
 
             var count = _db.UpdateTable(Register.TableAlias, CompareOperator.Equal, _paramsClause.Where,
                 _paramsClause.Value, InputUpdateWindow.TableRow.Row);
@@ -250,11 +235,7 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool AddItem()
         {
-            if (Register.TableAlias.Length == 0)
-            {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
-                return false;
-            }
+            if (!CheckTableAlias()) return false;
 
             var pragma = _db.Pragma_TableInfo(Register.TableAlias);
 
@@ -268,7 +249,7 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Truncates the table.
+        ///     Truncates the table.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
@@ -276,18 +257,15 @@ namespace SQLiteGui
         {
             Register.TableAlias = tableAlias;
 
-            if (Register.TableAlias.Length != 0)
-            {
-                return _db.TruncateTable(tableAlias);
-            }
+            if (Register.TableAlias.Length != 0) return _db.TruncateTable(tableAlias);
 
-            _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
+            Register.Info.AppendInfo(SqLiteGuiResource.ErrorEmptySelect);
             return false;
         }
 
 
         /// <summary>
-        /// Drops the table.
+        ///     Drops the table.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
@@ -295,17 +273,14 @@ namespace SQLiteGui
         {
             Register.TableAlias = tableAlias;
 
-            if (Register.TableAlias.Length != 0)
-            {
-                return _db.DropTable(tableAlias);
-            }
+            if (Register.TableAlias.Length != 0) return _db.DropTable(tableAlias);
 
-            _dbInfo.SetData(SqLiteGuiResource.ErrorEmptySelect);
+            Register.Info.AppendInfo(SqLiteGuiResource.ErrorEmptySelect);
             return false;
         }
 
         /// <summary>
-        /// Copies the table.
+        ///     Copies the table.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
@@ -313,7 +288,7 @@ namespace SQLiteGui
         {
             Register.TableAlias = tableAlias;
 
-            var inputwin = new InputBinaryWindow
+            var inputWin = new InputBinaryWindow
             (
                 SQLiteGuiStringResource.InputWindowTitleCopy,
                 SQLiteGuiStringResource.InputLblDescriptionCopy,
@@ -322,14 +297,14 @@ namespace SQLiteGui
                 Register.TableAlias
             );
 
-            _ = inputwin.ShowDialog();
+            _ = inputWin.ShowDialog();
 
             return InputBinaryWindow.ParamsClause != null &&
                    _db.CopyTable(InputBinaryWindow.ParamsClause.Where, InputBinaryWindow.ParamsClause.Value);
         }
 
         /// <summary>
-        /// Renames the table.
+        ///     Renames the table.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
@@ -337,7 +312,7 @@ namespace SQLiteGui
         {
             Register.TableAlias = tableAlias;
 
-            var inputwin = new InputBinaryWindow
+            var inputWin = new InputBinaryWindow
             (
                 SQLiteGuiStringResource.InputWindowTitleRename,
                 SQLiteGuiStringResource.InputLblDescriptionRename,
@@ -346,7 +321,7 @@ namespace SQLiteGui
                 tableAlias
             );
 
-            _ = inputwin.ShowDialog();
+            _ = inputWin.ShowDialog();
 
             return InputBinaryWindow.ParamsClause != null &&
                    _db.RenameTable(InputBinaryWindow.ParamsClause.Where, InputBinaryWindow.ParamsClause.Value);
@@ -358,11 +333,7 @@ namespace SQLiteGui
         /// <returns>Success Status</returns>
         internal static bool AddTable()
         {
-            if (string.IsNullOrEmpty(Register.ActiveDb))
-            {
-                _dbInfo.SetData(SqLiteGuiResource.ErrorNoValidDatabaseName);
-                return false;
-            }
+            if (!CheckTableAlias()) return false;
 
             var addTable = new AddTableWindow
             (
@@ -380,12 +351,20 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Generate an Item we want to Update
+        ///     Closes the database.
+        /// </summary>
+        internal static void CloseDatabase()
+        {
+            _db = null;
+        }
+
+        /// <summary>
+        ///     Generate an Item we want to Update
         /// </summary>
         /// <param name="tableSet">The table set.</param>
         /// <param name="pragma">Table Info</param>
         /// <returns>
-        /// Item we will Replace
+        ///     Item we will Replace
         /// </returns>
         private static IEnumerable<UpdateItem> GenerateUpdateItem(DataSet tableSet, DictionaryTableColumns pragma)
         {
@@ -393,10 +372,7 @@ namespace SQLiteGui
 
             var slice = tableSet.Columns(SqLiteGuiResource.StartColumn);
 
-            for (var i = 0; i < lst.Count; i++)
-            {
-                lst[i].Value = slice[i];
-            }
+            for (var i = 0; i < lst.Count; i++) lst[i].Value = slice[i];
 
             return lst;
         }
@@ -425,10 +401,7 @@ namespace SQLiteGui
         /// <returns>if something went wrong</returns>
         private static bool GetWhereClause()
         {
-            if (!Register.IsDetailActive)
-            {
-                return false;
-            }
+            if (!Register.IsDetailActive) return false;
 
             if (!string.IsNullOrEmpty(Register.PrimaryKey))
             {
@@ -439,9 +412,9 @@ namespace SQLiteGui
                 return true;
             }
 
-            _dbInfo.SetData(SqLiteGuiResource.WarningNoPrimaryKey);
+            Register.Info.AppendInfo(SqLiteGuiResource.WarningNoPrimaryKey);
 
-            var inputwin = new InputBinaryWindow
+            var inputWin = new InputBinaryWindow
             (
                 SQLiteGuiStringResource.InputWindowTitleWhere,
                 SQLiteGuiStringResource.InputLblDescriptionWhereClause,
@@ -449,25 +422,24 @@ namespace SQLiteGui
                 SQLiteGuiStringResource.InputLblSecondValueWhere
             );
 
-            _ = inputwin.ShowDialog();
+            _ = inputWin.ShowDialog();
 
-            if (InputBinaryWindow.ParamsClause == null)
-            {
-                return false;
-            }
+            if (InputBinaryWindow.ParamsClause == null) return false;
 
             _paramsClause = InputBinaryWindow.ParamsClause;
             return true;
         }
 
         /// <summary>
-        ///     Send our Message
+        ///     Checks the table alias.
         /// </summary>
-        /// <param name="sender">Control Sender</param>
-        /// <param name="e">Type of Event</param>
-        private static void SendMessage(object sender, string e)
+        /// <returns>Success Status.</returns>
+        private static bool CheckTableAlias()
         {
-            _dbInfo.SetData(e);
+            if (!string.IsNullOrEmpty(Register.TableAlias)) return true;
+
+            Register.Info.AppendInfo(SqLiteGuiResource.ErrorEmptySelect);
+            return false;
         }
 
         /// <summary>

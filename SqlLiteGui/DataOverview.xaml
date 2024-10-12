@@ -5,9 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sqLiteGui="clr-namespace:SQLiteGui"
              mc:Ignorable="d"
-             DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300" d:DataContext="{d:DesignInstance Type=sqLiteGui:DataOverviewViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5" />
@@ -26,7 +25,7 @@
         </Grid.ColumnDefinitions>
 
         <DataGrid x:Name="TableData"
-                  ItemsSource="{Binding Items}"
+                  ItemsSource="{Binding Raw}"
                   SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                   CanUserAddRows="False"
                   AutoGenerateColumns="True"

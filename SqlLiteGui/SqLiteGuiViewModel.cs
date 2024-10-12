@@ -6,19 +6,48 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.IO;
 using System.Windows;
 using DataFormatter;
 using ViewModel;
 
+
 namespace SQLiteGui
 {
+    /// <inheritdoc />
     /// <summary>
     ///     View Model
     /// </summary>
-    public class SqLiteGuiViewModel
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    public sealed class SqLiteGuiViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Gets the database information view model.
+        /// </summary>
+        /// <value>
+        /// The database information view model.
+        /// </value>
+        public DbInfoViewModel DbInfoViewModel { get; }
+
+        /// <summary>
+        /// Gets the data overview view model.
+        /// </summary>
+        /// <value>
+        /// The data overview view model.
+        /// </value>
+        public DataOverviewViewModel DataOverviewViewModel { get; }
+
+        /// <summary>
+        /// Gets the table overview view model.
+        /// </summary>
+        /// <value>
+        /// The table overview view model.
+        /// </value>
+        public TableOverviewViewModel TableOverviewViewModel { get; }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqLiteGuiViewModel" /> class.
         /// </summary>
@@ -30,10 +59,15 @@ namespace SQLiteGui
             CloseCommand = new DelegateCommand<object>(CloseClick);
             ImportCsvCommand = new DelegateCommand<object>(ImportCsvClick);
             ExportCsvCommand = new DelegateCommand<object>(ExportCsvClick);
+
+            DbInfoViewModel = new DbInfoViewModel();
+            Register.Info = DbInfoViewModel;
+            DataOverviewViewModel = new DataOverviewViewModel();
+            TableOverviewViewModel = new TableOverviewViewModel(DataOverviewViewModel);
         }
 
         /// <summary>
-        ///     Creates new databasecommand.
+        ///     Creates new database command.
         /// </summary>
         /// <value>
         ///     The new database command.
@@ -105,8 +139,13 @@ namespace SQLiteGui
         /// <param name="parameter">The parameter.</param>
         private void OpenDatabaseClick(object parameter)
         {
+            Register.StartNew();
             Register.ActiveDb = Dialogs.HandleFile(SqLiteGuiResource.DbFilter);
-            LoadDatabase();
+            SqLiteGuiProcessing.OpenDatabase(Register.ActiveDb);
+
+            var tables = SqLiteGuiProcessing.GetTableDetails();
+
+            TableOverviewViewModel.SetTables(tables);
         }
 
         /// <summary>
@@ -124,6 +163,7 @@ namespace SQLiteGui
         /// <param name="parameter">The parameter.</param>
         private void CloseClick(object parameter)
         {
+            SqLiteGuiProcessing.CloseDatabase();
             Application.Current.Shutdown(); // Close the application properly
         }
 
@@ -131,7 +171,7 @@ namespace SQLiteGui
         ///     Imports the CSV click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        private void ImportCsvClick(object parameter)
+        private static void ImportCsvClick(object parameter)
         {
             var csvFilePath = Dialogs.HandleFile("CSV files|*.csv");
             if (string.IsNullOrWhiteSpace(csvFilePath))
@@ -158,7 +198,7 @@ namespace SQLiteGui
         ///     Exports the CSV click.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        private void ExportCsvClick(object parameter)
+        private static void ExportCsvClick(object parameter)
         {
             var savePath = Dialogs.HandleFile("CSV files|*.csv", false);
             if (string.IsNullOrWhiteSpace(savePath))
@@ -183,16 +223,6 @@ namespace SQLiteGui
             {
                 MessageBox.Show($"Error exporting CSV: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        ///     Loads the database.
-        /// </summary>
-        private void LoadDatabase()
-        {
-            SqLiteGuiProcessing.OpenDatabase(Register.ActiveDb);
-            Register.StartNew();
-            // Optionally: Notify UI to refresh data
         }
     }
 }
