@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        CommonLibraryTests/Image.cs
+ * PURPOSE:     Tests for Image Tools
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -8,14 +16,6 @@ using ImageCompare;
 using Imaging;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Image.cs
- * PURPOSE:     Tests for Image Tools
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
 
 namespace CommonLibraryTests
 {
@@ -487,6 +487,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void CompareImageColors()
         {
+            //TODO replace
             //var imagePath = Path.Combine(SampleImagesFolder.FullName, "Color.png");
             //using var btm = new Bitmap(imagePath);
 

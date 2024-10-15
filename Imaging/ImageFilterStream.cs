@@ -275,14 +275,19 @@ namespace Imaging
             for (var y = 0; y < dbm.Height; y += stepWidth)
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
-                // Get the color of the current rectangle
-                var rectangle = new Rectangle(x, y, stepWidth, stepWidth);
-                var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
+                    // Ensure the rectangle doesn't exceed image boundaries
+                    var rectWidth = Math.Min(stepWidth, dbm.Width - x);
+                    var rectHeight = Math.Min(stepWidth, dbm.Height - y);
 
-                using var g = Graphics.FromImage(processedImage);
-                using var brush = new SolidBrush(averageColor);
-                g.FillRectangle(brush, x, y, stepWidth, stepWidth);
-            }
+                    // Get the color of the current rectangle
+                    var rectangle = new Rectangle(x, y, rectWidth, rectHeight);
+                    var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
+
+                    // Draw the rectangle with the average color
+                    using var g = Graphics.FromImage(processedImage);
+                    using var brush = new SolidBrush(averageColor);
+                    g.FillRectangle(brush, x, y, rectWidth, rectHeight);
+                }
 
             return processedImage;
         }
