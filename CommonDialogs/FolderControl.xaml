@@ -8,6 +8,7 @@
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
+        <!-- Grid Definitions -->
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
@@ -24,7 +25,6 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
             <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
             <RowDefinition Height="5*" />
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -59,33 +59,93 @@
         <Button Content="Up"
                 Grid.Row="0"
                 Grid.Column="3"
-                Click="BtnUpClick" />
+                Click="BtnUpClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="Background" Value="#FF4CAF50"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF66BB6A"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
         <Button Content="Go"
                 Grid.Column="3"
-                Grid.Row="2" Click="BtnGoClick" />
+                Grid.Row="2"
+                Click="BtnGoClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Exp"
                 Grid.Column="5"
-                Grid.Row="2" Click="BtnExplorerClick" />
+                Grid.Row="2"
+                Click="BtnExplorerClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
 
         <!-- Shortcut Buttons -->
         <Button Content="Desktop"
                 Grid.Row="6"
-                Grid.Column="0" Click="BtnDesktopClick" />
+                Grid.Column="0"
+                Click="BtnDesktopClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Root"
                 Grid.Row="4"
-                Grid.Column="0" Click="BtnRootClick" />
+                Grid.Column="0"
+                Click="BtnRootClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Docs"
                 Grid.Row="8"
-                Grid.Column="0" Click="BtnDocsClick" />
+                Grid.Column="0"
+                Click="BtnDocsClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Personal"
                 Grid.Row="10"
-                Grid.Column="0" Click="BtnPersonalClick" />
+                Grid.Column="0"
+                Click="BtnPersonalClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Pictures"
                 Grid.Row="12"
-                Grid.Column="0" Click="BtnPictureClick" />
+                Grid.Column="0"
+                Click="BtnPictureClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
+
         <Button Content="Folder"
                 Grid.Row="14"
-                Grid.Column="0" Click="BtnFolderClick" />
+                Grid.Column="0"
+                Click="BtnFolderClick">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            </Button.Style>
+        </Button>
 
         <!-- TreeView -->
         <TreeView x:Name="FoldersItem"
