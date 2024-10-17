@@ -296,7 +296,6 @@ namespace SQLiteGui
             return false;
         }
 
-
         /// <summary>
         ///     Drops the table.
         /// </summary>
