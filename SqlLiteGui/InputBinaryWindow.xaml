@@ -52,4 +52,11 @@
         <Label Name="LblDescription" Grid.Column="1" HorizontalAlignment="Stretch"
                Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="4" />
     </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 </Window>

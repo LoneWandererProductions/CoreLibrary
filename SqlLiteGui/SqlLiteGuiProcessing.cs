@@ -139,7 +139,6 @@ namespace SQLiteGui
             return count != -1;
         }
 
-
         /// <summary>
         ///     Select a Table
         /// </summary>
@@ -295,6 +294,7 @@ namespace SQLiteGui
             Register.Info.AppendInfo(SqLiteGuiResource.ErrorEmptySelect);
             return false;
         }
+
 
         /// <summary>
         ///     Drops the table.

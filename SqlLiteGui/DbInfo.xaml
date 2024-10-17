@@ -15,4 +15,11 @@
             Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged}" />
         <!-- Bind to ViewModel property -->
     </Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 </UserControl>
