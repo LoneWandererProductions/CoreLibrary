@@ -187,7 +187,7 @@
   </data>
   <data name="InputWindowTitleWhere" xml:space="preserve">
     <value>Where Clause</value>
-    <comment>Where</comment>
+    <comment>Input your where clause</comment>
   </data>
   <data name="LogsWindowTitle" xml:space="preserve">
     <value>Logs</value>

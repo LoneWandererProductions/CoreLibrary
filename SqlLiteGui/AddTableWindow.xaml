@@ -43,11 +43,8 @@
                Grid.ColumnSpan="3" />
         <TextBox Grid.Column="5"
                  x:Name="TxtBoxTableName"
-                 HorizontalAlignment="Stretch"
                  Grid.Row="1"
-                 TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Grid.RowSpan="2" />
+                 TextWrapping="Wrap" />
         <DataGrid
             x:Name="DataGridTbl"
             AutoGenerateColumns="True"
