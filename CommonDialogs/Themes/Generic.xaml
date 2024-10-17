@@ -8,18 +8,19 @@
     <Color x:Key="SecondaryColor">#FF03DAC6</Color>
     <Color x:Key="BackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="TextColor">#FF000000</Color>
+    <Color x:Key="GreenButton">#FF6AD25B</Color>
 
     <!-- Brushes -->
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource PrimaryColor}" />
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{DynamicResource SecondaryColor}" />
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}" />
-    <SolidColorBrush x:Key="TextBrush" Color="{DynamicResource TextColor}" />
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource GreenButton}" />
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}" />
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}" />
 
     <!-- Style for Buttons -->
     <Style TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SecondaryBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Padding" Value="10,5" />
         <Setter Property="FontSize" Value="14" />
@@ -37,13 +38,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FF66BB6A"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Style for TextBoxes -->
     <Style TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SecondaryBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="5" />
     </Style>

@@ -52,4 +52,11 @@
                                            Text="{Binding Path=Log, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                            IsEnabled="True" />
     </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 </Window>
