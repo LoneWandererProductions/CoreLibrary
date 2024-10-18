@@ -8,9 +8,11 @@
 
 // ReSharper disable MemberCanBeInternal, no not possible for User-control
 
+using System.Windows.Controls;
+
 namespace SQLiteGui
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
     ///     The data base info class.
     /// </summary>
@@ -34,5 +36,21 @@ namespace SQLiteGui
         /// The view model.
         /// </value>
         private DbInfoViewModel ViewModel { get; }
+
+        /// <summary>
+        /// Called when [text box text changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
+        private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is not TextBox textBox)
+            {
+                return;
+            }
+
+            textBox.CaretIndex = textBox.Text.Length; // Move caret to the end
+            textBox.ScrollToEnd(); // Scroll to the end
+        }
     }
 }
