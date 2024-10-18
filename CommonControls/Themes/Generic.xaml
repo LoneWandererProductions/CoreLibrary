@@ -57,6 +57,88 @@
         </Setter>
     </Style>
 
+
+    <!-- Style for ComboBox -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SecondaryBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="15">
+                        <!-- Rounded edges for the ComboBox -->
+                        <Grid>
+                            <!-- ToggleButton for the dropdown -->
+                            <ToggleButton Name="ToggleButton"
+                                      Focusable="False"
+                                      IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                      ClickMode="Press"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="0"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Width="20"
+                                      Height="20"
+                                      Margin="0,0,5,0">
+                                <Path x:Name="Arrow"
+                                  Width="10"
+                                  Height="6"
+                                  Stretch="Uniform"
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="M 0 0 L 10 0 L 5 6 Z"/>
+                            </ToggleButton>
+
+                            <!-- Content of the ComboBox -->
+                            <ContentPresenter Name="ContentSite"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          Margin="5,3,23,3"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"/>
+
+                            <!-- Popup for dropdown items -->
+                            <Popup Name="Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                  SnapsToDevicePixels="True"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <!-- Fully rounded Border -->
+                                    <Border x:Name="DropDownBorder"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="15" />
+                                    <!-- Fully rounded popup -->
+                                    <ScrollViewer Margin="4,6,4,6"
+                                              SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Style for TextBoxes -->
     <Style TargetType="TextBox">
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
@@ -65,4 +147,8 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="5" />
     </Style>
+
+    <!-- Style for ScrollBar -->
+
+    
 </ResourceDictionary>

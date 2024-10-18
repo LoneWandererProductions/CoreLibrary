@@ -27,7 +27,6 @@
                             <ScaleTransform x:Name="Scale" />
                         </imag:ImageGif.LayoutTransform>
                     </imag:ImageGif>
-
                 </Canvas>
             </Canvas>
         </ScrollViewer>

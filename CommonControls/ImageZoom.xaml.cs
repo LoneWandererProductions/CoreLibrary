@@ -68,6 +68,35 @@ namespace CommonControls
             typeof(ImageZoom), null);
 
         /// <summary>
+        /// The zoom scale property
+        /// </summary>
+        public static readonly DependencyProperty ZoomScaleProperty = DependencyProperty.Register(
+            nameof(ZoomScale),
+            typeof(double),
+            typeof(ImageZoom),
+            new PropertyMetadata(1.0, OnZoomScaleChanged));
+
+        /// <summary>
+        /// Gets or sets the zoom scale.
+        /// </summary>
+        public double ZoomScale
+        {
+            get => (double)GetValue(ZoomScaleProperty);
+            set => SetValue(ZoomScaleProperty, value);
+        }
+
+        /// <summary>
+        /// Called when the ZoomScale property changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnZoomScaleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = sender as ImageZoom;
+            control?.UpdateZoomScale((double)e.NewValue);
+        }
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly object _lock = new();
@@ -473,20 +502,26 @@ namespace CommonControls
         {
             lock (_lock)
             {
-                if (e.Delta > 0)
-                {
-                    Scale.ScaleX *= 1.1;
-                    Scale.ScaleY *= 1.1;
-                }
-                else
-                {
-                    Scale.ScaleX /= 1.1;
-                    Scale.ScaleY /= 1.1;
-                }
+                var zoomFactor = e.Delta > 0 ? 1.1 : (1 / 1.1);
+                var newZoomScale = Scale.ScaleX * zoomFactor; // Assume uniform scaling, so use ScaleX
 
-                _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                UpdateZoomScale(newZoomScale); // Centralize logic for updating the zoom scale
             }
         }
+
+        /// <summary>
+        /// Updates the zoom scale for both ScaleX and ScaleY.
+        /// </summary>
+        /// <param name="zoomScale">The new zoom scale.</param>
+        private void UpdateZoomScale(double zoomScale)
+        {
+            Scale.ScaleX = zoomScale;
+            Scale.ScaleY = zoomScale;
+
+            // Ensure the adorner updates with the new zoom scale
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+        }
+
 
         /// <summary>
         ///     Clean up managed and unmanaged resources.
