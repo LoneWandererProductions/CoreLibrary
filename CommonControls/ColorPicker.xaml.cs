@@ -52,6 +52,42 @@ namespace CommonControls
             typeof(ColorPicker), null);
 
         /// <summary>
+        /// The show text boxes property
+        /// </summary>
+        public static readonly DependencyProperty ShowTextBoxesProperty =
+            DependencyProperty.Register(
+                nameof(ShowTextBoxes),
+                typeof(bool),
+                typeof(ColorPicker),
+                new PropertyMetadata(true, OnShowTextBoxesChanged));
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [show text boxes].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [show text boxes]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ShowTextBoxes
+        {
+            get => (bool)GetValue(ShowTextBoxesProperty);
+            set => SetValue(ShowTextBoxesProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [show text boxes changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker colorPicker)
+            {
+                // Force layout update on visibility change
+                colorPicker.UpdateLayout();
+            }
+        }
+
+        /// <summary>
         ///     The alpha
         /// </summary>
         private int _alpha = 255;
