@@ -710,5 +710,31 @@ namespace Imaging
         {
             ImageGifHandler.CreateGif(path, target);
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Bitmaps to base64.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>
+        /// Image as string
+        /// </returns>
+        public string BitmapToBase64(Bitmap bitmap)
+        {
+            return ImageConverter.BitmapToBase64(bitmap);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Bitmaps the image to base64.
+        /// </summary>
+        /// <param name="bitmapImage">The bitmap image.</param>
+        /// <returns>
+        /// Image as string
+        /// </returns>
+        public string BitmapImageToBase64(BitmapImage bitmapImage)
+        {
+            return ImageConverter.BitmapImageToBase64(bitmapImage);
+        }
     }
 }

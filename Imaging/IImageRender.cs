@@ -483,5 +483,19 @@ namespace Imaging
         /// <param name="path">The paths of the images.</param>
         /// <param name="target">The target File.</param>
         void CreateGif(List<string> path, string target);
+
+        /// <summary>
+        /// Bitmaps to base64.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Image as string</returns>
+        string BitmapToBase64(Bitmap bitmap);
+
+        /// <summary>
+        /// Bitmaps the image to base64.
+        /// </summary>
+        /// <param name="bitmapImage">The bitmap image.</param>
+        /// <returns>Image as string</returns>
+        string BitmapImageToBase64(BitmapImage bitmapImage);
     }
 }
