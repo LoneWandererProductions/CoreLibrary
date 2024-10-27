@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Media;
+using ExtendedSystemObjects;
 using Imaging;
+using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
@@ -12,28 +16,40 @@ namespace CommonLibraryTests
         private const int Height = 10;
         private DirectBitmapImage _bitmapImage;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _bitmapImage = new DirectBitmapImage(Width, Height);
         }
 
+        /// <summary>
+        /// Cleanups this instance.
+        /// </summary>
         [TestCleanup]
         public void Cleanup()
         {
             _bitmapImage.Dispose();
         }
 
+        /// <summary>
+        /// Constructors the initializes bits array.
+        /// </summary>
         [TestMethod]
-        public void Constructor_InitializesBitsArray()
+        public void ConstructorInitializesBitsArray()
         {
             // Assert that the Bits array is initialized correctly
             Assert.IsNotNull(_bitmapImage.Bits);
             Assert.AreEqual(Width * Height, _bitmapImage.Bits.Length);
         }
 
+        /// <summary>
+        /// Sets the pixels valid pixels updates bitmap.
+        /// </summary>
         [TestMethod]
-        public void SetPixels_ValidPixels_UpdatesBitmap()
+        public void SetPixelsValidPixelsUpdatesBitmap()
         {
             var pixels = new List<PixelData>
             {
@@ -76,8 +92,11 @@ namespace CommonLibraryTests
                 _bitmapImage.Bits[(Width * 2) + 2]); // Blue
         }
 
+        /// <summary>
+        /// Sets the pixels simd two inputs should set correct pixels.
+        /// </summary>
         [TestMethod]
-        public void SetPixelsSimd_TwoInputs_ShouldSetCorrectPixels()
+        public void SetPixelsSimdTwoInputsShouldSetCorrectPixels()
         {
             // Arrange
             var pixels = new List<(int x, int y, Color color)>
@@ -100,7 +119,7 @@ namespace CommonLibraryTests
         ///     Applies the color matrix valid matrix transforms colors.
         /// </summary>
         [TestMethod]
-        public void ApplyColorMatrix_ValidMatrix_TransformsColors()
+        public void ApplyColorMatrixValidMatrixTransformsColors()
         {
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
@@ -139,10 +158,60 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        ///     Matrix multiplications.
+        /// </summary>
+        [TestMethod]
+        public void MatrixMultiplicationColor()
+        {
+            // Define the expected packed color
+            uint expectedPackedColor = unchecked((uint)(255 << 24 | 76 << 16 | 150 << 8 | 28));
+
+            // Define the color transformation matrix for grayscale
+            double[,] colorMatrix =
+            {
+                { 0.3, 0.3, 0.3, 0, 0 },
+                { 0.59, 0.59, 0.59, 0, 0 },
+                { 0.11, 0.11, 0.11, 0, 0 },
+                { 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0 }
+            };
+
+            // Define the initial pixel color (Green) as a column vector (5x1)
+            double[,] initialPixel =
+            {
+                { 0 },       // R
+                { 255 },     // G
+                { 0 },       // B
+                { 255 },     // A
+                { 1 }        // Additional value if needed
+            };
+
+            // Perform matrix multiplication
+            var result = MatrixUtility.UnsafeMultiplication(colorMatrix, initialPixel);
+
+            // Extract the results
+            var alpha = (int)result[3, 0];
+            var red = (int)Math.Round(result[0, 0]);
+            var green = (int)Math.Round(result[1, 0]);
+            var blue = (int)Math.Round(result[2, 0]);
+
+            // Assert the results
+            Assert.AreEqual(255, alpha, "Alpha value should be 255.");
+            Assert.AreEqual(76, red, "Red value should be 76.");
+            Assert.AreEqual(150, green, "Green value should be 150.");
+            Assert.AreEqual(28, blue, "Blue value should be 28.");
+
+            // Convert individual components to packed uint
+            uint packedColor = unchecked((uint)(alpha << 24 | red << 16 | green << 8 | blue));
+
+            Assert.AreEqual(packedColor, expectedPackedColor);
+        }
+
+        /// <summary>
         ///     Applies the color of the color matrix valid matrix transforms.
         /// </summary>
         [TestMethod]
-        public void ApplyColorMatrix_ValidMatrix_TransformsColor()
+        public void ApplyColorMatrixValidMatrixTransformsColor()
         {
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
@@ -167,11 +236,14 @@ namespace CommonLibraryTests
             _bitmapImage.ApplyColorMatrix(matrix);
             // Assert that colors were transformed correctly to grayscale
 
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
+            //Assert.AreEqual(unchecked((uint)(255 << 24 | 77 << 16 | 150 << 8 | 28)), _bitmapImage.Bits[Width + 1]);
         }
 
+        /// <summary>
+        /// Sets the pixels simd valid pixels updates bits.
+        /// </summary>
         [TestMethod]
-        public void SetPixelsSimd_ValidPixels_UpdatesBits()
+        public void SetPixelsSimdValidPixelsUpdatesBits()
         {
             var pixels = new List<(int x, int y, Color color)>
             {
@@ -190,8 +262,11 @@ namespace CommonLibraryTests
                 _bitmapImage.Bits[(Width * 2) + 2]); // Blue
         }
 
+        /// <summary>
+        /// Sets the pixels should set correct pixel values.
+        /// </summary>
         [TestMethod]
-        public void SetPixels_ShouldSetCorrectPixelValues()
+        public void SetPixelsShouldSetCorrectPixelValues()
         {
             // Arrange
             var bitmapImage = new DirectBitmapImage(2, 2);

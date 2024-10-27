@@ -130,8 +130,6 @@ namespace Mathematics
             var h = mOne.Height;
             var w = mOne.Width;
 
-            var result = new BaseMatrix(h, w);
-
             fixed (double* pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
             {
                 for (var i = 0; i < h; i++)
