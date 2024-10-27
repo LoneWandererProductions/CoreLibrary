@@ -9,28 +9,58 @@
  *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment
  */
 
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-// ReSharper disable UnusedMember.Global
-// ReSharper disable MemberCanBePrivate.Global, should be viewed external, since this is the config
-
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Imaging
 {
     /// <summary>
     ///     The image register class.
     /// </summary>
-    public static class ImageRegister
+    public sealed class ImageRegister
     {
+
+        /// <summary>
+        /// Gets the error log.
+        /// </summary>
+        /// <value>
+        /// The error log.
+        /// </value>
+        public Dictionary<DateTime, string> ErrorLog { get; } = new();
+
+        /// <summary>
+        /// Gets the last error.
+        /// </summary>
+        /// <value>
+        /// The last error.
+        /// </value>
+        public string LastError => ErrorLog.Values.Last();
+
+        // Private static instance of the singleton
+        private static readonly Lazy<ImageRegister> Settings = new(() => new ImageRegister());
+
+        // Private constructor to prevent instantiation from outside
+        internal ImageRegister()
+        {
+            // Initialization logic
+        }
+
+        // Public static property to get the instance
+        internal static ImageRegister Instance => Settings.Value;
+
         /// <summary>
         ///     The filter property map
         ///     Mapping of filters to their used properties
         /// </summary>
-        private static readonly Dictionary<ImageFilters, HashSet<string>> FilterPropertyMap = new()
+        private readonly Dictionary<ImageFilters, HashSet<string>> _filterPropertyMap = new()
         {
             {
                 ImageFilters.GaussianBlur,
@@ -75,7 +105,7 @@ namespace Imaging
         ///     The texture property map
         ///     Mapping of textures to their used properties
         /// </summary>
-        private static readonly Dictionary<TextureType, HashSet<string>> TexturePropertyMap = new()
+        private readonly Dictionary<TextureType, HashSet<string>> _texturePropertyMap = new()
         {
             {
                 TextureType.Noise,
@@ -149,42 +179,42 @@ namespace Imaging
         /// <summary>
         ///     The sharpen filter
         /// </summary>
-        internal static readonly double[,] SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+        internal readonly double[,] sharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
 
         /// <summary>
         ///     The gaussian blur
         /// </summary>
-        internal static readonly double[,] GaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+        internal readonly double[,] gaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     The emboss filter
         /// </summary>
-        internal static readonly double[,] EmbossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+        internal readonly double[,] embossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
 
         /// <summary>
         ///     The box blur
         /// </summary>
-        internal static readonly double[,] BoxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+        internal readonly double[,] boxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
         /// <summary>
         ///     The laplacian filter
         /// </summary>
-        internal static readonly double[,] LaplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+        internal readonly double[,] laplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
 
         /// <summary>
         ///     The edge enhance
         /// </summary>
-        internal static readonly double[,] EdgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
+        internal readonly double[,] edgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
 
         /// <summary>
         ///     The unsharp mask
         /// </summary>
-        internal static readonly double[,] UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+        internal readonly double[,] unsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
 
         /// <summary>
         ///     The motion blur
         /// </summary>
-        internal static readonly double[,] MotionBlur =
+        internal readonly double[,] motionBlur =
         {
             { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
         };
@@ -193,24 +223,24 @@ namespace Imaging
         ///     The kernel 45 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal static readonly double[,] Kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
+        internal readonly double[,] kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
 
         /// <summary>
         ///     The kernel 135 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal static readonly double[,] Kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
+        internal readonly double[,] kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
 
 
         /// <summary>
         ///     The sobel x kernel
         /// </summary>
-        internal static readonly int[,] SobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+        internal readonly int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
         /// <summary>
         ///     The sobel y kernel
         /// </summary>
-        internal static readonly int[,] SobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+        internal readonly int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image
@@ -228,7 +258,7 @@ namespace Imaging
         ///     NewB = (m31* R + m32* G + m33* B + m34* A + m35)
         ///     NewA = (m41* R + m42* G + m43* B + m44* A + m45)
         /// </summary>
-        internal static readonly ColorMatrix GrayScale = new(new[]
+        internal readonly ColorMatrix grayScale = new(new[]
         {
             new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -239,7 +269,7 @@ namespace Imaging
         ///     Source:
         ///     https://archive.ph/hzR2W
         /// </summary>
-        internal static readonly ColorMatrix Invert = new(new[]
+        internal readonly ColorMatrix invert = new(new[]
         {
             new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
@@ -250,7 +280,7 @@ namespace Imaging
         ///     Source:
         ///     https://archive.ph/hzR2W
         /// </summary>
-        internal static readonly ColorMatrix Sepia = new(new[]
+        internal readonly ColorMatrix sepia = new(new[]
         {
             new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
             new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -261,7 +291,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal static readonly ColorMatrix Polaroid = new(new[]
+        internal readonly ColorMatrix Polaroid = new(new[]
         {
             new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
             new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
@@ -273,7 +303,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal static readonly ColorMatrix BlackAndWhite = new(new[]
+        internal readonly ColorMatrix BlackAndWhite = new(new[]
         {
             new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
@@ -283,7 +313,7 @@ namespace Imaging
         ///     The brightness Filter
         ///     Adjusts the brightness of the image by scaling the color values.
         /// </summary>
-        internal static readonly ColorMatrix Brightness = new(new[]
+        internal readonly ColorMatrix Brightness = new(new[]
         {
             new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -293,7 +323,7 @@ namespace Imaging
         ///     The contrast Filter
         ///     Adjusts the contrast of the image by scaling the differences between pixel values.
         /// </summary>
-        internal static readonly ColorMatrix Contrast = new(new[]
+        internal readonly ColorMatrix Contrast = new(new[]
         {
             new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -303,7 +333,7 @@ namespace Imaging
         ///     The hue shift Filter
         ///     Shifts the hue of the image, effectively rotating the color wheel.
         /// </summary>
-        internal static readonly ColorMatrix HueShift = new(new[]
+        internal readonly ColorMatrix HueShift = new(new[]
         {
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -313,7 +343,7 @@ namespace Imaging
         ///     The color balance Filter
         ///     Adjusts the balance of colors to emphasize or de-emphasize specific color channels.
         /// </summary>
-        internal static readonly ColorMatrix ColorBalance = new(new[]
+        internal readonly ColorMatrix colorBalance = new(new[]
         {
             new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -323,7 +353,7 @@ namespace Imaging
         ///     The vintage Filter
         ///     Applies a vintage effect by modifying the color matrix to mimic old photo tones.
         /// </summary>
-        internal static readonly ColorMatrix Vintage = new(new[]
+        internal readonly ColorMatrix vintage = new(new[]
         {
             new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 },
             new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -429,7 +459,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>Return the current config</returns>
-        public static ImageFilterConfig GetSettings(ImageFilters filter)
+        public ImageFilterConfig GetSettings(ImageFilters filter)
         {
             return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
         }
@@ -439,7 +469,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public static void SetSettings(ImageFilters filter, ImageFilterConfig config)
+        public void SetSettings(ImageFilters filter, ImageFilterConfig config)
         {
             FilterSettings[filter] = config;
         }
@@ -448,7 +478,7 @@ namespace Imaging
         ///     Gets the available filters.
         /// </summary>
         /// <returns>List of available Filters</returns>
-        public static IEnumerable<ImageFilters> GetAvailableFilters()
+        public IEnumerable<ImageFilters> GetAvailableFilters()
         {
             return FilterSettings.Keys;
         }
@@ -458,9 +488,9 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>List of properties needed for our Filters</returns>
-        public static HashSet<string> GetUsedProperties(ImageFilters filter)
+        public HashSet<string> GetUsedProperties(ImageFilters filter)
         {
-            return FilterPropertyMap.TryGetValue(filter, out var properties) ? properties : new HashSet<string>();
+            return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : new HashSet<string>();
         }
 
         /// <summary>
@@ -468,7 +498,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>Get the Setting based on Filter</returns>
-        public static TextureConfiguration GetSettings(TextureType filter)
+        public TextureConfiguration GetSettings(TextureType filter)
         {
             return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfiguration();
         }
@@ -478,7 +508,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public static void SetSettings(TextureType filter, TextureConfiguration config)
+        public void SetSettings(TextureType filter, TextureConfiguration config)
         {
             TextureSetting[filter] = config;
         }
@@ -489,11 +519,20 @@ namespace Imaging
         /// </summary>
         /// <param name="textureType">Type of the texture.</param>
         /// <returns>List of properties needed for our Textures</returns>
-        public static HashSet<string> GetUsedProperties(TextureType textureType)
+        public HashSet<string> GetUsedProperties(TextureType textureType)
         {
-            return TexturePropertyMap.TryGetValue(textureType, out var properties)
+            return _texturePropertyMap.TryGetValue(textureType, out var properties)
                 ? properties
                 : new HashSet<string>();
+        }
+
+        /// <summary>
+        /// Sets the error.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        public void SetError(Exception exception)
+        {
+            ErrorLog.Add(DateTime.MinValue, exception.Message);
         }
     }
 }

@@ -33,6 +33,11 @@ namespace Imaging
     internal static class ImageFilterStream
     {
         /// <summary>
+        /// The image settings
+        /// </summary>
+        private static ImageRegister _imageSettings;
+
+        /// <summary>
         ///     The default half window size
         /// </summary>
         private const int DefaultHalfWindowSize = 5;
@@ -44,15 +49,19 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The image to gray scale</param>
         /// <param name="filter">Image Filter</param>
+        /// <param name="imageSettings"></param>
         /// <returns>
         ///     A filtered version of the image
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
         [return: MaybeNull]
-        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter)
+        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter, ImageRegister imageSettings = null )
         {
             ImageHelper.ValidateImage(nameof(FilterImage), image);
+
+            //set the Settings for the filters
+            _imageSettings = imageSettings ?? new ImageRegister();
 
             //create a blank bitmap the same size as original
             var btm = new Bitmap(image.Width, image.Height);
@@ -63,68 +72,68 @@ namespace Imaging
             //create some image attributes
             using var atr = new ImageAttributes();
 
+            //set the color matrix attribute
             ImageFilterConfig settings;
 
-            //set the color matrix attribute
             switch (filter)
             {
                 case ImageFilters.GrayScale:
-                    atr.SetColorMatrix(ImageRegister.GrayScale);
+                    atr.SetColorMatrix(_imageSettings.grayScale);
                     break;
                 case ImageFilters.Invert:
-                    atr.SetColorMatrix(ImageRegister.Invert);
+                    atr.SetColorMatrix(_imageSettings.invert);
                     break;
                 case ImageFilters.Sepia:
-                    atr.SetColorMatrix(ImageRegister.Sepia);
+                    atr.SetColorMatrix(_imageSettings.sepia);
                     break;
                 case ImageFilters.BlackAndWhite:
-                    atr.SetColorMatrix(ImageRegister.BlackAndWhite);
+                    atr.SetColorMatrix(_imageSettings.BlackAndWhite);
                     break;
                 case ImageFilters.Polaroid:
-                    atr.SetColorMatrix(ImageRegister.Polaroid);
+                    atr.SetColorMatrix(_imageSettings.Polaroid);
                     break;
                 case ImageFilters.Contour:
                     return ApplySobel(image);
                 case ImageFilters.Brightness:
-                    atr.SetColorMatrix(ImageRegister.Brightness);
+                    atr.SetColorMatrix(_imageSettings.Brightness);
                     break;
                 case ImageFilters.Contrast:
-                    atr.SetColorMatrix(ImageRegister.Contrast);
+                    atr.SetColorMatrix(_imageSettings.Contrast);
                     break;
                 case ImageFilters.HueShift:
-                    atr.SetColorMatrix(ImageRegister.HueShift);
+                    atr.SetColorMatrix(_imageSettings.HueShift);
                     break;
                 case ImageFilters.ColorBalance:
-                    atr.SetColorMatrix(ImageRegister.ColorBalance);
+                    atr.SetColorMatrix(_imageSettings.colorBalance);
                     break;
                 case ImageFilters.Vintage:
-                    atr.SetColorMatrix(ImageRegister.Vintage);
+                    atr.SetColorMatrix(_imageSettings.vintage);
                     break;
                 // New convolution-based filters
                 case ImageFilters.Sharpen:
-                    settings = ImageRegister.GetSettings(ImageFilters.Sharpen);
-                    return ApplyFilter(image, ImageRegister.SharpenFilter, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.Sharpen);
+                    return ApplyFilter(image, _imageSettings?.sharpenFilter, settings.Factor, settings.Bias);
                 case ImageFilters.GaussianBlur:
-                    settings = ImageRegister.GetSettings(ImageFilters.GaussianBlur);
-                    return ApplyFilter(image, ImageRegister.GaussianBlur, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.GaussianBlur);
+                    return ApplyFilter(image, _imageSettings?.gaussianBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Emboss:
-                    settings = ImageRegister.GetSettings(ImageFilters.Emboss);
-                    return ApplyFilter(image, ImageRegister.EmbossFilter, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.Emboss);
+                    return ApplyFilter(image, _imageSettings?.embossFilter, settings.Factor, settings.Bias);
                 case ImageFilters.BoxBlur:
-                    settings = ImageRegister.GetSettings(ImageFilters.BoxBlur);
-                    return ApplyFilter(image, ImageRegister.BoxBlur, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.BoxBlur);
+                    return ApplyFilter(image, _imageSettings?.boxBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Laplacian:
-                    settings = ImageRegister.GetSettings(ImageFilters.Laplacian);
-                    return ApplyFilter(image, ImageRegister.LaplacianFilter, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.Laplacian);
+                    return ApplyFilter(image, _imageSettings?.laplacianFilter, settings.Factor, settings.Bias);
                 case ImageFilters.EdgeEnhance:
-                    settings = ImageRegister.GetSettings(ImageFilters.EdgeEnhance);
-                    return ApplyFilter(image, ImageRegister.EdgeEnhance, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.EdgeEnhance);
+                    return ApplyFilter(image, _imageSettings?.edgeEnhance, settings.Factor, settings.Bias);
                 case ImageFilters.MotionBlur:
-                    settings = ImageRegister.GetSettings(ImageFilters.MotionBlur);
-                    return ApplyFilter(image, ImageRegister.MotionBlur, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.MotionBlur);
+                    return ApplyFilter(image, _imageSettings?.motionBlur, settings.Factor, settings.Bias);
                 case ImageFilters.UnsharpMask:
-                    settings = ImageRegister.GetSettings(ImageFilters.UnsharpMask);
-                    return ApplyFilter(image, ImageRegister.UnsharpMask, settings.Factor, settings.Bias);
+                    settings = _imageSettings?.GetSettings(ImageFilters.UnsharpMask);
+                    return ApplyFilter(image, _imageSettings?.unsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
                 case ImageFilters.DifferenceOfGaussians:
                     return ApplyDifferenceOfGaussians(image);
@@ -135,16 +144,16 @@ namespace Imaging
                 case ImageFilters.None:
                     break;
                 case ImageFilters.AnisotropicKuwahara:
-                    settings = ImageRegister.GetSettings(ImageFilters.AnisotropicKuwahara);
+                    settings = _imageSettings.GetSettings(ImageFilters.AnisotropicKuwahara);
                     return ApplyAnisotropicKuwahara(image, settings.BaseWindowSize);
                 case ImageFilters.SupersamplingAntialiasing:
-                    settings = ImageRegister.GetSettings(ImageFilters.SupersamplingAntialiasing);
+                    settings = _imageSettings.GetSettings(ImageFilters.SupersamplingAntialiasing);
                     return ApplySupersamplingAntialiasing(image, settings.Scale);
                 case ImageFilters.PostProcessingAntialiasing:
-                    settings = ImageRegister.GetSettings(ImageFilters.PostProcessingAntialiasing);
+                    settings = _imageSettings.GetSettings(ImageFilters.PostProcessingAntialiasing);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 case ImageFilters.PencilSketchEffect:
-                    settings = ImageRegister.GetSettings(ImageFilters.PencilSketchEffect);
+                    settings = _imageSettings.GetSettings(ImageFilters.PencilSketchEffect);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 default:
                     return null;
@@ -159,6 +168,8 @@ namespace Imaging
             }
             catch (OutOfMemoryException ex)
             {
+                imageSettings?.SetError(ex);
+
                 Trace.WriteLine(ex);
                 throw;
             }
@@ -244,6 +255,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
+                _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
 
@@ -325,8 +337,8 @@ namespace Imaging
                     var pixel = dbmBase.GetPixel(x + i, y + j);
                     int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
                     // Sobel masks for gradient calculation
-                    gx += ImageRegister.SobelX[i + 1, j + 1] * grayValue;
-                    gy += ImageRegister.SobelY[i + 1, j + 1] * grayValue;
+                    gx += _imageSettings.sobelX[i + 1, j + 1] * grayValue;
+                    gy += _imageSettings.sobelY[i + 1, j + 1] * grayValue;
                 }
 
                 // Calculate gradient magnitude
@@ -349,6 +361,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
+                _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
 
@@ -384,8 +397,8 @@ namespace Imaging
         private static Bitmap ApplyCrosshatch(Image image)
         {
             // Apply the 45-degree and 135-degree filters
-            var hatch45 = ApplyFilter(image, ImageRegister.Kernel45Degrees);
-            var hatch135 = ApplyFilter(image, ImageRegister.Kernel135Degrees);
+            var hatch45 = ApplyFilter(image, _imageSettings.kernel45Degrees);
+            var hatch135 = ApplyFilter(image, _imageSettings.kernel135Degrees);
 
             // Combine the two hatching directions
             return ImageOverlays.AddImages(hatch45, hatch135);
@@ -430,6 +443,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
+                _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
 
@@ -605,8 +619,8 @@ namespace Imaging
             out int regionWidth, out int regionHeight)
         {
             // Compute gradient magnitude using Sobel operators
-            var gradientX = ApplyKernel(dbmBase, x, y, ImageRegister.SobelX);
-            var gradientY = ApplyKernel(dbmBase, x, y, ImageRegister.SobelY);
+            var gradientX = ApplyKernel(dbmBase, x, y, _imageSettings.sobelX);
+            var gradientY = ApplyKernel(dbmBase, x, y, _imageSettings.sobelY);
             var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
 
             // Compute local variance
@@ -866,6 +880,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
+                _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
         }
@@ -908,6 +923,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
+                _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
             }
 

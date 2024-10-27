@@ -20,6 +20,22 @@ namespace Imaging
     /// <seealso cref="T:Imaging.ITextureGenerator" />
     public class TextureGenerator : ITextureGenerator
     {
+        /// <summary>
+        /// The image Settings
+        /// </summary>
+        /// <value>
+        /// The image settings.
+        /// </value>
+        private ImageRegister ImageSettings { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextureGenerator"/> class.
+        /// </summary>
+        public TextureGenerator()
+        {
+            ImageSettings = ImageRegister.Instance; // Ensure singleton instance is available
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Generates the noise bitmap.
@@ -29,7 +45,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateNoiseBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Noise);
+            var config = ImageSettings.GetSettings(TextureType.Noise);
             return Texture.GenerateNoiseBitmap(
                 width,
                 height,
@@ -51,7 +67,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateCloudsBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Clouds);
+            var config = ImageSettings.GetSettings(TextureType.Clouds);
             return Texture.GenerateCloudsBitmap(
                 width,
                 height,
@@ -71,7 +87,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateMarbleBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Marble);
+            var config = ImageSettings.GetSettings(TextureType.Marble);
             return Texture.GenerateMarbleBitmap(
                 width,
                 height,
@@ -93,7 +109,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateWaveBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Wave);
+            var config = ImageSettings.GetSettings(TextureType.Wave);
             return Texture.GenerateWaveBitmap(
                 width,
                 height,
@@ -113,7 +129,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateWoodBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Wood);
+            var config = ImageSettings.GetSettings(TextureType.Wood);
             return Texture.GenerateWoodBitmap(
                 width,
                 height,
@@ -148,9 +164,7 @@ namespace Imaging
                 height,
                 filter,
                 shape,
-                actualStartPoint,
-                shapeParams
-            );
+                ImageSettings, shapeParams, actualStartPoint);
         }
 
         /// <inheritdoc />
@@ -162,7 +176,7 @@ namespace Imaging
         /// <returns>Texture Bitmap</returns>
         public Bitmap GenerateCrosshatchBitmap(int width, int height)
         {
-            var config = ImageRegister.GetSettings(TextureType.Crosshatch);
+            var config = ImageSettings.GetSettings(TextureType.Crosshatch);
 
             return Texture.GenerateCrosshatchBitmap(
                 width,

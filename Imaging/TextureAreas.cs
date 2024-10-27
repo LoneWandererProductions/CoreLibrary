@@ -24,8 +24,9 @@ namespace Imaging
         /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
-        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
+        /// <param name="imageSettings"></param>
         /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
         /// <returns>
         ///     Generates a filter for a certain area
         /// </returns>
@@ -34,19 +35,19 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        internal static Bitmap GenerateTexture(
-            int width,
+        internal static Bitmap GenerateTexture(int width,
             int height,
             TextureType filter,
             TextureShape shape,
-            Point? startPoint = null,
-            object shapeParams = null)
+            ImageRegister imageSettings,
+            object shapeParams = null,
+            Point? startPoint = null)
         {
             // If no start point is provided, default to (0, 0)
             var actualStartPoint = startPoint ?? new Point(0, 0);
 
             // Retrieve the settings for the specified filter
-            var settings = ImageRegister.GetSettings(filter);
+            var settings = imageSettings.GetSettings(filter);
 
             // Create a bitmap to apply the texture
             Bitmap textureBitmap;

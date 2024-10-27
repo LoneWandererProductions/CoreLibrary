@@ -30,6 +30,22 @@ namespace Imaging
     /// </summary>
     public sealed class ImageRender : IImageRender
     {
+        /// <summary>
+        /// The image Settings
+        /// </summary>
+        /// <value>
+        /// The image settings.
+        /// </value>
+        private ImageRegister _imageSettings;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageRender"/> class.
+        /// </summary>
+        public ImageRender()
+        {
+            _imageSettings = ImageRegister.Instance; // Ensure singleton instance is available
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Get the bitmap file.
@@ -110,7 +126,7 @@ namespace Imaging
         [return: MaybeNull]
         public Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
-            return ImageFilterStream.FilterImage(image, filter);
+            return ImageFilterStream.FilterImage(image, filter, _imageSettings);
         }
 
         /// <inheritdoc />
