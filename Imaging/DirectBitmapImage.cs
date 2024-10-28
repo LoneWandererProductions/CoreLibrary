@@ -40,12 +40,12 @@ namespace Imaging
         /// <summary>
         ///     The height
         /// </summary>
-        private readonly int _height;
+        public int Height { get; private set; }
 
         /// <summary>
         ///     The width
         /// </summary>
-        private readonly int _width;
+        public  int Width { get; private set; }
 
         /// <summary>
         ///     Indicates if the instance has been disposed
@@ -59,8 +59,8 @@ namespace Imaging
         /// <param name="height">The height.</param>
         public DirectBitmapImage(int width, int height)
         {
-            _width = width;
-            _height = height;
+            Width = width;
+            Height = height;
 
             // Initialize the Bits array and pin it for direct access
             Bits = new uint[width * height];
@@ -110,13 +110,13 @@ namespace Imaging
                 foreach (var pixel in pixels)
                 {
                     // Validate pixel bounds
-                    if (pixel.X < 0 || pixel.X >= _width || pixel.Y < 0 || pixel.Y >= _height)
+                    if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
                     {
                         continue; // Skip invalid pixels
                     }
 
                     // Calculate the index in the back buffer
-                    var pixelIndex = ((pixel.Y * _width) + pixel.X) * 4; // 4 bytes per pixel (BGRA)
+                    var pixelIndex = ((pixel.Y * Width) + pixel.X) * 4; // 4 bytes per pixel (BGRA)
 
                     // Set the pixel data in the back buffer
                     dataPointer[pixelIndex + 0] = pixel.B; // Blue
@@ -125,14 +125,14 @@ namespace Imaging
                     dataPointer[pixelIndex + 3] = pixel.A; // Alpha
 
                     // Store the pixel data as ARGB in the Bits array
-                    Bits[(pixel.Y * _width) + pixel.X] = Bits[(pixel.Y * _width) + pixel.X] =
+                    Bits[(pixel.Y * Width) + pixel.X] = Bits[(pixel.Y * Width) + pixel.X] =
                         (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
                     ; // This will be fine as long as A, R, G, B are 0-255
                 }
             }
 
             // Mark the area of the bitmap that was changed
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, _width, _height));
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             _bitmap.Unlock(); // Unlock the bitmap after writing
         }
 
@@ -143,7 +143,7 @@ namespace Imaging
         private BitmapImage ConvertImage()
         {
             // Create a new WriteableBitmap
-            var bitmap = new WriteableBitmap(_width, _height, 96, 96, PixelFormats.Bgra32, null);
+            var bitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
 
             // Create a byte array to hold the byte representation of the Bits
             var byteArray = new byte[Bits.Length * sizeof(uint)];
@@ -154,7 +154,7 @@ namespace Imaging
             // Copy the byte array to the WriteableBitmap's back buffer
             bitmap.Lock();
             Marshal.Copy(byteArray, 0, bitmap.BackBuffer, byteArray.Length);
-            bitmap.AddDirtyRect(new Int32Rect(0, 0, _width, _height));
+            bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             bitmap.Unlock();
 
             // Create a new BitmapImage from the WriteableBitmap
@@ -222,8 +222,8 @@ namespace Imaging
                 Debug.WriteLine($"Pixel {i}: R={r}, G={g}, B={b}, A={a} -> Transformed: A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B}");
 
                 // Calculate x and y for the pixel
-                var x = i % _width;
-                var y = i / _width;
+                var x = i % Width;
+                var y = i / Width;
 
                 // Store the transformed pixel color
                 transformedPixels[i] = (x, y, newColor);
@@ -245,7 +245,7 @@ namespace Imaging
             var vectorCount = Vector<int>.Count;
 
             // Ensure Bits array is properly initialized
-            if (Bits == null || Bits.Length < _width * _height)
+            if (Bits == null || Bits.Length < Width * Height)
             {
                 throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
             }
@@ -263,9 +263,9 @@ namespace Imaging
                         var (x, y, color) = pixelArray[i + j];
 
                         // Check for valid pixel bounds
-                        if (x >= 0 && x < _width && y >= 0 && y < _height)
+                        if (x >= 0 && x < Width && y >= 0 && y < Height)
                         {
-                            indices[j] = x + (y * _width);
+                            indices[j] = x + (y * Width);
                             colors[j] = (color.A << 24) | (color.R << 16) | (color.G << 8) | color.B;
                         }
                         else
@@ -312,7 +312,7 @@ namespace Imaging
 
             // Copy the byte array to the WriteableBitmap's back buffer
             Marshal.Copy(byteArray, 0, _bitmap.BackBuffer, byteArray.Length);
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, _width, _height));
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             _bitmap.Unlock();
         }
 

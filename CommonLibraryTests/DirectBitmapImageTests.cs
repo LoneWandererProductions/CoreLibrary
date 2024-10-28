@@ -356,5 +356,16 @@ namespace CommonLibraryTests
             Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (255 << 8) | 0)),
                 bitmapImage.Bits[3]); // Check Yellow (0xFFFFFF00)
         }
+
+        /// <summary>
+        /// Constructors the with zero dimensions should throw.
+        /// </summary>
+        [TestMethod]
+        public void ConstructorWithZeroDimensionsShouldThrow()
+        {
+            // Act & Assert
+            Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
+        }
+
     }
 }
