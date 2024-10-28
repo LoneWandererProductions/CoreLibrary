@@ -36,14 +36,14 @@ namespace Imaging
         /// <value>
         /// The image settings.
         /// </value>
-        private ImageRegister _imageSettings;
+        public ImageRegister ImageSettings { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageRender"/> class.
         /// </summary>
         public ImageRender()
         {
-            _imageSettings = ImageRegister.Instance; // Ensure singleton instance is available
+            ImageSettings = ImageRegister.Instance; // Ensure singleton instance is available
         }
 
         /// <inheritdoc />
@@ -126,7 +126,7 @@ namespace Imaging
         [return: MaybeNull]
         public Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
-            return ImageFilterStream.FilterImage(image, filter, _imageSettings);
+            return ImageFilterStream.FilterImage(image, filter, ImageSettings);
         }
 
         /// <inheritdoc />
