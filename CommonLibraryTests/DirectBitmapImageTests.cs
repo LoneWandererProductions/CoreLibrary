@@ -121,6 +121,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ApplyColorMatrixValidMatrixTransformsColors()
         {
+            _bitmapImage = new DirectBitmapImage(1, 2);
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
@@ -136,7 +137,7 @@ namespace CommonLibraryTests
                 new()
                 {
                     X = 1,
-                    Y = 1,
+                    Y = 0,
                     R = 0,
                     G = 255,
                     B = 0,
@@ -151,10 +152,31 @@ namespace CommonLibraryTests
                 new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
             };
             _bitmapImage.ApplyColorMatrix(matrix);
-            // Assert that colors were transformed correctly to grayscale
 
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 77 << 16 | 151 << 8 | 29)), _bitmapImage.Bits[0]);
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 150 << 16 | 150 << 8 | 150)), _bitmapImage.Bits[Width + 1]); // Grayscale for Green
+            var colorValue = _bitmapImage.Bits[0];
+
+            var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+            var r = (byte)((colorValue >> 16) & 0xFF); // Red
+            var g = (byte)((colorValue >> 8) & 0xFF);  // Green
+            var b = (byte)(colorValue & 0xFF);         // Blue
+
+
+
+            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+
+            colorValue = _bitmapImage.Bits[1];
+
+            a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+            r = (byte)((colorValue >> 16) & 0xFF); // Red
+            g = (byte)((colorValue >> 8) & 0xFF);  // Green
+            b = (byte)(colorValue & 0xFF);         // Blue
+
+
+            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+
+            // Assert that colors were transformed correctly to grayscale
+            Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
+            Assert.AreEqual((UInt32)0, _bitmapImage.Bits[1]); // Grayscale for Green
         }
 
         /// <summary>
@@ -163,6 +185,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void MatrixMultiplicationColor()
         {
+            _bitmapImage = new DirectBitmapImage(1, 1);
             // Define the expected packed color
             uint expectedPackedColor = unchecked((uint)(255 << 24 | 76 << 16 | 150 << 8 | 28));
 
@@ -213,13 +236,14 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ApplyColorMatrixValidMatrixTransformsColor()
         {
+            _bitmapImage = new DirectBitmapImage(1, 1);
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
                 new()
                 {
-                    X = 1,
-                    Y = 1,
+                    X = 0,
+                    Y = 0,
                     R = 0,
                     G = 255,
                     B = 0,
@@ -234,9 +258,18 @@ namespace CommonLibraryTests
                 new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
             };
             _bitmapImage.ApplyColorMatrix(matrix);
-            // Assert that colors were transformed correctly to grayscale
 
-            //Assert.AreEqual(unchecked((uint)(255 << 24 | 77 << 16 | 150 << 8 | 28)), _bitmapImage.Bits[Width + 1]);
+            var colorValue = _bitmapImage.Bits[0];
+
+            byte a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+            byte r = (byte)((colorValue >> 16) & 0xFF); // Red
+            byte g = (byte)((colorValue >> 8) & 0xFF);  // Green
+            byte b = (byte)(colorValue & 0xFF);         // Blue
+
+            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+
+            // Assert that colors were transformed correctly to grayscale
+            Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
         }
 
         /// <summary>

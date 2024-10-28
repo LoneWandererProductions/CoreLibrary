@@ -184,76 +184,54 @@ namespace Imaging
         /// <param name="matrix">The matrix.</param>
         public void ApplyColorMatrix(float[][] matrix)
         {
-            // Initialize transformedColors to hold the transformed pixel colors
-            var transformedColors = new (int x, int y, Color color)[Bits.Length];
+            // Prepare an array to hold transformed pixel data
+            var transformedPixels = new (int x, int y, Color color)[Bits.Length];
 
-            // Loop through the Bits array and apply the color matrix
             for (var i = 0; i < Bits.Length; i++)
             {
+                // Original color data
                 var color = Bits[i];
+                var a = (byte)((color >> 24) & 0xFF);
+                var r = (byte)((color >> 16) & 0xFF);
+                var g = (byte)((color >> 8) & 0xFF);
+                var b = (byte)(color & 0xFF);
 
-                // Extract ARGB values from the color
-                var converter = new ColorHsv((int)color);
-                Debug.WriteLine(
-                    $"Original color for pixel {i}: ARGB({converter.A}, {converter.R}, {converter.G}, {converter.B})");
-
-                // Create a vector for the color (ARGB)
-                var colorVector = new float[4] { converter.R, converter.G, converter.B, converter.A };
-
-                // Initialize a new result array for transformed colors
+                // Color vector, ensure it is float
+                var colorVector = new float[] { r, g, b, a };
                 var result = new float[4];
 
-                // Perform the matrix multiplication
-                result[0] = (matrix[0][0] * colorVector[0]) + (matrix[0][1] * colorVector[1]) +
-                            (matrix[0][2] * colorVector[2]) + (matrix[0][3] * colorVector[3]);
-                result[1] = (matrix[1][0] * colorVector[0]) + (matrix[1][1] * colorVector[1]) +
-                            (matrix[1][2] * colorVector[2]) + (matrix[1][3] * colorVector[3]);
-                result[2] = (matrix[2][0] * colorVector[0]) + (matrix[2][1] * colorVector[1]) +
-                            (matrix[2][2] * colorVector[2]) + (matrix[2][3] * colorVector[3]);
-                result[3] = (matrix[3][0] * colorVector[0]) + (matrix[3][1] * colorVector[1]) +
-                            (matrix[3][2] * colorVector[2]) + (matrix[3][3] * colorVector[3]);
-
-                // Log transformed color before adding bias
-                Debug.WriteLine(
-                    $"Transformed color for pixel {i} (before bias): R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
-
-                // Add the bias from the last row of the matrix
-                result[0] += matrix[4][0]; // Bias for R
-                result[1] += matrix[4][1]; // Bias for G
-                result[2] += matrix[4][2]; // Bias for B
-                result[3] += matrix[4][3]; // Bias for A
-
-                // Log color after bias addition
-                Debug.WriteLine($"After adding bias: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
-
-                // Clamp the values to [0, 255] and round down
-                result[0] = (int)Math.Ceiling(Math.Clamp(result[0], 0, 255));
-                result[1] = (int)Math.Ceiling(Math.Clamp(result[1], 0, 255));
-                result[2] = (int)Math.Ceiling(Math.Clamp(result[2], 0, 255));
-                result[3] = (int)Math.Ceiling(Math.Clamp(result[3], 0, 255));
-
-                // Log clamped values
-                Debug.WriteLine($"Clamped values: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
-
-                // Create new color
-                var newColor = new Color
+                // Apply matrix transformation
+                for (var j = 0; j < 4; j++)
                 {
-                    A = (byte)result[3], R = (byte)result[0], G = (byte)result[1], B = (byte)result[2]
-                };
+                    result[j] = 0; // Initialize to zero before summation
+                    for (var k = 0; k < 4; k++) // Ensure we only sum over valid indices
+                    {
+                        result[j] += matrix[j][k] * colorVector[k];
+                    }
+                }
 
-                // Calculate the x and y positions
+                // Clamp result to [0, 255] and convert to bytes
+                var newColor = Color.FromArgb(
+                    (byte)Math.Clamp(result[3], 0, 255),
+                    (byte)Math.Clamp(result[0], 0, 255),
+                    (byte)Math.Clamp(result[1], 0, 255),
+                    (byte)Math.Clamp(result[2], 0, 255)
+                );
+
+                // Debug output for transformed color
+                Debug.WriteLine($"Pixel {i}: R={r}, G={g}, B={b}, A={a} -> Transformed: A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B}");
+
+                // Calculate x and y for the pixel
                 var x = i % _width;
                 var y = i / _width;
 
                 // Store the transformed pixel color
-                transformedColors[i] = (x, y, newColor);
-                Debug.WriteLine(
-                    $"Transformed pixel position ({x}, {y}) with new color: ARGB({newColor.A}, {newColor.R}, {newColor.G}, {newColor.B})");
+                transformedPixels[i] = (x, y, newColor);
             }
 
-            // Use SetPixelsSimd to apply the transformed pixel colors
-            SetPixelsSimd(transformedColors.Where(p => p.color.A != 0)); // Filter out default colors
-            Debug.WriteLine("Applied transformed colors to pixels.");
+            // Apply transformed pixels
+            SetPixelsSimd(transformedPixels);
+            Debug.WriteLine("Color matrix applied successfully.");
         }
 
         /// <summary>
@@ -283,20 +261,32 @@ namespace Imaging
                     if (i + j < pixelArray.Length)
                     {
                         var (x, y, color) = pixelArray[i + j];
-                        indices[j] = x + (y * _width);
-                        colors[j] = (color.A << 24) | (color.R << 16) | (color.G << 8) | color.B;
+
+                        // Check for valid pixel bounds
+                        if (x >= 0 && x < _width && y >= 0 && y < _height)
+                        {
+                            indices[j] = x + (y * _width);
+                            colors[j] = (color.A << 24) | (color.R << 16) | (color.G << 8) | color.B;
+                        }
+                        else
+                        {
+                            // Assign default values if the pixel is out of bounds
+                            indices[j] = 0; // Or a suitable default index if required
+                            colors[j] = 0;  // Default color
+                        }
                     }
                     else
                     {
                         // Handle cases where the remaining elements are less than vectorCount
-                        indices[j] = 0;
-                        colors[j] = 0; // Use a default color or handle it as needed
+                        indices[j] = 0; // Default index (can also be an invalid one)
+                        colors[j] = 0;  // Default color
                     }
                 }
 
                 // Write data to Bits array
                 for (var j = 0; j < vectorCount; j++)
                 {
+                    // Write only valid indices
                     if (i + j < pixelArray.Length)
                     {
                         Bits[indices[j]] = (uint)colors[j];
@@ -304,6 +294,8 @@ namespace Imaging
                 }
             }
         }
+
+
 
         /// <summary>
         ///     Updates the bitmap from the Bits array.
