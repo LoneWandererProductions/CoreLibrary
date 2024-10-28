@@ -218,9 +218,6 @@ namespace Imaging
                     (byte)Math.Clamp(result[2], 0, 255)
                 );
 
-                // Debug output for transformed color
-                Debug.WriteLine($"Pixel {i}: R={r}, G={g}, B={b}, A={a} -> Transformed: A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B}");
-
                 // Calculate x and y for the pixel
                 var x = i % Width;
                 var y = i / Width;
@@ -231,7 +228,6 @@ namespace Imaging
 
             // Apply transformed pixels
             SetPixelsSimd(transformedPixels);
-            Debug.WriteLine("Color matrix applied successfully.");
         }
 
         /// <summary>
