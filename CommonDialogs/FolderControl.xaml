@@ -59,58 +59,48 @@
         <Button Content="Up"
                 Grid.Row="0"
                 Grid.Column="3"
-                Click="BtnUpClick">
-
-        </Button>
+                Click="BtnUpClick" />
 
         <Button Content="Go"
                 Grid.Column="3"
                 Grid.Row="2"
-                Click="BtnGoClick">
-        </Button>
+                Click="BtnGoClick" />
 
         <Button Content="Exp"
                 Grid.Column="5"
                 Grid.Row="2"
-                Click="BtnExplorerClick">
-        </Button>
+                Click="BtnExplorerClick" />
 
         <!-- Shortcut Buttons -->
         <Button Content="Desktop"
                 Grid.Row="6"
                 Grid.Column="0"
-                Click="BtnDesktopClick">
-        </Button>
+                Click="BtnDesktopClick" />
 
         <Button Content="Root"
                 Grid.Row="4"
                 Grid.Column="0"
-                Click="BtnRootClick">
-        </Button>
+                Click="BtnRootClick" />
 
         <Button Content="Docs"
                 Grid.Row="8"
                 Grid.Column="0"
-                Click="BtnDocsClick">
-        </Button>
+                Click="BtnDocsClick" />
 
         <Button Content="Personal"
                 Grid.Row="10"
                 Grid.Column="0"
-                Click="BtnPersonalClick">
-        </Button>
+                Click="BtnPersonalClick" />
 
         <Button Content="Pictures"
                 Grid.Row="12"
                 Grid.Column="0"
-                Click="BtnPictureClick">
-        </Button>
+                Click="BtnPictureClick" />
 
         <Button Content="Folder"
                 Grid.Row="14"
                 Grid.Column="0"
-                Click="BtnFolderClick">
-        </Button>
+                Click="BtnFolderClick" />
 
         <!-- TreeView -->
         <TreeView x:Name="FoldersItem"
@@ -145,7 +135,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

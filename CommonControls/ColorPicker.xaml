@@ -35,7 +35,7 @@
 
         <!-- Images and other controls -->
         <Image x:Name="ImageOne" Grid.ColumnSpan="7" Grid.Column="0" />
-        <Image x:Name="ImageTwo" Grid.Row="0" Grid.ColumnSpan="7" Grid.Column="0" 
+        <Image x:Name="ImageTwo" Grid.Row="0" Grid.ColumnSpan="7" Grid.Column="0"
                MouseDown="ImageTwo_MouseDown" />
 
         <!-- Nested Grid for TextBoxes, with dynamic visibility -->
@@ -74,7 +74,7 @@
         </Grid>
 
         <!-- Slider and other elements, unchanged -->
-        <Slider Grid.Column="7" Grid.Row="0" Maximum="255" Orientation="Vertical" 
+        <Slider Grid.Column="7" Grid.Row="0" Maximum="255" Orientation="Vertical"
                 Value="{Binding Alpha, Mode=TwoWay}" />
         <Label Content="{Binding Path=AlphaPercentage}" Grid.Column="7" Grid.Row="4" />
         <Canvas Name="CanvasPreview" Grid.Column="7" Grid.Row="6" />

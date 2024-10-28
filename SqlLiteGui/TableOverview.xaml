@@ -34,11 +34,11 @@
         <!-- DataGrid for Tables -->
         <DataGrid
             ItemsSource="{Binding Tables, Mode=TwoWay}"
-                  SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  Grid.Column="1"
-                  Grid.RowSpan="11">
+            SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
+            CanUserAddRows="False"
+            IsReadOnly="True"
+            Grid.Column="1"
+            Grid.RowSpan="11">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Table Name" Binding="{Binding TableAlias}" Width="*" />
             </DataGrid.Columns>
@@ -91,7 +91,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

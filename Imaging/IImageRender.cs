@@ -485,14 +485,14 @@ namespace Imaging
         void CreateGif(List<string> path, string target);
 
         /// <summary>
-        /// Bitmaps to base64.
+        ///     Bitmaps to base64.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Image as string</returns>
         string BitmapToBase64(Bitmap bitmap);
 
         /// <summary>
-        /// Bitmaps the image to base64.
+        ///     Bitmaps the image to base64.
         /// </summary>
         /// <param name="bitmapImage">The bitmap image.</param>
         /// <returns>Image as string</returns>

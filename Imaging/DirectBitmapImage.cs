@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -38,16 +37,6 @@ namespace Imaging
         private readonly GCHandle _bitsHandle;
 
         /// <summary>
-        ///     The height
-        /// </summary>
-        public int Height { get; private set; }
-
-        /// <summary>
-        ///     The width
-        /// </summary>
-        public  int Width { get; private set; }
-
-        /// <summary>
         ///     Indicates if the instance has been disposed
         /// </summary>
         private bool _disposed;
@@ -69,6 +58,16 @@ namespace Imaging
             // Initialize WriteableBitmap
             _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
+
+        /// <summary>
+        ///     The height
+        /// </summary>
+        public int Height { get; }
+
+        /// <summary>
+        ///     The width
+        /// </summary>
+        public int Width { get; }
 
         /// <summary>
         ///     Gets the bitmap Image.
@@ -268,14 +267,14 @@ namespace Imaging
                         {
                             // Assign default values if the pixel is out of bounds
                             indices[j] = 0; // Or a suitable default index if required
-                            colors[j] = 0;  // Default color
+                            colors[j] = 0; // Default color
                         }
                     }
                     else
                     {
                         // Handle cases where the remaining elements are less than vectorCount
                         indices[j] = 0; // Default index (can also be an invalid one)
-                        colors[j] = 0;  // Default color
+                        colors[j] = 0; // Default color
                     }
                 }
 
@@ -290,7 +289,6 @@ namespace Imaging
                 }
             }
         }
-
 
 
         /// <summary>

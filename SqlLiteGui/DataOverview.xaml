@@ -26,19 +26,19 @@
 
         <DataGrid
             ItemsSource="{Binding Raw}"
-                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                  CanUserAddRows="False"
-                  AutoGenerateColumns="True"
-                  Grid.RowSpan="11"
-                  IsReadOnly="True"
-                  ColumnWidth="*"
-                  MinHeight="50"
-                  MinWidth="50"
-                  ScrollViewer.CanContentScroll="True"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  CanUserResizeColumns="True"
-                  CanUserResizeRows="True">
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+            CanUserAddRows="False"
+            AutoGenerateColumns="True"
+            Grid.RowSpan="11"
+            IsReadOnly="True"
+            ColumnWidth="*"
+            MinHeight="50"
+            MinWidth="50"
+            ScrollViewer.CanContentScroll="True"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            CanUserResizeColumns="True"
+            CanUserResizeRows="True">
             <DataGrid.Resources>
                 <ContextMenu x:Key="RowMenu"
                              DataContext="{Binding PlacementTarget.(sqLiteGui:DataOverview.DataContext),
@@ -81,7 +81,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

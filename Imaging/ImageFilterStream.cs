@@ -33,14 +33,14 @@ namespace Imaging
     internal static class ImageFilterStream
     {
         /// <summary>
-        /// The image settings
-        /// </summary>
-        private static ImageRegister _imageSettings;
-
-        /// <summary>
         ///     The default half window size
         /// </summary>
         private const int DefaultHalfWindowSize = 5;
+
+        /// <summary>
+        ///     The image settings
+        /// </summary>
+        private static ImageRegister _imageSettings;
 
         /// <summary>
         ///     Converts an image to gray scale
@@ -56,7 +56,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
         [return: MaybeNull]
-        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter, ImageRegister imageSettings = null )
+        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter, ImageRegister imageSettings = null)
         {
             ImageHelper.ValidateImage(nameof(FilterImage), image);
 
@@ -287,19 +287,19 @@ namespace Imaging
             for (var y = 0; y < dbm.Height; y += stepWidth)
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
-                    // Ensure the rectangle doesn't exceed image boundaries
-                    var rectWidth = Math.Min(stepWidth, dbm.Width - x);
-                    var rectHeight = Math.Min(stepWidth, dbm.Height - y);
+                // Ensure the rectangle doesn't exceed image boundaries
+                var rectWidth = Math.Min(stepWidth, dbm.Width - x);
+                var rectHeight = Math.Min(stepWidth, dbm.Height - y);
 
-                    // Get the color of the current rectangle
-                    var rectangle = new Rectangle(x, y, rectWidth, rectHeight);
-                    var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
+                // Get the color of the current rectangle
+                var rectangle = new Rectangle(x, y, rectWidth, rectHeight);
+                var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
 
-                    // Draw the rectangle with the average color
-                    using var g = Graphics.FromImage(processedImage);
-                    using var brush = new SolidBrush(averageColor);
-                    g.FillRectangle(brush, x, y, rectWidth, rectHeight);
-                }
+                // Draw the rectangle with the average color
+                using var g = Graphics.FromImage(processedImage);
+                using var brush = new SolidBrush(averageColor);
+                g.FillRectangle(brush, x, y, rectWidth, rectHeight);
+            }
 
             return processedImage;
         }

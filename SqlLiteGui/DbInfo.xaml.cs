@@ -30,18 +30,18 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        /// Gets the view model.
+        ///     Gets the view model.
         /// </summary>
         /// <value>
-        /// The view model.
+        ///     The view model.
         /// </value>
         private DbInfoViewModel ViewModel { get; }
 
         /// <summary>
-        /// Called when [text box text changed].
+        ///     Called when [text box text changed].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="TextChangedEventArgs" /> instance containing the event data.</param>
         private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is not TextBox textBox)

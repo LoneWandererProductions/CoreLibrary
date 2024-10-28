@@ -68,33 +68,13 @@ namespace CommonControls
             typeof(ImageZoom), null);
 
         /// <summary>
-        /// The zoom scale property
+        ///     The zoom scale property
         /// </summary>
         public static readonly DependencyProperty ZoomScaleProperty = DependencyProperty.Register(
             nameof(ZoomScale),
             typeof(double),
             typeof(ImageZoom),
             new PropertyMetadata(1.0, OnZoomScaleChanged));
-
-        /// <summary>
-        /// Gets or sets the zoom scale.
-        /// </summary>
-        public double ZoomScale
-        {
-            get => (double)GetValue(ZoomScaleProperty);
-            set => SetValue(ZoomScaleProperty, value);
-        }
-
-        /// <summary>
-        /// Called when the ZoomScale property changes.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnZoomScaleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var control = sender as ImageZoom;
-            control?.UpdateZoomScale((double)e.NewValue);
-        }
 
         /// <summary>
         ///     The lock
@@ -141,6 +121,15 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+        }
+
+        /// <summary>
+        ///     Gets or sets the zoom scale.
+        /// </summary>
+        public double ZoomScale
+        {
+            get => (double)GetValue(ZoomScaleProperty);
+            set => SetValue(ZoomScaleProperty, value);
         }
 
         /// <summary>
@@ -198,6 +187,17 @@ namespace CommonControls
         {
             Dispose(true);
             GC.SuppressFinalize(this); // Prevent finalizer from running.
+        }
+
+        /// <summary>
+        ///     Called when the ZoomScale property changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
+        private static void OnZoomScaleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = sender as ImageZoom;
+            control?.UpdateZoomScale((double)e.NewValue);
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace CommonControls
         {
             lock (_lock)
             {
-                var zoomFactor = e.Delta > 0 ? 1.1 : (1 / 1.1);
+                var zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
                 var newZoomScale = Scale.ScaleX * zoomFactor; // Assume uniform scaling, so use ScaleX
 
                 UpdateZoomScale(newZoomScale); // Centralize logic for updating the zoom scale
@@ -510,7 +510,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Updates the zoom scale for both ScaleX and ScaleY.
+        ///     Updates the zoom scale for both ScaleX and ScaleY.
         /// </summary>
         /// <param name="zoomScale">The new zoom scale.</param>
         private void UpdateZoomScale(double zoomScale)

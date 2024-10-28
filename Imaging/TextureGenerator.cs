@@ -21,20 +21,20 @@ namespace Imaging
     public class TextureGenerator : ITextureGenerator
     {
         /// <summary>
-        /// The image Settings
-        /// </summary>
-        /// <value>
-        /// The image settings.
-        /// </value>
-        private ImageRegister ImageSettings { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextureGenerator"/> class.
+        ///     Initializes a new instance of the <see cref="TextureGenerator" /> class.
         /// </summary>
         public TextureGenerator()
         {
             ImageSettings = ImageRegister.Instance; // Ensure singleton instance is available
         }
+
+        /// <summary>
+        ///     The image Settings
+        /// </summary>
+        /// <value>
+        ///     The image settings.
+        /// </value>
+        private ImageRegister ImageSettings { get; }
 
         /// <inheritdoc />
         /// <summary>

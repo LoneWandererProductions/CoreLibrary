@@ -31,20 +31,20 @@ namespace Imaging
     public sealed class ImageRender : IImageRender
     {
         /// <summary>
-        /// The image Settings
-        /// </summary>
-        /// <value>
-        /// The image settings.
-        /// </value>
-        public ImageRegister ImageSettings { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImageRender"/> class.
+        ///     Initializes a new instance of the <see cref="ImageRender" /> class.
         /// </summary>
         public ImageRender()
         {
             ImageSettings = ImageRegister.Instance; // Ensure singleton instance is available
         }
+
+        /// <summary>
+        ///     The image Settings
+        /// </summary>
+        /// <value>
+        ///     The image settings.
+        /// </value>
+        public ImageRegister ImageSettings { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -713,11 +713,11 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Bitmaps to base64.
+        ///     Bitmaps to base64.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>
-        /// Image as string
+        ///     Image as string
         /// </returns>
         public string BitmapToBase64(Bitmap bitmap)
         {
@@ -726,11 +726,11 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Bitmaps the image to base64.
+        ///     Bitmaps the image to base64.
         /// </summary>
         /// <param name="bitmapImage">The bitmap image.</param>
         /// <returns>
-        /// Image as string
+        ///     Image as string
         /// </returns>
         public string BitmapImageToBase64(BitmapImage bitmapImage)
         {

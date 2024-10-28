@@ -27,34 +27,8 @@ namespace Imaging
     /// </summary>
     public sealed class ImageRegister
     {
-
-        /// <summary>
-        /// Gets the error log.
-        /// </summary>
-        /// <value>
-        /// The error log.
-        /// </value>
-        public Dictionary<DateTime, string> ErrorLog { get; } = new();
-
-        /// <summary>
-        /// Gets the last error.
-        /// </summary>
-        /// <value>
-        /// The last error.
-        /// </value>
-        public string LastError => ErrorLog.Values.Last();
-
         // Private static instance of the singleton
         private static readonly Lazy<ImageRegister> Settings = new(() => new ImageRegister());
-
-        // Private constructor to prevent instantiation from outside
-        internal ImageRegister()
-        {
-            // Initialization logic
-        }
-
-        // Public static property to get the instance
-        internal static ImageRegister Instance => Settings.Value;
 
         /// <summary>
         ///     The filter property map
@@ -177,19 +151,15 @@ namespace Imaging
         };
 
         /// <summary>
-        ///     The sharpen filter
+        ///     the color matrix needed to Color Swap an image to BlackAndWhite
+        ///     Source:
+        ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal readonly double[,] sharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
-
-        /// <summary>
-        ///     The gaussian blur
-        /// </summary>
-        internal readonly double[,] gaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-
-        /// <summary>
-        ///     The emboss filter
-        /// </summary>
-        internal readonly double[,] embossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+        internal readonly ColorMatrix BlackAndWhite = new(new[]
+        {
+            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
+        });
 
         /// <summary>
         ///     The box blur
@@ -197,9 +167,34 @@ namespace Imaging
         internal readonly double[,] boxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
         /// <summary>
-        ///     The laplacian filter
+        ///     The brightness Filter
+        ///     Adjusts the brightness of the image by scaling the color values.
         /// </summary>
-        internal readonly double[,] laplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+        internal readonly ColorMatrix Brightness = new(new[]
+        {
+            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+        });
+
+        /// <summary>
+        ///     The color balance Filter
+        ///     Adjusts the balance of colors to emphasize or de-emphasize specific color channels.
+        /// </summary>
+        internal readonly ColorMatrix colorBalance = new(new[]
+        {
+            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+        });
+
+        /// <summary>
+        ///     The contrast Filter
+        ///     Adjusts the contrast of the image by scaling the differences between pixel values.
+        /// </summary>
+        internal readonly ColorMatrix Contrast = new(new[]
+        {
+            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
+            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+        });
 
         /// <summary>
         ///     The edge enhance
@@ -207,40 +202,14 @@ namespace Imaging
         internal readonly double[,] edgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
 
         /// <summary>
-        ///     The unsharp mask
+        ///     The emboss filter
         /// </summary>
-        internal readonly double[,] unsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+        internal readonly double[,] embossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
 
         /// <summary>
-        ///     The motion blur
+        ///     The gaussian blur
         /// </summary>
-        internal readonly double[,] motionBlur =
-        {
-            { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
-        };
-
-        /// <summary>
-        ///     The kernel 45 degrees
-        ///     Defines directional edge detection kernel for crosshatching
-        /// </summary>
-        internal readonly double[,] kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
-
-        /// <summary>
-        ///     The kernel 135 degrees
-        ///     Defines directional edge detection kernel for crosshatching
-        /// </summary>
-        internal readonly double[,] kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
-
-
-        /// <summary>
-        ///     The sobel x kernel
-        /// </summary>
-        internal readonly int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-
-        /// <summary>
-        ///     The sobel y kernel
-        /// </summary>
-        internal readonly int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+        internal readonly double[,] gaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image
@@ -265,6 +234,16 @@ namespace Imaging
         });
 
         /// <summary>
+        ///     The hue shift Filter
+        ///     Shifts the hue of the image, effectively rotating the color wheel.
+        /// </summary>
+        internal readonly ColorMatrix HueShift = new(new[]
+        {
+            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
+            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
+        });
+
+        /// <summary>
         ///     the color matrix needed to invert an image
         ///     Source:
         ///     https://archive.ph/hzR2W
@@ -276,15 +255,29 @@ namespace Imaging
         });
 
         /// <summary>
-        ///     the color matrix needed to Sepia an image
-        ///     Source:
-        ///     https://archive.ph/hzR2W
+        ///     The kernel 135 degrees
+        ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal readonly ColorMatrix sepia = new(new[]
+        internal readonly double[,] kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
+
+        /// <summary>
+        ///     The kernel 45 degrees
+        ///     Defines directional edge detection kernel for crosshatching
+        /// </summary>
+        internal readonly double[,] kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
+
+        /// <summary>
+        ///     The laplacian filter
+        /// </summary>
+        internal readonly double[,] laplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+
+        /// <summary>
+        ///     The motion blur
+        /// </summary>
+        internal readonly double[,] motionBlur =
         {
-            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
-            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
-        });
+            { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
+        };
 
         /// <summary>
         ///     the color matrix needed to Color Swap an image to Polaroid
@@ -299,55 +292,36 @@ namespace Imaging
         });
 
         /// <summary>
-        ///     the color matrix needed to Color Swap an image to BlackAndWhite
+        ///     the color matrix needed to Sepia an image
         ///     Source:
-        ///     https://docs.rainmeter.net/tips/colormatrix-guide/
+        ///     https://archive.ph/hzR2W
         /// </summary>
-        internal readonly ColorMatrix BlackAndWhite = new(new[]
+        internal readonly ColorMatrix sepia = new(new[]
         {
-            new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
+            new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
+            new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
         });
 
         /// <summary>
-        ///     The brightness Filter
-        ///     Adjusts the brightness of the image by scaling the color values.
+        ///     The sharpen filter
         /// </summary>
-        internal readonly ColorMatrix Brightness = new(new[]
-        {
-            new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
-        });
+        internal readonly double[,] sharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+
 
         /// <summary>
-        ///     The contrast Filter
-        ///     Adjusts the contrast of the image by scaling the differences between pixel values.
+        ///     The sobel x kernel
         /// </summary>
-        internal readonly ColorMatrix Contrast = new(new[]
-        {
-            new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
-        });
+        internal readonly int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
         /// <summary>
-        ///     The hue shift Filter
-        ///     Shifts the hue of the image, effectively rotating the color wheel.
+        ///     The sobel y kernel
         /// </summary>
-        internal readonly ColorMatrix HueShift = new(new[]
-        {
-            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
-            new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
-        });
+        internal readonly int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 
         /// <summary>
-        ///     The color balance Filter
-        ///     Adjusts the balance of colors to emphasize or de-emphasize specific color channels.
+        ///     The unsharp mask
         /// </summary>
-        internal readonly ColorMatrix colorBalance = new(new[]
-        {
-            new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
-        });
+        internal readonly double[,] unsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
 
         /// <summary>
         ///     The vintage Filter
@@ -435,6 +409,31 @@ namespace Imaging
 
             // Add more default settings as needed
         }
+
+        // Private constructor to prevent instantiation from outside
+        internal ImageRegister()
+        {
+            // Initialization logic
+        }
+
+        /// <summary>
+        ///     Gets the error log.
+        /// </summary>
+        /// <value>
+        ///     The error log.
+        /// </value>
+        public Dictionary<DateTime, string> ErrorLog { get; } = new();
+
+        /// <summary>
+        ///     Gets the last error.
+        /// </summary>
+        /// <value>
+        ///     The last error.
+        /// </value>
+        public string LastError => ErrorLog.Values.Last();
+
+        // Public static property to get the instance
+        internal static ImageRegister Instance => Settings.Value;
 
         /// <summary>
         ///     The settings for our Filter
@@ -527,7 +526,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the error.
+        ///     Sets the error.
         /// </summary>
         /// <param name="exception">The exception.</param>
         public void SetError(Exception exception)

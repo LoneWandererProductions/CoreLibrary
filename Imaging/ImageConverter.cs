@@ -8,31 +8,32 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
     /// <summary>
-    /// Image Converter stuff
+    ///     Image Converter stuff
     /// </summary>
     internal static class ImageConverter
     {
         /// <summary>
-        /// Bitmaps to base64.
+        ///     Bitmaps to base64.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Image as string</returns>
         internal static string BitmapToBase64(Bitmap bitmap)
         {
             using var memoryStream = new MemoryStream();
-            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+            bitmap.Save(memoryStream, ImageFormat.Png);
             var imageBytes = memoryStream.ToArray();
             return Convert.ToBase64String(imageBytes);
         }
 
         /// <summary>
-        /// Converts a BitmapImage to a Base64 string.
+        ///     Converts a BitmapImage to a Base64 string.
         /// </summary>
         /// <param name="bitmapImage">The BitmapImage to convert.</param>
         /// <returns>Base64 encoded image as a string.</returns>

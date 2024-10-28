@@ -1,25 +1,25 @@
 ﻿<UserControl
     x:Class="SQLiteGui.DbInfo"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             d:DesignHeight="300" d:DesignWidth="300" x:ClassModifier="internal">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    d:DesignHeight="300" d:DesignWidth="300" x:ClassModifier="internal">
     <Grid>
         <TextBox
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ScrollViewer.CanContentScroll="True"
-            TextChanged="OnTextBoxTextChanged" 
+            TextChanged="OnTextBoxTextChanged"
             Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged}" />
         <!-- Bind to ViewModel property -->
     </Grid>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/SQLiteGui;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media;
-using ExtendedSystemObjects;
 using Imaging;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +16,7 @@ namespace CommonLibraryTests
         private DirectBitmapImage _bitmapImage;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -26,7 +25,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
@@ -35,7 +34,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Constructors the initializes bits array.
+        ///     Constructors the initializes bits array.
         /// </summary>
         [TestMethod]
         public void ConstructorInitializesBitsArray()
@@ -46,7 +45,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the pixels valid pixels updates bitmap.
+        ///     Sets the pixels valid pixels updates bitmap.
         /// </summary>
         [TestMethod]
         public void SetPixelsValidPixelsUpdatesBitmap()
@@ -93,7 +92,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the pixels simd two inputs should set correct pixels.
+        ///     Sets the pixels simd two inputs should set correct pixels.
         /// </summary>
         [TestMethod]
         public void SetPixelsSimdTwoInputsShouldSetCorrectPixels()
@@ -157,9 +156,8 @@ namespace CommonLibraryTests
 
             var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
             var r = (byte)((colorValue >> 16) & 0xFF); // Red
-            var g = (byte)((colorValue >> 8) & 0xFF);  // Green
-            var b = (byte)(colorValue & 0xFF);         // Blue
-
+            var g = (byte)((colorValue >> 8) & 0xFF); // Green
+            var b = (byte)(colorValue & 0xFF); // Blue
 
 
             Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
@@ -168,8 +166,8 @@ namespace CommonLibraryTests
 
             a = (byte)((colorValue >> 24) & 0xFF); // Alpha
             r = (byte)((colorValue >> 16) & 0xFF); // Red
-            g = (byte)((colorValue >> 8) & 0xFF);  // Green
-            b = (byte)(colorValue & 0xFF);         // Blue
+            g = (byte)((colorValue >> 8) & 0xFF); // Green
+            b = (byte)(colorValue & 0xFF); // Blue
 
 
             Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
@@ -187,26 +185,23 @@ namespace CommonLibraryTests
         {
             _bitmapImage = new DirectBitmapImage(1, 1);
             // Define the expected packed color
-            uint expectedPackedColor = unchecked((uint)(255 << 24 | 76 << 16 | 150 << 8 | 28));
+            var expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
 
             // Define the color transformation matrix for grayscale
             double[,] colorMatrix =
             {
-                { 0.3, 0.3, 0.3, 0, 0 },
-                { 0.59, 0.59, 0.59, 0, 0 },
-                { 0.11, 0.11, 0.11, 0, 0 },
-                { 0, 0, 0, 1, 0 },
+                { 0.3, 0.3, 0.3, 0, 0 }, { 0.59, 0.59, 0.59, 0, 0 }, { 0.11, 0.11, 0.11, 0, 0 }, { 0, 0, 0, 1, 0 },
                 { 0, 0, 0, 0, 0 }
             };
 
             // Define the initial pixel color (Green) as a column vector (5x1)
             double[,] initialPixel =
             {
-                { 0 },       // R
-                { 255 },     // G
-                { 0 },       // B
-                { 255 },     // A
-                { 1 }        // Additional value if needed
+                { 0 }, // R
+                { 255 }, // G
+                { 0 }, // B
+                { 255 }, // A
+                { 1 } // Additional value if needed
             };
 
             // Perform matrix multiplication
@@ -225,7 +220,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(28, blue, "Blue value should be 28.");
 
             // Convert individual components to packed uint
-            uint packedColor = unchecked((uint)(alpha << 24 | red << 16 | green << 8 | blue));
+            var packedColor = unchecked((uint)((alpha << 24) | (red << 16) | (green << 8) | blue));
 
             Assert.AreEqual(packedColor, expectedPackedColor);
         }
@@ -261,10 +256,10 @@ namespace CommonLibraryTests
 
             var colorValue = _bitmapImage.Bits[0];
 
-            byte a = (byte)((colorValue >> 24) & 0xFF); // Alpha
-            byte r = (byte)((colorValue >> 16) & 0xFF); // Red
-            byte g = (byte)((colorValue >> 8) & 0xFF);  // Green
-            byte b = (byte)(colorValue & 0xFF);         // Blue
+            var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+            var r = (byte)((colorValue >> 16) & 0xFF); // Red
+            var g = (byte)((colorValue >> 8) & 0xFF); // Green
+            var b = (byte)(colorValue & 0xFF); // Blue
 
             Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
 
@@ -273,7 +268,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the pixels simd valid pixels updates bits.
+        ///     Sets the pixels simd valid pixels updates bits.
         /// </summary>
         [TestMethod]
         public void SetPixelsSimdValidPixelsUpdatesBits()
@@ -296,7 +291,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets the pixels should set correct pixel values.
+        ///     Sets the pixels should set correct pixel values.
         /// </summary>
         [TestMethod]
         public void SetPixelsShouldSetCorrectPixelValues()
@@ -358,7 +353,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Constructors the with zero dimensions should throw.
+        ///     Constructors the with zero dimensions should throw.
         /// </summary>
         [TestMethod]
         public void ConstructorWithZeroDimensionsShouldThrow()
@@ -366,6 +361,5 @@ namespace CommonLibraryTests
             // Act & Assert
             Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
         }
-
     }
 }
