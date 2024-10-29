@@ -87,21 +87,21 @@ namespace Imaging
                     atr.SetColorMatrix(_imageSettings.sepia);
                     break;
                 case ImageFilters.BlackAndWhite:
-                    atr.SetColorMatrix(_imageSettings.BlackAndWhite);
+                    atr.SetColorMatrix(_imageSettings.blackAndWhite);
                     break;
                 case ImageFilters.Polaroid:
-                    atr.SetColorMatrix(_imageSettings.Polaroid);
+                    atr.SetColorMatrix(_imageSettings.polaroid);
                     break;
                 case ImageFilters.Contour:
                     return ApplySobel(image);
                 case ImageFilters.Brightness:
-                    atr.SetColorMatrix(_imageSettings.Brightness);
+                    atr.SetColorMatrix(_imageSettings.brightness);
                     break;
                 case ImageFilters.Contrast:
-                    atr.SetColorMatrix(_imageSettings.Contrast);
+                    atr.SetColorMatrix(_imageSettings.contrast);
                     break;
                 case ImageFilters.HueShift:
-                    atr.SetColorMatrix(_imageSettings.HueShift);
+                    atr.SetColorMatrix(_imageSettings.hueShift);
                     break;
                 case ImageFilters.ColorBalance:
                     atr.SetColorMatrix(_imageSettings.colorBalance);

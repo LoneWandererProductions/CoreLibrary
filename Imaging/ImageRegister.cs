@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Text.Json;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
@@ -155,7 +156,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal readonly ColorMatrix BlackAndWhite = new(new[]
+        internal readonly ColorMatrix blackAndWhite = new(new[]
         {
             new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
@@ -170,7 +171,7 @@ namespace Imaging
         ///     The brightness Filter
         ///     Adjusts the brightness of the image by scaling the color values.
         /// </summary>
-        internal readonly ColorMatrix Brightness = new(new[]
+        internal readonly ColorMatrix brightness = new(new[]
         {
             new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -190,7 +191,7 @@ namespace Imaging
         ///     The contrast Filter
         ///     Adjusts the contrast of the image by scaling the differences between pixel values.
         /// </summary>
-        internal readonly ColorMatrix Contrast = new(new[]
+        internal readonly ColorMatrix contrast = new(new[]
         {
             new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -237,7 +238,7 @@ namespace Imaging
         ///     The hue shift Filter
         ///     Shifts the hue of the image, effectively rotating the color wheel.
         /// </summary>
-        internal readonly ColorMatrix HueShift = new(new[]
+        internal readonly ColorMatrix hueShift = new(new[]
         {
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -284,7 +285,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal readonly ColorMatrix Polaroid = new(new[]
+        internal readonly ColorMatrix polaroid = new(new[]
         {
             new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
             new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
@@ -532,6 +533,39 @@ namespace Imaging
         public void SetError(Exception exception)
         {
             ErrorLog.Add(DateTime.MinValue, exception.Message);
+        }
+
+        /// <summary>
+        /// Loads settings from a JSON string.
+        /// </summary>
+        /// <param name="json">The JSON string containing settings.</param>
+        public void LoadSettingsFromJson(string json)
+        {
+            try
+            {
+                var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
+
+                if (settings != null)
+                {
+                    foreach (var filter in settings)
+                    {
+                        _filterPropertyMap[filter.Key] = filter.Value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLog[DateTime.Now] = $"Error loading JSON: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the current settings as a JSON string.
+        /// </summary>
+        /// <returns>JSON representation of current settings.</returns>
+        public string GetSettingsAsJson()
+        {
+            return JsonSerializer.Serialize(_filterPropertyMap, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }
