@@ -79,32 +79,33 @@ namespace ExtendedSystemObjects
         /// <param name="item">The item.</param>
         public void Change(int uniqueIdentifier, object item)
         {
-            var entry = GetItem(uniqueIdentifier, LogState.Change);
-
-            if (entry == -1)
+            if (GetItem(uniqueIdentifier, LogState.Change) is var entry && entry != -1)
             {
-                var log = new LogEntry { State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier };
-                Changelog.Add(Changelog.Count, log);
-
-                Changed = true;
+                var existingItem = Changelog[entry];
+                if (!existingItem.Data.Equals(item))
+                {
+                    Changelog[entry] = new LogEntry
+                    {
+                        State = LogState.Change,
+                        Data = item,
+                        UniqueIdentifier = uniqueIdentifier
+                    };
+                    Changed = true;
+                }
             }
             else
             {
-                var existingItem = Changelog[entry];
-
-                if (existingItem.Equals(item))
+                var log = new LogEntry
                 {
-                    return;
-                }
-
-                Changelog[entry] = new LogEntry
-                {
-                    State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Change,
+                    Data = item,
+                    UniqueIdentifier = uniqueIdentifier
                 };
-
+                Changelog.Add(Changelog.Count, log);
                 Changed = true;
             }
         }
+
 
         /// <summary>
         ///     Gets the predecessor.
