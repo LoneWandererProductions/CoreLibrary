@@ -555,7 +555,7 @@ namespace Imaging
             }
             catch (Exception ex)
             {
-                ErrorLog[DateTime.Now] = $"Error loading JSON: {ex.Message}";
+                ErrorLog.Add(DateTime.MinValue, $"{ImagingResources.ErrorLoadSettings} {ex.Message}");
             }
         }
 

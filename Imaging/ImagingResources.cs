@@ -139,6 +139,11 @@ namespace Imaging
         internal const string ErrorPath = "Error: Path is Null.";
 
         /// <summary>
+        ///     The error, could not load Setting (const). Value: "Error loading Configuration:"
+        /// </summary>
+        internal const string ErrorLoadSettings = "Error loading Configuration:";
+
+        /// <summary>
         ///     The error, min/ max value exceeded 0 or 255 (const). Value: "Error: minValue and maxValue must be between 0 and
         ///     255, and minValue must not be greater than maxValue."
         /// </summary>
