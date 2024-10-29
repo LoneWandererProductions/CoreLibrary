@@ -157,5 +157,36 @@ namespace ExtendedSystemObjects
 
             return result;
         }
+
+        /// <summary>
+        /// Converts the specified jagged array.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="jaggedArray">The jagged array.</param>
+        /// <returns>Converted Jagged Array</returns>
+        public static unsafe TValue[,] Convert<TValue>(this TValue[][] jaggedArray) where TValue : unmanaged
+        {
+            int rows = jaggedArray.Length;
+            int cols = jaggedArray[0].Length;
+
+            // Allocate a rectangular array
+            TValue[,] result = new TValue[rows, cols];
+
+            // Iterate through each row
+            for (int i = 0; i < rows; i++)
+            {
+                // Pin the current row
+                fixed (TValue* rowPtr = jaggedArray[i])
+                {
+                    for (int j = 0; j < cols; j++)
+                    {
+                        result[i, j] = rowPtr[j]; // Copy the value directly
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }
+
