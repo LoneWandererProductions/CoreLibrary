@@ -547,13 +547,13 @@ namespace Imaging
 
                 if (settings != null)
                 {
-                    foreach (var filter in settings)
+                    foreach (var (imageFilters, filter) in settings)
                     {
-                        _filterPropertyMap[filter.Key] = filter.Value;
+                        _filterPropertyMap[imageFilters] = filter;
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {
                 ErrorLog.Add(DateTime.MinValue, $"{ImagingResources.ErrorLoadSettings} {ex.Message}");
             }

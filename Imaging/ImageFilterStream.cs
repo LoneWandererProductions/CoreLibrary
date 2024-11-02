@@ -253,7 +253,7 @@ namespace Imaging
 
                 return result.Bitmap;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
                 _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
@@ -359,7 +359,7 @@ namespace Imaging
 
                 return dbmResult.Bitmap;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
                 _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
@@ -441,7 +441,7 @@ namespace Imaging
 
                 return result.Bitmap;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
                 _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
@@ -878,7 +878,7 @@ namespace Imaging
             {
                 dbmBase.SetPixelsSimd(pixelsToSet);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
                 _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
@@ -921,7 +921,7 @@ namespace Imaging
 
                 return result.Bitmap;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
                 _imageSettings?.SetError(ex);
                 Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");

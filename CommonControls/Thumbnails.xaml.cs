@@ -107,10 +107,15 @@ namespace CommonControls
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
 
         /// <summary>
+        /// The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty ImageClickedCommandProperty = DependencyProperty.Register(
+            nameof(ImageClickedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
+
+        /// <summary>
         ///     The refresh
         /// </summary>
         private static bool _refresh = true;
-
 
         /// <summary>
         ///     The cancellation token source
@@ -244,6 +249,18 @@ namespace CommonControls
         }
 
         /// <summary>
+        /// Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        /// The image clicked command.
+        /// </value>
+        public ICommand ImageClickedCommand
+        {
+            get => (ICommand)GetValue(ImageClickedCommandProperty);
+            set => SetValue(ImageClickedCommandProperty, value);
+        }
+
+        /// <summary>
         ///     The Name of the Image Control
         /// </summary>
         /// <value>
@@ -275,6 +292,7 @@ namespace CommonControls
         /// </value>
         public List<int> Selection { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
@@ -445,11 +463,10 @@ namespace CommonControls
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count >= 4)
-                {
-                    await Task.WhenAll(tasks);
-                    tasks.Clear();
-                }
+                if (tasks.Count < 4) continue;
+
+                await Task.WhenAll(tasks);
+                tasks.Clear();
             }
 
             // Wait for all remaining tasks
@@ -771,6 +788,8 @@ namespace CommonControls
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
+            ImageClickedCommand.Execute(args);
+
             ImageClicked?.Invoke(this, args);
         }
 
