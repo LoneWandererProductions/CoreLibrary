@@ -86,21 +86,14 @@ namespace ExtendedSystemObjects
                 {
                     Changelog[entry] = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changed = true;
                 }
             }
             else
             {
-                var log = new LogEntry
-                {
-                    State = LogState.Change,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier
-                };
+                var log = new LogEntry { State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier };
                 Changelog.Add(Changelog.Count, log);
                 Changed = true;
             }

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests

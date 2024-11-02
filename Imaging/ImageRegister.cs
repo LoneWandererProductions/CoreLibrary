@@ -38,36 +38,28 @@ namespace Imaging
         private readonly Dictionary<ImageFilters, HashSet<string>> _filterPropertyMap = new()
         {
             {
-                ImageFilters.GaussianBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.GaussianBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.BoxBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.BoxBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.MotionBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.MotionBlur, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Sharpen,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Sharpen, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Emboss,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Emboss, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.Laplacian,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.Laplacian, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.EdgeEnhance,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.EdgeEnhance, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             {
-                ImageFilters.UnsharpMask,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                ImageFilters.UnsharpMask, new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
             },
             { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
@@ -536,7 +528,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Loads settings from a JSON string.
+        ///     Loads settings from a JSON string.
         /// </summary>
         /// <param name="json">The JSON string containing settings.</param>
         public void LoadSettingsFromJson(string json)
@@ -560,7 +552,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Retrieves the current settings as a JSON string.
+        ///     Retrieves the current settings as a JSON string.
         /// </summary>
         /// <returns>JSON representation of current settings.</returns>
         public string GetSettingsAsJson()

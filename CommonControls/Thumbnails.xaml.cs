@@ -107,7 +107,7 @@ namespace CommonControls
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
 
         /// <summary>
-        /// The image clicked command property
+        ///     The image clicked command property
         /// </summary>
         public static readonly DependencyProperty ImageClickedCommandProperty = DependencyProperty.Register(
             nameof(ImageClickedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
@@ -249,10 +249,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the image clicked command.
+        ///     Gets or sets the image clicked command.
         /// </summary>
         /// <value>
-        /// The image clicked command.
+        ///     The image clicked command.
         /// </value>
         public ICommand ImageClickedCommand
         {
@@ -463,7 +463,10 @@ namespace CommonControls
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count < 4) continue;
+                if (tasks.Count < 4)
+                {
+                    continue;
+                }
 
                 await Task.WhenAll(tasks);
                 tasks.Clear();
