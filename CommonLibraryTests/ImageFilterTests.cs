@@ -103,10 +103,8 @@ namespace CommonLibraryTests
         private Bitmap CreateTestBitmap(int width, int height, Color color)
         {
             var bitmap = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(bitmap))
-            {
-                g.Clear(color);
-            }
+            using var g = Graphics.FromImage(bitmap);
+            g.Clear(color);
 
             return bitmap;
         }

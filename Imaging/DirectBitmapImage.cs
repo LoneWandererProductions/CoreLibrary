@@ -125,7 +125,7 @@ namespace Imaging
 
                     // Store the pixel data as ARGB in the Bits array
                     Bits[(pixel.Y * Width) + pixel.X] = Bits[(pixel.Y * Width) + pixel.X] =
-                        (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B); 
+                        (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
                     // This will be fine as long as A, R, G, B are 0-255
                 }
             }
