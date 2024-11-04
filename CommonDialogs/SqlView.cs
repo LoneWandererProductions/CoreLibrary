@@ -61,10 +61,7 @@ namespace CommonDialogs
             get => _trustIsActive;
             set
             {
-                if (_trustIsActive == value)
-                {
-                    return;
-                }
+                if (_trustIsActive == value) return;
 
                 _trustIsActive = value;
                 OnPropertyChanged(nameof(TrustIsActive));
@@ -82,10 +79,7 @@ namespace CommonDialogs
             get => _dataBase;
             set
             {
-                if (_dataBase == value)
-                {
-                    return;
-                }
+                if (_dataBase == value) return;
 
                 _dataBase = value;
                 OnPropertyChanged(nameof(Database));
@@ -103,10 +97,7 @@ namespace CommonDialogs
             get => _server;
             set
             {
-                if (_server == value)
-                {
-                    return;
-                }
+                if (_server == value) return;
 
                 _server = value;
                 OnPropertyChanged(nameof(Server));
@@ -124,10 +115,7 @@ namespace CommonDialogs
             get => AddLog;
             set
             {
-                if (AddLog == value)
-                {
-                    return;
-                }
+                if (AddLog == value) return;
 
                 AddLog = value;
                 OnPropertyChanged(nameof(Log));
@@ -242,14 +230,7 @@ namespace CommonDialogs
                 Log = string.Concat(Log, ConnectionStringDb, Environment.NewLine);
             }
 
-            if (check)
-            {
-                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
-            }
-            else
-            {
-                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
-            }
+            Log = string.Concat(Log, check ? ComCtlResources.DbLogConnectionStringBuild : ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
         }
 
         /// <summary>

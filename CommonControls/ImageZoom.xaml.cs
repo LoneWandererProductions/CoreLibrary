@@ -77,6 +77,20 @@ namespace CommonControls
             new PropertyMetadata(1.0, OnZoomScaleChanged));
 
         /// <summary>
+        ///     The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedPointCommandProperty = DependencyProperty.Register(
+            nameof(SelectedPointCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
+
+
+        /// <summary>
+        ///     The selected frame property
+        /// </summary>
+        public static readonly DependencyProperty SelectedFrameCommandProperty =
+            DependencyProperty.Register(nameof(SelectedFrameCommand), typeof(ICommand), typeof(ImageZoom),
+                new PropertyMetadata(null));
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly object _lock = new();
@@ -114,13 +128,34 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+        }
+
+        /// <summary>
+        ///     Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        ///     The image clicked command.
+        /// </value>
+        public ICommand SelectedPointCommand
+        {
+            get => (ICommand)GetValue(SelectedPointCommandProperty);
+            set => SetValue(SelectedPointCommandProperty, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected frame.
+        /// </summary>
+        /// <value>
+        ///     The selected frame.
+        /// </value>
+        public ICommand SelectedFrameCommand
+        {
+            get => (ICommand)GetValue(SelectedFrameCommandProperty);
+            set => SetValue(SelectedFrameCommandProperty, value);
         }
 
         /// <summary>
@@ -180,6 +215,7 @@ namespace CommonControls
             set => SetValue(AutoplayGif, value);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Implementation of IDisposable interface.
         /// </summary>
@@ -290,10 +326,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -360,16 +393,12 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
-                {
-                }
-                    break;
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                     break;
                 case SelectionTools.FreeForm:
                     e.GetPosition(BtmImage);
@@ -399,15 +428,19 @@ namespace CommonControls
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
+                case SelectionTools.Rectangle:
                 {
                     var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
+                    SelectedFrameCommand.Execute(frame);
                 }
                     break;
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
+                    SetClickedPoint(e);
+
                     var endpoint = e.GetPosition(BtmImage);
+
+
                     SelectedPoint?.Invoke(endpoint);
                     break;
                 default:
@@ -436,10 +469,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
@@ -458,8 +488,8 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
                     _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
@@ -475,18 +505,9 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // Handle pixel selection if needed
                     break;
-
-                case SelectionTools.Erase:
-                {
-                    // Similar to rectangle selection, but intended for erasing
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-
-                    break;
-                }
-
                 default:
                     // Nothing
                     return;
@@ -522,6 +543,17 @@ namespace CommonControls
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
+        /// <summary>
+        ///     Sets the clicked point.
+        /// </summary>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
+        private void SetClickedPoint(MouseEventArgs e)
+        {
+            var endpoint = e.GetPosition(BtmImage);
+            SelectedPoint?.Invoke(endpoint);
+            SelectedPointCommand.Execute(endpoint);
+        }
+
 
         /// <summary>
         ///     Clean up managed and unmanaged resources.
@@ -529,17 +561,11 @@ namespace CommonControls
         /// <param name="disposing">Whether the method was called by Dispose or the finalizer.</param>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return; // Early exit if already disposed
-            }
+            if (_disposed) return; // Early exit if already disposed
 
             lock (_lock) // Ensure thread-safety
             {
-                if (_disposed)
-                {
-                    return; // Double-check in case Dispose was called by another thread
-                }
+                if (_disposed) return; // Double-check in case Dispose was called by another thread
 
                 if (disposing)
                 {
@@ -547,20 +573,12 @@ namespace CommonControls
 
                     // Unsubscribe event handlers
                     if (SelectedFrame != null)
-                    {
                         foreach (var d in SelectedFrame.GetInvocationList())
-                        {
                             SelectedFrame -= (DelegateFrame)d;
-                        }
-                    }
 
                     if (SelectedPoint != null)
-                    {
                         foreach (var d in SelectedPoint.GetInvocationList())
-                        {
                             SelectedPoint -= (DelegatePoint)d;
-                        }
-                    }
 
                     // Dispose image resources
                     BtmImage?.StopAnimation();
