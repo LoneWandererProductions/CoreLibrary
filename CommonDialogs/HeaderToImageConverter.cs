@@ -41,17 +41,11 @@ namespace CommonDialogs
         /// <returns>Image</returns>
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not string str || string.IsNullOrEmpty(str))
-            {
-                return null;
-            }
+            if (value is not string str || string.IsNullOrEmpty(str)) return null;
 
             // Get the directory where the executing assembly is located
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (root == null)
-            {
-                return null;
-            }
+            if (root == null) return null;
 
             // Construct the full paths to the images
             var driveImagePath = Path.Combine(root, ComCtlResources.DriveImage);

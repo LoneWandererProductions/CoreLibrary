@@ -28,26 +28,21 @@ namespace CommonControls
         /// <summary>
         ///     The select rectangle tool
         /// </summary>
-        SelectRectangle = 1,
+        Rectangle = 1,
 
         /// <summary>
         ///     The select pixel tool
         /// </summary>
-        SelectPixel = 2,
-
-        /// <summary>
-        ///     The erase tool
-        /// </summary>
-        Erase = 3,
+        Pixel = 2,
 
         /// <summary>
         ///     The select ellipse tool
         /// </summary>
-        SelectEllipse = 4,
+        Ellipse = 3,
 
         /// <summary>
         ///     The free form selection tool
         /// </summary>
-        FreeForm = 5
+        FreeForm = 4
     }
 }

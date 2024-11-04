@@ -12,6 +12,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Imaging;
 
 namespace CommonControls
@@ -29,6 +30,15 @@ namespace CommonControls
         /// <param name="colorHsv">The color HSV.</param>
         public delegate void DelegateColor(ColorHsv colorHsv);
 
+        /// <summary>
+        ///     The image loaded command dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ColorChangedCommandProperty = DependencyProperty.Register(
+            nameof(ColorChangedCommand),
+            typeof(ICommand),
+            typeof(ColorPickerMenu),
+            new PropertyMetadata(null));
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorPickerMenu" /> class.
@@ -36,6 +46,18 @@ namespace CommonControls
         public ColorPickerMenu()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        ///     Gets or sets the color changed command.
+        /// </summary>
+        /// <value>
+        ///     The color changed command.
+        /// </value>
+        public ICommand ColorChangedCommand
+        {
+            get => (ICommand)GetValue(ColorChangedCommandProperty);
+            set => SetValue(ColorChangedCommandProperty, value);
         }
 
         /// <summary>
@@ -86,6 +108,7 @@ namespace CommonControls
         {
             AddColor(colorHsv);
             ColorChanged?.Invoke(colorHsv);
+            ColorChangedCommand.Execute(colorHsv);
         }
 
         /// <summary>
