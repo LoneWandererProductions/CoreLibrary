@@ -6,6 +6,8 @@
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 
 namespace CommonControls
