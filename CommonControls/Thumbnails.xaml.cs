@@ -152,11 +152,6 @@ namespace CommonControls
         private int _originalWidth;
 
         /// <summary>
-        ///     The previous selected border
-        /// </summary>
-        private Border _previousSelectedBorder;
-
-        /// <summary>
         ///     The selection
         /// </summary>
         private int _selection;
@@ -306,6 +301,11 @@ namespace CommonControls
         private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
+        /// The border
+        /// </summary>
+        private ConcurrentDictionary<int, Border> Border { get; set; }
+
+        /// <summary>
         ///     Gets or sets the selection.
         /// </summary>
         /// <value>
@@ -417,6 +417,7 @@ namespace CommonControls
 
             Keys = new ConcurrentDictionary<string, int>();
             ImageDct = new ConcurrentDictionary<string, Image>();
+            Border = new ConcurrentDictionary<int, Border>();
             Selection = new List<int>();
 
             if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
@@ -494,8 +495,12 @@ namespace CommonControls
                 Child = images, // Set the image as the child of the border
                 BorderThickness = new Thickness(0), // Initially no border
                 BorderBrush = Brushes.Transparent, // Initially transparent
-                Margin = new Thickness(1) // Optionally add some margin for spacing
+                Margin = new Thickness(1), // Optionally add some margin for spacing
+                Name = string.Concat(ComCtlResources.ImageAdd, key)
             };
+
+            //add a reference to Border for later use
+            Border.TryAdd(key, border);
 
             // Add image click handler (this should run on the UI thread)
             images.MouseDown += ImageClick_MouseDown;
@@ -624,22 +629,28 @@ namespace CommonControls
             var clickedBorder = clickedImage.Parent as Border;
             if (clickedBorder == null) return;
 
-            // Clear previous selection highlight if any
-            if (_previousSelectedBorder != null)
-            {
-                _previousSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border highlight
-                _previousSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
-            }
+            // Update the selected border (reuse the UpdateSelectedBorder method)
+            UpdateSelectedBorder(clickedBorder);
+        }
 
-            // Highlight the currently clicked thumbnail
-            clickedBorder.BorderBrush = Brushes.Blue; // Highlight with blue border
-            clickedBorder.BorderThickness = new Thickness(2); // Set border thickness
+        /// <summary>
+        /// Next Border of this instance.
+        /// </summary>
+        public void Next()
+        {
+            int currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            int newIndex = (currentIndex + 1) % Border.Count; // Loop to the start if at the end
+            SelectImageAtIndex(newIndex);
+        }
 
-            // Update the currently selected border
-            _currentSelectedBorder = clickedBorder;
-
-            // Update the previous selected border to the current one
-            _previousSelectedBorder = _currentSelectedBorder;
+        /// <summary>
+        /// Previous Border of this instance.
+        /// </summary>
+        public void Previous()
+        {
+            int currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            int newIndex = (currentIndex - 1 + Border.Count) % Border.Count; // Loop to the end if at the start
+            SelectImageAtIndex(newIndex);
         }
 
         /// <summary>
@@ -736,6 +747,55 @@ namespace CommonControls
             ImageClickedCommand.Execute(args);
 
             ImageClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Gets the index of the current.
+        /// </summary>
+        /// <param name="name">The key.</param>
+        /// <returns>Index of Border</returns>
+        private int GetCurrentIndex(string name)
+        {
+            // Find the index of the selected border
+            return Border
+                .Where(pair => pair.Value.Name == name)
+                .Select(pair => pair.Key)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Selects the index of the image at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        private void SelectImageAtIndex(int index)
+        {
+            if (index < 0 || index >= Border.Count || !Border.ContainsKey(index)) return;
+
+            var border = Border[index];
+
+            // Now, update the current selected border with the found Border
+            UpdateSelectedBorder(border);
+        }
+
+        /// <summary>
+        /// Updates the selected border.
+        /// </summary>
+        /// <param name="newSelectedBorder">The new selected border.</param>
+        private void UpdateSelectedBorder(Border newSelectedBorder)
+        {
+            // Remove the "selected" style from the previously selected border
+            if (_currentSelectedBorder != null)
+            {
+                _currentSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border
+                _currentSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
+            }
+
+            // Set the new border as selected
+            newSelectedBorder.BorderBrush = Brushes.Blue;  // Set a color for the border
+            newSelectedBorder.BorderThickness = new Thickness(2); // Set thickness to highlight
+
+            // Update the current selected border reference
+            _currentSelectedBorder = newSelectedBorder;
         }
 
         /// <summary>

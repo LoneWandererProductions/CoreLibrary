@@ -18,7 +18,7 @@ namespace Imaging
     ///     Main Entry Class that will handle all things related to textures
     /// </summary>
     /// <seealso cref="T:Imaging.ITextureGenerator" />
-    public class TextureGenerator : ITextureGenerator
+    public sealed class TextureGenerator : ITextureGenerator
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextureGenerator" /> class.

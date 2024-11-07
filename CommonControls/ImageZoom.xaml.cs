@@ -11,6 +11,7 @@
 // ReSharper disable UnusedType.Global
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -419,6 +420,12 @@ namespace CommonControls
             // Release the mouse capture and stop tracking it.
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
+
+            if (_selectionAdorner == null)
+            {
+                Trace.Write(ComCtlResources.InformationArdonerNull);
+                return;
+            }
 
             //clicked Endpoint
 
