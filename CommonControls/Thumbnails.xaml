@@ -6,18 +6,11 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800" Loaded="UserControl_Loaded">
-    <Grid x:Name="Thb">
-        <ItemsControl>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding ImageSource}" Width="{Binding CellSize}" Height="{Binding CellSize}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Grid>
+    <ScrollViewer x:Name="MainScrollViewer" 
+                  HorizontalScrollBarVisibility="Auto" 
+                  VerticalScrollBarVisibility="Auto">
+        <Grid x:Name="Thb">
+            <!-- Your dynamically added images will go here -->
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -638,9 +638,11 @@ namespace CommonControls
         /// </summary>
         public void Next()
         {
-            int currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
-            int newIndex = (currentIndex + 1) % Border.Count; // Loop to the start if at the end
+            var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            var newIndex = (currentIndex + 1) % Border.Count; // Loop to the start if at the end
             SelectImageAtIndex(newIndex);
+
+            CenterOnItem(newIndex);
         }
 
         /// <summary>
@@ -648,9 +650,36 @@ namespace CommonControls
         /// </summary>
         public void Previous()
         {
-            int currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
-            int newIndex = (currentIndex - 1 + Border.Count) % Border.Count; // Loop to the end if at the start
+            var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            var newIndex = (currentIndex - 1 + Border.Count) % Border.Count; // Loop to the end if at the start
             SelectImageAtIndex(newIndex);
+
+            CenterOnItem(newIndex);
+        }
+
+        /// <summary>
+        /// Centers the ScrollViewer on a specific item by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the item to center on.</param>
+        public void CenterOnItem(int id)
+        {
+            if (MainScrollViewer == null || Border == null) return;
+
+            // Check if the item with the specified ID exists
+            if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
+            {
+                // Get the position of the target element relative to the ScrollViewer
+                GeneralTransform itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
+                Point itemPosition = itemTransform.Transform(new Point(0, 0));
+
+                // Calculate the offsets needed to center the item
+                double centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) + (targetElement.RenderSize.Width / 2);
+                double centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) + (targetElement.RenderSize.Height / 2);
+
+                // Set the ScrollViewer's offset to center the item
+                MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
+                MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
+            }
         }
 
         /// <summary>

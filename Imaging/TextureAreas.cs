@@ -22,7 +22,7 @@ namespace Imaging
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <param name="filter">The filter.</param>
+        /// <param name="texture">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="imageSettings"></param>
         /// <param name="shapeParams">The shape parameters.</param>
@@ -37,7 +37,7 @@ namespace Imaging
         /// </exception>
         internal static Bitmap GenerateTexture(int width,
             int height,
-            TextureType filter,
+            TextureType texture,
             TextureShape shape,
             ImageRegister imageSettings,
             object shapeParams = null,
@@ -47,13 +47,13 @@ namespace Imaging
             var actualStartPoint = startPoint ?? new Point(0, 0);
 
             // Retrieve the settings for the specified filter
-            var settings = imageSettings.GetSettings(filter);
+            var settings = imageSettings.GetSettings(texture);
 
             // Create a bitmap to apply the texture
             Bitmap textureBitmap;
 
             // Generate texture based on the selected filter
-            switch (filter)
+            switch (texture)
             {
                 case TextureType.Noise:
                     textureBitmap = Texture.GenerateNoiseBitmap(
@@ -96,9 +96,11 @@ namespace Imaging
                 case TextureType.Wave:
                     textureBitmap = Texture.GenerateWaveBitmap(width, height, settings.Alpha);
                     break;
-
+                case TextureType.Crosshatch:
+                    textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Angle1, settings.Angle2, settings.Alpha);
+                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(filter), filter, null);
+                    throw new ArgumentOutOfRangeException(nameof(texture), texture, null);
             }
 
             // Apply the texture to the specified area shape
