@@ -13,7 +13,7 @@ namespace CommonControls
     /// <inheritdoc />
     /// <summary>
     ///     We need the Id of the clicked Image
-    /// </summary>
+    /// </summary>s
     public sealed class ImageEventArgs : EventArgs
     {
         /// <summary>
