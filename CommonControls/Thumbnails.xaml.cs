@@ -463,7 +463,7 @@ namespace CommonControls
             await Task.WhenAll(tasks);
 
             timer.Stop();
-            Trace.WriteLine("End: " + timer.Elapsed);
+            Trace.WriteLine(string.Concat(ComCtlResources.DebugTimer, timer.Elapsed));
 
             // Notify that loading is finished
             ImageLoaded?.Invoke();

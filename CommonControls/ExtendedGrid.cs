@@ -24,228 +24,189 @@ namespace CommonControls
     public static class ExtendedGrid
     {
         /// <summary>
-        ///     The height. Min is 1
+        /// The height and width of each cell. Min is 1.
         /// </summary>
-        private static int _height = 1;
+        private static int _cellHeight = 1;
 
         /// <summary>
-        ///     The length. Min is 1
+        /// The cell width
         /// </summary>
-        private static int _length = 1;
+        private static int _cellWidth = 1;
 
         /// <summary>
-        ///     Gets or sets the columns.
+        /// Gets the number of columns.
         /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
         public static int Columns { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the rows.
+        ///     Gets the number of rows.
         /// </summary>
         public static int Rows { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the cell size.
+        ///     Gets or sets the default cell size in pixels.
         /// </summary>
         public static int CellSize { get; set; } = 100;
 
         /// <summary>
-        ///     Generate a Standard Uniform Grid like Grid
-        ///     Standard Height == Length == CellSize, is initiated with 100
+        ///     Generates a grid with uniform cell size.
         /// </summary>
-        /// <param name="columns">Height, y, Amount of Columns</param>
-        /// <param name="rows">Length, x, amount of rows</param>
-        /// <param name="gridLines">Show Grid Lines</param>
-        /// <returns>The <see cref="Grid" />. An Uniform like Grid.</returns>
-        /// <exception cref="CommonControlsException">Wrong Parameters</exception>
+        /// <param name="columns">Number of columns in the grid.</param>
+        /// <param name="rows">Number of rows in the grid.</param>
+        /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
+        /// <returns>A <see cref="Grid"/> with uniform cell dimensions.</returns>
         public static Grid ExtendGrid(int columns, int rows, bool gridLines)
         {
-            if (CellSize < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters,
-                    nameof(CellSize)));
-            }
-
-            _height = _length = CellSize;
-
-            if (columns < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Columns)));
-            }
-
-            if (rows < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Rows)));
-            }
+            ValidateParameters(columns, rows, CellSize);
 
             Columns = columns;
             Rows = rows;
-            return GenerateGrid(gridLines);
+            _cellHeight = _cellWidth = CellSize;
+
+            return InitializeGridBase(gridLines, _cellWidth * Columns, _cellHeight * Rows, null, null);
         }
 
         /// <summary>
-        ///     Generate a Standard Uniform Grid like Grid
-        ///     With specified Height Length
+        ///     Generates a grid with specified cell dimensions.
         /// </summary>
-        /// <param name="columns">Height, y, Amount of Columns</param>
-        /// <param name="rows">Length, x, amount of rows</param>
-        /// <param name="length">Pixel length of Cell, or Width</param>
-        /// <param name="height">Pixel height of Cell, or Height</param>
-        /// <param name="gridLines">Grid Lines</param>
-        /// <returns>The <see cref="Grid" />. An Uniform like Grid.</returns>
-        public static Grid ExtendGrid(int columns, int rows, int length, int height, bool gridLines)
+        /// <param name="columns">Number of columns in the grid.</param>
+        /// <param name="rows">Number of rows in the grid.</param>
+        /// <param name="width">Cell width in pixels.</param>
+        /// <param name="height">Cell height in pixels.</param>
+        /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
+        /// <returns>A <see cref="Grid"/> with custom cell dimensions.</returns>
+        public static Grid ExtendGrid(int columns, int rows, int width, int height, bool gridLines)
         {
-            if (columns < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Columns)));
-            }
-
-            if (rows < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Rows)));
-            }
-
-            if (length < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(length)));
-            }
-
-            if (height < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(height)));
-            }
+            ValidateParameters(columns, rows, width, height);
 
             Columns = columns;
             Rows = rows;
+            _cellWidth = width;
+            _cellHeight = height;
 
-            _length = length;
-            _height = height;
-
-            return GenerateGrid(gridLines);
+            return InitializeGridBase(gridLines, _cellWidth * Columns, _cellHeight * Rows, null, null);
         }
 
         /// <summary>
-        ///     Generate a Standard Uniform Grid like Grid
-        ///     With custom Height Length
+        ///     Generates a grid with custom widths for columns and heights for rows.
         /// </summary>
-        /// <param name="grdC">The Grid Column.</param>
-        /// <param name="grdR">The Grid Row.</param>
-        /// <param name="gridLines">Show Grid Lines</param>
-        /// <returns>The <see cref="Grid" />. An Uniform like Grid.</returns>
-        public static Grid ExtendGrid(List<int> grdC, List<int> grdR, bool gridLines)
+        /// <param name="columnWidths">List of column widths in pixels.</param>
+        /// <param name="rowHeights">List of row heights in pixels.</param>
+        /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
+        /// <returns>A <see cref="Grid"/> with custom row and column dimensions.</returns>
+        public static Grid ExtendGrid(List<int> columnWidths, List<int> rowHeights, bool gridLines)
         {
-            if (grdC == null || Columns < 0)
+            if (columnWidths == null || rowHeights == null)
             {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Columns)));
+                throw new CommonControlsException("Column and row dimensions cannot be null.");
             }
 
-            if (grdR == null || Rows < 0)
-            {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(Rows)));
-            }
+            Columns = columnWidths.Count;
+            Rows = rowHeights.Count;
 
-            Columns = grdC.Count;
-            Rows = grdR.Count;
-
-            return GenerateGrid(grdC, grdR, gridLines);
+            return InitializeGridBase(gridLines, CalculateTotalWidth(columnWidths), CalculateTotalHeight(rowHeights), columnWidths, rowHeights);
         }
 
         /// <summary>
-        ///     Creates the grid with the provided Parameters
+        ///     Initializes the grid with the base settings and dimensions.
         /// </summary>
-        /// <param name="gridLines">Show Grid Lines</param>
-        /// <returns>The <see cref="Grid" />. An Uniform like Grid.</returns>
-        private static Grid GenerateGrid(bool gridLines)
+        /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
+        /// <param name="width">Total grid width in pixels.</param>
+        /// <param name="height">Total grid height in pixels.</param>
+        /// <param name="columnWidths">Custom column widths if any, null otherwise.</param>
+        /// <param name="rowHeights">Custom row heights if any, null otherwise.</param>
+        /// <returns>A <see cref="Grid"/> configured with the specified parameters.</returns>
+        private static Grid InitializeGridBase(bool gridLines, int width, int height, IReadOnlyCollection<int> columnWidths, IReadOnlyCollection<int> rowHeights)
         {
             var dynamicGrid = new Grid
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 ShowGridLines = gridLines,
-                Width = _length * Columns,
-                Height = _height * Rows,
+                Width = width,
+                Height = height,
 #if DEBUG
-                //for Debugging Purposes, yes it should hurt the eyes!
                 Background = Brushes.Gray
 #endif
             };
 
-            for (var y = 0; y < Columns; y++)
+            if (columnWidths != null)
             {
-                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(_length) });
+                foreach (var colWidth in columnWidths)
+                {
+                    dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(colWidth) });
+                }
+            }
+            else
+            {
+                for (var i = 0; i < Columns; i++)
+                {
+                    dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(_cellWidth) });
+                }
             }
 
-            for (var y = 0; y < Rows; y++)
+            if (rowHeights != null)
             {
-                var rows = new RowDefinition { Height = new GridLength(_height) };
-
-                dynamicGrid.RowDefinitions.Add(rows);
+                foreach (var rowHeight in rowHeights)
+                {
+                    dynamicGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(rowHeight) });
+                }
+            }
+            else
+            {
+                for (var i = 0; i < Rows; i++)
+                {
+                    dynamicGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(_cellHeight) });
+                }
             }
 
             return dynamicGrid;
         }
 
         /// <summary>
-        ///     Creates the grid with the provided Parameters
+        ///     Validates the grid parameters to ensure they are non-negative.
         /// </summary>
-        /// <param name="grdC">The Grid Column.</param>
-        /// <param name="grdR">The Grid Row.</param>
-        /// <param name="gridLines">Show Grid Lines</param>
-        /// <returns>The <see cref="Grid" />. An Uniform like Grid.</returns>
-        /// <exception cref="CommonControlsException"></exception>
-        private static Grid GenerateGrid(IEnumerable<int> grdC, IEnumerable<int> grdR, bool gridLines)
+        private static void ValidateParameters(int columns, int rows, int width = 1, int height = 1)
         {
-            if (grdC == null)
+            if (columns < 0 || rows < 0 || width < 1 || height < 1)
             {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(grdC)));
+                throw new CommonControlsException(ComCtlResources.GridExceptionValidate);
+            }
+        }
+
+        /// <summary>
+        ///     Calculates the total width of the grid.
+        /// </summary>
+        private static int CalculateTotalWidth(IEnumerable<int> columnWidths)
+        {
+            var totalWidth = 0;
+            foreach (var width in columnWidths)
+            {
+                if (width < 0) throw new CommonControlsException(ComCtlResources.GridExceptionColumn);
+
+                totalWidth += width;
             }
 
-            if (grdR == null)
+            return totalWidth;
+        }
+
+        /// <summary>
+        ///     Calculates the total height of the grid.
+        /// </summary>
+        private static int CalculateTotalHeight(IEnumerable<int> rowHeights)
+        {
+            var totalHeight = 0;
+            foreach (var height in rowHeights)
             {
-                throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters, nameof(grdR)));
+                if (height < 0) throw new CommonControlsException(ComCtlResources.GridExceptionRow);
+
+                totalHeight += height;
             }
 
-            var height = 0;
-            var length = 0;
-
-            var dynamicGrid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                ShowGridLines = gridLines,
-#if DEBUG
-                //for Debugging Purposes, yes it should hurt the eyes!
-                Background = Brushes.Gray
-#endif
-            };
-
-            foreach (var grid in grdC)
-            {
-                if (grid < 0)
-                {
-                    throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters,
-                        nameof(length)));
-                }
-
-                dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(grid) });
-                length += grid;
-            }
-
-            foreach (var grid in grdR)
-            {
-                if (grid < 0)
-                {
-                    throw new CommonControlsException(string.Concat(ComCtlResources.ErrorWrongParameters,
-                        nameof(height)));
-                }
-
-                dynamicGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(grid) });
-                height += grid;
-            }
-
-            dynamicGrid.Height = height;
-            dynamicGrid.Width = length;
-
-            return dynamicGrid;
+            return totalHeight;
         }
     }
 }

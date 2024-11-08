@@ -1,82 +1,105 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls
+ * FILE:        CommonControls/GlobalKeyHandler.cs
+ * PURPOSE:     Attached Control to handle global Keystrokes
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
 namespace CommonControls
 {
+    /// <summary>
+    /// A static class that provides global key handling functionality to attach key-command mappings to UI elements.
+    /// </summary>
     public static class GlobalKeyHandler
     {
-        // DependencyProperty to enable or disable key handling
+        // DependencyProperty to enable or disable global key handling on a specific UIElement.
         public static readonly DependencyProperty AttachProperty =
             DependencyProperty.RegisterAttached(
-                "Attach", typeof(bool), typeof(GlobalKeyHandler),
+                ComCtlResources.GlobalKeyAttach, typeof(bool), typeof(GlobalKeyHandler),
                 new PropertyMetadata(false, OnAttachChanged));
 
-        // DependencyProperty to store custom key bindings
-        public static readonly DependencyProperty KeyBindingsProperty =
+        // DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+        public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
-                "KeyBindings", typeof(Dictionary<Key, ICommand>), typeof(GlobalKeyHandler),
+                ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Key, ICommand>), typeof(GlobalKeyHandler),
                 new PropertyMetadata(null));
 
-        // Getter and Setter for Attach property
+        /// <summary>
+        /// Sets the Attach property, enabling or disabling key handling on the specified UIElement.
+        /// When set to true, key events are registered; when false, they are unregistered.
+        /// </summary>
         public static void SetAttach(UIElement element, bool value)
         {
             element.SetValue(AttachProperty, value);
         }
 
+        /// <summary>
+        /// Gets the current value of the Attach property for a UIElement.
+        /// </summary>
         public static bool GetAttach(UIElement element)
         {
             return (bool)element.GetValue(AttachProperty);
         }
 
-        // Getter and Setter for KeyBindings property
-        public static void SetKeyBindings(UIElement element, Dictionary<Key, ICommand> value)
+        /// <summary>
+        /// Sets the dictionary of key-command bindings for the specified UIElement.
+        /// This dictionary maps specific keys to ICommand instances, allowing the element to handle
+        /// those keys by executing the associated commands.
+        /// </summary>
+        public static void SetCommandBindings(UIElement element, Dictionary<Key, ICommand> value)
         {
-            element.SetValue(KeyBindingsProperty, value);
+            element.SetValue(CommandBindingsProperty, value);
         }
 
-        public static Dictionary<Key, ICommand> GetKeyBindings(UIElement element)
+        /// <summary>
+        /// Gets the dictionary of key-command bindings associated with the specified UIElement.
+        /// </summary>
+        public static Dictionary<Key, ICommand> GetCommandBindings(UIElement element)
         {
-            return (Dictionary<Key, ICommand>)element.GetValue(KeyBindingsProperty);
+            return (Dictionary<Key, ICommand>)element.GetValue(CommandBindingsProperty);
         }
 
-        // When the Attach property changes, we subscribe or unsubscribe from the PreviewKeyDown event
+        /// <summary>
+        /// Called whenever the Attach property changes. Attaches or detaches key event handling based on the new value.
+        /// </summary>
         private static void OnAttachChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var element = d as UIElement;
-            if (element == null) return;
+            if (d is not UIElement element) return;
 
-            if ((bool)e.NewValue)
+            if ((bool)e.NewValue) // If Attach is set to true
             {
-                element.PreviewKeyDown += OnPreviewKeyDown;
+                element.PreviewKeyDown += OnPreviewKeyDown; // Attach the key-down handler
             }
-            else
+            else // If Attach is set to false
             {
-                element.PreviewKeyDown -= OnPreviewKeyDown;
+                element.PreviewKeyDown -= OnPreviewKeyDown; // Detach the key-down handler
             }
         }
 
-        // This method processes the PreviewKeyDown event
+        /// <summary>
+        /// Handles the PreviewKeyDown event on the attached UIElement.
+        /// This method checks if there is a command bound to the pressed key and executes it if allowed.
+        /// </summary>
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Handled) return;
+            if (e.Handled) return; // Do nothing if the event is already handled
 
-            var element = sender as UIElement;
-            if (element == null) return;
+            if (sender is not UIElement element) return;
 
-            var keyBindings = GetKeyBindings(element);
-            if (keyBindings == null) return;
+            // Retrieve the dictionary of key-command bindings for this element
+            var bindings = GetCommandBindings(element);
 
-            // Check if the pressed key has a command assigned to it
-            if (keyBindings.ContainsKey(e.Key))
-            {
-                var command = keyBindings[e.Key];
-                if (command.CanExecute(null))
-                {
-                    command.Execute(null);
-                    e.Handled = true;  // Mark event as handled
-                }
-            }
+            // Check if a command is bound to the pressed key and if it can execute
+            if (bindings == null || !bindings.TryGetValue(e.Key, out var command) || !command.CanExecute(null)) return;
+
+            // Execute the command if found and mark the event as handled
+            command.Execute(null);
+            e.Handled = true;
         }
     }
 }
