@@ -26,7 +26,10 @@ namespace CommonDialogs
         /// <returns>Selected Path</returns>
         public static string ShowFolder(string folder = "")
         {
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var browser = new FolderBrowser(folder);
             _ = browser.ShowDialog();
@@ -57,7 +60,10 @@ namespace CommonDialogs
             var input = new InputBox(header, description);
             _ = input.ShowDialog();
 
-            if (string.IsNullOrEmpty(input.InputText)) return string.Empty;
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return string.Empty;
+            }
 
             return input.InputText;
         }
@@ -72,13 +78,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileOpen(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
 
-            if (openFile.ShowDialog() != true) return null;
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = openFile.FileName;
 
@@ -95,13 +110,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileSave(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var saveFile = new SaveFileDialog { Filter = appendage, InitialDirectory = folder, OverwritePrompt = true };
 
-            if (saveFile.ShowDialog() != true) return null;
+            if (saveFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = saveFile.FileName;
 

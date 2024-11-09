@@ -376,8 +376,16 @@ namespace Imaging
         /// </returns>
         public static bool operator ==(ColorHsv left, ColorHsv right)
         {
-            if (ReferenceEquals(left, right)) return true; // Same reference
-            if (left is null || right is null) return false; // One is null
+            if (ReferenceEquals(left, right))
+            {
+                return true; // Same reference
+            }
+
+            if (left is null || right is null)
+            {
+                return false; // One is null
+            }
+
             return left.Equals(right);
         }
 

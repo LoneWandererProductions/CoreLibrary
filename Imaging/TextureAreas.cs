@@ -97,7 +97,8 @@ namespace Imaging
                     textureBitmap = Texture.GenerateWaveBitmap(width, height, settings.Alpha);
                     break;
                 case TextureType.Crosshatch:
-                    textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Angle1, settings.Angle2, settings.Alpha);
+                    textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.LineSpacing,
+                        settings.LineColor, settings.LineThickness, settings.Angle1, settings.Angle2, settings.Alpha);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(texture), texture, null);

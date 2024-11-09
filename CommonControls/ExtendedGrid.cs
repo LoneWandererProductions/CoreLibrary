@@ -24,20 +24,20 @@ namespace CommonControls
     public static class ExtendedGrid
     {
         /// <summary>
-        /// The height and width of each cell. Min is 1.
+        ///     The height and width of each cell. Min is 1.
         /// </summary>
         private static int _cellHeight = 1;
 
         /// <summary>
-        /// The cell width
+        ///     The cell width
         /// </summary>
         private static int _cellWidth = 1;
 
         /// <summary>
-        /// Gets the number of columns.
+        ///     Gets the number of columns.
         /// </summary>
         /// <value>
-        /// The columns.
+        ///     The columns.
         /// </value>
         public static int Columns { get; private set; }
 
@@ -57,7 +57,7 @@ namespace CommonControls
         /// <param name="columns">Number of columns in the grid.</param>
         /// <param name="rows">Number of rows in the grid.</param>
         /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
-        /// <returns>A <see cref="Grid"/> with uniform cell dimensions.</returns>
+        /// <returns>A <see cref="Grid" /> with uniform cell dimensions.</returns>
         public static Grid ExtendGrid(int columns, int rows, bool gridLines)
         {
             ValidateParameters(columns, rows, CellSize);
@@ -77,7 +77,7 @@ namespace CommonControls
         /// <param name="width">Cell width in pixels.</param>
         /// <param name="height">Cell height in pixels.</param>
         /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
-        /// <returns>A <see cref="Grid"/> with custom cell dimensions.</returns>
+        /// <returns>A <see cref="Grid" /> with custom cell dimensions.</returns>
         public static Grid ExtendGrid(int columns, int rows, int width, int height, bool gridLines)
         {
             ValidateParameters(columns, rows, width, height);
@@ -96,7 +96,7 @@ namespace CommonControls
         /// <param name="columnWidths">List of column widths in pixels.</param>
         /// <param name="rowHeights">List of row heights in pixels.</param>
         /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
-        /// <returns>A <see cref="Grid"/> with custom row and column dimensions.</returns>
+        /// <returns>A <see cref="Grid" /> with custom row and column dimensions.</returns>
         public static Grid ExtendGrid(List<int> columnWidths, List<int> rowHeights, bool gridLines)
         {
             if (columnWidths == null || rowHeights == null)
@@ -107,7 +107,8 @@ namespace CommonControls
             Columns = columnWidths.Count;
             Rows = rowHeights.Count;
 
-            return InitializeGridBase(gridLines, CalculateTotalWidth(columnWidths), CalculateTotalHeight(rowHeights), columnWidths, rowHeights);
+            return InitializeGridBase(gridLines, CalculateTotalWidth(columnWidths), CalculateTotalHeight(rowHeights),
+                columnWidths, rowHeights);
         }
 
         /// <summary>
@@ -118,8 +119,9 @@ namespace CommonControls
         /// <param name="height">Total grid height in pixels.</param>
         /// <param name="columnWidths">Custom column widths if any, null otherwise.</param>
         /// <param name="rowHeights">Custom row heights if any, null otherwise.</param>
-        /// <returns>A <see cref="Grid"/> configured with the specified parameters.</returns>
-        private static Grid InitializeGridBase(bool gridLines, int width, int height, IReadOnlyCollection<int> columnWidths, IReadOnlyCollection<int> rowHeights)
+        /// <returns>A <see cref="Grid" /> configured with the specified parameters.</returns>
+        private static Grid InitializeGridBase(bool gridLines, int width, int height,
+            IReadOnlyCollection<int> columnWidths, IReadOnlyCollection<int> rowHeights)
         {
             var dynamicGrid = new Grid
             {
@@ -185,7 +187,10 @@ namespace CommonControls
             var totalWidth = 0;
             foreach (var width in columnWidths)
             {
-                if (width < 0) throw new CommonControlsException(ComCtlResources.GridExceptionColumn);
+                if (width < 0)
+                {
+                    throw new CommonControlsException(ComCtlResources.GridExceptionColumn);
+                }
 
                 totalWidth += width;
             }
@@ -201,7 +206,10 @@ namespace CommonControls
             var totalHeight = 0;
             foreach (var height in rowHeights)
             {
-                if (height < 0) throw new CommonControlsException(ComCtlResources.GridExceptionRow);
+                if (height < 0)
+                {
+                    throw new CommonControlsException(ComCtlResources.GridExceptionRow);
+                }
 
                 totalHeight += height;
             }

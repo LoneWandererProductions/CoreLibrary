@@ -6,8 +6,8 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800" Loaded="UserControl_Loaded">
-    <ScrollViewer x:Name="MainScrollViewer" 
-                  HorizontalScrollBarVisibility="Auto" 
+    <ScrollViewer x:Name="MainScrollViewer"
+                  HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <Grid x:Name="Thb">
             <!-- Your dynamically added images will go here -->
