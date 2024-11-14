@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ViewModel
@@ -30,6 +33,21 @@ namespace ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        ///     Sets the property and raises PropertyChanged if the value changes.
+        /// </summary>
+        /// <typeparam name="T">Type of the property.</typeparam>
+        /// <param name="field">Reference to the field storing the property value.</param>
+        /// <param name="value">New value to set.</param>
+        /// <param name="propertyName">Name of the property (optional, automatically provided by caller).</param>
+        protected void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
+            field = value;
+            OnPropertyChanged(propertyName);
         }
     }
 }

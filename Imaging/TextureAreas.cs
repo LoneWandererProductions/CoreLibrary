@@ -100,6 +100,14 @@ namespace Imaging
                     textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.LineSpacing,
                         settings.LineColor, settings.LineThickness, settings.Angle1, settings.Angle2, settings.Alpha);
                     break;
+                case TextureType.Concrete:
+                    textureBitmap = Texture.GenerateConcreteBitmap(width, height, settings.MinValue,
+                        settings.MaxValue, settings.Alpha, settings.TurbulenceSize);
+                    break;
+                case TextureType.Canvas:
+                    textureBitmap = Texture.GenerateCanvasBitmap(width, height, settings.LineSpacing,
+                        settings.LineColor, settings.LineThickness, settings.Alpha);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(texture), texture, null);
             }

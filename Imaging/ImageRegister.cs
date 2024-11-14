@@ -73,6 +73,7 @@ namespace Imaging
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
             { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } },
             { ImageFilters.PencilSketchEffect, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
+
             // Add other filters as necessary
         };
 
@@ -147,7 +148,26 @@ namespace Imaging
                     nameof(TextureConfiguration.Angle1),
                     nameof(TextureConfiguration.Angle2)
                 }
+            },
+            {
+                TextureType.Concrete,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.MinValue),
+                    nameof(TextureConfiguration.MaxValue),
+                    nameof(TextureConfiguration.TurbulenceSize)
+                }
+            },
+            {
+                TextureType.Canvas,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.LineSpacing),
+                    nameof(TextureConfiguration.LineColor),
+                    nameof(TextureConfiguration.LineThickness)
+                }
             }
+
             // Add other textures as necessary
         };
 
@@ -406,6 +426,20 @@ namespace Imaging
                 LineThickness = 1,
                 Angle1 = 45.0f,
                 Angle2 = 135.0f
+            };
+
+            TextureSetting[TextureType.Concrete] = new TextureConfiguration
+            {
+                MinValue = 50,
+                MaxValue = 200,
+                TurbulenceSize = 16
+            };
+
+            TextureSetting[TextureType.Canvas] = new TextureConfiguration
+            {
+                LineSpacing = 8,
+                LineColor = Color.FromArgb(210, 180, 140),
+                LineThickness = 1
             };
 
             // Add more default settings as needed

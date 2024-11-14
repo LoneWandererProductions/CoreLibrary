@@ -188,5 +188,45 @@ namespace Imaging
                 config.Angle2
             );
         }
+
+        /// <summary>
+        ///     Generates the concrete bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        public Bitmap GenerateConcreteBitmap(int width, int height)
+        {
+            var config = ImageSettings.GetSettings(TextureType.Crosshatch);
+
+            return Texture.GenerateConcreteBitmap(
+                width,
+                height,
+                config.MinValue,
+                config.MaxValue,
+                config.Alpha,
+                config.TurbulenceSize
+            );
+        }
+
+        /// <summary>
+        ///     Generates the canvas bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        public Bitmap GenerateCanvasBitmap(int width, int height)
+        {
+            var config = ImageSettings.GetSettings(TextureType.Crosshatch);
+
+            return Texture.GenerateCanvasBitmap(
+                width,
+                height,
+                config.LineSpacing,
+                config.LineColor,
+                config.LineThickness,
+                config.Alpha
+            );
+        }
     }
 }

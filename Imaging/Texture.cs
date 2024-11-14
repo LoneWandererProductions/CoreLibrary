@@ -361,6 +361,95 @@ namespace Imaging
             return crosshatchBitmap;
         }
 
+        //TODO wire in the two Textures, add the settings to the config menu
+
+        /// <summary>
+        ///     Generates a concrete texture bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="minValue">The minimum grayscale value.</param>
+        /// <param name="maxValue">The maximum grayscale value.</param>
+        /// <param name="alpha">The alpha transparency level.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <returns>Concrete Texture Bitmap</returns>
+        internal static Bitmap GenerateConcreteBitmap(
+            int width,
+            int height,
+            int minValue = 50,
+            int maxValue = 200,
+            int alpha = 255,
+            double turbulenceSize = 16)
+        {
+            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
+            GenerateBaseNoise();
+
+            var concreteBitmap = new DirectBitmap(width, height);
+            var pixelData = new List<(int x, int y, Color color)>();
+
+            for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
+            {
+                // Turbulence creates irregular, rough texture
+                var noiseValue = Turbulence(x, y, turbulenceSize);
+                var colorValue = minValue + (int)((maxValue - minValue) * noiseValue);
+
+                // Add minor random variation for a "gritty" look
+                colorValue = Math.Clamp(colorValue + RandomVariation(-15, 15), minValue, maxValue);
+
+                var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
+                pixelData.Add((x, y, color));
+            }
+
+            concreteBitmap.SetPixelsSimd(pixelData.ToArray());
+            return concreteBitmap.Bitmap;
+        }
+
+        /// <summary>
+        ///     Generates a canvas texture bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="lineSpacing">The spacing between fibers.</param>
+        /// <param name="lineColor">The color of the fibers.</param>
+        /// <param name="lineThickness">The thickness of the fibers.</param>
+        /// <param name="alpha">The alpha transparency level.</param>
+        /// <returns>Canvas Texture Bitmap</returns>
+        internal static Bitmap GenerateCanvasBitmap(
+            int width,
+            int height,
+            int lineSpacing = 8,
+            Color lineColor = default,
+            int lineThickness = 1,
+            int alpha = 255)
+        {
+            var canvasBitmap = new DirectBitmap(width, height);
+
+
+            //no Simd for now
+            using (var g = Graphics.FromImage(canvasBitmap.Bitmap))
+            {
+                g.Clear(Color.White);
+
+                // Draw vertical fibers
+                for (var x = 0; x < width; x += lineSpacing)
+                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                    {
+                        g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
+                    }
+
+                // Draw horizontal fibers
+                for (var y = 0; y < height; y += lineSpacing)
+                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                    {
+                        g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
+                    }
+            }
+
+            return canvasBitmap.Bitmap;
+        }
+
+
         /// <summary>
         ///     Generates the base noise.
         /// </summary>
@@ -414,6 +503,15 @@ namespace Imaging
             var i2 = ImageHelper.Interpolate(v3, v4, fracX);
 
             return ImageHelper.Interpolate(i1, i2, fracY);
+        }
+
+        /// <summary>
+        ///     Adds a minor random variation to an integer value within a given range.
+        /// </summary>
+        private static int RandomVariation(int min, int max)
+        {
+            var rand = new Random();
+            return rand.Next(min, max);
         }
     }
 }
