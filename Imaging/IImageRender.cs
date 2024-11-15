@@ -128,6 +128,22 @@ namespace Imaging
         Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width);
 
         /// <summary>
+        ///     Cuts the bitmap.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        ///     The cut Image, based on the shape
+        /// </returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null,
+            Point? startPoint = null);
+
+        /// <summary>
         ///     Cuts a bitmap.
         /// </summary>
         /// <param name="image">The image.</param>

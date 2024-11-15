@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/TextureShape.cs
+ * FILE:        Imaging/MaskShape.cs
  * PURPOSE:     Enum that shows all allowed shapes
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ namespace Imaging
     /// <summary>
     ///     Texture Shapes
     /// </summary>
-    public enum TextureShape
+    public enum MaskShape
     {
         /// <summary>
         ///     The rectangle

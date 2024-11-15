@@ -11,6 +11,7 @@
 // ReSharper disable UnusedType.Global
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -77,6 +78,20 @@ namespace CommonControls
             new PropertyMetadata(1.0, OnZoomScaleChanged));
 
         /// <summary>
+        ///     The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedPointCommandProperty = DependencyProperty.Register(
+            nameof(SelectedPointCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
+
+
+        /// <summary>
+        ///     The selected frame property
+        /// </summary>
+        public static readonly DependencyProperty SelectedFrameCommandProperty =
+            DependencyProperty.Register(nameof(SelectedFrameCommand), typeof(ICommand), typeof(ImageZoom),
+                new PropertyMetadata(null));
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly object _lock = new();
@@ -121,6 +136,30 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+        }
+
+        /// <summary>
+        ///     Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        ///     The image clicked command.
+        /// </value>
+        public ICommand SelectedPointCommand
+        {
+            get => (ICommand)GetValue(SelectedPointCommandProperty);
+            set => SetValue(SelectedPointCommandProperty, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected frame.
+        /// </summary>
+        /// <value>
+        ///     The selected frame.
+        /// </value>
+        public ICommand SelectedFrameCommand
+        {
+            get => (ICommand)GetValue(SelectedFrameCommandProperty);
+            set => SetValue(SelectedFrameCommandProperty, value);
         }
 
         /// <summary>
@@ -180,6 +219,7 @@ namespace CommonControls
             set => SetValue(AutoplayGif, value);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Implementation of IDisposable interface.
         /// </summary>
@@ -360,16 +400,12 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
-                {
-                }
-                    break;
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                     break;
                 case SelectionTools.FreeForm:
                     e.GetPosition(BtmImage);
@@ -391,6 +427,12 @@ namespace CommonControls
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
+            if (_selectionAdorner == null)
+            {
+                Trace.Write(ComCtlResources.InformationArdonerNull);
+                return;
+            }
+
             //clicked Endpoint
 
             switch (ZoomTool)
@@ -399,15 +441,19 @@ namespace CommonControls
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
+                case SelectionTools.Rectangle:
                 {
                     var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
+                    SelectedFrameCommand.Execute(frame);
                 }
                     break;
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
+                    SetClickedPoint(e);
+
                     var endpoint = e.GetPosition(BtmImage);
+
+
                     SelectedPoint?.Invoke(endpoint);
                     break;
                 default:
@@ -458,8 +504,8 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
                     _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
@@ -475,18 +521,9 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // Handle pixel selection if needed
                     break;
-
-                case SelectionTools.Erase:
-                {
-                    // Similar to rectangle selection, but intended for erasing
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-
-                    break;
-                }
-
                 default:
                     // Nothing
                     return;
@@ -520,6 +557,17 @@ namespace CommonControls
 
             // Ensure the adorner updates with the new zoom scale
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+        }
+
+        /// <summary>
+        ///     Sets the clicked point.
+        /// </summary>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
+        private void SetClickedPoint(MouseEventArgs e)
+        {
+            var endpoint = e.GetPosition(BtmImage);
+            SelectedPoint?.Invoke(endpoint);
+            SelectedPointCommand.Execute(endpoint);
         }
 
 

@@ -613,35 +613,25 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Converts the jagged double array to rectangular array.
+        ///     Converts the jagged double array to rectangular array.
         /// </summary>
         [TestMethod]
         public void ConvertJaggedDoubleArrayToRectangularArray()
         {
             // Arrange
-            double[][] jaggedArray = new double[][]
-            {
-                new double[] { 1.1, 1.2, 1.3 },
-                new double[] { 2.1, 2.2, 2.3 },
-                new double[] { 3.1, 3.2, 3.3 }
-            };
+            double[][] jaggedArray = { new[] { 1.1, 1.2, 1.3 }, new[] { 2.1, 2.2, 2.3 }, new[] { 3.1, 3.2, 3.3 } };
 
-            double[,] expected = new double[,]
-            {
-                { 1.1, 1.2, 1.3 },
-                { 2.1, 2.2, 2.3 },
-                { 3.1, 3.2, 3.3 }
-            };
+            double[,] expected = { { 1.1, 1.2, 1.3 }, { 2.1, 2.2, 2.3 }, { 3.1, 3.2, 3.3 } };
 
             // Act
-            double[,] result = jaggedArray.Convert();
+            var result = jaggedArray.Convert();
 
             // Assert
             Assert.AreEqual(expected.GetLength(0), result.GetLength(0), "Row count mismatch.");
             Assert.AreEqual(expected.GetLength(1), result.GetLength(1), "Column count mismatch.");
-            for (int i = 0; i < expected.GetLength(0); i++)
+            for (var i = 0; i < expected.GetLength(0); i++)
             {
-                for (int j = 0; j < expected.GetLength(1); j++)
+                for (var j = 0; j < expected.GetLength(1); j++)
                 {
                     Assert.AreEqual(expected[i, j], result[i, j], $"Value mismatch at [{i}, {j}].");
                 }

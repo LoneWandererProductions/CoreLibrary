@@ -242,14 +242,9 @@ namespace CommonDialogs
                 Log = string.Concat(Log, ConnectionStringDb, Environment.NewLine);
             }
 
-            if (check)
-            {
-                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
-            }
-            else
-            {
-                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
-            }
+            Log = string.Concat(Log,
+                check ? ComCtlResources.DbLogConnectionStringBuild : ComCtlResources.DbLogConnectionStringBuildError,
+                Environment.NewLine);
         }
 
         /// <summary>

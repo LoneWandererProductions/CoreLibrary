@@ -93,7 +93,7 @@ namespace Debugger
         /// <param name="colorOptions">The filter option.</param>
         private void AddFilter(IEnumerable<ColorOption> colorOptions)
         {
-            if (colorOptions == null || colorOptions.Count() == 0)
+            if (colorOptions?.Any() != true)
             {
                 return;
             }

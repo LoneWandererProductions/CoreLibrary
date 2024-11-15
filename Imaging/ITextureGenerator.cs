@@ -79,6 +79,26 @@ namespace Imaging
             int height);
 
         /// <summary>
+        ///     Generates the concrete bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        Bitmap GenerateConcreteBitmap(
+            int width,
+            int height);
+
+        /// <summary>
+        ///     Generates the canvas bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        Bitmap GenerateCanvasBitmap(
+            int width,
+            int height);
+
+        /// <summary>
         ///     Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -94,7 +114,7 @@ namespace Imaging
             int width,
             int height,
             TextureType filter,
-            TextureShape shape,
+            MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null);
     }

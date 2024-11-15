@@ -37,7 +37,7 @@ namespace CommonLibrarySqlLiteTests
         /// <summary>
         ///     The SqlLite Interface.
         /// </summary>
-        private static readonly SqliteDatabase _target = new();
+        private static readonly SqliteDatabase Target = new();
 
         /// <summary>
         ///     Test if we can create a Database
@@ -46,20 +46,20 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void CreateDatabase()
         {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+            Target.SendMessage += SharedHelperClass.DebugPrints;
 
             //cleanup
             SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbCreate);
 
             //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseCreate, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseCreate, true);
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCreate),
-                "Test failed Create: " + _target.LastErrors);
+                "Test failed Create: " + Target.LastErrors);
 
             //check if file was deleted
-            _target.DeleteDatabase(_target.Location, ResourcesSqlLite.DbDatabaseCreate);
+            Target.DeleteDatabase(Target.Location, ResourcesSqlLite.DbDatabaseCreate);
             Assert.IsFalse(File.Exists(ResourcesSqlLite.PathDbCreate),
-                "Test failed Delete: " + _target.LastErrors);
+                "Test failed Delete: " + Target.LastErrors);
         }
 
         /// <summary>
@@ -70,16 +70,16 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void DetachDatabase()
         {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+            Target.SendMessage += SharedHelperClass.DebugPrints;
 
             //cleanup
             SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbDetach);
             SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbCreate);
 
             //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDetach, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDetach, true);
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbDetach),
-                "Test failed Create: " + _target.LastErrors);
+                "Test failed Create: " + Target.LastErrors);
 
             //add some content
             var elementone = new TableColumns
@@ -91,12 +91,12 @@ namespace CommonLibrarySqlLiteTests
 
             columns.DColumns.Add("First", elementone);
 
-            _target.CreateTable("First", columns);
+            Target.CreateTable("First", columns);
 
             //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseCreate, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseCreate, true);
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCreate),
-                "Test passes Create " + _target.LastErrors);
+                "Test passes Create " + Target.LastErrors);
 
             //add some content
             elementone = new TableColumns
@@ -108,11 +108,11 @@ namespace CommonLibrarySqlLiteTests
 
             columns.DColumns.Add("Second", elementone);
 
-            _target.CreateTable("Second", columns);
+            Target.CreateTable("Second", columns);
 
             //Test attach and Detach
-            var check = _target.AttachDatabase("DbDetach", "DbDetach");
-            Assert.IsTrue(check, "Test failed attach Database: " + _target.LastErrors);
+            var check = Target.AttachDatabase("DbDetach", "DbDetach");
+            Assert.IsTrue(check, "Test failed attach Database: " + Target.LastErrors);
         }
 
         /// <summary>
@@ -162,23 +162,23 @@ namespace CommonLibrarySqlLiteTests
         [TestMethod]
         public void BreakDatabase()
         {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+            Target.SendMessage += SharedHelperClass.DebugPrints;
 
             //cleanup
             SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbCrash);
 
             //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbCrash, true);
+            Target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbCrash, true);
             Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbCrash),
-                "Test failed Create: " + _target.LastErrors);
+                "Test failed Create: " + Target.LastErrors);
 
             //select a bogus DB
-            _target.SimpleSelect(TableName);
+            Target.SimpleSelect(TableName);
 
             /*
              * Target is not to get the right Error Message but to enforce Exceptions
              */
-            Assert.IsTrue(_target.LastErrors.Contains("Table does not exist"), "Test did not failed correctly");
+            Assert.IsTrue(Target.LastErrors.Contains("Table does not exist"), "Test did not failed correctly");
 
             var elementOne = new TableColumns
             {
@@ -195,17 +195,17 @@ namespace CommonLibrarySqlLiteTests
             columns.DColumns.Add(HeaderFirst, elementOne);
             columns.DColumns.Add(HeaderSecond, elementTwo);
 
-            _target.CreateTable(TableName, columns);
+            Target.CreateTable(TableName, columns);
 
-            _target.InsertMultipleRow(TableName, null, true);
+            Target.InsertMultipleRow(TableName, null, true);
 
             /*
              * Target is not to get the right Error Message but to enforce Exceptions
              */
-            Assert.IsTrue(_target.LastErrors.Contains("Input Value was empty"),
+            Assert.IsTrue(Target.LastErrors.Contains("Input Value was empty"),
                 "Test did not failed correctly");
 
-            var check = _target.InsertMultipleRow("bogus", new List<TableSet>(), true);
+            var check = Target.InsertMultipleRow("bogus", new List<TableSet>(), true);
 
             /*
              * Target is not to get the right Error Message but to enforce Exceptions

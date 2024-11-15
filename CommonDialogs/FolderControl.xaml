@@ -45,7 +45,7 @@
             TextAlignment="Left"
             TextTrimming="CharacterEllipsis"
             Text="{Binding Path=Paths}"
-            Background="White" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="13" />
+            Background="White" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" />
 
         <!-- Input Path -->
         <TextBox
@@ -53,7 +53,7 @@
             TextWrapping="Wrap"
             VerticalAlignment="Center"
             Text="{Binding Path=LookUp}"
-            Grid.ColumnSpan="3" Grid.Column="0" Height="19" />
+            Grid.ColumnSpan="3" Grid.Column="0" />
 
         <!-- Navigation Buttons -->
         <Button Content="Up"

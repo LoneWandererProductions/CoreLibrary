@@ -23,13 +23,14 @@ namespace CommonFilter
         /// </summary>
         private ILogicEvaluations _evaluate = null!;
 
+        /// Gets or sets the options.
         /// <summary>
         ///     The filter
         /// </summary>
         private FilterWindow _filter = null!;
 
         /// <summary>
-        ///     Gets or sets the options.
+        ///     Gets or sets the conditions.
         /// </summary>
         /// <value>
         ///     The options.

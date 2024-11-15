@@ -73,6 +73,7 @@ namespace Imaging
             { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
             { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } },
             { ImageFilters.PencilSketchEffect, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
+
             // Add other filters as necessary
         };
 
@@ -147,7 +148,26 @@ namespace Imaging
                     nameof(TextureConfiguration.Angle1),
                     nameof(TextureConfiguration.Angle2)
                 }
+            },
+            {
+                TextureType.Concrete,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.MinValue),
+                    nameof(TextureConfiguration.MaxValue),
+                    nameof(TextureConfiguration.TurbulenceSize)
+                }
+            },
+            {
+                TextureType.Canvas,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.LineSpacing),
+                    nameof(TextureConfiguration.LineColor),
+                    nameof(TextureConfiguration.LineThickness)
+                }
             }
+
             // Add other textures as necessary
         };
 
@@ -156,7 +176,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal readonly ColorMatrix blackAndWhite = new(new[]
+        internal readonly ColorMatrix BlackAndWhite = new(new[]
         {
             new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 }, new[] { 1.5f, 1.5f, 1.5f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { -1, -1, -1, 0, 1 }
@@ -165,13 +185,13 @@ namespace Imaging
         /// <summary>
         ///     The box blur
         /// </summary>
-        internal readonly double[,] boxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+        internal readonly double[,] BoxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
         /// <summary>
         ///     The brightness Filter
         ///     Adjusts the brightness of the image by scaling the color values.
         /// </summary>
-        internal readonly ColorMatrix brightness = new(new[]
+        internal readonly ColorMatrix Brightness = new(new[]
         {
             new[] { 1.2f, 0, 0, 0, 0 }, new[] { 0, 1.2f, 0, 0, 0 }, new[] { 0, 0, 1.2f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -181,7 +201,7 @@ namespace Imaging
         ///     The color balance Filter
         ///     Adjusts the balance of colors to emphasize or de-emphasize specific color channels.
         /// </summary>
-        internal readonly ColorMatrix colorBalance = new(new[]
+        internal readonly ColorMatrix ColorBalance = new(new[]
         {
             new[] { 1f, 0.2f, -0.2f, 0, 0 }, new[] { -0.2f, 1f, 0.2f, 0, 0 }, new[] { 0.2f, -0.2f, 1f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -191,7 +211,7 @@ namespace Imaging
         ///     The contrast Filter
         ///     Adjusts the contrast of the image by scaling the differences between pixel values.
         /// </summary>
-        internal readonly ColorMatrix contrast = new(new[]
+        internal readonly ColorMatrix Contrast = new(new[]
         {
             new[] { 1.5f, 0, 0, 0, -0.2f }, new[] { 0, 1.5f, 0, 0, -0.2f }, new[] { 0, 0, 1.5f, 0, -0.2f },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -200,17 +220,17 @@ namespace Imaging
         /// <summary>
         ///     The edge enhance
         /// </summary>
-        internal readonly double[,] edgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
+        internal readonly double[,] EdgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
 
         /// <summary>
         ///     The emboss filter
         /// </summary>
-        internal readonly double[,] embossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+        internal readonly double[,] EmbossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
 
         /// <summary>
         ///     The gaussian blur
         /// </summary>
-        internal readonly double[,] gaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+        internal readonly double[,] GaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image
@@ -228,7 +248,7 @@ namespace Imaging
         ///     NewB = (m31* R + m32* G + m33* B + m34* A + m35)
         ///     NewA = (m41* R + m42* G + m43* B + m44* A + m45)
         /// </summary>
-        internal readonly ColorMatrix grayScale = new(new[]
+        internal readonly ColorMatrix GrayScale = new(new[]
         {
             new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -238,7 +258,7 @@ namespace Imaging
         ///     The hue shift Filter
         ///     Shifts the hue of the image, effectively rotating the color wheel.
         /// </summary>
-        internal readonly ColorMatrix hueShift = new(new[]
+        internal readonly ColorMatrix HueShift = new(new[]
         {
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new[] { 0.213f, 0.715f, 0.072f, 0, 0 },
             new[] { 0.213f, 0.715f, 0.072f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -249,7 +269,7 @@ namespace Imaging
         ///     Source:
         ///     https://archive.ph/hzR2W
         /// </summary>
-        internal readonly ColorMatrix invert = new(new[]
+        internal readonly ColorMatrix Invert = new(new[]
         {
             new float[] { -1, 0, 0, 0, 0 }, new float[] { 0, -1, 0, 0, 0 }, new float[] { 0, 0, -1, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 1, 1, 1, 0, 1 }
@@ -259,23 +279,23 @@ namespace Imaging
         ///     The kernel 135 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal readonly double[,] kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
+        internal readonly double[,] Kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
 
         /// <summary>
         ///     The kernel 45 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal readonly double[,] kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
+        internal readonly double[,] Kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
 
         /// <summary>
         ///     The laplacian filter
         /// </summary>
-        internal readonly double[,] laplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+        internal readonly double[,] LaplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
 
         /// <summary>
         ///     The motion blur
         /// </summary>
-        internal readonly double[,] motionBlur =
+        internal readonly double[,] MotionBlur =
         {
             { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
         };
@@ -285,7 +305,7 @@ namespace Imaging
         ///     Source:
         ///     https://docs.rainmeter.net/tips/colormatrix-guide/
         /// </summary>
-        internal readonly ColorMatrix polaroid = new(new[]
+        internal readonly ColorMatrix Polaroid = new(new[]
         {
             new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
             new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
@@ -297,7 +317,7 @@ namespace Imaging
         ///     Source:
         ///     https://archive.ph/hzR2W
         /// </summary>
-        internal readonly ColorMatrix sepia = new(new[]
+        internal readonly ColorMatrix Sepia = new(new[]
         {
             new[] { .393f, .349f, .272f, 0, 0 }, new[] { .769f, .686f, .534f, 0, 0 },
             new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -306,29 +326,29 @@ namespace Imaging
         /// <summary>
         ///     The sharpen filter
         /// </summary>
-        internal readonly double[,] sharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+        internal readonly double[,] SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
 
 
         /// <summary>
         ///     The sobel x kernel
         /// </summary>
-        internal readonly int[,] sobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+        internal readonly int[,] SobelX = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
         /// <summary>
         ///     The sobel y kernel
         /// </summary>
-        internal readonly int[,] sobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+        internal readonly int[,] SobelY = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     The unsharp mask
         /// </summary>
-        internal readonly double[,] unsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+        internal readonly double[,] UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
 
         /// <summary>
         ///     The vintage Filter
         ///     Applies a vintage effect by modifying the color matrix to mimic old photo tones.
         /// </summary>
-        internal readonly ColorMatrix vintage = new(new[]
+        internal readonly ColorMatrix Vintage = new(new[]
         {
             new[] { 0.393f, 0.349f, 0.272f, 0, 0 }, new[] { 0.769f, 0.686f, 0.534f, 0, 0 },
             new[] { 0.189f, 0.168f, 0.131f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }
@@ -406,6 +426,20 @@ namespace Imaging
                 LineThickness = 1,
                 Angle1 = 45.0f,
                 Angle2 = 135.0f
+            };
+
+            TextureSetting[TextureType.Concrete] = new TextureConfiguration
+            {
+                MinValue = 50,
+                MaxValue = 200,
+                TurbulenceSize = 16
+            };
+
+            TextureSetting[TextureType.Canvas] = new TextureConfiguration
+            {
+                LineSpacing = 8,
+                LineColor = Color.FromArgb(210, 180, 140),
+                LineThickness = 1
             };
 
             // Add more default settings as needed
@@ -536,7 +570,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Loads settings from a JSON string.
+        ///     Loads settings from a JSON string.
         /// </summary>
         /// <param name="json">The JSON string containing settings.</param>
         public void LoadSettingsFromJson(string json)
@@ -546,21 +580,17 @@ namespace Imaging
                 var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
 
                 if (settings != null)
-                {
-                    foreach (var filter in settings)
-                    {
-                        _filterPropertyMap[filter.Key] = filter.Value;
-                    }
-                }
+                    foreach (var (imageFilters, filter) in settings)
+                        _filterPropertyMap[imageFilters] = filter;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {
                 ErrorLog.Add(DateTime.MinValue, $"{ImagingResources.ErrorLoadSettings} {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Retrieves the current settings as a JSON string.
+        ///     Retrieves the current settings as a JSON string.
         /// </summary>
         /// <returns>JSON representation of current settings.</returns>
         public string GetSettingsAsJson()

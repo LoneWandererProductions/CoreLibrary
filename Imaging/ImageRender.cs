@@ -180,6 +180,42 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        ///     Cuts the bitmap.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>The selected Image area.</returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">shape - null</exception>
+        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null,
+            Point? startPoint = null)
+        {
+            var btm = ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
+
+            // If no start point is provided, default to (0, 0)
+            var actualStartPoint = startPoint ?? new Point(0, 0);
+
+            switch (shape)
+            {
+                case MaskShape.Rectangle:
+                    return ImageMask.ApplyRectangleMask(btm, width, height, actualStartPoint);
+
+                case MaskShape.Circle:
+                    return ImageMask.ApplyCircleMask(btm, width, height, actualStartPoint);
+
+                case MaskShape.Polygon:
+                    return ImageMask.ApplyPolygonMask(btm, (Point[])shapeParams);
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(shape), shape, null);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Cuts a bitmap.
         /// </summary>
         /// <param name="image">The image.</param>

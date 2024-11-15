@@ -123,19 +123,14 @@ namespace Imaging
             // Check if the image exists
             if (!File.Exists(GifSource))
                 // Log or show an error message
-            {
                 return;
-            }
 
             try
             {
                 var info = ImageGifHandler.GetImageInfo(GifSource);
 
                 // Handle possible error
-                if (info is not { IsAnimated: true })
-                {
-                    return;
-                }
+                if (info is not { IsAnimated: true }) return;
 
                 _imageList = await ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
@@ -149,10 +144,7 @@ namespace Imaging
                 // Fire the ImageLoaded event to notify that the GIF is ready
                 ImageLoaded?.Invoke(this, EventArgs.Empty);
 
-                if (AutoStart)
-                {
-                    StartAnimation();
-                }
+                if (AutoStart) StartAnimation();
             }
             catch (Exception ex)
             {
@@ -213,13 +205,9 @@ namespace Imaging
         private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if ((Visibility)e.NewValue == Visibility.Visible)
-            {
                 ((ImageGif)sender).StartAnimation();
-            }
             else
-            {
                 ((ImageGif)sender).StopAnimation();
-            }
         }
 
         /// <summary>
@@ -231,9 +219,7 @@ namespace Imaging
             {
                 var newIndex = (int)ev.NewValue;
                 if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
-                {
                     gifImage.Source = gifImage._imageList[newIndex];
-                }
             }
         }
 
@@ -258,10 +244,7 @@ namespace Imaging
         /// </summary>
         private void StartAnimation()
         {
-            if (!_isInitialized)
-            {
-                _ = InitializeAsync();
-            }
+            if (!_isInitialized) _ = InitializeAsync();
 
             BeginAnimation(FrameIndexProperty, _animation);
         }
@@ -280,10 +263,7 @@ namespace Imaging
         /// <param name="disposing">if set to <c>true</c> [disposing].</param>
         private void Dispose(bool disposing)
         {
-            if (_isDisposed)
-            {
-                return;
-            }
+            if (_isDisposed) return;
 
             if (disposing)
             {

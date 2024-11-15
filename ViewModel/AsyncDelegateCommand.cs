@@ -9,12 +9,15 @@
  *              https://stackoverflow.com/questions/48527651/full-implementation-of-relay-command-can-it-be-applied-to-all-cases
  */
 
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ViewModel
 {
+    /// <inheritdoc />
     /// <summary>
     ///     An asynchronous delegate command class.
     /// </summary>
@@ -45,6 +48,7 @@ namespace ViewModel
             _canExecute = canExecute;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Executes the command asynchronously.
         /// </summary>
@@ -54,6 +58,7 @@ namespace ViewModel
             await _execute((T)parameter);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Determines if the command can execute.
         /// </summary>
@@ -64,6 +69,7 @@ namespace ViewModel
             return _canExecute?.Invoke((T)parameter) ?? true;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>

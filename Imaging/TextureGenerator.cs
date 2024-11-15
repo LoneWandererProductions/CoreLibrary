@@ -18,7 +18,7 @@ namespace Imaging
     ///     Main Entry Class that will handle all things related to textures
     /// </summary>
     /// <seealso cref="T:Imaging.ITextureGenerator" />
-    public class TextureGenerator : ITextureGenerator
+    public sealed class TextureGenerator : ITextureGenerator
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextureGenerator" /> class.
@@ -152,7 +152,7 @@ namespace Imaging
         /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>Texture Bitmap</returns>
-        public Bitmap GenerateTexture(int width, int height, TextureType filter, TextureShape shape,
+        public Bitmap GenerateTexture(int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null)
         {
@@ -186,6 +186,46 @@ namespace Imaging
                 config.LineThickness,
                 config.Angle1,
                 config.Angle2
+            );
+        }
+
+        /// <summary>
+        ///     Generates the concrete bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        public Bitmap GenerateConcreteBitmap(int width, int height)
+        {
+            var config = ImageSettings.GetSettings(TextureType.Crosshatch);
+
+            return Texture.GenerateConcreteBitmap(
+                width,
+                height,
+                config.MinValue,
+                config.MaxValue,
+                config.Alpha,
+                config.TurbulenceSize
+            );
+        }
+
+        /// <summary>
+        ///     Generates the canvas bitmap.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Texture Bitmap</returns>
+        public Bitmap GenerateCanvasBitmap(int width, int height)
+        {
+            var config = ImageSettings.GetSettings(TextureType.Crosshatch);
+
+            return Texture.GenerateCanvasBitmap(
+                width,
+                height,
+                config.LineSpacing,
+                config.LineColor,
+                config.LineThickness,
+                config.Alpha
             );
         }
     }

@@ -412,8 +412,8 @@ namespace CommonControls
         private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPicker colorPicker)
-            {
                 // Force layout update on visibility change
+            {
                 colorPicker.UpdateLayout();
             }
         }

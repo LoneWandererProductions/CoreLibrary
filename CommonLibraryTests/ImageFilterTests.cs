@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
@@ -102,10 +103,8 @@ namespace CommonLibraryTests
         private Bitmap CreateTestBitmap(int width, int height, Color color)
         {
             var bitmap = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(bitmap))
-            {
-                g.Clear(color);
-            }
+            using var g = Graphics.FromImage(bitmap);
+            g.Clear(color);
 
             return bitmap;
         }

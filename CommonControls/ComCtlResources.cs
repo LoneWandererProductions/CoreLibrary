@@ -14,24 +14,51 @@ namespace CommonControls
     internal static class ComCtlResources
     {
         /// <summary>
-        ///     Error, wrong parameters (const). Value: "Wrong Arguments provided".
+        ///     The grid exception validate (const). Value: "Grid dimensions and cell sizes must be non-negative and greater than
+        ///     zero.".
         /// </summary>
-        internal const string ErrorWrongParameters = "Wrong Arguments provided: ";
+        internal const string GridExceptionValidate =
+            "Grid dimensions and cell sizes must be non-negative and greater than zero.";
 
         /// <summary>
-        ///     Error, Color Selection parameters (const). Value: "Error selecting color".
+        ///     The grid exception column (const). Value: "Column width cannot be negative.".
         /// </summary>
-        internal const string ErrorColorSelection = "Error selecting color";
+        internal const string GridExceptionColumn = "Column width cannot be negative.";
 
         /// <summary>
-        ///     Error, Color switching parameters (const). Value:"Error switching color".
+        ///     The grid exception row (const). Value: "Row height cannot be negative.".
         /// </summary>
-        internal const string ErrorSwitchingColor = "Error switching color";
+        internal const string GridExceptionRow = "Row height cannot be negative.";
+
+        /// <summary>
+        ///     The global key attach (const). Value: "Attach".
+        /// </summary>
+        internal const string GlobalKeyAttach = "Attach";
+
+        /// <summary>
+        ///     The global key command bindings (const). Value: "CommandBindings".
+        /// </summary>
+        internal const string GlobalKeyCommandBindings = "CommandBindings";
+
+        /// <summary>
+        ///     Error, Color Selection parameters (const). Value: "Error selecting color.".
+        /// </summary>
+        internal const string ErrorColorSelection = "Error selecting color.";
+
+        /// <summary>
+        ///     Error, Color switching parameters (const). Value:"Error switching color.".
+        /// </summary>
+        internal const string ErrorSwitchingColor = "Error switching color.";
 
         /// <summary>
         ///     The error could not load image (const). Value: "Error could not load Image:".
         /// </summary>
         internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
+
+        /// <summary>
+        ///     The information ardoner null (const). Value: "Adorner was outside of the image control.".
+        /// </summary>
+        internal const string InformationArdonerNull = "Adorner was outside of the image control.";
 
         /// <summary>
         ///     Error, Color Selection initializing parameters (const). Value: "Error initializing color selection control"
@@ -82,6 +109,12 @@ namespace CommonControls
         ///     New Item (const). Value: "NewItem".
         /// </summary>
         internal const string NewItem = "New Item";
+
+
+        /// <summary>
+        ///     The debug timer (const). Value: "Time Tracked end: ".
+        /// </summary>
+        internal const string DebugTimer = "Time Tracked end: ";
 
         /// <summary>
         ///     Separator (const). Value: " , ".

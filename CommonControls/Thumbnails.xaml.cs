@@ -107,10 +107,24 @@ namespace CommonControls
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
 
         /// <summary>
+        ///     The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty ImageClickedCommandProperty = DependencyProperty.Register(
+            nameof(ImageClickedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
+
+        /// <summary>
+        ///     The image loaded command dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ImageLoadCommandProperty = DependencyProperty.Register(
+            nameof(ImageLoadedCommand),
+            typeof(ICommand),
+            typeof(Thumbnails),
+            new PropertyMetadata(null));
+
+        /// <summary>
         ///     The refresh
         /// </summary>
         private static bool _refresh = true;
-
 
         /// <summary>
         ///     The cancellation token source
@@ -136,11 +150,6 @@ namespace CommonControls
         ///     The original width
         /// </summary>
         private int _originalWidth;
-
-        /// <summary>
-        ///     The previous selected border
-        /// </summary>
-        private Border _previousSelectedBorder;
 
         /// <summary>
         ///     The selection
@@ -244,6 +253,30 @@ namespace CommonControls
         }
 
         /// <summary>
+        ///     Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        ///     The image clicked command.
+        /// </value>
+        public ICommand ImageClickedCommand
+        {
+            get => (ICommand)GetValue(ImageClickedCommandProperty);
+            set => SetValue(ImageClickedCommandProperty, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the image loaded command.
+        /// </summary>
+        /// <value>
+        ///     The image loaded command.
+        /// </value>
+        public ICommand ImageLoadedCommand
+        {
+            get => (ICommand)GetValue(ImageLoadCommandProperty);
+            set => SetValue(ImageLoadCommandProperty, value);
+        }
+
+        /// <summary>
         ///     The Name of the Image Control
         /// </summary>
         /// <value>
@@ -268,6 +301,11 @@ namespace CommonControls
         private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
+        ///     The border
+        /// </summary>
+        private ConcurrentDictionary<int, Border> Border { get; set; }
+
+        /// <summary>
         ///     Gets or sets the selection.
         /// </summary>
         /// <value>
@@ -275,6 +313,7 @@ namespace CommonControls
         /// </value>
         public List<int> Selection { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
@@ -354,6 +393,7 @@ namespace CommonControls
             LoadImages();
 
             //All Images Loaded
+            ImageLoadedCommand?.Execute(this);
             ImageLoaded?.Invoke();
         }
 
@@ -392,6 +432,7 @@ namespace CommonControls
 
             Keys = new ConcurrentDictionary<string, int>();
             ImageDct = new ConcurrentDictionary<string, Image>();
+            Border = new ConcurrentDictionary<int, Border>();
             Selection = new List<int>();
 
             if (SelectBox)
@@ -445,18 +486,20 @@ namespace CommonControls
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count >= 4)
+                if (tasks.Count < 4)
                 {
-                    await Task.WhenAll(tasks);
-                    tasks.Clear();
+                    continue;
                 }
+
+                await Task.WhenAll(tasks);
+                tasks.Clear();
             }
 
             // Wait for all remaining tasks
             await Task.WhenAll(tasks);
 
             timer.Stop();
-            Trace.WriteLine("End: " + timer.Elapsed);
+            Trace.WriteLine(string.Concat(ComCtlResources.DebugTimer, timer.Elapsed));
 
             // Notify that loading is finished
             ImageLoaded?.Invoke();
@@ -491,8 +534,12 @@ namespace CommonControls
                 Child = images, // Set the image as the child of the border
                 BorderThickness = new Thickness(0), // Initially no border
                 BorderBrush = Brushes.Transparent, // Initially transparent
-                Margin = new Thickness(1) // Optionally add some margin for spacing
+                Margin = new Thickness(1), // Optionally add some margin for spacing
+                Name = string.Concat(ComCtlResources.ImageAdd, key)
             };
+
+            //add a reference to Border for later use
+            Border.TryAdd(key, border);
 
             // Add image click handler (this should run on the UI thread)
             images.MouseDown += ImageClick_MouseDown;
@@ -638,22 +685,62 @@ namespace CommonControls
                 return;
             }
 
-            // Clear previous selection highlight if any
-            if (_previousSelectedBorder != null)
+            // Update the selected border (reuse the UpdateSelectedBorder method)
+            UpdateSelectedBorder(clickedBorder);
+        }
+
+        /// <summary>
+        ///     Next Border of this instance.
+        /// </summary>
+        public void Next()
+        {
+            var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            var newIndex = (currentIndex + 1) % Border.Count; // Loop to the start if at the end
+            SelectImageAtIndex(newIndex);
+
+            CenterOnItem(newIndex);
+        }
+
+        /// <summary>
+        ///     Previous Border of this instance.
+        /// </summary>
+        public void Previous()
+        {
+            var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
+            var newIndex = (currentIndex - 1 + Border.Count) % Border.Count; // Loop to the end if at the start
+            SelectImageAtIndex(newIndex);
+
+            CenterOnItem(newIndex);
+        }
+
+        /// <summary>
+        ///     Centers the ScrollViewer on a specific item by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the item to center on.</param>
+        public void CenterOnItem(int id)
+        {
+            if (MainScrollViewer == null || Border == null)
             {
-                _previousSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border highlight
-                _previousSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
+                return;
             }
 
-            // Highlight the currently clicked thumbnail
-            clickedBorder.BorderBrush = Brushes.Blue; // Highlight with blue border
-            clickedBorder.BorderThickness = new Thickness(2); // Set border thickness
+            // Check if the item with the specified ID exists
+            if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
+            {
+                // Get the position of the target element relative to the ScrollViewer
+                var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
+                var itemPosition = itemTransform.Transform(new Point(0, 0));
 
-            // Update the currently selected border
-            _currentSelectedBorder = clickedBorder;
+                // Calculate the offsets needed to center the item
+                var centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) +
+                                    (targetElement.RenderSize.Width / 2);
+                var centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) +
+                                    (targetElement.RenderSize.Height / 2);
 
-            // Update the previous selected border to the current one
-            _previousSelectedBorder = _currentSelectedBorder;
+                // Set the ScrollViewer's offset to center the item
+                MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
+                MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
+            }
         }
 
         /// <summary>
@@ -771,7 +858,61 @@ namespace CommonControls
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
+            ImageClickedCommand.Execute(args);
+
             ImageClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        ///     Gets the index of the current.
+        /// </summary>
+        /// <param name="name">The key.</param>
+        /// <returns>Index of Border</returns>
+        private int GetCurrentIndex(string name)
+        {
+            // Find the index of the selected border
+            return Border
+                .Where(pair => pair.Value.Name == name)
+                .Select(pair => pair.Key)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        ///     Selects the index of the image at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        private void SelectImageAtIndex(int index)
+        {
+            if (index < 0 || index >= Border.Count || !Border.ContainsKey(index))
+            {
+                return;
+            }
+
+            var border = Border[index];
+
+            // Now, update the current selected border with the found Border
+            UpdateSelectedBorder(border);
+        }
+
+        /// <summary>
+        ///     Updates the selected border.
+        /// </summary>
+        /// <param name="newSelectedBorder">The new selected border.</param>
+        private void UpdateSelectedBorder(Border newSelectedBorder)
+        {
+            // Remove the "selected" style from the previously selected border
+            if (_currentSelectedBorder != null)
+            {
+                _currentSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border
+                _currentSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
+            }
+
+            // Set the new border as selected
+            newSelectedBorder.BorderBrush = Brushes.Blue; // Set a color for the border
+            newSelectedBorder.BorderThickness = new Thickness(2); // Set thickness to highlight
+
+            // Update the current selected border reference
+            _currentSelectedBorder = newSelectedBorder;
         }
 
         /// <summary>
@@ -805,22 +946,9 @@ namespace CommonControls
         /// <summary>
         ///     Finalizes this instance.
         /// </summary>
-        /// <returns></returns>
         ~Thumbnails()
         {
             Dispose(false);
         }
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     We need the Id of the clicked Image
-    /// </summary>
-    public sealed class ImageEventArgs : EventArgs
-    {
-        /// <summary>
-        ///     The tile id.
-        /// </summary>
-        public int Id { get; internal init; }
     }
 }
