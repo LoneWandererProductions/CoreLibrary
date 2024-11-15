@@ -554,7 +554,6 @@ namespace CommonLibraryTests
             const int interval = 3;
 
             Assert.IsTrue(i.Interval(one, interval), "Check passed");
-
             Assert.IsFalse(i.Interval(two, interval), "Check passed");
         }
 
