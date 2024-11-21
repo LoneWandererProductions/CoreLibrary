@@ -263,7 +263,7 @@ namespace Imaging
                 var innerException = path != null
                     ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
                     : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+                throw new IOException(ImagingResources.ErrorFileNotFound, innerException);
             }
         }
 

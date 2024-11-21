@@ -749,6 +749,17 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Creates a gif.
+        /// </summary>
+        /// <param name="images">List off bitmaps and timer data</param>
+        /// <param name="target">The target File.</param>
+        public void CreateGif(List<FrameInfo> images, string target)
+        {
+            ImageGifHandler.CreateGif(images, target);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Bitmaps to base64.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>

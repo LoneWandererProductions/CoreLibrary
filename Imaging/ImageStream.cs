@@ -216,7 +216,7 @@ namespace Imaging
                 //create a Bitmap from the file and add it to the list
                 if (!File.Exists(image))
                 {
-                    Trace.WriteLine(string.Concat(ImagingResources.ErrorMissingFile, image));
+                    Trace.WriteLine(string.Concat(ImagingResources.ErrorFileNotFound, image));
                     continue;
                 }
 
@@ -227,7 +227,7 @@ namespace Imaging
 
             if (images.IsNullOrEmpty())
             {
-                Trace.WriteLine(ImagingResources.ErrorMissingFile);
+                Trace.WriteLine(ImagingResources.ErrorFileNotFound);
                 return null;
             }
 

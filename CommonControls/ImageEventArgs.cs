@@ -14,7 +14,6 @@ namespace CommonControls
     /// <summary>
     ///     We need the Id of the clicked Image
     /// </summary>
-    /// s
     public sealed class ImageEventArgs : EventArgs
     {
         /// <summary>

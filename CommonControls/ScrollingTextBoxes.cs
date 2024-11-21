@@ -61,10 +61,7 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling)
-            {
-                return;
-            }
+            if (!AutoScrolling) return;
 
             base.OnTextChanged(e);
             CaretIndex = Text.Length;
@@ -116,10 +113,7 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling)
-            {
-                return;
-            }
+            if (!AutoScrolling) return;
 
             base.OnTextChanged(e);
             ScrollToEnd();

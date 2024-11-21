@@ -31,9 +31,9 @@ namespace CommonControls
         Rectangle = 1,
 
         /// <summary>
-        ///     The select pixel tool
+        ///     The select trace tool
         /// </summary>
-        Pixel = 2,
+        Trace = 2,
 
         /// <summary>
         ///     The select ellipse tool

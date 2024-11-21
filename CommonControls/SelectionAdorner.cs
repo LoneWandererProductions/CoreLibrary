@@ -161,15 +161,15 @@ namespace CommonControls
                     case SelectionTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
-                            selectionRect.Left + (selectionRect.Width / 2),
-                            selectionRect.Top + (selectionRect.Height / 2));
+                            selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
 
                         // Draw the ellipse with the calculated center and half the width and height as radii
                         drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2,
                             selectionRect.Height / 2);
                         break;
 
-                    case SelectionTools.Pixel:
+                    case SelectionTools.Trace:
                         // Select a single pixel (this can be visualized as a very small rectangle)
                         drawingContext.DrawRectangle(Brushes.Red, dashedPen,
                             new Rect(_startPoint.Value, new Size(1, 1)));

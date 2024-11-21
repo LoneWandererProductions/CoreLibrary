@@ -501,6 +501,13 @@ namespace Imaging
         void CreateGif(List<string> path, string target);
 
         /// <summary>
+        /// Creates a gif.
+        /// </summary>
+        /// <param name="images">List off bitmaps and timer data</param>
+        /// <param name="target">The target File.</param>
+        void CreateGif(List<FrameInfo> images, string target);
+
+        /// <summary>
         ///     Bitmaps to base64.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
