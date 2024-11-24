@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/ImageZoom.xaml.cs
- * PURPOSE:     Image View Control, that can handle some tools
+ * FILE:        CommonControls/ImageZoomTools.xaml.cs
+ * PURPOSE:     Image View Control Tools, that are exposed to the Outside
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -18,7 +18,7 @@ namespace CommonControls
     /// <summary>
     ///     The possible Selection Tools
     /// </summary>
-    public enum SelectionTools
+    public enum ImageZoomTools
     {
         /// <summary>
         ///     The move tool
@@ -36,13 +36,18 @@ namespace CommonControls
         Trace = 2,
 
         /// <summary>
+        ///     The select Dot tool
+        /// </summary>
+        Dot = 3,
+
+        /// <summary>
         ///     The select ellipse tool
         /// </summary>
-        Ellipse = 3,
+        Ellipse = 4,
 
         /// <summary>
         ///     The free form selection tool
         /// </summary>
-        FreeForm = 4
+        FreeForm = 5
     }
 }

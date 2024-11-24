@@ -6,8 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedMember.Global
-
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -48,6 +46,36 @@ namespace ViewModel
 
             field = value;
             OnPropertyChanged(propertyName);
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this instance can execute.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        /// </returns>
+        /// <value>
+        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+        /// </value>
+        protected bool CanExecute(object obj)
+        {
+            // check if executing is allowed, not used right now
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines whether this instance can execute the specified object.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        /// </returns>
+        protected bool CanExecute<T>(T obj)
+        {
+            // check if executing is allowed, not used right now
+            return true;
         }
     }
 }
