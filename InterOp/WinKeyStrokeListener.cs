@@ -18,11 +18,12 @@ using System.Windows.Input;
 
 namespace InterOp
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Only works in window App
     ///     Manages a global low level keyboard hook
     /// </summary>
-    public sealed class WinKeyStrokeListener
+    public sealed class WinKeyStrokeListener : IDisposable
     {
         /// <summary>
         ///     Keyboard Process
@@ -35,6 +36,11 @@ namespace InterOp
         ///     Id of hook
         /// </summary>
         private IntPtr _hookId = IntPtr.Zero;
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
 
         /// <summary>
         ///     Initializes a new instance of the
@@ -121,6 +127,36 @@ namespace InterOp
 
             //not interested, next
             return Win32Api.CallNextHookEx(_hookId, nCode, wParam, lParam);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // Dispose managed resources (if any)
+            }
+
+            UnHookKeyboard();
+            _disposed = true;
         }
     }
 

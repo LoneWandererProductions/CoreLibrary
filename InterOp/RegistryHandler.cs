@@ -30,7 +30,7 @@ namespace InterOp
         ///     All Registry Objects in a certain Path
         /// </returns>
         /// <exception cref="PlatformNotSupportedException"></exception>
-        public Dictionary<int, object> GetRegistryObjects(string registryPath)
+        public Dictionary<string, object> GetRegistryObjects(string registryPath)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

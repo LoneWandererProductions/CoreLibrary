@@ -26,38 +26,38 @@ namespace InterOp
         /// </summary>
         /// <param name="registryPath">User specified Path</param>
         /// <returns>Dictionary of RegistryObjects</returns>
-        internal static Dictionary<int, object> GetRegistryObjects(string registryPath)
+        internal static Dictionary<string, object> GetRegistryObjects(string registryPath)
         {
-            var registry = new Dictionary<int, object>();
-            var i = -1;
+            var registry = new Dictionary<string, object>();
 
-            using var key = Registry.LocalMachine.OpenSubKey(registryPath);
             try
             {
+                using var key = Registry.LocalMachine.OpenSubKey(registryPath);
                 if (key != null)
                 {
                     foreach (var subKeyName in key.GetSubKeyNames())
                     {
                         using var subKey = key.OpenSubKey(subKeyName);
-                        if (subKey == null)
+                        if (subKey != null)
                         {
-                            Trace.WriteLine(InterOpResources.KeyError);
-                            continue;
+                            registry.Add(subKeyName, subKey);
                         }
-
-                        i++;
-                        registry.Add(i, subKey);
+                        else
+                        {
+                            Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} , {nameof(subKeyName)} {subKeyName}");
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
-                return null;
+                Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} {registryPath} , {nameof(Exception)}: {ex}");
+                throw; // Re-throw or handle accordingly
             }
 
             return registry;
         }
+
 
         /// <summary>
         ///     Sets the registry objects.

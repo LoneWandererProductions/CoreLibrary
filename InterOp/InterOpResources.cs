@@ -85,8 +85,8 @@ namespace InterOp
         internal const int WmSysKeyDown = 0x0104;
 
         /// <summary>
-        ///     Registry Key error (const). Value: "Error: Empty Registry Key Exception".
+        ///     Registry Key error (const). Value: "Error while reading Registry".
         /// </summary>
-        internal const string KeyError = "Error: Empty Registry Key Exception";
+        internal const string ErrorRegistryKey = "Error while reading Registry";
     }
 }

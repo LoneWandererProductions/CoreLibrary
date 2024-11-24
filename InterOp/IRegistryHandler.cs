@@ -23,7 +23,7 @@ namespace InterOp
         /// </summary>
         /// <param name="registryPath">The registry path.</param>
         /// <returns>All Registry Objects in a certain Path</returns>
-        Dictionary<int, object> GetRegistryObjects(string registryPath);
+        Dictionary<string, object> GetRegistryObjects(string registryPath);
 
         /// <summary>
         ///     Writes the registry.
