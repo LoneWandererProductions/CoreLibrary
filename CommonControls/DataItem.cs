@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable ArrangeBraces_foreach
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 using System;
 using ViewModel;
@@ -22,12 +23,12 @@ namespace CommonControls
         /// <summary>
         ///     The id.
         /// </summary>
-        private readonly int _id;
+        private int _id;
 
         /// <summary>
         ///     The name.
         /// </summary>
-        private readonly string _name;
+        private string _name;
 
         /// <summary>
         ///     Gets or sets the id.
@@ -35,8 +36,13 @@ namespace CommonControls
         public int Id
         {
             get => _id;
-            init
+            set
             {
+                if (_id == value)
+                {
+                    return;
+                }
+
                 _id = value;
                 RaisePropertyChangedEvent(nameof(Id));
             }
@@ -48,8 +54,13 @@ namespace CommonControls
         public string Name
         {
             get => _name;
-            init
+            set
             {
+                if (_name == value)
+                {
+                    return;
+                }
+
                 _name = value;
                 RaisePropertyChangedEvent(nameof(Name));
             }
@@ -79,6 +90,7 @@ namespace CommonControls
             return _id == other._id && _name == other._name;
         }
 
+        /// <inheritdoc/>
         /// <summary>
         ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
@@ -91,6 +103,7 @@ namespace CommonControls
             return ReferenceEquals(this, obj) || (obj is DataItem other && Equals(other));
         }
 
+        /// <inheritdoc/>
         /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
@@ -99,9 +112,10 @@ namespace CommonControls
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(_id, _name);
+            return HashCode.Combine(_id);
         }
 
+        /// <inheritdoc/>
         /// <summary>
         ///     Converts to string.
         /// </summary>
@@ -110,7 +124,7 @@ namespace CommonControls
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(_id, ComCtlResources.Separator, _name);
+            return $"{_id}{ComCtlResources.Separator}{_name}";
         }
     }
 }

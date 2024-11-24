@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
+// ReSharper disable BadBracesSpaces
 
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,9 @@ namespace CommonControls
         /// </summary>
         private readonly bool _unique;
 
+        /// <summary>
+        /// The unique name
+        /// </summary>
         private readonly List<string> _uniqueName;
 
         /// <summary>
