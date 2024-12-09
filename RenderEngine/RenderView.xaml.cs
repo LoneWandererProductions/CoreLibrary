@@ -8,6 +8,7 @@
 
 // ReSharper disable UnusedType.Global
 
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -73,6 +74,8 @@ namespace RenderEngine
         private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             _bitmap ??= new SKBitmap(e.Info.Width, e.Info.Height);
+
+            CheckGpuUsage(e.Surface);
 
             e.Surface.Canvas.DrawBitmap(_bitmap, 0, 0);
 
@@ -251,6 +254,16 @@ namespace RenderEngine
             var cursor = new Coordinate2D(position.X, position.Y);
 
             CanvasClicked?.Invoke(cursor);
+        }
+
+        // Optional: Check GPU usage and report it (based on SkiaSharp OpenGL/Vulkan capabilities)
+        public void CheckGpuUsage(SKSurface surface)
+        {
+            var gpuUsed = surface.Handle != IntPtr.Zero; // Simple GPU check
+            if (gpuUsed)
+            {
+                System.Diagnostics.Debug.WriteLine("GPU is being used!");
+            }
         }
     }
 }

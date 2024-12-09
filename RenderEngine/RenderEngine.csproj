@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="3.116.1" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.7" />
   </ItemGroup>
 
