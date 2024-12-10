@@ -28,21 +28,21 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Fractures()
         {
-            var one = new ExtendedMath.Fraction(14, 2);
+            var one = new Fraction(14, 2);
             Assert.AreEqual(7, one.Numerator, $"Test Failed: {one.Numerator}");
             Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
             Assert.AreEqual(0, one.Exponent, $"Test Failed: {one.Exponent}");
             Assert.AreEqual(7, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
             Assert.AreEqual(7, one.Decimal, $"Test Failed: {one.Decimal}");
 
-            one = new ExtendedMath.Fraction(14, 8);
+            one = new Fraction(14, 8);
             Assert.AreEqual(3, one.Numerator, $"Test Failed: {one.Numerator}");
             Assert.AreEqual(4, one.Denominator, $"Test Failed: {one.Denominator}");
             Assert.AreEqual(1, one.Exponent, $"Test Failed: {one.Exponent}");
             Assert.AreEqual(7, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
             Assert.AreEqual((decimal)1.75, one.Decimal, $"Test Failed: {one.Decimal}");
 
-            one = new ExtendedMath.Fraction(0, 1, 2);
+            one = new Fraction(0, 1, 2);
             Assert.AreEqual(0, one.Numerator, $"Test Failed: {one.Numerator}");
             Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
             Assert.AreEqual(0, one.Exponent, $"Test Failed: {one.Exponent}");
@@ -56,9 +56,9 @@ namespace CommonLibraryTests
         [TestMethod]
         public void FracturesOperations()
         {
-            var one = new ExtendedMath.Fraction(1, 2, 2);
+            var one = new Fraction(1, 2, 2);
             Assert.AreEqual(5, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
-            var two = new ExtendedMath.Fraction(1, 2, 2);
+            var two = new Fraction(1, 2, 2);
             Assert.AreEqual(5, two.ExponentNumerator, $"Test Failed: {two.ExponentNumerator}");
 
             var result = one + two;
@@ -77,12 +77,12 @@ namespace CommonLibraryTests
             Assert.AreEqual(0, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
             Assert.AreEqual(0, result.Decimal, $"Test Failed: {result.Decimal}");
 
-            one = new ExtendedMath.Fraction(4, 2);
+            one = new Fraction(4, 2);
             Assert.AreEqual(2, one.ExponentNumerator, $"Test Failed: {one.ExponentNumerator}");
             Assert.AreEqual(2, one.Numerator, $"Test Failed: {one.Numerator}");
             Assert.AreEqual(1, one.Denominator, $"Test Failed: {one.Denominator}");
 
-            two = new ExtendedMath.Fraction(1, 1, 4);
+            two = new Fraction(1, 1, 4);
             Assert.AreEqual(4, two.ExponentNumerator, $"Test Failed: {two.ExponentNumerator}");
 
             result = one * two;
@@ -101,9 +101,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(1, result.ExponentNumerator, $"Test Failed: {result.ExponentNumerator}");
             Assert.AreEqual((decimal)0.5, result.Decimal, $"Test Failed: {result.Decimal}");
 
-            one = new ExtendedMath.Fraction(2, 2);
+            one = new Fraction(2, 2);
             // 2 1/2                                                this is the add-on
-            two = new ExtendedMath.Fraction(1, 2, 1);
+            two = new Fraction(1, 2, 1);
 
             result = one + two;
 
@@ -114,11 +114,11 @@ namespace CommonLibraryTests
             Assert.AreEqual((decimal)2.5, result.Decimal, $"Test Failed: {result.Decimal}");
 
             // 1/2
-            one = new ExtendedMath.Fraction(-1, 2);
+            one = new Fraction(-1, 2);
             // 3/2  1,5
-            two = new ExtendedMath.Fraction(1, 2, -1);
+            two = new Fraction(1, 2, -1);
             //4/3   1.25
-            var three = new ExtendedMath.Fraction(1, 4, -1);
+            var three = new Fraction(1, 4, -1);
 
             //-1/2 * 3/2 = 3 / 4
             result = one * two;

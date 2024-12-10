@@ -435,7 +435,7 @@ namespace CommonControls
 
                 if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
-                    var fraction = new ExtendedMath.Fraction(pics.Count, ThumbHeight);
+                    var fraction = new Fraction(pics.Count, ThumbHeight);
                     ThumbWidth = (int)Math.Ceiling(fraction.Decimal);
                 }
             }
