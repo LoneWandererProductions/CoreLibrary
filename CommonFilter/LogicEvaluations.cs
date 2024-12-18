@@ -11,10 +11,11 @@ using System.Collections.Generic;
 
 namespace CommonFilter
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Will be packed into an Interface and be an optional Interface for Filter
     /// </summary>
-    public class LogicEvaluations : ILogicEvaluations
+    public sealed class LogicEvaluations : ILogicEvaluations
     {
         /// <inheritdoc />
         /// <summary>
