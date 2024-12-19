@@ -18,11 +18,6 @@ namespace CommonFilter
     internal sealed partial class FilterWindow
     {
         /// <summary>
-        ///     The filter option
-        /// </summary>
-        private readonly Dictionary<int, SearchParameterControl> _filterOption = new();
-
-        /// <summary>
         ///     The interface
         /// </summary>
         private readonly Filter _interface;
@@ -36,8 +31,7 @@ namespace CommonFilter
         {
             InitializeComponent();
             View.Reference = this;
-            View.Filter = _filterOption;
-            _filterOption = new Dictionary<int, SearchParameterControl>();
+            View.Filter = new Dictionary<int, SearchParameterControl>();
             _interface = filter;
             AddFilter();
         }
@@ -47,7 +41,7 @@ namespace CommonFilter
         /// </summary>
         public void AddFilter()
         {
-            var id = GetFirstAvailableIndex(_filterOption.Keys.ToList());
+            var id = GetFirstAvailableIndex(View.Filter.Keys.ToList());
 
             var searchParameterControl = new SearchParameterControl(id);
             searchParameterControl.DeleteLogic += SearchParameterControl_DeleteLogic;
@@ -55,7 +49,7 @@ namespace CommonFilter
             // Add the control to the ListBox's Items
             _ = FilterList.Items.Add(searchParameterControl);
 
-            _filterOption.Add(id, searchParameterControl);
+            View.Filter.Add(id, searchParameterControl);
         }
 
         /// <summary>
@@ -84,7 +78,7 @@ namespace CommonFilter
             }
 
             FilterList.Items.Remove(sender);
-            _filterOption.Remove(id);
+            View.Filter.Remove(id);
         }
 
         /// <summary>
