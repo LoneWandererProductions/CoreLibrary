@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -193,50 +194,54 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
+        /// 0 ... error
+        /// 1 ... warning
+        /// 2 ... Information
+        /// 3 ... External Source
         /// </summary>
-        /// <param name="error">Error Message</param>
-        /// <param name="objectString">Object converted to XML</param>
-        /// <param name="lvl">Level of Error</param>
-        /// <param name="methods">Name of the method</param>
+        /// <param name="message">The message.</param>
+        /// <param name="objectDetails">The object details.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="callStack">The call stack.</param>
         /// <returns>
-        ///     Error Message
+        /// Error Message
         /// </returns>
-        private static string CreateLogMessage(string error, string objectString, ErCode lvl,
-            string methods)
+        private static string CreateLogMessage(string message, string objectDetails, ErCode logLevel, string callStack)
         {
-            //decide with Log lvl
-            switch (lvl)
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            var logPrefix = logLevel switch
             {
-                case ErCode.Error:
-                    error = string.Concat(DebuggerResources.LogLvlOne, DateTime.Now, DebuggerResources.Spacer, error);
-                    break;
+                ErCode.Error => DebuggerResources.LogLvlOne,
+                ErCode.Warning => DebuggerResources.LogLvlTwo,
+                ErCode.Information => DebuggerResources.LogLvlThree,
+                ErCode.External => DebuggerResources.LogLvlFour,
+                _ => DebuggerResources.LogLvlThree,
+            };
 
-                case ErCode.Warning:
-                    error = string.Concat(DebuggerResources.LogLvlTwo, DateTime.Now, DebuggerResources.Spacer, error);
-                    break;
+            var logBuilder = new StringBuilder();
+            logBuilder.Append(logPrefix)
+                      .Append(DateTime.Now)
+                      .Append(DebuggerResources.Spacer)
+                      .Append("ThreadId: ")
+                      .Append(threadId)
+                      .Append(DebuggerResources.Spacer)
+                      .Append(message);
 
-                case ErCode.Information:
-                    error = string.Concat(DebuggerResources.LogLvlThree, DateTime.Now, DebuggerResources.Spacer, error);
-                    break;
-
-                case ErCode.External:
-                    error = string.Concat(DebuggerResources.LogLvlFour, DateTime.Now, DebuggerResources.Spacer, error);
-                    break;
+            if (!string.IsNullOrEmpty(objectDetails))
+            {
+                logBuilder.Append(DebuggerResources.ObjectFormatting)
+                          .Append(objectDetails);
             }
 
-            //Add Object if we deliver it
-            if (!string.IsNullOrEmpty(objectString))
+            if (!string.IsNullOrEmpty(callStack))
             {
-                error = string.Concat(error, DebuggerResources.ObjectFormatting, objectString);
+                logBuilder.Append(Environment.NewLine)
+                          .Append(callStack);
             }
 
-            // Add Call Stack
-            return string.Concat(error, Environment.NewLine, methods);
+            return logBuilder.ToString();
         }
+
 
         /// <summary>
         ///     Just creates adds something to the Log File if it doesn't exist it will create one
