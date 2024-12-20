@@ -399,25 +399,33 @@ namespace Debugger
         /// </summary>
         private static void RotateLogFiles()
         {
-            // Get all existing log files
+            // Get all existing log files matching the base path and extension
             var logFiles = Directory.GetFiles(LogDirectory, $"{DebugRegister.DebugPath}*{DebuggerResources.LogFileExtension}");
+
+            // Sort the files to ensure that we rotate in the correct order (oldest first)
+            Array.Sort(logFiles);
 
             // Rename each file to shift the versions
             for (var i = logFiles.Length - 1; i >= 0; i--)
             {
+                // Determine the new version number (i + 1) for the file
                 var newVersion = i + 1;
                 var newFilePath = Path.Combine(LogDirectory, $"{DebugRegister.DebugPath}_{newVersion}{DebuggerResources.LogFileExtension}");
 
-                // If the new version exceeds the max number of files, delete it
+                // If the new version exceeds the max file count, delete the oldest log file
                 if (newVersion > DebugRegister.MaxFileCount)
                 {
                     File.Delete(logFiles[i]);
                 }
                 else
                 {
+                    // Rename the current log file to the new versioned file name
                     File.Move(logFiles[i], newFilePath);
                 }
             }
+
+            // Update the global DebugPath to reflect the latest log file
+            DebugRegister.DebugPath = $"{DebugRegister.DebugPath}_{logFiles.Length + 1}";
         }
     }
 }
