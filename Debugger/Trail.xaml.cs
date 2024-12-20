@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -162,7 +163,15 @@ namespace Debugger
         private void MenDel_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
-            DebugLog.Delete();
+            _ = DebugProcessing.StopDebuggingAsync();
+            try
+            {
+                File.Delete(DebugRegister.DebugPath);
+            }
+            catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
+            {
+                Trace.WriteLine(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), nameof(ErCode.Error));
+            }
         }
 
         /// <summary>

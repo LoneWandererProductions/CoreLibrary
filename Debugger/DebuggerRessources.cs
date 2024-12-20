@@ -155,6 +155,17 @@ namespace Debugger
         internal const string FoundColor = "Yellow";
 
         /// <summary>
+        ///     The log file extensione (const). Value: "".log".
+        /// </summary>
+        internal const string LogFileExtension = ".log";
+
+        /// <summary>
+        ///     The log Path (const). Value: "Log".
+        /// </summary>
+        internal const string LogPath = "Log";
+
+
+        /// <summary>
         ///     The object formatting (readonly). Value: string.Concat(Environment.NewLine, "Object:", Environment.NewLine).
         /// </summary>
         /// ss

@@ -57,17 +57,7 @@ namespace Debugger
         /// <summary>
         ///     The directory where log files are stored.
         /// </summary>
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-
-        /// <summary>
-        ///     The log file name prefix.
-        /// </summary>
-        private static readonly string LogFileName = "debug_log";
-
-        /// <summary>
-        ///     The log file extension.
-        /// </summary>
-        private static readonly string LogFileExtension = ".log";
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,DebuggerResources.LogPath);
 
         /// <summary>
         ///     Initializes the <see cref="DebugProcessing" /> class.
@@ -365,17 +355,26 @@ namespace Debugger
 
             try
             {
-                var filePath = GetLogFilePath();
+                var logFilePath = GetLogFilePath();
+
+                // Ensure the log file exists
+                if (!File.Exists(logFilePath))
+                {
+                    using (File.Create(logFilePath))
+                    {
+                        // Just create the file and close it
+                    }
+                }
 
                 // Check file size and rotate if necessary
-                if (new FileInfo(filePath).Length > DebugRegister.MaxFileSize)
+                if (new FileInfo(logFilePath).Length > DebugRegister.MaxFileSize)
                 {
                     RotateLogFiles();
-                    filePath = GetLogFilePath(); // Update path after rotation
+                    logFilePath = GetLogFilePath(); // Update path after rotation
                 }
 
                 // Append the message to the file asynchronously
-                await File.AppendAllTextAsync(filePath, string.Concat(message, Environment.NewLine));
+                await File.AppendAllTextAsync(logFilePath, string.Concat(message, Environment.NewLine));
             }
             finally
             {
@@ -392,7 +391,7 @@ namespace Debugger
         /// <returns>The current log file path.</returns>
         private static string GetLogFilePath()
         {
-            return Path.Combine(LogDirectory, $"{LogFileName}{LogFileExtension}");
+            return Path.Combine(LogDirectory, $"{DebugRegister.DebugPath}{DebuggerResources.LogFileExtension}");
         }
 
         /// <summary>
@@ -401,13 +400,13 @@ namespace Debugger
         private static void RotateLogFiles()
         {
             // Get all existing log files
-            var logFiles = Directory.GetFiles(LogDirectory, $"{LogFileName}*{LogFileExtension}");
+            var logFiles = Directory.GetFiles(LogDirectory, $"{DebugRegister.DebugPath}*{DebuggerResources.LogFileExtension}");
 
             // Rename each file to shift the versions
             for (var i = logFiles.Length - 1; i >= 0; i--)
             {
                 var newVersion = i + 1;
-                var newFilePath = Path.Combine(LogDirectory, $"{LogFileName}_{newVersion}{LogFileExtension}");
+                var newFilePath = Path.Combine(LogDirectory, $"{DebugRegister.DebugPath}_{newVersion}{DebuggerResources.LogFileExtension}");
 
                 // If the new version exceeds the max number of files, delete it
                 if (newVersion > DebugRegister.MaxFileCount)

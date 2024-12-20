@@ -67,7 +67,7 @@ namespace Debugger
         /// <summary>
         ///     Create a dump.
         /// </summary>
-        public static void CreateDump()
+        public void CreateDump()
         {
             DebugProcessing.CreateDump();
         }
@@ -75,16 +75,18 @@ namespace Debugger
         /// <summary>
         ///     Delete the Log File.
         /// </summary>
-        internal static void Delete()
+        internal void Delete()
         {
             _ = DebugProcessing.StopDebuggingAsync();
             try
             {
-                File.Delete(DebugRegister.DebugPath);
+                var logFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.LogPath, $"{DebugRegister.DebugPath}{DebuggerResources.LogFileExtension}");
+
+                File.Delete(logFiles);
             }
             catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
             {
-                CreateLogFile(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), ErCode.Error);
+                LogFile(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), ErCode.Error);
             }
         }
 
@@ -93,7 +95,7 @@ namespace Debugger
         /// </summary>
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
-        public static void CreateLogFile(string error, ErCode lvl)
+        public void LogFile(string error, ErCode lvl)
         {
             var st = new StackTrace(true);
 
@@ -114,7 +116,7 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="obj">The object.</param>
-        public static void CreateLogFile<T>(string error, ErCode lvl, T obj)
+        public void LogFile<T>(string error, ErCode lvl, T obj)
         {
             var st = new StackTrace(true);
 
@@ -135,7 +137,7 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="objLst">The object List.</param>
-        public static void CreateLogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
+        public void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
         {
             var st = new StackTrace(true);
 
@@ -157,7 +159,7 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="objectDictionary">The objectDictionary.</param>
-        public static void CreateLogFile<T, TU>(string error, ErCode lvl,
+        public void LogFile<T, TU>(string error, ErCode lvl,
             Dictionary<T, TU> objectDictionary)
         {
             var st = new StackTrace(true);
@@ -220,7 +222,7 @@ namespace Debugger
         ///     Close the window.
         ///     With our Process Listener
         /// </summary>
-        private static void CloseWindow()
+        internal void CloseWindow()
         {
             Process[] proc = null;
 
