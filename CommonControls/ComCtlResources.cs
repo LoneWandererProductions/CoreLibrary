@@ -14,7 +14,7 @@ namespace CommonControls
     internal static class ComCtlResources
     {
         /// <summary>
-        /// The global key skip text controls (const). Value: "GlobalKeySkipTextControls"
+        ///     The global key skip text controls (const). Value: "GlobalKeySkipTextControls"
         /// </summary>
         internal const string GlobalKeySkipTextControls = "GlobalKeySkipTextControls";
 

@@ -25,16 +25,6 @@ namespace CommonControls
     internal sealed class SelectionAdorner : Adorner
     {
         /// <summary>
-        ///     The free form points
-        /// </summary>
-        public List<Point> FreeFormPoints { get; set; } = new();
-
-        /// <summary>
-        /// The is tracing
-        /// </summary>
-        public bool IsTracing { get; set; }
-
-        /// <summary>
         ///     The end point
         /// </summary>
         private Point? _endPoint;
@@ -69,6 +59,16 @@ namespace CommonControls
             adornedElement.PreviewMouseMove += OnMouseMove;
             adornedElement.PreviewMouseUp += OnMouseUp;
         }
+
+        /// <summary>
+        ///     The free form points
+        /// </summary>
+        public List<Point> FreeFormPoints { get; set; } = new();
+
+        /// <summary>
+        ///     The is tracing
+        /// </summary>
+        public bool IsTracing { get; set; }
 
         /// <summary>
         ///     Gets the current selection frame.
@@ -131,10 +131,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Called when [mouse down].
+        ///     Called when [mouse down].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (Tool == ImageZoomTools.Trace && e.LeftButton == MouseButtonState.Pressed)
@@ -147,10 +147,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Called when [mouse move].
+        ///     Called when [mouse move].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             if (IsTracing && e.LeftButton == MouseButtonState.Pressed)
@@ -162,10 +162,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Called when [mouse up].
+        ///     Called when [mouse up].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (IsTracing && e.LeftButton == MouseButtonState.Released)
@@ -219,8 +219,8 @@ namespace CommonControls
                     case ImageZoomTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
-                            selectionRect.Left + selectionRect.Width / 2,
-                            selectionRect.Top + selectionRect.Height / 2);
+                            selectionRect.Left + (selectionRect.Width / 2),
+                            selectionRect.Top + (selectionRect.Height / 2));
 
                         // Draw the ellipse with the calculated center and half the width and height as radii
                         drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2,

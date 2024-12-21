@@ -90,7 +90,7 @@ namespace CommonControls
             return _id == other._id && _name == other._name;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary>
         ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
@@ -103,7 +103,7 @@ namespace CommonControls
             return ReferenceEquals(this, obj) || (obj is DataItem other && Equals(other));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
@@ -115,7 +115,7 @@ namespace CommonControls
             return HashCode.Combine(_id);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         /// <summary>
         ///     Converts to string.
         /// </summary>

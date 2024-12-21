@@ -430,16 +430,12 @@ namespace Imaging
 
             TextureSetting[TextureType.Concrete] = new TextureConfiguration
             {
-                MinValue = 50,
-                MaxValue = 200,
-                TurbulenceSize = 16
+                MinValue = 50, MaxValue = 200, TurbulenceSize = 16
             };
 
             TextureSetting[TextureType.Canvas] = new TextureConfiguration
             {
-                LineSpacing = 8,
-                LineColor = Color.FromArgb(210, 180, 140),
-                LineThickness = 1
+                LineSpacing = 8, LineColor = Color.FromArgb(210, 180, 140), LineThickness = 1
             };
 
             // Add more default settings as needed
@@ -580,8 +576,12 @@ namespace Imaging
                 var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
 
                 if (settings != null)
+                {
                     foreach (var (imageFilters, filter) in settings)
+                    {
                         _filterPropertyMap[imageFilters] = filter;
+                    }
+                }
             }
             catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {

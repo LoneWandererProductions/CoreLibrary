@@ -32,9 +32,9 @@ namespace Debugger
         ///     External Message = 3.
         /// </summary>
         External = 3,
-        
+
         /// <summary>
-        ///     Verbose Message = 4. 
+        ///     Verbose Message = 4.
         ///     Highly detailed debug information, used for troubleshooting when no debugger is available.
         /// </summary>
         Verbose = 4

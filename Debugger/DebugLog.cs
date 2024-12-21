@@ -80,7 +80,8 @@ namespace Debugger
             _ = DebugProcessing.StopDebuggingAsync();
             try
             {
-                var logFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.LogPath, $"{DebugRegister.DebugPath}{DebuggerResources.LogFileExtension}");
+                var logFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.LogPath,
+                    $"{DebugRegister.DebugPath}{DebuggerResources.LogFileExtension}");
 
                 File.Delete(logFiles);
             }

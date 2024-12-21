@@ -19,7 +19,7 @@ namespace CommonControls
     public static class GlobalKeyHandler
     {
         /// <summary>
-        /// DependencyProperty to enable or disable global key handling on a specific UIElement.
+        ///     DependencyProperty to enable or disable global key handling on a specific UIElement.
         /// </summary>
         public static readonly DependencyProperty AttachProperty =
             DependencyProperty.RegisterAttached(
@@ -28,7 +28,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+        ///     DependencyProperty to store a dictionary of key-command pairs for a UIElement.
         /// </summary>
         public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
@@ -37,7 +37,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// Skip text controls property
+        ///     Skip text controls property
         /// </summary>
         public static readonly DependencyProperty SkipTextControlsProperty =
             DependencyProperty.RegisterAttached(
@@ -45,7 +45,7 @@ namespace CommonControls
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Sets the skip text controls.
+        ///     Sets the skip text controls.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="value">if set to <c>true</c> [value].</param>
@@ -55,7 +55,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the skip text controls.
+        ///     Gets the skip text controls.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns>Returns if we skip control.</returns>
@@ -104,12 +104,19 @@ namespace CommonControls
         /// </summary>
         private static void OnAttachChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not UIElement element) return;
+            if (d is not UIElement element)
+            {
+                return;
+            }
 
             if ((bool)e.NewValue) // If Attach is set to true
+            {
                 element.PreviewKeyDown += OnPreviewKeyDown; // Attach the key-down handler
+            }
             else // If Attach is set to false
+            {
                 element.PreviewKeyDown -= OnPreviewKeyDown; // Detach the key-down handler
+            }
         }
 
         /// <summary>
@@ -118,22 +125,33 @@ namespace CommonControls
         /// </summary>
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Handled) return; // Do nothing if the event is already handled
+            if (e.Handled)
+            {
+                return; // Do nothing if the event is already handled
+            }
 
-            if (sender is not UIElement element) return;
+            if (sender is not UIElement element)
+            {
+                return;
+            }
 
             // Get the currently focused element using Keyboard.FocusedElement
             var focusedElement = Keyboard.FocusedElement;
 
             // Check if skipping text controls is enabled
             if (GetSkipTextControls(element) && focusedElement is TextBox or RichTextBox)
+            {
                 return;
+            }
 
             // Retrieve the dictionary of key-command bindings for this element
             var bindings = GetCommandBindings(element);
 
             // Check if a command is bound to the pressed key and if it can execute
-            if (bindings == null || !bindings.TryGetValue(e.Key, out var command) || !command.CanExecute(null)) return;
+            if (bindings == null || !bindings.TryGetValue(e.Key, out var command) || !command.CanExecute(null))
+            {
+                return;
+            }
 
             // Execute the command if found and mark the event as handled
             command.Execute(null);

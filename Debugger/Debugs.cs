@@ -6,74 +6,73 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace Debugger
 {
     /// <summary>
-    /// Entry for static Debuging
+    ///     Entry for static Debugging
     /// </summary>
     public static class Debugs
     {
         /// <summary>
-        /// Single instance of DebugLog
+        ///     Single instance of DebugLog
         /// </summary>
-        private static readonly DebugLog _debugLog = new();
+        private static readonly DebugLog DebugLog = new();
 
         /// <summary>
-        /// Initializes the <see cref="Debugs"/> class.
+        ///     Initializes the <see cref="Debugs" /> class.
         /// </summary>
         static Debugs()
         {
-            _debugLog.Start();
+            DebugLog.Start();
         }
 
         /// <summary>
-        /// Start debugging with a window.
-        /// Completly optional. Activate to see the Debug Window
+        ///     Start debugging with a window.
+        ///     Completely optional. Activate to see the Debug Window
         /// </summary>
         public static void StartWindow()
         {
-            _debugLog.StartWindow();
+            DebugLog.StartWindow();
         }
 
         public static void CloseWindow()
         {
-            _debugLog.CloseWindow();
+            DebugLog.CloseWindow();
         }
 
 
         /// <summary>
-        /// Stops the debugging.
+        ///     Stops the debugging.
         /// </summary>
         public static void StopDebugging()
         {
-            _debugLog.StopDebugging();
-            _debugLog.CloseWindow();
+            DebugLog.StopDebugging();
+            DebugLog.CloseWindow();
         }
 
         /// <summary>
-        /// Creates the dump.
-        /// Writes all log entries of the current session into the Log no mather the Debug Lvl.
+        ///     Creates the dump.
+        ///     Writes all log entries of the current session into the Log no mather the Debug Lvl.
         /// </summary>
         public static void CreateDump()
         {
-            _debugLog.CreateDump();
+            DebugLog.CreateDump();
         }
 
         /// <summary>
-        /// Logs the message to the Debug file.
+        ///     Logs the message to the Debug file.
         /// </summary>
         /// <param name="error">The error.</param>
         /// <param name="lvl">The level.</param>
         public static void LogFile(string error, ErCode lvl)
         {
-            _debugLog.LogFile(error, lvl);
+            DebugLog.LogFile(error, lvl);
         }
 
         /// <summary>
-        /// Logs the message to the Debug file with an object
+        ///     Logs the message to the Debug file with an object
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="error">The error.</param>
@@ -81,11 +80,11 @@ namespace Debugger
         /// <param name="obj">The object.</param>
         public static void LogFile<T>(string error, ErCode lvl, T obj)
         {
-            _debugLog.LogFile(error, lvl, obj);
+            DebugLog.LogFile(error, lvl, obj);
         }
 
         /// <summary>
-        /// Logs the message to the Debug file with a list of objects.
+        ///     Logs the message to the Debug file with a list of objects.
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="error">The error.</param>
@@ -93,11 +92,11 @@ namespace Debugger
         /// <param name="objLst">The object LST.</param>
         public static void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
         {
-            _debugLog.LogFile(error, lvl, objLst);
+            DebugLog.LogFile(error, lvl, objLst);
         }
 
         /// <summary>
-        /// Logs the file with a dictionary of objects.
+        ///     Logs the file with a dictionary of objects.
         /// </summary>
         /// <typeparam name="T">Generic Type</typeparam>
         /// <typeparam name="TU">The type of the u.</typeparam>
@@ -106,16 +105,16 @@ namespace Debugger
         /// <param name="objectDictionary">The object dictionary.</param>
         public static void LogFile<T, TU>(string error, ErCode lvl, Dictionary<T, TU> objectDictionary)
         {
-            _debugLog.LogFile(error, lvl, objectDictionary);
+            DebugLog.LogFile(error, lvl, objectDictionary);
         }
 
         /// <summary>
-        /// Deletes the log file.
-        /// Optional, but if you want to clean up behind you.
+        ///     Deletes the log file.
+        ///     Optional, but if you want to clean up behind you.
         /// </summary>
         public static void DeleteLogFile()
         {
-            _debugLog.Delete();
+            DebugLog.Delete();
         }
     }
 }

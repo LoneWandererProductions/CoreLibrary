@@ -185,17 +185,17 @@ namespace Debugger
         }
 
         /// <summary>
-        /// 0 ... error
-        /// 1 ... warning
-        /// 2 ... Information
-        /// 3 ... External Source
+        ///     0 ... error
+        ///     1 ... warning
+        ///     2 ... Information
+        ///     3 ... External Source
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="objectDetails">The object details.</param>
         /// <param name="logLevel">The log level.</param>
         /// <param name="callStack">The call stack.</param>
         /// <returns>
-        /// Error Message
+        ///     Error Message
         /// </returns>
         private static string CreateLogMessage(string message, string objectDetails, ErCode logLevel, string callStack)
         {
@@ -206,7 +206,7 @@ namespace Debugger
                 ErCode.Warning => DebuggerResources.LogLvlTwo,
                 ErCode.Information => DebuggerResources.LogLvlThree,
                 ErCode.External => DebuggerResources.LogLvlFour,
-                _ => DebuggerResources.LogLvlThree,
+                _ => DebuggerResources.LogLvlThree
             };
 
             var logBuilder = new StringBuilder();
@@ -401,7 +401,8 @@ namespace Debugger
         private static void RotateLogFiles()
         {
             // Get all existing log files matching the base path and extension
-            var logFiles = Directory.GetFiles(LogDirectory, $"{DebugRegister.DebugPath}*{DebuggerResources.LogFileExtension}");
+            var logFiles = Directory.GetFiles(LogDirectory,
+                $"{DebugRegister.DebugPath}*{DebuggerResources.LogFileExtension}");
 
             // Sort the files to ensure that we rotate in the correct order (oldest first)
             Array.Sort(logFiles);
@@ -411,7 +412,8 @@ namespace Debugger
             {
                 // Determine the new version number (i + 1) for the file
                 var newVersion = i + 1;
-                var newFilePath = Path.Combine(LogDirectory, $"{DebugRegister.DebugPath}_{newVersion}{DebuggerResources.LogFileExtension}");
+                var newFilePath = Path.Combine(LogDirectory,
+                    $"{DebugRegister.DebugPath}_{newVersion}{DebuggerResources.LogFileExtension}");
 
                 // If the new version exceeds the max file count, delete the oldest log file
                 if (newVersion > DebugRegister.MaxFileCount)

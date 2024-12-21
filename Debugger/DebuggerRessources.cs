@@ -155,7 +155,7 @@ namespace Debugger
         internal const string FoundColor = "Yellow";
 
         /// <summary>
-        ///     The log file extensione (const). Value: "".log".
+        ///     The log file extension (const). Value: "".log".
         /// </summary>
         internal const string LogFileExtension = ".log";
 

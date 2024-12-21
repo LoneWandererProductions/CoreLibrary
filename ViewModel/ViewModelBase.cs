@@ -42,7 +42,10 @@ namespace ViewModel
         /// <param name="propertyName">Name of the property (optional, automatically provided by caller).</param>
         protected void SetProperty<T>(ref T field, T value, string propertyName)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return;
+            }
 
             field = value;
             OnPropertyChanged(propertyName);

@@ -33,14 +33,14 @@ namespace InterOp
         private readonly Win32Api.LowLevelKeyboardProc _proc;
 
         /// <summary>
+        ///     The disposed
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
         ///     Id of hook
         /// </summary>
         private IntPtr _hookId = IntPtr.Zero;
-
-        /// <summary>
-        /// The disposed
-        /// </summary>
-        private bool _disposed;
 
         /// <summary>
         ///     Initializes a new instance of the
@@ -49,6 +49,16 @@ namespace InterOp
         public WinKeyStrokeListener()
         {
             _proc = HookCallback;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -129,20 +139,13 @@ namespace InterOp
             return Win32Api.CallNextHookEx(_hookId, nCode, wParam, lParam);
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
+        ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (_disposed)
