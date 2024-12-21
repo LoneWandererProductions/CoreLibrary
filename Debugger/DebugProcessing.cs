@@ -57,7 +57,8 @@ namespace Debugger
         /// <summary>
         ///     The directory where log files are stored.
         /// </summary>
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,DebuggerResources.LogPath);
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            DebuggerResources.LogPath);
 
         /// <summary>
         ///     Initializes the <see cref="DebugProcessing" /> class.
@@ -210,23 +211,23 @@ namespace Debugger
 
             var logBuilder = new StringBuilder();
             logBuilder.Append(logPrefix)
-                      .Append(DateTime.Now)
-                      .Append(DebuggerResources.Spacer)
-                      .Append("ThreadId: ")
-                      .Append(threadId)
-                      .Append(DebuggerResources.Spacer)
-                      .Append(message);
+                .Append(DateTime.Now)
+                .Append(DebuggerResources.Spacer)
+                .Append("ThreadId: ")
+                .Append(threadId)
+                .Append(DebuggerResources.Spacer)
+                .Append(message);
 
             if (!string.IsNullOrEmpty(objectDetails))
             {
                 logBuilder.Append(DebuggerResources.ObjectFormatting)
-                          .Append(objectDetails);
+                    .Append(objectDetails);
             }
 
             if (!string.IsNullOrEmpty(callStack))
             {
                 logBuilder.Append(Environment.NewLine)
-                          .Append(callStack);
+                    .Append(callStack);
             }
 
             return logBuilder.ToString();
@@ -360,7 +361,7 @@ namespace Debugger
                 // Ensure the log file exists
                 if (!File.Exists(logFilePath))
                 {
-                    using (File.Create(logFilePath))
+                    await using (File.Create(logFilePath))
                     {
                         // Just create the file and close it
                     }

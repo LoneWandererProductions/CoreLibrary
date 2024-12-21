@@ -19,14 +19,14 @@ namespace Debugger
         /// <summary>
         /// Single instance of DebugLog
         /// </summary>
-        private static readonly Lazy<DebugLog> _debugLog = new(() => new DebugLog());
+        private static readonly DebugLog _debugLog = new();
 
         /// <summary>
         /// Initializes the <see cref="Debugs"/> class.
         /// </summary>
         static Debugs()
         {
-            _debugLog.Value.Start();
+            _debugLog.Start();
         }
 
         /// <summary>
@@ -35,12 +35,12 @@ namespace Debugger
         /// </summary>
         public static void StartWindow()
         {
-            _debugLog.Value.StartWindow();
+            _debugLog.StartWindow();
         }
 
         public static void CloseWindow()
         {
-            _debugLog.Value.CloseWindow();
+            _debugLog.CloseWindow();
         }
 
 
@@ -49,8 +49,8 @@ namespace Debugger
         /// </summary>
         public static void StopDebugging()
         {
-            _debugLog.Value.StopDebugging();
-            _debugLog.Value.CloseWindow();
+            _debugLog.StopDebugging();
+            _debugLog.CloseWindow();
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Debugger
         /// </summary>
         public static void CreateDump()
         {
-            _debugLog.Value.CreateDump();
+            _debugLog.CreateDump();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Debugger
         /// <param name="lvl">The level.</param>
         public static void LogFile(string error, ErCode lvl)
         {
-            _debugLog.Value.LogFile(error, lvl);
+            _debugLog.LogFile(error, lvl);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Debugger
         /// <param name="obj">The object.</param>
         public static void LogFile<T>(string error, ErCode lvl, T obj)
         {
-            _debugLog.Value.LogFile(error, lvl, obj);
+            _debugLog.LogFile(error, lvl, obj);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Debugger
         /// <param name="objLst">The object LST.</param>
         public static void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
         {
-            _debugLog.Value.LogFile(error, lvl, objLst);
+            _debugLog.LogFile(error, lvl, objLst);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Debugger
         /// <param name="objectDictionary">The object dictionary.</param>
         public static void LogFile<T, TU>(string error, ErCode lvl, Dictionary<T, TU> objectDictionary)
         {
-            _debugLog.Value.LogFile(error, lvl, objectDictionary);
+            _debugLog.LogFile(error, lvl, objectDictionary);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Debugger
         /// </summary>
         public static void DeleteLogFile()
         {
-            _debugLog.Value.Delete();
+            _debugLog.Delete();
         }
     }
 }
