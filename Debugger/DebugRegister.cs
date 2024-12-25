@@ -135,6 +135,8 @@ namespace Debugger
         /// </value>
         internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
 
+        public static bool IsVerbose { get; set; }
+
         /// <summary>
         ///     The base options
         /// </summary>

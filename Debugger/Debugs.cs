@@ -68,7 +68,7 @@ namespace Debugger
         /// <param name="lvl">The level.</param>
         public static void LogFile(string error, ErCode lvl)
         {
-            DebugLog.LogFile(error, lvl);
+            DebugLog.LogFile(error, lvl, 2);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Debugger
         /// <param name="obj">The object.</param>
         public static void LogFile<T>(string error, ErCode lvl, T obj)
         {
-            DebugLog.LogFile(error, lvl, obj);
+            DebugLog.LogFile(error, lvl, obj, 2);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Debugger
         /// <param name="objLst">The object LST.</param>
         public static void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
         {
-            DebugLog.LogFile(error, lvl, objLst);
+            DebugLog.LogFile(error, lvl, objLst, 2);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Debugger
         /// <param name="objectDictionary">The object dictionary.</param>
         public static void LogFile<T, TU>(string error, ErCode lvl, Dictionary<T, TU> objectDictionary)
         {
-            DebugLog.LogFile(error, lvl, objectDictionary);
+            DebugLog.LogFile(error, lvl, objectDictionary, 2);
         }
 
         /// <summary>

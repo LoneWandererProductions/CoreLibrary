@@ -9,7 +9,6 @@
 // ReSharper disable SwitchStatementMissingSomeCases
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -20,184 +19,85 @@ using System.Threading.Tasks;
 namespace Debugger
 {
     /// <summary>
-    ///     Simple class for handling .txt files
+    ///     Static class for handling debug processing and logging.
     /// </summary>
     internal static class DebugProcessing
     {
         /// <summary>
-        ///     The is active flag, should we log Data?
+        ///     Controls whether debugging is active.
         /// </summary>
-        private static bool _isActive;
+        private static bool _debugLogging;
 
         /// <summary>
-        ///     The processing task
+        ///     Semaphore for writing logs to prevent multiple threads from writing simultaneously.
         /// </summary>
-        private static readonly Task ProcessingTask;
+        private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
         /// <summary>
-        ///     The write semaphore
-        /// </summary>
-        private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
-
-        /// <summary>
-        ///     The message queue
-        /// </summary>
-        private static readonly ConcurrentQueue<string> MessageQueue = new();
-
-        /// <summary>
-        ///     The cancellation token source
+        ///     Handles cancellation of async operations.
         /// </summary>
         private static readonly CancellationTokenSource CancellationTokenSource = new();
 
         /// <summary>
-        ///     The message queued event
+        ///     Creates a log entry.
         /// </summary>
-        private static readonly ManualResetEventSlim MessageQueuedEvent = new(false);
-
-        /// <summary>
-        ///     The directory where log files are stored.
-        /// </summary>
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-            DebuggerResources.LogPath);
-
-        /// <summary>
-        ///     Initializes the <see cref="DebugProcessing" /> class.
-        /// </summary>
-        static DebugProcessing()
+        internal static void DebugLogEntry(string errorMessage, ErCode logLevel, string stackTrace, string logFile)
         {
-            // Ensure log directory exists
-            if (!Directory.Exists(LogDirectory))
-            {
-                Directory.CreateDirectory(LogDirectory);
-            }
+            if (!_debugLogging) return;
 
-            // Start a background task to process the message queue
-            ProcessingTask = Task.Run(() => ProcessMessageQueueAsync(CancellationTokenSource.Token));
+            var logMessage = CreateLogMessage(errorMessage, string.Empty, logLevel, stackTrace);
+            HandleLogMessage(logMessage, logLevel, logFile);
         }
 
         /// <summary>
-        ///     Entry Point for all Debug Messages
-        ///     Only called by the Error Box
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
+        ///     Creates a log entry for an object.
         /// </summary>
-        /// <param name="error">Error Message</param>
-        /// <param name="lvl">Level of Error</param>
-        /// <param name="info">The information.</param>
-        internal static void CreateLogFile(string error, ErCode lvl, string info)
+        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, T obj, string stackTrace, string logFile)
         {
-            if (!_isActive)
-            {
-                return;
-            }
-
-            var message = CreateLogMessage(error, string.Empty, lvl, info);
-            LogError(message, lvl);
-        }
-
-        /// <summary>
-        ///     Just creates adds something to the Log File if it doesn't exist it will create one
-        ///     Only called by the Error Box
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
-        /// </summary>
-        /// <typeparam name="T">Type of Object</typeparam>
-        /// <param name="error">Error Message</param>
-        /// <param name="lvl">Level of Error</param>
-        /// <param name="obj">The Object</param>
-        /// <param name="info">The information.</param>
-        internal static void CreateLogFile<T>(string error, ErCode lvl, T obj, string info)
-        {
-            if (!_isActive)
-            {
-                return;
-            }
+            if (!_debugLogging) return;
 
             var objectString = ConvertObjectXml.ConvertObjectToXml(obj);
-            var message = CreateLogMessage(error, objectString, lvl, info);
-            LogError(message, lvl);
+            var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
+            HandleLogMessage(logMessage, logLevel, logFile);
         }
 
         /// <summary>
-        ///     Just creates adds something to the Log File if it doesn't exist it will create one
-        ///     Only called by the Error Box
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
+        ///     Creates a log entry for a list of objects.
         /// </summary>
-        /// <typeparam name="T">Type of Object</typeparam>
-        /// <param name="error">Error Message</param>
-        /// <param name="lvl">Level of Error</param>
-        /// <param name="objLst">Enumeration of Objects</param>
-        /// <param name="info">The information.</param>
-        internal static void CreateLogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst, string info)
+        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, IEnumerable<T> objList, string stackTrace, string logFile)
         {
-            if (!_isActive)
-            {
-                return;
-            }
+            if (!_debugLogging) return;
 
-            var objectString = ConvertObjectXml.ConvertListXml(objLst);
-            var message = CreateLogMessage(error, objectString, lvl, info);
-            LogError(message, lvl);
+            var objectString = ConvertObjectXml.ConvertListXml(objList);
+            var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
+            HandleLogMessage(logMessage, logLevel, logFile);
         }
 
         /// <summary>
-        ///     Just creates adds something to the Log File if it doesn't exist it will create one
-        ///     Only called by the Error Box
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
+        ///     Creates a log entry for a dictionary of objects.
         /// </summary>
-        /// <typeparam name="T">Type of Key</typeparam>
-        /// <typeparam name="TU">Type of Value</typeparam>
-        /// <param name="error">Error Message</param>
-        /// <param name="lvl">Level of Error</param>
-        /// <param name="objectDictionary">Dictionary Object</param>
-        /// <param name="info">The information.</param>
-        /// <returns></returns>
-        internal static void CreateLogFile<T, TU>(string error, ErCode lvl,
-            Dictionary<T, TU> objectDictionary, string info)
+        internal static void DebugLogEntry<T, TU>(string errorMessage, ErCode logLevel, Dictionary<T, TU> objDictionary, string stackTrace, string logFile)
         {
-            if (!_isActive)
-            {
-                return;
-            }
+            if (!_debugLogging) return;
 
-            var objectString = ConvertObjectXml.ConvertDictionaryXml(objectDictionary);
-            var message = CreateLogMessage(error, objectString, lvl, info);
-            LogError(message, lvl);
+            var objectString = ConvertObjectXml.ConvertDictionaryXml(objDictionary);
+            var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
+            HandleLogMessage(logMessage, logLevel, logFile);
         }
 
         /// <summary>
-        ///     Simple Debug Dump of the latest Messages
+        ///     Flushes debug logs and activates dump mode.
         /// </summary>
-        internal static void CreateDump()
+        internal static void DebugFlushActivateDump()
         {
             Trace.Flush();
             DebugRegister.IsDumpActive = true;
         }
 
         /// <summary>
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
-        ///     3 ... External Source
+        ///     Creates a log message.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="objectDetails">The object details.</param>
-        /// <param name="logLevel">The log level.</param>
-        /// <param name="callStack">The call stack.</param>
-        /// <returns>
-        ///     Error Message
-        /// </returns>
-        private static string CreateLogMessage(string message, string objectDetails, ErCode logLevel, string callStack)
+        private static string CreateLogMessage(string errorMessage, string objString, ErCode logLevel, string stackTrace)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
             var logPrefix = logLevel switch
@@ -213,222 +113,80 @@ namespace Debugger
             logBuilder.Append(logPrefix)
                 .Append(DateTime.Now)
                 .Append(DebuggerResources.Spacer)
-                .Append("ThreadId: ")
-                .Append(threadId)
+                .Append($"ThreadId: {threadId}")
                 .Append(DebuggerResources.Spacer)
-                .Append(message);
+                .Append(errorMessage);
 
-            if (!string.IsNullOrEmpty(objectDetails))
+            if (!string.IsNullOrEmpty(objString))
             {
                 logBuilder.Append(DebuggerResources.ObjectFormatting)
-                    .Append(objectDetails);
+                    .Append(objString);
             }
 
-            if (!string.IsNullOrEmpty(callStack))
+            if (!string.IsNullOrEmpty(stackTrace))
             {
                 logBuilder.Append(Environment.NewLine)
-                    .Append(callStack);
+                    .Append(stackTrace);
             }
 
             return logBuilder.ToString();
         }
 
-
         /// <summary>
-        ///     Just creates adds something to the Log File if it doesn't exist it will create one
-        ///     0 ... error
-        ///     1 ... warning
-        ///     2 ... Information
+        ///     Handles a log message by adding it to the current log and optionally writing it to a file.
         /// </summary>
-        /// <param name="message">Complete Error Message</param>
-        /// <param name="lvl">Level of Error</param>
-        private static void LogError(string message, ErCode lvl)
+        private static void HandleLogMessage(string logMessage, ErCode logLevel, string logFile)
         {
-            //we don't want to crash just because we exceed the Log
             if (DebugLog.CurrentLog.Capacity < DebugLog.CurrentLog.Count)
             {
                 DebugLog.CurrentLog.Clear();
             }
 
-            DebugLog.CurrentLog.Add(message);
+            DebugLog.CurrentLog.Add(logMessage);
+            Trace.WriteLine(logMessage);
 
-            Trace.WriteLine(message);
-
-            /*
-             *  Errors will always be logged down,
-             *  if someone issued the Dump Command so we add everything to the File.
-             *  Of course we still Trace everything.
-            */
-            if (lvl == 0 && !DebugRegister.IsDumpActive)
+            if (logLevel == ErCode.Error || DebugRegister.IsDumpActive || DebugRegister.IsVerbose)
             {
-                WriteFile(message);
-            }
-
-            if (DebugRegister.IsDumpActive)
-            {
-                WriteFile(message);
+                WriteLogFileAsync(logFile, logMessage);
             }
         }
 
         /// <summary>
-        ///     Initiate debug.
+        ///     Asynchronously writes a log message to a file.
         /// </summary>
-        internal static void InitiateDebug()
+        private static async Task WriteLogFileAsync(string logFile, string logMessage)
         {
-            //Initiate Log file
-            DebugLog.CurrentLog = new List<string>();
-            //say we started
-            DebugRegister.IsRunning = _isActive = true;
-        }
-
-        /// <summary>
-        ///     Stop Debugging Window
-        /// </summary>
-        internal static async Task StopDebuggingAsync()
-        {
-            DebugRegister.IsRunning = _isActive = false;
-
-            // Signal the cancellation token
-            CancellationTokenSource.Cancel();
-
-            // Await the background task to finish processing
-            if (ProcessingTask != null)
-            {
-                await ProcessingTask;
-            }
-
-            Trace.Close();
-        }
-
-        /// <summary>
-        ///     Writes the file.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private static void WriteFile(string message)
-        {
-            // Enqueue the message
-            MessageQueue.Enqueue(message);
-            // Signal that a message has been queued
-            MessageQueuedEvent.Set();
-        }
-
-        /// <summary>
-        ///     Processes the message queue asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        private static async Task ProcessMessageQueueAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested || !MessageQueue.IsEmpty)
-            {
-                try
-                {
-                    // Wait for a message to be enqueued or until cancellation is requested
-                    MessageQueuedEvent.Wait(cancellationToken);
-
-                    // Dequeue all messages and write them to the file
-                    while (MessageQueue.TryDequeue(out var message))
-                    {
-                        await WriteToFileAsync(message);
-                    }
-
-                    // Reset the event after processing all messages
-                    MessageQueuedEvent.Reset();
-                }
-                catch (OperationCanceledException)
-                {
-                    // Cancellation requested, exit the loop
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine(string.Concat(DebuggerResources.ErrorProcessing, ex.Message));
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Writes to file asynchronously, handling file size and rotation.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        private static async Task WriteToFileAsync(string message)
-        {
-            await WriteSemaphore.WaitAsync(); // Ensure thread safety using SemaphoreSlim
+            await Semaphore.WaitAsync();
 
             try
             {
-                var logFilePath = GetLogFilePath();
-
-                // Ensure the log file exists
-                if (!File.Exists(logFilePath))
-                {
-                    await using (File.Create(logFilePath))
-                    {
-                        // Just create the file and close it
-                    }
-                }
-
-                // Check file size and rotate if necessary
-                if (new FileInfo(logFilePath).Length > DebugRegister.MaxFileSize)
-                {
-                    RotateLogFiles();
-                    logFilePath = GetLogFilePath(); // Update path after rotation
-                }
-
-                // Append the message to the file asynchronously
-                await File.AppendAllTextAsync(logFilePath, string.Concat(message, Environment.NewLine));
+                await File.AppendAllTextAsync(logFile, $"{logMessage}{Environment.NewLine}");
             }
             finally
             {
-                WriteSemaphore.Release(); // Release the semaphore
+                Semaphore.Release();
             }
-
-            // Simulate some delay (optional)
-            await Task.Delay(DebuggerResources.Idle);
         }
 
         /// <summary>
-        ///     Gets the current log file path.
+        ///     Starts the debug logging process.
         /// </summary>
-        /// <returns>The current log file path.</returns>
-        private static string GetLogFilePath()
+        internal static void StartDebug()
         {
-            return Path.Combine(LogDirectory, $"{DebugRegister.DebugPath}{DebuggerResources.LogFileExtension}");
+            DebugLog.CurrentLog = new List<string>();
+            DebugRegister.IsRunning = _debugLogging = true;
         }
 
         /// <summary>
-        ///     Rotates the log files by renaming the current log file and deleting the oldest one if necessary.
+        ///     Stops debugging and closes any active tasks.
         /// </summary>
-        private static void RotateLogFiles()
+        internal static void StopDebuggingClose()
         {
-            // Get all existing log files matching the base path and extension
-            var logFiles = Directory.GetFiles(LogDirectory,
-                $"{DebugRegister.DebugPath}*{DebuggerResources.LogFileExtension}");
+            DebugRegister.IsRunning = _debugLogging = false;
+            CancellationTokenSource.Cancel();
 
-            // Sort the files to ensure that we rotate in the correct order (oldest first)
-            Array.Sort(logFiles);
-
-            // Rename each file to shift the versions
-            for (var i = logFiles.Length - 1; i >= 0; i--)
-            {
-                // Determine the new version number (i + 1) for the file
-                var newVersion = i + 1;
-                var newFilePath = Path.Combine(LogDirectory,
-                    $"{DebugRegister.DebugPath}_{newVersion}{DebuggerResources.LogFileExtension}");
-
-                // If the new version exceeds the max file count, delete the oldest log file
-                if (newVersion > DebugRegister.MaxFileCount)
-                {
-                    File.Delete(logFiles[i]);
-                }
-                else
-                {
-                    // Rename the current log file to the new versioned file name
-                    File.Move(logFiles[i], newFilePath);
-                }
-            }
-
-            // Update the global DebugPath to reflect the latest log file
-            DebugRegister.DebugPath = $"{DebugRegister.DebugPath}_{logFiles.Length + 1}";
+            Trace.Close();
         }
     }
 }
+

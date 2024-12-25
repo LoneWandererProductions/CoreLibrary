@@ -69,11 +69,12 @@ namespace Debugger
             //set Index and Counter
             _index = _counter = ReadLines(DebugRegister.DebugPath).Count();
 
-            DebugProcessing.InitiateDebug();
+            DebugProcessing.StartDebug();
 
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
             //Tell them that we started.
-            DebugProcessing.CreateLogFile(DebuggerResources.InformationCreateLogFile, ErCode.Information,
-                DebuggerResources.ManualStart);
+            DebugProcessing.DebugLogEntry(DebuggerResources.InformationCreateLogFile, ErCode.Information,
+                DebuggerResources.ManualStart, path);
 
             StartTick();
         }
@@ -163,7 +164,7 @@ namespace Debugger
         private void MenDel_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
-            _ = DebugProcessing.StopDebuggingAsync();
+            DebugProcessing.StopDebuggingClose();
             try
             {
                 File.Delete(DebugRegister.DebugPath);
@@ -182,7 +183,7 @@ namespace Debugger
         private void MenStop_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
-            _ = DebugProcessing.StopDebuggingAsync();
+            DebugProcessing.StopDebuggingClose();
         }
 
         /// <summary>
@@ -194,11 +195,12 @@ namespace Debugger
         {
             //get index
             _index = ReadLines(DebugRegister.DebugPath).Count();
-            DebugProcessing.InitiateDebug();
+            DebugProcessing.StartDebug();
 
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
             //Tell them we started
-            DebugProcessing.CreateLogFile(DebuggerResources.InformationCreateLogFile, ErCode.Information,
-                DebuggerResources.ManualStart);
+            DebugProcessing.DebugLogEntry(DebuggerResources.InformationCreateLogFile, ErCode.Information,
+                DebuggerResources.ManualStart, path);
             StartTick();
         }
 
@@ -267,7 +269,7 @@ namespace Debugger
         {
             _dispatcherTimer?.Stop();
 
-            _ = DebugProcessing.StopDebuggingAsync();
+            DebugProcessing.StopDebuggingClose();
 
             Log.Document.Blocks.Clear();
 
@@ -288,7 +290,7 @@ namespace Debugger
 
             //set index
             _index = ReadLines(DebugRegister.DebugPath).Count();
-            DebugProcessing.InitiateDebug();
+            DebugProcessing.StartDebug();
 
             _dispatcherTimer?.Start();
         }

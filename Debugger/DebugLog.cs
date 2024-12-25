@@ -39,7 +39,7 @@ namespace Debugger
         public void Start()
         {
             DebugRegister.SuppressWindow = false;
-            DebugProcessing.InitiateDebug();
+            DebugProcessing.StartDebug();
         }
 
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace Debugger
         public void StartWindow()
         {
             DebugRegister.SuppressWindow = true;
-            DebugProcessing.InitiateDebug();
+            DebugProcessing.StartDebug();
             InitiateWindow();
         }
 
@@ -60,7 +60,7 @@ namespace Debugger
         public void StopDebugging()
         {
             DebugRegister.IsRunning = false;
-            _ = DebugProcessing.StopDebuggingAsync();
+            DebugProcessing.StopDebuggingClose();
             CloseWindow();
         }
 
@@ -69,7 +69,7 @@ namespace Debugger
         /// </summary>
         public void CreateDump()
         {
-            DebugProcessing.CreateDump();
+            DebugProcessing.DebugFlushActivateDump();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Debugger
         /// </summary>
         internal void Delete()
         {
-            _ = DebugProcessing.StopDebuggingAsync();
+            DebugProcessing.StopDebuggingClose();
             try
             {
                 var logFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DebuggerResources.LogPath,
@@ -92,22 +92,24 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Create the log file.
+        /// Create the log file.
         /// </summary>
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
-        public void LogFile(string error, ErCode lvl)
+        /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
+        public void LogFile(string error, ErCode lvl, int debugLvl = 1)
         {
             var st = new StackTrace(true);
 
-            var methodName = st.GetFrame(1)?.GetMethod()?.Name;
+            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
             // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(1).GetFileLineNumber();
-            var file = st.GetFrame(1)?.GetFileName();
+            var line = st.GetFrame(debugLvl).GetFileLineNumber();
+            var file = st.GetFrame(debugLvl)?.GetFileName();
 
             var info = GenerateInfo(methodName, line, file);
 
-            DebugProcessing.CreateLogFile(error, lvl, info);
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
+            DebugProcessing.DebugLogEntry(error, lvl, info, path);
         }
 
         /// <summary>
@@ -117,18 +119,20 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="obj">The object.</param>
-        public void LogFile<T>(string error, ErCode lvl, T obj)
+        /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
+        public void LogFile<T>(string error, ErCode lvl, T obj, int debugLvl = 1)
         {
             var st = new StackTrace(true);
 
-            var methodName = st.GetFrame(1)?.GetMethod()?.Name;
+            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
             // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(1).GetFileLineNumber();
-            var file = st.GetFrame(1)?.GetFileName();
+            var line = st.GetFrame(debugLvl).GetFileLineNumber();
+            var file = st.GetFrame(debugLvl)?.GetFileName();
 
             var info = GenerateInfo(methodName, line, file);
 
-            DebugProcessing.CreateLogFile(error, lvl, obj, info);
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
+            DebugProcessing.DebugLogEntry(error, lvl, obj, info, path);
         }
 
         /// <summary>
@@ -138,18 +142,20 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="objLst">The object List.</param>
-        public void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst)
+        /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
+        public void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst, int debugLvl = 1)
         {
             var st = new StackTrace(true);
 
-            var methodName = st.GetFrame(1)?.GetMethod()?.Name;
+            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
             // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(1).GetFileLineNumber();
-            var file = st.GetFrame(1)?.GetFileName();
+            var line = st.GetFrame(debugLvl).GetFileLineNumber();
+            var file = st.GetFrame(debugLvl)?.GetFileName();
 
             var info = GenerateInfo(methodName, line, file);
 
-            DebugProcessing.CreateLogFile(error, lvl, objLst, info);
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
+            DebugProcessing.DebugLogEntry(error, lvl, objLst, info, path);
         }
 
         /// <summary>
@@ -160,19 +166,21 @@ namespace Debugger
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
         /// <param name="objectDictionary">The objectDictionary.</param>
+        /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
         public void LogFile<T, TU>(string error, ErCode lvl,
-            Dictionary<T, TU> objectDictionary)
+            Dictionary<T, TU> objectDictionary, int debugLvl = 1)
         {
             var st = new StackTrace(true);
 
-            var methodName = st.GetFrame(1)?.GetMethod()?.Name;
+            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
             // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(1).GetFileLineNumber();
-            var file = st.GetFrame(1)?.GetFileName();
+            var line = st.GetFrame(debugLvl).GetFileLineNumber();
+            var file = st.GetFrame(debugLvl)?.GetFileName();
 
             var info = GenerateInfo(methodName, line, file);
 
-            DebugProcessing.CreateLogFile(error, lvl, objectDictionary, info);
+            var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
+            DebugProcessing.DebugLogEntry(error, lvl, objectDictionary, info, path);
         }
 
         /// <summary>
