@@ -43,7 +43,10 @@ namespace Debugger
         /// </summary>
         internal static void DebugLogEntry(string errorMessage, ErCode logLevel, string stackTrace, string logFile)
         {
-            if (!_debugLogging) return;
+            if (!_debugLogging)
+            {
+                return;
+            }
 
             var logMessage = CreateLogMessage(errorMessage, string.Empty, logLevel, stackTrace);
             HandleLogMessage(logMessage, logLevel, logFile);
@@ -52,9 +55,13 @@ namespace Debugger
         /// <summary>
         ///     Creates a log entry for an object.
         /// </summary>
-        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, T obj, string stackTrace, string logFile)
+        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, T obj, string stackTrace,
+            string logFile)
         {
-            if (!_debugLogging) return;
+            if (!_debugLogging)
+            {
+                return;
+            }
 
             var objectString = ConvertObjectXml.ConvertObjectToXml(obj);
             var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
@@ -64,9 +71,13 @@ namespace Debugger
         /// <summary>
         ///     Creates a log entry for a list of objects.
         /// </summary>
-        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, IEnumerable<T> objList, string stackTrace, string logFile)
+        internal static void DebugLogEntry<T>(string errorMessage, ErCode logLevel, IEnumerable<T> objList,
+            string stackTrace, string logFile)
         {
-            if (!_debugLogging) return;
+            if (!_debugLogging)
+            {
+                return;
+            }
 
             var objectString = ConvertObjectXml.ConvertListXml(objList);
             var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
@@ -76,9 +87,13 @@ namespace Debugger
         /// <summary>
         ///     Creates a log entry for a dictionary of objects.
         /// </summary>
-        internal static void DebugLogEntry<T, TU>(string errorMessage, ErCode logLevel, Dictionary<T, TU> objDictionary, string stackTrace, string logFile)
+        internal static void DebugLogEntry<T, TU>(string errorMessage, ErCode logLevel, Dictionary<T, TU> objDictionary,
+            string stackTrace, string logFile)
         {
-            if (!_debugLogging) return;
+            if (!_debugLogging)
+            {
+                return;
+            }
 
             var objectString = ConvertObjectXml.ConvertDictionaryXml(objDictionary);
             var logMessage = CreateLogMessage(errorMessage, objectString, logLevel, stackTrace);
@@ -97,7 +112,8 @@ namespace Debugger
         /// <summary>
         ///     Creates a log message.
         /// </summary>
-        private static string CreateLogMessage(string errorMessage, string objString, ErCode logLevel, string stackTrace)
+        private static string CreateLogMessage(string errorMessage, string objString, ErCode logLevel,
+            string stackTrace)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
             var logPrefix = logLevel switch
@@ -189,4 +205,3 @@ namespace Debugger
         }
     }
 }
-

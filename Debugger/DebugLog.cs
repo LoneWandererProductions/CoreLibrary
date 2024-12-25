@@ -92,7 +92,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Create the log file.
+        ///     Create the log file.
         /// </summary>
         /// <param name="error">The error.</param>
         /// <param name="lvl">The lvl.</param>
