@@ -80,19 +80,13 @@ namespace ImageCompare
         /// </returns>
         public bool Equals(ImageDuplicate other)
         {
-            if (Image == null || other.Image == null)
-            {
-                return false;
-            }
+            if (Image == null || other.Image == null) return false;
 
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)
             {
                 var comparisonResult = Image[x, y].CompareTo(other.Image[x, y]);
-                if (comparisonResult != 0)
-                {
-                    return false;
-                }
+                if (comparisonResult != 0) return false;
             }
 
             return other.R.Interval(R, ImageResources.ColorThreshold) &&
@@ -110,19 +104,13 @@ namespace ImageCompare
         /// </returns>
         public int CompareTo(ImageDuplicate other)
         {
-            if (Image == null)
-            {
-                return 0;
-            }
+            if (Image == null) return 0;
 
             for (var i = 0; i < ImageResources.DuplicateSize; i++)
             for (var j = 0; j < ImageResources.DuplicateSize; j++)
             {
                 var comparisonResult = Image[i, j].CompareTo(other.Image[i, j]);
-                if (comparisonResult != 0)
-                {
-                    return comparisonResult;
-                }
+                if (comparisonResult != 0) return comparisonResult;
             }
 
             return 0;

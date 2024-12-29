@@ -187,10 +187,7 @@ namespace CommonControls
             var totalWidth = 0;
             foreach (var width in columnWidths)
             {
-                if (width < 0)
-                {
-                    throw new CommonControlsException(ComCtlResources.GridExceptionColumn);
-                }
+                if (width < 0) throw new CommonControlsException(ComCtlResources.GridExceptionColumn);
 
                 totalWidth += width;
             }
@@ -206,10 +203,7 @@ namespace CommonControls
             var totalHeight = 0;
             foreach (var height in rowHeights)
             {
-                if (height < 0)
-                {
-                    throw new CommonControlsException(ComCtlResources.GridExceptionRow);
-                }
+                if (height < 0) throw new CommonControlsException(ComCtlResources.GridExceptionRow);
 
                 totalHeight += height;
             }

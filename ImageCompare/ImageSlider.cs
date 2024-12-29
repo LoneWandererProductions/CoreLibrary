@@ -64,9 +64,7 @@ namespace ImageCompare
             {
                 // Update the bottom edge for the current position in the big image
                 for (var x = 0; x < smallWidth; x++)
-                {
                     smallImageBottomEdge.SetPixel(x, 0, dbmBig.GetPixel(j + x, i + smallHeight - 1));
-                }
 
                 if (CheckEdges(dbmBig, dbmSmall, i, j, smallImageBottomEdge, threshold) &&
                     CheckFull(dbmBig, dbmSmall, i, j, threshold))
@@ -100,41 +98,25 @@ namespace ImageCompare
 
             // Check top edge
             for (var x = 0; x < smallWidth; x++)
-            {
                 if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow), smallImage.GetPixel(x, 0), threshold))
-                {
                     return false;
-                }
-            }
 
             // Check bottom edge
             for (var x = 0; x < smallWidth; x++)
-            {
                 if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + smallHeight - 1),
                         smallImageBottomEdge.GetPixel(x, 0), threshold))
-                {
                     return false;
-                }
-            }
 
             // Check left edge
             for (var y = 0; y < smallHeight; y++)
-            {
                 if (!IsColorMatch(bigImage.GetPixel(startCol, startRow + y), smallImage.GetPixel(0, y), threshold))
-                {
                     return false;
-                }
-            }
 
             // Check right edge
             for (var y = 0; y < smallHeight; y++)
-            {
                 if (!IsColorMatch(bigImage.GetPixel(startCol + smallWidth - 1, startRow + y),
                         smallImage.GetPixel(smallWidth - 1, y), threshold))
-                {
                     return false;
-                }
-            }
 
             return true;
         }
@@ -158,13 +140,9 @@ namespace ImageCompare
 
             for (var y = 0; y < smallHeight; y++)
             for (var x = 0; x < smallWidth; x++)
-            {
                 if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + y), smallImage.GetPixel(x, y),
                         threshold))
-                {
                     return false;
-                }
-            }
 
             return true;
         }

@@ -124,9 +124,37 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
         [return: MaybeNull]
-        public Bitmap FilterImage(Bitmap image, ImageFilters filter)
+        public Bitmap FilterImage(Bitmap image, FiltersType filter)
         {
-            return ImageFilterStream.FilterImage(image, filter, ImageSettings);
+            return FiltersStream.FilterImage(image, filter, ImageSettings);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Filters the image area.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        /// Area with applied filter
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
+        public Bitmap FilterImageArea(Bitmap image,
+            FiltersType filter,
+            MaskShape shape,
+            object shapeParams = null,
+            Point? startPoint = null)
+        {
+            return FiltersAreas.GenerateFilter(
+                image,
+                filter,
+                shape,
+                ImageSettings, shapeParams, startPoint);
         }
 
         /// <inheritdoc />
@@ -416,7 +444,7 @@ namespace Imaging
         /// </returns>
         public Bitmap Pixelate(Bitmap image, int stepWidth = 2)
         {
-            return ImageFilterStream.Pixelate(image, stepWidth);
+            return FiltersStream.Pixelate(image, stepWidth);
         }
 
         /// <inheritdoc />
@@ -680,7 +708,6 @@ namespace Imaging
         /// <returns>
         ///     Bitmap with adjusted Gamma.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
         {
             return ImageStreamHsv.ApplyGammaCorrection(image, gamma);

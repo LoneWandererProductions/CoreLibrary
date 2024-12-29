@@ -76,16 +76,10 @@ namespace ImageCompare
             lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count)
-            {
-                return null;
-            }
+            if (lst.Count != imagePaths.Count) return null;
 
             var similarity = AnalysisProcessing.GetSimilarity(imagePaths);
-            for (var i = 0; i < lst.Count; i++)
-            {
-                lst[i].Similarity = similarity[i];
-            }
+            for (var i = 0; i < lst.Count; i++) lst[i].Similarity = similarity[i];
 
             return lst;
         }
@@ -101,14 +95,10 @@ namespace ImageCompare
         public ImageCompareData CompareImages(Bitmap first, Bitmap second)
         {
             if (first == null)
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
-            }
 
             if (second == null)
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
-            }
 
             return ImageHelper.CompareImages(first, second);
         }
@@ -135,10 +125,7 @@ namespace ImageCompare
         /// <exception cref="T:System.ArgumentException">Argument Exception</exception>
         public Dictionary<Color, int> GetColors(string path)
         {
-            if (!File.Exists(path))
-            {
-                throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, path));
-            }
+            if (!File.Exists(path)) throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, path));
 
             var image = new Bitmap(path);
 
@@ -155,9 +142,7 @@ namespace ImageCompare
         public Dictionary<Color, int> GetColors(Bitmap image)
         {
             if (image == null)
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(image)));
-            }
 
             return AnalysisProcessing.GetColors(image);
         }
@@ -176,14 +161,10 @@ namespace ImageCompare
         public Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
             if (first == null)
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
-            }
 
             if (second == null)
-            {
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
-            }
 
             return AnalysisProcessing.DifferenceImage(first, second, color);
         }

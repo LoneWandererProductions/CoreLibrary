@@ -16,7 +16,7 @@ namespace ImageCompare
     ///     Struct for checking duplicate Images
     /// </summary>
     /// <seealso cref="T:System.IComparable`1" />
-    internal struct ImageSimilar : IComparable<ImageSimilar>
+    internal readonly struct ImageSimilar : IComparable<ImageSimilar>
     {
         /// <summary>
         ///     Determines whether the specified <see cref="object" />, is equal to this instance.
@@ -36,7 +36,7 @@ namespace ImageCompare
         /// <returns>
         ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override readonly int GetHashCode()
+        public override int GetHashCode()
         {
             return HashCode.Combine(Image);
         }
@@ -111,27 +111,15 @@ namespace ImageCompare
         /// <returns>
         ///     Compare result to <paramref name="other" />.
         /// </returns>
-        public readonly int CompareTo(ImageSimilar other)
+        public int CompareTo(ImageSimilar other)
         {
-            if (Image == null)
-            {
-                return 0;
-            }
+            if (Image == null) return 0;
 
-            if (!other.R.Interval(R, ImageResources.ColorThreshold))
-            {
-                return 0;
-            }
+            if (!other.R.Interval(R, ImageResources.ColorThreshold)) return 0;
 
-            if (!other.G.Interval(G, ImageResources.ColorThreshold))
-            {
-                return 0;
-            }
+            if (!other.G.Interval(G, ImageResources.ColorThreshold)) return 0;
 
-            if (!other.B.Interval(B, ImageResources.ColorThreshold))
-            {
-                return 0;
-            }
+            if (!other.B.Interval(B, ImageResources.ColorThreshold)) return 0;
 
             return 1;
         }

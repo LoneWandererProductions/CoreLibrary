@@ -4,7 +4,6 @@
  * FILE:        Imaging/TextureAreas.cs
  * PURPOSE:     Provide textures for certain areas
  * PROGRAMER:   Peter Geinitz (Wayfarer)
- * Sources:     https://lodev.org/cgtutor/randomnoise.html
  */
 
 using System;
@@ -56,7 +55,7 @@ namespace Imaging
             switch (texture)
             {
                 case TextureType.Noise:
-                    textureBitmap = Texture.GenerateNoiseBitmap(
+                    textureBitmap = TextureStream.GenerateNoiseBitmap(
                         width,
                         height,
                         settings.MinValue,
@@ -68,7 +67,7 @@ namespace Imaging
                     break;
 
                 case TextureType.Clouds:
-                    textureBitmap = Texture.GenerateCloudsBitmap(
+                    textureBitmap = TextureStream.GenerateCloudsBitmap(
                         width,
                         height,
                         settings.MinValue,
@@ -78,7 +77,7 @@ namespace Imaging
                     break;
 
                 case TextureType.Marble:
-                    textureBitmap = Texture.GenerateMarbleBitmap(
+                    textureBitmap = TextureStream.GenerateMarbleBitmap(
                         width,
                         height,
                         settings.Alpha,
@@ -86,7 +85,7 @@ namespace Imaging
                     break;
 
                 case TextureType.Wood:
-                    textureBitmap = Texture.GenerateWoodBitmap(
+                    textureBitmap = TextureStream.GenerateWoodBitmap(
                         width,
                         height,
                         settings.Alpha,
@@ -94,18 +93,18 @@ namespace Imaging
                     break;
 
                 case TextureType.Wave:
-                    textureBitmap = Texture.GenerateWaveBitmap(width, height, settings.Alpha);
+                    textureBitmap = TextureStream.GenerateWaveBitmap(width, height, settings.Alpha);
                     break;
                 case TextureType.Crosshatch:
-                    textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.LineSpacing,
+                    textureBitmap = TextureStream.GenerateCrosshatchBitmap(width, height, settings.LineSpacing,
                         settings.LineColor, settings.LineThickness, settings.Angle1, settings.Angle2, settings.Alpha);
                     break;
                 case TextureType.Concrete:
-                    textureBitmap = Texture.GenerateConcreteBitmap(width, height, settings.MinValue,
+                    textureBitmap = TextureStream.GenerateConcreteBitmap(width, height, settings.MinValue,
                         settings.MaxValue, settings.Alpha, settings.TurbulenceSize);
                     break;
                 case TextureType.Canvas:
-                    textureBitmap = Texture.GenerateCanvasBitmap(width, height, settings.LineSpacing,
+                    textureBitmap = TextureStream.GenerateCanvasBitmap(width, height, settings.LineSpacing,
                         settings.LineColor, settings.LineThickness, settings.Alpha);
                     break;
                 default:

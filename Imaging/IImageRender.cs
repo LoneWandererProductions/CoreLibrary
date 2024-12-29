@@ -87,7 +87,27 @@ namespace Imaging
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-        Bitmap FilterImage(Bitmap image, ImageFilters filter);
+        Bitmap FilterImage(Bitmap image, FiltersType filter);
+
+        /// <summary>
+        /// Filters the image area.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        /// Area with applied filter
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
+        Bitmap FilterImageArea(Bitmap image,
+            FiltersType filter,
+            MaskShape shape,
+            object shapeParams = null,
+            Point? startPoint = null);
 
         /// <summary>
         ///     Combines the bitmaps overlays them and merges them into one Image

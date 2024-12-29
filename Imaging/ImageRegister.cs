@@ -35,44 +35,44 @@ namespace Imaging
         ///     The filter property map
         ///     Mapping of filters to their used properties
         /// </summary>
-        private readonly Dictionary<ImageFilters, HashSet<string>> _filterPropertyMap = new()
+        private readonly Dictionary<FiltersType, HashSet<string>> _filterPropertyMap = new()
         {
             {
-                ImageFilters.GaussianBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.GaussianBlur,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.BoxBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.BoxBlur,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.MotionBlur,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.MotionBlur,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.Sharpen,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.Sharpen,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.Emboss,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.Emboss,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.Laplacian,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.Laplacian,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.EdgeEnhance,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.EdgeEnhance,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
             {
-                ImageFilters.UnsharpMask,
-                new HashSet<string> { nameof(ImageFilterConfig.Factor), nameof(ImageFilterConfig.Bias) }
+                FiltersType.UnsharpMask,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
             },
-            { ImageFilters.AnisotropicKuwahara, new HashSet<string> { nameof(ImageFilterConfig.BaseWindowSize) } },
-            { ImageFilters.SupersamplingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Scale) } },
-            { ImageFilters.PostProcessingAntialiasing, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } },
-            { ImageFilters.PencilSketchEffect, new HashSet<string> { nameof(ImageFilterConfig.Sigma) } }
+            { FiltersType.AnisotropicKuwahara, new HashSet<string> { nameof(FiltersConfig.BaseWindowSize) } },
+            { FiltersType.SupersamplingAntialiasing, new HashSet<string> { nameof(FiltersConfig.Scale) } },
+            { FiltersType.PostProcessingAntialiasing, new HashSet<string> { nameof(FiltersConfig.Sigma) } },
+            { FiltersType.PencilSketchEffect, new HashSet<string> { nameof(FiltersConfig.Sigma) } }
 
             // Add other filters as necessary
         };
@@ -360,23 +360,23 @@ namespace Imaging
         static ImageRegister()
         {
             // Initialize default Filter settings
-            FilterSettings[ImageFilters.GaussianBlur] = new ImageFilterConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.BoxBlur] = new ImageFilterConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.MotionBlur] = new ImageFilterConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
-            FilterSettings[ImageFilters.Sharpen] =
-                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.Emboss] =
-                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.Laplacian] =
-                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.EdgeEnhance] =
-                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.UnsharpMask] =
-                new ImageFilterConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
-            FilterSettings[ImageFilters.AnisotropicKuwahara] = new ImageFilterConfig { BaseWindowSize = 5 };
-            FilterSettings[ImageFilters.SupersamplingAntialiasing] = new ImageFilterConfig { Scale = 1 };
-            FilterSettings[ImageFilters.PostProcessingAntialiasing] = new ImageFilterConfig { Sigma = 1.0 };
-            FilterSettings[ImageFilters.PencilSketchEffect] = new ImageFilterConfig { Sigma = 1.0 };
+            FilterSettings[FiltersType.GaussianBlur] = new FiltersConfig { Factor = 1.0 / 16.0, Bias = 0.0 };
+            FilterSettings[FiltersType.BoxBlur] = new FiltersConfig { Factor = 1.0 / 9.0, Bias = 0.0 };
+            FilterSettings[FiltersType.MotionBlur] = new FiltersConfig { Factor = 1.0 / 5.0, Bias = 0.0 };
+            FilterSettings[FiltersType.Sharpen] =
+                new FiltersConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[FiltersType.Emboss] =
+                new FiltersConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[FiltersType.Laplacian] =
+                new FiltersConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[FiltersType.EdgeEnhance] =
+                new FiltersConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[FiltersType.UnsharpMask] =
+                new FiltersConfig { Factor = 1.0, Bias = 0.0 }; // Assuming default values
+            FilterSettings[FiltersType.AnisotropicKuwahara] = new FiltersConfig { BaseWindowSize = 5 };
+            FilterSettings[FiltersType.SupersamplingAntialiasing] = new FiltersConfig { Scale = 1 };
+            FilterSettings[FiltersType.PostProcessingAntialiasing] = new FiltersConfig { Sigma = 1.0 };
+            FilterSettings[FiltersType.PencilSketchEffect] = new FiltersConfig { Sigma = 1.0 };
             // Add more default settings as needed
 
             // Initialize default Texture settings
@@ -430,12 +430,16 @@ namespace Imaging
 
             TextureSetting[TextureType.Concrete] = new TextureConfiguration
             {
-                MinValue = 50, MaxValue = 200, TurbulenceSize = 16
+                MinValue = 50,
+                MaxValue = 200,
+                TurbulenceSize = 16
             };
 
             TextureSetting[TextureType.Canvas] = new TextureConfiguration
             {
-                LineSpacing = 8, LineColor = Color.FromArgb(210, 180, 140), LineThickness = 1
+                LineSpacing = 8,
+                LineColor = Color.FromArgb(210, 180, 140),
+                LineThickness = 1
             };
 
             // Add more default settings as needed
@@ -469,7 +473,7 @@ namespace Imaging
         /// <summary>
         ///     The settings for our Filter
         /// </summary>
-        public static ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings { get; set; } = new();
+        public static ConcurrentDictionary<FiltersType, FiltersConfig> FilterSettings { get; set; } = new();
 
         /// <summary>
         ///     The texture setting
@@ -489,9 +493,9 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>Return the current config</returns>
-        public ImageFilterConfig GetSettings(ImageFilters filter)
+        public FiltersConfig GetSettings(FiltersType filter)
         {
-            return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
+            return FilterSettings.TryGetValue(filter, out var config) ? config : new FiltersConfig();
         }
 
         /// <summary>
@@ -499,7 +503,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public void SetSettings(ImageFilters filter, ImageFilterConfig config)
+        public void SetSettings(FiltersType filter, FiltersConfig config)
         {
             FilterSettings[filter] = config;
         }
@@ -508,7 +512,7 @@ namespace Imaging
         ///     Gets the available filters.
         /// </summary>
         /// <returns>List of available Filters</returns>
-        public IEnumerable<ImageFilters> GetAvailableFilters()
+        public IEnumerable<FiltersType> GetAvailableFilters()
         {
             return FilterSettings.Keys;
         }
@@ -518,7 +522,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>List of properties needed for our Filters</returns>
-        public HashSet<string> GetUsedProperties(ImageFilters filter)
+        public HashSet<string> GetUsedProperties(FiltersType filter)
         {
             return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : new HashSet<string>();
         }
@@ -573,15 +577,11 @@ namespace Imaging
         {
             try
             {
-                var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
+                var settings = JsonSerializer.Deserialize<Dictionary<FiltersType, HashSet<string>>>(json);
 
                 if (settings != null)
-                {
                     foreach (var (imageFilters, filter) in settings)
-                    {
                         _filterPropertyMap[imageFilters] = filter;
-                    }
-                }
             }
             catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {

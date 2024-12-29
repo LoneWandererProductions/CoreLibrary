@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageFilterStream.cs
+ * FILE:        Imaging/FiltersStream.cs
  * PURPOSE:     Separate out all Filter Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -30,7 +30,7 @@ namespace Imaging
     /// <summary>
     ///     Here we handle the grunt work for all image filters
     /// </summary>
-    internal static class ImageFilterStream
+    internal static class FiltersStream
     {
         /// <summary>
         ///     The default half window size
@@ -56,7 +56,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
         [return: MaybeNull]
-        internal static Bitmap FilterImage(Bitmap image, ImageFilters filter, ImageRegister imageSettings = null)
+        internal static Bitmap FilterImage(Bitmap image, FiltersType filter, ImageRegister imageSettings = null)
         {
             ImageHelper.ValidateImage(nameof(FilterImage), image);
 
@@ -73,87 +73,87 @@ namespace Imaging
             using var atr = new ImageAttributes();
 
             //set the color matrix attribute
-            ImageFilterConfig settings;
+            FiltersConfig settings;
 
             switch (filter)
             {
-                case ImageFilters.GrayScale:
+                case FiltersType.GrayScale:
                     atr.SetColorMatrix(_imageSettings.GrayScale);
                     break;
-                case ImageFilters.Invert:
+                case FiltersType.Invert:
                     atr.SetColorMatrix(_imageSettings.Invert);
                     break;
-                case ImageFilters.Sepia:
+                case FiltersType.Sepia:
                     atr.SetColorMatrix(_imageSettings.Sepia);
                     break;
-                case ImageFilters.BlackAndWhite:
+                case FiltersType.BlackAndWhite:
                     atr.SetColorMatrix(_imageSettings.BlackAndWhite);
                     break;
-                case ImageFilters.Polaroid:
+                case FiltersType.Polaroid:
                     atr.SetColorMatrix(_imageSettings.Polaroid);
                     break;
-                case ImageFilters.Contour:
+                case FiltersType.Contour:
                     return ApplySobel(image);
-                case ImageFilters.Brightness:
+                case FiltersType.Brightness:
                     atr.SetColorMatrix(_imageSettings.Brightness);
                     break;
-                case ImageFilters.Contrast:
+                case FiltersType.Contrast:
                     atr.SetColorMatrix(_imageSettings.Contrast);
                     break;
-                case ImageFilters.HueShift:
+                case FiltersType.HueShift:
                     atr.SetColorMatrix(_imageSettings.HueShift);
                     break;
-                case ImageFilters.ColorBalance:
+                case FiltersType.ColorBalance:
                     atr.SetColorMatrix(_imageSettings.ColorBalance);
                     break;
-                case ImageFilters.Vintage:
+                case FiltersType.Vintage:
                     atr.SetColorMatrix(_imageSettings.Vintage);
                     break;
                 // New convolution-based filters
-                case ImageFilters.Sharpen:
-                    settings = _imageSettings?.GetSettings(ImageFilters.Sharpen);
+                case FiltersType.Sharpen:
+                    settings = _imageSettings?.GetSettings(FiltersType.Sharpen);
                     return ApplyFilter(image, _imageSettings?.SharpenFilter, settings.Factor, settings.Bias);
-                case ImageFilters.GaussianBlur:
-                    settings = _imageSettings?.GetSettings(ImageFilters.GaussianBlur);
+                case FiltersType.GaussianBlur:
+                    settings = _imageSettings?.GetSettings(FiltersType.GaussianBlur);
                     return ApplyFilter(image, _imageSettings?.GaussianBlur, settings.Factor, settings.Bias);
-                case ImageFilters.Emboss:
-                    settings = _imageSettings?.GetSettings(ImageFilters.Emboss);
+                case FiltersType.Emboss:
+                    settings = _imageSettings?.GetSettings(FiltersType.Emboss);
                     return ApplyFilter(image, _imageSettings?.EmbossFilter, settings.Factor, settings.Bias);
-                case ImageFilters.BoxBlur:
-                    settings = _imageSettings?.GetSettings(ImageFilters.BoxBlur);
+                case FiltersType.BoxBlur:
+                    settings = _imageSettings?.GetSettings(FiltersType.BoxBlur);
                     return ApplyFilter(image, _imageSettings?.BoxBlur, settings.Factor, settings.Bias);
-                case ImageFilters.Laplacian:
-                    settings = _imageSettings?.GetSettings(ImageFilters.Laplacian);
+                case FiltersType.Laplacian:
+                    settings = _imageSettings?.GetSettings(FiltersType.Laplacian);
                     return ApplyFilter(image, _imageSettings?.LaplacianFilter, settings.Factor, settings.Bias);
-                case ImageFilters.EdgeEnhance:
-                    settings = _imageSettings?.GetSettings(ImageFilters.EdgeEnhance);
+                case FiltersType.EdgeEnhance:
+                    settings = _imageSettings?.GetSettings(FiltersType.EdgeEnhance);
                     return ApplyFilter(image, _imageSettings?.EdgeEnhance, settings.Factor, settings.Bias);
-                case ImageFilters.MotionBlur:
-                    settings = _imageSettings?.GetSettings(ImageFilters.MotionBlur);
+                case FiltersType.MotionBlur:
+                    settings = _imageSettings?.GetSettings(FiltersType.MotionBlur);
                     return ApplyFilter(image, _imageSettings?.MotionBlur, settings.Factor, settings.Bias);
-                case ImageFilters.UnsharpMask:
-                    settings = _imageSettings?.GetSettings(ImageFilters.UnsharpMask);
+                case FiltersType.UnsharpMask:
+                    settings = _imageSettings?.GetSettings(FiltersType.UnsharpMask);
                     return ApplyFilter(image, _imageSettings?.UnsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
-                case ImageFilters.DifferenceOfGaussians:
+                case FiltersType.DifferenceOfGaussians:
                     return ApplyDifferenceOfGaussians(image);
-                case ImageFilters.Crosshatch:
+                case FiltersType.Crosshatch:
                     return ApplyCrosshatch(image);
-                case ImageFilters.FloydSteinbergDithering:
+                case FiltersType.FloydSteinbergDithering:
                     return ApplyFloydSteinbergDithering(image);
-                case ImageFilters.None:
+                case FiltersType.None:
                     break;
-                case ImageFilters.AnisotropicKuwahara:
-                    settings = _imageSettings.GetSettings(ImageFilters.AnisotropicKuwahara);
+                case FiltersType.AnisotropicKuwahara:
+                    settings = _imageSettings.GetSettings(FiltersType.AnisotropicKuwahara);
                     return ApplyAnisotropicKuwahara(image, settings.BaseWindowSize);
-                case ImageFilters.SupersamplingAntialiasing:
-                    settings = _imageSettings.GetSettings(ImageFilters.SupersamplingAntialiasing);
+                case FiltersType.SupersamplingAntialiasing:
+                    settings = _imageSettings.GetSettings(FiltersType.SupersamplingAntialiasing);
                     return ApplySupersamplingAntialiasing(image, settings.Scale);
-                case ImageFilters.PostProcessingAntialiasing:
-                    settings = _imageSettings.GetSettings(ImageFilters.PostProcessingAntialiasing);
+                case FiltersType.PostProcessingAntialiasing:
+                    settings = _imageSettings.GetSettings(FiltersType.PostProcessingAntialiasing);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
-                case ImageFilters.PencilSketchEffect:
-                    settings = _imageSettings.GetSettings(ImageFilters.PencilSketchEffect);
+                case FiltersType.PencilSketchEffect:
+                    settings = _imageSettings.GetSettings(FiltersType.PencilSketchEffect);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 default:
                     return null;
@@ -226,10 +226,7 @@ namespace Imaging
                     var imageY = y + (filterY - filterOffset);
 
                     // Check bounds to prevent out-of-bounds access
-                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
-                    {
-                        continue;
-                    }
+                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height) continue;
 
                     var pixelColor = source.GetPixel(imageX, imageY);
 
@@ -238,9 +235,9 @@ namespace Imaging
                     red += pixelColor.R * filterMatrix[filterY, filterX];
                 }
 
-                var newBlue = ImageHelper.Clamp((factor * blue) + bias);
-                var newGreen = ImageHelper.Clamp((factor * green) + bias);
-                var newRed = ImageHelper.Clamp((factor * red) + bias);
+                var newBlue = ImageHelper.Clamp(factor * blue + bias);
+                var newGreen = ImageHelper.Clamp(factor * green + bias);
+                var newRed = ImageHelper.Clamp(factor * red + bias);
 
                 // Instead of setting the pixel immediately, add it to the list
                 pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
@@ -312,7 +309,7 @@ namespace Imaging
         private static Bitmap ApplySobel(Bitmap originalImage)
         {
             // Convert the original image to greyscale
-            var greyscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
+            var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
             // Create a new bitmap to store the result of Sobel operator
             var resultImage = new Bitmap(greyscaleImage.Width, greyscaleImage.Height);
@@ -342,7 +339,7 @@ namespace Imaging
                 }
 
                 // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
+                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
 
                 // Normalize the magnitude to fit within the range of 0-255
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
@@ -461,7 +458,7 @@ namespace Imaging
             var result = new DirectBitmap(image.Width, image.Height);
 
             // Convert to grayscale
-            var grayBitmap = FilterImage(image, ImageFilters.GrayScale);
+            var grayBitmap = FilterImage(image, FiltersType.GrayScale);
 
             // Define the color palette for dithering
             var palette = new List<Color> { Color.Black, Color.White };
@@ -564,13 +561,13 @@ namespace Imaging
         public static Bitmap PencilSketchEffect(Bitmap originalImage)
         {
             // Step 1: Convert to Grayscale
-            var grayscaleImage = FilterImage(originalImage, ImageFilters.GrayScale);
+            var grayscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
             // Step 2: Invert the Grayscale Image
-            var invertedImage = FilterImage(grayscaleImage, ImageFilters.Invert);
+            var invertedImage = FilterImage(grayscaleImage, FiltersType.Invert);
 
             // Step 3: Apply Gaussian Blur to the Inverted Image
-            var blurredImage = FilterImage(invertedImage, ImageFilters.GaussianBlur);
+            var blurredImage = FilterImage(invertedImage, FiltersType.GaussianBlur);
 
             // Step 4: Blend Grayscale Image with the Blurred, Inverted Image using Color Dodge
             var sketchImage = ColorDodgeBlend(grayscaleImage, blurredImage);
@@ -621,7 +618,7 @@ namespace Imaging
             // Compute gradient magnitude using Sobel operators
             var gradientX = ApplyKernel(dbmBase, x, y, _imageSettings.SobelX);
             var gradientY = ApplyKernel(dbmBase, x, y, _imageSettings.SobelY);
-            var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
+            var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
 
             // Compute local variance
             var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
@@ -688,7 +685,7 @@ namespace Imaging
             }
 
             var mean = sum / count;
-            var variance = (sumSquared / count) - (mean * mean);
+            var variance = sumSquared / count - mean * mean;
 
             return variance;
         }
@@ -787,18 +784,16 @@ namespace Imaging
             var regions = new List<Rectangle>
             {
                 // Base region
-                new(centerX - (width / 2), centerY - (height / 2), width, height)
+                new(centerX - width / 2, centerY - height / 2, width, height)
             };
 
             for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
             {
-                var newWidth = width - (i * step);
-                var newHeight = height - (i * step);
+                var newWidth = width - i * step;
+                var newHeight = height - i * step;
                 if (newWidth > 0 && newHeight > 0)
-                {
-                    regions.Add(new Rectangle(centerX - (newWidth / 2) + (offset * i),
-                        centerY - (newHeight / 2) + (offset * i), newWidth, newHeight));
-                }
+                    regions.Add(new Rectangle(centerX - newWidth / 2 + offset * i,
+                        centerY - newHeight / 2 + offset * i, newWidth, newHeight));
             }
 
             return regions;
@@ -867,7 +862,7 @@ namespace Imaging
                 {
                     var pixel = dbmBase.GetPixel(nx, ny);
                     var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                    var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
+                    var newIntensity = ImageHelper.Clamp(oldIntensity + error * ditherMatrix[dy, dx] / 16);
                     var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
 
                     pixelsToSet.Add((nx, ny, newColor));

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageFilters.cs
+ * FILE:        Imaging/FiltersType.cs
  * PURPOSE:     Enum that holds all possible Filter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Enum of possible Filter
     /// </summary>
-    public enum ImageFilters
+    public enum FiltersType
     {
         /// <summary>
         ///     No Filter
