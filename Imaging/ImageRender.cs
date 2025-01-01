@@ -9,6 +9,7 @@
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable MissingSpace
 
 using System;
 using System.Collections.Generic;
@@ -134,6 +135,8 @@ namespace Imaging
         /// Filters the image area.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
@@ -145,6 +148,8 @@ namespace Imaging
         /// or
         /// shape - null</exception>
         public Bitmap FilterImageArea(Bitmap image,
+            int? width,
+            int? height,
             FiltersType filter,
             MaskShape shape,
             object shapeParams = null,
@@ -152,6 +157,8 @@ namespace Imaging
         {
             return FiltersAreas.GenerateFilter(
                 image,
+                width,
+                height,
                 filter,
                 shape,
                 ImageSettings, shapeParams, startPoint);
@@ -515,6 +522,36 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        /// Fills the color of the area with.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        ///     The Changed Image
+        /// </returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
+        public Bitmap FillAreaWithColor(
+            Bitmap image,
+            int? width,
+            int? height,
+            Color color,
+            MaskShape shape,
+            object shapeParams = null,
+            Point? startPoint = null)
+        {
+            return ImageStream.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);
+        }
+
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Floods the fill scan line stack.
         /// </summary>
         /// <param name="image">The image.</param>
@@ -780,7 +817,7 @@ namespace Imaging
         /// </summary>
         /// <param name="images">List off bitmaps and timer data</param>
         /// <param name="target">The target File.</param>
-        public void CreateGif(List<FrameInfo> images, string target)
+        public void CreateGif(IEnumerable<FrameInfo> images, string target)
         {
             ImageGifHandler.CreateGif(images, target);
         }

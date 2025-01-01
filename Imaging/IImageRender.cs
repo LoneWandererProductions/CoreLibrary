@@ -93,6 +93,8 @@ namespace Imaging
         /// Filters the image area.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
@@ -104,6 +106,8 @@ namespace Imaging
         /// or
         /// shape - null</exception>
         Bitmap FilterImageArea(Bitmap image,
+            int? width,
+            int? height,
             FiltersType filter,
             MaskShape shape,
             object shapeParams = null,
@@ -365,6 +369,31 @@ namespace Imaging
         Bitmap SetPixel(Bitmap image, Point point, Color color, int radius);
 
         /// <summary>
+        /// Fills the area with color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="color">The color of the shape</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
+        /// <returns>
+        /// Generates a filter for a certain area
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
+        Bitmap FillAreaWithColor(
+            Bitmap image,
+            int? width,
+            int? height,
+            Color color,
+            MaskShape shape,
+            object shapeParams = null,
+            Point? startPoint = null);
+
+        /// <summary>
         ///     Floods the fill scan line stack.
         /// </summary>
         /// <param name="image">The image.</param>
@@ -525,7 +554,7 @@ namespace Imaging
         /// </summary>
         /// <param name="images">List off bitmaps and timer data</param>
         /// <param name="target">The target File.</param>
-        void CreateGif(List<FrameInfo> images, string target);
+        void CreateGif(IEnumerable<FrameInfo> images, string target);
 
         /// <summary>
         ///     Bitmaps to base64.

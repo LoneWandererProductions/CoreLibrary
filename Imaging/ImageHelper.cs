@@ -7,6 +7,8 @@
  * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
 
+// ReSharper disable MissingSpace
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -119,17 +121,16 @@ namespace Imaging
             for (var x = 0; x < image.Width; x++)
             {
                 var pixel = image.GetPixel(x, y);
-                if (pixel.A != 0) // Not fully transparent
-                {
-                    hasNonTransparentPixel = true;
-                    if (x < minX) minX = x;
+                if (pixel.A == 0) continue;
 
-                    if (x > maxX) maxX = x;
+                hasNonTransparentPixel = true;
+                if (x < minX) minX = x;
 
-                    if (y < minY) minY = y;
+                if (x > maxX) maxX = x;
 
-                    if (y > maxY) maxY = y;
-                }
+                if (y < minY) minY = y;
+
+                if (y > maxY) maxY = y;
             }
 
             // If all pixels are transparent, return a zero-sized rectangle
@@ -146,16 +147,20 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void HandleException(Exception ex)
         {
+            if (ex == null)
+                throw new ArgumentNullException(nameof(ex), ImagingResources.ExceptionNull);
+
             // Log the exception details (implementation may vary)
-            Trace.WriteLine($"Exception Type: {ex.GetType().Name}");
-            Trace.WriteLine($"Message: {ex.Message}");
-            Trace.WriteLine($"Stack Trace: {ex.StackTrace}");
+            Trace.WriteLine(string.Format(ImagingResources.ExceptionType, ex.GetType().Name));
+            Trace.WriteLine(string.Format(ImagingResources.ExceptionMessage, ex.Message));
+            Trace.WriteLine(string.Format(ImagingResources.ExceptionStackTrace, ex.StackTrace));
 
             // Optionally, rethrow or handle further
             if (ex is ArgumentException or InvalidOperationException or NotSupportedException or UriFormatException
                 or IOException)
-                throw new ApplicationException("An error occurred while processing the image.", ex);
+                throw new ApplicationException(ImagingResources.GeneralProcessingError, ex);
         }
+
 
         /// <summary>
         ///     Validates the image.

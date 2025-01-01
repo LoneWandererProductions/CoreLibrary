@@ -169,23 +169,25 @@ namespace Imaging
         /// Generates the texture overlay.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="startPoint">The start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="width">The width.</param>
         /// <returns>
         /// Texture Bitmap
         /// </returns>
         /// <exception cref="System.ArgumentOutOfRangeException">filter - null
         /// or
         /// shape - null</exception>
-        public Bitmap GenerateTextureOverlay(Bitmap image, TextureType filter, MaskShape shape,
+        public Bitmap GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null)
         {
             var overlay = TextureAreas.GenerateTexture(
-                image.Width,
-                image.Height,
+                width,
+                height,
                 filter,
                 shape,
                 ImageSettings, shapeParams, startPoint);

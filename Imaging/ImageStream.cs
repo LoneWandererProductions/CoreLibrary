@@ -9,6 +9,7 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable MissingSpace
 
 using System;
 using System.Collections.Generic;
@@ -696,6 +697,74 @@ namespace Imaging
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
+        }
+
+        /// <summary>
+        /// Fills the area with color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="color">The color of the shape</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
+        /// <returns>
+        /// Generates a filter for a certain area
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
+        internal static Bitmap FillAreaWithColor(
+            Bitmap image,
+            int? width,
+            int? height,
+            Color color,
+            MaskShape shape,
+            object shapeParams = null,
+            Point? startPoint = null)
+        {
+            // Validate input
+            if (image == null) throw new ArgumentNullException(nameof(image));
+
+            // Default start point
+            var actualStartPoint = startPoint ?? new Point(0, 0);
+
+            // Determine dimensions
+            var actualWidth = width ?? image.Width;
+            var actualHeight = height ?? image.Height;
+
+            using var g = Graphics.FromImage(image);
+            using Brush brush = new SolidBrush(color);
+
+            // Apply mask based on the specified shape
+            switch (shape)
+            {
+                case MaskShape.Rectangle:
+                    g.FillRectangle(brush, new Rectangle(actualStartPoint, new Size(actualWidth, actualHeight)));
+                    break;
+
+                case MaskShape.Circle:
+                    g.FillEllipse(brush, new Rectangle(actualStartPoint, new Size(actualWidth, actualHeight)));
+                    break;
+
+                case MaskShape.Polygon:
+                    if (shapeParams is Point[] points)
+                    {
+                        g.FillPolygon(brush, points);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Invalid shape parameters for polygon mask.", nameof(shapeParams));
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(shape), shape, "Unsupported shape type");
+            }
+
+            return image;
         }
 
         /// <summary>
