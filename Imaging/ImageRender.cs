@@ -132,7 +132,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Filters the image area.
+        ///     Filters the image area.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -142,11 +142,13 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters.</param>
         /// <param name="startPoint">The start point.</param>
         /// <returns>
-        /// Area with applied filter
+        ///     Area with applied filter
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         public Bitmap FilterImageArea(Bitmap image,
             int? width,
             int? height,
@@ -522,7 +524,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Fills the color of the area with.
+        ///     Fills the color of the area with.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -534,9 +536,11 @@ namespace Imaging
         /// <returns>
         ///     The Changed Image
         /// </returns>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         public Bitmap FillAreaWithColor(
             Bitmap image,
             int? width,
