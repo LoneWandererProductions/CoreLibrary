@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        CommonLibraryTests/DirectBitmapImageTests.cs
+ * PURPOSE:     Custom Image Class´, some tests for validations
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media;
@@ -8,6 +16,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    ///  DirectBitmapImage test cases
+    /// </summary>
     [TestClass]
     public class DirectBitmapImageTests
     {
