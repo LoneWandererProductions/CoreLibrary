@@ -103,27 +103,36 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Calculates the cos as float. Variation of CalcCos.
+        ///     Calculates the cos as float. Variation of CalcCos.
         /// </summary>
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcCosF(int degree) => (float)CalcCos(degree);
+        public static float CalcCosF(int degree)
+        {
+            return (float)CalcCos(degree);
+        }
 
         /// <summary>
-        /// Calculates the sin float. Variation of CalcSin.
+        ///     Calculates the sin float. Variation of CalcSin.
         /// </summary>
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcSinF(int degree) => (float)CalcSin(degree);
+        public static float CalcSinF(int degree)
+        {
+            return (float)CalcSin(degree);
+        }
 
         /// <summary>
-        /// Calculates the tan float. Variation of CalcTan.
+        ///     Calculates the tan float. Variation of CalcTan.
         /// </summary>
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcTanF(int degree) => (float)CalcTan(degree);
+        public static float CalcTanF(int degree)
+        {
+            return (float)CalcTan(degree);
+        }
     }
 }

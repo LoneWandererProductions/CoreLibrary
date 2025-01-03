@@ -99,7 +99,7 @@ namespace Imaging
             int height);
 
         /// <summary>
-        /// Generates the texture.
+        ///     Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -108,11 +108,13 @@ namespace Imaging
         /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         Bitmap GenerateTexture(
             int width,
             int height,
@@ -122,7 +124,7 @@ namespace Imaging
             object shapeParams = null);
 
         /// <summary>
-        /// Generates the texture overlay.
+        ///     Generates the texture overlay.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -132,11 +134,13 @@ namespace Imaging
         /// <param name="startPoint">The start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         Bitmap GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null);

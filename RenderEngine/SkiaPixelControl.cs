@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
@@ -9,14 +11,15 @@ namespace RenderEngine
 {
     public class SkiaPixelControl : SKElement
     {
-        private SKBitmap _bitmap;
-        private System.Drawing.Bitmap _gdiBitmap;
         private readonly List<SKRect> _dirtyRegions;
+        private SKBitmap _bitmap;
+        private Bitmap _gdiBitmap;
 
         static SkiaPixelControl()
         {
             // Default style for the control (if needed)
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(SkiaPixelControl), new FrameworkPropertyMetadata(typeof(SkiaPixelControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SkiaPixelControl),
+                new FrameworkPropertyMetadata(typeof(SkiaPixelControl)));
         }
 
         public SkiaPixelControl()
@@ -27,7 +30,7 @@ namespace RenderEngine
         public void Initialize(int width, int height)
         {
             _bitmap = new SKBitmap(width, height);
-            _gdiBitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb); // Set to BGRA format for compatibility
+            _gdiBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb); // Set to BGRA format for compatibility
             using (var canvas = new SKCanvas(_bitmap))
             {
                 canvas.Clear(SKColors.Black);
@@ -37,7 +40,9 @@ namespace RenderEngine
         public void SetPixel(int x, int y, SKColor color)
         {
             if (_bitmap == null)
+            {
                 throw new InvalidOperationException("The control must be initialized before setting pixels.");
+            }
 
             _bitmap.SetPixel(x, y, color);
 
@@ -51,7 +56,9 @@ namespace RenderEngine
         public SKColor GetPixel(int x, int y)
         {
             if (_bitmap == null)
+            {
                 throw new InvalidOperationException("The control must be initialized before getting pixels.");
+            }
 
             return _bitmap.GetPixel(x, y);
         }
@@ -59,21 +66,23 @@ namespace RenderEngine
         public void ChangeAreaOfPixels(int startX, int startY, int width, int height, byte[] pixelData)
         {
             if (_bitmap == null)
+            {
                 throw new InvalidOperationException("The control must be initialized before changing pixels.");
+            }
 
             // Update the pixels in the area defined by startX, startY, width, height
-            for (int y = 0; y < height; y++)
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    int srcIndex = (y * width + x) * 4; // BGRA32 format
-                    int dstIndex = ((startY + y) * _bitmap.Width + (startX + x)) * 4;
+                    var srcIndex = ((y * width) + x) * 4; // BGRA32 format
+                    var dstIndex = (((startY + y) * _bitmap.Width) + startX + x) * 4;
 
                     var color = new SKColor(
                         pixelData[srcIndex + 2], // Red
                         pixelData[srcIndex + 1], // Green
                         pixelData[srcIndex], // Blue
-                        pixelData[srcIndex + 3]  // Alpha
+                        pixelData[srcIndex + 3] // Alpha
                     );
 
                     _bitmap.SetPixel(startX + x, startY + y, color);
@@ -87,15 +96,15 @@ namespace RenderEngine
             InvalidateVisual();
         }
 
-        public System.Drawing.Bitmap GetGdiBitmap()
+        public Bitmap GetGdiBitmap()
         {
             // Convert SkiaSharp Bitmap to System.Drawing Bitmap (BGRA to ARGB conversion)
-            for (int y = 0; y < _bitmap.Height; y++)
+            for (var y = 0; y < _bitmap.Height; y++)
             {
-                for (int x = 0; x < _bitmap.Width; x++)
+                for (var x = 0; x < _bitmap.Width; x++)
                 {
                     var color = _bitmap.GetPixel(x, y);
-                    _gdiBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue));
+                    _gdiBitmap.SetPixel(x, y, Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue));
                 }
             }
 
@@ -107,7 +116,9 @@ namespace RenderEngine
             base.OnPaintSurface(e);
 
             if (_bitmap == null)
+            {
                 return;
+            }
 
             var canvas = e.Surface.Canvas;
 
@@ -120,8 +131,8 @@ namespace RenderEngine
                 canvas.Save();
 
                 // Calculate the scaling factors to fit the control
-                float scaleX = (float)e.Info.Width / _bitmap.Width;
-                float scaleY = (float)e.Info.Height / _bitmap.Height;
+                var scaleX = (float)e.Info.Width / _bitmap.Width;
+                var scaleY = (float)e.Info.Height / _bitmap.Height;
 
                 // Scale the canvas
                 canvas.Scale(scaleX, scaleY);

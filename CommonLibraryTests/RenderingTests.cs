@@ -1,10 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Imaging;
-using RenderEngine;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
@@ -51,7 +50,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test to compare the processing speed between DirectBitmap and SkiaSharp.
+        ///     Test to compare the processing speed between DirectBitmap and SkiaSharp.
         /// </summary>
         [TestMethod]
         public void CompareImageProcessingSpeed()
@@ -59,11 +58,11 @@ namespace CommonLibraryTests
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
             // Measure processing time with DirectBitmap
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             ProcessWithDirectBitmap(imagePath);
             stopwatch.Stop();
-            long directBitmapTime = stopwatch.ElapsedMilliseconds;
+            var directBitmapTime = stopwatch.ElapsedMilliseconds;
 
 
             // Log times for comparison
@@ -74,15 +73,15 @@ namespace CommonLibraryTests
         {
             var btm = new Bitmap(imagePath);
             // Load the image using DirectBitmap (replace with your method)
-            DirectBitmap directBitmap = new DirectBitmap(btm);
+            var directBitmap = new DirectBitmap(btm);
 
             // Example operation: convert to grayscale
-            for (int x = 0; x < directBitmap.Width; x++)
+            for (var x = 0; x < directBitmap.Width; x++)
             {
-                for (int y = 0; y < directBitmap.Height; y++)
+                for (var y = 0; y < directBitmap.Height; y++)
                 {
-                    Color color = directBitmap.GetPixel(x, y);
-                    int grayValue = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
+                    var color = directBitmap.GetPixel(x, y);
+                    var grayValue = (int)((color.R * 0.3) + (color.G * 0.59) + (color.B * 0.11));
                     directBitmap.SetPixel(x, y, Color.FromArgb(grayValue, grayValue, grayValue));
                 }
             }

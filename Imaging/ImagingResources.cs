@@ -299,37 +299,37 @@ namespace Imaging
         internal const string ErrorLoadSettings = "Error loading Configuration:";
 
         /// <summary>
-        /// The error with shape polygon (const). Value: "Error loading Configuration:"
+        ///     The error with shape polygon (const). Value: "Error loading Configuration:"
         /// </summary>
         internal const string ErrorWithShapePolygon = "Error loading Configuration:";
 
         /// <summary>
-        /// The invalid dimensions (const). Value: "Width and height must be positive integers."
+        ///     The invalid dimensions (const). Value: "Width and height must be positive integers."
         /// </summary>
         public const string InvalidDimensions = "Width and height must be positive integers.";
 
         /// <summary>
-        /// The image settings null (const). Value:  "Image settings cannot be null."
+        ///     The image settings null (const). Value:  "Image settings cannot be null."
         /// </summary>
         public const string ImageSettingsNull = "Image settings cannot be null.";
 
         /// <summary>
-        /// The invalid texture settings (const). Value:  "Invalid texture settings."
+        ///     The invalid texture settings (const). Value:  "Invalid texture settings."
         /// </summary>
         public const string InvalidTextureSettings = "Invalid texture settings.";
 
         /// <summary>
-        /// The unsupported texture (const). Value: "Unsupported texture type."
+        ///     The unsupported texture (const). Value: "Unsupported texture type."
         /// </summary>
         public const string UnsupportedTexture = "Unsupported texture type.";
 
         /// <summary>
-        /// The invalid polygon parameters (const). Value:"Invalid shape parameters for polygon mask."
+        ///     The invalid polygon parameters (const). Value:"Invalid shape parameters for polygon mask."
         /// </summary>
         public const string InvalidPolygonParams = "Invalid shape parameters for polygon mask.";
 
         /// <summary>
-        /// The unsupported shape (const). Value:  "Unsupported shape type."
+        ///     The unsupported shape (const). Value:  "Unsupported shape type."
         /// </summary>
         public const string UnsupportedShape = "Unsupported shape type.";
 
@@ -341,34 +341,35 @@ namespace Imaging
             "Error: minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.";
 
         /// <summary>
-        /// The exception null (const). Value: "The exception object cannot be null."
+        ///     The exception null (const). Value: "The exception object cannot be null."
         /// </summary>
         public const string ExceptionNull = "The exception object cannot be null.";
 
         /// <summary>
-        /// The exception type (const). Value: "Exception Type: {0}"
+        ///     The exception type (const). Value: "Exception Type: {0}"
         /// </summary>
         public const string ExceptionType = "Exception Type: {0}";
 
         /// <summary>
-        /// The exception message (const). Value: "Message: {0}"
+        ///     The exception message (const). Value: "Message: {0}"
         /// </summary>
         public const string ExceptionMessage = "Message: {0}";
 
         /// <summary>
-        /// The exception stack trace (const). Value: "Stack Trace: {0}"
+        ///     The exception stack trace (const). Value: "Stack Trace: {0}"
         /// </summary>
         public const string ExceptionStackTrace = "Stack Trace: {0}";
 
         /// <summary>
-        /// The general processing error (const). Value: "An error occurred while processing the image."
+        ///     The general processing error (const). Value: "An error occurred while processing the image."
         /// </summary>
         public const string GeneralProcessingError = "An error occurred while processing the image.";
 
         /// <summary>
         ///     The File Appendix
         /// </summary>
-        public static readonly List<string> Appendix = new() {
+        public static readonly List<string> Appendix = new()
+        {
             JpgExt,
             PngExt,
             BmpExt,

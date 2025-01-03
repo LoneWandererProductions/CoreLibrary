@@ -341,9 +341,15 @@ namespace CommonControls
         private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as Thumbnails;
-            if (e.NewValue == e.OldValue) return;
+            if (e.NewValue == e.OldValue)
+            {
+                return;
+            }
 
-            if (!_refresh) return;
+            if (!_refresh)
+            {
+                return;
+            }
 
             control?.OnItemsSourceChanged();
         }
@@ -356,11 +362,17 @@ namespace CommonControls
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id)) return;
+            if (!ItemsSource.ContainsKey(id))
+            {
+                return;
+            }
 
             var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-            if (image != null) image.Source = null;
+            if (image != null)
+            {
+                image.Source = null;
+            }
 
             _ = ItemsSource.Remove(id);
 
@@ -403,7 +415,10 @@ namespace CommonControls
         /// </summary>
         private async void LoadImages()
         {
-            if (ItemsSource?.Any() != true) return;
+            if (ItemsSource?.Any() != true)
+            {
+                return;
+            }
 
             _cancellationTokenSource = new CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
@@ -420,18 +435,33 @@ namespace CommonControls
             Border = new ConcurrentDictionary<int, Border>();
             Selection = new List<int>();
 
-            if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
+            if (SelectBox)
+            {
+                ChkBox = new ConcurrentDictionary<int, CheckBox>();
+            }
 
             // Handle special cases
-            if (ThumbCellSize == 0) ThumbCellSize = 100;
+            if (ThumbCellSize == 0)
+            {
+                ThumbCellSize = 100;
+            }
 
-            if (ThumbHeight == 0 && ThumbWidth == 0) ThumbHeight = 1;
+            if (ThumbHeight == 0 && ThumbWidth == 0)
+            {
+                ThumbHeight = 1;
+            }
 
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
-                if (ThumbWidth == 1) ThumbHeight = pics.Count;
+                if (ThumbWidth == 1)
+                {
+                    ThumbHeight = pics.Count;
+                }
 
-                if (ThumbHeight == 1) ThumbWidth = pics.Count;
+                if (ThumbHeight == 1)
+                {
+                    ThumbWidth = pics.Count;
+                }
 
                 if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
@@ -448,12 +478,18 @@ namespace CommonControls
             var tasks = new List<Task>();
             foreach (var (key, name) in pics)
             {
-                if (token.IsCancellationRequested) return;
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
 
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count < 4) continue;
+                if (tasks.Count < 4)
+                {
+                    continue;
+                }
 
                 await Task.WhenAll(tasks);
                 tasks.Clear();
@@ -479,7 +515,10 @@ namespace CommonControls
         private async Task LoadImageAsync(int key, string name, Panel exGrid)
         {
             var token = _cancellationTokenSource.Token;
-            if (token.IsCancellationRequested) return;
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             BitmapImage myBitmapCell = null;
 
@@ -526,7 +565,10 @@ namespace CommonControls
                 Trace.WriteLine(ex);
             }
 
-            if (myBitmapCell == null) return;
+            if (myBitmapCell == null)
+            {
+                return;
+            }
 
             // Set the image source on the UI thread
             Application.Current.Dispatcher.Invoke(() =>
@@ -537,6 +579,7 @@ namespace CommonControls
 
             if (SelectBox)
                 // Handle checkboxes for selection on the UI thread
+            {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
@@ -550,7 +593,10 @@ namespace CommonControls
                         IsChecked = IsCheckBoxSelected
                     };
 
-                    if (IsCheckBoxSelected) Selection.Add(key);
+                    if (IsCheckBoxSelected)
+                    {
+                        Selection.Add(key);
+                    }
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
@@ -561,6 +607,7 @@ namespace CommonControls
                     Grid.SetColumn(checkbox, key % ThumbWidth);
                     _ = exGrid.Children.Add(checkbox);
                 });
+            }
         }
 
         /// <summary>
@@ -615,9 +662,15 @@ namespace CommonControls
         private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Get the image that was clicked
-            if (sender is not Image clickedImage) return;
+            if (sender is not Image clickedImage)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedImage.Name)) return;
+            if (!Keys.ContainsKey(clickedImage.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedImage.Name];
 
@@ -627,7 +680,10 @@ namespace CommonControls
 
             // Get the parent border (since we wrapped the image in a Border)
             var clickedBorder = clickedImage.Parent as Border;
-            if (clickedBorder == null) return;
+            if (clickedBorder == null)
+            {
+                return;
+            }
 
             // Update the selected border (reuse the UpdateSelectedBorder method)
             UpdateSelectedBorder(clickedBorder);
@@ -663,7 +719,10 @@ namespace CommonControls
         /// <param name="id">The ID of the item to center on.</param>
         public void CenterOnItem(int id)
         {
-            if (MainScrollViewer == null || Border == null) return;
+            if (MainScrollViewer == null || Border == null)
+            {
+                return;
+            }
 
             // Check if the item with the specified ID exists
             if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
@@ -673,10 +732,10 @@ namespace CommonControls
                 var itemPosition = itemTransform.Transform(new Point(0, 0));
 
                 // Calculate the offsets needed to center the item
-                var centerOffsetX = itemPosition.X - MainScrollViewer.ViewportWidth / 2 +
-                                    targetElement.RenderSize.Width / 2;
-                var centerOffsetY = itemPosition.Y - MainScrollViewer.ViewportHeight / 2 +
-                                    targetElement.RenderSize.Height / 2;
+                var centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) +
+                                    (targetElement.RenderSize.Width / 2);
+                var centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) +
+                                    (targetElement.RenderSize.Height / 2);
 
                 // Set the ScrollViewer's offset to center the item
                 MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
@@ -692,9 +751,15 @@ namespace CommonControls
         private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton) return;
+            if (sender is not Image clickedButton)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedButton.Name)) return;
+            if (!Keys.ContainsKey(clickedButton.Name))
+            {
+                return;
+            }
 
             _selection = Keys[clickedButton.Name];
 
@@ -729,9 +794,15 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0) return;
+            if (Selection.Count == 0)
+            {
+                return;
+            }
 
-            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id])) check.IsChecked = false;
+            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
+            {
+                check.IsChecked = false;
+            }
         }
 
         /// <summary>
@@ -742,9 +813,15 @@ namespace CommonControls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox) return;
+            if (sender is not CheckBox clickedCheckBox)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
+            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -759,9 +836,15 @@ namespace CommonControls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox) return;
+            if (sender is not CheckBox clickedCheckBox)
+            {
+                return;
+            }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
+            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            {
+                return;
+            }
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -800,7 +883,10 @@ namespace CommonControls
         /// <param name="index">The index.</param>
         private void SelectImageAtIndex(int index)
         {
-            if (index < 0 || index >= Border.Count || !Border.ContainsKey(index)) return;
+            if (index < 0 || index >= Border.Count || !Border.ContainsKey(index))
+            {
+                return;
+            }
 
             var border = Border[index];
 
@@ -835,13 +921,19 @@ namespace CommonControls
         /// <param name="disposing">if set to <c>true</c> [disposing].</param>
         private void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
                 // Dispose managed resources
                 // e.g., unsubscribe from events, dispose of Image objects, etc.
-                foreach (var image in Thb.Children.OfType<Image>()) image.Source = null; // Release image source
+                foreach (var image in Thb.Children.OfType<Image>())
+                {
+                    image.Source = null; // Release image source
+                }
 
                 Thb.Children.Clear(); // Clear children from the UI element
             }
