@@ -90,7 +90,7 @@ namespace Imaging
         Bitmap FilterImage(Bitmap image, FiltersType filter);
 
         /// <summary>
-        ///     Filters the image area.
+        /// Filters the image area.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -100,13 +100,11 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters.</param>
         /// <param name="startPoint">The start point.</param>
         /// <returns>
-        ///     Area with applied filter
+        /// Area with applied filter
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        ///     filter - null
-        ///     or
-        ///     shape - null
-        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
         Bitmap FilterImageArea(Bitmap image,
             int? width,
             int? height,
@@ -371,7 +369,7 @@ namespace Imaging
         Bitmap SetPixel(Bitmap image, Point point, Color color, int radius);
 
         /// <summary>
-        ///     Fills the area with color.
+        /// Fills the area with color.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -381,13 +379,11 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters.</param>
         /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
         /// <returns>
-        ///     Generates a filter for a certain area
+        /// Generates a filter for a certain area
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        ///     filter - null
-        ///     or
-        ///     shape - null
-        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
         Bitmap FillAreaWithColor(
             Bitmap image,
             int? width,

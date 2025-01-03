@@ -24,7 +24,7 @@ namespace Mathematics
         ///     https://de.wikipedia.org/wiki/Radiant_(Einheit)
         /// </summary>
         /// <param name="degree">Degree we want to Rotate</param>
-        /// <returns>The <see cref="double" />.</returns>
+        /// <returns>The <see cref="double" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CalcCos(int degree)
         {
@@ -47,7 +47,7 @@ namespace Mathematics
         ///     https://de.wikipedia.org/wiki/Radiant_(Einheit)
         /// </summary>
         /// <param name="degree">Degree we want to Rotate</param>
-        /// <returns>The <see cref="double" />.</returns>
+        /// <returns>The <see cref="double" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CalcSin(int degree)
         {
@@ -101,5 +101,29 @@ namespace Mathematics
             const double rad = Math.PI / 180.0;
             return Math.Tan(normalizedDegree * rad);
         }
+
+        /// <summary>
+        /// Calculates the cos as float. Variation of CalcCos.
+        /// </summary>
+        /// <param name="degree">The degree.</param>
+        /// <returns>The <see cref="float" /> The radial Value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CalcCosF(int degree) => (float)CalcCos(degree);
+
+        /// <summary>
+        /// Calculates the sin float. Variation of CalcSin.
+        /// </summary>
+        /// <param name="degree">The degree.</param>
+        /// <returns>The <see cref="float" /> The radial Value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CalcSinF(int degree) => (float)CalcSin(degree);
+
+        /// <summary>
+        /// Calculates the tan float. Variation of CalcTan.
+        /// </summary>
+        /// <param name="degree">The degree.</param>
+        /// <returns>The <see cref="float" /> The radial Value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CalcTanF(int degree) => (float)CalcTan(degree);
     }
 }

@@ -128,10 +128,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -286,18 +283,12 @@ namespace CommonControls
         private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as ImageZoom;
-            if (control == null)
-            {
-                return; // Ensure that we are working with an ImageZoom instance
-            }
+            if (control == null) return; // Ensure that we are working with an ImageZoom instance
 
             var newTool = (ImageZoomTools)e.NewValue;
 
             // Detach the previous adorner if needed
-            if (control.SelectionAdorner == null)
-            {
-                return;
-            }
+            if (control.SelectionAdorner == null) return;
 
             control.SelectionAdorner.Tool = newTool; // Update the tool in the adorner
             control.SelectionAdorner.ClearFreeFormPoints(); // Reset any existing free-form points if applicable
@@ -360,10 +351,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -521,10 +509,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
@@ -618,17 +603,11 @@ namespace CommonControls
         /// <param name="disposing">Whether the method was called by Dispose or the finalizer.</param>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return; // Early exit if already disposed
-            }
+            if (_disposed) return; // Early exit if already disposed
 
             lock (_lock) // Ensure thread-safety
             {
-                if (_disposed)
-                {
-                    return; // Double-check in case Dispose was called by another thread
-                }
+                if (_disposed) return; // Double-check in case Dispose was called by another thread
 
                 if (disposing)
                 {
@@ -636,20 +615,12 @@ namespace CommonControls
 
                     // Unsubscribe event handlers
                     if (SelectedFrame != null)
-                    {
                         foreach (var d in SelectedFrame.GetInvocationList())
-                        {
                             SelectedFrame -= (DelegateFrame)d;
-                        }
-                    }
 
                     if (SelectedPoint != null)
-                    {
                         foreach (var d in SelectedPoint.GetInvocationList())
-                        {
                             SelectedPoint -= (DelegatePoint)d;
-                        }
-                    }
 
                     // Dispose image resources
                     BtmImage?.StopAnimation();

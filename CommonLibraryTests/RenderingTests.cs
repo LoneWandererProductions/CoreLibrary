@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Imaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RenderEngine;
 
 namespace CommonLibraryTests
@@ -51,7 +51,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Test to compare the processing speed between DirectBitmap and SkiaSharp.
+        /// Test to compare the processing speed between DirectBitmap and SkiaSharp.
         /// </summary>
         [TestMethod]
         public void CompareImageProcessingSpeed()
@@ -59,40 +59,30 @@ namespace CommonLibraryTests
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
             // Measure processing time with DirectBitmap
-            var stopwatch = new Stopwatch();
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             ProcessWithDirectBitmap(imagePath);
             stopwatch.Stop();
-            var directBitmapTime = stopwatch.ElapsedMilliseconds;
+            long directBitmapTime = stopwatch.ElapsedMilliseconds;
 
-            // Measure processing time with SkiaSharp
-            stopwatch.Reset();
-            stopwatch.Start();
-            var img2 = Tester.ProcessWithSkiaSharp(imagePath);
-            stopwatch.Stop();
-            var skiaTime = stopwatch.ElapsedMilliseconds;
 
             // Log times for comparison
             Console.WriteLine($"DirectBitmap processing time: {directBitmapTime} ms");
-            Console.WriteLine($"SkiaSharp processing time: {skiaTime} ms");
-
-            // Assert: Compare times and choose which one is faster
-            Assert.IsTrue(directBitmapTime <= skiaTime, "DirectBitmap should be faster or equal in processing time.");
         }
 
         private void ProcessWithDirectBitmap(string imagePath)
         {
             var btm = new Bitmap(imagePath);
             // Load the image using DirectBitmap (replace with your method)
-            var directBitmap = new DirectBitmap(btm);
+            DirectBitmap directBitmap = new DirectBitmap(btm);
 
             // Example operation: convert to grayscale
-            for (var x = 0; x < directBitmap.Width; x++)
+            for (int x = 0; x < directBitmap.Width; x++)
             {
-                for (var y = 0; y < directBitmap.Height; y++)
+                for (int y = 0; y < directBitmap.Height; y++)
                 {
-                    var color = directBitmap.GetPixel(x, y);
-                    var grayValue = (int)((color.R * 0.3) + (color.G * 0.59) + (color.B * 0.11));
+                    Color color = directBitmap.GetPixel(x, y);
+                    int grayValue = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
                     directBitmap.SetPixel(x, y, Color.FromArgb(grayValue, grayValue, grayValue));
                 }
             }

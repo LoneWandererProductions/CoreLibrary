@@ -16,11 +16,15 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging
 {
@@ -167,10 +171,7 @@ namespace Imaging
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
             var colorArgb = color.ToArgb();
-            for (var i = y; i < y + height && i < Height; i++)
-            {
-                Bits[x + (i * Width)] = colorArgb;
-            }
+            for (var i = y; i < y + height && i < Height; i++) Bits[x + i * Width] = colorArgb;
         }
 
         /// <summary>
@@ -183,10 +184,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            if (y < 0 || y >= Height || length <= 0)
-            {
-                return;
-            }
+            if (y < 0 || y >= Height || length <= 0) return;
 
             var colorArgb = color.ToArgb();
             var vectorCount = Vector<int>.Count;
@@ -198,22 +196,14 @@ namespace Imaging
             var startX = (x + vectorCount - 1) & ~(vectorCount - 1);
 
             // Fill initial non-aligned part
-            for (var i = x; i < startX && i < endX; i++)
-            {
-                Bits[i + (y * Width)] = colorArgb;
-            }
+            for (var i = x; i < startX && i < endX; i++) Bits[i + y * Width] = colorArgb;
 
             // Fill aligned part with SIMD
             for (var xPos = startX; xPos + vectorCount <= endX; xPos += vectorCount)
-            {
-                colorVector.CopyTo(Bits, xPos + (y * Width));
-            }
+                colorVector.CopyTo(Bits, xPos + y * Width);
 
             // Fill final non-aligned part
-            for (var i = endX - vectorCount; i < endX; i++)
-            {
-                Bits[i + (y * Width)] = colorArgb;
-            }
+            for (var i = endX - vectorCount; i < endX; i++) Bits[i + y * Width] = colorArgb;
         }
 
         /// <summary>
@@ -234,18 +224,12 @@ namespace Imaging
             for (var y = y2; y < y2 + height && y < Height; y++)
             for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
             {
-                var startIndex = x + (y * Width);
+                var startIndex = x + y * Width;
                 if (startIndex + vectorCount <= Bits.Length)
-                {
                     colorVector.CopyTo(Bits, startIndex);
-                }
                 else
-                {
                     for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
-                    {
                         Bits[startIndex + j] = colorArgb;
-                    }
-                }
             }
         }
 
@@ -269,22 +253,14 @@ namespace Imaging
                     var indexVector = new Vector<int>(indices, i);
 
                     for (var j = 0; j < chunkSize; j++)
-                    {
                         if (indexVector[j] < Bits.Length)
-                        {
                             Bits[indexVector[j]] = colorArgb;
-                        }
-                    }
                 }
                 else
                 {
                     for (var j = i; j < i + chunkSize; j++)
-                    {
                         if (indices[j] < Bits.Length)
-                        {
                             Bits[indices[j]] = colorArgb;
-                        }
-                    }
                 }
             }
         }
@@ -298,7 +274,7 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             Bits[index] = color.ToArgb();
         }
 
@@ -320,9 +296,7 @@ namespace Imaging
 
             // Ensure Bits array is properly initialized
             if (Bits == null || Bits.Length < Width * Height)
-            {
                 throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
-            }
 
             for (var i = 0; i < pixelArray.Length; i += vectorCount)
             {
@@ -331,11 +305,10 @@ namespace Imaging
 
                 // Load data into vectors
                 for (var j = 0; j < vectorCount; j++)
-                {
                     if (i + j < pixelArray.Length)
                     {
                         var (x, y, color) = pixelArray[i + j];
-                        indices[j] = x + (y * Width);
+                        indices[j] = x + y * Width;
                         colors[j] = color.ToArgb();
                     }
                     else
@@ -344,16 +317,11 @@ namespace Imaging
                         indices[j] = 0;
                         colors[j] = Color.Transparent.ToArgb(); // Use a default color or handle it as needed
                     }
-                }
 
                 // Write data to Bits array
                 for (var j = 0; j < vectorCount; j++)
-                {
                     if (i + j < pixelArray.Length)
-                    {
                         Bits[indices[j]] = colors[j];
-                    }
-                }
             }
         }
 
@@ -366,7 +334,7 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             var col = Bits[index];
             return Color.FromArgb(col);
         }
@@ -377,10 +345,7 @@ namespace Imaging
         /// <returns>The Image as a list of Colors</returns>
         public Span<Color> GetColors()
         {
-            if (Bits == null)
-            {
-                return null;
-            }
+            if (Bits == null) return null;
 
             var length = Height * Width;
             var array = new Color[length];
@@ -396,6 +361,30 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Converts the Bits into bitmapImage.
+        /// </summary>
+        /// <returns>BitmapImage image data</returns>
+        public BitmapImage ToBitmapImage()
+        {
+            // Create a WriteableBitmap with the same dimensions as the DirectBitmap
+            var writeableBitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
+
+            // Write the pixel data (from DirectBitmap's Bits) into the WriteableBitmap
+            writeableBitmap.WritePixels(
+                new Int32Rect(0, 0, Width, Height),
+                Bits,
+                Width * 4, // Each pixel has 4 bytes (BGRA)
+                0);
+
+            // Return the WriteableBitmap as a BitmapImage
+            return new BitmapImage
+            {
+                CreateOptions = BitmapCreateOptions.None,
+                CacheOption = BitmapCacheOption.OnLoad
+            };
+        }
+
+        /// <summary>
         ///     Converts to string.
         /// </summary>
         /// <returns>
@@ -405,10 +394,7 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            for (var i = 0; i < Bits.Length - 1; i++)
-            {
-                info = string.Concat(info, Bits[i], ImagingResources.Indexer);
-            }
+            for (var i = 0; i < Bits.Length - 1; i++) info = string.Concat(info, Bits[i], ImagingResources.Indexer);
 
             return string.Concat(info, ImagingResources.Spacing, Bits[Bits.Length]);
         }
@@ -433,10 +419,7 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {
@@ -444,10 +427,7 @@ namespace Imaging
                 Bitmap?.Dispose();
 
                 // Free the GCHandle if it is allocated
-                if (BitsHandle.IsAllocated)
-                {
-                    BitsHandle.Free();
-                }
+                if (BitsHandle.IsAllocated) BitsHandle.Free();
             }
 
             Disposed = true;

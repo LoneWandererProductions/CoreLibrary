@@ -17,7 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    ///     DirectBitmapImage test cases
+    ///  DirectBitmapImage test cases
     /// </summary>
     [TestClass]
     public class DirectBitmapImageTests

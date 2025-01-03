@@ -243,16 +243,11 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
-                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
-                }
             }
 
-            foreach (var image in images)
-            {
-                image.Dispose();
-            }
+            foreach (var image in images) image.Dispose();
 
             //before return please Convert
             return btm;
@@ -384,10 +379,7 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(RotateImage), image);
 
             //no need to do anything
-            if (degree is 360 or 0)
-            {
-                return image;
-            }
+            if (degree is 360 or 0) return image;
 
             if (degree is > 360 or < -360)
             {
@@ -408,8 +400,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
-                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
+                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
+                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
             }
 
             // Find the min and max x and y coordinates.
@@ -453,18 +445,13 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
+            if (image == null) throw new ArgumentNullException(nameof(image));
 
             var bounds = ImageHelper.GetNonTransparentBounds(image);
 
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 // Return an empty image or handle this case as needed
-            {
                 return new Bitmap(1, 1);
-            }
 
             var croppedBitmap = new Bitmap(bounds.Width, bounds.Height);
             using var graphics = Graphics.FromImage(croppedBitmap);
@@ -509,10 +496,7 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory))
-                {
-                    return;
-                }
+                if (!Directory.Exists(directory)) return;
 
                 var newPath = path;
 
@@ -560,10 +544,7 @@ namespace Imaging
                 var color = result.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
-                {
-                    continue;
-                }
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
 
                 //replace Value under the threshold with pure White
                 pixelsToSet.Add((x, y, replacementColor));
@@ -603,9 +584,7 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
-            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
-            }
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -629,22 +608,14 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
-            if (radius < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
-            }
+            if (radius < 0) throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
-            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
-            }
 
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0)
-            {
-                return GetPixel(image, point);
-            }
+            if (points.Count == 0) return GetPixel(image, point);
 
             int redSum = 0, greenSum = 0, blueSum = 0;
 
@@ -729,7 +700,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Fills the area with color.
+        /// Fills the area with color.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -739,13 +710,11 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters.</param>
         /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
         /// <returns>
-        ///     Generates a filter for a certain area
+        /// Generates a filter for a certain area
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        ///     filter - null
-        ///     or
-        ///     shape - null
-        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
+        /// or
+        /// shape - null</exception>
         internal static Bitmap FillAreaWithColor(
             Bitmap image,
             int? width,
@@ -756,10 +725,7 @@ namespace Imaging
             Point? startPoint = null)
         {
             // Validate input
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
+            if (image == null) throw new ArgumentNullException(nameof(image));
 
             // Default start point
             var actualStartPoint = startPoint ?? new Point(0, 0);
@@ -816,10 +782,7 @@ namespace Imaging
             var result = new DirectBitmap(image);
 
             var oldColor = dbm.GetPixel(x, y);
-            if (oldColor == newColor)
-            {
-                return image; // Return original image if the color is the same
-            }
+            if (oldColor == newColor) return image; // Return original image if the color is the same
 
             var pixelData = new List<(int x, int y, Color color)>();
 
@@ -832,10 +795,7 @@ namespace Imaging
                 var x1 = x;
 
                 // Move to the left boundary
-                while (x1 >= 0 && dbm.GetPixel(x1, y) == oldColor)
-                {
-                    x1--;
-                }
+                while (x1 >= 0 && dbm.GetPixel(x1, y) == oldColor) x1--;
 
                 x1++;
                 bool spanBelow;
@@ -914,9 +874,9 @@ namespace Imaging
         private static ColorMatrix CreateColorMatrix(Color sourceColor, Color targetColor)
         {
             // Calculate the difference between source and target colors for each channel
-            var rRatio = (targetColor.R / 255f) - (sourceColor.R / 255f);
-            var gRatio = (targetColor.G / 255f) - (sourceColor.G / 255f);
-            var bRatio = (targetColor.B / 255f) - (sourceColor.B / 255f);
+            var rRatio = targetColor.R / 255f - sourceColor.R / 255f;
+            var gRatio = targetColor.G / 255f - sourceColor.G / 255f;
+            var bRatio = targetColor.B / 255f - sourceColor.B / 255f;
 
             return new ColorMatrix(new[]
             {
