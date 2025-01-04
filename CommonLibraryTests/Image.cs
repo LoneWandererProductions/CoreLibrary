@@ -371,114 +371,151 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Speed compare.
-        ///     We use TestCleanup to execute it at the end, so no other test execution interferes
+        /// Compares the speed of drawing operations using Microsoft's Graphics and DirectBitmap implementations.
+        /// The test ensures that no interference occurs from other tests.
         /// </summary>
         [TestMethod]
-        public void SpeedCompare()
+        public void CompareSystemDrawingDirectBitmapPerformance()
         {
-            var bmp = new Bitmap(1000, 1000);
-            var blackPen = new Pen(Color.Black, 1);
+            const int imageSize = 1000;
+            const int iterations = 1000;
+            const int rectangleWidth = 100;
+            const int rectangleHeight = 200;
 
-            const int x1 = 0;
-            const int y1 = 0;
-            const int x2 = 0;
-            const int y2 = 1000;
-
-            var watch = Stopwatch.StartNew();
-            // the code that you want to measure comes here
-
-            for (var i = 0; i < 1000; i++)
-            {
-                // Draw line to screen.
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.DrawLine(blackPen, x1, y1, x2, y2);
-            }
-
-            watch.Stop();
-            //microsoft way
-            var elapsedOne = watch.ElapsedMilliseconds;
-
+            using var bmp = new Bitmap(imageSize, imageSize);
+            using var blackPen = new Pen(Color.Black, 1);
             var dbm = DirectBitmap.GetInstance(bmp);
 
-            watch = Stopwatch.StartNew();
-
-            for (var i = 0; i < 1000; i++)
-            {
-                // Draw line to screen.
-                dbm.DrawVerticalLine(x1, y1, 1000, Color.Black);
-            }
-
-            watch.Stop();
-            var elapsedTwo = watch.ElapsedMilliseconds;
-
-            Trace.WriteLine($"Second DrawVerticalLine: {elapsedTwo} First DrawLine: {elapsedOne}");
-
-            //for now it depends... sometimes it is slower sometimes it is faster ...
-            Trace.WriteLine(elapsedOne < elapsedTwo, "Was faster, I made an breakthrough. ");
-
-            watch = Stopwatch.StartNew();
-
-            for (var i = 0; i < 1000; i++)
-            {
-                // Draw line to screen.
-                dbm.DrawRectangle(x1, y1, 1, 1000, Color.Black);
-            }
-
-            watch.Stop();
-
-            // the code that you want to measure comes here
-
-            for (var i = 0; i < 1000; i++)
-            {
-                // Draw line to screen.
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.DrawRectangle(blackPen, x1, y1, 100, 200);
-            }
-
-            // Warm up both methods to avoid JIT overhead
+            // Warm-up to avoid JIT overhead
             for (var i = 0; i < 10; i++)
             {
-                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.DrawLine(blackPen, 0, 0, 0, imageSize);
+                dbm.DrawVerticalLine(0, 0, imageSize, Color.Black);
             }
 
-            // Variables to track total elapsed time for each method
-            long totalElapsedMicrosoft = 0;
-            long totalElapsedDbm = 0;
-            const int iterations = 100; // Number of iterations to average results
+            // Measure drawing a vertical line with Graphics
+            var graphicsElapsedTime = MeasureExecutionTime(iterations, () =>
+            {
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.DrawLine(blackPen, 0, 0, 0, imageSize);
+            });
 
+            // Measure drawing a vertical line with DirectBitmap
+            var dbmElapsedTime = MeasureExecutionTime(iterations, () => dbm.DrawVerticalLine(0, 0, imageSize, Color.Black));
+
+            Trace.WriteLine($"Graphics DrawLine: {graphicsElapsedTime} ms, DirectBitmap DrawVerticalLine: {dbmElapsedTime} ms");
+            Assert.IsTrue(dbmElapsedTime <= graphicsElapsedTime,
+                $"DirectBitmap was slower: {dbmElapsedTime} ms vs Graphics: {graphicsElapsedTime} ms");
+
+            // Measure drawing a rectangle with Graphics
+            var graphicsRectangleTime = MeasureExecutionTime(iterations, () =>
+            {
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.DrawRectangle(blackPen, 0, 0, rectangleWidth, rectangleHeight);
+            });
+
+            // Measure drawing a rectangle with DirectBitmap
+            var dbmRectangleTime = MeasureExecutionTime(iterations, () => dbm.DrawRectangle(0, 0, rectangleWidth, rectangleHeight, Color.Black));
+
+            Trace.WriteLine($"Graphics DrawRectangle: {graphicsRectangleTime} ms, DirectBitmap DrawRectangle: {dbmRectangleTime} ms");
+            Assert.IsTrue(graphicsRectangleTime <= dbmRectangleTime,
+                $"Graphics was faster for rectangles: {graphicsRectangleTime} ms vs DirectBitmap: {dbmRectangleTime} ms");
+
+            // Local function for measuring execution time
+            long MeasureExecutionTime(int count, Action action)
+            {
+                var stopwatch = Stopwatch.StartNew();
+
+                for (var i = 0; i < count; i++)
+                {
+                    action();
+                }
+
+                stopwatch.Stop();
+                return stopwatch.ElapsedMilliseconds;
+            }
+        }
+
+        /// <summary>
+        /// Compares performance of drawing vertical lines with System.Drawing's FillRectangle and DirectBitmap's DrawRectangle.
+        /// </summary>
+        [TestMethod]
+        public void CompareVerticalLineWithRectanglePerformance()
+        {
+            const int width = 1000;
+            const int height = 1000;
+            const int iterations = 1000;
+            const int lineWidth = 1; // Special case: Line width is 1 (vertical line)
+            const int x = 0;
+            const int y = 0;
+
+            var bmp = new Bitmap(width, height);
+            var blackBrush = new SolidBrush(Color.Black);
+
+            // Initialize DirectBitmap with the same dimensions
+            var dbm = DirectBitmap.GetInstance(bmp);
+
+            // Warm-up both methods to ensure no JIT overhead
+            using (var graphics = Graphics.FromImage(bmp))
+            {
+                for (var i = 0; i < 10; i++)
+                {
+                    graphics.FillRectangle(blackBrush, x, y, lineWidth, height);
+                }
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                dbm.DrawRectangle(x, y, lineWidth, height, Color.Black);
+            }
+
+            // Measure System.Drawing performance
+            var watch = Stopwatch.StartNew();
             for (var i = 0; i < iterations; i++)
             {
-                // Measure time for the first method (Microsoft's generic way)
-                watch = Stopwatch.StartNew();
-
-                // Perform operation here (replace with your Microsoft rectangle draw code)
-                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
-
-                watch.Stop();
-                totalElapsedMicrosoft += watch.ElapsedMilliseconds; // Or use ElapsedTicks for higher precision
-
-                // Measure time for the second method (DirectBitmap custom method)
-                watch = Stopwatch.StartNew();
-
-                // Perform custom drawing method
-                dbm.DrawRectangle(x1, y1, 100, 200, Color.Black);
-
-                watch.Stop();
-                totalElapsedDbm += watch.ElapsedMilliseconds; // Or use ElapsedTicks
+                using var graphics = Graphics.FromImage(bmp);
+                graphics.FillRectangle(blackBrush, x, y, lineWidth, height);
             }
 
-            // Calculate average times for both methods
-            var averageMicrosoft = totalElapsedMicrosoft / iterations;
-            var averageDbm = totalElapsedDbm / iterations;
+            watch.Stop();
+            var elapsedGraphics = watch.ElapsedMilliseconds;
 
-            // Log the results
-            Trace.WriteLine(string.Concat("Average Rectangle Microsoft: ", averageMicrosoft,
-                " ms, Average DrawRectangle dbm: ", averageDbm, " ms"));
+            // Measure DirectBitmap performance
+            watch = Stopwatch.StartNew();
+            for (var i = 0; i < iterations; i++)
+            {
+                dbm.DrawRectangle(x, y, lineWidth, height, Color.Black);
+            }
 
-            // Perform the assertion based on average values
-            Assert.IsTrue(averageMicrosoft <= averageDbm,
-                $"Results: {averageMicrosoft} ms (Microsoft) vs {averageDbm} ms (DirectBitmap)");
+            watch.Stop();
+            var elapsedDirectBitmap = watch.ElapsedMilliseconds;
+
+
+            // Measure DirectBitmap Line performance
+            watch = Stopwatch.StartNew();
+            for (var i = 0; i < iterations; i++)
+            {
+                dbm.DrawVerticalLine(x, y, height, Color.Black);
+            }
+
+            watch.Stop();
+            var elapsedDirectBitmapLine = watch.ElapsedMilliseconds;
+
+
+            // Log results
+            Trace.WriteLine($"System.Drawing FillRectangle (lineWidth = 1): {elapsedGraphics} ms");
+            Trace.WriteLine($"DirectBitmap DrawRectangle: {elapsedDirectBitmap} ms");
+            Trace.WriteLine($"DirectBitmap DrawVerticalLine: {elapsedDirectBitmapLine} ms");
+
+
+            // Assertion to ensure DirectBitmap performs at least as well as System.Drawing
+            Assert.IsTrue(elapsedDirectBitmap <= elapsedGraphics,
+                $"DirectBitmap was slower: {elapsedDirectBitmap} ms vs Graphics: {elapsedGraphics} ms");
+
+            Assert.IsTrue(elapsedDirectBitmapLine <= elapsedGraphics,
+                $"DirectBitmap DrawVerticalLine was slower: {elapsedDirectBitmapLine} ms vs Graphics: {elapsedGraphics} ms");
+
         }
 
         /// <summary>
@@ -833,7 +870,7 @@ namespace CommonLibraryTests
             var two = new Coordinate2D(31, 10);
 
             // Test Bresenham
-            var lstOne = SpeedTests.BresenhamPlotLine(one, two);
+            var lstOne = HelperMethods.BresenhamPlotLine(one, two);
             var lstTwo = Mathematics.Lines.LinearLine(one, two);
 
             for (var x = 0; x < 10; x++)
@@ -927,7 +964,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test Bresenham
-            _ = SpeedTests.BresenhamPlotLine(one, two);
+            _ = HelperMethods.BresenhamPlotLine(one, two);
 
             watch.Stop();
 

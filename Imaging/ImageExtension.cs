@@ -47,5 +47,16 @@ namespace Imaging
             var bitmap = new Bitmap(image);
             return bitmap.ToBitmapImage();
         }
+
+        /// <summary>
+        /// Converts to argb.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        /// <returns>Id of the color</returns>
+        public static int ToArgb(this System.Windows.Media.Color color)
+        {
+            // ARGB format: (Alpha << 24) | (Red << 16) | (Green << 8) | Blue
+            return (color.A << 24) | (color.R << 16) | (color.G << 8) | color.B;
+        }
     }
 }

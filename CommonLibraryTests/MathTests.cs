@@ -166,7 +166,7 @@ namespace CommonLibraryTests
             var timer = new Stopwatch();
             timer.Start();
 
-            var compare1 = SpeedTests.TestOne(m1, m2);
+            var compare1 = HelperMethods.MatrixTestOne(m1, m2);
 
             timer.Stop();
             Trace.WriteLine($"Test one (span Version): {timer.Elapsed}");
@@ -241,7 +241,7 @@ namespace CommonLibraryTests
             var v = new double[,] { { -1, -1, -1, 0 } };
             m2 = new BaseMatrix { Matrix = v };
 
-            var oldM = SpeedTests.TestTwo(v, matrix);
+            var oldM = HelperMethods.MatrixTestTwo(v, matrix);
             var newM = m2 * m1;
 
             check = oldM.Equals(newM);

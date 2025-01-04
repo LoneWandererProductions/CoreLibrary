@@ -599,7 +599,7 @@ namespace CommonLibraryTests
             var y = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
             var m2 = new BaseMatrix { Matrix = y };
 
-            var compare1 = SpeedTests.TestOne(m1, m2);
+            var compare1 = HelperMethods.MatrixTestOne(m1, m2);
 
             Assert.AreEqual(compare1[0, 0], 2, "00");
             Assert.AreEqual(compare1[1, 0], 1, "10");
