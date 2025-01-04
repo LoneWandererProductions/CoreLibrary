@@ -1,4 +1,12 @@
-﻿using System.Drawing;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Imaging
+ * FILE:        Imaging/ImageExtension.cs
+ * PURPOSE:     Image Extensions, I think that are helpful and should be there from the beginning
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Drawing;
 using System.Windows.Media.Imaging;
 
 namespace Imaging
