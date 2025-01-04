@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 
 namespace Imaging
@@ -126,38 +127,17 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Bitmap BitmapImageToBitmap(BitmapImage image)
         {
             ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
 
-            // Ensure the BitmapImage is frozen to improve performance during access
-            if (!image.IsFrozen && image.CanFreeze)
-            {
-                image.Freeze();
-            }
+            using var outStream = new MemoryStream();
+            var enc = new BmpBitmapEncoder();
+            enc.Frames.Add(BitmapFrame.Create(image));
+            enc.Save(outStream);
+            var bitmap = new Bitmap(outStream);
 
-            // Get the pixel data from the BitmapImage
-            var width = image.PixelWidth;
-            var height = image.PixelHeight;
-            var stride = width * (image.Format.BitsPerPixel + 7) / 8;
-            var pixels = new byte[height * stride];
-
-            image.CopyPixels(pixels, stride, 0);
-
-            // Create a Bitmap from the pixel data
-            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            var bitmapData = bitmap.LockBits(
-                new Rectangle(0, 0, width, height),
-                ImageLockMode.WriteOnly,
-                PixelFormat.Format32bppArgb
-            );
-
-            // Copy pixel data into the bitmap
-            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
-            bitmap.UnlockBits(bitmapData);
-
-            return bitmap;
+            return new Bitmap(bitmap);
         }
 
         /// <summary>
