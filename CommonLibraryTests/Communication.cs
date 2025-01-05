@@ -27,7 +27,7 @@ namespace CommonLibraryTests
         public void Communications()
         {
             var communication = new Com();
-            communication.SaveFile(_path, "https://www.google.de/");
+            _ = communication.SaveFile(_path, "https://www.google.de/");
             var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication), "www.google.de");
 
             Assert.IsTrue(File.Exists(path), "File not found");

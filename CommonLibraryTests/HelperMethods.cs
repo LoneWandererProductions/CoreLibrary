@@ -28,7 +28,7 @@ namespace CommonLibraryTests
         {
             if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path);
+                _ = Directory.CreateDirectory(path);
             }
 
             var fileName = 0;
@@ -66,7 +66,7 @@ namespace CommonLibraryTests
 
             if (!Directory.Exists(folder))
             {
-                Directory.CreateDirectory(folder);
+                _ = Directory.CreateDirectory(folder);
             }
 
             if (File.Exists(path))

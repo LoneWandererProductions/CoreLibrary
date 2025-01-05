@@ -37,7 +37,7 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(test != null, "Test failed no changes");
 
-            FileHandleDelete.DeleteFile(paths);
+            _ = FileHandleDelete.DeleteFile(paths);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(2, rslt.Count, "Test failed no changes");
 
-            FileHandleDelete.DeleteFile(paths);
+            _ = FileHandleDelete.DeleteFile(paths);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace CommonLibraryTests
             //Display
             Assert.AreEqual("1", cache, "Correct Display");
 
-            FileHandleDelete.DeleteFile(path);
+            _ = FileHandleDelete.DeleteFile(path);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(fileContent.Contains("key1"));
             Assert.IsTrue(fileContent.Contains("value1"));
 
-            FileHandleDelete.DeleteFile(path);
+            _ = FileHandleDelete.DeleteFile(path);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace CommonLibraryTests
             var path = "nonexistent.xml";
 
             // Act
-            DeSerialize.LoadDictionaryFromXml<string, string>(path);
+            _ = DeSerialize.LoadDictionaryFromXml<string, string>(path);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace CommonLibraryTests
             File.WriteAllText(path, string.Empty);
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => DeSerialize.LoadDictionaryFromXml<string, string>(path));
+            _ = Assert.ThrowsException<ArgumentException>(() => DeSerialize.LoadDictionaryFromXml<string, string>(path));
         }
     }
 }

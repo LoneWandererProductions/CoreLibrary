@@ -370,7 +370,7 @@ namespace CommonLibraryTests
         public void ConstructorWithZeroDimensionsShouldThrow()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
         }
     }
 }

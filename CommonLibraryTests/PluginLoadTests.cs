@@ -129,11 +129,11 @@ namespace CommonLibraryTests
             var invalidAssembly = typeof(string).Assembly;
 
             // Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                InvokePrivateStaticMethod<IEnumerable<IPlugin>>(typeof(PluginLoad), "CreateCommands", invalidAssembly)
-                    .ToList();
-            });
+            _ = Assert.ThrowsException<InvalidOperationException>(() =>
+              {
+                  _ = InvokePrivateStaticMethod<IEnumerable<IPlugin>>(typeof(PluginLoad), "CreateCommands", invalidAssembly)
+                      .ToList();
+              });
         }
 
         /// <summary>

@@ -110,7 +110,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(clone.Count, list.Count, "Test passed CloneList, first round:  " + list.Count);
 
-            list.Remove(1);
+            _ = list.Remove(1);
 
             Assert.AreNotEqual(clone.Count, list.Count, "Test passed CloneList, first round:  " + list.Count);
 
@@ -313,7 +313,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(clone.Count, dct.Count, "Test passed CloneDictionary, first round:  " + dct.Count);
 
-            dct.Remove(1);
+            _ = dct.Remove(1);
 
             Assert.AreNotEqual(clone.Count, dct.Count, "Test passed CloneDictionary, first round:  " + dct.Count);
 
@@ -328,7 +328,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(clone.Count, dctAdv.Count,
                 "Test passed CloneDictionary Collection, seconds round:  " + dctAdv.Count);
 
-            dctAdv.Remove(1);
+            _ = dctAdv.Remove(1);
 
             Assert.AreNotEqual(clone.Count, dctAdv.Count,
                 "Test passed CloneDictionary Collection, second round:  " + dctAdv.Count);
@@ -348,7 +348,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(clone.Count, dctAdvObj.Count,
                 "Test passed CloneDictionary Collection, third round:  " + dctAdvObj.Count);
 
-            dctAdvObj.Remove(1);
+            _ = dctAdvObj.Remove(1);
 
             Assert.AreNotEqual(clone.Count, dctAdvObj.Count,
                 "Test passed CloneDictionary Collection, third round:  " + dctAdvObj.Count);
@@ -372,7 +372,7 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(1, dct.First().Value, "Test passed Sort:  " + dct.First().Value);
 
-            dct.Remove(1);
+            _ = dct.Remove(1);
 
             Assert.AreEqual(2, dct.First().Value, "Test passed Sort:  " + dct.First().Value);
 
@@ -473,15 +473,15 @@ namespace CommonLibraryTests
 
             Assert.AreEqual(2, dct[1].Count, "Correct count");
 
-            dct.AddDistinct(0, 0);
+            _ = dct.AddDistinct(0, 0);
 
             Assert.IsTrue(dct.ContainsKey(0), "key not added");
 
-            dct.AddDistinct(0, 1);
+            _ = dct.AddDistinct(0, 1);
 
             Assert.AreEqual(2, dct[1].Count, "Correct count");
 
-            dct.AddDistinct(0, 1);
+            _ = dct.AddDistinct(0, 1);
 
             Assert.AreEqual(2, dct[1].Count, "Correct count");
         }

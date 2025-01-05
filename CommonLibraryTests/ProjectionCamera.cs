@@ -31,7 +31,7 @@ namespace CommonLibraryTests
 
             var projection = new Projection();
 
-            projection.Generate(triangles, transform);
+            _ = projection.Generate(triangles, transform);
 
             transform.LeftCamera(0.5);
         }

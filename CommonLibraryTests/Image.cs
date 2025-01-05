@@ -208,7 +208,7 @@ namespace CommonLibraryTests
             }
             else
             {
-                FileHandleDelete.DeleteAllContents(OutputFolder.FullName, false);
+                _ = FileHandleDelete.DeleteAllContents(OutputFolder.FullName, false);
             }
 
             imagePath = Path.Combine(OutputFolder.FullName, "1.jpg");
@@ -659,13 +659,13 @@ namespace CommonLibraryTests
             var resultPathCompressed = Path.Combine(SampleImagesFolder.FullName, "result_compressed.png");
             var resultPathUnCompressed = Path.Combine(SampleImagesFolder.FullName, "result_un_compressed.png");
 
-            FileHandleDelete.DeleteFile(resultPath);
-            FileHandleDelete.DeleteFile(resultPathCompressed);
+            _ = FileHandleDelete.DeleteFile(resultPath);
+            _ = FileHandleDelete.DeleteFile(resultPathCompressed);
 
-            FileHandleDelete.DeleteFile(cifPath);
-            FileHandleDelete.DeleteFile(cifCompressed);
+            _ = FileHandleDelete.DeleteFile(cifPath);
+            _ = FileHandleDelete.DeleteFile(cifCompressed);
 
-            FileHandleDelete.DeleteFile(resultPathUnCompressed);
+            _ = FileHandleDelete.DeleteFile(resultPathUnCompressed);
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
             var btm = image.ToBitmap();
@@ -762,7 +762,7 @@ namespace CommonLibraryTests
 
             //check if our system can also handle non compressed files!
             data = CifProcessing.ConvertToCifFromBitmap(btm);
-            CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
+            _ = CifProcessing.GenerateCsv(btm.Height, btm.Width, data);
 
             Custom.GenerateBitmapToCifFile(btm, cifPath);
 
@@ -793,13 +793,13 @@ namespace CommonLibraryTests
             Assert.AreEqual(68, color.B, "done");
             Assert.AreEqual(85, color.G, "done");
 
-            FileHandleDelete.DeleteFile(resultPath);
-            FileHandleDelete.DeleteFile(resultPathCompressed);
+            _ = FileHandleDelete.DeleteFile(resultPath);
+            _ = FileHandleDelete.DeleteFile(resultPathCompressed);
 
-            FileHandleDelete.DeleteFile(cifPath);
-            FileHandleDelete.DeleteFile(cifCompressed);
+            _ = FileHandleDelete.DeleteFile(cifPath);
+            _ = FileHandleDelete.DeleteFile(cifCompressed);
 
-            FileHandleDelete.DeleteFile(resultPathUnCompressed);
+            _ = FileHandleDelete.DeleteFile(resultPathUnCompressed);
         }
 
         /// <summary>
@@ -820,7 +820,7 @@ namespace CommonLibraryTests
             var timer = new Stopwatch();
             timer.Start();
 
-            Custom.GetCif(cifPath);
+            _ = Custom.GetCif(cifPath);
 
             timer.Stop();
             Trace.WriteLine($"Test one Cif (parallel Version): {timer.Elapsed}");
@@ -828,7 +828,7 @@ namespace CommonLibraryTests
             timer = new Stopwatch();
             timer.Start();
 
-            FileHandleDelete.DeleteFile(cifPath);
+            _ = FileHandleDelete.DeleteFile(cifPath);
         }
 
         /// <summary>
@@ -861,82 +861,91 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Test our Line Algorithm.
+        /// Test the Line Algorithm, including Bresenham and Linear Line.
         /// </summary>
         [TestMethod]
-        public void Lines()
+        public void TestLineAlgorithms()
         {
-            var one = new Coordinate2D(1, 0);
-            var two = new Coordinate2D(31, 10);
+            // Test 1: General Line Test (Bresenham vs Linear Line)
+            var start = new Coordinate2D(1, 0);
+            var end = new Coordinate2D(31, 10);
 
-            // Test Bresenham
-            var lstOne = HelperMethods.BresenhamPlotLine(one, two);
-            var lstTwo = Mathematics.Lines.LinearLine(one, two);
+            // Bresenham Line Plot
+            var bresenhamLine = HelperMethods.BresenhamPlotLine(start, end);
+
+            // Linear Line Plot
+            var linearLine = Mathematics.Lines.LinearLine(start, end);
 
             for (var x = 0; x < 10; x++)
             {
-                var y = (3 * x) + 1;
+                var expectedY = (3 * x) + 1;
 
-                Assert.AreNotEqual(lstOne[x].Y, y, "Bresenham Y value is incorrect.");
-                Assert.AreNotEqual(lstTwo[x].Y, y, "LinearLine Y value is incorrect.");
+                Assert.AreNotEqual(bresenhamLine[x].Y, expectedY, $"Bresenham Y value at X={x} is incorrect.");
+                Assert.AreNotEqual(linearLine[x].Y, expectedY, $"LinearLine Y value at X={x} is incorrect.");
             }
 
-            // Horizontal Line Test
-            one = new Coordinate2D(1, 0);
-            two = new Coordinate2D(1, 50);
+            // Test 2: Horizontal Line Test
+            start = new Coordinate2D(1, 0);
+            end = new Coordinate2D(1, 50);
 
-            lstTwo = Mathematics.Lines.LinearLine(one, two);
+            linearLine = Mathematics.Lines.LinearLine(start, end);
 
-            Assert.AreEqual(lstTwo[25].Y, 25, "Horizontal Line Y value is incorrect.");
-            Assert.AreEqual(lstTwo[25].X, 1, "Horizontal Line X value is incorrect.");
+            // Check middle point on the horizontal line
+            Assert.AreEqual(linearLine[25].Y, 25, "Horizontal Line Y value at X=1 is incorrect.");
+            Assert.AreEqual(linearLine[25].X, 1, "Horizontal Line X value at Y=25 is incorrect.");
 
-            // Vertical Line Test
-            one = new Coordinate2D(0, 0);
-            two = new Coordinate2D(50, 0);
+            // Test 3: Vertical Line Test
+            start = new Coordinate2D(0, 0);
+            end = new Coordinate2D(50, 0);
 
-            lstTwo = Mathematics.Lines.LinearLine(one, two);
+            linearLine = Mathematics.Lines.LinearLine(start, end);
 
-            Assert.AreEqual(lstTwo[25].Y, 0, "Vertical Line Y value is incorrect.");
-            Assert.AreEqual(lstTwo[25].X, 25, "Vertical Line X value is incorrect.");
+            // Check middle point on the vertical line
+            Assert.AreEqual(linearLine[25].Y, 0, "Vertical Line Y value at X=25 is incorrect.");
+            Assert.AreEqual(linearLine[25].X, 25, "Vertical Line X value at Y=0 is incorrect.");
 
-            // Speed Test
-            // Garbage Collector
+            // Test 4: Performance Test
+            // Run Garbage Collection and clean-up
             GC.WaitForPendingFinalizers();
-            // Remove processor affinity setting for consistency in CI environment
-            // Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(1);
 
-            one = new Coordinate2D(1, 0);
-            two = new Coordinate2D(30001, 10000);
+            // Test large-scale performance comparison
+            start = new Coordinate2D(1, 0);
+            end = new Coordinate2D(30001, 10000);
+            long customLineTotal = 0, bresenhamTotal = 0;
 
-            long mineTotal = 0, bresenhamTotal = 0;
+            // Run multiple iterations for both algorithms
+            customLineTotal += RunLineCalculation(start, end, 10, ref bresenhamTotal);
+            start = new Coordinate2D(30001, 10000);
+            end = new Coordinate2D(1, 0);
+            customLineTotal += RunLineCalculation(start, end, 10, ref bresenhamTotal);
 
-            for (var i = 0; i < 10; i++)
-            {
-                mineTotal += CalcOne(one, two);
-                bresenhamTotal += CalcTwo(one, two);
-            }
-
-            one = new Coordinate2D(30001, 10000);
-            two = new Coordinate2D(1, 0);
-
-            for (var i = 0; i < 10; i++)
-            {
-                mineTotal += CalcOne(one, two);
-                bresenhamTotal += CalcTwo(one, two);
-            }
-
-            var mineAvg = (double)mineTotal / 20;
+            // Calculate averages
+            var customAvg = (double)customLineTotal / 20;
             var bresenhamAvg = (double)bresenhamTotal / 20;
-            var ratio = mineAvg / bresenhamAvg;
 
-            var message = $"Mine average: {mineAvg} vs. Bresenham average: {bresenhamAvg}";
+            // Calculate the ratio between custom line and Bresenham
+            var ratio = customAvg / bresenhamAvg;
+
+            var message = $"Custom Line average: {customAvg} vs. Bresenham average: {bresenhamAvg}";
             Trace.WriteLine(message);
 
-            // Check that the performance ratio is within an acceptable range (e.g., 5% slower)
-            Assert.IsTrue(ratio <= 1.05, $"Mine is more than 5% slower than Bresenham. {message}");
+            // Assert that the custom line algorithm is not more than 5% slower than Bresenham
+            Assert.IsTrue(ratio <= 1.05, $"Custom Line is more than 5% slower than Bresenham. {message}");
         }
 
-
+        /// <summary>
+        /// Run line calculation and accumulate results.
+        /// </summary>
+        private static long RunLineCalculation(Coordinate2D start, Coordinate2D end, int iterations, ref long bresenhamTotal)
+        {
+            long customTotal = 0;
+            for (var i = 0; i < iterations; i++)
+            {
+                customTotal += CalcOne(start, end);  // Custom Line Algorithm
+                bresenhamTotal += CalcTwo(start, end); // Bresenham Line Algorithm
+            }
+            return customTotal;
+        }
         /// <summary>
         ///     Calculates the one.
         /// </summary>

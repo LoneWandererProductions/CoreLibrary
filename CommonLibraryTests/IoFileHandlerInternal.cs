@@ -29,7 +29,7 @@ namespace CommonLibraryTests
         public void CleanUpExtensionListNullInputThrowsArgumentNullException()
         {
             // Act
-            FileHandlerProcessing.CleanUpExtensionList(null);
+            _ = FileHandlerProcessing.CleanUpExtensionList(null);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace CommonLibraryTests
             var target = @"D:\target";
 
             // Act
-            FileHandlerProcessing.GetSubFolder(element, root, target);
+            _ = FileHandlerProcessing.GetSubFolder(element, root, target);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace CommonLibraryTests
             var target = @"D:\target";
 
             // Act
-            FileHandlerProcessing.GetSubFolder(element, root, target);
+            _ = FileHandlerProcessing.GetSubFolder(element, root, target);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace CommonLibraryTests
         public void GetFilesByExtensionEmptyPathThrowsFileHandlerException()
         {
             // Act
-            FileHandlerProcessing.GetFilesByExtension(string.Empty, ".txt", false);
+            _ = FileHandlerProcessing.GetFilesByExtension(string.Empty, ".txt", false);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var path = Path.Combine(Path.GetTempPath(), "testfolder");
-            Directory.CreateDirectory(path);
+            _ = Directory.CreateDirectory(path);
             File.Create(Path.Combine(path, "file1.txt")).Dispose();
             File.Create(Path.Combine(path, "file2.txt")).Dispose();
 

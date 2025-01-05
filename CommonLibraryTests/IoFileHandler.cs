@@ -67,8 +67,8 @@ namespace CommonLibraryTests
         {
             Cleanup(); // Ensure a clean state before each test
 
-            Directory.CreateDirectory(TestSourceDir);
-            Directory.CreateDirectory(TestTargetDir);
+            _ = Directory.CreateDirectory(TestSourceDir);
+            _ = Directory.CreateDirectory(TestTargetDir);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace CommonLibraryTests
         public async Task GetNewFileName()
         {
             // Delete all contents synchronously if it's a quick operation
-            FileHandleDelete.DeleteAllContents(_path);
+            _ = FileHandleDelete.DeleteAllContents(_path);
 
             var fileOne = Path.Combine(_path, nameof(GetNewFileName),
                 Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
@@ -388,7 +388,7 @@ namespace CommonLibraryTests
         [ExpectedException(typeof(FileHandlerException))]
         public void CopyFilesSourceAndTargetEqualThrowsFileHandlerException()
         {
-            FileHandleCopy.CopyFiles(TestSourceDir, TestSourceDir, true);
+            _ = FileHandleCopy.CopyFiles(TestSourceDir, TestSourceDir, true);
         }
 
         /// <summary>
@@ -398,7 +398,7 @@ namespace CommonLibraryTests
         [ExpectedException(typeof(FileHandlerException), "Invalid Input. String was Empty")]
         public void CopyException()
         {
-            FileHandleCopy.CopyFiles(string.Empty, null);
+            _ = FileHandleCopy.CopyFiles(string.Empty, null);
         }
 
         /// <summary>
@@ -487,8 +487,8 @@ namespace CommonLibraryTests
         {
             var subPathOne = Path.Combine(TestSourceDir, "subOne");
             var subPathTwo = Path.Combine(TestTargetDir, "subTwo");
-            Directory.CreateDirectory(subPathOne);
-            Directory.CreateDirectory(subPathTwo);
+            _ = Directory.CreateDirectory(subPathOne);
+            _ = Directory.CreateDirectory(subPathTwo);
 
             var file1 = Path.Combine(subPathOne, PathOperations + ".txt");
             var file2 = Path.Combine(subPathTwo, PathOperationsTwo + ".txt");
@@ -512,9 +512,9 @@ namespace CommonLibraryTests
             var subPathTwo = Path.Combine(path, "subTwo");
             var subPathTwoExtended = Path.Combine(path, "subTwo", "test");
 
-            Directory.CreateDirectory(subPathOne);
-            Directory.CreateDirectory(subPathTwo);
-            Directory.CreateDirectory(subPathTwoExtended);
+            _ = Directory.CreateDirectory(subPathOne);
+            _ = Directory.CreateDirectory(subPathTwo);
+            _ = Directory.CreateDirectory(subPathTwoExtended);
 
             var file1 = Path.Combine(subPathTwo, PathOperations + ".txt");
             var file2 = Path.Combine(subPathTwoExtended, PathOperations + ".txt");
@@ -618,7 +618,7 @@ namespace CommonLibraryTests
         [ExpectedException(typeof(FileHandlerException))]
         public void CutFilesSourceAndTargetEqualThrowsFileHandlerException()
         {
-            FileHandleCut.CutFiles(TestSourceDir, TestSourceDir, true);
+            _ = FileHandleCut.CutFiles(TestSourceDir, TestSourceDir, true);
         }
 
         /// <summary>
@@ -660,7 +660,7 @@ namespace CommonLibraryTests
         [ExpectedException(typeof(FileHandlerException))]
         public void CutFilesFileListNullOrEmptyThrowsFileHandlerException()
         {
-            FileHandleCut.CutFiles((List<string>)null, TestTargetDir, true);
+            _ = FileHandleCut.CutFiles((List<string>)null, TestTargetDir, true);
         }
 
         /// <summary>
@@ -726,7 +726,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var subDir = Path.Combine(TestSourceDir, "SubDir");
-            Directory.CreateDirectory(subDir);
+            _ = Directory.CreateDirectory(subDir);
             var sourceFilePath = Path.Combine(subDir, "test.txt");
             File.WriteAllText(sourceFilePath, "Test Content");
 
@@ -748,7 +748,7 @@ namespace CommonLibraryTests
         public async Task CompressionAsync()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Compress");
-            FileHandleDelete.DeleteCompleteFolder(path);
+            _ = FileHandleDelete.DeleteCompleteFolder(path);
 
             //list of the files
             var lst = new List<string>();
