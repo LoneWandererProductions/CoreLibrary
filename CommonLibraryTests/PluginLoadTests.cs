@@ -130,10 +130,11 @@ namespace CommonLibraryTests
 
             // Act & Assert
             _ = Assert.ThrowsException<InvalidOperationException>(() =>
-              {
-                  _ = InvokePrivateStaticMethod<IEnumerable<IPlugin>>(typeof(PluginLoad), "CreateCommands", invalidAssembly)
-                      .ToList();
-              });
+            {
+                _ = InvokePrivateStaticMethod<IEnumerable<IPlugin>>(typeof(PluginLoad), "CreateCommands",
+                        invalidAssembly)
+                    .ToList();
+            });
         }
 
         /// <summary>

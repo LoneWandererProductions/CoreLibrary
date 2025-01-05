@@ -8,6 +8,7 @@
 
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Windows.Media.Imaging;
@@ -17,18 +18,13 @@ using NUnit.Framework;
 namespace CommonLibraryGuiTests
 {
     /// <summary>
-    /// performance Tests
+    ///     performance Tests
     /// </summary>
     [TestFixture]
     public class BitmapRenderingTests
     {
         /// <summary>
-        /// The test bitmap
-        /// </summary>
-        private Bitmap _testBitmap;
-
-        /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [SetUp]
         public void Setup()
@@ -39,7 +35,7 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TearDown]
         public void Cleanup()
@@ -48,7 +44,12 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Compares the rendering speeds.
+        ///     The test bitmap
+        /// </summary>
+        private Bitmap _testBitmap;
+
+        /// <summary>
+        ///     Compares the rendering speeds.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -63,11 +64,12 @@ namespace CommonLibraryGuiTests
             TestContext.WriteLine($"Media.Image Time: {mediaImageTime}ms");
             TestContext.WriteLine($"NativeBitmapDisplay Time: {nativeDisplayTime}ms");
 
-            Assert.IsTrue(nativeDisplayTime <= mediaImageTime, "NativeBitmapDisplay should be as fast or faster than Media.Image rendering.");
+            Assert.IsTrue(nativeDisplayTime <= mediaImageTime,
+                "NativeBitmapDisplay should be as fast or faster than Media.Image rendering.");
         }
 
         /// <summary>
-        /// Compares the rendering speeds for multiple updates.
+        ///     Compares the rendering speeds for multiple updates.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -85,11 +87,12 @@ namespace CommonLibraryGuiTests
             TestContext.WriteLine($"Media.Image Time for {updateCount} updates: {mediaImageTime}ms");
             TestContext.WriteLine($"NativeBitmapDisplay Time for {updateCount} updates: {nativeDisplayTime}ms");
 
-            Assert.IsTrue(nativeDisplayTime <= mediaImageTime, "NativeBitmapDisplay should be as fast or faster than Media.Image rendering.");
+            Assert.IsTrue(nativeDisplayTime <= mediaImageTime,
+                "NativeBitmapDisplay should be as fast or faster than Media.Image rendering.");
         }
 
         /// <summary>
-        /// Measures the media image rendering.
+        ///     Measures the media image rendering.
         /// </summary>
         /// <param name="updateCount">The update count.</param>
         /// <returns>elapsed Time</returns>
@@ -97,10 +100,10 @@ namespace CommonLibraryGuiTests
         {
             var stopwatch = Stopwatch.StartNew();
 
-            for (int i = 0; i < updateCount; i++)
+            for (var i = 0; i < updateCount; i++)
             {
                 // Convert Bitmap to BitmapSource
-                BitmapSource bitmapSource = BitmapToBitmapSource(_testBitmap);
+                var bitmapSource = BitmapToBitmapSource(_testBitmap);
 
                 // Simulate rendering in Media.Image
                 new System.Windows.Controls.Image { Source = bitmapSource };
@@ -111,7 +114,7 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Measures the native bitmap rendering.
+        ///     Measures the native bitmap rendering.
         /// </summary>
         /// <param name="updateCount">The update count.</param>
         /// <returns>elapsed Time</returns>
@@ -119,7 +122,7 @@ namespace CommonLibraryGuiTests
         {
             var stopwatch = Stopwatch.StartNew();
 
-            for (int i = 0; i < updateCount; i++)
+            for (var i = 0; i < updateCount; i++)
             {
                 // Simulate rendering in NativeBitmapDisplay
                 new NativeBitmapDisplay { Bitmap = _testBitmap };
@@ -130,7 +133,7 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Measures the media image rendering.
+        ///     Measures the media image rendering.
         /// </summary>
         /// <returns></returns>
         private long MeasureMediaImageRendering()
@@ -138,7 +141,7 @@ namespace CommonLibraryGuiTests
             var stopwatch = Stopwatch.StartNew();
 
             // Convert Bitmap to BitmapSource
-            BitmapSource bitmapSource = BitmapToBitmapSource(_testBitmap);
+            var bitmapSource = BitmapToBitmapSource(_testBitmap);
 
             // Simulate rendering in Media.Image
             // Normally, we'd add this to a visual tree in WPF, but here we're testing only the conversion/rendering logic.
@@ -149,7 +152,7 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Measures the native bitmap rendering.
+        ///     Measures the native bitmap rendering.
         /// </summary>
         /// <returns></returns>
         private long MeasureNativeBitmapRendering()
@@ -164,14 +167,14 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Bitmaps to bitmap source.
+        ///     Bitmaps to bitmap source.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns></returns>
         private static BitmapSource BitmapToBitmapSource(Image bitmap)
         {
             using var memoryStream = new MemoryStream();
-            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+            bitmap.Save(memoryStream, ImageFormat.Png);
             memoryStream.Position = 0;
 
             var bitmapImage = new BitmapImage();

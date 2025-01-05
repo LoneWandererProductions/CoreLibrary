@@ -371,8 +371,8 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compares the speed of drawing operations using Microsoft's Graphics and DirectBitmap implementations.
-        /// The test ensures that no interference occurs from other tests.
+        ///     Compares the speed of drawing operations using Microsoft's Graphics and DirectBitmap implementations.
+        ///     The test ensures that no interference occurs from other tests.
         /// </summary>
         [TestMethod]
         public void CompareSystemDrawingDirectBitmapPerformance()
@@ -402,9 +402,11 @@ namespace CommonLibraryTests
             });
 
             // Measure drawing a vertical line with DirectBitmap
-            var dbmElapsedTime = MeasureExecutionTime(iterations, () => dbm.DrawVerticalLine(0, 0, imageSize, Color.Black));
+            var dbmElapsedTime =
+                MeasureExecutionTime(iterations, () => dbm.DrawVerticalLine(0, 0, imageSize, Color.Black));
 
-            Trace.WriteLine($"Graphics DrawLine: {graphicsElapsedTime} ms, DirectBitmap DrawVerticalLine: {dbmElapsedTime} ms");
+            Trace.WriteLine(
+                $"Graphics DrawLine: {graphicsElapsedTime} ms, DirectBitmap DrawVerticalLine: {dbmElapsedTime} ms");
             Assert.IsTrue(dbmElapsedTime <= graphicsElapsedTime,
                 $"DirectBitmap was slower: {dbmElapsedTime} ms vs Graphics: {graphicsElapsedTime} ms");
 
@@ -416,9 +418,11 @@ namespace CommonLibraryTests
             });
 
             // Measure drawing a rectangle with DirectBitmap
-            var dbmRectangleTime = MeasureExecutionTime(iterations, () => dbm.DrawRectangle(0, 0, rectangleWidth, rectangleHeight, Color.Black));
+            var dbmRectangleTime = MeasureExecutionTime(iterations,
+                () => dbm.DrawRectangle(0, 0, rectangleWidth, rectangleHeight, Color.Black));
 
-            Trace.WriteLine($"Graphics DrawRectangle: {graphicsRectangleTime} ms, DirectBitmap DrawRectangle: {dbmRectangleTime} ms");
+            Trace.WriteLine(
+                $"Graphics DrawRectangle: {graphicsRectangleTime} ms, DirectBitmap DrawRectangle: {dbmRectangleTime} ms");
             Assert.IsTrue(graphicsRectangleTime <= dbmRectangleTime,
                 $"Graphics was faster for rectangles: {graphicsRectangleTime} ms vs DirectBitmap: {dbmRectangleTime} ms");
 
@@ -438,7 +442,8 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Compares performance of drawing vertical lines with System.Drawing's FillRectangle and DirectBitmap's DrawRectangle.
+        ///     Compares performance of drawing vertical lines with System.Drawing's FillRectangle and DirectBitmap's
+        ///     DrawRectangle.
         /// </summary>
         [TestMethod]
         public void CompareVerticalLineWithRectanglePerformance()
@@ -515,7 +520,6 @@ namespace CommonLibraryTests
 
             Assert.IsTrue(elapsedDirectBitmapLine <= elapsedGraphics,
                 $"DirectBitmap DrawVerticalLine was slower: {elapsedDirectBitmapLine} ms vs Graphics: {elapsedGraphics} ms");
-
         }
 
         /// <summary>
@@ -861,7 +865,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test the Line Algorithm, including Bresenham and Linear Line.
+        ///     Test the Line Algorithm, including Bresenham and Linear Line.
         /// </summary>
         [TestMethod]
         public void TestLineAlgorithms()
@@ -874,7 +878,7 @@ namespace CommonLibraryTests
             var bresenhamLine = HelperMethods.BresenhamPlotLine(start, end);
 
             // Linear Line Plot
-            var linearLine = Mathematics.Lines.LinearLine(start, end);
+            var linearLine = Lines.LinearLine(start, end);
 
             for (var x = 0; x < 10; x++)
             {
@@ -888,7 +892,7 @@ namespace CommonLibraryTests
             start = new Coordinate2D(1, 0);
             end = new Coordinate2D(1, 50);
 
-            linearLine = Mathematics.Lines.LinearLine(start, end);
+            linearLine = Lines.LinearLine(start, end);
 
             // Check middle point on the horizontal line
             Assert.AreEqual(linearLine[25].Y, 25, "Horizontal Line Y value at X=1 is incorrect.");
@@ -898,7 +902,7 @@ namespace CommonLibraryTests
             start = new Coordinate2D(0, 0);
             end = new Coordinate2D(50, 0);
 
-            linearLine = Mathematics.Lines.LinearLine(start, end);
+            linearLine = Lines.LinearLine(start, end);
 
             // Check middle point on the vertical line
             Assert.AreEqual(linearLine[25].Y, 0, "Vertical Line Y value at X=25 is incorrect.");
@@ -934,18 +938,21 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Run line calculation and accumulate results.
+        ///     Run line calculation and accumulate results.
         /// </summary>
-        private static long RunLineCalculation(Coordinate2D start, Coordinate2D end, int iterations, ref long bresenhamTotal)
+        private static long RunLineCalculation(Coordinate2D start, Coordinate2D end, int iterations,
+            ref long bresenhamTotal)
         {
             long customTotal = 0;
             for (var i = 0; i < iterations; i++)
             {
-                customTotal += CalcOne(start, end);  // Custom Line Algorithm
+                customTotal += CalcOne(start, end); // Custom Line Algorithm
                 bresenhamTotal += CalcTwo(start, end); // Bresenham Line Algorithm
             }
+
             return customTotal;
         }
+
         /// <summary>
         ///     Calculates the one.
         /// </summary>
@@ -956,7 +963,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test my stuff
-            _ = Mathematics.Lines.LinearLine(one, two);
+            _ = Lines.LinearLine(one, two);
 
             watch.Stop();
 

@@ -36,7 +36,7 @@ namespace Imaging
     /// <seealso cref="T:System.IDisposable" />
     public sealed class DirectBitmap : IDisposable
     {
-        private readonly object _syncLock = new object();
+        private readonly object _syncLock = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
@@ -397,7 +397,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Draws the vertical lines simd.
+        ///     Draws the vertical lines simd.
         /// </summary>
         /// <param name="verticalLines">The vertical lines.</param>
         public void DrawVerticalLinesSimd(IEnumerable<(int x, int y, int finalY, Color color)> verticalLines)
@@ -521,7 +521,7 @@ namespace Imaging
                 using (var stream = new MemoryStream())
                 {
                     // Encode the WriteableBitmap to a MemoryStream
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    var encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
                     encoder.Save(stream);
 

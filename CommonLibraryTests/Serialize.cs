@@ -177,7 +177,8 @@ namespace CommonLibraryTests
             File.WriteAllText(path, string.Empty);
 
             // Act & Assert
-            _ = Assert.ThrowsException<ArgumentException>(() => DeSerialize.LoadDictionaryFromXml<string, string>(path));
+            _ = Assert.ThrowsException<ArgumentException>(() =>
+                DeSerialize.LoadDictionaryFromXml<string, string>(path));
         }
     }
 }

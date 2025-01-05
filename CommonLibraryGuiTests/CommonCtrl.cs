@@ -11,6 +11,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using CommonControls;
+using Imaging;
 using InterOp;
 using NUnit.Framework;
 
@@ -37,6 +38,7 @@ namespace CommonLibraryGuiTests
             _ = new ScrollingTextBoxes { Text = "test" };
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
+            _ = new NativeBitmapDisplay();
 
             Assert.Pass();
         }
