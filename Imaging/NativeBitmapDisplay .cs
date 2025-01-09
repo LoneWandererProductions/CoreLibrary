@@ -108,19 +108,20 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Updates the image.
+        /// Updates the image.
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="newBitmap">The new bitmap.</param>
         private static void UpdateImage(NativeBitmapDisplay control, Bitmap newBitmap)
         {
-            if (ReferenceEquals(control._pictureBox.Image, newBitmap))
+            if (ReferenceEquals(control._pictureBox.Image, newBitmap)) return;
+
+            if (control._pictureBox.Image is Bitmap oldBitmap)
             {
-                return;
+                oldBitmap.Dispose();
             }
 
-            control._pictureBox.Image?.Dispose();
-            control._pictureBox.Image = newBitmap;
+            control._pictureBox.Image = newBitmap?.Clone() as Bitmap; // Clone to ensure safe assignment
         }
 
         /// <inheritdoc />
