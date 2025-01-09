@@ -121,7 +121,7 @@ namespace Imaging
                 oldBitmap.Dispose();
             }
 
-            control._pictureBox.Image = newBitmap?.Clone() as Bitmap; // Clone to ensure safe assignment
+            control._pictureBox.Image = newBitmap.Clone() as Bitmap; // Clone to ensure safe assignment
         }
 
         /// <inheritdoc />

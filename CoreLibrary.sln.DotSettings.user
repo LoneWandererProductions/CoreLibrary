@@ -6,6 +6,7 @@
   &lt;Or&gt;&#xD;
     &lt;TestAncestor&gt;&#xD;
       &lt;TestId&gt;MSTest::D2D1B7B6-0C94-45F8-BD4E-1FB9A318AC21::net5.0-windows7.0::CommonLibraryTests.DirectBitmapImageTests.MatrixMultiplicationColor&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;MSTest::D2D1B7B6-0C94-45F8-BD4E-1FB9A318AC21::net5.0-windows7.0::CommonLibraryTests.PerformanceTests&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
     &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryGuiTests" Presentation="&amp;lt;CommonLibraryGuiTests&amp;gt;" /&gt;&#xD;
     &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryTests" Presentation="&amp;lt;CommonLibraryTests&amp;gt;" /&gt;&#xD;
