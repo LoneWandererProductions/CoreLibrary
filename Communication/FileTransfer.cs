@@ -1,10 +1,10 @@
 ﻿/*
-* COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     Communication
-* FILE:        Communication/FileTransfer.cs
-* PURPOSE:     Does the heavy lifting for File Transfers
-* PROGRAMER:   Peter Geinitz (Wayfarer)
-*/
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Communication
+ * FILE:        Communication/FileTransfer.cs
+ * PURPOSE:     Does the heavy lifting for File Transfers
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -12,142 +12,121 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Runtime.InteropServices;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Communication
 {
     /// <summary>
-    ///     The file transfer class.
+    /// Handles file transfers for the Communication project.
     /// </summary>
     internal static class FileTransfer
     {
         /// <summary>
-        ///     Gets or sets the progress.
+        /// The HTTP client
         /// </summary>
-        /// <value>
-        ///     The progress.
-        /// </value>
-        public static int Progress { get; private set; }
+        private static readonly Lazy<HttpClient> HttpClient = new(() => new HttpClient());
 
         /// <summary>
-        ///     Saves the file.
+        /// Saves a file from a URL to the specified file path.
         /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="url">The URL.</param>
-        /// <returns>Success Status</returns>
-        internal static bool SaveFile(string filePath, string url)
+        /// <param name="filePath">The destination folder path.</param>
+        /// <param name="url">The file URL.</param>
+        /// <param name="progress">Optional progress reporter.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <returns>A task that resolves to true if the file was saved successfully; otherwise, false.</returns>
+        internal static async Task<bool> SaveFileAsync(
+            string filePath,
+            string url,
+            IProgress<int> progress = null,
+            CancellationToken cancellationToken = default)
         {
-            _ = Directory.CreateDirectory(filePath);
-
             try
             {
-                using var webC = new WebClient { Credentials = CredentialCache.DefaultNetworkCredentials };
-                webC.DownloadProgressChanged += DownloadProgressChanged;
+                Directory.CreateDirectory(filePath);
 
-                var link = new Uri(url);
-
-                var path = GetPath(link, filePath);
-
-                if (path == null)
-                {
+                var uri = new Uri(url);
+                var path = GetPath(uri, filePath);
+                if (string.IsNullOrEmpty(path))
                     return false;
+
+                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                response.EnsureSuccessStatusCode();
+
+                await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
+                var totalBytes = response.Content.Headers.ContentLength ?? -1L;
+                var buffer = new byte[8192];
+                long totalRead = 0;
+                int bytesRead;
+
+                while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                    totalRead += bytesRead;
+
+                    if (progress != null && totalBytes > 0)
+                    {
+                        var percentage = (int)((totalRead * 100) / totalBytes);
+                        progress.Report(percentage);
+                    }
                 }
 
-                //webC.DownloadFileAsync(new Uri(url), path);
-                webC.DownloadFile(link, path);
+                return true;
             }
-            catch (Exception ex) when (ex is ExternalException or ArgumentNullException or UnauthorizedAccessException
-                                           or WebException)
+            catch (Exception ex) when (ex is HttpRequestException or IOException)
             {
-                Trace.WriteLine(ex.Message);
+                Trace.WriteLine($"Error saving file: {ex.Message}");
                 return false;
             }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Saves the file.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="url">The URL.</param>
-        internal static async Task SaveFile(string filePath, IEnumerable<string> url)
-        {
-            await DownloadFileAsync(filePath, url).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        ///     Downloads the file asynchronous.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="url">The URLs.</param>
-        private static async Task DownloadFileAsync(string filePath, IEnumerable<string> url)
-        {
-            _ = Directory.CreateDirectory(filePath);
-
-            foreach (var link in url)
+            catch (Exception ex)
             {
-                try
-                {
-                    using var webC = new WebClient { Credentials = CredentialCache.DefaultNetworkCredentials };
-
-                    var urls = new Uri(link);
-
-                    var path = GetPath(urls, filePath);
-
-                    if (path == null)
-                    {
-                        continue;
-                    }
-
-                    webC.DownloadProgressChanged += DownloadProgressChanged;
-                    await webC.DownloadFileTaskAsync(urls, path).ConfigureAwait(false);
-                }
-                catch (Exception ex) when (ex is ExternalException or ArgumentNullException
-                                               or UnauthorizedAccessException)
-                {
-                    Trace.WriteLine(ex.Message);
-                }
+                Trace.WriteLine($"Unexpected error: {ex}");
+                throw; // Re-throw unexpected exceptions to let the caller handle them.
             }
         }
 
         /// <summary>
-        ///     Gets the path.
+        /// Saves multiple files from URLs to the specified file path.
         /// </summary>
-        /// <param name="link">The link.</param>
-        /// <param name="filePath">The file path.</param>
-        /// <returns>Save Path</returns>
+        /// <param name="filePath">The destination folder path.</param>
+        /// <param name="urls">The file URLs.</param>
+        /// <param name="progress">Optional progress reporter.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        internal static async Task SaveFilesAsync(
+            string filePath,
+            IEnumerable<string> urls,
+            IProgress<int> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            foreach (var url in urls)
+            {
+                await SaveFileAsync(filePath, url, progress, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Generates a valid file path based on the URL and destination folder.
+        /// </summary>
+        /// <param name="link">The URL of the file.</param>
+        /// <param name="filePath">The destination folder path.</param>
+        /// <returns>The full file path for saving the file.</returns>
         private static string GetPath(Uri link, string filePath)
         {
             if (string.IsNullOrEmpty(link.AbsoluteUri))
-            {
                 return string.Empty;
-            }
 
             var target = Path.GetFileName(link.AbsolutePath);
 
-            if (!string.IsNullOrEmpty(target))
-            {
+            if (!string.IsNullOrWhiteSpace(target))
                 return Path.Combine(filePath, target);
-            }
 
-            target = link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf("//", StringComparison.Ordinal) + 2)..];
-            target = Regex.Replace(target, "/", "");
+            target = Regex.Replace(link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf("//", StringComparison.Ordinal) + 2)..], "/", "");
 
             return Path.Combine(filePath, target);
-        }
-
-        /// <summary>
-        ///     The download progress changed.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The download progress changed event arguments.</param>
-        private static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            Progress = e.ProgressPercentage;
         }
     }
 }

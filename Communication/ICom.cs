@@ -10,7 +10,10 @@
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMemberInSuper.Global
 
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Communication
 {
@@ -20,18 +23,35 @@ namespace Communication
     internal interface ICom
     {
         /// <summary>
-        ///     Saves the file.
+        /// Saves the file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="url">The URL.</param>
-        /// <returns>Success Status</returns>
-        bool SaveFile(string filePath, string url);
+        /// <param name="progress">The progress.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// Success Status
+        /// </returns>
+        Task<bool> SaveFile(string filePath, string url, IProgress<int> progress = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        ///     Saves the file.
+        /// Saves the file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        /// <param name="url">The URL.</param>
-        void SaveFile(string filePath, IEnumerable<string> url);
+        /// <param name="urls">The urls.</param>
+        /// <param name="progress">The progress.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>If task is finished</returns>
+        Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int> progress = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Sends an HTTP request to the specified URL with the given method and body.
+        /// </summary>
+        /// <param name="url">The URL to send the request to.</param>
+        /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
+        /// <param name="body">The request body (optional).</param>
+        /// <param name="contentType">The content type (default: application/json).</param>
+        /// <returns>An HttpResponseMessage containing the response details.</returns>
+        Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = "application/json");
     }
 }
