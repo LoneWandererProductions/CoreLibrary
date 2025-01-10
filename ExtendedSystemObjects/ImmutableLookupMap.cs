@@ -9,6 +9,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects
 {
@@ -18,14 +19,31 @@ namespace ExtendedSystemObjects
     public sealed class ImmutableLookupMap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : struct, IEquatable<TKey>
     {
+        /// <summary>
+        /// The keys
+        /// </summary>
         private readonly TKey[] _keys;
+
+        /// <summary>
+        /// The values
+        /// </summary>
         private readonly TValue[] _values;
+
+        /// <summary>
+        /// The key presence
+        /// </summary>
         private readonly bool[] _keyPresence;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImmutableLookupMap{TKey, TValue}"/> class.
+        /// The small primes
+        /// </summary>
+        private static readonly int[] SmallPrimes = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47 };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImmutableLookupMap{TKey, TValue}" /> class.
         /// </summary>
         /// <param name="data">A dictionary containing the key-value pairs to initialize the map.</param>
+        /// <exception cref="System.ArgumentNullException">data</exception>
         public ImmutableLookupMap(IDictionary<TKey, TValue> data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -44,6 +62,9 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Retrieves the value associated with the specified key.
         /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">The key {key} was not found in the lookup map.</exception>
         public TValue Get(TKey key)
         {
             int hash = GetHash(key, _keys.Length);
@@ -63,12 +84,15 @@ namespace ExtendedSystemObjects
                 }
             }
 
-            throw new KeyNotFoundException($"The key {key} was not found in the lookup map.");
+            throw new KeyNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
         }
 
         /// <summary>
         /// Attempts to retrieve the value associated with the specified key.
         /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The value amd bool check if it exists.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             int hash = GetHash(key, _keys.Length);
@@ -98,18 +122,36 @@ namespace ExtendedSystemObjects
         /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            for (int i = 0; i < _keys.Length; i++)
+            var keysSpan = new ReadOnlySpan<TKey>(_keys);
+            var valuesSpan = new ReadOnlySpan<TValue>(_values);
+
+            for (int i = 0; i < keysSpan.Length; i++)
             {
                 if (_keyPresence[i])
                 {
-                    yield return new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
+                    yield return new KeyValuePair<TKey, TValue>(keysSpan[i], valuesSpan[i]);
                 }
             }
         }
 
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         // Helper Methods
+
+        /// <summary>
+        /// Adds the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="capacity">The capacity.</param>
+        /// <exception cref="System.InvalidOperationException">Duplicate key detected: {key}</exception>
         private void Add(TKey key, TValue value, int capacity)
         {
             int hash = GetHash(key, capacity);
@@ -118,7 +160,8 @@ namespace ExtendedSystemObjects
             {
                 if (_keys[hash].Equals(key))
                 {
-                    throw new InvalidOperationException($"Duplicate key detected: {key}");
+                    throw new InvalidOperationException(
+                                           $"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
                 }
 
                 hash = (hash + 1) % capacity; // Linear probing
@@ -129,11 +172,23 @@ namespace ExtendedSystemObjects
             _keyPresence[hash] = true;
         }
 
+        /// <summary>
+        /// Gets the hash.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="capacity">The capacity.</param>
+        /// <returns>Hash Value</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHash(TKey key, int capacity)
         {
-            return Math.Abs(key.GetHashCode() % capacity);
+            return key.GetHashCode() & (capacity - 1);
         }
 
+        /// <summary>
+        /// Finds the next prime.
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <returns>Next prime number</returns>
         private static int FindNextPrime(int number)
         {
             while (!IsPrime(number))
@@ -144,15 +199,27 @@ namespace ExtendedSystemObjects
             return number;
         }
 
+        /// <summary>
+        /// Determines whether the specified number is prime.
+        /// Uses an internal dictionary for smaller Primes, to speed up the process.
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified number is prime; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsPrime(int number)
         {
             if (number < 2) return false;
-            if (number == 2 || number == 3) return true;
-            if (number % 2 == 0 || number % 3 == 0) return false;
 
-            for (int i = 5; i * i <= number; i += 6)
+            foreach (var prime in SmallPrimes)
             {
-                if (number % i == 0 || number % (i + 2) == 0) return false;
+                if (number == prime) return true;
+                if (number % prime == 0) return false;
+            }
+
+            for (int i = 49; i * i <= number; i += 2)
+            {
+                if (number % i == 0) return false;
             }
 
             return true;
