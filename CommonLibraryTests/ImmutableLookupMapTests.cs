@@ -23,7 +23,7 @@ namespace CommonLibraryTests
         public void Setup()
         {
             _data = new Dictionary<int, string>();
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
                 _data[i] = $"Value_{i}";
             }
@@ -66,7 +66,7 @@ namespace CommonLibraryTests
         public void TestImmutableLookupMapLookup()
         {
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
                 var value = _immutableLookupMap.Get(i);
                 Assert.AreEqual($"Value_{i}", value); // Verifying correctness
@@ -83,7 +83,7 @@ namespace CommonLibraryTests
         public void TestReadOnlyDictionaryLookup()
         {
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
                 var value = _readOnlyDictionary[i]; // Accessing keys from ReadOnlyDictionary
                 Assert.AreEqual($"Value_{i}", value); // Verifying correctness

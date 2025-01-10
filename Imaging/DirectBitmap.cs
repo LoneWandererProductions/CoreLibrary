@@ -353,6 +353,7 @@ namespace Imaging
         {
             lock (_syncLock)
             {
+                // Convert pixels to array for efficient indexing
                 var pixelArray = pixels.ToArray();
                 var vectorCount = Vector<int>.Count;
 
@@ -362,12 +363,17 @@ namespace Imaging
                     throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
                 }
 
+                // Convert the Bits array to a Span for more efficient access
+                var bitsSpan = new Span<int>(Bits);
+
+                // Process pixels in blocks using Span
                 for (var i = 0; i < pixelArray.Length; i += vectorCount)
                 {
+                    // Create slices for indices and colors
                     var indices = new int[vectorCount];
                     var colors = new int[vectorCount];
 
-                    // Load data into vectors
+                    // Load data into vectors (use Span slicing)
                     for (var j = 0; j < vectorCount; j++)
                     {
                         if (i + j < pixelArray.Length)
@@ -384,12 +390,15 @@ namespace Imaging
                         }
                     }
 
-                    // Write data to Bits array
+                    // Create a Span for the relevant section of the Bits array
+                    var bitsSlice = bitsSpan.Slice(indices[0], vectorCount);
+
+                    // Write data to Bits array via Span slice
                     for (var j = 0; j < vectorCount; j++)
                     {
                         if (i + j < pixelArray.Length)
                         {
-                            Bits[indices[j]] = colors[j];
+                            bitsSlice[j] = colors[j];
                         }
                     }
                 }

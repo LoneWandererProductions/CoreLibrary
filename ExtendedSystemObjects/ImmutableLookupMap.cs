@@ -9,6 +9,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects
@@ -122,18 +123,14 @@ namespace ExtendedSystemObjects
         /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            var keysSpan = new ReadOnlySpan<TKey>(_keys);
-            var valuesSpan = new ReadOnlySpan<TValue>(_values);
-
-            for (int i = 0; i < keysSpan.Length; i++)
+            for (int i = 0; i < _keys.Length; i++)
             {
                 if (_keyPresence[i])
                 {
-                    yield return new KeyValuePair<TKey, TValue>(keysSpan[i], valuesSpan[i]);
+                    yield return new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
                 }
             }
         }
-
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
