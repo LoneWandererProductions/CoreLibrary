@@ -390,15 +390,12 @@ namespace Imaging
                         }
                     }
 
-                    // Create a Span for the relevant section of the Bits array
-                    var bitsSlice = bitsSpan.Slice(indices[0], vectorCount);
-
                     // Write data to Bits array via Span slice
                     for (var j = 0; j < vectorCount; j++)
                     {
                         if (i + j < pixelArray.Length)
                         {
-                            bitsSlice[j] = colors[j];
+                            Bits[indices[j]] = colors[j];
                         }
                     }
                 }
