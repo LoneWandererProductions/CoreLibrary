@@ -23,7 +23,11 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The small primes
         /// </summary>
-        private static readonly int[] SmallPrimes = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47 };
+        private static readonly int[] SmallPrimes =
+        {
+            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
+            127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
+        };
 
         /// <summary>
         ///     The key presence
@@ -52,14 +56,34 @@ namespace ExtendedSystemObjects
                 throw new ArgumentNullException(nameof(data));
             }
 
-            var capacity = FindNextPrime(data.Count * 2); // Use prime number capacity
+            // Double the capacity and find the next prime number
+            var capacity = FindNextPrime(data.Count * 2);
+
+            // Initialize the internal arrays
             _keys = new TKey[capacity];
             _values = new TValue[capacity];
             _keyPresence = new bool[capacity];
 
-            foreach (var kvp in data)
+            // Populate the arrays with a brute-force quadratic approach
+            foreach (var (key, value) in data)
             {
-                Add(kvp.Key, kvp.Value, capacity);
+                for (int i = 0; i < capacity; i++)
+                {
+                    int hash = (GetHash(key, capacity) + i * i) % capacity; // Quadratic probing formula
+
+                    if (!_keyPresence[hash])
+                    {
+                        _keys[hash] = key;
+                        _values[hash] = value;
+                        _keyPresence[hash] = true;
+                        break;
+                    }
+
+                    if (_keys[hash].Equals(key))
+                    {
+                        throw new InvalidOperationException($"Duplicate key detected: {key}");
+                    }
+                }
             }
         }
 

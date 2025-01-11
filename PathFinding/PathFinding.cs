@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace PathFinding
 {
@@ -136,13 +137,8 @@ namespace PathFinding
                 //Checks all the squares adjacent to the current point
                 //Skips explored nodes
                 //Skips the node if it is blocked, thanks to Linq all in the loop
-                foreach (var neighbor in GetValidNeighbors(currentPoint, diagonal))
+                foreach (var neighbor in GetValidNeighbors(currentPoint, diagonal).Where(neighbor => !exploredList.Contains(neighbor) && !neighbor.IsWall))
                 {
-                    if (exploredList.Contains(neighbor) || neighbor.IsWall)
-                    {
-                        continue;
-                    }
-
                     //Decision tree how we progress
                     //Check new possible Node
                     if (neighbor.Parent == null)
