@@ -7,6 +7,7 @@
  */
 
 using System.IO;
+using System.Threading.Tasks;
 using Communication;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,10 +25,10 @@ namespace CommonLibraryTests
         ///     Communications instance.
         /// </summary>
         [TestMethod]
-        public void Communications()
+        public async Task CommunicationsAsync()
         {
             var communication = new NetCom();
-            _ = communication.SaveFile(_path, "https://www.google.de/");
+            _ = await communication.SaveFile(_path, "https://www.google.de/");
             var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication), "www.google.de");
 
             Assert.IsTrue(File.Exists(path), "File not found");
