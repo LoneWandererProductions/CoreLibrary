@@ -209,7 +209,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHash(TKey key, int capacity)
         {
-            return key.GetHashCode() & (capacity - 1);
+            return Math.Abs(key.GetHashCode() % capacity);
         }
 
         /// <summary>
