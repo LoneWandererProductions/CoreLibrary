@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Generic tests for speed.
+    ///     Generic tests for speed.
     /// </summary>
     [TestClass]
     public class PerformanceTests
@@ -17,13 +17,13 @@ namespace CommonLibraryTests
         private ReadOnlyDictionary<int, string> _readOnlyDictionary;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _data = new Dictionary<int, string>();
-            for (int i = 0; i < 10_000; i++)
+            for (var i = 0; i < 10_000; i++)
             {
                 _data[i] = $"Value_{i}";
             }
@@ -33,7 +33,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the immutable lookup map initialization.
+        ///     Tests the immutable lookup map initialization.
         /// </summary>
         [TestMethod]
         public void TestImmutableLookupMapInitialization()
@@ -47,7 +47,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Tests the read only dictionary initialization.
+        ///     Tests the read only dictionary initialization.
         /// </summary>
         [TestMethod]
         public void TestReadOnlyDictionaryInitialization()
@@ -60,13 +60,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the immutable lookup map lookup.
+        ///     Tests the immutable lookup map lookup.
         /// </summary>
         [TestMethod]
         public void TestImmutableLookupMapLookup()
         {
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 10_000; i++)
+            for (var i = 0; i < 10_000; i++)
             {
                 var value = _immutableLookupMap.Get(i);
                 Assert.AreEqual($"Value_{i}", value); // Verifying correctness
@@ -77,13 +77,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the read only dictionary lookup.
+        ///     Tests the read only dictionary lookup.
         /// </summary>
         [TestMethod]
         public void TestReadOnlyDictionaryLookup()
         {
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 10_000; i++)
+            for (var i = 0; i < 10_000; i++)
             {
                 var value = _readOnlyDictionary[i]; // Accessing keys from ReadOnlyDictionary
                 Assert.AreEqual($"Value_{i}", value); // Verifying correctness

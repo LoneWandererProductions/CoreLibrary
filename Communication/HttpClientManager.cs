@@ -14,27 +14,35 @@ using System.Threading.Tasks;
 namespace Communication
 {
     /// <summary>
-    /// Http Client for sending requests.
+    ///     Http Client for sending requests.
     /// </summary>
     internal static class HttpClientManager
     {
         /// <summary>
-        /// The HTTP client (static to be shared across all usages).
+        ///     The HTTP client (static to be shared across all usages).
         /// </summary>
         private static readonly HttpClient HttpClient = new();
 
         /// <summary>
-        /// Sends an HTTP request to the specified URL with the given method and body.
+        ///     Sends an HTTP request to the specified URL with the given method and body.
         /// </summary>
         /// <param name="url">The URL to send the request to.</param>
         /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
         /// <param name="body">The request body (optional).</param>
         /// <param name="contentType">The content type (default: application/json).</param>
-        /// <returns>A <see cref="HttpResponseMessage"/> containing the response body.</returns>
-        internal static async Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = "application/json")
+        /// <returns>A <see cref="HttpResponseMessage" /> containing the response body.</returns>
+        internal static async Task<string> SendMessageAsync(string url, string method, string body = null,
+            string contentType = "application/json")
         {
-            if (string.IsNullOrEmpty(url)) throw new ArgumentException("URL cannot be null or empty.", nameof(url));
-            if (string.IsNullOrEmpty(method)) throw new ArgumentException("Method cannot be null or empty.", nameof(method));
+            if (string.IsNullOrEmpty(url))
+            {
+                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+            }
+
+            if (string.IsNullOrEmpty(method))
+            {
+                throw new ArgumentException("Method cannot be null or empty.", nameof(method));
+            }
 
             var httpRequest = new HttpRequestMessage
             {
@@ -48,7 +56,7 @@ namespace Communication
             try
             {
                 // Send the request and get the response
-                HttpResponseMessage response = await HttpClient.SendAsync(httpRequest);
+                var response = await HttpClient.SendAsync(httpRequest);
 
                 // Check if the response is successful
                 if (response.IsSuccessStatusCode)
@@ -58,7 +66,7 @@ namespace Communication
                 }
 
                 // Handle HTTP error status codes
-                string errorContent = await response.Content.ReadAsStringAsync();
+                var errorContent = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error: {response.StatusCode}. {errorContent}");
             }
             catch (Exception ex)

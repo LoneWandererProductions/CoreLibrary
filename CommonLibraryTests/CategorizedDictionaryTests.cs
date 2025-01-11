@@ -156,7 +156,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(updated);
             var result = dict.GetCategoryAndValue(1);
             Assert.IsNotNull(result);
-            Assert.AreEqual("NewCategory", result?.Category);
+            Assert.AreEqual("NewCategory", result.Value.Category);
         }
 
         /// <summary>

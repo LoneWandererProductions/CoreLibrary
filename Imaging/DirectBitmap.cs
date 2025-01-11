@@ -524,20 +524,18 @@ namespace Imaging
 
                 // Create a BitmapImage and set the WriteableBitmap's pixel data
                 bitmapImage = new BitmapImage();
-                using (var stream = new MemoryStream())
-                {
-                    // Encode the WriteableBitmap to a MemoryStream
-                    var encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
-                    encoder.Save(stream);
+                using var stream = new MemoryStream();
+                // Encode the WriteableBitmap to a MemoryStream
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
+                encoder.Save(stream);
 
-                    // Set the stream as the source for the BitmapImage
-                    stream.Seek(0, SeekOrigin.Begin);
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-                }
+                // Set the stream as the source for the BitmapImage
+                stream.Seek(0, SeekOrigin.Begin);
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = stream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
             });
 
             return bitmapImage;

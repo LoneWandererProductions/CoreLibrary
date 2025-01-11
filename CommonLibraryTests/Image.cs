@@ -514,20 +514,22 @@ namespace CommonLibraryTests
             // Informational output instead of failure
             if (elapsedDirectBitmap > elapsedGraphics)
             {
-                Trace.WriteLine($"Warning: DirectBitmap DrawRectangle is slower than System.Drawing by {elapsedDirectBitmap - elapsedGraphics} ms.");
+                Trace.WriteLine(
+                    $"Warning: DirectBitmap DrawRectangle is slower than System.Drawing by {elapsedDirectBitmap - elapsedGraphics} ms.");
             }
             else
             {
-                Trace.WriteLine($"DirectBitmap DrawRectangle is faster or equal to System.Drawing.");
+                Trace.WriteLine("DirectBitmap DrawRectangle is faster or equal to System.Drawing.");
             }
 
             if (elapsedDirectBitmapLine > elapsedGraphics)
             {
-                Trace.WriteLine($"Warning: DirectBitmap DrawVerticalLine is slower than System.Drawing by {elapsedDirectBitmapLine - elapsedGraphics} ms.");
+                Trace.WriteLine(
+                    $"Warning: DirectBitmap DrawVerticalLine is slower than System.Drawing by {elapsedDirectBitmapLine - elapsedGraphics} ms.");
             }
             else
             {
-                Trace.WriteLine($"DirectBitmap DrawVerticalLine is faster or equal to System.Drawing.");
+                Trace.WriteLine("DirectBitmap DrawVerticalLine is faster or equal to System.Drawing.");
             }
         }
 

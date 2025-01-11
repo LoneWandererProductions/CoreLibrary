@@ -20,17 +20,17 @@ using System.Threading.Tasks;
 namespace Communication
 {
     /// <summary>
-    /// Handles file transfers for the Communication project.
+    ///     Handles file transfers for the Communication project.
     /// </summary>
     internal static class FileTransfer
     {
         /// <summary>
-        /// The HTTP client
+        ///     The HTTP client
         /// </summary>
         private static readonly Lazy<HttpClient> HttpClient = new(() => new HttpClient());
 
         /// <summary>
-        /// Saves a file from a URL to the specified file path.
+        ///     Saves a file from a URL to the specified file path.
         /// </summary>
         /// <param name="filePath">The destination folder path.</param>
         /// <param name="url">The file URL.</param>
@@ -50,27 +50,32 @@ namespace Communication
                 var uri = new Uri(url);
                 var path = GetPath(uri, filePath);
                 if (string.IsNullOrEmpty(path))
+                {
                     return false;
+                }
 
-                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead,
+                    cancellationToken);
                 response.EnsureSuccessStatusCode();
 
                 await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+                await using var fileStream =
+                    new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
 
                 var totalBytes = response.Content.Headers.ContentLength ?? -1L;
                 var buffer = new byte[8192];
                 long totalRead = 0;
                 int bytesRead;
 
-                while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+                while ((bytesRead =
+                           await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
                 {
                     await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                     totalRead += bytesRead;
 
                     if (progress != null && totalBytes > 0)
                     {
-                        var percentage = (int)((totalRead * 100) / totalBytes);
+                        var percentage = (int)(totalRead * 100 / totalBytes);
                         progress.Report(percentage);
                     }
                 }
@@ -90,7 +95,7 @@ namespace Communication
         }
 
         /// <summary>
-        /// Saves multiple files from URLs to the specified file path.
+        ///     Saves multiple files from URLs to the specified file path.
         /// </summary>
         /// <param name="filePath">The destination folder path.</param>
         /// <param name="urls">The file URLs.</param>
@@ -109,7 +114,7 @@ namespace Communication
         }
 
         /// <summary>
-        /// Generates a valid file path based on the URL and destination folder.
+        ///     Generates a valid file path based on the URL and destination folder.
         /// </summary>
         /// <param name="link">The URL of the file.</param>
         /// <param name="filePath">The destination folder path.</param>
@@ -117,14 +122,19 @@ namespace Communication
         private static string GetPath(Uri link, string filePath)
         {
             if (string.IsNullOrEmpty(link.AbsoluteUri))
+            {
                 return string.Empty;
+            }
 
             var target = Path.GetFileName(link.AbsolutePath);
 
             if (!string.IsNullOrWhiteSpace(target))
+            {
                 return Path.Combine(filePath, target);
+            }
 
-            target = Regex.Replace(link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf("//", StringComparison.Ordinal) + 2)..], "/", "");
+            target = Regex.Replace(
+                link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf("//", StringComparison.Ordinal) + 2)..], "/", "");
 
             return Path.Combine(filePath, target);
         }

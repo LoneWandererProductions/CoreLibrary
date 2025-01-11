@@ -32,7 +32,7 @@ namespace Communication
             watcher.EnableRaisingEvents = true;
 
             Console.WriteLine("Monitoring folder for changes. Press any key to stop.");
-            await Task.Run(() => Console.ReadKey()); // Run in background to avoid blocking
+            await Task.Run(Console.ReadKey); // Run in background to avoid blocking
 
             watcher.EnableRaisingEvents = false;
             watcher.Dispose();

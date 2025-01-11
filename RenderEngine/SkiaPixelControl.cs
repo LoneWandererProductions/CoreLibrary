@@ -31,10 +31,8 @@ namespace RenderEngine
         {
             _bitmap = new SKBitmap(width, height);
             _gdiBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb); // Set to BGRA format for compatibility
-            using (var canvas = new SKCanvas(_bitmap))
-            {
-                canvas.Clear(SKColors.Black);
-            }
+            using var canvas = new SKCanvas(_bitmap);
+            canvas.Clear(SKColors.Black);
         }
 
         public void SetPixel(int x, int y, SKColor color)

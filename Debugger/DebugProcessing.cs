@@ -163,7 +163,7 @@ namespace Debugger
 
             if (logLevel == ErCode.Error || DebugRegister.IsDumpActive || DebugRegister.IsVerbose)
             {
-                WriteLogFileAsync(logFile, logMessage);
+                _ = WriteLogFileAsync(logFile, logMessage);
             }
         }
 
