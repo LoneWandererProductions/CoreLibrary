@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
- * FILE:        Communication/FileTransfer.cs
+ * FILE:        Communication/INetCom.cs
  * PURPOSE:     Entry Point for File Downloads, defined as Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -20,7 +20,7 @@ namespace Communication
     /// <summary>
     ///     The ICom interface.
     /// </summary>
-    internal interface ICom
+    public interface INetCom
     {
         /// <summary>
         /// Saves the file.

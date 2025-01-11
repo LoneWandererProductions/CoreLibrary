@@ -21,12 +21,12 @@ namespace CommonLibraryTests
         private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication));
 
         /// <summary>
-        ///     Communicationses this instance.
+        ///     Communications instance.
         /// </summary>
         [TestMethod]
         public void Communications()
         {
-            var communication = new Com();
+            var communication = new NetCom();
             _ = communication.SaveFile(_path, "https://www.google.de/");
             var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication), "www.google.de");
 

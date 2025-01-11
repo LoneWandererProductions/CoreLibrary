@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
- * FILE:        Communication/Com.cs
+ * FILE:        Communication/NetCom.cs
  * PURPOSE:     Entry Point for File Downloads
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -19,7 +19,7 @@ namespace Communication
     /// <summary>
     ///     The com class.
     /// </summary>
-    public sealed class Com : ICom
+    public sealed class NetCom : INetCom
     {
         /// <inheritdoc />
         /// <summary>
