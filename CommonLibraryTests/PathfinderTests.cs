@@ -7,7 +7,7 @@ using Pathfinder;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// 
+    /// Some basic tests for the pathfinder
     /// </summary>
     [TestClass]
     public class PathfinderTests

@@ -51,6 +51,6 @@ namespace CommonControls
         /// <value>
         ///     The tool.
         /// </value>
-        public string Tool { get; internal init; }
+        public ImageZoomTools Tool { get; internal init; }
     }
 }
