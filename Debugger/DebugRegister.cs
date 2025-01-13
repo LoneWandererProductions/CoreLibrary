@@ -135,6 +135,12 @@ namespace Debugger
         /// </value>
         internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is verbose.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is verbose; otherwise, <c>false</c>.
+        /// </value>
         public static bool IsVerbose { get; set; }
 
         /// <summary>

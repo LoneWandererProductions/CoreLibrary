@@ -14,23 +14,28 @@ namespace Debugger
     public enum ErCode
     {
         /// <summary>
-        ///     Error Message = 0.
+        ///     Diagnostic Message = 0.
         /// </summary>
-        Error = 0,
+        Diagnostic = 0,
 
         /// <summary>
-        ///     Warning Message= 1.
+        ///     Error Message = 1.
         /// </summary>
-        Warning = 1,
+        Error = 1,
 
         /// <summary>
-        ///     Information Message = 2.
+        ///     Warning Message= 2.
         /// </summary>
-        Information = 2,
+        Warning = 2,
 
         /// <summary>
-        ///     External Message = 3.
+        ///     Information Message = 3.
         /// </summary>
-        External = 3
+        Information = 3,
+
+        /// <summary>
+        ///     External Message = 4.
+        /// </summary>
+        External = 4
     }
 }

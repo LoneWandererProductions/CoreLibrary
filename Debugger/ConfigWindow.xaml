@@ -49,6 +49,8 @@
         <Label Content="Is Running:" Grid.Column="1" Grid.Row="7" />
         <Label Content="Dump Active:" Grid.Row="9"
                Grid.Column="1" />
+        <Label Content="Verbose Active:" Grid.Row="9"
+               Grid.Column="9"/>
         <TextBox Grid.ColumnSpan="7"
                  Grid.Column="3"
                  Grid.Row="1"
@@ -87,5 +89,9 @@
         <debugger:ItemColors Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="10" x:Name="ColorOptions" />
         <Button Content="Reset" Grid.Column="9" HorizontalAlignment="Stretch" Grid.Row="16" VerticalAlignment="Stretch"
                 Click="BtnReset_Click" />
+        <CheckBox
+            Grid.Column="10"
+            Grid.Row="9"
+            IsChecked="{Binding IsVerbose, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" />
     </Grid>
 </Window>

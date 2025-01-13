@@ -86,6 +86,16 @@ namespace Debugger
                 RaisePropertyChangedEvent(nameof(IsDumpActive));
             }
         }
+
+        public bool IsVerbose
+        {
+            get => DebugRegister.IsVerbose;
+            set
+            {
+                DebugRegister.IsVerbose = value;
+                RaisePropertyChangedEvent(nameof(IsVerbose));
+            }
+        }
     }
 
     /// <inheritdoc />
