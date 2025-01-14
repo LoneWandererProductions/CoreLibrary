@@ -37,24 +37,29 @@ namespace Debugger
         private const string BaseText = "<Color for everything else>";
 
         /// <summary>
-        ///     The log Level one (const). Value: " , Error: ".
+        ///     The log Level verbose (const). Value: "Trace: ".
         /// </summary>
-        internal const string LogLvlOne = "Error: ";
+        internal const string LogLvlVerbose = "Trace: ";
 
         /// <summary>
-        ///     The log Level two (const). Value: " , Warning: ".
+        ///     The log Level Error (const). Value:  "Error: ".
         /// </summary>
-        internal const string LogLvlTwo = "Warning: ";
+        internal const string LogLvlError = "Error: ";
 
         /// <summary>
-        ///     The log Level three (const). Value: " , Information: ".
+        ///     The log Level Warning (const). Value: "Warning: ".
         /// </summary>
-        internal const string LogLvlThree = "Information: ";
+        internal const string LogLvlWarning = "Warning: ";
 
         /// <summary>
-        ///     The log Level four (const). Value: "External Source: ".
+        ///     The log Level Information (const). Value: "Information: "
         /// </summary>
-        internal const string LogLvlFour = "External Source: ";
+        internal const string LogLvlInformation = "Information: ";
+
+        /// <summary>
+        ///     The log Level External (const). Value: "External Source: ".
+        /// </summary>
+        internal const string LogLvlExternal = "External Source: ";
 
         /// <summary>
         ///     The error serializing (const). Value: "Unexpected Problems appeared while trying to serialize object: ".
@@ -75,6 +80,11 @@ namespace Debugger
         ///     The caller (const). Value: "Method: ".
         /// </summary>
         internal const string Caller = "Method: ";
+
+        /// <summary>
+        ///     The ThreadId (const). Value: "ThreadId: ".
+        /// </summary>
+        internal const string  ThreadId = "ThreadId: ";
 
         /// <summary>
         ///     The Line Number (const). Value: "Line Number: ".
@@ -168,10 +178,10 @@ namespace Debugger
         internal static readonly List<ColorOption> InitialOptions = new()
         {
             new ColorOption { ColorName = DebugRegister.StandardColor, EntryText = BaseText },
-            new ColorOption { ColorName = DebugRegister.ErrorColor, EntryText = LogLvlOne },
-            new ColorOption { ColorName = DebugRegister.WarningColor, EntryText = LogLvlTwo },
-            new ColorOption { ColorName = DebugRegister.InformationColor, EntryText = LogLvlThree },
-            new ColorOption { ColorName = DebugRegister.ExternalColor, EntryText = LogLvlFour }
+            new ColorOption { ColorName = DebugRegister.ErrorColor, EntryText = LogLvlError },
+            new ColorOption { ColorName = DebugRegister.WarningColor, EntryText = LogLvlWarning },
+            new ColorOption { ColorName = DebugRegister.InformationColor, EntryText = LogLvlInformation },
+            new ColorOption { ColorName = DebugRegister.ExternalColor, EntryText = LogLvlExternal }
         };
     }
 }

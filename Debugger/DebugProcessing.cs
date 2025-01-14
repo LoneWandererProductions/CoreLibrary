@@ -118,30 +118,35 @@ namespace Debugger
             var threadId = Thread.CurrentThread.ManagedThreadId;
             var logPrefix = logLevel switch
             {
-                ErCode.Error => DebuggerResources.LogLvlOne,
-                ErCode.Warning => DebuggerResources.LogLvlTwo,
-                ErCode.Information => DebuggerResources.LogLvlThree,
-                ErCode.External => DebuggerResources.LogLvlFour,
-                _ => DebuggerResources.LogLvlThree
+                ErCode.Diagnostic => DebuggerResources.LogLvlVerbose,
+                ErCode.Error => DebuggerResources.LogLvlError,
+                ErCode.Warning => DebuggerResources.LogLvlWarning,
+                ErCode.Information => DebuggerResources.LogLvlInformation,
+                ErCode.External => DebuggerResources.LogLvlExternal,
+                _ => DebuggerResources.LogLvlInformation
             };
 
             var logBuilder = new StringBuilder();
-            logBuilder.Append(logPrefix)
+            _ = logBuilder.Append(logPrefix)
                 .Append(DateTime.Now)
-                .Append(DebuggerResources.Spacer)
-                .Append($"ThreadId: {threadId}")
                 .Append(DebuggerResources.Spacer)
                 .Append(errorMessage);
 
+            if (DebugRegister.IsVerbose)
+            {
+                _ = logBuilder.Append($"{DebuggerResources.ThreadId}{threadId}")
+                    .Append(DebuggerResources.Spacer);
+            }
+
             if (!string.IsNullOrEmpty(objString))
             {
-                logBuilder.Append(DebuggerResources.ObjectFormatting)
-                    .Append(objString);
+                _ = logBuilder.Append(DebuggerResources.ObjectFormatting)
+                    .Append(objString).Append(DebuggerResources.Spacer);
             }
 
             if (!string.IsNullOrEmpty(stackTrace))
             {
-                logBuilder.Append(Environment.NewLine)
+                _ = logBuilder.Append(DebuggerResources.Spacer)
                     .Append(stackTrace);
             }
 
@@ -153,12 +158,12 @@ namespace Debugger
         /// </summary>
         private static void HandleLogMessage(string logMessage, ErCode logLevel, string logFile)
         {
-            if (DebugLog.CurrentLog.Capacity < DebugLog.CurrentLog.Count)
+            if (DebugLog.Container.Capacity < DebugLog.CurrentLog.Count)
             {
-                DebugLog.CurrentLog.Clear();
+                DebugLog.Container.Clear();
             }
 
-            DebugLog.CurrentLog.Add(logMessage);
+            DebugLog.Container.Add(logMessage);
             Trace.WriteLine(logMessage);
 
             if (logLevel == ErCode.Error || DebugRegister.IsDumpActive || DebugRegister.IsVerbose)
@@ -189,7 +194,7 @@ namespace Debugger
         /// </summary>
         internal static void StartDebug()
         {
-            DebugLog.CurrentLog = new List<string>();
+            DebugLog.Container = new List<string>();
             DebugRegister.IsRunning = _debugLogging = true;
         }
 

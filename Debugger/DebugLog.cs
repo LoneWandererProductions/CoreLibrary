@@ -11,10 +11,12 @@
 // ReSharper disable ClassNeverInstantiated.Global
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Debugger
 {
@@ -25,12 +27,21 @@ namespace Debugger
     public sealed class DebugLog : IDebugLog
     {
         /// <summary>
-        ///     Holds all messages for the.
+        /// Holds all messages for the.
         /// </summary>
         /// <value>
-        ///     The current log messages
+        /// The current log messages
         /// </value>
-        public static List<string> CurrentLog { get; internal set; }
+        public static IReadOnlyCollection<string> CurrentLog => Container.ToList();
+
+        /// <summary>
+        /// Gets or sets the container.
+        /// Internal Handler more thead safe
+        /// </summary>
+        /// <value>
+        /// The container.
+        /// </value>
+        internal static List<string> Container { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -99,17 +110,11 @@ namespace Debugger
         /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
         public void LogFile(string error, ErCode lvl, int debugLvl = 1)
         {
-            var st = new StackTrace(true);
-
-            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
-            // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(debugLvl).GetFileLineNumber();
-            var file = st.GetFrame(debugLvl)?.GetFileName();
-
-            var info = GenerateInfo(methodName, line, file);
+            //collect Stacktrace on verbose or Error
+            var stackTrace = GetStackTraceInfo(lvl, debugLvl);
 
             var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-            DebugProcessing.DebugLogEntry(error, lvl, info, path);
+            DebugProcessing.DebugLogEntry(error, lvl, stackTrace, path);
         }
 
         /// <summary>
@@ -122,17 +127,11 @@ namespace Debugger
         /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
         public void LogFile<T>(string error, ErCode lvl, T obj, int debugLvl = 1)
         {
-            var st = new StackTrace(true);
-
-            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
-            // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(debugLvl).GetFileLineNumber();
-            var file = st.GetFrame(debugLvl)?.GetFileName();
-
-            var info = GenerateInfo(methodName, line, file);
+            //collect Stacktrace on verbose or Error
+            var stackTrace = GetStackTraceInfo(lvl, debugLvl);
 
             var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-            DebugProcessing.DebugLogEntry(error, lvl, obj, info, path);
+            DebugProcessing.DebugLogEntry(error, lvl, obj, stackTrace, path);
         }
 
         /// <summary>
@@ -145,17 +144,11 @@ namespace Debugger
         /// <param name="debugLvl">The debug level, optional. Defines the abstraction lvl.</param>
         public void LogFile<T>(string error, ErCode lvl, IEnumerable<T> objLst, int debugLvl = 1)
         {
-            var st = new StackTrace(true);
-
-            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
-            // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(debugLvl).GetFileLineNumber();
-            var file = st.GetFrame(debugLvl)?.GetFileName();
-
-            var info = GenerateInfo(methodName, line, file);
+            //collect Stacktrace on verbose or Error
+            var stackTrace = GetStackTraceInfo(lvl, debugLvl);
 
             var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-            DebugProcessing.DebugLogEntry(error, lvl, objLst, info, path);
+            DebugProcessing.DebugLogEntry(error, lvl, objLst, stackTrace, path);
         }
 
         /// <summary>
@@ -170,18 +163,41 @@ namespace Debugger
         public void LogFile<T, TU>(string error, ErCode lvl,
             Dictionary<T, TU> objectDictionary, int debugLvl = 1)
         {
-            var st = new StackTrace(true);
-
-            var methodName = st.GetFrame(debugLvl)?.GetMethod()?.Name;
-            // ReSharper disable once PossibleNullReferenceException
-            var line = st.GetFrame(debugLvl).GetFileLineNumber();
-            var file = st.GetFrame(debugLvl)?.GetFileName();
-
-            var info = GenerateInfo(methodName, line, file);
+            //collect Stacktrace on verbose or Error
+            var stackTrace = GetStackTraceInfo(lvl, debugLvl);
 
             var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-            DebugProcessing.DebugLogEntry(error, lvl, objectDictionary, info, path);
+            DebugProcessing.DebugLogEntry(error, lvl, objectDictionary, stackTrace, path);
         }
+
+        /// <summary>
+        /// Helper method to generate stack trace info.
+        /// </summary>
+        /// <param name="lvl">The level of error.</param>
+        /// <param name="debugLvl">The debug level. Defines the abstraction level.</param>
+        /// <returns>
+        /// Generated stack trace information as a string.
+        /// </returns>
+        private string GetStackTraceInfo(ErCode lvl, int debugLvl)
+        {
+            //only collect Stacktrace on verbose or Error
+            var stackTrace = string.Empty;
+
+            if (!DebugRegister.IsVerbose && lvl != ErCode.Error)
+            {
+                return stackTrace;
+            }
+
+            var st = new StackTrace(true);
+            var methodName = st.GetFrame(debugLvl + 1)?.GetMethod()?.Name; // Add +1 here
+            // ReSharper disable once PossibleNullReferenceException
+            var line = st.GetFrame(debugLvl + 1).GetFileLineNumber(); // Adjust frame level
+            var file = st.GetFrame(debugLvl + 1)?.GetFileName();
+            stackTrace = GenerateInfo(methodName, line, file);
+
+            return stackTrace;
+        }
+
 
         /// <summary>
         ///     Generates the information.
