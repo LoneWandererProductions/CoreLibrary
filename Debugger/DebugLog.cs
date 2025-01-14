@@ -11,7 +11,6 @@
 // ReSharper disable ClassNeverInstantiated.Global
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -27,19 +26,19 @@ namespace Debugger
     public sealed class DebugLog : IDebugLog
     {
         /// <summary>
-        /// Holds all messages for the.
+        ///     Holds all messages for the.
         /// </summary>
         /// <value>
-        /// The current log messages
+        ///     The current log messages
         /// </value>
         public static IReadOnlyCollection<string> CurrentLog => Container.ToList();
 
         /// <summary>
-        /// Gets or sets the container.
-        /// Internal Handler more thead safe
+        ///     Gets or sets the container.
+        ///     Internal Handler more thead safe
         /// </summary>
         /// <value>
-        /// The container.
+        ///     The container.
         /// </value>
         internal static List<string> Container { get; set; }
 
@@ -171,12 +170,12 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Helper method to generate stack trace info.
+        ///     Helper method to generate stack trace info.
         /// </summary>
         /// <param name="lvl">The level of error.</param>
         /// <param name="debugLvl">The debug level. Defines the abstraction level.</param>
         /// <returns>
-        /// Generated stack trace information as a string.
+        ///     Generated stack trace information as a string.
         /// </returns>
         private string GetStackTraceInfo(ErCode lvl, int debugLvl)
         {

@@ -50,7 +50,7 @@
         <Label Content="Dump Active:" Grid.Row="9"
                Grid.Column="1" />
         <Label Content="Verbose Active:" Grid.Row="9"
-               Grid.Column="9"/>
+               Grid.Column="9" />
         <TextBox Grid.ColumnSpan="7"
                  Grid.Column="3"
                  Grid.Row="1"

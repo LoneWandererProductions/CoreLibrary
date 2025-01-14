@@ -206,7 +206,7 @@ namespace CommonControls
                     Y = (int)selectionRect.Y,
                     Width = (int)selectionRect.Width,
                     Height = (int)selectionRect.Height,
-                    Tool = Tool// Store the current tool as a string
+                    Tool = Tool // Store the current tool as a string
                 };
 
                 switch (Tool)
@@ -220,8 +220,8 @@ namespace CommonControls
                     case ImageZoomTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
-                            selectionRect.Left + selectionRect.Width / 2,
-                            selectionRect.Top + selectionRect.Height / 2);
+                            selectionRect.Left + (selectionRect.Width / 2),
+                            selectionRect.Top + (selectionRect.Height / 2));
 
                         // Draw the ellipse with the calculated center and half the width and height as radii
                         drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2,

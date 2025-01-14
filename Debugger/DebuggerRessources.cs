@@ -84,7 +84,7 @@ namespace Debugger
         /// <summary>
         ///     The ThreadId (const). Value: "ThreadId: ".
         /// </summary>
-        internal const string  ThreadId = "ThreadId: ";
+        internal const string ThreadId = "ThreadId: ";
 
         /// <summary>
         ///     The Line Number (const). Value: "Line Number: ".

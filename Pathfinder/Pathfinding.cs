@@ -84,7 +84,9 @@ namespace Pathfinder
                 foreach (var neighbor in GetNeighbors(currentNode, _grid, goalX, goalY))
                 {
                     if (closedList.Contains((neighbor.X, neighbor.Y)))
+                    {
                         continue;
+                    }
 
                     neighbor.H = Heuristic(neighbor.X, neighbor.Y, goalX, goalY);
                     neighbor.Parent = currentNode;
@@ -197,7 +199,10 @@ namespace Pathfinder
                     if (result == 0)
                     {
                         result = x.X.CompareTo(y.X);
-                        if (result == 0) result = x.Y.CompareTo(y.Y);
+                        if (result == 0)
+                        {
+                            result = x.Y.CompareTo(y.Y);
+                        }
                     }
                 }
 

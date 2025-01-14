@@ -25,8 +25,8 @@ namespace ExtendedSystemObjects
         /// </summary>
         private static readonly int[] SmallPrimes =
         {
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
-            127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
+            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+            103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
         };
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace ExtendedSystemObjects
             // Populate the arrays with a brute-force quadratic approach
             foreach (var (key, value) in data)
             {
-                for (int i = 0; i < capacity; i++)
+                for (var i = 0; i < capacity; i++)
                 {
-                    int hash = (GetHash(key, capacity) + i * i) % capacity; // Quadratic probing formula
+                    var hash = (GetHash(key, capacity) + (i * i)) % capacity; // Quadratic probing formula
 
                     if (!_keyPresence[hash])
                     {
