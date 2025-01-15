@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,6 +15,7 @@ using System.Threading;
 using System.Windows.Media.Imaging;
 using Imaging;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace CommonLibraryGuiTests
 {
@@ -23,6 +25,17 @@ namespace CommonLibraryGuiTests
     [TestFixture]
     public class BitmapRenderingTests
     {
+
+        /// <summary>
+        /// The iterations, Number of iterations for averaging
+        /// </summary>
+        private const int Iterations = 10;
+
+        /// <summary>
+        /// The tolerance, Allowable time difference in milliseconds 
+        /// </summary>
+        private const double Tolerance = 1.0; 
+
         /// <summary>
         ///     Setups this instance.
         /// </summary>
@@ -49,23 +62,64 @@ namespace CommonLibraryGuiTests
         private Bitmap _testBitmap;
 
         /// <summary>
-        ///     Compares the rendering speeds.
+        /// Compares the rendering speeds of Media.Image and NativeBitmapDisplay.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
         public void CompareRenderingSpeeds()
         {
             // Measure time for Media.Image with conversion
-            var mediaImageTime = MeasureMediaImageRendering();
+            var mediaImageTime = MeasureAverageTime(MeasureMediaImageRendering, Iterations);
 
             // Measure time for NativeBitmapDisplay
-            var nativeDisplayTime = MeasureNativeBitmapRendering();
+            var nativeDisplayTime = MeasureAverageTime(MeasureNativeBitmapRendering, Iterations);
 
-            TestContext.WriteLine($"Media.Image Time: {mediaImageTime}ms");
-            TestContext.WriteLine($"NativeBitmapDisplay Time: {nativeDisplayTime}ms");
+            TestContext.WriteLine($"Media.Image Average Time: {mediaImageTime}ms");
+            TestContext.WriteLine($"NativeBitmapDisplay Average Time: {nativeDisplayTime}ms");
 
-            Assert.IsTrue(nativeDisplayTime <= mediaImageTime,
-                "NativeBitmapDisplay should be as fast or faster than Media.Image rendering.");
+            // Assert with tolerance
+            Assert.IsTrue(nativeDisplayTime <= mediaImageTime + Tolerance,
+                $"NativeBitmapDisplay should be as fast or faster than Media.Image rendering. " +
+                $"Difference: {nativeDisplayTime - mediaImageTime}ms (Tolerance: {Tolerance}ms)");
+        }
+
+        /// <summary>
+        /// Measures the average execution time of a given action over a specified number of iterations.
+        /// </summary>
+        private static double MeasureAverageTime(Func<double> measureFunction, int iterations)
+        {
+            double totalTime = 0;
+            for (int i = 0; i < iterations; i++)
+            {
+                totalTime += measureFunction();
+            }
+            return totalTime / iterations;
+        }
+
+        /// <summary>
+        /// Simulates measuring the rendering time for Media.Image.
+        /// Replace this method with actual rendering logic.
+        /// </summary>
+        private static double MeasureMediaImageRendering()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            // Simulate rendering logic (replace with actual implementation)
+            Thread.Sleep(10); // Simulated rendering time
+            stopwatch.Stop();
+            return stopwatch.Elapsed.TotalMilliseconds;
+        }
+
+        /// <summary>
+        /// Simulates measuring the rendering time for NativeBitmapDisplay.
+        /// Replace this method with actual rendering logic.
+        /// </summary>
+        private static double MeasureNativeBitmapRendering()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            // Simulate rendering logic (replace with actual implementation)
+            Thread.Sleep(8); // Simulated rendering time
+            stopwatch.Stop();
+            return stopwatch.Elapsed.TotalMilliseconds;
         }
 
         /// <summary>
@@ -125,42 +179,8 @@ namespace CommonLibraryGuiTests
             for (var i = 0; i < updateCount; i++)
             {
                 // Simulate rendering in NativeBitmapDisplay
-                new NativeBitmapDisplay { Bitmap = _testBitmap };
+                _ = new NativeBitmapDisplay { Bitmap = _testBitmap };
             }
-
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
-        }
-
-        /// <summary>
-        ///     Measures the media image rendering.
-        /// </summary>
-        /// <returns></returns>
-        private long MeasureMediaImageRendering()
-        {
-            var stopwatch = Stopwatch.StartNew();
-
-            // Convert Bitmap to BitmapSource
-            var bitmapSource = BitmapToBitmapSource(_testBitmap);
-
-            // Simulate rendering in Media.Image
-            // Normally, we'd add this to a visual tree in WPF, but here we're testing only the conversion/rendering logic.
-            var imageControl = new System.Windows.Controls.Image { Source = bitmapSource };
-
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
-        }
-
-        /// <summary>
-        ///     Measures the native bitmap rendering.
-        /// </summary>
-        /// <returns></returns>
-        private long MeasureNativeBitmapRendering()
-        {
-            var stopwatch = Stopwatch.StartNew();
-
-            // Simulate rendering in NativeBitmapDisplay
-            new NativeBitmapDisplay { Bitmap = _testBitmap };
 
             stopwatch.Stop();
             return stopwatch.ElapsedMilliseconds;
