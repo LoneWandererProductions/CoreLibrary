@@ -15,6 +15,7 @@ namespace Mathematics
 {
     /// <summary>
     ///     Some Basic Math Constants
+    ///     For future events will be extended
     /// </summary>
     public static class Constants
     {
