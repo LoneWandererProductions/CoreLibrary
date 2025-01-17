@@ -35,7 +35,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// The data store
         /// </summary>
-        private readonly ConcurrentDictionary<int, VaultItem<T>> _dataStore = new();
+        private readonly ConcurrentDictionary<long, VaultItem<T>> _dataStore = new();
 
         /// <summary>
         /// The lock
@@ -55,7 +55,16 @@ namespace ExtendedSystemObjects
         /// </value>
         public int ExpiryTimeInMilliseconds { get; set; } = 30000; // 30 seconds (adjustable)
 
+        /// <summary>
+        /// The current identifier
+        /// </summary>
         private int _currentId; // ID counter
+
+
+        /// <summary>
+        /// The recycled ids
+        /// </summary>
+        private readonly ConcurrentQueue<long> _recycledIds = new();
 
         /// <summary>
         /// Gets the total memory usage.
@@ -88,9 +97,13 @@ namespace ExtendedSystemObjects
         /// <param name="data">The data.</param>
         /// <param name="expiryTime">The expiry time.</param>
         /// <returns>Your return ticket.</returns>
-        public int Store(T data, TimeSpan? expiryTime = null)
+        public long Store(T data, TimeSpan? expiryTime = null)
         {
-            var id = Interlocked.Increment(ref _currentId); // Thread-safe ID generation
+            // Thread-safe ID generation
+            var id = _recycledIds.TryDequeue(out var recycledId)
+                ? recycledId
+                : Interlocked.Increment(ref _currentId);
+
             var vaultItem = new VaultItem<T>(data, expiryTime ?? TimeSpan.MaxValue);
 
             lock (_lock)
@@ -100,6 +113,7 @@ namespace ExtendedSystemObjects
 
             return id; // Return the ID to the caller
         }
+
 
         /// <summary>
         /// Retrieves the specified key.
@@ -120,13 +134,14 @@ namespace ExtendedSystemObjects
                     throw new KeyNotFoundException($"ID {id} not found.");
                 }
 
-                if (vaultItem.HasExpired)
+                if (!vaultItem.HasExpired)
                 {
-                    Release(id);
-                    throw new KeyNotFoundException($"ID {id} has expired.");
+                    return vaultItem.Data;
                 }
 
-                return vaultItem.Data;
+                Release(id);
+
+                throw new KeyNotFoundException($"ID {id} has expired.");
             }
         }
 
@@ -134,7 +149,7 @@ namespace ExtendedSystemObjects
         /// Releases the specified key.
         /// </summary>
         /// <param name="id">The id.</param>
-        public void Release(int id)
+        public void Release(long id)
         {
             lock (_lock)
             {
@@ -175,13 +190,14 @@ namespace ExtendedSystemObjects
         private static long GetMemoryUsage(T data)
         {
             // Handle byte arrays differently since they have a specific size
-            if (data is byte[] bytes)
+            return data switch
             {
-                return bytes.Length;
-            }
-
+                byte[] bytes => bytes.Length,
+                string str => str.Length * sizeof(char),
+                ICollection<object> collection => collection.Count * 1024, // Approximate per object
+                _ => 1024 // Default estimate
+            };
             // For other objects, we can only approximate memory usage. You could expand this for specific types.
-            return 1024; // Default assumption for non-byte array types (could be improved).
         }
 
         /// <summary>
