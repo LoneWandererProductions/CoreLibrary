@@ -6,6 +6,11 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Local
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,22 +19,23 @@ using System.Threading;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     /// In Memory Vault for data.
     /// </summary>
     /// <typeparam name="T">Generic data type.</typeparam>
-    public sealed class MemoryVault<T>
+    public sealed class MemoryVault<T> : IDisposable
     {
         /// <summary>
         /// The instance
         /// </summary>
-        private static readonly Lazy<MemoryVault<T>> _instance =
+        private static readonly Lazy<MemoryVault<T>> MemoryInstance =
             new(() => new MemoryVault<T>());
 
         /// <summary>
         /// The data store
         /// </summary>
-        private readonly ConcurrentDictionary<string, VaultItem<T>> _dataStore = new();
+        private readonly ConcurrentDictionary<int, VaultItem<T>> _dataStore = new();
 
         /// <summary>
         /// The lock
@@ -48,6 +54,8 @@ namespace ExtendedSystemObjects
         /// The expiry time in milliseconds.
         /// </value>
         public int ExpiryTimeInMilliseconds { get; set; } = 30000; // 30 seconds (adjustable)
+
+        private int _currentId; // ID counter
 
         /// <summary>
         /// Gets the total memory usage.
@@ -72,77 +80,65 @@ namespace ExtendedSystemObjects
         /// <value>
         /// The instance.
         /// </value>
-        public static MemoryVault<T> Instance => _instance.Value;
+        public static MemoryVault<T> Instance => MemoryInstance.Value;
 
         /// <summary>
         /// Store data with an optional expiration time
         /// </summary>
-        /// <param name="key">The key.</param>
         /// <param name="data">The data.</param>
         /// <param name="expiryTime">The expiry time.</param>
-        public void Store(string key, T data, TimeSpan? expiryTime = null)
+        /// <returns>Your return ticket.</returns>
+        public int Store(T data, TimeSpan? expiryTime = null)
         {
+            var id = Interlocked.Increment(ref _currentId); // Thread-safe ID generation
+            var vaultItem = new VaultItem<T>(data, expiryTime ?? TimeSpan.MaxValue);
+
             lock (_lock)
             {
-                var vaultItem = new VaultItem<T>(data, expiryTime ?? TimeSpan.MaxValue);
-                if (_dataStore.TryAdd(key, vaultItem))
-                {
-                    TotalMemoryUsage += GetMemoryUsage(data);
-                }
-                else
-                {
-                    // Update existing entry if key already exists
-                    var existingItem = _dataStore[key];
-                    TotalMemoryUsage -= GetMemoryUsage(existingItem.Data);
-                    existingItem.Data = data;
-                    existingItem.ExpiryTime = expiryTime ?? TimeSpan.MaxValue;
-                    TotalMemoryUsage += GetMemoryUsage(data);
-                }
+                _dataStore[id] = vaultItem;
             }
+
+            return id; // Return the ID to the caller
         }
 
         /// <summary>
         /// Retrieves the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <param name="id">The id.</param>
+        /// <returns>Your object that you stored.</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">
         /// Key {key} has expired.
         /// or
         /// Key {key} not found.
         /// </exception>
-        public T Retrieve(string key)
+        public T Retrieve(int id)
         {
             lock (_lock)
             {
-                if (_dataStore.TryGetValue(key, out var vaultItem))
+                if (!_dataStore.TryGetValue(id, out var vaultItem))
                 {
-                    // Check if the item has expired
-                    if (vaultItem.HasExpired)
-                    {
-                        Release(key);
-                        throw new KeyNotFoundException($"Key {key} has expired.");
-                    }
-
-                    return vaultItem.Data;
+                    throw new KeyNotFoundException($"ID {id} not found.");
                 }
 
-                throw new KeyNotFoundException($"Key {key} not found.");
+                if (vaultItem.HasExpired)
+                {
+                    Release(id);
+                    throw new KeyNotFoundException($"ID {id} has expired.");
+                }
+
+                return vaultItem.Data;
             }
         }
 
         /// <summary>
         /// Releases the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        public void Release(string key)
+        /// <param name="id">The id.</param>
+        public void Release(int id)
         {
             lock (_lock)
             {
-                if (_dataStore.TryRemove(key, out var vaultItem))
-                {
-                    TotalMemoryUsage -= GetMemoryUsage(vaultItem.Data);
-                }
+                _dataStore.TryRemove(id, out _);
             }
         }
 
@@ -165,7 +161,10 @@ namespace ExtendedSystemObjects
         /// <returns>Memory used.</returns>
         public int GetMemoryUsage()
         {
-            return _dataStore.Sum(item => item.Value is byte[] bytes ? bytes.Length : 0);
+            lock (_lock)
+            {
+                return _dataStore.Sum(item => item.Value is byte[] bytes ? bytes.Length : 0);
+            }
         }
 
         /// <summary>
@@ -210,11 +209,21 @@ namespace ExtendedSystemObjects
                     .Select(kv => kv.Key)
                     .ToList();
 
-                foreach (var key in expiredKeys)
+                foreach (var id in expiredKeys)
                 {
-                    Release(key);
+                    Release(id);
                 }
             }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Releases all resources used by the <see cref="T:ExtendedSystemObjects.MemoryVault`1" />.
+        /// </summary>
+        public void Dispose()
+        {
+            _cleanupTimer?.Dispose();
+            _dataStore.Clear();
         }
     }
 }
