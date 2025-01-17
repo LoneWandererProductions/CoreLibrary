@@ -15,7 +15,6 @@ using System.Threading;
 using System.Windows.Media.Imaging;
 using Imaging;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace CommonLibraryGuiTests
 {
