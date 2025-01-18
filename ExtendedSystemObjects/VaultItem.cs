@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+
 using System;
 
 namespace ExtendedSystemObjects
@@ -13,8 +15,8 @@ namespace ExtendedSystemObjects
     /// <summary>
     /// Vault item with expiration and data tracking
     /// </summary>
-    /// <typeparam name="U">Generic Type</typeparam>
-    internal class VaultItem<U>
+    /// <typeparam name="TU">Generic Type</typeparam>
+    internal sealed class VaultItem<TU>
     {
         /// <summary>
         /// Gets or sets the data.
@@ -22,7 +24,7 @@ namespace ExtendedSystemObjects
         /// <value>
         /// The data.
         /// </value>
-        public U Data { get; set; }
+        public TU Data { get; set; }
 
         /// <summary>
         /// Gets the expiry date.
@@ -41,16 +43,10 @@ namespace ExtendedSystemObjects
         public TimeSpan ExpiryTime { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VaultItem{U}"/> class.
+        /// Initializes a new instance of the <see cref="VaultItem{TU}"/> class.
+        /// Needed for Json serialization.
         /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="expiryTime">The expiry time.</param>
-        public VaultItem(U data, TimeSpan expiryTime)
-        {
-            Data = data;
-            ExpiryTime = expiryTime;
-            ExpiryDate = DateTime.UtcNow.Add(expiryTime);
-        }
+        public VaultItem() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VaultItem{U}"/> class.
@@ -58,12 +54,30 @@ namespace ExtendedSystemObjects
         /// <param name="data">The data.</param>
         /// <param name="expiryTime">The expiry time.</param>
         /// <param name="description">A short description of the item, optional.</param>
-        public VaultItem(U data, TimeSpan expiryTime, string description = "")
+        public VaultItem(TU data, TimeSpan expiryTime, string description = "")
         {
             Data = data;
             ExpiryTime = expiryTime;
             ExpiryDate = DateTime.UtcNow.Add(expiryTime);
+            Description = description;
+            CreationDate = DateTime.Now;
         }
+
+        /// <summary>
+        /// Gets or sets the creation date.
+        /// </summary>
+        /// <value>
+        /// The creation date.
+        /// </value>
+        public DateTime CreationDate { get; }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        public string Description { get; set; }
 
         /// <summary>
         /// HasExpired checks if the item has passed its expiration timed.

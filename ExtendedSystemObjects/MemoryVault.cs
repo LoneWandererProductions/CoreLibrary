@@ -57,11 +57,6 @@ namespace ExtendedSystemObjects
         private readonly Dictionary<long, VaultItem<TU>> _vault;
 
         /// <summary>
-        /// The metadata
-        /// </summary>
-        private readonly Dictionary<long, Dictionary<string, object>> _metadata;
-
-        /// <summary>
         /// The lock
         /// </summary>
         private readonly ReaderWriterLockSlim _lock = new();
@@ -71,7 +66,6 @@ namespace ExtendedSystemObjects
         /// </summary>
         public MemoryVault()
         {
-            _metadata = new Dictionary<long, Dictionary<string, object>>();
             _vault = new Dictionary<long, VaultItem<TU>>();
         }
 
@@ -189,123 +183,49 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Adds metadata to an item.
         /// </summary>
-        public void AddMetadata(long identifier, string key, object value)
+        public void AddMetadata(long identifier, VaultMetadata metaData)
         {
-            _lock.EnterUpgradeableReadLock();
+            if (metaData == null)
+                throw new ArgumentNullException(nameof(metaData));
+
+            _lock.EnterWriteLock();
             try
             {
-                _lock.EnterWriteLock();
-                try
+                if (_vault.ContainsKey(identifier))
                 {
-                    _metadata[identifier][key] = value;
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
+                    _vault[identifier].Description = metaData.Description;
                 }
             }
             finally
             {
-                _lock.ExitUpgradeableReadLock();
+                _lock.ExitWriteLock();
             }
         }
+
 
         /// <summary>
         /// Retrieves metadata for an item.
         /// </summary>
-        public object GetMetadata(long identifier, string key)
+        public VaultMetadata GetMetadata(long identifier)
         {
             _lock.EnterReadLock();
             try
             {
-                if (!_metadata.ContainsKey(identifier))
-                    throw new ArgumentException("No item with this identifier exists.", nameof(identifier));
-
-                return _metadata[identifier].TryGetValue(key, out var value) ? value : null;
+                if (_vault.TryGetValue(identifier, out var item) && !item.HasExpired)
+                {
+                    return new VaultMetadata
+                    {
+                        Description = item.Description, CreationDate = item.CreationDate, Identifier = identifier
+                    };
+                }
             }
             finally
             {
                 _lock.ExitReadLock();
             }
+
+            return null;
         }
-
-        /// <summary>
-        /// Save selected items (by identifier) to a JSON file
-        /// </summary>
-        /// <param name="identifiers">The identifiers.</param>
-        /// <param name="path">The path.</param>
-        /// <exception cref="System.InvalidOperationException">No valid items found to save.</exception>
-        public void SaveSelectedItemsToFile(IEnumerable<long> identifiers, string path)
-        {
-            // Filter out non-expired items by identifiers
-            var selectedItems = _vault
-                .Where(kvp => identifiers.Contains(kvp.Key) && !kvp.Value.HasExpired)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            if (selectedItems.Count == 0)
-            {
-                throw new InvalidOperationException("No valid items found to save.");
-            }
-
-            var selectedMetadata = _metadata
-                .Where(kvp => identifiers.Contains(kvp.Key))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            // Prepare the data to be saved
-            var dataToSave = new
-            {
-                Vault = selectedItems,
-                Metadata = selectedMetadata
-            };
-
-            var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-            var json = JsonSerializer.Serialize(dataToSave, jsonOptions);
-
-            // Write to the specified path
-            File.WriteAllText(path, json);
-        }
-
-        /// <summary>
-        /// Load items from a file and assign them new identifiers
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <exception cref="System.IO.FileNotFoundException">The specified file does not exist.</exception>
-        /// <exception cref="System.InvalidOperationException">The file is invalid or does not contain expected data.</exception>
-        public void LoadSelectedItemsFromFile(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("The specified file does not exist.");
-            }
-
-            var json = File.ReadAllText(path);
-            var data = JsonSerializer.Deserialize<dynamic>(json);
-
-            if (data?.Vault is not JsonElement loadedVault || data?.Metadata is not JsonElement loadedMetadata)
-            {
-                throw new InvalidOperationException("The file is invalid or does not contain expected data.");
-            }
-
-            // Deserialize VaultItem<TU> objects
-            var vaultItems = (from kvp in loadedVault.EnumerateObject() let identifier = long.Parse(kvp.Name) let item = JsonSerializer.Deserialize<VaultItem<TU>>(kvp.Value.GetRawText()) select (identifier, item)).ToList();
-
-            // Add items to the vault with new identifiers
-            foreach (var (_, item) in vaultItems)
-            {
-                var newIdentifier = Utility.GetFirstAvailableIndex(_vault.Keys.ToList());
-                _vault[newIdentifier] = item;
-            }
-
-            // Deserialize metadata
-            var metadataItems = (from kvp in loadedMetadata.EnumerateObject() let identifier = long.Parse(kvp.Name) let metadata = JsonSerializer.Deserialize<Dictionary<string, object>>(kvp.Value.GetRawText()) select (identifier, metadata)).ToList();
-
-            // Add metadata to the vault with the new identifiers
-            foreach (var (identifier, objects) in metadataItems)
-            {
-                _metadata[identifier] = objects;
-            }
-        }
-
 
         /// <inheritdoc />
         /// <summary>

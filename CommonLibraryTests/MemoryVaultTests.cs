@@ -84,43 +84,28 @@ namespace CommonLibraryTests
             Assert.IsNull(retrievedData);
         }
 
-        //[TestMethod]
-        //public void AddMetadata_ShouldStoreMetadataCorrectly()
-        //{
-        //    // Arrange
-        //    var data = "TestData";
-        //    var identifier = _vault.Add(data);
-        //    var key = "Description";
-        //    var value = "A test item";
+        [TestMethod]
+        public void AddMetadata_ShouldStoreMetadataCorrectly()
+        {
+            // Arrange
+            var data = "TestData";
+            var identifier = _vault.Add(data);
+            var metadata = new VaultMetadata
+            {
+                Description = "A test item",
+                CreationDate = DateTime.UtcNow,
+                Identifier = identifier
+            };
 
-        //    // Act
-        //    _vault.AddMetadata(identifier, key, value);
-        //    var retrievedMetadata = _vault.GetMetadata(identifier, key);
+            // Act
+            _vault.AddMetadata(identifier, metadata);
+            var retrievedMetadata = _vault.GetMetadata(identifier);
 
-        //    // Assert
-        //    Assert.AreEqual(value, retrievedMetadata);
-        //}
-
-        //[TestMethod]
-        //public void SaveAndLoadItems_ShouldPreserveDataIntegrity()
-        //{
-        //    // Arrange
-        //    var data = "TestData";
-        //    var identifier = _vault.Add(data);
-        //    _vault.AddMetadata(identifier, "Description", "Saved TestData");
-
-        //    var filePath = "vaultData.json";
-
-        //    // Act
-        //    _vault.SaveSelectedItemsToFile(new[] { identifier }, filePath);
-        //    _vault.LoadSelectedItemsFromFile(filePath);
-
-        //    var loadedData = _vault.Get(identifier);
-        //    var loadedMetadata = _vault.GetMetadata(identifier, "Description");
-
-        //    // Assert
-        //    Assert.AreEqual(data, loadedData);
-        //    Assert.AreEqual("Saved TestData", loadedMetadata);
-        //}
+            // Assert
+            Assert.IsNotNull(retrievedMetadata);
+            Assert.AreEqual(metadata.Description, retrievedMetadata.Description);
+            Assert.AreEqual(metadata.Identifier, retrievedMetadata.Identifier);
+        }
     }
 }
+
