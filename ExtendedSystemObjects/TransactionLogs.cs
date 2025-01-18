@@ -22,6 +22,13 @@ namespace ExtendedSystemObjects
     public sealed class TransactionLogs
     {
         /// <summary>
+        ///     The lock for non-thread-safe operations.
+        /// </summary>
+        private readonly object _lock = new();
+
+        private int _changedFlag; // 0 = false, 1 = true
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="TransactionLogs" /> class.
         /// </summary>
         public TransactionLogs()
@@ -32,9 +39,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The changelog
         /// </summary>
-        public ConcurrentDictionary<int, LogEntry> Changelog { get; init; }
-
-        private int _changedFlag; // 0 = false, 1 = true
+        public ConcurrentDictionary<int, LogEntry> Changelog { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="TransactionLogs" /> is changed.
@@ -49,11 +54,6 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// The lock for non-thread-safe operations.
-        /// </summary>
-        private readonly object _lock = new object();
-
-        /// <summary>
         ///     Adds the specified unique identifier.
         /// </summary>
         /// <param name="uniqueIdentifier">The unique identifier.</param>
@@ -65,10 +65,7 @@ namespace ExtendedSystemObjects
             {
                 var log = new LogEntry
                 {
-                    State = LogState.Add,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier,
-                    StartData = startData
+                    State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
                 };
 
                 // Add the new log entry to the Changelog
@@ -91,9 +88,7 @@ namespace ExtendedSystemObjects
                     var item = Changelog[id].Data;
                     var log = new LogEntry
                     {
-                        State = LogState.Remove,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changelog[Changelog.Count] = log; // Add remove log entry
                     Changed = true;
@@ -117,9 +112,7 @@ namespace ExtendedSystemObjects
                     {
                         Changelog[entry] = new LogEntry
                         {
-                            State = LogState.Change,
-                            Data = item,
-                            UniqueIdentifier = uniqueIdentifier
+                            State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                         };
                         Changed = true;
                     }
@@ -128,9 +121,7 @@ namespace ExtendedSystemObjects
                 {
                     var log = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changelog[Changelog.Count] = log; // Add change log entry
                     Changed = true;
@@ -150,7 +141,8 @@ namespace ExtendedSystemObjects
                 var unique = Changelog[id].UniqueIdentifier;
 
                 foreach (var item in Changelog.Reverse().Where(item =>
-                             item.Key < id && item.Value.UniqueIdentifier == unique && item.Value.State == LogState.Add))
+                             item.Key < id && item.Value.UniqueIdentifier == unique &&
+                             item.Value.State == LogState.Add))
                 {
                     return item.Key;
                 }

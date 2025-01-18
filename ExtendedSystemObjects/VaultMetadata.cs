@@ -18,7 +18,7 @@ namespace ExtendedSystemObjects
     public sealed class VaultMetadata
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="VaultMetadata"/> class.
+        ///     Initializes a new instance of the <see cref="VaultMetadata" /> class.
         /// </summary>
         /// <param name="identifier">The identifier.</param>
         /// <param name="creationDate">The creation date.</param>
@@ -29,42 +29,42 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VaultMetadata"/> class.
+        ///     Initializes a new instance of the <see cref="VaultMetadata" /> class.
         /// </summary>
         public VaultMetadata()
         {
         }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the identifier.
         /// </summary>
         /// <value>
-        /// The identifier.
+        ///     The identifier.
         /// </value>
-        public long Identifier { get; internal set; }
+        public long Identifier { get; internal init; }
 
         /// <summary>
-        /// Gets or sets the creation date.
+        ///     Gets or sets the creation date.
         /// </summary>
         /// <value>
-        /// The creation date.
+        ///     The creation date.
         /// </value>
         public DateTime CreationDate { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the description.
+        ///     Gets or sets the description.
         /// </summary>
         /// <value>
-        /// The description.
+        ///     The description.
         /// </value>
         public string Description { get; init; }
 
         /// <summary>
-        /// Gets or sets the additional metadata.
-        /// Future Proving for custom user data.
+        ///     Gets or sets the additional metadata.
+        ///     Future Proving for custom user data.
         /// </summary>
         /// <value>
-        /// The additional metadata.
+        ///     The additional metadata.
         /// </value>
         public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
     }

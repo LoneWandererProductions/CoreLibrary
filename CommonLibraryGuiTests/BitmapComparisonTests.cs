@@ -24,17 +24,6 @@ namespace CommonLibraryGuiTests
     [TestFixture]
     public class BitmapRenderingTests
     {
-
-        /// <summary>
-        /// The iterations, Number of iterations for averaging
-        /// </summary>
-        private const int Iterations = 10;
-
-        /// <summary>
-        /// The tolerance, Allowable time difference in milliseconds 
-        /// </summary>
-        private const double Tolerance = 1.0; 
-
         /// <summary>
         ///     Setups this instance.
         /// </summary>
@@ -56,12 +45,22 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
+        ///     The iterations, Number of iterations for averaging
+        /// </summary>
+        private const int Iterations = 10;
+
+        /// <summary>
+        ///     The tolerance, Allowable time difference in milliseconds
+        /// </summary>
+        private const double Tolerance = 1.0;
+
+        /// <summary>
         ///     The test bitmap
         /// </summary>
         private Bitmap _testBitmap;
 
         /// <summary>
-        /// Compares the rendering speeds of Media.Image and NativeBitmapDisplay.
+        ///     Compares the rendering speeds of Media.Image and NativeBitmapDisplay.
         /// </summary>
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -78,26 +77,27 @@ namespace CommonLibraryGuiTests
 
             // Assert with tolerance
             Assert.IsTrue(nativeDisplayTime <= mediaImageTime + Tolerance,
-                $"NativeBitmapDisplay should be as fast or faster than Media.Image rendering. " +
+                "NativeBitmapDisplay should be as fast or faster than Media.Image rendering. " +
                 $"Difference: {nativeDisplayTime - mediaImageTime}ms (Tolerance: {Tolerance}ms)");
         }
 
         /// <summary>
-        /// Measures the average execution time of a given action over a specified number of iterations.
+        ///     Measures the average execution time of a given action over a specified number of iterations.
         /// </summary>
         private static double MeasureAverageTime(Func<double> measureFunction, int iterations)
         {
             double totalTime = 0;
-            for (int i = 0; i < iterations; i++)
+            for (var i = 0; i < iterations; i++)
             {
                 totalTime += measureFunction();
             }
+
             return totalTime / iterations;
         }
 
         /// <summary>
-        /// Simulates measuring the rendering time for Media.Image.
-        /// Replace this method with actual rendering logic.
+        ///     Simulates measuring the rendering time for Media.Image.
+        ///     Replace this method with actual rendering logic.
         /// </summary>
         private static double MeasureMediaImageRendering()
         {
@@ -109,8 +109,8 @@ namespace CommonLibraryGuiTests
         }
 
         /// <summary>
-        /// Simulates measuring the rendering time for NativeBitmapDisplay.
-        /// Replace this method with actual rendering logic.
+        ///     Simulates measuring the rendering time for NativeBitmapDisplay.
+        ///     Replace this method with actual rendering logic.
         /// </summary>
         private static double MeasureNativeBitmapRendering()
         {

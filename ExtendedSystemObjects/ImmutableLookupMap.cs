@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -87,6 +90,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Returns an enumerator for iterating over the key-value pairs in the map.
         /// </summary>
@@ -172,33 +176,6 @@ namespace ExtendedSystemObjects
         }
 
         // Helper Methods
-
-        /// <summary>
-        ///     Adds the specified key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="capacity">The capacity.</param>
-        /// <exception cref="System.InvalidOperationException">Duplicate key detected: {key}</exception>
-        private void Add(TKey key, TValue value, int capacity)
-        {
-            var hash = GetHash(key, capacity);
-
-            while (_keyPresence[hash])
-            {
-                if (_keys[hash].Equals(key))
-                {
-                    throw new InvalidOperationException(
-                        $"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
-                }
-
-                hash = (hash + 1) % capacity; // Linear probing
-            }
-
-            _keys[hash] = key;
-            _values[hash] = value;
-            _keyPresence[hash] = true;
-        }
 
         /// <summary>
         ///     Gets the hash.

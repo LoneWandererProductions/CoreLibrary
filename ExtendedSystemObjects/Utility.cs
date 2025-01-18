@@ -34,17 +34,21 @@ namespace ExtendedSystemObjects
         public static int GetFirstAvailableIndex(List<int> lst)
         {
             if (lst == null)
+            {
                 throw new ArgumentNullException(nameof(lst));
+            }
 
             lock (lst) // Ensure exclusive access to the list
             {
                 // Materialize the IEnumerable to avoid multiple enumerations
                 var snapshot = new HashSet<int>(lst.ToList());
 
-                for (int i = 0; i < int.MaxValue; i++)
+                for (var i = 0; i < int.MaxValue; i++)
                 {
                     if (!snapshot.Contains(i))
+                    {
                         return i;
+                    }
                 }
             }
 
@@ -62,7 +66,9 @@ namespace ExtendedSystemObjects
         public static long GetFirstAvailableIndex(List<long> lst)
         {
             if (lst == null)
+            {
                 throw new ArgumentNullException(nameof(lst));
+            }
 
             lock (lst) // Ensure exclusive access to the list
             {
@@ -72,7 +78,9 @@ namespace ExtendedSystemObjects
                 for (long i = 0; i < long.MaxValue; i++)
                 {
                     if (!snapshot.Contains(i))
+                    {
                         return i;
+                    }
                 }
             }
 

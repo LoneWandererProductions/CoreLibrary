@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+
 using System.Collections.Generic;
 
 namespace Debugger

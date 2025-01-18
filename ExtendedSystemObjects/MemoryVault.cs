@@ -10,35 +10,51 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 
 namespace ExtendedSystemObjects
 {
     /// <inheritdoc />
     /// <summary>
-    /// A thread-safe memory vault for managing data with expiration and metadata enrichment.
+    ///     A thread-safe memory vault for managing data with expiration and metadata enrichment.
     /// </summary>
     /// <typeparam name="TU">Generic type of the data being stored.</typeparam>
     public sealed class MemoryVault<TU> : IDisposable
     {
         /// <summary>
-        /// The instance
+        ///     The instance
         /// </summary>
         private static MemoryVault<TU> _instance;
 
         /// <summary>
-        /// The instance lock
+        ///     The instance lock
         /// </summary>
         private static readonly object InstanceLock = new();
 
         /// <summary>
-        /// Public static property to access the Singleton instance
+        ///     The lock
+        /// </summary>
+        private readonly ReaderWriterLockSlim _lock = new();
+
+        /// <summary>
+        ///     The vault
+        /// </summary>
+        private readonly Dictionary<long, VaultItem<TU>> _vault;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MemoryVault{TU}" /> class.
+        /// </summary>
+        private MemoryVault()
+        {
+            _vault = new Dictionary<long, VaultItem<TU>>();
+        }
+
+        /// <summary>
+        ///     Public static property to access the Singleton instance
         /// </summary>
         /// <value>
-        /// The instance.
+        ///     The instance.
         /// </value>
         public static MemoryVault<TU> Instance
         {
@@ -51,26 +67,17 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// The vault
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        private readonly Dictionary<long, VaultItem<TU>> _vault;
-
-        /// <summary>
-        /// The lock
-        /// </summary>
-        private readonly ReaderWriterLockSlim _lock = new();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryVault{TU}"/> class.
-        /// </summary>
-        public MemoryVault()
+        public void Dispose()
         {
-            _vault = new Dictionary<long, VaultItem<TU>>();
+            _lock?.Dispose();
         }
 
         /// <summary>
-        /// Adds data to the vault with an optional expiration time.
+        ///     Adds data to the vault with an optional expiration time.
         /// </summary>
         public long Add(TU data, TimeSpan? expiryTime = null, string description = "", long identifier = -1)
         {
@@ -97,7 +104,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Gets the data by its identifier.
+        ///     Gets the data by its identifier.
         /// </summary>
         public TU Get(long identifier)
         {
@@ -129,7 +136,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes an item from the vault by its identifier.
+        ///     Removes an item from the vault by its identifier.
         /// </summary>
         public bool Remove(long identifier)
         {
@@ -145,7 +152,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Gets all non-expired items in the vault.
+        ///     Gets all non-expired items in the vault.
         /// </summary>
         public List<TU> GetAll()
         {
@@ -181,12 +188,14 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Adds metadata to an item.
+        ///     Adds metadata to an item.
         /// </summary>
         public void AddMetadata(long identifier, VaultMetadata metaData)
         {
             if (metaData == null)
+            {
                 throw new ArgumentNullException(nameof(metaData));
+            }
 
             _lock.EnterWriteLock();
             try
@@ -204,7 +213,7 @@ namespace ExtendedSystemObjects
 
 
         /// <summary>
-        /// Retrieves metadata for an item.
+        ///     Retrieves metadata for an item.
         /// </summary>
         public VaultMetadata GetMetadata(long identifier)
         {
@@ -225,15 +234,6 @@ namespace ExtendedSystemObjects
             }
 
             return null;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _lock?.Dispose();
         }
     }
 }
