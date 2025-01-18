@@ -8,11 +8,13 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects
 {
@@ -24,14 +26,57 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Get the first available index.
         ///     Only usable for positive int Values
+        ///     Thread Safe
         /// </summary>
         /// <param name="lst">The List.</param>
         /// <returns>The first available Index<see cref="int" />.</returns>
-        public static int GetFirstAvailableIndex(IEnumerable<int> lst)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetFirstAvailableIndex(List<int> lst)
         {
-            return Enumerable.Range(0, int.MaxValue)
-                .Except(lst)
-                .FirstOrDefault();
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            lock (lst) // Ensure exclusive access to the list
+            {
+                // Materialize the IEnumerable to avoid multiple enumerations
+                var snapshot = new HashSet<int>(lst.ToList());
+
+                for (int i = 0; i < int.MaxValue; i++)
+                {
+                    if (!snapshot.Contains(i))
+                        return i;
+                }
+            }
+
+            throw new InvalidOperationException("No available index found.");
+        }
+
+        /// <summary>
+        ///     Get the first available index.
+        ///     Only usable for positive long Values
+        ///     Thread Safe
+        /// </summary>
+        /// <param name="lst">The List.</param>
+        /// <returns>The first available Index<see cref="long" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long GetFirstAvailableIndex(List<long> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            lock (lst) // Ensure exclusive access to the list
+            {
+                // Materialize the IEnumerable to avoid multiple enumerations
+                var snapshot = new HashSet<long>(lst.ToList());
+
+                for (long i = 0; i < long.MaxValue; i++)
+                {
+                    if (!snapshot.Contains(i))
+                        return i;
+                }
+            }
+
+            throw new InvalidOperationException("No available index found.");
         }
 
         /// <summary>

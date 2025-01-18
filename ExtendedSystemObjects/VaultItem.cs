@@ -53,6 +53,19 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="VaultItem{U}"/> class.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="expiryTime">The expiry time.</param>
+        /// <param name="description">A short description of the item, optional.</param>
+        public VaultItem(U data, TimeSpan expiryTime, string description = "")
+        {
+            Data = data;
+            ExpiryTime = expiryTime;
+            ExpiryDate = DateTime.UtcNow.Add(expiryTime);
+        }
+
+        /// <summary>
         /// HasExpired checks if the item has passed its expiration timed.
         /// </summary>
         /// <value>
