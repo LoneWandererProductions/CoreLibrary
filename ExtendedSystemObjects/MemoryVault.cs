@@ -9,6 +9,8 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
+
 
 using System;
 using System.Collections.Generic;
@@ -397,24 +399,29 @@ namespace ExtendedSystemObjects
                 // Deserialize the JSON string to a VaultItem<TU>
                 var item = JsonSerializer.Deserialize<VaultItem<TU>>(json);
 
-                var identifier = Add(item.Data);
-
-                //set metadata
-                var metadata = new VaultMetadata
+                if (item != null)
                 {
-                    Description = item.Description,
-                    CreationDate = item.CreationDate,
-                    AdditionalMetadata = item.AdditionalMetadata
-                };
+                    var identifier = Add(item.Data);
 
-                AddMetadata(identifier, metadata);
+                    //set metadata
+                    var metadata = new VaultMetadata
+                    {
+                        Description = item.Description,
+                        CreationDate = item.CreationDate,
+                        AdditionalMetadata = item.AdditionalMetadata
+                    };
 
-                return identifier;
+                    AddMetadata(identifier, metadata);
+
+                    return identifier;
+                }
             }
             catch (Exception)
             {
                 return -1; // Return -1 if loading fails
             }
+
+            return -1; // Return -1 if loading fails
         }
     }
 }
