@@ -60,12 +60,20 @@ namespace ExtendedSystemObjects
         public string Description { get; init; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance has expire time.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasExpireTime { get; set; }
+
+        /// <summary>
         ///     Gets or sets the additional metadata.
         ///     Future Proving for custom user data.
         /// </summary>
         /// <value>
         ///     The additional metadata.
         /// </value>
-        public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
+        public Dictionary<string, object> AdditionalMetadata { get; init; } = new();
     }
 }

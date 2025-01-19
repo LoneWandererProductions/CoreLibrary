@@ -52,23 +52,6 @@ namespace CommonLibraryTests
         }
 
         [TestMethod]
-        public void GetData_ShouldReturnDefaultWhenExpired()
-        {
-            // Arrange
-            var data = "TestData";
-            var identifier = _vault.Add(data, TimeSpan.FromMilliseconds(100)); // Expiry after 100ms
-
-            // Wait for the item to expire
-            Thread.Sleep(200);
-
-            // Act
-            var retrievedData = _vault.Get(identifier);
-
-            // Assert
-            Assert.IsNull(retrievedData);
-        }
-
-        [TestMethod]
         public void RemoveData_ShouldRemoveCorrectItem()
         {
             // Arrange
@@ -84,6 +67,9 @@ namespace CommonLibraryTests
             Assert.IsNull(retrievedData);
         }
 
+        /// <summary>
+        /// Adds the metadata should store metadata correctly.
+        /// </summary>
         [TestMethod]
         public void AddMetadata_ShouldStoreMetadataCorrectly()
         {
@@ -103,6 +89,55 @@ namespace CommonLibraryTests
             Assert.IsNotNull(retrievedMetadata);
             Assert.AreEqual(metadata.Description, retrievedMetadata.Description);
             Assert.AreEqual(metadata.Identifier, retrievedMetadata.Identifier);
+        }
+
+        [TestMethod]
+        public void Save_ShouldPersistData()
+        {
+            // Arrange
+            var data = "TestData";
+            var identifier = _vault.Add(data);
+
+            // Act
+            var filePath = "vault_test_data.json";
+            _vault.SaveToDisk(identifier,filePath);
+
+            // Simulate creating a new vault instance and loading the saved data
+            var newVault = MemoryVault<string>.Instance;
+
+            // Load the data from the file
+            newVault.LoadFromDisk(filePath);
+
+            // Assert
+            var retrievedData = newVault.Get(identifier);
+            Assert.AreEqual(data, retrievedData);
+        }
+
+        [TestMethod]
+        public void Save_ShouldPersistExpiredDataCorrectly()
+        {
+            // Arrange
+            var data = "TestData";
+            var identifier = _vault.Add(data, TimeSpan.FromMilliseconds(100)); // Expiry after 100ms
+
+            // Act
+            var filePath = "vault_test_expired_data.json";
+            _vault.SaveToDisk(identifier, filePath);
+
+            // Simulate creating a new vault instance and loading the saved data
+            var newVault = MemoryVault<string>.Instance;
+
+            // Load the data from the file
+            identifier = newVault.LoadFromDisk(filePath);
+
+            // Wait for the item to expire
+            Thread.Sleep(200);
+
+            // Act
+            var retrievedData = newVault.Get(identifier);
+
+            // Assert
+            Assert.IsNull(retrievedData); // Data should be null because it's expired
         }
     }
 }
