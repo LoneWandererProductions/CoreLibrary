@@ -36,6 +36,9 @@ namespace Imaging
     /// <seealso cref="T:System.IDisposable" />
     public sealed class DirectBitmap : IDisposable
     {
+        /// <summary>
+        /// The synchronize lock
+        /// </summary>
         private readonly object _syncLock = new();
 
         /// <summary>
