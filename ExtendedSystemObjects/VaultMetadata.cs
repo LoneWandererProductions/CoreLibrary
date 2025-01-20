@@ -60,10 +60,10 @@ namespace ExtendedSystemObjects
         public string Description { get; init; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance has expire time.
+        ///     Gets or sets a value indicating whether this instance has expire time.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
         /// </value>
         public bool HasExpireTime { get; set; }
 

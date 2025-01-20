@@ -15,13 +15,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Validate Vertical lines mostly
+    ///     Validate Vertical lines mostly
     /// </summary>
     [TestClass]
     public class DirectBitmapValidation
     {
         /// <summary>
-        /// Draws the single vertical line should modify bits correctly.
+        ///     Draws the single vertical line should modify bits correctly.
         /// </summary>
         [TestMethod]
         public void DrawSingleVerticalLineShouldModifyBitsCorrectly()
@@ -47,7 +47,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Draws the single vertical line within bounds should modify bits correctly.
+        ///     Draws the single vertical line within bounds should modify bits correctly.
         /// </summary>
         [TestMethod]
         public void DrawSingleVerticalLineWithinBoundsShouldModifyBitsCorrectly()
@@ -76,15 +76,19 @@ namespace CommonLibraryTests
             {
                 for (var y = 0; y <= height; y++)
                 {
-                    if (x == 5 && y >= 2 && y <= 8) continue; // Skip the drawn vertical line
+                    if (x == 5 && y >= 2 && y <= 8)
+                    {
+                        continue; // Skip the drawn vertical line
+                    }
 
-                    Assert.AreEqual(0, target.Bits[x + y * (width + 1)], $"Pixel at ({x}, {y}) was unexpectedly modified.");
+                    Assert.AreEqual(0, target.Bits[x + (y * (width + 1))],
+                        $"Pixel at ({x}, {y}) was unexpectedly modified.");
                 }
             }
         }
 
         /// <summary>
-        /// Draws the vertical lines simd multiple lines should handle correctly.
+        ///     Draws the vertical lines simd multiple lines should handle correctly.
         /// </summary>
         [TestMethod]
         public void DrawVerticalLinesSimdMultipleLinesShouldHandleCorrectly()
@@ -105,8 +109,15 @@ namespace CommonLibraryTests
             target.DrawVerticalLinesSimd(verticalLines);
 
             // Assert
-            for (var y = 1; y < 5; y++) Assert.AreEqual(red, target.Bits[1 + (y * width)]);
-            for (var y = 3; y < 8; y++) Assert.AreEqual(blue, target.Bits[2 + (y * width)]);
+            for (var y = 1; y < 5; y++)
+            {
+                Assert.AreEqual(red, target.Bits[1 + (y * width)]);
+            }
+
+            for (var y = 3; y < 8; y++)
+            {
+                Assert.AreEqual(blue, target.Bits[2 + (y * width)]);
+            }
         }
     }
 }

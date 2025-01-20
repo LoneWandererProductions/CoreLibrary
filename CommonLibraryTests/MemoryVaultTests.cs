@@ -68,7 +68,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Adds the metadata should store metadata correctly.
+        ///     Adds the metadata should store metadata correctly.
         /// </summary>
         [TestMethod]
         public void AddMetadata_ShouldStoreMetadataCorrectly()
@@ -100,7 +100,7 @@ namespace CommonLibraryTests
 
             // Act
             var filePath = "vault_test_data.json";
-            _vault.SaveToDisk(identifier,filePath);
+            _vault.SaveToDisk(identifier, filePath);
 
             // Simulate creating a new vault instance and loading the saved data
             var newVault = MemoryVault<string>.Instance;

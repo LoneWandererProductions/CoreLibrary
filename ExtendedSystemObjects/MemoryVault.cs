@@ -39,6 +39,11 @@ namespace ExtendedSystemObjects
         private static readonly object InstanceLock = new();
 
         /// <summary>
+        ///     The cleanup timer
+        /// </summary>
+        private readonly Timer _cleanupTimer;
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly ReaderWriterLockSlim _lock = new();
@@ -49,18 +54,14 @@ namespace ExtendedSystemObjects
         private readonly Dictionary<long, VaultItem<TU>> _vault;
 
         /// <summary>
-        /// The cleanup timer
-        /// </summary>
-        private readonly Timer _cleanupTimer;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="MemoryVault{TU}" /> class.
         /// </summary>
         private MemoryVault()
         {
             _vault = new Dictionary<long, VaultItem<TU>>();
             // Initialize the cleanup timer
-            _cleanupTimer = new Timer(CleanupExpiredItems, null, TimeSpan.Zero, TimeSpan.FromMinutes(5)); // Run every 5 minutes
+            _cleanupTimer =
+                new Timer(CleanupExpiredItems, null, TimeSpan.Zero, TimeSpan.FromMinutes(5)); // Run every 5 minutes
         }
 
         /// <summary>
@@ -81,15 +82,10 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// The memory usage threshold in bytes.
-        /// If the memory usage exceeds this value, the event will be triggered.
+        ///     The memory usage threshold in bytes.
+        ///     If the memory usage exceeds this value, the event will be triggered.
         /// </summary>
         public long MemoryThreshold { get; set; } = 10 * 1024 * 1024; // Default 10 MB
-
-        /// <summary>
-        /// Event triggered when memory usage exceeds the threshold.
-        /// </summary>
-        public event EventHandler<VaultMemoryThresholdExceededEventArgs> MemoryThresholdExceeded;
 
         /// <inheritdoc />
         /// <summary>
@@ -100,6 +96,11 @@ namespace ExtendedSystemObjects
             _lock?.Dispose();
             _cleanupTimer?.Dispose();
         }
+
+        /// <summary>
+        ///     Event triggered when memory usage exceeds the threshold.
+        /// </summary>
+        public event EventHandler<VaultMemoryThresholdExceededEventArgs> MemoryThresholdExceeded;
 
         /// <summary>
         ///     Adds data to the vault with an optional expiration time.
@@ -171,7 +172,8 @@ namespace ExtendedSystemObjects
                 }
 
                 // If the item is not found, return default value
-                return default; // Or you can throw an exception or return a specific value depending on your requirements
+                return
+                    default; // Or you can throw an exception or return a specific value depending on your requirements
             }
             finally
             {
@@ -248,7 +250,7 @@ namespace ExtendedSystemObjects
 
 
         /// <summary>
-        /// Cleanups the expired items.
+        ///     Cleanups the expired items.
         /// </summary>
         /// <param name="state">The state.</param>
         private void CleanupExpiredItems(object state)
@@ -256,7 +258,8 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                foreach (var key in _vault.Where(kvp => kvp.Value.HasExpired && kvp.Value.HasExpireTime).Select(kvp => kvp.Key).ToList())
+                foreach (var key in _vault.Where(kvp => kvp.Value.HasExpired && kvp.Value.HasExpireTime)
+                             .Select(kvp => kvp.Key).ToList())
                 {
                     _vault.Remove(key);
                 }
@@ -268,7 +271,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Calculates the current memory usage of the vault.
+        ///     Calculates the current memory usage of the vault.
         /// </summary>
         private long CalculateMemoryUsage()
         {
@@ -359,7 +362,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Saves an item to disk by its identifier in a binary format.
+        ///     Saves an item to disk by its identifier in a binary format.
         /// </summary>
         /// <param name="identifier">The identifier of the item.</param>
         /// <param name="filePath">The file path to save the item.</param>
@@ -368,10 +371,10 @@ namespace ExtendedSystemObjects
         {
             try
             {
-                var item = _vault[identifier];  // Retrieve the item from the vault
+                var item = _vault[identifier]; // Retrieve the item from the vault
 
                 // Serialize the VaultItem to JSON
-                string json = JsonSerializer.Serialize(item);
+                var json = JsonSerializer.Serialize(item);
 
                 // Write the JSON string to a file
                 File.WriteAllText(filePath, json);
@@ -385,7 +388,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Loads an item from disk into the vault from a binary format.
+        ///     Loads an item from disk into the vault from a binary format.
         /// </summary>
         /// <param name="filePath">The file path of the saved item.</param>
         /// <returns>The identifier of the loaded item, or -1 if loading fails.</returns>
@@ -394,7 +397,7 @@ namespace ExtendedSystemObjects
             try
             {
                 // Read the JSON string from the file
-                string json = File.ReadAllText(filePath);
+                var json = File.ReadAllText(filePath);
 
                 // Deserialize the JSON string to a VaultItem<TU>
                 var item = JsonSerializer.Deserialize<VaultItem<TU>>(json);

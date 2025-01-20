@@ -35,34 +35,41 @@ namespace ExtendedSystemObjects
         {
             Data = data;
             ExpiryTime = expiryTime;
-            if (expiryTime != null) ExpiryDate = DateTime.UtcNow.Add((TimeSpan)expiryTime);
-            else HasExpireTime = false;
+            if (expiryTime != null)
+            {
+                ExpiryDate = DateTime.UtcNow.Add((TimeSpan)expiryTime);
+            }
+            else
+            {
+                HasExpireTime = false;
+            }
+
             Description = description;
             CreationDate = DateTime.Now;
             DataSize = MeasureMemoryUsage(data);
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance has expire time.
+        ///     Gets or sets a value indicating whether this instance has expire time.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
         /// </value>
         public bool HasExpireTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the size of the data.
+        ///     Gets or sets the size of the data.
         /// </summary>
         /// <value>
-        /// The size of the data.
+        ///     The size of the data.
         /// </value>
         public long DataSize { get; }
 
         /// <summary>
-        /// Gets or sets the data.
+        ///     Gets or sets the data.
         /// </summary>
         /// <value>
-        /// The data.
+        ///     The data.
         /// </value>
         public TU Data { get; }
 
@@ -107,23 +114,6 @@ namespace ExtendedSystemObjects
         public bool HasExpired => DateTime.UtcNow > ExpiryDate;
 
         /// <summary>
-        /// Calculates the size of an object using memory allocation.
-        /// </summary>
-        /// <typeparam name="T">The type of the object.</typeparam>
-        /// <param name="data">The object to calculate the size of.</param>
-        /// <returns>The size in bytes.</returns>
-        private static long MeasureMemoryUsage<T>(T data)
-        {
-            if (data == null)
-                return 0;
-
-            var before = GC.GetTotalMemory(true);
-            _ = data; // Ensures the data is referenced
-            var after = GC.GetTotalMemory(true);
-            return after - before;
-        }
-
-        /// <summary>
         ///     Gets or sets the additional metadata.
         ///     Future Proving for custom user data.
         /// </summary>
@@ -131,5 +121,24 @@ namespace ExtendedSystemObjects
         ///     The additional metadata.
         /// </value>
         public Dictionary<string, object> AdditionalMetadata { get; init; } = new();
+
+        /// <summary>
+        ///     Calculates the size of an object using memory allocation.
+        /// </summary>
+        /// <typeparam name="T">The type of the object.</typeparam>
+        /// <param name="data">The object to calculate the size of.</param>
+        /// <returns>The size in bytes.</returns>
+        private static long MeasureMemoryUsage<T>(T data)
+        {
+            if (data == null)
+            {
+                return 0;
+            }
+
+            var before = GC.GetTotalMemory(true);
+            _ = data; // Ensures the data is referenced
+            var after = GC.GetTotalMemory(true);
+            return after - before;
+        }
     }
 }

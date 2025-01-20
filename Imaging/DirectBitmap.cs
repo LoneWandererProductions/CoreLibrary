@@ -417,7 +417,7 @@ namespace Imaging
                     var colorArgb = color.ToArgb();
 
                     // Starting position in the Bits array
-                    var position = x + y * Width;
+                    var position = x + (y * Width);
 
                     // Calculate the number of rows in the vertical line
                     var rowCount = finalY - y + 1;
@@ -436,7 +436,7 @@ namespace Imaging
                     for (var i = 0; i < alignedRowCount; i += vectorSize)
                     {
                         // Calculate the start of the current segment
-                        var currentPosition = position + i * Width;
+                        var currentPosition = position + (i * Width);
 
                         // Get a slice of the span for SIMD processing
                         var segment = bitsSpan.Slice(currentPosition, vectorSize);
@@ -448,7 +448,7 @@ namespace Imaging
                     // Handle the remaining pixels
                     for (var i = alignedRowCount; i < rowCount; i++)
                     {
-                        bitsSpan[position + i * Width] = colorArgb;
+                        bitsSpan[position + (i * Width)] = colorArgb;
                     }
                 }
             }
