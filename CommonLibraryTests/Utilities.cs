@@ -116,13 +116,26 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Finds the sequences should return correct result when there are sequences.
+        ///     Finds the sequences should return correct result when there are sequences.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldReturnCorrectResultWhenThereAreSequences()
         {
             // Arrange
-            var numbers = new List<int> { 1, 1, 2, 4, 4, 5, 6, 6, 2, 3, 3 };
+            var numbers = new List<int>
+            {
+                1,
+                1,
+                2,
+                4,
+                4,
+                5,
+                6,
+                6,
+                2,
+                3,
+                3
+            };
 
             // Act
             var result = Utility.FindSequences(numbers);
@@ -140,7 +153,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Finds the sequences should return empty when list is empty.
+        ///     Finds the sequences should return empty when list is empty.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldReturnEmptyWhenListIsEmpty()
@@ -156,7 +169,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Finds the sequences should return single sequence when all values are same.
+        ///     Finds the sequences should return single sequence when all values are same.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldReturnSingleSequenceWhenAllValuesAreSame()
@@ -173,7 +186,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Finds the sequences should handle single element list.
+        ///     Finds the sequences should handle single element list.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldHandleSingleElementList()
@@ -190,13 +203,20 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Finds the sequences should return correct result when no sequences.
+        ///     Finds the sequences should return correct result when no sequences.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldReturnCorrectResultWhenNoSequences()
         {
             // Arrange
-            var numbers = new List<int> { 1, 2, 3, 4, 5 };
+            var numbers = new List<int>
+            {
+                1,
+                2,
+                3,
+                4,
+                5
+            };
 
             // Act
             var result = Utility.FindSequences(numbers);
@@ -211,13 +231,26 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Finds the sequences should return correct result when list has mixed sequences.
+        ///     Finds the sequences should return correct result when list has mixed sequences.
         /// </summary>
         [TestMethod]
         public void FindSequencesShouldReturnCorrectResultWhenListHasMixedSequences()
         {
             // Arrange
-            var numbers = new List<int> { 1, 1, 2, 4, 4, 5, 5, 5, 6, 6, 7 };
+            var numbers = new List<int>
+            {
+                1,
+                1,
+                2,
+                4,
+                4,
+                5,
+                5,
+                5,
+                6,
+                6,
+                7
+            };
 
             // Act
             var result = Utility.FindSequences(numbers);

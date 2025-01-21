@@ -310,8 +310,8 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Finds the sequences.
-        /// Looks for consecutive numbers in a sequence.
+        ///     Finds the sequences.
+        ///     Looks for consecutive numbers in a sequence.
         /// </summary>
         /// <param name="numbers">The numbers.</param>
         /// <returns>Return the start, end, and the repeated value of that streak.</returns>
@@ -320,7 +320,9 @@ namespace ExtendedSystemObjects
             var result = new List<(int start, int end, int value)>();
 
             if (numbers == null || numbers.Count == 0)
+            {
                 return result;
+            }
 
             var start = 0;
             for (var i = 1; i <= numbers.Count; i++)

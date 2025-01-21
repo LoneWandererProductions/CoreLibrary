@@ -402,18 +402,18 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Draws the vertical lines.
+        ///     Draws the vertical lines.
         /// </summary>
         /// <param name="verticalLines">The vertical lines.</param>
         public void DrawVerticalLines(IEnumerable<(int x, int y, int finalY, Color color)> verticalLines)
         {
-            _ = Parallel.ForEach(verticalLines, (line) =>
-              {
-                  var (x, y, finalY, color) = line;
-                  var colorArgb = color.ToArgb();
+            _ = Parallel.ForEach(verticalLines, line =>
+            {
+                var (x, y, finalY, color) = line;
+                var colorArgb = color.ToArgb();
 
                 // Starting position in the Bits array
-                var position = x + y * Width;
+                var position = x + (y * Width);
 
                 // Calculate the number of rows in the vertical line
                 var rowCount = finalY - y + 1;
@@ -423,10 +423,10 @@ namespace Imaging
 
                 // Set the color for each pixel in the vertical line
                 for (var i = 0; i < rowCount; i++)
-                  {
-                      bitsSpan[position + i * Width] = colorArgb;
-                  }
-              });
+                {
+                    bitsSpan[position + (i * Width)] = colorArgb;
+                }
+            });
         }
 
         /// <summary>
