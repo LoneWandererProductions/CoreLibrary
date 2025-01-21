@@ -308,5 +308,34 @@ namespace ExtendedSystemObjects
                     let end = stack[^1]
                     select new KeyValuePair<int, int>(start, end)).ToList();
         }
+
+        /// <summary>
+        /// Finds the sequences.
+        /// Looks for consecutive numbers in a sequence.
+        /// </summary>
+        /// <param name="numbers">The numbers.</param>
+        /// <returns>Return the start, end, and the repeated value of that streak.</returns>
+        public static List<(int start, int end, int value)> FindSequences(List<int> numbers)
+        {
+            var result = new List<(int start, int end, int value)>();
+
+            if (numbers == null || numbers.Count == 0)
+                return result;
+
+            var start = 0;
+            for (var i = 1; i <= numbers.Count; i++)
+            {
+                // Check if we're at the end of a sequence or at the end of the list
+                if (i != numbers.Count && numbers[i] == numbers[start])
+                {
+                    continue;
+                }
+
+                result.Add((start, i - 1, numbers[start]));
+                start = i;
+            }
+
+            return result;
+        }
     }
 }

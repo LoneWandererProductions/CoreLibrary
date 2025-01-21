@@ -86,13 +86,11 @@ namespace ExtendedSystemObjects
                 if (id != -1)
                 {
                     var item = Changelog[id].Data;
-
-                    Changelog[Changelog.Count] = new LogEntry
+                    var log = new LogEntry
                     {
-                        State = LogState.Remove,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
-                    }; // Add remove log entry
+                        State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
+                    };
+                    Changelog[Changelog.Count] = log; // Add remove log entry
                     Changed = true;
                 }
             }

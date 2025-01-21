@@ -36,7 +36,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            target.DrawVerticalLinesSimd(verticalLines);
+            target.DrawVerticalLines(verticalLines);
 
             // Assert
             for (var y = 2; y <= 8; y++) // Include the pixel at finalY
@@ -62,7 +62,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            target.DrawVerticalLinesSimd(verticalLines);
+            target.DrawVerticalLines(verticalLines);
 
             // Assert
             for (var y = 2; y <= 8; y++) // Ensure all expected pixels are tested
@@ -106,7 +106,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            target.DrawVerticalLinesSimd(verticalLines);
+            target.DrawVerticalLines(verticalLines);
 
             // Assert
             for (var y = 1; y < 5; y++)

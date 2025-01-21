@@ -114,5 +114,122 @@ namespace CommonLibraryTests
             Assert.AreEqual(6, result[0].Value, "Sequence 2");
             Assert.AreEqual(5, result[1].Value, "Sequence 2");
         }
+
+        /// <summary>
+        /// Finds the sequences should return correct result when there are sequences.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldReturnCorrectResultWhenThereAreSequences()
+        {
+            // Arrange
+            var numbers = new List<int> { 1, 1, 2, 4, 4, 5, 6, 6, 2, 3, 3 };
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(7, result.Count);
+            Assert.AreEqual((0, 1, 1), result[0]);
+            Assert.AreEqual((2, 2, 2), result[1]);
+            Assert.AreEqual((3, 4, 4), result[2]);
+            Assert.AreEqual((5, 5, 5), result[3]);
+            Assert.AreEqual((6, 7, 6), result[4]);
+            Assert.AreEqual((8, 8, 2), result[5]);
+            Assert.AreEqual((9, 10, 3), result[6]);
+        }
+
+
+        /// <summary>
+        /// Finds the sequences should return empty when list is empty.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldReturnEmptyWhenListIsEmpty()
+        {
+            // Arrange
+            var numbers = new List<int>();
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(0, result.Count);
+        }
+
+        /// <summary>
+        /// Finds the sequences should return single sequence when all values are same.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldReturnSingleSequenceWhenAllValuesAreSame()
+        {
+            // Arrange
+            var numbers = new List<int> { 7, 7, 7, 7 };
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual((0, 3, 7), result[0]);
+        }
+
+        /// <summary>
+        /// Finds the sequences should handle single element list.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldHandleSingleElementList()
+        {
+            // Arrange
+            var numbers = new List<int> { 10 };
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual((0, 0, 10), result[0]);
+        }
+
+        /// <summary>
+        /// Finds the sequences should return correct result when no sequences.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldReturnCorrectResultWhenNoSequences()
+        {
+            // Arrange
+            var numbers = new List<int> { 1, 2, 3, 4, 5 };
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(5, result.Count);
+            Assert.AreEqual((0, 0, 1), result[0]);
+            Assert.AreEqual((1, 1, 2), result[1]);
+            Assert.AreEqual((2, 2, 3), result[2]);
+            Assert.AreEqual((3, 3, 4), result[3]);
+            Assert.AreEqual((4, 4, 5), result[4]);
+        }
+
+        /// <summary>
+        /// Finds the sequences should return correct result when list has mixed sequences.
+        /// </summary>
+        [TestMethod]
+        public void FindSequencesShouldReturnCorrectResultWhenListHasMixedSequences()
+        {
+            // Arrange
+            var numbers = new List<int> { 1, 1, 2, 4, 4, 5, 5, 5, 6, 6, 7 };
+
+            // Act
+            var result = Utility.FindSequences(numbers);
+
+            // Assert
+            Assert.AreEqual(6, result.Count);
+            Assert.AreEqual((0, 1, 1), result[0]);
+            Assert.AreEqual((2, 2, 2), result[1]);
+            Assert.AreEqual((3, 4, 4), result[2]);
+            Assert.AreEqual((5, 7, 5), result[3]);
+            Assert.AreEqual((8, 9, 6), result[4]);
+            Assert.AreEqual((10, 10, 7), result[5]);
+        }
     }
 }
