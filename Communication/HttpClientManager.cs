@@ -8,6 +8,7 @@
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,12 +17,61 @@ namespace Communication
     /// <summary>
     ///     Http Client for sending requests.
     /// </summary>
-    internal static class HttpClientManager
+    public static class HttpClientManager
     {
         /// <summary>
         ///     The HTTP client (static to be shared across all usages).
         /// </summary>
         private static readonly HttpClient HttpClient = new();
+
+        public static async Task<string> CallSoapServiceAsync()
+        {
+            //target url
+            var requestUri = new Uri("");
+            //define commmand in xml body, see CreateSoapRequest
+            var soapAction = "";
+
+            var soapRequest = CreateSoapRequest();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Headers =
+            {
+                { "User-Agent", "insomnia/10.2.0" },
+                { "SOAPAction", soapAction }
+            },
+                Content = new StringContent(soapRequest)
+                {
+                    // Set the correct Content-Type to 'text/xml; charset=utf-8'
+                    Headers = { ContentType = new MediaTypeHeaderValue("text/xml") { CharSet = "utf-8" } }
+                }
+            };
+
+            try
+            {
+                using var response = await HttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode(); // Will throw if not successful
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                // Handle errors (e.g., network issues, timeouts, etc.)
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static string CreateSoapRequest()
+        {
+            // You can structure the SOAP request body using string interpolation for readability
+            return @"<?xml version=""1.0""?>
+            <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:tns=""http://tempuri.org/"">
+               <soapenv:Header/>
+               <soapenv:Body>
+                  <tns:HelloWorld/>
+               </soapenv:Body>
+            </soapenv:Envelope>";
+        }
 
         /// <summary>
         ///     Sends an HTTP request to the specified URL with the given method and body.
