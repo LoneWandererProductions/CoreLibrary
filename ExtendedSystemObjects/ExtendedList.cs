@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/ExtendedList.cs
- * PURPOSE:     Generic System Functions for Lists
+ * PURPOSE:     Generic System Functions for Lists, most operations are not thread safe, so beware.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace ExtendedSystemObjects
@@ -28,6 +29,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">List we want to check</param>
         /// <returns>Empty or not</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty<TValue>(this List<TValue> lst)
         {
             if (lst == null)
