@@ -45,17 +45,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Constructors the initializes bits array.
-        /// </summary>
-        [TestMethod]
-        public void ConstructorInitializesBitsArray()
-        {
-            // Assert that the Bits array is initialized correctly
-            Assert.IsNotNull(_bitmapImage.Bits);
-            Assert.AreEqual(Width * Height, _bitmapImage.Bits.Length);
-        }
-
-        /// <summary>
         ///     Sets the pixels valid pixels updates bitmap.
         /// </summary>
         [TestMethod]
@@ -100,6 +89,17 @@ namespace CommonLibraryTests
                 _bitmapImage.Bits[Width + 1]); // Green
             Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
                 _bitmapImage.Bits[(Width * 2) + 2]); // Blue
+        }
+
+        /// <summary>
+        ///     Constructors the initializes bits array.
+        /// </summary>
+        [TestMethod]
+        public void ConstructorInitializesBitsArray()
+        {
+            // Assert that the Bits array is initialized correctly
+            Assert.IsNotNull(_bitmapImage.Bits);
+            Assert.AreEqual(Width * Height, _bitmapImage.Bits.Length);
         }
 
         /// <summary>

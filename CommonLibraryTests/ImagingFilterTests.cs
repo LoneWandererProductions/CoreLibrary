@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ImageFilterTests.cs
+ * FILE:        CommonLibraryTests/ImagingFilterTests.cs
  * PURPOSE:     Tests for Image Tools, here mostly filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -16,7 +16,7 @@ namespace CommonLibraryTests
     ///     Add some filter tests
     /// </summary>
     [TestClass]
-    public class ImageFilterTests
+    public class ImagingFilterTests
     {
         private readonly ImageRender _render = new();
 
@@ -27,8 +27,7 @@ namespace CommonLibraryTests
         public void PixelateSmallStepWidthPixelsChanged()
         {
             // Arrange
-            var input = CreateTestBitmap(10, 10, Color.Red);
-            var expected = CreateTestBitmap(10, 10, Color.Red); // A simple color, the output should still be red
+            var input = CreateTestBitmap(10, 10, Color.Red);// A simple color, the output should still be red
             var stepWidth = 2;
 
             // Act
@@ -99,8 +98,8 @@ namespace CommonLibraryTests
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="color">The color.</param>
-        /// <returns></returns>
-        private Bitmap CreateTestBitmap(int width, int height, Color color)
+        /// <returns>Test bitmap</returns>
+        private static Bitmap CreateTestBitmap(int width, int height, Color color)
         {
             var bitmap = new Bitmap(width, height);
             using var g = Graphics.FromImage(bitmap);

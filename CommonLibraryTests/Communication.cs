@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Communication;
@@ -37,12 +36,12 @@ namespace CommonLibraryTests
             File.Delete(path);
         }
 
-        [TestMethod]
-        public async Task Untested()
-        {
-            //var str = await HttpClientManager.CallSoapServiceAsync();
+        //[TestMethod]
+        //public async Task Untested()
+        //{
+        //    //var str = await HttpClientManager.CallSoapServiceAsync();
 
-            //Trace.WriteLine(str);
-        }
+        //    //Trace.WriteLine(str);
+        //}
     }
 }

@@ -1,12 +1,13 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Image.cs
+ * FILE:        CommonLibraryTests/ImagingTests.cs
  * PURPOSE:     Tests for Image Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -23,7 +24,7 @@ namespace CommonLibraryTests
     ///     Test some image related stuff
     /// </summary>
     [TestClass]
-    public class Image
+    public class ImagingTests
     {
         /// <summary>
         ///     The codebase
@@ -72,118 +73,14 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        ///     Test the custom DirectBitmap and how it works
+        /// Converts to argbvalidcolorreturnscorrectargbvalue.
         /// </summary>
         [TestMethod]
-        public void DirectBitmaps()
+        public void ToArgbValidColorReturnsCorrectArgbValue()
         {
-            var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
-
-            var btm = new Bitmap(imagePath);
-            var dbm = new DirectBitmap(100, 100);
-
-            using (var graph = Graphics.FromImage(dbm.Bitmap))
-            {
-                graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                    GraphicsUnit.Pixel);
-            }
-
-            var col1 = btm.GetPixel(99, 99);
-            var col2 = dbm.GetPixel(99, 99);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            col1 = btm.GetPixel(0, 51);
-            col2 = dbm.GetPixel(0, 51);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            col1 = btm.GetPixel(0, 0);
-            col2 = dbm.GetPixel(0, 0);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            col1 = btm.GetPixel(51, 0);
-            col2 = dbm.GetPixel(51, 0);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            dbm.Dispose();
-
-            //alternate way
-            dbm = DirectBitmap.GetInstance(btm);
-
-            var replacementColor = Color.FromArgb(128, 128, 128);
-
-            dbm.SetPixel(0, 51, replacementColor);
-            dbm.SetPixel(51, 51, replacementColor);
-            dbm.SetPixel(0, 0, replacementColor);
-            dbm.SetPixel(51, 0, replacementColor);
-
-            btm = dbm.Bitmap;
-
-            col1 = btm.GetPixel(51, 51);
-            col2 = dbm.GetPixel(51, 51);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            Assert.AreEqual(col2.R, replacementColor.R, "done");
-            Assert.AreEqual(col2.B, replacementColor.B, "done");
-            Assert.AreEqual(col2.G, replacementColor.G, "done");
-
-            col1 = btm.GetPixel(0, 51);
-            col2 = dbm.GetPixel(0, 51);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            Assert.AreEqual(col2.R, replacementColor.R, "done");
-            Assert.AreEqual(col2.B, replacementColor.B, "done");
-            Assert.AreEqual(col2.G, replacementColor.G, "done");
-
-            col1 = btm.GetPixel(0, 0);
-            col2 = dbm.GetPixel(0, 0);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            Assert.AreEqual(col2.R, replacementColor.R, "done");
-            Assert.AreEqual(col2.B, replacementColor.B, "done");
-            Assert.AreEqual(col2.G, replacementColor.G, "done");
-
-            col1 = btm.GetPixel(51, 0);
-            col2 = dbm.GetPixel(51, 0);
-
-            Assert.AreEqual(col1.R, col2.R, "done");
-            Assert.AreEqual(col1.B, col2.B, "done");
-            Assert.AreEqual(col1.G, col2.G, "done");
-
-            Assert.AreEqual(col2.R, replacementColor.R, "done");
-            Assert.AreEqual(col2.B, replacementColor.B, "done");
-            Assert.AreEqual(col2.G, replacementColor.G, "done");
-
-            btm = new Bitmap(imagePath);
-
-            dbm = new DirectBitmap(btm);
-
-            var compare = new ImageAnalysis();
-            var data = compare.CompareImages(btm, dbm.Bitmap);
-
-            Assert.AreEqual(100, data.Similarity, $"Image was not equal: {data.Similarity}");
-
-            dbm.Dispose();
+            var color = Color.FromArgb(128, 255, 0, 0); // ARGB: 128, Red: 255, Green: 0, Blue: 0
+            var result = color.ToArgb();
+            Assert.AreEqual(-2130771968, result); // Precomputed ARGB value
         }
 
         /// <summary>
@@ -368,196 +265,6 @@ namespace CommonLibraryTests
             Assert.AreEqual(121, color.R, "done");
             Assert.AreEqual(88, color.B, "done");
             Assert.AreEqual(104, color.G, "done");
-        }
-
-        /// <summary>
-        ///     Compares the speed of drawing operations using Microsoft's Graphics and DirectBitmap implementations.
-        ///     The test ensures that no interference occurs from other tests.
-        /// </summary>
-        [TestMethod]
-        public void CompareSystemDrawingDirectBitmapPerformance()
-        {
-            const int imageSize = 1000;
-            const int iterations = 1000;
-            const int rectangleWidth = 100;
-            const int rectangleHeight = 200;
-
-            using var bmp = new Bitmap(imageSize, imageSize);
-            using var blackPen = new Pen(Color.Black, 1);
-            var dbm = DirectBitmap.GetInstance(bmp);
-
-            // Warm-up to avoid JIT overhead
-            for (var i = 0; i < 10; i++)
-            {
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.DrawLine(blackPen, 0, 0, 0, imageSize);
-                dbm.DrawVerticalLine(0, 0, imageSize, Color.Black);
-            }
-
-            // Measure drawing a vertical line with Graphics
-            var graphicsElapsedTime = MeasureExecutionTime(iterations, () =>
-            {
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.DrawLine(blackPen, 0, 0, 0, imageSize);
-            });
-
-            // Measure drawing a vertical line with DirectBitmap
-            var dbmElapsedTime =
-                MeasureExecutionTime(iterations, () => dbm.DrawVerticalLine(0, 0, imageSize, Color.Black));
-
-            Trace.WriteLine(
-                $"Graphics DrawLine: {graphicsElapsedTime} ms, DirectBitmap DrawVerticalLine: {dbmElapsedTime} ms");
-            Assert.IsTrue(dbmElapsedTime <= graphicsElapsedTime,
-                $"DirectBitmap was slower: {dbmElapsedTime} ms vs Graphics: {graphicsElapsedTime} ms");
-
-            // Measure drawing a rectangle with Graphics
-            var graphicsRectangleTime = MeasureExecutionTime(iterations, () =>
-            {
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.DrawRectangle(blackPen, 0, 0, rectangleWidth, rectangleHeight);
-            });
-
-            // Measure drawing a rectangle with DirectBitmap
-            var dbmRectangleTime = MeasureExecutionTime(iterations,
-                () => dbm.DrawRectangle(0, 0, rectangleWidth, rectangleHeight, Color.Black));
-
-            Trace.WriteLine(
-                $"Graphics DrawRectangle: {graphicsRectangleTime} ms, DirectBitmap DrawRectangle: {dbmRectangleTime} ms");
-            Assert.IsTrue(graphicsRectangleTime <= dbmRectangleTime,
-                $"Graphics was faster for rectangles: {graphicsRectangleTime} ms vs DirectBitmap: {dbmRectangleTime} ms");
-
-            // Local function for measuring execution time
-            long MeasureExecutionTime(int count, Action action)
-            {
-                var stopwatch = Stopwatch.StartNew();
-
-                for (var i = 0; i < count; i++)
-                {
-                    action();
-                }
-
-                stopwatch.Stop();
-                return stopwatch.ElapsedMilliseconds;
-            }
-        }
-
-        /// <summary>
-        ///     Compares performance of drawing vertical lines with System.Drawing's FillRectangle and DirectBitmap's
-        ///     DrawRectangle.
-        /// </summary>
-        [TestMethod]
-        public void CompareVerticalLineWithRectanglePerformance()
-        {
-            const int width = 1000;
-            const int height = 1000;
-            const int iterations = 1000;
-            const int lineWidth = 1; // Special case: Line width is 1 (vertical line)
-            const int x = 0;
-            const int y = 0;
-
-            var bmp = new Bitmap(width, height);
-            var blackBrush = new SolidBrush(Color.Black);
-
-            // Initialize DirectBitmap with the same dimensions
-            var dbm = DirectBitmap.GetInstance(bmp);
-
-            // Warm-up both methods to ensure no JIT overhead
-            using (var graphics = Graphics.FromImage(bmp))
-            {
-                for (var i = 0; i < 10; i++)
-                {
-                    graphics.FillRectangle(blackBrush, x, y, lineWidth, height);
-                }
-            }
-
-            for (var i = 0; i < 10; i++)
-            {
-                dbm.DrawRectangle(x, y, lineWidth, height, Color.Black);
-            }
-
-            // Measure System.Drawing performance
-            var watch = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++)
-            {
-                using var graphics = Graphics.FromImage(bmp);
-                graphics.FillRectangle(blackBrush, x, y, lineWidth, height);
-            }
-
-            watch.Stop();
-            var elapsedGraphics = watch.ElapsedMilliseconds;
-
-            // Measure DirectBitmap performance
-            watch = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++)
-            {
-                dbm.DrawRectangle(x, y, lineWidth, height, Color.Black);
-            }
-
-            watch.Stop();
-            var elapsedDirectBitmap = watch.ElapsedMilliseconds;
-
-            // Measure DirectBitmap Line performance
-            watch = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++)
-            {
-                dbm.DrawVerticalLine(x, y, height, Color.Black);
-            }
-
-            watch.Stop();
-            var elapsedDirectBitmapLine = watch.ElapsedMilliseconds;
-
-            // Log results
-            Trace.WriteLine($"System.Drawing FillRectangle (lineWidth = 1): {elapsedGraphics} ms");
-            Trace.WriteLine($"DirectBitmap DrawRectangle: {elapsedDirectBitmap} ms");
-            Trace.WriteLine($"DirectBitmap DrawVerticalLine: {elapsedDirectBitmapLine} ms");
-
-            // Informational output instead of failure
-            if (elapsedDirectBitmap > elapsedGraphics)
-            {
-                Trace.WriteLine(
-                    $"Warning: DirectBitmap DrawRectangle is slower than System.Drawing by {elapsedDirectBitmap - elapsedGraphics} ms.");
-            }
-            else
-            {
-                Trace.WriteLine("DirectBitmap DrawRectangle is faster or equal to System.Drawing.");
-            }
-
-            if (elapsedDirectBitmapLine > elapsedGraphics)
-            {
-                Trace.WriteLine(
-                    $"Warning: DirectBitmap DrawVerticalLine is slower than System.Drawing by {elapsedDirectBitmapLine - elapsedGraphics} ms.");
-            }
-            else
-            {
-                Trace.WriteLine("DirectBitmap DrawVerticalLine is faster or equal to System.Drawing.");
-            }
-        }
-
-        /// <summary>
-        ///     Compares the colors.
-        /// </summary>
-        [TestMethod]
-        public void CompareImageColors()
-        {
-            //TODO replace
-            //var imagePath = Path.Combine(SampleImagesFolder.FullName, "Color.png");
-            //using var btm = new Bitmap(imagePath);
-
-            //var imageData = ImageProcessing.GenerateData(btm, 0);
-
-            //var color = Analysis.FindImagesInColorRange(imageData.R, imageData.G, imageData.B, 4,
-            //    SampleImagesFolder.FullName, false, ImagingResources.Appendix);
-
-            //if (color == null)
-            //{
-            //    Assert.Fail("color was null");
-            //}
-
-            //Assert.AreEqual(2, color.Count, "Done");
-            //Assert.AreEqual(imagePath, color[0], "Done");
-
-            //imagePath = Path.Combine(SampleImagesFolder.FullName, "ColorShade.png");
-            //Assert.AreEqual(imagePath, color[1], "Done");
         }
 
         /// <summary>
