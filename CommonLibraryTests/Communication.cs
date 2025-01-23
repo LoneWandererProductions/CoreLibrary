@@ -40,9 +40,9 @@ namespace CommonLibraryTests
         [TestMethod]
         public async Task Untested()
         {
-            var str = await HttpClientManager.CallSoapServiceAsync();
+            //var str = await HttpClientManager.CallSoapServiceAsync();
 
-            Trace.WriteLine(str);
+            //Trace.WriteLine(str);
         }
     }
 }

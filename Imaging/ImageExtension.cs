@@ -6,7 +6,11 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 using Color = System.Windows.Media.Color;
 
@@ -62,6 +66,7 @@ namespace Imaging
         /// </summary>
         /// <param name="color">The color.</param>
         /// <returns>Id of the color</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToArgb(this Color color)
         {
             // ARGB format: (Alpha << 24) | (Red << 16) | (Green << 8) | Blue
@@ -72,8 +77,8 @@ namespace Imaging
         ///     Converts the color to open gl format.
         /// </summary>
         /// <param name="color">The color.</param>
-        /// <returns>Format accpeted by OpenTK</returns>
-        public static float[] ConvertColorToOpenGLFormat(this Color color)
+        /// <returns>Format accepted by OpenTK</returns>
+        public static float[] ConvertColorToOpenGlFormat(this Color color)
         {
             // Convert ARGB (0-255) to RGBA (0.0-1.0)
             var normalizedColor = new float[4];
