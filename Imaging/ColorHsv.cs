@@ -129,10 +129,10 @@ namespace Imaging
         public string Hex { get; private set; }
 
         /// <summary>
-        /// Gets the color of the open tk.
+        ///     Gets the color of the open tk.
         /// </summary>
         /// <value>
-        /// The color of the open tk.
+        ///     The color of the open tk.
         /// </value>
         public float[] OpenTKColor { get; private set; }
 
@@ -483,18 +483,18 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Rgbas to float array.
+        ///     Rgbas to float array.
         /// </summary>
         private void GetFloatArray()
         {
             // Normalize the RGBA values to the [0.0f, 1.0f] range
-            float normalizedR = R / 255f;
-            float normalizedG = G / 255f;
-            float normalizedB = B / 255f;
-            float normalizedA = A / 255f;
+            var normalizedR = R / 255f;
+            var normalizedG = G / 255f;
+            var normalizedB = B / 255f;
+            var normalizedA = A / 255f;
 
             // Return as float[] in the range [0.0f, 1.0f]
-            OpenTKColor = new float[] { normalizedR, normalizedG, normalizedB, normalizedA };
+            OpenTKColor = new[] { normalizedR, normalizedG, normalizedB, normalizedA };
         }
 
         /// <summary>

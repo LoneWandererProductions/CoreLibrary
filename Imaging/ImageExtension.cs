@@ -69,22 +69,21 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Converts the color to open gl format.
+        ///     Converts the color to open gl format.
         /// </summary>
         /// <param name="color">The color.</param>
         /// <returns>Format accpeted by OpenTK</returns>
         public static float[] ConvertColorToOpenGLFormat(this Color color)
         {
             // Convert ARGB (0-255) to RGBA (0.0-1.0)
-            float[] normalizedColor = new float[4];
+            var normalizedColor = new float[4];
 
-            normalizedColor[0] = color.R / 255.0f;  // Red
-            normalizedColor[1] = color.G / 255.0f;  // Green
-            normalizedColor[2] = color.B / 255.0f;  // Blue
-            normalizedColor[3] = color.A / 255.0f;  // Alpha
+            normalizedColor[0] = color.R / 255.0f; // Red
+            normalizedColor[1] = color.G / 255.0f; // Green
+            normalizedColor[2] = color.B / 255.0f; // Blue
+            normalizedColor[3] = color.A / 255.0f; // Alpha
 
             return normalizedColor;
         }
-
     }
 }

@@ -1,21 +1,27 @@
-﻿using OpenTK.GLControl;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Windowing.Desktop;
-using System;
+﻿using System;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using OpenTK.GLControl;
+using OpenTK.Graphics.OpenGL4;
 
 namespace RenderEngine
 {
-    public partial class TKRender
+    /// <inheritdoc cref="UserControl" />
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
+    public partial class TkRender
     {
         private GLControl _glControl;
 
         private int _shaderProgram;
-        private int _vbo;
         private int _vao;
+        private int _vbo;
 
-        public TKRender()
+        public TkRender()
         {
             InitializeComponent();
             Loaded += OnLoaded;
@@ -23,16 +29,13 @@ namespace RenderEngine
             Initialize();
         }
 
-        private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             // Create a WindowsFormsHost
             var windowsFormsHost = new WindowsFormsHost();
 
             // Create and configure the GLControl
-            _glControl = new GLControl
-            {
-                Dock = DockStyle.Fill
-            };
+            _glControl = new GLControl { Dock = DockStyle.Fill };
 
             // Attach GLControl to WindowsFormsHost
             windowsFormsHost.Child = _glControl;
@@ -52,7 +55,7 @@ namespace RenderEngine
         public void Initialize()
         {
             // Compile shaders
-            string vertexShaderSource = @"
+            const string vertexShaderSource = @"
                 #version 450 core
                 layout(location = 0) in vec2 aPosition;
                 layout(location = 1) in vec3 aColor;
@@ -66,7 +69,7 @@ namespace RenderEngine
                 }
             ";
 
-            string fragmentShaderSource = @"
+            const string fragmentShaderSource = @"
                 #version 450 core
                 in vec3 vColor;
                 out vec4 FragColor;
@@ -77,8 +80,8 @@ namespace RenderEngine
                 }
             ";
 
-            int vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
-            int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
+            var vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
+            var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
             _shaderProgram = GL.CreateProgram();
             GL.AttachShader(_shaderProgram, vertexShader);
@@ -107,19 +110,19 @@ namespace RenderEngine
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             // Generate vertex data
-            float[] vertexData = new float[columns.Length * 5 * 6];
-            for (int i = 0; i < columns.Length; i++)
+            var vertexData = new float[columns.Length * 5 * 6];
+            for (var i = 0; i < columns.Length; i++)
             {
                 var column = columns[i];
 
-                float columnHeight = column.Height / screenHeight;
-                float xLeft = (i / (float)screenWidth) * 2.0f - 1.0f;
-                float xRight = ((i + 1) / (float)screenWidth) * 2.0f - 1.0f;
+                var columnHeight = column.Height / screenHeight;
+                var xLeft = (i / (float)screenWidth * 2.0f) - 1.0f;
+                var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
 
-                float yTop = columnHeight - 1.0f;
-                float yBottom = -1.0f;
+                var yTop = columnHeight - 1.0f;
+                var yBottom = -1.0f;
 
-                int offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
+                var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
 
                 // Vertex 1
                 vertexData[offset + 0] = xLeft;
@@ -166,7 +169,8 @@ namespace RenderEngine
 
             // Upload vertex data to GPU
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                BufferUsageHint.DynamicDraw);
 
             // Render
             GL.UseProgram(_shaderProgram);
@@ -176,21 +180,21 @@ namespace RenderEngine
 
         private int CompileShader(ShaderType type, string source)
         {
-            int shader = GL.CreateShader(type);
+            var shader = GL.CreateShader(type);
             GL.ShaderSource(shader, source);
             GL.CompileShader(shader);
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out int status);
-            if (status != (int)All.True)
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
+            if (status == (int)All.True)
             {
-                string infoLog = GL.GetShaderInfoLog(shader);
-                throw new Exception($"Error compiling shader of type {type}: {infoLog}");
+                return shader;
             }
 
-            return shader;
+            var infoLog = GL.GetShaderInfoLog(shader);
+            throw new Exception($"Error compiling shader of type {type}: {infoLog}");
         }
 
-        private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             _glControl?.Dispose();
         }

@@ -43,10 +43,6 @@ namespace CommonLibraryTests
             var str = await HttpClientManager.CallSoapServiceAsync();
 
             Trace.WriteLine(str);
-
         }
-
-
-        
     }
 }

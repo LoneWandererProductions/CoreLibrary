@@ -35,11 +35,7 @@ namespace Communication
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                Headers =
-            {
-                { "User-Agent", "insomnia/10.2.0" },
-                { "SOAPAction", soapAction }
-            },
+                Headers = { { "User-Agent", "insomnia/10.2.0" }, { "SOAPAction", soapAction } },
                 Content = new StringContent(soapRequest)
                 {
                     // Set the correct Content-Type to 'text/xml; charset=utf-8'
