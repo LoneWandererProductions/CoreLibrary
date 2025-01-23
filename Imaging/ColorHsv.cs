@@ -128,6 +128,14 @@ namespace Imaging
         /// </summary>
         public string Hex { get; private set; }
 
+        /// <summary>
+        /// Gets the color of the open tk.
+        /// </summary>
+        /// <value>
+        /// The color of the open tk.
+        /// </value>
+        public float[] OpenTKColor { get; private set; }
+
         /// <inheritdoc />
         /// <summary>
         ///     HSV, A Values are enough to check equality
@@ -228,6 +236,7 @@ namespace Imaging
             B = (int)((b + m) * 255);
 
             GetHex();
+            GetFloatArray();
         }
 
         /// <summary>
@@ -279,6 +288,7 @@ namespace Imaging
             V = max / 255d;
 
             GetHex();
+            GetFloatArray();
         }
 
         /// <summary>
@@ -304,8 +314,8 @@ namespace Imaging
 
             // Update the hex representation of the color
             GetHex();
+            GetFloatArray();
         }
-
 
         /// <summary>
         ///     Hexadecimals to color.
@@ -470,6 +480,21 @@ namespace Imaging
         private void GetHex()
         {
             Hex = string.Concat("#", $"{R:X2}{G:X2}{B:X2}");
+        }
+
+        /// <summary>
+        /// Rgbas to float array.
+        /// </summary>
+        private void GetFloatArray()
+        {
+            // Normalize the RGBA values to the [0.0f, 1.0f] range
+            float normalizedR = R / 255f;
+            float normalizedG = G / 255f;
+            float normalizedB = B / 255f;
+            float normalizedA = A / 255f;
+
+            // Return as float[] in the range [0.0f, 1.0f]
+            OpenTKColor = new float[] { normalizedR, normalizedG, normalizedB, normalizedA };
         }
 
         /// <summary>
