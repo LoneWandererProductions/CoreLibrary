@@ -189,8 +189,6 @@ namespace RenderEngine
 
             return shader;
         }
-    }
-
 
         private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
         {
