@@ -2,12 +2,9 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        RenderEngine/TkRender.cs
- * PURPOSE:     Render Control with OpenTK, aka OpenGL
+ * PURPOSE:     Main Render Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
-
-
-// ReSharper disable UnusedType.Global
 
 using System;
 using System.Windows;
@@ -18,19 +15,15 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace RenderEngine
 {
-    /// <inheritdoc cref="UserControl" />
-    /// <summary>
-    /// Generic Display for our Graphics
-    /// </summary>
-    /// <seealso cref="System.Windows.Controls.UserControl" />
-    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class TkRender
     {
         private GLControl _glControl;
-
         private int _shaderProgram;
         private int _vao;
         private int _vbo;
+
+        // New texture variable for the background image
+        private int _backgroundTexture;
 
         public TkRender()
         {
@@ -42,37 +35,28 @@ namespace RenderEngine
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Create a WindowsFormsHost
             var windowsFormsHost = new WindowsFormsHost();
-
-            // Create and configure the GLControl
             _glControl = new GLControl { Dock = DockStyle.Fill };
-
-            // Attach GLControl to WindowsFormsHost
             windowsFormsHost.Child = _glControl;
-
-            // Add WindowsFormsHost to the WPF layout
             MainGrid.Children.Add(windowsFormsHost);
 
-            // Attach OpenGL event handlers
             _glControl.Load += GlControl_Load;
             _glControl.Paint += GlControl_Paint;
             _glControl.Resize += GlControl_Resize;
 
-            // Force initial paint
+            // Load background texture
+            _backgroundTexture = TkHelper.LoadTexture("path_to_your_background_image.jpg");
+
             _glControl.Invalidate();
         }
 
         public void Initialize()
         {
-            // Compile shaders
             const string vertexShaderSource = @"
                 #version 450 core
                 layout(location = 0) in vec2 aPosition;
                 layout(location = 1) in vec3 aColor;
-
                 out vec3 vColor;
-
                 void main()
                 {
                     gl_Position = vec4(aPosition, 0.0, 1.0);
@@ -84,7 +68,6 @@ namespace RenderEngine
                 #version 450 core
                 in vec3 vColor;
                 out vec4 FragColor;
-
                 void main()
                 {
                     FragColor = vec4(vColor, 1.0);
@@ -102,7 +85,6 @@ namespace RenderEngine
             GL.DeleteShader(vertexShader);
             GL.DeleteShader(fragmentShader);
 
-            // Create VAO and VBO
             _vao = GL.GenVertexArray();
             _vbo = GL.GenBuffer();
 
@@ -116,78 +98,34 @@ namespace RenderEngine
             GL.EnableVertexAttribArray(1);
         }
 
-        private float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight, Func<T, float[]> getVertexAttributes)
+        private void RenderBackground(int textureId)
         {
-            var vertexData = new float[data.Length * 6 * 5]; // 6 vertices * 5 attributes (x, y, r, g, b)
+            GL.UseProgram(_shaderProgram);
 
-            for (var i = 0; i < data.Length; i++)
-            {
-                var attributes = getVertexAttributes(data[i]);
-                var xLeft = (i / (float)screenWidth * 2.0f) - 1.0f;
-                var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
+            // Bind the background texture
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-                var columnHeight = attributes[0]; // In case of columns, this would be height, for example
-                var yTop = columnHeight - 1.0f;
-                var yBottom = -1.0f;
-
-                var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
-
-                // Using helper to set vertices
-                vertexData[offset + 0] = xLeft;
-                vertexData[offset + 1] = yTop;
-                vertexData[offset + 2] = attributes[1]; // r
-                vertexData[offset + 3] = attributes[2]; // g
-                vertexData[offset + 4] = attributes[3]; // b
-
-                vertexData[offset + 5] = xRight;
-                vertexData[offset + 6] = yTop;
-                vertexData[offset + 7] = attributes[1];
-                vertexData[offset + 8] = attributes[2];
-                vertexData[offset + 9] = attributes[3];
-
-                vertexData[offset + 10] = xRight;
-                vertexData[offset + 11] = yBottom;
-                vertexData[offset + 12] = attributes[1];
-                vertexData[offset + 13] = attributes[2];
-                vertexData[offset + 14] = attributes[3];
-
-                vertexData[offset + 15] = xLeft;
-                vertexData[offset + 16] = yTop;
-                vertexData[offset + 17] = attributes[1];
-                vertexData[offset + 18] = attributes[2];
-                vertexData[offset + 19] = attributes[3];
-
-                vertexData[offset + 20] = xRight;
-                vertexData[offset + 21] = yBottom;
-                vertexData[offset + 22] = attributes[1];
-                vertexData[offset + 23] = attributes[2];
-                vertexData[offset + 24] = attributes[3];
-
-                vertexData[offset + 25] = xLeft;
-                vertexData[offset + 26] = yBottom;
-                vertexData[offset + 27] = attributes[1];
-                vertexData[offset + 28] = attributes[2];
-                vertexData[offset + 29] = attributes[3];
-            }
-
-            return vertexData;
+            // Draw the background as a full-screen quad
+            GL.BindVertexArray(_vao);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 6); // Full screen quad (6 vertices)
         }
 
         public void RenderColumns(ColumnData[] columns, int screenWidth, int screenHeight)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            // Generate vertex data using the helper method
-            var vertexData = GenerateVertexData(columns, screenWidth, screenHeight, column =>
-            {
-                return new float[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z };
-            });
+            // Render the background first
+            RenderBackground(_backgroundTexture);
 
-            // Upload vertex data to GPU
+            // Generate vertex data for columns
+            var vertexData = TkHelper.GenerateVertexData(columns, screenWidth, screenHeight, column => new[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z });
+
+            // Upload column vertex data to GPU
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
 
-            // Render
+            // Render columns on top of background
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);
             GL.DrawArrays(PrimitiveType.Triangles, 0, columns.Length * 6);
@@ -197,23 +135,41 @@ namespace RenderEngine
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            // Generate vertex data using the helper method
-            var vertexData = GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
+            // Render the background first
+            RenderBackground(_backgroundTexture);
+
+            // Generate vertex data for pixels
+            var vertexData = TkHelper.GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
             {
                 var pixelWidth = 2.0f / screenWidth;
                 var pixelHeight = 2.0f / screenHeight;
-                return new float[] { pixelWidth, pixel.Color.X, pixel.Color.Y, pixel.Color.Z };
+
+                // Assuming you want to use both pixelWidth and pixelHeight for vertex position,
+                // you can define the coordinates for each vertex of the pixel quad
+                return new[]
+                {
+                    -1 + pixel.X * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f, // Bottom-left vertex
+                    -1 + (pixel.X + 1) * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f, // Bottom-right vertex
+                    -1 + pixel.X * pixelWidth, -1 + (pixel.Y + 1) * pixelHeight, 0.0f, // Top-left vertex
+
+                    -1 + (pixel.X + 1) * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f, // Bottom-right vertex
+                    -1 + (pixel.X + 1) * pixelWidth, -1 + (pixel.Y + 1) * pixelHeight, 0.0f, // Top-right vertex
+                    -1 + pixel.X * pixelWidth, -1 + (pixel.Y + 1) * pixelHeight, 0.0f, // Top-left vertex
+
+                    pixel.Color.X, pixel.Color.Y, pixel.Color.Z // Color for each pixel
+                };
             });
 
-            // Upload vertex data to GPU
+            // Upload pixel vertex data to GPU
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
 
-            // Render
+            // Render pixels on top of the background
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);
             GL.DrawArrays(PrimitiveType.Triangles, 0, pixels.Length * 6);
         }
+
 
         private int CompileShader(ShaderType type, string source)
         {
@@ -236,6 +192,7 @@ namespace RenderEngine
             if (_shaderProgram != 0) GL.DeleteProgram(_shaderProgram);
             if (_vao != 0) GL.DeleteVertexArray(_vao);
             if (_vbo != 0) GL.DeleteBuffer(_vbo);
+            GL.DeleteTexture(_backgroundTexture); // Delete the background texture
             _glControl?.Dispose();
         }
 
