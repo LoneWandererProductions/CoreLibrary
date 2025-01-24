@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using ExtendedSystemObjects;
 
@@ -477,6 +478,7 @@ namespace Imaging
         /// <summary>
         ///     Gets the hexadecimal.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GetHex()
         {
             Hex = string.Concat("#", $"{R:X2}{G:X2}{B:X2}");
@@ -488,14 +490,22 @@ namespace Imaging
         private void GetFloatArray()
         {
             // Normalize the RGBA values to the [0.0f, 1.0f] range
-            var normalizedR = R / 255f;
-            var normalizedG = G / 255f;
-            var normalizedB = B / 255f;
-            var normalizedA = A / 255f;
+            var normalizedR = Normalize(R);
+            var normalizedG = Normalize(G);
+            var normalizedB = Normalize(B);
+            var normalizedA = Normalize(A);
 
             // Return as float[] in the range [0.0f, 1.0f]
             OpenTKColor = new[] { normalizedR, normalizedG, normalizedB, normalizedA };
         }
+
+        /// <summary>
+        /// Normalizes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Normalized value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Normalize(int value) => value / 255f;
 
         /// <summary>
         ///     Converts to a hex string.

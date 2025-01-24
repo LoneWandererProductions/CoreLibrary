@@ -81,14 +81,13 @@ namespace Imaging
         public static float[] ConvertColorToOpenGlFormat(this Color color)
         {
             // Convert ARGB (0-255) to RGBA (0.0-1.0)
-            var normalizedColor = new float[4];
-
-            normalizedColor[0] = color.R / 255.0f; // Red
-            normalizedColor[1] = color.G / 255.0f; // Green
-            normalizedColor[2] = color.B / 255.0f; // Blue
-            normalizedColor[3] = color.A / 255.0f; // Alpha
-
-            return normalizedColor;
+            return new[]
+            {
+                color.R / 255.0f, // Red
+                color.G / 255.0f, // Green
+                color.B / 255.0f, // Blue
+                color.A / 255.0f  // Alpha
+            };
         }
     }
 }
