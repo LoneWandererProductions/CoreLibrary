@@ -9,7 +9,7 @@ namespace RenderEngine
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>
-    /// 
+    /// Generic Display for our Graphics
     /// </summary>
     /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
@@ -196,6 +196,9 @@ namespace RenderEngine
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            if (_shaderProgram != 0) GL.DeleteProgram(_shaderProgram);
+            if (_vao != 0) GL.DeleteVertexArray(_vao);
+            if (_vbo != 0) GL.DeleteBuffer(_vbo);
             _glControl?.Dispose();
         }
 
@@ -212,6 +215,7 @@ namespace RenderEngine
 
         private void GlControl_Resize(object sender, EventArgs e)
         {
+            var aspectRatio = (float)_glControl.Width / _glControl.Height;
             GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
         }
     }
