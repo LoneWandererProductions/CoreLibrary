@@ -1,4 +1,15 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     RenderEngine
+ * FILE:        RenderEngine/TkRender.cs
+ * PURPOSE:     Render Control with OpenTK, aka OpenGL
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+
+// ReSharper disable UnusedType.Global
+
+using System;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -105,77 +116,103 @@ namespace RenderEngine
             GL.EnableVertexAttribArray(1);
         }
 
-        public void RenderColumns(ColumnData[] columns, int screenWidth, int screenHeight)
+        private float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight, Func<T, float[]> getVertexAttributes)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            var vertexData = new float[data.Length * 6 * 5]; // 6 vertices * 5 attributes (x, y, r, g, b)
 
-            // Generate vertex data
-            var vertexData = new float[columns.Length * 5 * 6];
-            for (var i = 0; i < columns.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                var column = columns[i];
-
-                var columnHeight = column.Height / screenHeight;
+                var attributes = getVertexAttributes(data[i]);
                 var xLeft = (i / (float)screenWidth * 2.0f) - 1.0f;
                 var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
 
+                var columnHeight = attributes[0]; // In case of columns, this would be height, for example
                 var yTop = columnHeight - 1.0f;
                 var yBottom = -1.0f;
 
                 var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
 
-                // Vertex 1
+                // Using helper to set vertices
                 vertexData[offset + 0] = xLeft;
                 vertexData[offset + 1] = yTop;
-                vertexData[offset + 2] = column.Color.X;
-                vertexData[offset + 3] = column.Color.Y;
-                vertexData[offset + 4] = column.Color.Z;
+                vertexData[offset + 2] = attributes[1]; // r
+                vertexData[offset + 3] = attributes[2]; // g
+                vertexData[offset + 4] = attributes[3]; // b
 
-                // Vertex 2
                 vertexData[offset + 5] = xRight;
                 vertexData[offset + 6] = yTop;
-                vertexData[offset + 7] = column.Color.X;
-                vertexData[offset + 8] = column.Color.Y;
-                vertexData[offset + 9] = column.Color.Z;
+                vertexData[offset + 7] = attributes[1];
+                vertexData[offset + 8] = attributes[2];
+                vertexData[offset + 9] = attributes[3];
 
-                // Vertex 3
                 vertexData[offset + 10] = xRight;
                 vertexData[offset + 11] = yBottom;
-                vertexData[offset + 12] = column.Color.X;
-                vertexData[offset + 13] = column.Color.Y;
-                vertexData[offset + 14] = column.Color.Z;
+                vertexData[offset + 12] = attributes[1];
+                vertexData[offset + 13] = attributes[2];
+                vertexData[offset + 14] = attributes[3];
 
-                // Vertex 4
                 vertexData[offset + 15] = xLeft;
                 vertexData[offset + 16] = yTop;
-                vertexData[offset + 17] = column.Color.X;
-                vertexData[offset + 18] = column.Color.Y;
-                vertexData[offset + 19] = column.Color.Z;
+                vertexData[offset + 17] = attributes[1];
+                vertexData[offset + 18] = attributes[2];
+                vertexData[offset + 19] = attributes[3];
 
-                // Vertex 5
                 vertexData[offset + 20] = xRight;
                 vertexData[offset + 21] = yBottom;
-                vertexData[offset + 22] = column.Color.X;
-                vertexData[offset + 23] = column.Color.Y;
-                vertexData[offset + 24] = column.Color.Z;
+                vertexData[offset + 22] = attributes[1];
+                vertexData[offset + 23] = attributes[2];
+                vertexData[offset + 24] = attributes[3];
 
-                // Vertex 6
                 vertexData[offset + 25] = xLeft;
                 vertexData[offset + 26] = yBottom;
-                vertexData[offset + 27] = column.Color.X;
-                vertexData[offset + 28] = column.Color.Y;
-                vertexData[offset + 29] = column.Color.Z;
+                vertexData[offset + 27] = attributes[1];
+                vertexData[offset + 28] = attributes[2];
+                vertexData[offset + 29] = attributes[3];
             }
+
+            return vertexData;
+        }
+
+        public void RenderColumns(ColumnData[] columns, int screenWidth, int screenHeight)
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+
+            // Generate vertex data using the helper method
+            var vertexData = GenerateVertexData(columns, screenWidth, screenHeight, column =>
+            {
+                return new float[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z };
+            });
 
             // Upload vertex data to GPU
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
-                BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
 
             // Render
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);
             GL.DrawArrays(PrimitiveType.Triangles, 0, columns.Length * 6);
+        }
+
+        public void RenderPixels(PixelData[] pixels, int screenWidth, int screenHeight)
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+
+            // Generate vertex data using the helper method
+            var vertexData = GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
+            {
+                var pixelWidth = 2.0f / screenWidth;
+                var pixelHeight = 2.0f / screenHeight;
+                return new float[] { pixelWidth, pixel.Color.X, pixel.Color.Y, pixel.Color.Z };
+            });
+
+            // Upload vertex data to GPU
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+
+            // Render
+            GL.UseProgram(_shaderProgram);
+            GL.BindVertexArray(_vao);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, pixels.Length * 6);
         }
 
         private int CompileShader(ShaderType type, string source)
@@ -215,7 +252,6 @@ namespace RenderEngine
 
         private void GlControl_Resize(object sender, EventArgs e)
         {
-            var aspectRatio = (float)_glControl.Width / _glControl.Height;
             GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
         }
     }

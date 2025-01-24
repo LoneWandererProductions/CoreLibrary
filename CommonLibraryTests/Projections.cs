@@ -242,43 +242,6 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Vector not converted");
         }
 
-        [TestMethod]
-        public void LeftRightBug()
-        {
-            var triangles = GenerateCube();
-
-            var transform = Transform.GetInstance();
-            var transform1 = Transform.GetInstance();
-            var transform2 = Transform.GetInstance();
-
-            var cache = new List<PolyTriangle>(triangles);
-
-            transform1.CameraType = transform2.CameraType = transform.CameraType = Cameras.Orbit;
-
-            transform1.DisplayType = transform2.DisplayType = transform.DisplayType = Display.Normal;
-
-
-            transform1.LeftCamera(0.5);
-            transform2.RightCamera(0.5);
-
-            var raster = new Projection { Debug = false };
-            var reference = raster.Generate(cache, transform);
-            var left = raster.Generate(cache, transform1);
-            var right = raster.Generate(cache, transform1);
-
-            Trace.WriteLine("Details:");
-
-            for (var i = 0; i < reference.Count; i++)
-            {
-                Trace.WriteLine("Base:");
-                Trace.WriteLine(reference[i].ToString());
-                Trace.WriteLine("left:");
-                Trace.WriteLine(left[i].ToString());
-                Trace.WriteLine("Right:");
-                Trace.WriteLine(right[i].ToString());
-            }
-        }
-
         /// <summary>
         ///     Multiplies the matrix vector.
         /// </summary>

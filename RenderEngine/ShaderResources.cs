@@ -1,11 +1,11 @@
-﻿using System;
+﻿// ReSharper disable UnusedType.Global
 
 namespace RenderEngine
 {
     /// <summary>
     /// A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
     /// </summary>
-    public static class ShaderResource
+    internal static class ShaderResource
     {
         /// <summary>
         /// Solid Color Shader

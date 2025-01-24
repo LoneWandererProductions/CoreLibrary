@@ -13,6 +13,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// Some basic tests for Memory Vault
+    /// </summary>
     [TestClass]
     public class MemoryVaultTests
     {
@@ -24,8 +27,11 @@ namespace CommonLibraryTests
             _vault = MemoryVault<string>.Instance;
         }
 
+        /// <summary>
+        /// Adds the data should return identifier.
+        /// </summary>
         [TestMethod]
-        public void AddData_ShouldReturnIdentifier()
+        public void AddDataShouldReturnIdentifier()
         {
             // Arrange
             var data = "TestData";
@@ -37,8 +43,11 @@ namespace CommonLibraryTests
             Assert.AreNotEqual(-1, identifier);
         }
 
+        /// <summary>
+        /// Gets the data should return correct data.
+        /// </summary>
         [TestMethod]
-        public void GetData_ShouldReturnCorrectData()
+        public void GetDataShouldReturnCorrectData()
         {
             // Arrange
             var data = "TestData";
@@ -51,8 +60,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(data, retrievedData);
         }
 
+        /// <summary>
+        /// Removes the data should remove correct item.
+        /// </summary>
         [TestMethod]
-        public void RemoveData_ShouldRemoveCorrectItem()
+        public void RemoveDataShouldRemoveCorrectItem()
         {
             // Arrange
             var data = "TestData";
@@ -71,7 +83,7 @@ namespace CommonLibraryTests
         ///     Adds the metadata should store metadata correctly.
         /// </summary>
         [TestMethod]
-        public void AddMetadata_ShouldStoreMetadataCorrectly()
+        public void AddMetadataShouldStoreMetadataCorrectly()
         {
             // Arrange
             var data = "TestData";
@@ -91,8 +103,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(metadata.Identifier, retrievedMetadata.Identifier);
         }
 
+        /// <summary>
+        /// Saves the should persist data.
+        /// </summary>
         [TestMethod]
-        public void Save_ShouldPersistData()
+        public void SaveShouldPersistData()
         {
             // Arrange
             var data = "TestData";
@@ -113,8 +128,11 @@ namespace CommonLibraryTests
             Assert.AreEqual(data, retrievedData);
         }
 
+        /// <summary>
+        /// Saves the should persist expired data correctly.
+        /// </summary>
         [TestMethod]
-        public void Save_ShouldPersistExpiredDataCorrectly()
+        public void SaveShouldPersistExpiredDataCorrectly()
         {
             // Arrange
             var data = "TestData";

@@ -135,9 +135,9 @@ namespace CommonLibraryTests
         public void ReadCsvWithLayerKeywords_ReturnsCorrectLayers()
         {
             // Arrange
-            var filepath = "test.csv";
-            var separator = ',';
-            var layerKeyword = "Layer_";
+            const string filepath = "test.csv";
+            const char separator = ',';
+            const string layerKeyword = "Layer_";
 
             // Create test CSV content
             var csvContent = new List<string>
