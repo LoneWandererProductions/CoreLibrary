@@ -7,11 +7,15 @@
  */
 
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
@@ -30,7 +34,6 @@ namespace RenderEngine
             InitializeComponent();
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
-            Initialize();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -74,8 +77,8 @@ namespace RenderEngine
                 }
             ";
 
-            var vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
-            var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
+            var vertexShader = TkHelper.CompileShader(ShaderType.VertexShader, vertexShaderSource);
+            var fragmentShader = TkHelper.CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
             _shaderProgram = GL.CreateProgram();
             GL.AttachShader(_shaderProgram, vertexShader);
@@ -170,21 +173,33 @@ namespace RenderEngine
             GL.DrawArrays(PrimitiveType.Triangles, 0, pixels.Length * 6);
         }
 
-
-        private int CompileShader(ShaderType type, string source)
+        // Screenshot method
+        public void CaptureScreenshot(string filePath)
         {
-            var shader = GL.CreateShader(type);
-            GL.ShaderSource(shader, source);
-            GL.CompileShader(shader);
+            // Step 1: Determine the dimensions of the OpenGL viewport or control
+            int width = _glControl.Width;  // Replace _glControl with your actual OpenGL control or window
+            int height = _glControl.Height;
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
-            if (status == (int)All.True)
+            // Step 2: Allocate a byte array to store the pixel data (RGBA format)
+            byte[] pixels = new byte[width * height * 4]; // 4 bytes per pixel (RGBA)
+
+            // Step 3: Read the pixels from the OpenGL framebuffer
+            GL.ReadPixels(0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+
+            // Step 4: Create a Bitmap and copy the pixel data into it
+            using (var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
             {
-                return shader;
-            }
+                var rect = new Rectangle(0, 0, width, height);
+                var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            var infoLog = GL.GetShaderInfoLog(shader);
-            throw new Exception($"Error compiling shader of type {type}: {infoLog}");
+                // Copy pixel data from the byte array to the Bitmap
+                Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
+
+                bitmap.UnlockBits(bitmapData);
+
+                // Step 5: Save the Bitmap as a file
+                bitmap.Save(filePath, ImageFormat.Png);
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -210,6 +225,8 @@ namespace RenderEngine
         private void GlControl_Resize(object sender, EventArgs e)
         {
             GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
+            // Initialize shaders and other OpenGL resources here
+            Initialize();
         }
     }
 }

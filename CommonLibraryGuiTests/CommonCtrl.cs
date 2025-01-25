@@ -14,6 +14,7 @@ using CommonControls;
 using Imaging;
 using InterOp;
 using NUnit.Framework;
+using RenderEngine;
 
 namespace CommonLibraryGuiTests
 {
@@ -39,6 +40,7 @@ namespace CommonLibraryGuiTests
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
+            _ = new TkRender();
 
             Assert.Pass();
         }

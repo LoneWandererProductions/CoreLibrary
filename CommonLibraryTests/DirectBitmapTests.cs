@@ -33,7 +33,7 @@ namespace CommonLibraryTests
         /// Directs the bitmap operations should match colors correctly.
         /// </summary>
         [TestMethod]
-        public void DirectBitmapOperations_ShouldMatchColorsCorrectly()
+        public void DirectBitmapOperationsShouldMatchColorsCorrectly()
         {
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
             using var sourceBitmap = new Bitmap(imagePath);
@@ -157,12 +157,67 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Verifies the colors match.
+        /// Tests the bytes conversion.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The target.</param>
-        /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyColorsMatch(Bitmap source, DirectBitmap target, params (int x, int y)[] coordinates)
+        [TestMethod]
+        public void TestBytesConversion()
+        {
+            // Arrange
+            // Create a simple Bitmap with known pixel values
+            int width = 2;
+            int height = 2;
+            var bitmap = new Bitmap(width, height);
+
+            // Set pixel values (ARGB)
+            bitmap.SetPixel(0, 0, Color.FromArgb(255, 0, 0, 255)); // Blue
+            bitmap.SetPixel(1, 0, Color.FromArgb(255, 0, 255, 0)); // Green
+            bitmap.SetPixel(0, 1, Color.FromArgb(255, 255, 0, 0)); // Red
+            bitmap.SetPixel(1, 1, Color.FromArgb(255, 255, 255, 255)); // White
+
+            // Load the generated bitmap into DirectBitmap
+            var directBitmap = new DirectBitmap(bitmap);
+
+            // Act
+            byte[] byteArray = directBitmap.Bytes();
+
+            // Assert
+            Assert.IsNotNull(byteArray);
+            Assert.AreEqual(directBitmap.Bits.Length * 4, byteArray.Length);
+
+            // Optionally, check the byte values for correctness
+            // The pixels should be converted to ARGB->RGBA byte format
+            // Let's check the bytes corresponding to the first pixel (Blue)
+            Assert.AreEqual(0x00, byteArray[0]); // Red
+            Assert.AreEqual(0x00, byteArray[1]); // Green
+            Assert.AreEqual(0xFF, byteArray[2]); // Blue
+            Assert.AreEqual(0xFF, byteArray[3]); // Alpha
+
+            // Check the second pixel (Green)
+            Assert.AreEqual(0x00, byteArray[4]); // Red
+            Assert.AreEqual(0xFF, byteArray[5]); // Green
+            Assert.AreEqual(0x00, byteArray[6]); // Blue
+            Assert.AreEqual(0xFF, byteArray[7]); // Alpha
+
+            // Check the third pixel (Red)
+            Assert.AreEqual(0xFF, byteArray[8]); // Red
+            Assert.AreEqual(0x00, byteArray[9]); // Green
+            Assert.AreEqual(0x00, byteArray[10]); // Blue
+            Assert.AreEqual(0xFF, byteArray[11]); // Alpha
+
+            // Check the fourth pixel (White)
+            Assert.AreEqual(0xFF, byteArray[12]); // Red
+            Assert.AreEqual(0xFF, byteArray[13]); // Green
+            Assert.AreEqual(0xFF, byteArray[14]); // Blue
+            Assert.AreEqual(0xFF, byteArray[15]); // Alpha
+        }
+
+        /// <summary>
+    /// Verifies the colors match.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="coordinates">The coordinates.</param>
+    private static void VerifyColorsMatch(Bitmap source, DirectBitmap target, params (int x, int y)[] coordinates)
         {
             foreach (var (x, y) in coordinates)
             {

@@ -3,20 +3,34 @@
  * PROJECT:     RenderEngine
  * FILE:        RenderEngine/TKHelper.cs
  * PURPOSE:     Basic Helper stuff for our engine
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using OpenTK.Graphics.OpenGL;
-using System.Runtime.InteropServices;
-using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
+using Imaging; // For Marshal.Copy and memory management
+using OpenTK.Graphics.OpenGL4; // For GL methods, ShaderType, TextureTarget, etc.
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
     internal static class TkHelper
     {
+        internal static int CompileShader(ShaderType type, string source)
+        {
+            var shader = GL.CreateShader(type);
+            GL.ShaderSource(shader, source);
+            GL.CompileShader(shader);
+
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
+            if (status == (int)All.True)
+            {
+                return shader;
+            }
+
+            var infoLog = GL.GetShaderInfoLog(shader);
+            throw new Exception($"Error compiling shader of type {type}: {infoLog}");
+        }
+
         internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight, Func<T, float[]> getVertexAttributes)
         {
             var vertexData = new float[data.Length * 6 * 5]; // 6 vertices * 5 attributes (x, y, r, g, b)
@@ -28,7 +42,7 @@ namespace RenderEngine
                 var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
 
                 var columnHeight = attributes[0]; // In case of columns, this would be height, for example
-                var yTop = (columnHeight / (float)screenHeight) * 2.0f - 1.0f;  // Use columnHeight to set the top Y position
+                var yTop = (columnHeight / screenHeight) * 2.0f - 1.0f;
                 var yBottom = -1.0f; // Bottom of the screen is -1.0f
 
                 var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
@@ -76,53 +90,25 @@ namespace RenderEngine
 
         public static byte[] LoadTexture(string filePath, out int width, out int height)
         {
-            // Load the image using System.Drawing.Bitmap
-            using var bitmap = new Bitmap(filePath);
+            using var directBitmap = new DirectBitmap(filePath);
 
-            // Ensure the image format is consistent with OpenGL requirements
-            width = bitmap.Width;
-            height = bitmap.Height;
+            width = directBitmap.Width;
+            height = directBitmap.Height;
 
-            // Lock the bitmap data
-            var bitmapData = bitmap.LockBits(
-                new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            // Copy the image data into a byte array
-            int dataSize = Math.Abs(bitmapData.Stride) * bitmapData.Height;
-            byte[] pixelData = new byte[dataSize];
-            System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixelData, 0, dataSize);
-
-            // Unlock the bitmap data
-            bitmap.UnlockBits(bitmapData);
-
-            return pixelData;
+            return directBitmap.Bytes(); // Assuming `Bits` is byte[] in the updated DirectBitmap class
         }
 
         public static int LoadTexture(string filePath)
         {
-            // Load the image file
             var textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            using (var bitmap = new Bitmap(filePath))
+            using (var directBitmap = new DirectBitmap(filePath))
             {
-                // Convert the bitmap to a byte array (RGBA)
-                var pixels = new byte[bitmap.Width * bitmap.Height * 4]; // 4 for RGBA channels
-                var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-                var data = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
-                bitmap.UnlockBits(data);
-
-                // Convert the byte array to IntPtr (needed for GL.TexImage2D)
-                IntPtr pointer = Marshal.UnsafeAddrOfPinnedArrayElement(pixels, 0);
-
-                // Load the image into OpenGL texture
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pointer);
+                var pixels = directBitmap.Bytes(); // Assuming `Bits` is a byte array in the updated DirectBitmap class
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
-            // Set texture parameters (filtering, wrapping)
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
