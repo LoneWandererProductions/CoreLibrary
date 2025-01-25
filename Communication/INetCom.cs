@@ -56,5 +56,12 @@ namespace Communication
         /// <returns>An HttpResponseMessage containing the response details.</returns>
         Task<string> SendMessageAsync(string url, string method, string body = null,
             string contentType = "application/json");
+
+        /// <summary>
+        /// Listeners the specified port.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        /// <returns>Reference to the listener</returns>
+        Listener Listener(int port);
     }
 }

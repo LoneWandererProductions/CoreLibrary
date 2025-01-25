@@ -7,6 +7,10 @@
  */
 
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Communication;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,12 +40,52 @@ namespace CommonLibraryTests
             File.Delete(path);
         }
 
-        //[TestMethod]
-        //public async Task Untested()
-        //{
-        //    //var str = await HttpClientManager.CallSoapServiceAsync();
+        /// <summary>
+        /// Listeners the should respond with pong when pinged.
+        /// </summary>
+        [TestMethod]
+        public async Task ListenerShouldRespondWithPongWhenPinged()
+        {
+            // Arrange
+            const int port = 12345; // Example port
+            var listener = new Listener(port);
+            var cancellationTokenSource = new CancellationTokenSource();
 
-        //    //Trace.WriteLine(str);
-        //}
+            // Start the listener in a separate task to simulate real-world usage
+            var listenerTask = Task.Run(() => listener.StartListening(cancellationTokenSource.Token));
+
+            // Wait for a brief moment to ensure the server is up and listening
+            await Task.Delay(1000);
+
+            // Act - Connect to the server and send a message
+            using (var client = new TcpClient("localhost", port))
+            {
+                var stream = client.GetStream();
+                byte[] requestMessage = Encoding.ASCII.GetBytes("PING");
+                stream.Write(requestMessage, 0, requestMessage.Length);
+
+                // Read the response
+                byte[] buffer = new byte[1024];
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                // Assert - Verify the response is "PONG"
+                Assert.AreEqual("PONG", response, "Expected response was not received.");
+            }
+
+            // Stop the listener after the test
+            cancellationTokenSource.Cancel();
+            await listenerTask;  // Ensure listener has finished
+
+            listener.StopListening();
+        }
     }
+
+    //[TestMethod]
+    //public async Task Untested()
+    //{
+    //    //var str = await HttpClientManager.CallSoapServiceAsync();
+
+    //    //Trace.WriteLine(str);
+    //}
 }

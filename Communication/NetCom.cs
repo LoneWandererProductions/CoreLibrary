@@ -76,5 +76,18 @@ namespace Communication
                 throw new Exception("An error occurred while sending the HTTP request.", ex);
             }
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Listeners the specified port.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        /// <returns>
+        /// Reference to the listener
+        /// </returns>
+        public Listener Listener(int port)
+        {
+            return new(port);
+        }
     }
 }
