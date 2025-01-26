@@ -40,7 +40,7 @@ namespace CommonLibraryGuiTests
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
-            _ = new TkRender();
+            _ = new OpenTkControl();
 
             Assert.Pass();
         }
