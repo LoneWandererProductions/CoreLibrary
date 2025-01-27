@@ -25,6 +25,13 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Cleanup Processes
+      run: |
+        echo "Cleaning up"
+        taskkill /F /IM vstest.console.exe || true
+        taskkill /F /IM dotnet.exe || true
+    - name: Exit Workflow (Force)
+      run: exit 0
       continue-on-error: true
       timeout-minutes: 5
     - name: Exit Workflow (Force)
