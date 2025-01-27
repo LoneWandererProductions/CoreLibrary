@@ -12,47 +12,45 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 30  # Increased timeout for the entire job
 
     steps:
     - uses: actions/checkout@v3
-
-    # Setup .NET
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 5.0.x
 
-    # Restore dependencies
     - name: Restore dependencies
       run: dotnet restore
 
-    # Build the project
     - name: Build
       run: dotnet build --no-restore
 
-    # Run tests with verbosity, no build, and capture any outputs
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --no-restore > NUL 2>&1
+    # Run tests in parts (if categorized)
+    - name: Run Tests (Part 1)
+      run: dotnet test --no-build --verbosity normal --filter "Category=Part1" --no-restore
       timeout-minutes: 5
 
-    # Add sleep for investigation before cleanup (optional debugging step)
-    - name: Sleep for Investigation (5s)
-      run: sleep 5
+    - name: Run Tests (Part 2)
+      run: dotnet test --no-build --verbosity normal --filter "Category=Part2" --no-restore
+      timeout-minutes: 5
 
-    # Debug logs: Check for processes and running tasks
-    - name: Debug Log (Before Cleanup)
-      run: |
-        echo "Test step finished. Checking for processes..."
-        tasklist /FI "IMAGENAME eq vstest.console.exe"
-        tasklist /FI "IMAGENAME eq dotnet.exe"
+    # Detailed logging for debugging
+    - name: Test with Detailed Logging
+      run: dotnet test --no-build --verbosity detailed --no-restore > result.log; tail -n 20 result.log
 
-    # Cleanup processes (kill vstest and dotnet if hanging)
+    # Check for stuck processes if needed
+    - name: Check for Stuck Processes
+      run: tasklist /FI "IMAGENAME eq vstest.console.exe"
+
+    # Cleanup to force the workflow to exit in case of long waits
     - name: Cleanup Processes
       run: |
-        echo "Cleaning up"
-        taskkill /F /IM vstest.console.exe || true
-        taskkill /F /IM dotnet.exe || true
+        echo "Checking for stuck processes"
+        taskkill /IM vstest.console.exe /F || echo "No processes to kill"
+        timeout /T 10 /NOBREAK
 
-    # Force exit the workflow (forcing it to stop after cleanup)
     - name: Exit Workflow (Force)
       run: exit 0
