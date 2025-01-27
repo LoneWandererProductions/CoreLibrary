@@ -27,3 +27,5 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       continue-on-error: true
+    - name: Complete Job
+      run: exit 0
