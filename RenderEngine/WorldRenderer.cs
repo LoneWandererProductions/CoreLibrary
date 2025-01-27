@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace RenderEngine
 {
@@ -107,7 +108,7 @@ namespace RenderEngine
             return Color.Black; // Default to black if no intersection
         }
 
-        private (float dx, float dy, float dz) RotateRay(float dx, float dy, float dz, int angle, int pitch)
+        private (float dx, float dy, float dz) RotateRay(float dx, float dy, float dz, float angle, float pitch)
         {
             // Convert angles to radians
             float angleRad = angle * (float)Math.PI / 180;
@@ -127,6 +128,45 @@ namespace RenderEngine
 
             return (newDx, newDy, finalDz);
         }
+        //Huge TODO
+
+        private Color SampleOutdoorSkybox(float nx, float ny, WorldCamera camera)
+        {
+            // Map normalized coordinates to spherical direction
+            float dx = nx;
+            float dy = ny;
+            float dz = 1f;
+
+            // Rotate direction based on camera angle
+            (dx, dy, dz) = RotateRay(dx, dy, dz, camera.Angle, camera.Pitch);
+
+            // Map to skybox texture (spherical or cubemap)
+            float u = 0.5f + (float)(Math.Atan2(dz, dx) / (2 * Math.PI));
+            float v = 0.5f - (float)(Math.Asin(dy) / Math.PI);
+
+            // Sample the skybox texture
+            return Color.Black;  //OutdoorSkyboxTexture.Sample(u, v);
+        }
+
+        private Color SampleIndoorSkybox(float nx, float ny, WorldCamera camera, int roomWidth, int roomHeight, int roomLength)
+        {
+            // Normalize pixel to room dimensions
+            float dx = nx * roomWidth;
+            float dy = ny * roomHeight;
+
+            // Calculate texture coordinates based on camera position and room size
+            float u = (camera.X + dx) / roomWidth;
+            float v = (camera.Y + dy) / roomHeight;
+
+            // Choose wall, floor, or ceiling based on camera angle and position
+            if (camera.Z < roomHeight / 2)
+                return Color.Black; //CeilingTexture.Sample(u, v);
+            else if (camera.Z > -roomHeight / 2)
+                return Color.Black; //FloorTexture.Sample(u, v);
+            else
+                return Color.Black; //WallTexture.Sample(u, v);
+        }
+
     }
 
 }
