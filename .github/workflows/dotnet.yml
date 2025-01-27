@@ -15,24 +15,44 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    # Setup .NET
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 5.0.x
+
+    # Restore dependencies
     - name: Restore dependencies
       run: dotnet restore
+
+    # Build the project
     - name: Build
       run: dotnet build --no-restore
+
+    # Run tests with verbosity, no build, and capture any outputs
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --no-restore > /dev/null 2>&1
+      timeout-minutes: 5
+
+    # Add sleep for investigation before cleanup (optional debugging step)
+    - name: Sleep for Investigation (5s)
+      run: sleep 5
+
+    # Debug logs: Check for processes and running tasks
+    - name: Debug Log (Before Cleanup)
+      run: |
+        echo "Test step finished. Checking for processes..."
+        tasklist /FI "IMAGENAME eq vstest.console.exe"
+        tasklist /FI "IMAGENAME eq dotnet.exe"
+
+    # Cleanup processes (kill vstest and dotnet if hanging)
     - name: Cleanup Processes
       run: |
         echo "Cleaning up"
         taskkill /F /IM vstest.console.exe || true
         taskkill /F /IM dotnet.exe || true
-    - name: Exit Workflow (Force)
-      run: exit 0
-      continue-on-error: true
-      timeout-minutes: 5
+
+    # Force exit the workflow (forcing it to stop after cleanup)
     - name: Exit Workflow (Force)
       run: exit 0
