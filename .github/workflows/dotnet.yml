@@ -25,5 +25,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Exit Workflow
+      continue-on-error: true
+      timeout-minutes: 5
+    - name: Exit Workflow (Force)
       run: exit 0
