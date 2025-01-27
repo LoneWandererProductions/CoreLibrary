@@ -32,7 +32,7 @@ jobs:
 
     # Run tests with verbosity, no build, and capture any outputs
     - name: Test
-      run: dotnet test --no-build --verbosity normal --no-restore > /dev/null 2>&1
+      run: dotnet test --no-build --verbosity normal --no-restore > NUL 2>&1
       timeout-minutes: 5
 
     # Add sleep for investigation before cleanup (optional debugging step)
