@@ -167,6 +167,33 @@ namespace RenderEngine
                 return Color.Black; //WallTexture.Sample(u, v);
         }
 
+        //TOOD other approach
+        public (float uMin, float uMax, float vMin, float vMax) GetSkyboxProjection(WorldCamera camera)
+        {
+            // Step 1: Calculate the boundaries of the frustum
+            float halfHeight = (float)(Math.Tan(camera.FieldOfView * Math.PI / 360) * camera.ZFar);
+            float halfWidth = halfHeight;
+
+            // Frustum boundaries (camera position is at the origin, frustum at ZFar distance)
+            float frustumLeft = camera.X - halfWidth;
+            float frustumRight = camera.X + halfWidth;
+            float frustumTop = camera.Y + halfHeight;
+            float frustumBottom = camera.Y - halfHeight;
+
+            // Step 2: Map these boundaries to the skybox plane (assuming the skybox is a 2D texture or cubemap face)
+            // Here we assume the skybox is projected onto a unit square (0, 1) in both u and v coordinates.
+
+            // Convert the frustum to normalized coordinates for the skybox (u, v)
+            float uMin = (frustumLeft + halfWidth) / (2 * halfWidth);  // Normalize to [0, 1]
+            float uMax = (frustumRight + halfWidth) / (2 * halfWidth); // Normalize to [0, 1]
+            float vMin = (frustumBottom + halfHeight) / (2 * halfHeight);  // Normalize to [0, 1]
+            float vMax = (frustumTop + halfHeight) / (2 * halfHeight);  // Normalize to [0, 1]
+
+            return (uMin, uMax, vMin, vMax);
+        }
+
+
+
     }
 
 }
