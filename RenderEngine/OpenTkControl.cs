@@ -8,7 +8,6 @@
 
 #nullable enable
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -20,10 +19,11 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
+    /// <inheritdoc />
     /// <summary>
     /// Display Control for OpenGL
     /// </summary>
-    /// <seealso cref="System.Windows.Forms.Integration.WindowsFormsHost" />
+    /// <seealso cref="T:System.Windows.Forms.Integration.WindowsFormsHost" />
     public sealed class OpenTkControl : WindowsFormsHost
     {
         private GLControl? _glControl;
@@ -33,6 +33,11 @@ namespace RenderEngine
 
         public OpenTkControl()
         {
+            if (!OpenTkHelper.IsOpenGlCompatible(4, 5))
+            {
+                throw new NotSupportedException("OpenGL 4.5 or higher is required but not available.");
+            }
+
             InitializeGlControl();
             InitializeShaders();
             InitializeBuffers();
@@ -41,16 +46,16 @@ namespace RenderEngine
 
         private void InitializeGlControl()
         {
-            _glControl = new GLControl
+            _glControl = new GLControl();
+
+            _glControl.HandleCreated += (s, e) =>
             {
-                Dock = DockStyle.Fill
+                _glControl.MakeCurrent();  // OpenGL-Kontext setzen
+                GL.ClearColor(0.1f, 0.2f, 0.3f, 1.0f);
             };
 
             _glControl.Paint += GlControl_Paint;
             _glControl.Resize += GlControl_Resize;
-
-            _glControl.MakeCurrent();
-            GL.ClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         }
 
         private void InitializeShaders()
@@ -92,7 +97,7 @@ namespace RenderEngine
             GL.DeleteShader(fragmentShader);
 
             // Load background texture
-            _backgroundTexture = OpenTKHelper.LoadTexture("path_to_your_background_image.jpg");
+            _backgroundTexture = OpenTkHelper.LoadTexture("path_to_your_background_image.jpg");
         }
 
         private int CompileShader(ShaderType type, string source)
@@ -172,7 +177,7 @@ namespace RenderEngine
             GL.Clear(ClearBufferMask.ColorBufferBit);
             RenderBackground(_backgroundTexture);
 
-            var vertexData = OpenTKHelper.GenerateVertexData(columns, screenWidth, screenHeight, column =>
+            var vertexData = OpenTkHelper.GenerateVertexData(columns, screenWidth, screenHeight, column =>
                 new[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z });
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
@@ -188,7 +193,7 @@ namespace RenderEngine
             GL.Clear(ClearBufferMask.ColorBufferBit);
             RenderBackground(_backgroundTexture);
 
-            var vertexData = OpenTKHelper.GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
+            var vertexData = OpenTkHelper.GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
             {
                 var pixelWidth = 2.0f / screenWidth;
                 var pixelHeight = 2.0f / screenHeight;

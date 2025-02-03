@@ -9,29 +9,53 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Imaging; // For Marshal.Copy and memory management
+using System.Windows;
+using Imaging;
+using OpenTK.GLControl; // For Marshal.Copy and memory management
 using OpenTK.Graphics.OpenGL4; // For GL methods, ShaderType, TextureTarget, etc.
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
-    internal static class OpenTKHelper
+    internal static class OpenTkHelper
     {
-        internal static int CompileShader(ShaderType type, string source)
+        internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
         {
-            var shader = GL.CreateShader(type);
-            GL.ShaderSource(shader, source);
-            GL.CompileShader(shader);
+            bool isCompatible = false;
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
-            if (status == (int)All.True)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                return shader;
-            }
+                try
+                {
+                    using var tempContext = new GLControl();
+                    tempContext.MakeCurrent(); // Set OpenGL-Context
 
-            var infoLog = GL.GetShaderInfoLog(shader);
-            throw new Exception($"Error compiling shader of type {type}: {infoLog}");
+                    string versionString = GL.GetString(StringName.Version);
+                    string renderer = GL.GetString(StringName.Renderer);
+                    string vendor = GL.GetString(StringName.Vendor);
+
+                    Console.WriteLine($"OpenGL Renderer: {renderer}");
+                    Console.WriteLine($"OpenGL Vendor: {vendor}");
+                    Console.WriteLine($"OpenGL Version: {versionString}");
+
+                    string[] versionParts = versionString.Split('.');
+                    if (versionParts.Length < 2) return;
+
+                    if (int.TryParse(versionParts[0], out int major) &&
+                        int.TryParse(versionParts[1].Split(' ')[0], out int minor))
+                    {
+                        isCompatible = (major > requiredMajor) || (major == requiredMajor && minor >= requiredMinor);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"OpenGL initialization failed: {ex.Message}");
+                }
+            });
+
+            return isCompatible;
         }
+
 
         internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight, Func<T, float[]> getVertexAttributes)
         {
@@ -90,7 +114,23 @@ namespace RenderEngine
             return vertexData;
         }
 
-        public static byte[] LoadTexture(string filePath, out int width, out int height)
+        internal static int CompileShader(ShaderType type, string source)
+        {
+            var shader = GL.CreateShader(type);
+            GL.ShaderSource(shader, source);
+            GL.CompileShader(shader);
+
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
+            if (status == (int)All.True)
+            {
+                return shader;
+            }
+
+            var infoLog = GL.GetShaderInfoLog(shader);
+            throw new Exception($"Error compiling shader of type {type}: {infoLog}");
+        }
+
+        internal static byte[] LoadTexture(string filePath, out int width, out int height)
         {
             using var directBitmap = new DirectBitmap(filePath);
 
@@ -100,7 +140,7 @@ namespace RenderEngine
             return directBitmap.Bytes(); // Assuming `Bits` is byte[] in the updated DirectBitmap class
         }
 
-        public static int LoadTexture(string filePath)
+        internal static int LoadTexture(string filePath)
         {
             // Check if the file exists
             if (!File.Exists(filePath))

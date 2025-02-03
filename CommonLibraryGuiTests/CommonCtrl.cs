@@ -8,7 +8,9 @@
 
 // ReSharper disable UnusedVariable
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using CommonControls;
 using Imaging;
@@ -40,8 +42,15 @@ namespace CommonLibraryGuiTests
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
-            //causes problems on machines without openGl
-            //_ = new OpenTkControl();
+
+            try
+            {
+                _ = new OpenTkControl();
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
 
             Assert.Pass();
         }
