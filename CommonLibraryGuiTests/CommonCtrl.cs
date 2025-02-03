@@ -40,7 +40,8 @@ namespace CommonLibraryGuiTests
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
-            _ = new OpenTkControl();
+            //causes problems on machines without openGl
+            //_ = new OpenTkControl();
 
             Assert.Pass();
         }
