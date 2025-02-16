@@ -653,7 +653,6 @@ namespace CommonLibraryTests
             Trace.WriteLine(message);   // Log the performance results
         }
 
-
         /// <summary>
         ///     Run line calculation and accumulate results.
         /// </summary>
