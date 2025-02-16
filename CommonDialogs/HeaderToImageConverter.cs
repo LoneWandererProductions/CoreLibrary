@@ -14,7 +14,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using Imaging;
 
 namespace CommonDialogs
 {
@@ -65,7 +64,7 @@ namespace CommonDialogs
                     : null;
 
             // Return the image if it exists
-            return imagePath != null ? ImageStreamMedia.GetBitmapImageFileStream(imagePath) : null;
+            return imagePath != null ? DialogHelper.GetBitmapImageFileStream(imagePath) : null;
         }
 
         /// <inheritdoc />

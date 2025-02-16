@@ -13,6 +13,7 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBeInternal
 
 using System.Diagnostics;
 using System.Text;
@@ -39,12 +40,12 @@ namespace CommonDialogs
         /// <summary>
         ///     The IntegratedSecurity string for the connection string
         /// </summary>
-        private string _security;
+        private string? _security;
 
         /// <summary>
         ///     The TrustServerCertificate string for the connection string
         /// </summary>
-        private string _trust;
+        private string? _trust;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqlConnect" /> class.

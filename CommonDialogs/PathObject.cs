@@ -21,22 +21,22 @@ namespace CommonDialogs
         /// <summary>
         ///     Gets or sets the file path. Full Path.
         /// </summary>
-        public string FilePath { get; internal init; }
+        public string? FilePath { get; internal init; }
 
         /// <summary>
         ///     Gets the folder.
         /// </summary>
-        public string Folder => GetFolder();
+        public string? Folder => GetFolder();
 
         /// <summary>
         ///     Gets the file name.
         /// </summary>
-        public string FileName => GetGetFileName();
+        public string? FileName => GetGetFileName();
 
         /// <summary>
         ///     Gets the file name without ext.
         /// </summary>
-        public string FileNameWithoutExt => GetGetFileNameWithoutExtension();
+        public string? FileNameWithoutExt => GetGetFileNameWithoutExtension();
 
         /// <summary>
         ///     Gets the File extension.
@@ -44,13 +44,13 @@ namespace CommonDialogs
         /// <value>
         ///     The extension.
         /// </value>
-        public string Extension => GetFileExtension();
+        public string? Extension => GetFileExtension();
 
         /// <summary>
         ///     Get the folder.
         /// </summary>
         /// <returns>The Folder as <see cref="string" />.</returns>
-        private string GetFolder()
+        private string? GetFolder()
         {
             return Path.GetDirectoryName(FilePath);
         }
@@ -59,7 +59,7 @@ namespace CommonDialogs
         ///     Get the get file name.
         /// </summary>
         /// <returns>The File Name as<see cref="string" />.</returns>
-        private string GetGetFileName()
+        private string? GetGetFileName()
         {
             return Path.GetFileName(FilePath);
         }
@@ -68,7 +68,7 @@ namespace CommonDialogs
         ///     Get the get file name without extension.
         /// </summary>
         /// <returns>The  File Name without extension as<see cref="string" />.</returns>
-        private string GetGetFileNameWithoutExtension()
+        private string? GetGetFileNameWithoutExtension()
         {
             return Path.GetFileNameWithoutExtension(FileName);
         }
@@ -77,7 +77,7 @@ namespace CommonDialogs
         ///     Gets the file extension.
         /// </summary>
         /// <returns>the file Extension</returns>
-        private string GetFileExtension()
+        private string? GetFileExtension()
         {
             return Path.GetExtension(FileName);
         }
