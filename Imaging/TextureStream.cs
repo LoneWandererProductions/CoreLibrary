@@ -319,61 +319,39 @@ namespace Imaging
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
 
-            var crosshatchBitmap = new Bitmap(width, height);
+            var crosshatchBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.White); // Background color
+            graphics.Clear(Color.Transparent); // Set background to transparent
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
-            // Convert angles from degrees to radians
-            var radAngle1 = angle1 * Math.PI / 180.0;
-            var radAngle2 = angle2 * Math.PI / 180.0;
 
-            // Calculate the line direction vectors
-            var dx1 = Math.Cos(radAngle1);
-            var dy1 = Math.Sin(radAngle1);
-            var dx2 = Math.Cos(radAngle2);
-            var dy2 = Math.Sin(radAngle2);
-
-            // Draw first set of lines
-            for (var y = 0; y < height; y += lineSpacing)
+            void DrawLines(double angle)
             {
-                graphics.DrawLine(
-                    pen,
-                    0, y,
-                    (int)((width * dx1) + (width * dy1)),
-                    (int)((y * dx1) + (width * dy1)));
+                var radians = angle * Math.PI / 180.0;
+                var cosA = Math.Cos(radians);
+                var sinA = Math.Sin(radians);
+
+                // The farthest diagonal distance in the image to ensure full coverage
+                var diagonalLength = (int)Math.Sqrt(width * width + height * height);
+
+                for (var d = -diagonalLength; d < diagonalLength; d += lineSpacing)
+                {
+                    var x1 = (int)(d * cosA);
+                    var y1 = (int)(d * sinA);
+                    var x2 = (int)((d + diagonalLength) * cosA);
+                    var y2 = (int)((d + diagonalLength) * sinA);
+
+                    graphics.DrawLine(pen, x1, y1, x2, y2);
+                }
             }
 
-            for (var x = 0; x < width; x += lineSpacing)
-            {
-                graphics.DrawLine(
-                    pen,
-                    x, 0,
-                    (int)((x * dx1) + (height * dx1)),
-                    (int)((height * dx1) + (height * dy1)));
-            }
-
-            // Draw second set of lines
-            for (var y = 0; y < height; y += lineSpacing)
-            {
-                graphics.DrawLine(
-                    pen,
-                    0, y,
-                    (int)((width * dx2) + (height * dy2)),
-                    (int)((y * dx2) + (height * dy2)));
-            }
-
-            for (var x = 0; x < width; x += lineSpacing)
-            {
-                graphics.DrawLine(
-                    pen,
-                    x, 0,
-                    (int)((x * dx2) + (width * dx2)),
-                    (int)((width * dx2) + (height * dy2)));
-            }
+            // Draw the two crosshatch line sets
+            DrawLines(angle1);
+            DrawLines(angle2);
 
             return crosshatchBitmap;
         }
+
 
         /// <summary>
         ///     Generates a concrete texture bitmap.
@@ -439,23 +417,21 @@ namespace Imaging
 
 
             //no Simd for now
-            using (var g = Graphics.FromImage(canvasBitmap.Bitmap))
+            using var g = Graphics.FromImage(canvasBitmap.Bitmap);
+            g.Clear(Color.White);
+
+            // Draw vertical fibers
+            for (var x = 0; x < width; x += lineSpacing)
             {
-                g.Clear(Color.White);
+                using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
+                g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
+            }
 
-                // Draw vertical fibers
-                for (var x = 0; x < width; x += lineSpacing)
-                {
-                    using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
-                    g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
-                }
-
-                // Draw horizontal fibers
-                for (var y = 0; y < height; y += lineSpacing)
-                {
-                    using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
-                    g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
-                }
+            // Draw horizontal fibers
+            for (var y = 0; y < height; y += lineSpacing)
+            {
+                using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
+                g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
             }
 
             return canvasBitmap.Bitmap;
