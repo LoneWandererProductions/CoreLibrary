@@ -11,7 +11,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="5" />
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="110" />
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="30" />
             <ColumnDefinition Width="5" />
@@ -43,7 +43,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
-        <Label Content="File Path:" Grid.Column="1" Grid.Row="1" />
+        <Label Content="File Path:" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center"/>
         <Label Content="Suppress Window:" Grid.Column="1" Grid.Row="3" />
         <Label Content="Ticks:" Grid.Column="1" Grid.Row="5" />
         <Label Content="Is Running:" Grid.Column="1" Grid.Row="7" />
@@ -52,6 +52,9 @@
         <Label Content="Verbose Active:" Grid.Row="9"
                Grid.Column="9" />
         <TextBox Grid.ColumnSpan="7"
+                 HorizontalScrollBarVisibility="Auto"
+                 VerticalScrollBarVisibility="Hidden"
+                 TextWrapping="NoWrap"
                  Grid.Column="3"
                  Grid.Row="1"
                  Text="{Binding DebugPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -71,7 +74,7 @@
             Grid.Column="3"
             Grid.Row="16" Click="BtnSave_Click" Grid.ColumnSpan="5" />
         <Button
-            Content="Cancel"
+            Content="Close"
             Grid.Row="16" Click="BtnCnl_Click" Grid.ColumnSpan="2" Grid.Column="0" />
         <CheckBox Grid.ColumnSpan="5"
                   Grid.Column="3"

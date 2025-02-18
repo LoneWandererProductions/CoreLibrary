@@ -1,24 +1,23 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/ConfigWindow.xaml.cs
- * PURPOSE:     Config Window
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PURPOSE:     Configuration Window for Debugger
+ * AUTHOR:      Peter Geinitz (Wayfarer)
  */
 
+using System.Linq;
 using System.Windows;
 
 namespace Debugger
 {
-    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Interaction logic for Config.xaml
+    /// Interaction logic for ConfigWindow.xaml.
     /// </summary>
-    internal sealed partial class ConfigWindow
+    internal sealed partial class ConfigWindow : Window
     {
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Debugger.ConfigWindow" /> class.
+        /// Initializes a new instance of the <see cref="ConfigWindow"/> class.
         /// </summary>
         internal ConfigWindow()
         {
@@ -26,11 +25,45 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     Handles the Click event of the BtnReset control.
+        /// Handles the reset button click event.
+        /// Resets configuration and updates UI elements.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnReset_Click(object sender, RoutedEventArgs e)
+        {
+            ResetConfiguration();
+        }
+
+        /// <summary>
+        /// Handles the save button click event.
+        /// Saves the current configuration.
+        /// </summary>
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveConfiguration();
+        }
+
+        /// <summary>
+        /// Handles the window loaded event.
+        /// Initializes color options and binds the DataContext.
+        /// </summary>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeConfiguration();
+        }
+
+        /// <summary>
+        /// Handles the cancel button click event.
+        /// Closes the configuration window.
+        /// </summary>
+        private void BtnCnl_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Resets the configuration and updates UI elements.
+        /// </summary>
+        private void ResetConfiguration()
         {
             DebugRegister.Reset();
             ColorOptions.AddItemColors(DebugRegister.ColorOptions);
@@ -38,35 +71,27 @@ namespace Debugger
         }
 
         /// <summary>
-        ///     The Button save click.
+        /// Saves the current configuration using XML serialization.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        private void SaveConfiguration()
         {
             var options = ColorOptions.GetColorOptions();
             DebugRegister.XmlSerializerObject(DataContext, options);
         }
 
         /// <summary>
-        ///     The window loaded.
+        /// Initializes color options and binds the DataContext.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void InitializeConfiguration()
         {
-            ColorOptions.AddItemColors(DebugRegister.ColorOptions);
-            DataContext = DebugRegister.Config;
-        }
+            var options = DebugRegister.ColorOptions;
+            if (options is null || !options.Any())
+            {
+                options = DebuggerResources.InitialOptions.ToList();
+            }
 
-        /// <summary>
-        ///     The Button Cancel click.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void BtnCnl_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            ColorOptions.AddItemColors(options);
+            DataContext = DebugRegister.Config;
         }
     }
 }

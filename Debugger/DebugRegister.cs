@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -133,7 +134,7 @@ namespace Debugger
         /// <value>
         ///     The color options.
         /// </value>
-        internal static List<ColorOption> ColorOptions { get; set; } = DebuggerResources.InitialOptions;
+        internal static List<ColorOption> ColorOptions { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is verbose.
@@ -160,7 +161,7 @@ namespace Debugger
                 StandardColor = DebuggerResources.StandardColor,
                 WarningColor = DebuggerResources.WarningColor,
                 IsDumpActive = false,
-                ColorOptions = DebuggerResources.InitialOptions,
+                ColorOptions = DebuggerResources.InitialOptions.ToList(),
                 MaxFileSize = 5 * 1024 * 1024, // Default: 5 MB
                 MaxFileCount = 10 // Default: 10 files
             };

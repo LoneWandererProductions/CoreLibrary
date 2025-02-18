@@ -8,6 +8,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 
 namespace Debugger
 {
@@ -175,13 +177,12 @@ namespace Debugger
         /// <summary>
         ///     The initial options for the colors
         /// </summary>
-        internal static readonly List<ColorOption> InitialOptions = new()
-        {
+        internal static readonly ImmutableList<ColorOption> InitialOptions = ImmutableList.Create(
             new ColorOption { ColorName = DebugRegister.StandardColor, EntryText = BaseText },
             new ColorOption { ColorName = DebugRegister.ErrorColor, EntryText = LogLvlError },
             new ColorOption { ColorName = DebugRegister.WarningColor, EntryText = LogLvlWarning },
             new ColorOption { ColorName = DebugRegister.InformationColor, EntryText = LogLvlInformation },
             new ColorOption { ColorName = DebugRegister.ExternalColor, EntryText = LogLvlExternal }
-        };
+        );
     }
 }
