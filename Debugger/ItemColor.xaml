@@ -19,8 +19,8 @@
         <!-- ColorSelector Control -->
         <commonControls:ColorSelection Grid.Column="0" x:Name="ColorPicker" StartColor="Black" />
         <!-- TextBox Control -->
-        <TextBox x:Name="TextBox" 
-                 Margin="5" Grid.Column="1"                  
+        <TextBox x:Name="TextBox"
+                 Margin="5" Grid.Column="1"
                  HorizontalScrollBarVisibility="Auto"
                  VerticalScrollBarVisibility="Hidden"
                  TextWrapping="NoWrap" Text="{Binding EntryText}" />

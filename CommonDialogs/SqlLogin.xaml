@@ -1,14 +1,14 @@
 ﻿<!-- ReSharper disable once UnusedType.Global -->
 <Window
-        x:Class="CommonDialogs.SqlLogin"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dialogs="clr-namespace:CommonDialogs"
-        mc:Ignorable="d"
-        Topmost="True"
-        Title="Connect to Server" Height="450" Width="450">
+    x:Class="CommonDialogs.SqlLogin"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:dialogs="clr-namespace:CommonDialogs"
+    mc:Ignorable="d"
+    Topmost="True"
+    Title="Connect to Server" Height="450" Width="450">
     <Window.DataContext>
         <dialogs:SqlView x:Name="View" x:FieldModifier="public" />
     </Window.DataContext>
@@ -52,7 +52,7 @@
                  IsEnabled="True"
                  VerticalScrollBarVisibility="Auto"
                  HorizontalScrollBarVisibility="Auto"
-                 AcceptsReturn="True" 
+                 AcceptsReturn="True"
                  VerticalContentAlignment="Bottom" />
     </Grid>
     <Window.Resources>

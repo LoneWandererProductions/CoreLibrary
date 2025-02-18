@@ -79,15 +79,15 @@ namespace Communication
 
         /// <inheritdoc />
         /// <summary>
-        /// Listeners the specified port.
+        ///     Listeners the specified port.
         /// </summary>
         /// <param name="port">The port.</param>
         /// <returns>
-        /// Reference to the listener
+        ///     Reference to the listener
         /// </returns>
         public Listener Listener(int port)
         {
-            return new(port);
+            return new Listener(port);
         }
     }
 }

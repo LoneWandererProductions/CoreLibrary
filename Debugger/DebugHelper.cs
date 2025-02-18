@@ -25,7 +25,7 @@ namespace Debugger
             DebuggerResources.LogPath);
 
         /// <summary>
-        /// Gets the log file.
+        ///     Gets the log file.
         /// </summary>
         /// <param name="logFile">The log file.</param>
         /// <returns>The Content of the file</returns>
@@ -80,8 +80,10 @@ namespace Debugger
             }
 
             // Determine the color option based on the line content
-            var option = DebugRegister.ColorOptions.FirstOrDefault(opt => line.StartsWith(opt.EntryText, StringComparison.Ordinal))
-                         ?? DebugRegister.ColorOptions[0];
+            var option =
+                DebugRegister.ColorOptions.FirstOrDefault(opt =>
+                    line.StartsWith(opt.EntryText, StringComparison.Ordinal))
+                ?? DebugRegister.ColorOptions[0];
 
             // Apply the foreground color
             newRange.ApplyPropertyValue(TextElement.ForegroundProperty, option.ColorName);

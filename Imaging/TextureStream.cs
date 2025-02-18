@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 // ReSharper disable UnusedMember.Local
 
@@ -319,7 +320,7 @@ namespace Imaging
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
 
-            var crosshatchBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var crosshatchBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
             graphics.Clear(Color.Transparent); // Set background to transparent
 
@@ -332,7 +333,7 @@ namespace Imaging
                 var sinA = Math.Sin(radians);
 
                 // The farthest diagonal distance in the image to ensure full coverage
-                var diagonalLength = (int)Math.Sqrt(width * width + height * height);
+                var diagonalLength = (int)Math.Sqrt((width * width) + (height * height));
 
                 for (var d = -diagonalLength; d < diagonalLength; d += lineSpacing)
                 {

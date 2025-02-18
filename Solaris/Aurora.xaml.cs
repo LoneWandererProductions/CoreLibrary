@@ -327,7 +327,7 @@ namespace Solaris
                 SetValue(AuroraMovementProperty, value);
 
                 //display an movement Animation, block the whole control while displaying
-                Helper.DisplayMovement(this, value, AuroraAvatar, AuroraWidth, AuroraHeight,
+                _ = Helper.DisplayMovement(this, value, AuroraAvatar, AuroraWidth, AuroraHeight,
                     AuroraTextureSize);
             }
         }
@@ -377,7 +377,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Updates the map and bitmap.
+        ///     Updates the map and bitmap.
         /// </summary>
         private void UpdateMapAndBitmap()
         {

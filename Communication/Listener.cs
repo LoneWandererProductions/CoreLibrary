@@ -8,14 +8,14 @@ namespace Communication
 {
     public class Listener
     {
-        private System.Net.Sockets.TcpListener tcpListener;
-        private bool isRunning;
         private readonly int _port = 12345;
+        private bool isRunning;
+        private readonly TcpListener tcpListener;
 
         public Listener(int port)
         {
             _port = port;
-            tcpListener = new System.Net.Sockets.TcpListener(IPAddress.Any, port);
+            tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
         public void StartListening(CancellationToken cancellationToken)
@@ -60,8 +60,8 @@ namespace Communication
             var stream = client.GetStream();
 
             // Respond with a simple message (acting as the "ping response")
-            string response = "PONG";
-            byte[] buffer = Encoding.ASCII.GetBytes(response);
+            var response = "PONG";
+            var buffer = Encoding.ASCII.GetBytes(response);
             stream.Write(buffer, 0, buffer.Length);
 
             // Close the connection

@@ -11,13 +11,15 @@ using System.Windows;
 
 namespace Debugger
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
-    /// Interaction logic for ConfigWindow.xaml.
+    ///     Interaction logic for ConfigWindow.xaml.
     /// </summary>
-    internal sealed partial class ConfigWindow : Window
+    internal sealed partial class ConfigWindow
     {
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigWindow"/> class.
+        ///     Initializes a new instance of the <see cref="T:Debugger.ConfigWindow" /> class.
         /// </summary>
         internal ConfigWindow()
         {
@@ -25,8 +27,8 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the reset button click event.
-        /// Resets configuration and updates UI elements.
+        ///     Handles the reset button click event.
+        ///     Resets configuration and updates UI elements.
         /// </summary>
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
@@ -34,8 +36,8 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the save button click event.
-        /// Saves the current configuration.
+        ///     Handles the save button click event.
+        ///     Saves the current configuration.
         /// </summary>
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -43,8 +45,8 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the window loaded event.
-        /// Initializes color options and binds the DataContext.
+        ///     Handles the window loaded event.
+        ///     Initializes color options and binds the DataContext.
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -52,8 +54,8 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Handles the cancel button click event.
-        /// Closes the configuration window.
+        ///     Handles the cancel button click event.
+        ///     Closes the configuration window.
         /// </summary>
         private void BtnCnl_Click(object sender, RoutedEventArgs e)
         {
@@ -61,7 +63,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Resets the configuration and updates UI elements.
+        ///     Resets the configuration and updates UI elements.
         /// </summary>
         private void ResetConfiguration()
         {
@@ -71,7 +73,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Saves the current configuration using XML serialization.
+        ///     Saves the current configuration using XML serialization.
         /// </summary>
         private void SaveConfiguration()
         {
@@ -80,12 +82,12 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Initializes color options and binds the DataContext.
+        ///     Initializes color options and binds the DataContext.
         /// </summary>
         private void InitializeConfiguration()
         {
             var options = DebugRegister.ColorOptions;
-            if (options is null || !options.Any())
+            if (options?.Any() != true)
             {
                 options = DebuggerResources.InitialOptions.ToList();
             }

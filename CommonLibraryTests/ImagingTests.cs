@@ -7,7 +7,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -73,7 +72,7 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Converts to argbvalidcolorreturnscorrectargbvalue.
+        ///     Converts to argbvalidcolorreturnscorrectargbvalue.
         /// </summary>
         [TestMethod]
         public void ToArgbValidColorReturnsCorrectArgbValue()
@@ -648,9 +647,10 @@ namespace CommonLibraryTests
             // Calculate the ratio between custom line and Bresenham
             var ratio = customAvg / bresenhamAvg;
 
-            var message = $"Custom Line average: {customAvg:F2} ms, Bresenham average: {bresenhamAvg:F2} ms, Ratio: {ratio:P2}";
+            var message =
+                $"Custom Line average: {customAvg:F2} ms, Bresenham average: {bresenhamAvg:F2} ms, Ratio: {ratio:P2}";
             Console.WriteLine(message); // Output the performance results
-            Trace.WriteLine(message);   // Log the performance results
+            Trace.WriteLine(message); // Log the performance results
         }
 
         /// <summary>

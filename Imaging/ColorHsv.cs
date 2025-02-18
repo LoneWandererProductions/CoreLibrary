@@ -500,12 +500,15 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Normalizes the specified value.
+        ///     Normalizes the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Normalized value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float Normalize(int value) => value / 255f;
+        private static float Normalize(int value)
+        {
+            return value / 255f;
+        }
 
         /// <summary>
         ///     Converts to a hex string.

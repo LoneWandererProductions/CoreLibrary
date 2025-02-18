@@ -21,19 +21,19 @@ namespace RenderEngine
 {
     /// <inheritdoc />
     /// <summary>
-    /// Display Control for OpenGL
+    ///     Display Control for OpenGL
     /// </summary>
     /// <seealso cref="T:System.Windows.Forms.Integration.WindowsFormsHost" />
     public sealed class OpenTkControl : WindowsFormsHost
     {
+        private int _backgroundTexture;
         private GLControl? _glControl;
         private int _shaderProgram;
         private int _vao, _vbo;
-        private int _backgroundTexture;
 
         public OpenTkControl()
         {
-            if (!OpenTkHelper.IsOpenGlCompatible(4, 5))
+            if (!OpenTkHelper.IsOpenGlCompatible())
             {
                 throw new NotSupportedException("OpenGL 4.5 or higher is required but not available.");
             }
@@ -50,7 +50,7 @@ namespace RenderEngine
 
             _glControl.HandleCreated += (s, e) =>
             {
-                _glControl.MakeCurrent();  // OpenGL-Kontext setzen
+                _glControl.MakeCurrent(); // OpenGL-Kontext setzen
                 GL.ClearColor(0.1f, 0.2f, 0.3f, 1.0f);
             };
 
@@ -84,8 +84,8 @@ namespace RenderEngine
 
             _shaderProgram = GL.CreateProgram();
 
-            int vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
-            int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
+            var vertexShader = CompileShader(ShaderType.VertexShader, vertexShaderSource);
+            var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
             GL.AttachShader(_shaderProgram, vertexShader);
             GL.AttachShader(_shaderProgram, fragmentShader);
@@ -102,14 +102,14 @@ namespace RenderEngine
 
         private int CompileShader(ShaderType type, string source)
         {
-            int shader = GL.CreateShader(type);
+            var shader = GL.CreateShader(type);
             GL.ShaderSource(shader, source);
             GL.CompileShader(shader);
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out int status);
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out var status);
             if (status == 0)
             {
-                string log = GL.GetShaderInfoLog(shader);
+                var log = GL.GetShaderInfoLog(shader);
                 throw new Exception($"Error compiling {type}: {log}");
             }
 
@@ -133,7 +133,10 @@ namespace RenderEngine
 
         private void GlControl_Paint(object? sender, PaintEventArgs e)
         {
-            if (_glControl == null) return;
+            if (_glControl == null)
+            {
+                return;
+            }
 
             if (!_glControl.Context.IsCurrent)
             {
@@ -142,14 +145,20 @@ namespace RenderEngine
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            if(_backgroundTexture != -1) RenderBackground(_backgroundTexture); // Render the background
+            if (_backgroundTexture != -1)
+            {
+                RenderBackground(_backgroundTexture); // Render the background
+            }
 
             _glControl.SwapBuffers();
         }
 
-        private void GlControl_Resize(object? sender, System.EventArgs e)
+        private void GlControl_Resize(object? sender, EventArgs e)
         {
-            if (_glControl == null) return;
+            if (_glControl == null)
+            {
+                return;
+            }
 
             if (!_glControl.Context.IsCurrent)
             {
@@ -181,7 +190,8 @@ namespace RenderEngine
                 new[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z });
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                BufferUsageHint.DynamicDraw);
 
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);
@@ -200,15 +210,16 @@ namespace RenderEngine
 
                 return new[]
                 {
-                    -1 + pixel.X * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f,
-                    -1 + (pixel.X + 1) * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f,
-                    -1 + pixel.X * pixelWidth, -1 + (pixel.Y + 1) * pixelHeight, 0.0f,
-                    pixel.Color.X, pixel.Color.Y, pixel.Color.Z
+                    -1 + (pixel.X * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                    -1 + ((pixel.X + 1) * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                    -1 + (pixel.X * pixelWidth), -1 + ((pixel.Y + 1) * pixelHeight), 0.0f, pixel.Color.X,
+                    pixel.Color.Y, pixel.Color.Z
                 };
             });
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                BufferUsageHint.DynamicDraw);
 
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);
@@ -217,17 +228,21 @@ namespace RenderEngine
 
         public void CaptureScreenshot(string filePath)
         {
-            if (_glControl == null) return;
+            if (_glControl == null)
+            {
+                return;
+            }
 
-            int width = _glControl.Width;
-            int height = _glControl.Height;
+            var width = _glControl.Width;
+            var height = _glControl.Height;
 
-            byte[] pixels = new byte[width * height * 4];
+            var pixels = new byte[width * height * 4];
             GL.ReadPixels(0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
 
             using var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, width, height);
-            var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
 

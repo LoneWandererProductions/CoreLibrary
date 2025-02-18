@@ -11,9 +11,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Imaging;
-using OpenTK.GLControl; // For Marshal.Copy and memory management
-using OpenTK.Graphics.OpenGL4; // For GL methods, ShaderType, TextureTarget, etc.
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
+using OpenTK.GLControl;
+using OpenTK.Graphics.OpenGL4;
+// For Marshal.Copy and memory management
+// For GL methods, ShaderType, TextureTarget, etc.
 
 namespace RenderEngine
 {
@@ -21,7 +22,7 @@ namespace RenderEngine
     {
         internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
         {
-            bool isCompatible = false;
+            var isCompatible = false;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -30,21 +31,24 @@ namespace RenderEngine
                     using var tempContext = new GLControl();
                     tempContext.MakeCurrent(); // Set OpenGL-Context
 
-                    string versionString = GL.GetString(StringName.Version);
-                    string renderer = GL.GetString(StringName.Renderer);
-                    string vendor = GL.GetString(StringName.Vendor);
+                    var versionString = GL.GetString(StringName.Version);
+                    var renderer = GL.GetString(StringName.Renderer);
+                    var vendor = GL.GetString(StringName.Vendor);
 
                     Console.WriteLine($"OpenGL Renderer: {renderer}");
                     Console.WriteLine($"OpenGL Vendor: {vendor}");
                     Console.WriteLine($"OpenGL Version: {versionString}");
 
-                    string[] versionParts = versionString.Split('.');
-                    if (versionParts.Length < 2) return;
-
-                    if (int.TryParse(versionParts[0], out int major) &&
-                        int.TryParse(versionParts[1].Split(' ')[0], out int minor))
+                    var versionParts = versionString.Split('.');
+                    if (versionParts.Length < 2)
                     {
-                        isCompatible = (major > requiredMajor) || (major == requiredMajor && minor >= requiredMinor);
+                        return;
+                    }
+
+                    if (int.TryParse(versionParts[0], out var major) &&
+                        int.TryParse(versionParts[1].Split(' ')[0], out var minor))
+                    {
+                        isCompatible = major > requiredMajor || (major == requiredMajor && minor >= requiredMinor);
                     }
                 }
                 catch (Exception ex)
@@ -57,7 +61,8 @@ namespace RenderEngine
         }
 
 
-        internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight, Func<T, float[]> getVertexAttributes)
+        internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight,
+            Func<T, float[]> getVertexAttributes)
         {
             var vertexData = new float[data.Length * 6 * 5]; // 6 vertices * 5 attributes (x, y, r, g, b)
 
@@ -68,7 +73,7 @@ namespace RenderEngine
                 var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
 
                 var columnHeight = attributes[0]; // In case of columns, this would be height, for example
-                var yTop = (columnHeight / screenHeight) * 2.0f - 1.0f;
+                var yTop = (columnHeight / screenHeight * 2.0f) - 1.0f;
                 var yBottom = -1.0f; // Bottom of the screen is -1.0f
 
                 var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
@@ -155,11 +160,14 @@ namespace RenderEngine
             using (var directBitmap = new DirectBitmap(filePath))
             {
                 var pixels = directBitmap.Bytes(); // Assuming `Bits` is a byte array in the updated DirectBitmap class
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, directBitmap.Width,
+                    directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 

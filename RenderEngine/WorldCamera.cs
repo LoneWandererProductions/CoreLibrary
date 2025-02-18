@@ -2,7 +2,6 @@
 
 namespace RenderEngine
 {
-
     public class WorldCamera
     {
         /// <summary>
@@ -16,7 +15,7 @@ namespace RenderEngine
         public int Y { get; set; }
 
         /// <summary>
-        ///     Z position: 
+        ///     Z position:
         ///     Z = −CellSize / 2: Bottom of the cell.
         ///     Z = +CellSize / 2: Top of the cell.
         /// </summary>
@@ -58,8 +57,8 @@ namespace RenderEngine
         public (float left, float right, float top, float bottom) GetViewFrustum()
         {
             // Compute half-width/height of the frustum at ZFar
-            float halfHeight = (float)(Math.Tan(FieldOfView * Math.PI / 360) * ZFar);
-            float halfWidth = halfHeight;
+            var halfHeight = (float)(Math.Tan(FieldOfView * Math.PI / 360) * ZFar);
+            var halfWidth = halfHeight;
 
             return (
                 left: X - halfWidth,
@@ -103,11 +102,11 @@ namespace RenderEngine
         public void Render()
         {
             var frustum = GetViewFrustum();
-            Console.WriteLine($"Rendering frustum:");
-            Console.WriteLine($"Left: {frustum.left}, Right: {frustum.right}, Top: {frustum.top}, Bottom: {frustum.bottom}");
+            Console.WriteLine("Rendering frustum:");
+            Console.WriteLine(
+                $"Left: {frustum.left}, Right: {frustum.right}, Top: {frustum.top}, Bottom: {frustum.bottom}");
             Console.WriteLine($"Camera Position: ({X}, {Y}, {Z})");
             Console.WriteLine($"Angle: {Angle} radians, Pitch: {Pitch} radians");
         }
     }
-
 }

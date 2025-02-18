@@ -31,7 +31,7 @@ namespace CommonLibraryTests
             var image = new Bitmap(10, 10);
             int? width = 5;
             int? height = 5;
-            Color color = Color.Red;
+            var color = Color.Red;
             const MaskShape shape = MaskShape.Circle;
             object shapeParams = null;
             Point? startPoint = new Point(3, 3); // Non-null start point

@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Some basic tests for Memory Vault
+    ///     Some basic tests for Memory Vault
     /// </summary>
     [TestClass]
     public class MemoryVaultTests
@@ -28,7 +28,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Adds the data should return identifier.
+        ///     Adds the data should return identifier.
         /// </summary>
         [TestMethod]
         public void AddDataShouldReturnIdentifier()
@@ -44,7 +44,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the data should return correct data.
+        ///     Gets the data should return correct data.
         /// </summary>
         [TestMethod]
         public void GetDataShouldReturnCorrectData()
@@ -61,7 +61,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Removes the data should remove correct item.
+        ///     Removes the data should remove correct item.
         /// </summary>
         [TestMethod]
         public void RemoveDataShouldRemoveCorrectItem()
@@ -104,7 +104,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Saves the should persist data.
+        ///     Saves the should persist data.
         /// </summary>
         [TestMethod]
         public void SaveShouldPersistData()
@@ -129,7 +129,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Saves the should persist expired data correctly.
+        ///     Saves the should persist expired data correctly.
         /// </summary>
         [TestMethod]
         public void SaveShouldPersistExpiredDataCorrectly()

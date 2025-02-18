@@ -30,7 +30,8 @@ namespace CommonControls
         /// </summary>
         public static readonly DependencyProperty IsAutoScrollingProperty =
             DependencyProperty.Register(nameof(IsAutoScrolling), typeof(bool), typeof(ScrollingTextBoxes),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnAutoScrollingChanged));
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    OnAutoScrollingChanged));
 
         /// <summary>
         ///     Gets or sets a value indicating whether auto-scrolling is activated.
@@ -56,7 +57,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Handles scroll changes and applies auto-scroll behavior.
+        ///     Handles scroll changes and applies auto-scroll behavior.
         /// </summary>
         private void OnScrollChanged(object sender, RoutedEventArgs e)
         {
@@ -68,7 +69,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Handles changes to the IsAutoScrolling property.
+        ///     Handles changes to the IsAutoScrolling property.
         /// </summary>
         private static void OnAutoScrollingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -93,7 +94,8 @@ namespace CommonControls
         /// </summary>
         public static readonly DependencyProperty IsAutoScrollingProperty =
             DependencyProperty.Register(nameof(IsAutoScrolling), typeof(bool), typeof(ScrollingRichTextBox),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnAutoScrollingChanged));
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    OnAutoScrollingChanged));
 
         /// <summary>
         ///     Gets or sets a value indicating whether auto-scrolling is activated.
@@ -119,18 +121,18 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Handles scroll changes and applies auto-scroll behavior.
+        ///     Handles scroll changes and applies auto-scroll behavior.
         /// </summary>
         private void OnScrollChanged(object sender, RoutedEventArgs e)
         {
             if (IsAutoScrolling)
             {
-                _ = (Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(ScrollToEnd)));
+                _ = Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(ScrollToEnd));
             }
         }
 
         /// <summary>
-        /// Handles changes to the IsAutoScrolling property.
+        ///     Handles changes to the IsAutoScrolling property.
         /// </summary>
         private static void OnAutoScrollingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

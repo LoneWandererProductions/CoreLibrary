@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Unit tests for DirectBitmap functionality.
+    ///     Unit tests for DirectBitmap functionality.
     /// </summary>
     [TestClass]
     public class DirectBitmapTests
@@ -26,7 +26,9 @@ namespace CommonLibraryTests
         private static readonly string Codebase = Directory.GetCurrentDirectory();
         private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
         private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
-        private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder?.FullName ?? string.Empty, "Images"));
+
+        private static readonly DirectoryInfo SampleImagesFolder =
+            new(Path.Combine(ProjectFolder?.FullName ?? string.Empty, "Images"));
 
         [TestMethod]
         public void DirectBitmapOperationsShouldMatchColorsCorrectly()
@@ -54,13 +56,14 @@ namespace CommonLibraryTests
             using var originalBitmap = new Bitmap(imagePath);
             var analysis = new ImageAnalysis();
             var comparisonResult = analysis.CompareImages(originalBitmap, directBitmap.Bitmap);
-            Assert.AreEqual(100, comparisonResult.Similarity, $"Image comparison failed. Similarity: {comparisonResult.Similarity}");
+            Assert.AreEqual(100, comparisonResult.Similarity,
+                $"Image comparison failed. Similarity: {comparisonResult.Similarity}");
 
             directBitmap.Dispose();
         }
 
         /// <summary>
-        /// Performances the comparison system drawing vs direct bitmap.
+        ///     Performances the comparison system drawing vs direct bitmap.
         /// </summary>
         [TestMethod]
         public void PerformanceComparisonSystemDrawingVsDirectBitmap()
@@ -81,11 +84,12 @@ namespace CommonLibraryTests
             var directBitmapTime = MeasurePerformance(iterations, () =>
                 directBitmap.DrawVerticalLine(0, 0, imageSize, Color.Black));
 
-            Assert.IsTrue(directBitmapTime <= graphicsTime, $"DirectBitmap slower: {directBitmapTime}ms vs {graphicsTime}ms");
+            Assert.IsTrue(directBitmapTime <= graphicsTime,
+                $"DirectBitmap slower: {directBitmapTime}ms vs {graphicsTime}ms");
         }
 
         /// <summary>
-        /// Verticals the line drawing performance comparison.
+        ///     Verticals the line drawing performance comparison.
         /// </summary>
         [TestMethod]
         public void VerticalLineDrawingPerformanceComparison()
@@ -113,16 +117,17 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Warms up vertical line drawing.
+        ///     Warms up vertical line drawing.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="brush">The brush.</param>
         /// <param name="directBitmap">The direct bitmap.</param>
         /// <param name="lineWidth">Width of the line.</param>
         /// <param name="height">The height.</param>
-        private static void WarmUpVerticalLineDrawing(Image bitmap, Brush brush, DirectBitmap directBitmap, int lineWidth, int height)
+        private static void WarmUpVerticalLineDrawing(Image bitmap, Brush brush, DirectBitmap directBitmap,
+            int lineWidth, int height)
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 using var graphics = Graphics.FromImage(bitmap);
                 graphics.FillRectangle(brush, 0, 0, lineWidth, height);
@@ -131,21 +136,22 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Asserts the performance results.
+        ///     Asserts the performance results.
         /// </summary>
         /// <param name="testName">Name of the test.</param>
         /// <param name="systemTime">The system time.</param>
         /// <param name="directBitmapTime">The direct bitmap time.</param>
         /// <param name="timeFactor">The time factor.</param>
-        private static void AssertPerformanceResults(string testName, double systemTime, double directBitmapTime, double timeFactor)
+        private static void AssertPerformanceResults(string testName, double systemTime, double directBitmapTime,
+            double timeFactor)
         {
-            double threshold = systemTime * timeFactor;
+            var threshold = systemTime * timeFactor;
             Assert.IsTrue(directBitmapTime <= threshold,
                 $"{testName}: DirectBitmap time ({directBitmapTime} ms) exceeded acceptable threshold ({threshold} ms).");
         }
 
         /// <summary>
-        /// Draws the single vertical line should modify bits correctly.
+        ///     Draws the single vertical line should modify bits correctly.
         /// </summary>
         [TestMethod]
         public void DrawSingleVerticalLineShouldModifyBitsCorrectly()
@@ -175,7 +181,7 @@ namespace CommonLibraryTests
 
             for (var y = 2; y <= 8; y++)
             {
-                Assert.AreEqual(color.ToArgb(), target.Bits[5 + y * (width + 1)]);
+                Assert.AreEqual(color.ToArgb(), target.Bits[5 + (y * (width + 1))]);
             }
         }
 
@@ -204,7 +210,7 @@ namespace CommonLibraryTests
 
         private static void WarmUpDrawing(Bitmap bitmap, Pen blackPen, DirectBitmap directBitmap)
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 using var graphics = Graphics.FromImage(bitmap);
                 graphics.DrawLine(blackPen, 0, 0, 0, bitmap.Height);
@@ -213,7 +219,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Measures the performance.
+        ///     Measures the performance.
         /// </summary>
         /// <param name="iterations">The iterations.</param>
         /// <param name="action">The action.</param>
@@ -221,13 +227,17 @@ namespace CommonLibraryTests
         private static double MeasurePerformance(int iterations, Action action)
         {
             var stopwatch = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++) action();
+            for (var i = 0; i < iterations; i++)
+            {
+                action();
+            }
+
             stopwatch.Stop();
             return stopwatch.Elapsed.TotalMilliseconds;
         }
 
         /// <summary>
-        /// Verifies the colors match.
+        ///     Verifies the colors match.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="target">The target.</param>
@@ -236,37 +246,39 @@ namespace CommonLibraryTests
         {
             foreach (var (x, y) in coordinates)
             {
-                Assert.AreEqual(source.GetPixel(x, y).ToArgb(), target.Bits[y * source.Width + x]);
+                Assert.AreEqual(source.GetPixel(x, y).ToArgb(), target.Bits[(y * source.Width) + x]);
             }
         }
 
         /// <summary>
-        /// Applies the replacement colors.
+        ///     Applies the replacement colors.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color, params (int x, int y)[] coordinates)
+        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color,
+            params (int x, int y)[] coordinates)
         {
             foreach (var (x, y) in coordinates)
             {
-                bitmap.Bits[y * bitmap.Width + x] = color.ToArgb();
+                bitmap.Bits[(y * bitmap.Width) + x] = color.ToArgb();
             }
         }
 
         /// <summary>
-        /// Verifies the replacement colors.
+        ///     Verifies the replacement colors.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="target">The target.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color, params (int x, int y)[] coordinates)
+        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color,
+            params (int x, int y)[] coordinates)
         {
             foreach (var (x, y) in coordinates)
             {
                 Assert.AreEqual(color.ToArgb(), bitmap.GetPixel(x, y).ToArgb());
-                Assert.AreEqual(color.ToArgb(), target.Bits[y * bitmap.Width + x]);
+                Assert.AreEqual(color.ToArgb(), target.Bits[(y * bitmap.Width) + x]);
             }
         }
     }

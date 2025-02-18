@@ -27,7 +27,7 @@ namespace CommonLibraryTests
         public void PixelateSmallStepWidthPixelsChanged()
         {
             // Arrange
-            var input = CreateTestBitmap(10, 10, Color.Red);// A simple color, the output should still be red
+            var input = CreateTestBitmap(10, 10, Color.Red); // A simple color, the output should still be red
             var stepWidth = 2;
 
             // Act

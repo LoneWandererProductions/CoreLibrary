@@ -3,16 +3,16 @@
 namespace RenderEngine
 {
     /// <summary>
-    /// A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
+    ///     A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
     /// </summary>
     internal static class ShaderResource
     {
         /// <summary>
-        /// Solid Color Shader
-        /// Renders objects with a solid color (e.g., red).
+        ///     Solid Color Shader
+        ///     Renders objects with a solid color (e.g., red).
         /// </summary>
         /// <value>
-        /// The solid color vertex shader.
+        ///     The solid color vertex shader.
         /// </value>
         public static string SolidColorVertexShader => @"
             #version 450 core
@@ -25,10 +25,10 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Gets the solid color fragment shader.
+        ///     Gets the solid color fragment shader.
         /// </summary>
         /// <value>
-        /// The solid color fragment shader.
+        ///     The solid color fragment shader.
         /// </value>
         public static string SolidColorFragmentShader => @"
             #version 450 core
@@ -41,11 +41,11 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Vertex Color Shader
-        /// Renders objects using colors assigned to each vertex.
+        ///     Vertex Color Shader
+        ///     Renders objects using colors assigned to each vertex.
         /// </summary>
         /// <value>
-        /// The vertex color vertex shader.
+        ///     The vertex color vertex shader.
         /// </value>
         public static string VertexColorVertexShader => @"
             #version 450 core
@@ -62,10 +62,10 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Gets the vertex color fragment shader.
+        ///     Gets the vertex color fragment shader.
         /// </summary>
         /// <value>
-        /// The vertex color fragment shader.
+        ///     The vertex color fragment shader.
         /// </value>
         public static string VertexColorFragmentShader => @"
             #version 450 core
@@ -79,11 +79,11 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Texture Mapping Shader
-        /// Maps a 2D texture onto a 3D object.
+        ///     Texture Mapping Shader
+        ///     Maps a 2D texture onto a 3D object.
         /// </summary>
         /// <value>
-        /// The texture mapping vertex shader.
+        ///     The texture mapping vertex shader.
         /// </value>
         public static string TextureMappingVertexShader => @"
             #version 450 core
@@ -100,10 +100,10 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Gets the texture mapping fragment shader.
+        ///     Gets the texture mapping fragment shader.
         /// </summary>
         /// <value>
-        /// The texture mapping fragment shader.
+        ///     The texture mapping fragment shader.
         /// </value>
         public static string TextureMappingFragmentShader => @"
             #version 450 core
@@ -119,11 +119,11 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Basic Lighting Shader (Phong Lighting)
-        /// Adds simple directional lighting to a 3D object.
+        ///     Basic Lighting Shader (Phong Lighting)
+        ///     Adds simple directional lighting to a 3D object.
         /// </summary>
         /// <value>
-        /// The basic lighting vertex shader.
+        ///     The basic lighting vertex shader.
         /// </value>
         public static string BasicLightingVertexShader => @"
             #version 450 core
@@ -140,10 +140,10 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Gets the basic lighting fragment shader.
+        ///     Gets the basic lighting fragment shader.
         /// </summary>
         /// <value>
-        /// The basic lighting fragment shader.
+        ///     The basic lighting fragment shader.
         /// </value>
         public static string BasicLightingFragmentShader => @"
             #version 450 core
@@ -167,8 +167,8 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Grayscale Shader
-        /// Converts a texture to grayscale using luminance formula.
+        ///     Grayscale Shader
+        ///     Converts a texture to grayscale using luminance formula.
         /// </summary>
         public static string GrayscaleFragmentShader => @"
             #version 450 core
@@ -186,11 +186,11 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Wireframe Shader
-        /// Renders a mesh in wireframe mode (green color).
+        ///     Wireframe Shader
+        ///     Renders a mesh in wireframe mode (green color).
         /// </summary>
         /// <value>
-        /// The wireframe vertex shader.
+        ///     The wireframe vertex shader.
         /// </value>
         public static string WireframeVertexShader => @"
             #version 450 core
@@ -203,10 +203,10 @@ namespace RenderEngine
         ";
 
         /// <summary>
-        /// Gets the wireframe fragment shader.
+        ///     Gets the wireframe fragment shader.
         /// </summary>
         /// <value>
-        /// The wireframe fragment shader.
+        ///     The wireframe fragment shader.
         /// </value>
         public static string WireframeFragmentShader => @"
             #version 450 core

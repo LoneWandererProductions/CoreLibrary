@@ -115,6 +115,11 @@ namespace Solaris
             typeof(Polaris), null);
 
         /// <summary>
+        ///     The lock
+        /// </summary>
+        private readonly object _lock = new();
+
+        /// <summary>
         ///     The cursor
         /// </summary>
         private Coordinate2D _cursor;
@@ -200,7 +205,8 @@ namespace Solaris
                 lock (_lock)
                 {
                     SetValue(PolarisMapProperty, value);
-                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                        PolarisTextures, PolarisMap);
                     LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
                 }
             }
@@ -275,12 +281,11 @@ namespace Solaris
                 }
 
                 PolarisMap = dictionary;
-                
+
                 lock (_lock)
                 {
-
                     BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                    PolarisTextures, PolarisMap);
+                        PolarisTextures, PolarisMap);
 
                     LayerOne.Source = BitmapLayerOne.ToBitmapImage();
                 }
@@ -353,6 +358,22 @@ namespace Solaris
         }
 
         /// <summary>
+        ///     Gets the width of the canvas.
+        /// </summary>
+        /// <value>
+        ///     The width of the canvas.
+        /// </value>
+        private int CanvasWidth => PolarisWidth * PolarisTextureSize;
+
+        /// <summary>
+        ///     Gets the height of the canvas.
+        /// </summary>
+        /// <value>
+        ///     The height of the canvas.
+        /// </value>
+        private int CanvasHeight => PolarisHeight * PolarisTextureSize;
+
+        /// <summary>
         ///     Initiates this instance.
         /// </summary>
         public void Initiate()
@@ -379,28 +400,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// The lock
-        /// </summary>
-        private readonly object _lock = new object();
-
-        /// <summary>
-        /// Gets the width of the canvas.
-        /// </summary>
-        /// <value>
-        /// The width of the canvas.
-        /// </value>
-        private int CanvasWidth => PolarisWidth * PolarisTextureSize;
-
-        /// <summary>
-        /// Gets the height of the canvas.
-        /// </summary>
-        /// <value>
-        /// The height of the canvas.
-        /// </value>
-        private int CanvasHeight => PolarisHeight * PolarisTextureSize;
-
-        /// <summary>
-        /// Handles the MouseDown event of the Touch control.
+        ///     Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
