@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using CommonDialogs;
@@ -110,12 +111,18 @@ namespace Debugger
 
             var lst = ReadLines(DebugRegister.DebugPath).ToList();
 
+            // Call BeginLoadingText to disable auto-scrolling
+            Log.BeginLoadingText();
+
             foreach (var line in lst.GetRange(_counter - diff, diff))
             {
                 var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
 
                 DebugHelper.AddRange(textRange, line, false);
             }
+
+            // Call EndLoadingText to enable scrolling after the lines are added
+            Log.EndLoadingText();
 
             _index = _counter;
         }

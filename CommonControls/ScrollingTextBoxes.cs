@@ -61,10 +61,7 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling)
-            {
-                return;
-            }
+            if (!AutoScrolling) return;
 
             base.OnTextChanged(e);
             CaretIndex = Text.Length;
@@ -85,6 +82,12 @@ namespace CommonControls
         public static readonly DependencyProperty IsAutoScrolling = DependencyProperty.Register(nameof(IsAutoScrolling),
             typeof(bool),
             typeof(ScrollingTextBoxes), null);
+
+
+        /// <summary>
+        /// The is loading text
+        /// </summary>
+        private bool _isLoadingText = false;
 
         /// <summary>
         ///     Gets or sets a value indicating whether AutoScrolling is activated
@@ -116,13 +119,27 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling)
-            {
-                return;
-            }
-
             base.OnTextChanged(e);
-            ScrollToEnd();
+
+            if (AutoScrolling)
+            {
+                // Delay scrolling to allow the text to be fully updated first
+                Dispatcher.BeginInvoke(new Action(() => ScrollToEnd()));
+            }
+        }
+
+        public void BeginLoadingText()
+        {
+            _isLoadingText = true;  // Set the flag to prevent auto-scrolling
+        }
+
+        public void EndLoadingText()
+        {
+            _isLoadingText = false;  // Re-enable scrolling after loading completes
+            if (AutoScrolling)
+            {
+                Dispatcher.BeginInvoke(new Action(() => ScrollToEnd()));  // Scroll to the end after loading
+            }
         }
     }
 }

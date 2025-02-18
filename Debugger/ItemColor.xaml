@@ -12,14 +12,18 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition Width="50" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
         <!-- ColorSelector Control -->
         <commonControls:ColorSelection Grid.Column="0" x:Name="ColorPicker" StartColor="Black" />
         <!-- TextBox Control -->
-        <TextBox x:Name="TextBox" Width="200" Margin="5" Grid.Column="1" Text="{Binding EntryText}" />
+        <TextBox x:Name="TextBox" 
+                 Margin="5" Grid.Column="1"                  
+                 HorizontalScrollBarVisibility="Auto"
+                 VerticalScrollBarVisibility="Hidden"
+                 TextWrapping="NoWrap" Text="{Binding EntryText}" />
         <!-- Button to Delete -->
         <Button Content="Delete" Grid.Column="2" Command="{Binding DeleteCommand}" />
     </Grid>

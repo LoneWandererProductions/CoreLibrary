@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type debugger:ConfigExtended}}"
-        Title="Config" Height="600" Width="350"
+        Title="Config" Height="600" Width="380"
         x:ClassModifier="internal" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
