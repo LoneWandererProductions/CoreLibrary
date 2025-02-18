@@ -111,8 +111,6 @@ namespace Debugger
 
             var lst = ReadLines(DebugRegister.DebugPath).ToList();
 
-            // Call BeginLoadingText to disable auto-scrolling
-            Log.BeginLoadingText();
 
             foreach (var line in lst.GetRange(_counter - diff, diff))
             {
@@ -121,8 +119,7 @@ namespace Debugger
                 DebugHelper.AddRange(textRange, line, false);
             }
 
-            // Call EndLoadingText to enable scrolling after the lines are added
-            Log.EndLoadingText();
+            Log.ScrollToEnd();
 
             _index = _counter;
         }
@@ -295,6 +292,8 @@ namespace Debugger
                 }
             });
 
+            Log.ScrollToEnd();
+
             //set index
             _index = ReadLines(DebugRegister.DebugPath).Count();
             DebugProcessing.StartDebug();
@@ -330,6 +329,8 @@ namespace Debugger
 
                 DebugHelper.AddRange(textRange, line, check);
             }
+
+            Log.ScrollToEnd();
 
             //set index
             _index = ReadLines(DebugRegister.DebugPath).Count();

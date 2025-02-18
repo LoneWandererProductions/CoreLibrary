@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     x:Class="Debugger.Trail"
     mc:Ignorable="d"
     Title="Trail" Height="350" Width="525" Loaded="Window_Loaded">
@@ -13,12 +12,12 @@
             <RowDefinition Height="23" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <commonControls:ScrollingRichTextBox x:Name="Log"
+        <RichTextBox x:Name="Log"
                                              VerticalScrollBarVisibility="Auto"
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Stretch"
                                              Block.LineHeight="2"
-                                             Grid.Row="1" AutoScrolling="True" />
+                                             Grid.Row="1" />
         <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <MenuItem Header="Menu">
                 <MenuItem Header="Delete Log" Click="MenDel_Click" />

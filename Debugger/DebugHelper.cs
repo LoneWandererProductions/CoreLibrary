@@ -24,12 +24,17 @@ namespace Debugger
         private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
             DebuggerResources.LogPath);
 
+        /// <summary>
+        /// Gets the log file.
+        /// </summary>
+        /// <param name="logFile">The log file.</param>
+        /// <returns>The Content of the file</returns>
         internal static string GetLogFile(string logFile)
         {
             // Ensure log directory exists
             if (!Directory.Exists(LogDirectory))
             {
-                Directory.CreateDirectory(LogDirectory);
+                _ = Directory.CreateDirectory(LogDirectory);
             }
 
             var logFilePath = Path.Combine(LogDirectory, $"{logFile}{DebuggerResources.LogFileExtension}");
@@ -46,10 +51,8 @@ namespace Debugger
                 return logFilePath;
             }
 
-            RotateLogFiles(logFilePath);
-            logFilePath = RotateLogFiles(logFilePath); // Update to the new file path
-
-            return logFilePath;
+            // Update to the new file path
+            return RotateLogFiles(logFilePath);
         }
 
         /// <summary>
@@ -61,7 +64,7 @@ namespace Debugger
         internal static void AddRange(TextRange textRange, string line, bool found)
         {
             // Get the current TextPointer for the end of the TextRange
-            TextPointer endPointer = textRange.End;
+            var endPointer = textRange.End;
 
             // Create a new TextRange starting from the current position of the TextPointer
             TextRange newRange = new(endPointer, endPointer)
