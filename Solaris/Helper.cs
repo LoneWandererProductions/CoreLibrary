@@ -113,7 +113,8 @@ namespace Solaris
             Dictionary<int, List<int>> map, KeyValuePair<int, int> idTexture)
         {
             map ??= new Dictionary<int, List<int>>();
-            var added = map.AddDistinct(idTexture.Key, idTexture.Value);
+            var (key, value) = idTexture;
+            var added = map.AddDistinct(key, value);
             return new KeyValuePair<bool, Dictionary<int, List<int>>>(added, map);
         }
 
@@ -124,19 +125,20 @@ namespace Solaris
             Dictionary<int, List<int>> map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
         {
             if (map == null || !map.TryGetValue(idLayer.Key, out var tileList))
-            {
-                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, new Dictionary<int, List<int>>());
-            }
+                return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
 
             var updatedList = tileList.Where(tile => textures[tile].Layer != idLayer.Value).ToList();
-            if (updatedList.Count == tileList.Count)
-            {
+            if (updatedList.Count == tileList.Count) // No changes
                 return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
-            }
 
-            map[idLayer.Key] = updatedList;
+            if (updatedList.Count == 0)
+                map.Remove(idLayer.Key); // Remove empty entries
+            else
+                map[idLayer.Key] = updatedList;
+
             return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
         }
+
 
         /// <summary>
         ///     Adds a tile image to the display layer.
