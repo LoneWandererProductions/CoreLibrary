@@ -192,20 +192,17 @@ namespace Solaris
             get => (Dictionary<int, List<int>>)GetValue(PolarisMapProperty);
             set
             {
-                if (value == null)
+                if (value == null || PolarisTextures == null)
                 {
                     return;
                 }
 
-                SetValue(PolarisMapProperty, value);
-
-                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                    PolarisTextures, PolarisMap);
-
-                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                    PolarisTextures, PolarisMap);
-
-                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+                lock (_lock)
+                {
+                    SetValue(PolarisMapProperty, value);
+                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                    LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
+                }
             }
         }
 
@@ -278,11 +275,15 @@ namespace Solaris
                 }
 
                 PolarisMap = dictionary;
+                
+                lock (_lock)
+                {
 
-                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
+                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
                     PolarisTextures, PolarisMap);
 
-                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+                    LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+                }
             }
         }
 
@@ -361,8 +362,8 @@ namespace Solaris
                 return;
             }
 
-            Touch.Height = PolarisHeight * PolarisTextureSize;
-            Touch.Width = PolarisWidth * PolarisTextureSize;
+            Touch.Height = CanvasHeight;
+            Touch.Width = CanvasWidth;
 
             if (PolarisGrid)
             {
@@ -374,12 +375,32 @@ namespace Solaris
                 LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
             }
 
-            BitmapLayerThree = new Bitmap(PolarisWidth * PolarisTextureSize,
-                PolarisHeight * PolarisTextureSize);
+            BitmapLayerThree = new Bitmap(CanvasWidth, CanvasHeight);
         }
 
         /// <summary>
-        ///     Handles the MouseDown event of the Touch control.
+        /// The lock
+        /// </summary>
+        private readonly object _lock = new object();
+
+        /// <summary>
+        /// Gets the width of the canvas.
+        /// </summary>
+        /// <value>
+        /// The width of the canvas.
+        /// </value>
+        private int CanvasWidth => PolarisWidth * PolarisTextureSize;
+
+        /// <summary>
+        /// Gets the height of the canvas.
+        /// </summary>
+        /// <value>
+        /// The height of the canvas.
+        /// </value>
+        private int CanvasHeight => PolarisHeight * PolarisTextureSize;
+
+        /// <summary>
+        /// Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
@@ -404,7 +425,7 @@ namespace Solaris
             }
             else
             {
-                _cursor.Y = (int)position.X / PolarisTextureSize;
+                _cursor.Y = (int)position.Y / PolarisTextureSize;
             }
 
             var id = _cursor.CalculateId(PolarisWidth);

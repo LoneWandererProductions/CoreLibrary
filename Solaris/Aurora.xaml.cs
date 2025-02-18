@@ -241,10 +241,7 @@ namespace Solaris
 
                 AuroraMap = dictionary;
 
-                BitmapLayerOne = Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize,
-                    AuroraTextures, AuroraMap);
-
-                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+                UpdateMapAndBitmap();
             }
         }
 
@@ -270,10 +267,7 @@ namespace Solaris
 
                 AuroraMap = dictionary;
 
-                BitmapLayerOne = Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize,
-                    AuroraTextures, AuroraMap);
-
-                LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+                UpdateMapAndBitmap();
             }
         }
 
@@ -383,6 +377,18 @@ namespace Solaris
         }
 
         /// <summary>
+        /// Updates the map and bitmap.
+        /// </summary>
+        private void UpdateMapAndBitmap()
+        {
+            BitmapLayerOne = Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize,
+                AuroraTextures, AuroraMap);
+
+            LayerOne.Source = BitmapLayerOne.ToBitmapImage();
+        }
+
+
+        /// <summary>
         ///     Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -408,17 +414,17 @@ namespace Solaris
             }
             else
             {
-                _cursor.Y = (int)position.X / AuroraTextureSize;
+                _cursor.Y = (int)position.Y / AuroraTextureSize;
             }
 
             var id = _cursor.CalculateId(AuroraWidth);
 
-            Clicked?.Invoke(this, id);
+            TileClicked?.Invoke(this, id);
         }
 
         /// <summary>
         ///     Occurs when [delete logic].
         /// </summary>
-        public event EventHandler<int> Clicked;
+        public event EventHandler<int> TileClicked;
     }
 }
