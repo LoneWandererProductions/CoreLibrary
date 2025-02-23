@@ -19,7 +19,7 @@ namespace CommonControls
         /// <value>
         ///     The x.
         /// </value>
-        public int X { get; internal init; }
+        public int X { get; init; }
 
         /// <summary>
         ///     Gets or sets the y.

@@ -135,6 +135,34 @@ namespace RenderEngine
             throw new Exception($"Error compiling shader of type {type}: {infoLog}");
         }
 
+        internal static int LoadShader(string vertexPath, string fragmentPath)
+        {
+            string vertexSource = File.ReadAllText(vertexPath);
+            string fragmentSource = File.ReadAllText(fragmentPath);
+
+            int vertexShader = CompileShader(ShaderType.VertexShader, vertexSource);
+            int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSource);
+
+            int shaderProgram = GL.CreateProgram();
+            GL.AttachShader(shaderProgram, vertexShader);
+            GL.AttachShader(shaderProgram, fragmentShader);
+            GL.LinkProgram(shaderProgram);
+
+            GL.GetProgram(shaderProgram, GetProgramParameterName.LinkStatus, out int status);
+            if (status == (int)All.False)
+            {
+                string infoLog = GL.GetProgramInfoLog(shaderProgram);
+                throw new Exception($"Error linking shader program: {infoLog}");
+            }
+
+            GL.DetachShader(shaderProgram, vertexShader);
+            GL.DetachShader(shaderProgram, fragmentShader);
+            GL.DeleteShader(vertexShader);
+            GL.DeleteShader(fragmentShader);
+
+            return shaderProgram;
+        }
+
         internal static byte[] LoadTexture(string filePath, out int width, out int height)
         {
             using var directBitmap = new DirectBitmap(filePath);
@@ -144,6 +172,42 @@ namespace RenderEngine
 
             return directBitmap.Bytes(); // Assuming `Bits` is byte[] in the updated DirectBitmap class
         }
+
+        internal static int LoadCubeMap(string[] filePaths)
+        {
+            if (filePaths.Length != 6)
+            {
+                throw new ArgumentException("Cube map must have exactly 6 textures.", nameof(filePaths));
+            }
+
+            var textureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.TextureCubeMap, textureId);
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (!File.Exists(filePaths[i]))
+                {
+                    Trace.WriteLine($"Cube map texture not found: {filePaths[i]}");
+                    continue;
+                }
+
+                using (var directBitmap = new DirectBitmap(filePaths[i]))
+                {
+                    var pixels = directBitmap.Bytes();
+                    GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
+                        directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                }
+            }
+
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)TextureWrapMode.ClampToEdge);
+
+            return textureId;
+        }
+
 
         internal static int LoadTexture(string filePath)
         {

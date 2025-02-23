@@ -93,10 +93,7 @@ namespace CommonControls
             {
                 Items = new BindingList<DataItem> { new() { Id = 0, Name = ComCtlResources.DataListEntry } };
 
-                foreach (var item in Items)
-                {
-                    ChangeLog.Add(item.Id, item, true);
-                }
+                foreach (var item in Items) ChangeLog.Add(item.Id, item, true);
             }
             else
             {
@@ -118,10 +115,7 @@ namespace CommonControls
 
             _unique = unique;
 
-            foreach (var item in Items)
-            {
-                _id.Add(item.Id);
-            }
+            foreach (var item in Items) _id.Add(item.Id);
 
             Items.ListChanged += ItemsListChanged;
             listBox.SelectionChanged += ItemSelected;
@@ -196,10 +190,7 @@ namespace CommonControls
         /// </summary>
         public void UpdateSelectedItem()
         {
-            if (_dataList.SelectedItem == null)
-            {
-                return;
-            }
+            if (_dataList.SelectedItem == null) return;
 
             var item = _dataList.SelectedItem;
 
@@ -261,20 +252,14 @@ namespace CommonControls
         {
             while (true)
             {
-                if (!CheckItemName(name))
-                {
-                    return name;
-                }
+                if (!CheckItemName(name)) return name;
 
                 var count = 0;
 
                 while (CheckItemName(name))
                 {
                     var cache = $"{name}({count++})";
-                    if (CheckItemName(cache))
-                    {
-                        continue;
-                    }
+                    if (CheckItemName(cache)) continue;
 
                     name = cache;
                 }
@@ -298,10 +283,7 @@ namespace CommonControls
         private void AddItem(string name)
         {
             //basic sanity checks
-            if (string.IsNullOrEmpty(name))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(name)) return;
 
             var idList = Items.Select(element => element.Id).ToList();
 
@@ -322,10 +304,7 @@ namespace CommonControls
         private void RemoveItem(DataItem item)
         {
             var check = Items.Remove(item);
-            if (!check)
-            {
-                return;
-            }
+            if (!check) return;
 
             _dataList.Removed(item);
         }
@@ -405,19 +384,13 @@ namespace CommonControls
         {
             var lst = _listBox.SelectedItems;
 
-            if (lst.Count == 0)
-            {
-                return;
-            }
+            if (lst.Count == 0) return;
 
             var items = new List<DataItem>(lst.Count);
 
             items.AddRange(lst.Cast<DataItem>());
 
-            if (items.Count == 0)
-            {
-                return;
-            }
+            if (items.Count == 0) return;
 
             _dataList.SelectedItem = items[0];
             _dataList.SelectedItems = items;

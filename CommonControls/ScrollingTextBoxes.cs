@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/ScrollingTextBoxes.cs
- * PURPOSE:     Extensions for TextBox and RichTextBox with AutoScrolling
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * FILE:        CommonControls/PathObject.cs
+ * PURPOSE:     Extensions for TextBox and RichTextBox
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -14,38 +14,36 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace CommonControls
 {
     /// <inheritdoc />
     /// <summary>
-    ///     The Extension for the TextBox class with AutoScrolling support.
+    ///     The Extension for the TextBox class.
     /// </summary>
     public sealed class ScrollingTextBoxes : TextBox
     {
         /// <summary>
-        ///     DependencyProperty: IsAutoScrolling
-        ///     Determines if auto-scrolling is enabled.
+        ///     DependencyProperty: Scrolling
+        ///     The is auto scrolling (readonly). Value: DependencyProperty.Register IsAutoScrolling
         /// </summary>
-        public static readonly DependencyProperty IsAutoScrollingProperty =
-            DependencyProperty.Register(nameof(IsAutoScrolling), typeof(bool), typeof(ScrollingTextBoxes),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    OnAutoScrollingChanged));
+        public static readonly DependencyProperty IsAutoScrolling = DependencyProperty.Register(nameof(IsAutoScrolling),
+            typeof(bool),
+            typeof(ScrollingTextBoxes), null);
 
         /// <summary>
-        ///     Gets or sets a value indicating whether auto-scrolling is activated.
+        ///     Gets or sets a value indicating whether AutoScrolling is activated
         /// </summary>
-        public bool IsAutoScrolling
+        public bool AutoScrolling
         {
-            get => (bool)GetValue(IsAutoScrollingProperty);
-            set => SetValue(IsAutoScrollingProperty, value);
+            get => (bool)GetValue(IsAutoScrolling);
+            set => SetValue(IsAutoScrolling, value);
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Raises the initialized event.
-        ///     Sets basic attributes.
+        ///     Set basic Attributes
         /// </summary>
         /// <param name="e">The event arguments.</param>
         protected override void OnInitialized(EventArgs e)
@@ -53,63 +51,51 @@ namespace CommonControls
             base.OnInitialized(e);
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-            AddHandler(ScrollViewer.ScrollChangedEvent, new RoutedEventHandler(OnScrollChanged));
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Handles scroll changes and applies auto-scroll behavior.
+        ///     Raises the text changed event.
+        ///     Change the standard behavior to scrolling down
         /// </summary>
-        private void OnScrollChanged(object sender, RoutedEventArgs e)
+        /// <param name="e">The text changed event arguments.</param>
+        protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (IsAutoScrolling)
-            {
-                CaretIndex = Text.Length;
-                ScrollToEnd();
-            }
-        }
+            if (!AutoScrolling) return;
 
-        /// <summary>
-        ///     Handles changes to the IsAutoScrolling property.
-        /// </summary>
-        private static void OnAutoScrollingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var textBox = (ScrollingTextBoxes)d;
-            if ((bool)e.NewValue)
-            {
-                textBox.CaretIndex = textBox.Text.Length;
-                textBox.ScrollToEnd();
-            }
+            base.OnTextChanged(e);
+            CaretIndex = Text.Length;
+            ScrollToEnd();
         }
     }
 
     /// <inheritdoc />
     /// <summary>
-    ///     The Extension for the RichTextBox class with AutoScrolling support.
+    ///     The Extension for the TextBox class.
     /// </summary>
     public sealed class ScrollingRichTextBox : RichTextBox
     {
         /// <summary>
-        ///     DependencyProperty: IsAutoScrolling
-        ///     Determines if auto-scrolling is enabled.
+        ///     DependencyProperty: Scrolling
+        ///     The is auto scrolling (readonly). Value: DependencyProperty.Register IsAutoScrolling
         /// </summary>
-        public static readonly DependencyProperty IsAutoScrollingProperty =
-            DependencyProperty.Register(nameof(IsAutoScrolling), typeof(bool), typeof(ScrollingRichTextBox),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    OnAutoScrollingChanged));
+        public static readonly DependencyProperty IsAutoScrolling = DependencyProperty.Register(nameof(IsAutoScrolling),
+            typeof(bool),
+            typeof(ScrollingTextBoxes), null);
 
         /// <summary>
-        ///     Gets or sets a value indicating whether auto-scrolling is activated.
+        ///     Gets or sets a value indicating whether AutoScrolling is activated
         /// </summary>
-        public bool IsAutoScrolling
+        public bool AutoScrolling
         {
-            get => (bool)GetValue(IsAutoScrollingProperty);
-            set => SetValue(IsAutoScrollingProperty, value);
+            get => (bool)GetValue(IsAutoScrolling);
+            set => SetValue(IsAutoScrolling, value);
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Raises the initialized event.
-        ///     Sets basic attributes.
+        ///     Set basic Attributes
         /// </summary>
         /// <param name="e">The event arguments.</param>
         protected override void OnInitialized(EventArgs e)
@@ -117,30 +103,20 @@ namespace CommonControls
             base.OnInitialized(e);
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-            AddHandler(ScrollViewer.ScrollChangedEvent, new RoutedEventHandler(OnScrollChanged));
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Handles scroll changes and applies auto-scroll behavior.
+        ///     Raises the text changed event.
+        ///     Change the standard behavior to scrolling down
         /// </summary>
-        private void OnScrollChanged(object sender, RoutedEventArgs e)
+        /// <param name="e">The text changed event arguments.</param>
+        protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (IsAutoScrolling)
-            {
-                _ = Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(ScrollToEnd));
-            }
-        }
+            if (!AutoScrolling) return;
 
-        /// <summary>
-        ///     Handles changes to the IsAutoScrolling property.
-        /// </summary>
-        private static void OnAutoScrollingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var richTextBox = (ScrollingRichTextBox)d;
-            if ((bool)e.NewValue)
-            {
-                richTextBox.ScrollToEnd();
-            }
+            base.OnTextChanged(e);
+            ScrollToEnd();
         }
     }
 }

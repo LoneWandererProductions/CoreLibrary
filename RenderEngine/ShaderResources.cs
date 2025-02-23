@@ -8,8 +8,45 @@ namespace RenderEngine
     internal static class ShaderResource
     {
         /// <summary>
+        /// Gets the vertex shader source.
+        /// A basic shader that passes position and color from the vertex to the fragment shader. This is a simple shader typically used for basic object rendering with color.
+        /// </summary>
+        /// <value>
+        /// The vertex shader source.
+        /// </value>
+        public static string VertexShaderSource => @"
+                #version 450 core
+                layout(location = 0) in vec2 aPosition;
+                layout(location = 1) in vec3 aColor;
+                out vec3 vColor;
+                void main()
+                {
+                    gl_Position = vec4(aPosition, 0.0, 1.0);
+                    vColor = aColor;
+                }
+            ";
+
+        /// <summary>
+        /// Gets the fragment shader source.
+        /// This is a basic fragment shader that outputs the color passed from the vertex shader. It's simple and can work with any shader that just passes the color from the vertex stage.
+        /// </summary>
+        /// <value>
+        /// The fragment shader source.
+        /// </value>
+        public static string FragmentShaderSource => @"
+                #version 450 core
+                in vec3 vColor;
+                out vec4 FragColor;
+                void main()
+                {
+                    FragColor = vec4(vColor, 1.0);
+                }
+            ";
+
+        /// <summary>
         ///     Solid Color Shader
         ///     Renders objects with a solid color (e.g., red).
+        ///     A vertex shader that just transforms the vertex positions for a solid color shader. This is simple and just passes the position without color.
         /// </summary>
         /// <value>
         ///     The solid color vertex shader.
@@ -43,6 +80,7 @@ namespace RenderEngine
         /// <summary>
         ///     Vertex Color Shader
         ///     Renders objects using colors assigned to each vertex.
+        ///     A vertex shader that passes both position and color information from the vertex to the fragment shader. This is used for vertex-colored objects.
         /// </summary>
         /// <value>
         ///     The vertex color vertex shader.
@@ -81,6 +119,7 @@ namespace RenderEngine
         /// <summary>
         ///     Texture Mapping Shader
         ///     Maps a 2D texture onto a 3D object.
+        ///     This vertex shader passes texture coordinates, which is useful when working with texture mapping.
         /// </summary>
         /// <value>
         ///     The texture mapping vertex shader.
@@ -217,5 +256,48 @@ namespace RenderEngine
                 FragColor = vec4(0.0, 1.0, 0.0, 1.0); // Green wireframe
             }
         ";
+
+        /// <summary>
+        ///     Skybox vertices.
+        ///     A set of vertices representing a cube used to render a skybox, typically used in environment mapping.
+        /// </summary>
+        public static readonly float[] SkyboxVertices =
+        {
+            // Positions
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f
+        };
     }
 }
