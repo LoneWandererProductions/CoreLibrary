@@ -8,11 +8,27 @@ namespace RenderEngine
     internal static class ShaderResource
     {
         /// <summary>
-        /// Gets the vertex shader source.
-        /// A basic shader that passes position and color from the vertex to the fragment shader. This is a simple shader typically used for basic object rendering with color.
+        ///     Skybox vertices.
+        ///     A set of vertices representing a cube used to render a skybox, typically used in environment mapping.
+        /// </summary>
+        public static readonly float[] SkyboxVertices =
+        {
+            // Positions
+            -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
+            1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f
+        };
+
+        /// <summary>
+        ///     Gets the vertex shader source.
+        ///     A basic shader that passes position and color from the vertex to the fragment shader. This is a simple shader
+        ///     typically used for basic object rendering with color.
         /// </summary>
         /// <value>
-        /// The vertex shader source.
+        ///     The vertex shader source.
         /// </value>
         public static string VertexShaderSource => @"
                 #version 450 core
@@ -27,11 +43,12 @@ namespace RenderEngine
             ";
 
         /// <summary>
-        /// Gets the fragment shader source.
-        /// This is a basic fragment shader that outputs the color passed from the vertex shader. It's simple and can work with any shader that just passes the color from the vertex stage.
+        ///     Gets the fragment shader source.
+        ///     This is a basic fragment shader that outputs the color passed from the vertex shader. It's simple and can work with
+        ///     any shader that just passes the color from the vertex stage.
         /// </summary>
         /// <value>
-        /// The fragment shader source.
+        ///     The fragment shader source.
         /// </value>
         public static string FragmentShaderSource => @"
                 #version 450 core
@@ -46,7 +63,8 @@ namespace RenderEngine
         /// <summary>
         ///     Solid Color Shader
         ///     Renders objects with a solid color (e.g., red).
-        ///     A vertex shader that just transforms the vertex positions for a solid color shader. This is simple and just passes the position without color.
+        ///     A vertex shader that just transforms the vertex positions for a solid color shader. This is simple and just passes
+        ///     the position without color.
         /// </summary>
         /// <value>
         ///     The solid color vertex shader.
@@ -80,7 +98,8 @@ namespace RenderEngine
         /// <summary>
         ///     Vertex Color Shader
         ///     Renders objects using colors assigned to each vertex.
-        ///     A vertex shader that passes both position and color information from the vertex to the fragment shader. This is used for vertex-colored objects.
+        ///     A vertex shader that passes both position and color information from the vertex to the fragment shader. This is
+        ///     used for vertex-colored objects.
         /// </summary>
         /// <value>
         ///     The vertex color vertex shader.
@@ -256,48 +275,5 @@ namespace RenderEngine
                 FragColor = vec4(0.0, 1.0, 0.0, 1.0); // Green wireframe
             }
         ";
-
-        /// <summary>
-        ///     Skybox vertices.
-        ///     A set of vertices representing a cube used to render a skybox, typically used in environment mapping.
-        /// </summary>
-        public static readonly float[] SkyboxVertices =
-        {
-            // Positions
-            -1.0f,  1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-            -1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f, -1.0f,
-            1.0f,  1.0f, -1.0f,
-            1.0f,  1.0f, -1.0f,
-            1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f,  1.0f
-        };
     }
 }

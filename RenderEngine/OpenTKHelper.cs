@@ -13,6 +13,7 @@ using System.Windows;
 using Imaging;
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
+
 // For Marshal.Copy and memory management
 // For GL methods, ShaderType, TextureTarget, etc.
 
@@ -137,21 +138,21 @@ namespace RenderEngine
 
         internal static int LoadShader(string vertexPath, string fragmentPath)
         {
-            string vertexSource = File.ReadAllText(vertexPath);
-            string fragmentSource = File.ReadAllText(fragmentPath);
+            var vertexSource = File.ReadAllText(vertexPath);
+            var fragmentSource = File.ReadAllText(fragmentPath);
 
-            int vertexShader = CompileShader(ShaderType.VertexShader, vertexSource);
-            int fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSource);
+            var vertexShader = CompileShader(ShaderType.VertexShader, vertexSource);
+            var fragmentShader = CompileShader(ShaderType.FragmentShader, fragmentSource);
 
-            int shaderProgram = GL.CreateProgram();
+            var shaderProgram = GL.CreateProgram();
             GL.AttachShader(shaderProgram, vertexShader);
             GL.AttachShader(shaderProgram, fragmentShader);
             GL.LinkProgram(shaderProgram);
 
-            GL.GetProgram(shaderProgram, GetProgramParameterName.LinkStatus, out int status);
+            GL.GetProgram(shaderProgram, GetProgramParameterName.LinkStatus, out var status);
             if (status == (int)All.False)
             {
-                string infoLog = GL.GetProgramInfoLog(shaderProgram);
+                var infoLog = GL.GetProgramInfoLog(shaderProgram);
                 throw new Exception($"Error linking shader program: {infoLog}");
             }
 
@@ -183,7 +184,7 @@ namespace RenderEngine
             var textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.TextureCubeMap, textureId);
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 if (!File.Exists(filePaths[i]))
                 {
@@ -199,11 +200,16 @@ namespace RenderEngine
                 }
             }
 
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS,
+                (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT,
+                (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR,
+                (int)TextureWrapMode.ClampToEdge);
 
             return textureId;
         }

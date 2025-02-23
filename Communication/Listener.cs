@@ -9,8 +9,8 @@ namespace Communication
     public class Listener
     {
         private readonly int _port = 12345;
-        private bool isRunning;
         private readonly TcpListener tcpListener;
+        private bool isRunning;
 
         public Listener(int port)
         {

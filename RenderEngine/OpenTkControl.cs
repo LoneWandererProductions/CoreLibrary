@@ -20,16 +20,6 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 namespace RenderEngine
 {
 #nullable enable
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using System.Windows.Forms.Integration;
-    using OpenTK.Graphics.OpenGL4;
-    using OpenTK.GLControl;
-    using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
-
     namespace RenderEngine
     {
         /// <inheritdoc />
@@ -40,23 +30,13 @@ namespace RenderEngine
         public sealed class OpenTkControl : WindowsFormsHost
         {
             private int _backgroundTexture;
+            private bool _enableSkybox;
             private GLControl? _glControl;
             private int _shaderProgram;
-            private int _vao, _vbo;
-            private bool _enableSkybox;
             private int _skyboxShader;
-            private int _skyboxVAO, _skyboxVBO;
             private int _skyboxTexture;
-
-            public bool EnableSkybox
-            {
-                get => _enableSkybox;
-                set
-                {
-                    _enableSkybox = value;
-                    _glControl?.Invalidate(); // Redraw when toggled
-                }
-            }
+            private int _skyboxVAO, _skyboxVBO;
+            private int _vao, _vbo;
 
             public OpenTkControl()
             {
@@ -69,6 +49,16 @@ namespace RenderEngine
                 InitializeShaders();
                 InitializeBuffers();
                 Child = _glControl; // Set GLControl as the hosted child
+            }
+
+            public bool EnableSkybox
+            {
+                get => _enableSkybox;
+                set
+                {
+                    _enableSkybox = value;
+                    _glControl?.Invalidate(); // Redraw when toggled
+                }
             }
 
             private void InitializeGlControl()
@@ -89,8 +79,10 @@ namespace RenderEngine
             {
                 _shaderProgram = GL.CreateProgram();
 
-                var vertexShader = OpenTkHelper.CompileShader(ShaderType.VertexShader, ShaderResource.VertexShaderSource);
-                var fragmentShader = OpenTkHelper.CompileShader(ShaderType.FragmentShader, ShaderResource.FragmentShaderSource);
+                var vertexShader =
+                    OpenTkHelper.CompileShader(ShaderType.VertexShader, ShaderResource.VertexShaderSource);
+                var fragmentShader =
+                    OpenTkHelper.CompileShader(ShaderType.FragmentShader, ShaderResource.FragmentShaderSource);
 
                 GL.AttachShader(_shaderProgram, vertexShader);
                 GL.AttachShader(_shaderProgram, fragmentShader);
@@ -116,7 +108,8 @@ namespace RenderEngine
                 GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
                 GL.EnableVertexAttribArray(0);
 
-                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 2 * sizeof(float));
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float),
+                    2 * sizeof(float));
                 GL.EnableVertexAttribArray(1);
             }
 
@@ -126,15 +119,16 @@ namespace RenderEngine
 
                 _skyboxTexture = OpenTkHelper.LoadCubeMap(new[]
                 {
-                "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"
-            });
+                    "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"
+                });
 
                 _skyboxVAO = GL.GenVertexArray();
                 _skyboxVBO = GL.GenBuffer();
 
                 GL.BindVertexArray(_skyboxVAO);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _skyboxVBO);
-                GL.BufferData(BufferTarget.ArrayBuffer, ShaderResource.SkyboxVertices.Length * sizeof(float), ShaderResource.SkyboxVertices, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, ShaderResource.SkyboxVertices.Length * sizeof(float),
+                    ShaderResource.SkyboxVertices, BufferUsageHint.StaticDraw);
             }
 
             private void RenderSkybox()
@@ -216,7 +210,8 @@ namespace RenderEngine
                     new[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z });
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                    BufferUsageHint.DynamicDraw);
 
                 GL.UseProgram(_shaderProgram);
                 GL.BindVertexArray(_vao);
@@ -235,15 +230,16 @@ namespace RenderEngine
 
                     return new[]
                     {
-                    -1 + (pixel.X * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
-                    -1 + ((pixel.X + 1) * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
-                    -1 + (pixel.X * pixelWidth), -1 + ((pixel.Y + 1) * pixelHeight), 0.0f, pixel.Color.X,
-                    pixel.Color.Y, pixel.Color.Z
+                        -1 + (pixel.X * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                        -1 + ((pixel.X + 1) * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                        -1 + (pixel.X * pixelWidth), -1 + ((pixel.Y + 1) * pixelHeight), 0.0f, pixel.Color.X,
+                        pixel.Color.Y, pixel.Color.Z
                     };
                 });
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData, BufferUsageHint.DynamicDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                    BufferUsageHint.DynamicDraw);
 
                 GL.UseProgram(_shaderProgram);
                 GL.BindVertexArray(_vao);
@@ -265,7 +261,8 @@ namespace RenderEngine
 
                 using var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 var rect = new Rectangle(0, 0, width, height);
-                var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
 

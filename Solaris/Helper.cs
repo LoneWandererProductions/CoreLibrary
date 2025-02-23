@@ -125,16 +125,24 @@ namespace Solaris
             Dictionary<int, List<int>> map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
         {
             if (map == null || !map.TryGetValue(idLayer.Key, out var tileList))
+            {
                 return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            }
 
             var updatedList = tileList.Where(tile => textures[tile].Layer != idLayer.Value).ToList();
             if (updatedList.Count == tileList.Count) // No changes
+            {
                 return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            }
 
             if (updatedList.Count == 0)
+            {
                 map.Remove(idLayer.Key); // Remove empty entries
+            }
             else
+            {
                 map[idLayer.Key] = updatedList;
+            }
 
             return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
         }
