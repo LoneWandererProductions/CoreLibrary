@@ -27,11 +27,6 @@ namespace Mathematics
         private const float TwoPi = 2 * Pi;
 
         /// <summary>
-        /// Fast lookup table based sin(x)
-        /// </summary>
-        private static readonly float[] SinLUT = new float[2024]; // Increased size for better accuracy
-
-        /// <summary>
         /// Fast approximation of sin(x) using a cubic polynomial.
         /// </summary>
         public static float FastSin(float x)
