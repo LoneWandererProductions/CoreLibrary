@@ -14,64 +14,100 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Tests for some simplifications
+    /// Benchmark tests for FastMath
     /// </summary>
     [TestClass]
-    public class TrigBenchmarkTests
+    public class FastMathBenchmarkTests
     {
         /// <summary>
-        /// The iterations
+        /// The number of iterations for benchmarking
         /// </summary>
         private const int iterations = 1_000_000;
 
         /// <summary>
-        /// The x
+        /// The test input value
         /// </summary>
-        private const float x = 1.2345f;
+        private const float inputValue = 1.2f; // Example input for sin, cos, etc.
 
         /// <summary>
-        /// Compares the sin functions.
+        /// Tests FastSin against MathF.Sin
         /// </summary>
         [TestMethod]
-        public void CompareSinFunctions()
+        public void CompareFastSin()
         {
             Compare(nameof(FastMath.FastSin), FastMath.FastSin, MathF.Sin);
-            Compare(nameof(FastMath.MediumSin), FastMath.MediumSin, MathF.Sin);
-            Compare(nameof(FastMath.LUTSin), FastMath.LUTSin, MathF.Sin);
         }
 
         /// <summary>
-        /// Compares the cos functions.
+        /// Tests FastLog2 against Math.Log2
         /// </summary>
         [TestMethod]
-        public void CompareCosFunctions()
+        public void CompareFastLog2()
         {
-            Compare(nameof(FastMath.FastCos), FastMath.FastCos, MathF.Cos);
+            Compare(nameof(FastMath.FastLog2), (x) => FastMath.FastLog2((int)x), (x) => (int)Math.Log2(x));
         }
 
         /// <summary>
-        /// Compares the specified method name.
+        /// Generic benchmarking method for floating-point functions
         /// </summary>
-        /// <param name="methodName">Name of the method.</param>
-        /// <param name="fastFunc">The fast function.</param>
-        /// <param name="refFunc">The reference function.</param>
-        private static void Compare(string methodName, Func<float, float> fastFunc, Func<float, float> refFunc)
+        private static void Compare(string methodName, Func<float, float> fastFunc, Func<float, float> standardFunc)
         {
-            var fastResult = 0f;
-            var refResult = 0f;
-            var errorSum = 0f;
+            // Warm up
+            fastFunc(inputValue);
+            standardFunc(inputValue);
 
-            Stopwatch sw = Stopwatch.StartNew();
-
+            // Measure fast function
+            var stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
-            {
-                fastResult = fastFunc(x);
-                refResult = refFunc(x);
-                errorSum += MathF.Abs(0 - refResult);
-            }
+                fastFunc(inputValue);
+            stopwatch.Stop();
+            long fastTime = stopwatch.ElapsedMilliseconds;
 
-            sw.Stop();
-            Trace.WriteLine($"{methodName}: {sw.ElapsedMilliseconds} ms, avg error={errorSum / iterations}");
+            // Measure standard function
+            stopwatch.Restart();
+            for (int i = 0; i < iterations; i++)
+                standardFunc(inputValue);
+            stopwatch.Stop();
+            long standardTime = stopwatch.ElapsedMilliseconds;
+
+            // Output results
+            PrintResults(methodName, fastTime, standardTime);
+        }
+
+        /// <summary>
+        /// Overload for integer-based functions
+        /// </summary>
+        private static void Compare(string methodName, Func<int, int> fastFunc, Func<int, int> standardFunc)
+        {
+            // Warm up
+            fastFunc(256);
+            standardFunc(256);
+
+            // Measure fast function
+            var stopwatch = Stopwatch.StartNew();
+            for (int i = 0; i < iterations; i++)
+                fastFunc(256);
+            stopwatch.Stop();
+            long fastTime = stopwatch.ElapsedMilliseconds;
+
+            // Measure standard function
+            stopwatch.Restart();
+            for (int i = 0; i < iterations; i++)
+                standardFunc(256);
+            stopwatch.Stop();
+            long standardTime = stopwatch.ElapsedMilliseconds;
+
+            // Output results
+            PrintResults(methodName, fastTime, standardTime);
+        }
+
+        /// <summary>
+        /// Prints the results in a cleaner format
+        /// </summary>
+        private static void PrintResults(string methodName, long fastTime, long standardTime)
+        {
+            string output = $"{methodName} -> Fast: {fastTime,5}ms | Standard: {standardTime,5}ms";
+            Trace.WriteLine(output); // Log to trace output if necessary
         }
     }
 }
