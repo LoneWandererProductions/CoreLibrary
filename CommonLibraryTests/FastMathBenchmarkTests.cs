@@ -1,139 +1,119 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/FastMathBenchmarkTests.cs
- * PURPOSE:     Test some speed options
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-using System;
+﻿using System;
 using System.Diagnostics;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
-    /// <summary>
-    /// Benchmark tests for FastMath and ExtendedMath
-    /// </summary>
     [TestClass]
     public class FastMathBenchmarkTests
     {
-        /// <summary>
-        /// The number of iterations for benchmarking
-        /// </summary>
-        private const int Iterations = 1_000_000;
+        // Constants for benchmarking
+        private const int Iterations = 100000;
+        private const float InputFloat = 123.456f;  // Example float input for sin, cos, tan
+        private const int InputInt = 123456;  // Example int input for log2
 
-        /// <summary>
-        /// The test input value
-        /// </summary>
-        private const float InputValue = 1.2f; // Example input for sin, cos, etc.
-
-        /// <summary>
-        /// Tests FastSin against MathF.Sin
-        /// </summary>
         [TestMethod]
-        public void CompareFastSin()
+        public void BenchmarkAllFunctions()
         {
-            Compare(nameof(FastMath.FastSin), FastMath.FastSin, MathF.Sin);
+            ComparePerformance("Log2 Benchmark", FastLog2, Math.Log2);
+            ComparePerformance("Fast Sin Benchmark", FastSinF, Math.Sin);
+            ComparePerformance("Sin Benchmark", ExtSinF, Math.Sin);
+            ComparePerformance("Cos Benchmark", ExtCosF, Math.Cos);
+            ComparePerformance("Tan Benchmark", ExtTanF, Math.Tan);
         }
 
-        /// <summary>
-        /// Tests FastLog2 against Math.Log2
-        /// </summary>
-        [TestMethod]
-        public void CompareFastLog2()
-        {
-            Compare(nameof(FastMath.FastLog2), (x) => FastMath.FastLog2((int)x), (x) => (int)Math.Log2(x));
-        }
-
-        /// <summary>
-        /// Tests ExtendedMath.CalcSinF against MathF.Sin
-        /// </summary>
-        [TestMethod]
-        public void CompareExtendedSinF()
-        {
-            Compare(nameof(ExtendedMath.CalcSinF), (x) => ExtendedMath.CalcSinF((int)x), MathF.Sin);
-        }
-
-        /// <summary>
-        /// Tests ExtendedMath.CalcCosF against MathF.Cos
-        /// </summary>
-        [TestMethod]
-        public void CompareExtendedCosF()
-        {
-            Compare(nameof(ExtendedMath.CalcCosF), (x) => ExtendedMath.CalcCosF((int)x), MathF.Cos);
-        }
-
-        /// <summary>
-        /// Tests ExtendedMath.CalcTanF against MathF.Tan
-        /// </summary>
-        [TestMethod]
-        public void CompareExtendedTanF()
-        {
-            Compare(nameof(ExtendedMath.CalcTanF), (x) => ExtendedMath.CalcTanF((int)x), MathF.Tan);
-        }
-
-        /// <summary>
-        /// Generic benchmarking method for floating-point functions
-        /// </summary>
-        private static void Compare(string methodName, Func<float, float> fastFunc, Func<float, float> standardFunc)
+        // Compare FastLog2 to standard Math.Log2
+        private static void ComparePerformance(string methodName, Func<int, int> customFunc, Func<double, double> standardFunc)
         {
             // Warm up
-            fastFunc(InputValue);
-            standardFunc(InputValue);
+            customFunc(InputInt);
+            standardFunc(InputInt);
 
-            // Measure fast function
+            // Measure custom function performance
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
-                fastFunc(InputValue);
+            for (var i = 0; i < Iterations; i++)
+                customFunc(InputInt);
             stopwatch.Stop();
-            long fastTime = stopwatch.ElapsedMilliseconds;
+            var customTime = stopwatch.ElapsedMilliseconds;
 
-            // Measure standard function
+            // Measure standard function performance
             stopwatch.Restart();
-            for (int i = 0; i < Iterations; i++)
-                standardFunc(InputValue);
+            for (var i = 0; i < Iterations; i++)
+                standardFunc(InputInt);
             stopwatch.Stop();
-            long standardTime = stopwatch.ElapsedMilliseconds;
+            var standardTime = stopwatch.ElapsedMilliseconds;
 
             // Output results
-            PrintResults(methodName, fastTime, standardTime);
+            PrintResults(methodName, customTime, standardTime);
         }
 
-        /// <summary>
-        /// Overload for integer-based functions
-        /// </summary>
-        private static void Compare(string methodName, Func<int, int> fastFunc, Func<int, int> standardFunc)
+        // Compare FastSinF to standard Math.Sin
+        private static void ComparePerformance(string methodName, Func<float, float> customFunc, Func<double, double> standardFunc)
         {
             // Warm up
-            fastFunc(256);
-            standardFunc(256);
+            customFunc(InputFloat);
+            standardFunc(InputFloat);
 
-            // Measure fast function
+            // Measure custom function performance
             var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
-                fastFunc(256);
+            for (var i = 0; i < Iterations; i++)
+                customFunc(InputFloat);
             stopwatch.Stop();
-            long fastTime = stopwatch.ElapsedMilliseconds;
+            var customTime = stopwatch.ElapsedMilliseconds;
 
-            // Measure standard function
+            // Measure standard function performance
             stopwatch.Restart();
-            for (int i = 0; i < Iterations; i++)
-                standardFunc(256);
+            for (var i = 0; i < Iterations; i++)
+                standardFunc(InputFloat);
             stopwatch.Stop();
-            long standardTime = stopwatch.ElapsedMilliseconds;
+            var standardTime = stopwatch.ElapsedMilliseconds;
 
             // Output results
-            PrintResults(methodName, fastTime, standardTime);
+            PrintResults(methodName, customTime, standardTime);
         }
 
-        /// <summary>
-        /// Prints the results in a cleaner format
-        /// </summary>
-        private static void PrintResults(string methodName, long fastTime, long standardTime)
+        // Output benchmark results
+        private static void PrintResults(string methodName, long customTime, long standardTime)
         {
-            string output = $"{methodName} -> Fast: {fastTime,5}ms | Standard: {standardTime,5}ms";
-            Trace.WriteLine(output); // Log to trace output if necessary
+            Console.WriteLine($"{methodName}:");
+            Console.WriteLine($"  Custom function time: {customTime} ms");
+            Console.WriteLine($"  Standard function time: {standardTime} ms");
+            Console.WriteLine($"  Performance ratio (faster is better): {(double)standardTime / customTime:F2}");
+            Console.WriteLine();
+        }
+
+        // Example fast log2 function (integer approximation)
+        private static int FastLog2(int x)
+        {
+            return FastMath.FastLog2(x);
+        }
+
+        // Example fast sine function (float)
+        private static float FastSinF(float x)
+        {
+            return FastMath.FastSin(x);  // Replace with actual fast implementation
+        }
+
+        // Example fast sine function (float)
+        private static float ExtSinF(float x)
+        {
+            var y = (int)x;
+            return ExtendedMath.CalcSinF(y);  // Replace with actual fast implementation
+        }
+
+        // Example fast cosine function (float)
+        private static float ExtCosF(float x)
+        {
+            var y = (int)x;
+            return ExtendedMath.CalcCosF(y);  // Replace with actual fast implementation
+        }
+
+        // Example fast tangent function (float)
+        private static float ExtTanF(float x)
+        {
+            var y = (int)x;
+            return (float)ExtendedMath.CalcTan(y);  // Replace with actual fast implementation
         }
     }
 }
