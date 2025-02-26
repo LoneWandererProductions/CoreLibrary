@@ -10,8 +10,8 @@ namespace CommonLibraryTests
     {
         // Constants for benchmarking
         private const int Iterations = 100000;
-        private const float InputFloat = 123.456f;  // Example float input for sin, cos, tan
-        private const int InputInt = 123456;  // Example int input for log2
+        private const float InputFloat = 123.456f; // Example float input for sin, cos, tan
+        private const int InputInt = 123456; // Example int input for log2
 
         [TestMethod]
         public void BenchmarkAllFunctions()
@@ -24,7 +24,8 @@ namespace CommonLibraryTests
         }
 
         // Compare FastLog2 to standard Math.Log2
-        private static void ComparePerformance(string methodName, Func<int, int> customFunc, Func<double, double> standardFunc)
+        private static void ComparePerformance(string methodName, Func<int, int> customFunc,
+            Func<double, double> standardFunc)
         {
             // Warm up
             customFunc(InputInt);
@@ -33,14 +34,20 @@ namespace CommonLibraryTests
             // Measure custom function performance
             var stopwatch = Stopwatch.StartNew();
             for (var i = 0; i < Iterations; i++)
+            {
                 customFunc(InputInt);
+            }
+
             stopwatch.Stop();
             var customTime = stopwatch.ElapsedMilliseconds;
 
             // Measure standard function performance
             stopwatch.Restart();
             for (var i = 0; i < Iterations; i++)
+            {
                 standardFunc(InputInt);
+            }
+
             stopwatch.Stop();
             var standardTime = stopwatch.ElapsedMilliseconds;
 
@@ -49,7 +56,8 @@ namespace CommonLibraryTests
         }
 
         // Compare FastSinF to standard Math.Sin
-        private static void ComparePerformance(string methodName, Func<float, float> customFunc, Func<double, double> standardFunc)
+        private static void ComparePerformance(string methodName, Func<float, float> customFunc,
+            Func<double, double> standardFunc)
         {
             // Warm up
             customFunc(InputFloat);
@@ -58,14 +66,20 @@ namespace CommonLibraryTests
             // Measure custom function performance
             var stopwatch = Stopwatch.StartNew();
             for (var i = 0; i < Iterations; i++)
+            {
                 customFunc(InputFloat);
+            }
+
             stopwatch.Stop();
             var customTime = stopwatch.ElapsedMilliseconds;
 
             // Measure standard function performance
             stopwatch.Restart();
             for (var i = 0; i < Iterations; i++)
+            {
                 standardFunc(InputFloat);
+            }
+
             stopwatch.Stop();
             var standardTime = stopwatch.ElapsedMilliseconds;
 
@@ -92,28 +106,28 @@ namespace CommonLibraryTests
         // Example fast sine function (float)
         private static float FastSinF(float x)
         {
-            return FastMath.FastSin(x);  // Replace with actual fast implementation
+            return FastMath.FastSin(x); // Replace with actual fast implementation
         }
 
         // Example fast sine function (float)
         private static float ExtSinF(float x)
         {
             var y = (int)x;
-            return ExtendedMath.CalcSinF(y);  // Replace with actual fast implementation
+            return ExtendedMath.CalcSinF(y); // Replace with actual fast implementation
         }
 
         // Example fast cosine function (float)
         private static float ExtCosF(float x)
         {
             var y = (int)x;
-            return ExtendedMath.CalcCosF(y);  // Replace with actual fast implementation
+            return ExtendedMath.CalcCosF(y); // Replace with actual fast implementation
         }
 
         // Example fast tangent function (float)
         private static float ExtTanF(float x)
         {
             var y = (int)x;
-            return (float)ExtendedMath.CalcTan(y);  // Replace with actual fast implementation
+            return (float)ExtendedMath.CalcTan(y); // Replace with actual fast implementation
         }
     }
 }

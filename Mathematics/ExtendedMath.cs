@@ -8,6 +8,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Runtime.CompilerServices;
@@ -20,45 +21,45 @@ namespace Mathematics
     public static class ExtendedMath
     {
         /// <summary>
-        /// The sin f lookup
+        ///     The sin f lookup
         /// </summary>
         private static readonly float[] SinFLookup = new float[360];
 
         /// <summary>
-        /// The sin d lookup
+        ///     The sin d lookup
         /// </summary>
         private static readonly double[] SinDLookup = new double[360];
 
         /// <summary>
-        /// The cos f lookup
+        ///     The cos f lookup
         /// </summary>
         private static readonly float[] CosFLookup = new float[360];
 
         /// <summary>
-        /// The cos d lookup
+        ///     The cos d lookup
         /// </summary>
         private static readonly double[] CosDLookup = new double[360];
 
         /// <summary>
-        /// The tan f lookup
+        ///     The tan f lookup
         /// </summary>
         private static readonly float[] TanFLookup = new float[360];
 
         /// <summary>
-        /// The tan d lookup
+        ///     The tan d lookup
         /// </summary>
         private static readonly double[] TanDLookup = new double[360];
 
         /// <summary>
-        /// Initializes the <see cref="ExtendedMath" /> class.
-        /// Precalculate all necessary values.
+        ///     Initializes the <see cref="ExtendedMath" /> class.
+        ///     Precalculate all necessary values.
         /// </summary>
         static ExtendedMath()
         {
-            for (int degree = 0; degree < 360; degree++)
+            for (var degree = 0; degree < 360; degree++)
             {
                 // SIN Lookup
-                if (Constants.Sinus.TryGetValue(degree, out double sinValue))
+                if (Constants.Sinus.TryGetValue(degree, out var sinValue))
                 {
                     SinDLookup[degree] = sinValue;
                     SinFLookup[degree] = (float)sinValue;
@@ -70,7 +71,7 @@ namespace Mathematics
                 }
 
                 // COS Lookup
-                if (Constants.CoSinus.TryGetValue(degree, out double cosValue))
+                if (Constants.CoSinus.TryGetValue(degree, out var cosValue))
                 {
                     CosDLookup[degree] = cosValue;
                     CosFLookup[degree] = (float)cosValue;
@@ -82,7 +83,7 @@ namespace Mathematics
                 }
 
                 // TAN Lookup
-                if (Constants.Tangents.TryGetValue(degree, out double tanValue))
+                if (Constants.Tangents.TryGetValue(degree, out var tanValue))
                 {
                     TanDLookup[degree] = tanValue;
                     TanFLookup[degree] = (float)tanValue;
@@ -111,7 +112,10 @@ namespace Mathematics
         /// <param name="degree">Degree we want to Rotate</param>
         /// <returns>The <see cref="double" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CalcCos(int degree) => CosDLookup[NormalizeAngle(degree)];
+        public static double CalcCos(int degree)
+        {
+            return CosDLookup[NormalizeAngle(degree)];
+        }
 
         /// <summary>
         ///     Calculate sin.
@@ -120,7 +124,10 @@ namespace Mathematics
         /// <param name="degree">Degree we want to Rotate</param>
         /// <returns>The <see cref="double" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CalcSin(int degree) => SinDLookup[NormalizeAngle(degree)];
+        public static double CalcSin(int degree)
+        {
+            return SinDLookup[NormalizeAngle(degree)];
+        }
 
         /// <summary>
         ///     Calculate tangent.
@@ -130,7 +137,10 @@ namespace Mathematics
         /// <returns>The <see cref="double" />.</returns>
         /// <exception cref="DivideByZeroException">Thrown when attempting to calculate tangent for angles where cosine is zero.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double CalcTan(int degree) => TanDLookup[NormalizeAngle(degree)];
+        public static double CalcTan(int degree)
+        {
+            return TanDLookup[NormalizeAngle(degree)];
+        }
 
         /// <summary>
         ///     Calculates the cos as float. Variation of CalcCos.
@@ -138,7 +148,10 @@ namespace Mathematics
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcCosF(int degree) => CosFLookup[NormalizeAngle(degree)];
+        public static float CalcCosF(int degree)
+        {
+            return CosFLookup[NormalizeAngle(degree)];
+        }
 
         /// <summary>
         ///     Calculates the sin float. Variation of CalcSin.
@@ -146,7 +159,10 @@ namespace Mathematics
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcSinF(int degree) => SinFLookup[NormalizeAngle(degree)];
+        public static float CalcSinF(int degree)
+        {
+            return SinFLookup[NormalizeAngle(degree)];
+        }
 
         /// <summary>
         ///     Calculates the tan float. Variation of CalcTan.
@@ -154,7 +170,10 @@ namespace Mathematics
         /// <param name="degree">The degree.</param>
         /// <returns>The <see cref="float" /> The radial Value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float CalcTanF(int degree) => TanFLookup[NormalizeAngle(degree)];
+        public static float CalcTanF(int degree)
+        {
+            return TanFLookup[NormalizeAngle(degree)];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int NormalizeAngle(int degrees)
