@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Xml.Serialization;
 
 namespace LightVector
@@ -159,8 +158,8 @@ namespace LightVector
     }
 
     /// <summary>
-    ///     The save object class.
-    ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
+    /// The save object class.
+    /// Save in a Dictionary, Id will be the Key and forwarder for the ParentId
     /// </summary>
     [Serializable]
     [XmlInclude(typeof(LineObject))]
@@ -169,59 +168,28 @@ namespace LightVector
     public sealed class SaveObject
     {
         /// <summary>
-        ///     Gets or sets the point id.
+        /// Unique identifier for the object.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Layer number, for sorting in rendering.
+        /// </summary>
+        public int Layer { get; set; }
+
+        /// <summary>
+        /// Reference starting point for object positioning.
+        /// </summary>
+        public Point StartCoordinates { get; set; }
+
+        /// <summary>
+        /// Graphic object (Line, Curve, Polygon).
         /// </summary>
         public object Graphic { get; set; }
 
         /// <summary>
-        ///     Gets or sets the Type.
-        ///     0 is Point
-        ///     1 is Line
-        ///     2 is Curve
+        /// Type of graphic object (Line, Curve, etc.).
         /// </summary>
         public VectorObjects Type { get; set; }
-    }
-
-    /// <summary>
-    ///     Simple test class for serialization
-    /// </summary>
-    public static class SerializerTest
-    {
-        public static void RunTest()
-        {
-            var container = new SaveContainer
-            {
-                Width = 500,
-                Objects = new List<SaveObject>
-                {
-                    new SaveObject
-                    {
-                        Graphic = new LineObject
-                        {
-                            StartPoint = new Point(10, 10),
-                            EndPoint = new Point(50, 50)
-                        },
-                        Type = VectorObjects.Line
-                    },
-                    new SaveObject
-                    {
-                        Graphic = new CurveObject
-                        {
-                            Points = new List<Point> { new(10, 10), new(20, 40), new(50, 50) },
-                            Tension = 0.5
-                        },
-                        Type = VectorObjects.Curve
-                    }
-                }
-            };
-
-            var serializer = new XmlSerializer(typeof(SaveContainer));
-
-            using (var writer = new StringWriter())
-            {
-                serializer.Serialize(writer, container);
-                Console.WriteLine(writer.ToString());  // Print XML output
-            }
-        }
     }
 }
