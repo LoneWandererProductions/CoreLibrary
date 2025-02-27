@@ -104,11 +104,6 @@ namespace Mathematics
                     return Exponent * Numerator;
                 }
 
-                if (Exponent == 0)
-                {
-                    return Numerator;
-                }
-
                 //catch negative exponent
                 var exponentNumerator = Math.Abs(Exponent * Denominator) + Numerator;
                 if (Exponent < 0)
@@ -210,6 +205,46 @@ namespace Mathematics
         }
 
         /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Fraction a, Fraction b) => a.Equals(b);
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Fraction a, Fraction b) => !(a == b);
+
+        /// <summary>
+        /// Implements the operator &lt;.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator <(Fraction a, Fraction b) => a.Decimal < b.Decimal;
+
+        /// <summary>
+        /// Implements the operator &gt;.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator >(Fraction a, Fraction b) => a.Decimal > b.Decimal;
+
+        /// <summary>
         ///     Returns a hash code for this instance.
         /// </summary>
         /// <returns>
@@ -285,17 +320,31 @@ namespace Mathematics
         /// <returns>Greatest common Factor.</returns>
         private static int GetGcf(int a, int b)
         {
-            while (true)
+            while (b != 0)
             {
-                if (a == b || b == 0)
-                {
-                    return a;
-                }
-
-                var a1 = a;
-                a = b;
-                b = a1 % b;
+                int temp = b;
+                b = a % b;
+                a = temp;
             }
+            return Math.Abs(a);
         }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Fraction"/> to <see cref="System.Decimal"/>.
+        /// </summary>
+        /// <param name="f">The f.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator decimal(Fraction f) => (decimal)f.Numerator / f.Denominator;
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Fraction"/> to <see cref="System.Double"/>.
+        /// </summary>
+        /// <param name="f">The f.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator double(Fraction f) => (double)f.Numerator / f.Denominator;
     }
 }
