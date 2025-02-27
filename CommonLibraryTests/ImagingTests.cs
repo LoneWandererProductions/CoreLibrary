@@ -595,7 +595,7 @@ namespace CommonLibraryTests
             var bresenhamLine = HelperMethods.BresenhamPlotLine(start, end);
 
             // Linear Line Plot
-            var linearLine = Lines.LinearLine(start, end);
+            var linearLine = Lines.BresenhamLine(start, end);
 
             for (var x = 0; x < 10; x++)
             {
@@ -609,7 +609,7 @@ namespace CommonLibraryTests
             start = new Coordinate2D(1, 0);
             end = new Coordinate2D(1, 50);
 
-            linearLine = Lines.LinearLine(start, end);
+            linearLine = Lines.BresenhamLine(start, end);
 
             // Log middle point on the horizontal line
             Console.WriteLine($"Horizontal Line: Middle point at X=1, Y={linearLine[25].Y}, Expected Y=25");
@@ -619,7 +619,7 @@ namespace CommonLibraryTests
             start = new Coordinate2D(0, 0);
             end = new Coordinate2D(50, 0);
 
-            linearLine = Lines.LinearLine(start, end);
+            linearLine = Lines.BresenhamLine(start, end);
 
             // Log middle point on the vertical line
             Console.WriteLine($"Vertical Line: Middle point at X=25, Y={linearLine[25].Y}, Expected Y=0");
@@ -679,7 +679,7 @@ namespace CommonLibraryTests
         {
             var watch = Stopwatch.StartNew();
             //test my stuff
-            _ = Lines.LinearLine(one, two);
+            _ = Lines.BresenhamLine(one, two);
 
             watch.Stop();
 

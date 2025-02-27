@@ -341,6 +341,18 @@ namespace LightVector
             return curve;
         }
 
+        /// <summary>
+        /// Creates the polygon.
+        /// </summary>
+        /// <param name="objFile">The object file.</param>
+        /// <param name="translation">The translation.</param>
+        /// <param name="angleX">The angle x.</param>
+        /// <param name="angleY">The angle y.</param>
+        /// <param name="angleZ">The angle z.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>A  Polygon</returns>
         internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
             int angleZ, int scale, int width, int height)
         {
@@ -357,7 +369,7 @@ namespace LightVector
                 var one = lst[i];
                 var two = lst[i + 1];
 
-                var line = Lines.LinearLine(one, two);
+                var line = Lines.BresenhamLine(one, two);
 
                 cache.AddRange(line);
             }
