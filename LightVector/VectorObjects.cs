@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -38,13 +39,35 @@ namespace LightVector
         ///     Gets or sets the stroke.
         ///     Optional
         /// </summary>
-        public SolidColorBrush Stroke { get; init; } = Brushes.Black;
+        [XmlIgnore]
+        public SolidColorBrush Stroke { get; set; } = Brushes.Black;
+
+        /// <summary>
+        ///     Workaround for XML serialization of Stroke
+        /// </summary>
+        [XmlElement("Stroke")]
+        public string StrokeColor
+        {
+            get => Stroke.Color.ToString();
+            set => Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+        }
 
         /// <summary>
         ///     Optional
         ///     If filled we will get filled curves
         /// </summary>
+        [XmlIgnore]
         public SolidColorBrush Fill { get; set; }
+
+        /// <summary>
+        ///     Workaround for XML serialization of Fill
+        /// </summary>
+        [XmlElement("Fill")]
+        public string FillColor
+        {
+            get => Fill?.Color.ToString();
+            set => Fill = string.IsNullOrEmpty(value) ? null : new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+        }
 
         /// <summary>
         ///     Optional
@@ -78,7 +101,7 @@ namespace LightVector
         /// <summary>
         ///     Gets or sets the points.
         /// </summary>
-        public List<Point> Points { get; set; }
+        public List<Point> Points { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the tension.
@@ -89,7 +112,7 @@ namespace LightVector
         ///     Get the path.
         /// </summary>
         /// <returns>The <see cref="Path" /> Bezier Path.</returns>
-        internal Path GetPath()
+        internal System.Windows.Shapes.Path GetPath()
         {
             var path = CustomObjects.ReturnBezierCurve(Points, Tension);
             //path.Fill = Fill;
@@ -101,7 +124,7 @@ namespace LightVector
     }
 
     /// <summary>
-    ///     The curve object class.
+    ///     The polygon object class.
     /// </summary>
     [Serializable]
     public sealed class Polygons
@@ -109,7 +132,7 @@ namespace LightVector
         /// <summary>
         ///     Gets or sets the points.
         /// </summary>
-        public List<Point> Points { get; set; }
+        public List<Point> Points { get; set; } = new();
     }
 
     /// <summary>
@@ -124,7 +147,7 @@ namespace LightVector
         /// <value>
         ///     The objects.
         /// </value>
-        public List<SaveObject> Objects { get; init; }
+        public List<SaveObject> Objects { get; init; } = new();
 
         /// <summary>
         ///     Gets or sets the width.
@@ -140,6 +163,9 @@ namespace LightVector
     ///     Save in a Dictionary, Id will be the Key and forwarder for the ParentId
     /// </summary>
     [Serializable]
+    [XmlInclude(typeof(LineObject))]
+    [XmlInclude(typeof(CurveObject))]
+    [XmlInclude(typeof(Polygons))]
     public sealed class SaveObject
     {
         /// <summary>
@@ -154,5 +180,48 @@ namespace LightVector
         ///     2 is Curve
         /// </summary>
         public VectorObjects Type { get; set; }
+    }
+
+    /// <summary>
+    ///     Simple test class for serialization
+    /// </summary>
+    public static class SerializerTest
+    {
+        public static void RunTest()
+        {
+            var container = new SaveContainer
+            {
+                Width = 500,
+                Objects = new List<SaveObject>
+                {
+                    new SaveObject
+                    {
+                        Graphic = new LineObject
+                        {
+                            StartPoint = new Point(10, 10),
+                            EndPoint = new Point(50, 50)
+                        },
+                        Type = VectorObjects.Line
+                    },
+                    new SaveObject
+                    {
+                        Graphic = new CurveObject
+                        {
+                            Points = new List<Point> { new(10, 10), new(20, 40), new(50, 50) },
+                            Tension = 0.5
+                        },
+                        Type = VectorObjects.Curve
+                    }
+                }
+            };
+
+            var serializer = new XmlSerializer(typeof(SaveContainer));
+
+            using (var writer = new StringWriter())
+            {
+                serializer.Serialize(writer, container);
+                Console.WriteLine(writer.ToString());  // Print XML output
+            }
+        }
     }
 }

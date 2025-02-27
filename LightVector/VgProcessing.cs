@@ -379,14 +379,6 @@ namespace LightVector
             return new Polygons { Points = points };
         }
 
-        private static Vector3D Convert(TertiaryVector triangle, Vector3D translateVector, int angleX, int angleY,
-            int angleZ, int scale)
-        {
-            var start = new Vector3D { X = triangle.X, Y = triangle.Y, Z = triangle.Z };
-
-            return null; //Projection3DCamera.WorldMatrix(start, translateVector, angleX, angleY, angleZ, scale);
-        }
-
         /// <summary>
         ///     The generate line.
         /// </summary>
