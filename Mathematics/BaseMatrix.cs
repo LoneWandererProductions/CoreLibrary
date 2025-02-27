@@ -66,14 +66,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets the bits handle.
-        /// </summary>
-        /// <value>
-        ///     The bits handle.
-        /// </value>
-        private GCHandle BitsHandle { get; }
-
-        /// <summary>
         ///     Gets a value indicating whether this <see cref="BaseMatrix" /> is disposed.
         /// </summary>
         /// <value>
@@ -150,7 +142,6 @@ namespace Mathematics
             {
                 // free managed resources
                 Matrix = null;
-                BitsHandle.Free();
             }
 
             Disposed = true;
