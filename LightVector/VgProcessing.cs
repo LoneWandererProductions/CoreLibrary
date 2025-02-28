@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Windows;
 using DataFormatter;
 using ExtendedSystemObjects;
@@ -270,16 +271,16 @@ namespace LightVector
             var cos = ExtendedMath.CalcCos(degree);
             var sin = ExtendedMath.CalcSin(degree);
 
-            for (var i = 0; i < curve.Points.Count; i++)
+            for (var i = 0; i < curve.Vectors.Count; i++)
             {
-                var pnt = curve.Points[i];
+                var pnt = curve.Vectors[i];
 
                 var x = (int)((pnt.X * cos) - (pnt.Y * sin));
                 var y = (int)((pnt.Y * cos) + (pnt.X * sin));
 
                 pnt.X = x;
                 pnt.Y = y;
-                curve.Points[i] = pnt;
+                curve.Vectors[i] = pnt;
             }
 
             return curve;
@@ -325,9 +326,9 @@ namespace LightVector
                 return curve;
             }
 
-            var points = new List<Point>(curve.Points.Count);
+            var points = new List<Vector2>(curve.Vectors.Count);
 
-            foreach (var pointer in curve.Points)
+            foreach (var pointer in curve.Vectors)
             {
                 var pnt = pointer;
                 pnt.X *= factor;
@@ -336,7 +337,7 @@ namespace LightVector
                 points.Add(pnt);
             }
 
-            curve.Points = points;
+            curve.Vectors = points;
 
             return curve;
         }
@@ -357,7 +358,6 @@ namespace LightVector
             int angleZ, int scale, int width, int height)
         {
             var projection = new Projection();
-            var transform = new Transform();
 
             var cache = new List<Vector3D>();
 
@@ -389,7 +389,7 @@ namespace LightVector
         {
             var start = IdToPoint(mVector.MasterId, width);
 
-            var end = new Point { X = start.X + mVector.ColumnX, Y = start.Y + mVector.RowY };
+            var end = new Vector2 { X = start.X + mVector.ColumnX, Y = start.Y + mVector.RowY };
 
             return new LineObject
             {
@@ -431,7 +431,7 @@ namespace LightVector
         /// <param name="vector">Point on the Map</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>Fitting id of the Coordinate</returns>
-        private static int CalculateId(Point vector, int width)
+        private static int CalculateId(Vector2 vector, int width)
         {
             return (int)((vector.Y * width) + vector.X);
         }
@@ -446,18 +446,18 @@ namespace LightVector
         /// <param name="masterId">Point on the Map</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>Fitting Coordinate of the id</returns>
-        private static Point IdToPoint(int masterId, int width)
+        private static Vector2 IdToPoint(int masterId, int width)
         {
             if (width == 0)
             {
                 Trace.WriteLine(WvgResources.ErrorZeroDivision);
-                return new Point();
+                return new Vector2();
             }
 
             var modulo = masterId % width;
             var yColumn = masterId / width;
 
-            return new Point { X = modulo, Y = yColumn };
+            return new Vector2 { X = modulo, Y = yColumn };
         }
     }
 }

@@ -11,6 +11,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Shapes;
 using DataFormatter;
@@ -164,19 +165,18 @@ namespace LightVector
         ///     The curve add.
         /// </summary>
         /// <param name="curve">The curve.</param>
-        public Path CurveAdd(List<Point> curve)
+        public Path CurveAdd(List<Vector2> curve)
         {
             Curves ??= new List<CurveObject>();
 
-            var crv = new CurveObject { Points = curve };
-
-            //what????
-            var path = crv.GetPath();
+            var crv = new CurveObject { Vectors = curve };
 
             //TODO implement cuvier path
             Curves.Add(crv);
 
-            return path;
+            //TODO return a drawable path
+
+            return null;
         }
 
         public Polygons LoadObjectFile(ObjFile obj, Vector3D translation, int angleX, int angleY,

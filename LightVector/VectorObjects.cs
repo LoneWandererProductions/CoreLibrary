@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -72,134 +71,105 @@ namespace LightVector
         ///     Optional
         /// </summary>
         public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
-    }
-
-    /// <summary>
-    ///     The line object class.
-    /// </summary>
-    [Serializable]
-    public sealed class LineObject : GraphicObject
-    {
-        /// <summary>
-        ///     Gets or sets the start point.
-        /// </summary>
-        public Point StartPoint { get; init; }
 
         /// <summary>
-        ///     Gets or sets the end point.
+        /// Gets or sets the index of the z.
         /// </summary>
-        public Point EndPoint { get; init; }
-    }
+        /// <value>
+        /// The index of the z.
+        /// </value>
+        public int ZIndex { get; set; } = 0;
 
-    /// <summary>
-    ///     The curve object class.
-    /// </summary>
-    [Serializable]
-    public sealed class CurveObject : GraphicObject
-    {
-        /// <summary>
-        ///     Gets or sets the points.
-        /// </summary>
-        public List<Point> Points { get; set; } = new();
 
         /// <summary>
-        ///     Gets or sets the tension.
+        /// Apply transformation method (scaling, rotation, etc.)
+        ///  Each subclass will override this method to implement specific transformation logic
         /// </summary>
-        public double Tension { get; init; } = 1.0;
-
-        /// <summary>
-        ///     Get the path.
-        /// </summary>
-        /// <returns>The <see cref="Path" /> Bezier Path.</returns>
-        internal System.Windows.Shapes.Path GetPath()
+        /// <param name="transformation">The transformation.</param>
+        public virtual void ApplyTransformation(Transform transformation)
         {
-            var path = CustomObjects.ReturnBezierCurve(Points, Tension);
-            //path.Fill = Fill;
-            //path.Stroke = Stroke;
-            //path.StrokeThickness = Thickness;
-            //path.StrokeLineJoin = StrokeLineJoin;
-            return path;
+            // Each subclass will override this method to implement specific transformation logic
         }
     }
 
-    /// <summary>
-    ///     The polygon object class.
-    /// </summary>
-    [Serializable]
-    public sealed class Polygons
-    {
         /// <summary>
-        ///     Gets or sets the points.
+        ///     The polygon object class.
         /// </summary>
-        public List<Point> Points { get; set; } = new();
+        [Serializable]
+        public sealed class Polygons
+        {
+            /// <summary>
+            ///     Gets or sets the points.
+            /// </summary>
+            public List<Point> Points { get; set; } = new();
+        }
+
+        /// <summary>
+        ///     Save Container
+        /// </summary>
+        [XmlRoot(ElementName = "Element")]
+        public sealed class SaveContainer
+        {
+            /// <summary>
+            ///     Gets or sets the objects.
+            /// </summary>
+            /// <value>
+            ///     The objects.
+            /// </value>
+            public List<SaveObject> Objects { get; init; } = new();
+
+            /// <summary>
+            ///     Gets or sets the width.
+            /// </summary>
+            /// <value>
+            ///     The width.
+            /// </value>
+            public int Width { get; init; }
+
+            /// <summary>
+            /// Gets the height.
+            /// </summary>
+            /// <value>
+            /// The height.
+            /// </value>
+            public int Height { get; init; }
+
+            //TODO add more stuff
+        }
+
+        /// <summary>
+        /// The save object class.
+        /// Save in a Dictionary, Id will be the Key and forwarder for the ParentId
+        /// </summary>
+        [Serializable]
+        [XmlInclude(typeof(LineObject))]
+        [XmlInclude(typeof(CurveObject))]
+        [XmlInclude(typeof(Polygons))]
+        public sealed class SaveObject
+        {
+            /// <summary>
+            /// Unique identifier for the object.
+            /// </summary>
+            public int Id { get; set; }
+
+            /// <summary>
+            /// Layer number, for sorting in rendering.
+            /// </summary>
+            public int Layer { get; set; }
+
+            /// <summary>
+            /// Reference starting point for object positioning.
+            /// </summary>
+            public Point StartCoordinates { get; set; }
+
+            /// <summary>
+            /// Graphic object (Line, Curve, Polygon).
+            /// </summary>
+            public GraphicObject Graphic { get; set; }
+
+            /// <summary>
+            /// Type of graphic object (Line, Curve, etc.).
+            /// </summary>
+            public VectorObjects Type { get; set; }
+        }
     }
-
-    /// <summary>
-    ///     Save Container
-    /// </summary>
-    [XmlRoot(ElementName = "Element")]
-    public sealed class SaveContainer
-    {
-        /// <summary>
-        ///     Gets or sets the objects.
-        /// </summary>
-        /// <value>
-        ///     The objects.
-        /// </value>
-        public List<SaveObject> Objects { get; init; } = new();
-
-        /// <summary>
-        ///     Gets or sets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
-        public int Width { get; init; }
-
-        /// <summary>
-        /// Gets the height.
-        /// </summary>
-        /// <value>
-        /// The height.
-        /// </value>
-        public int Height { get; init; }
-
-        //TODO add more stuff
-    }
-
-    /// <summary>
-    /// The save object class.
-    /// Save in a Dictionary, Id will be the Key and forwarder for the ParentId
-    /// </summary>
-    [Serializable]
-    [XmlInclude(typeof(LineObject))]
-    [XmlInclude(typeof(CurveObject))]
-    [XmlInclude(typeof(Polygons))]
-    public sealed class SaveObject
-    {
-        /// <summary>
-        /// Unique identifier for the object.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Layer number, for sorting in rendering.
-        /// </summary>
-        public int Layer { get; set; }
-
-        /// <summary>
-        /// Reference starting point for object positioning.
-        /// </summary>
-        public Point StartCoordinates { get; set; }
-
-        /// <summary>
-        /// Graphic object (Line, Curve, Polygon).
-        /// </summary>
-        public object Graphic { get; set; }
-
-        /// <summary>
-        /// Type of graphic object (Line, Curve, etc.).
-        /// </summary>
-        public VectorObjects Type { get; set; }
-    }
-}

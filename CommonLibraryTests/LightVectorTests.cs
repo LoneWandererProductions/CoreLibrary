@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Xml.Serialization;
 using LightVector;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,8 +38,8 @@ namespace CommonLibraryTests
                     {
                         Graphic = new LineObject
                         {
-                            StartPoint = new System.Windows.Point(10, 10),
-                            EndPoint = new System.Windows.Point(50, 50)
+                            StartPoint = new Vector2(10, 10),
+                            EndPoint = new Vector2(50, 50)
                         },
                         Type = VectorObjects.Line
                     },
@@ -46,7 +47,7 @@ namespace CommonLibraryTests
                     {
                         Graphic = new CurveObject
                         {
-                            Points = new List<System.Windows.Point>
+                            Vectors = new List<Vector2>
                             {
                                 new(10, 10),
                                 new(20, 40),

@@ -11,10 +11,12 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Generic;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Shapes;
 using DataFormatter;
 using Mathematics;
+using static LightVector.LineObject;
 
 namespace LightVector
 {
@@ -94,7 +96,7 @@ namespace LightVector
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <returns>The <see cref="Path" />.</returns>
-        Path CurveAdd(List<Point> curve);
+        Path CurveAdd(List<Vector2> curve);
 
         /// <summary>
         ///     Lines the remove.
