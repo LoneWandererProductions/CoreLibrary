@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Windows;
 using DataFormatter;
 using ExtendedSystemObjects;
 using Mathematics;
@@ -33,7 +32,7 @@ namespace LightVector
             try
             {
                 return (from graphic in container.Objects
-                    where graphic.Type == VectorObjects.Line
+                    where graphic.Type == GraphicTypes.Line
                     select graphic.Graphic as LineObject).ToList();
             }
             catch (AggregateException aex)
@@ -57,7 +56,7 @@ namespace LightVector
             try
             {
                 return (from graphic in container.Objects
-                    where graphic.Type == VectorObjects.Curve
+                    where graphic.Type == GraphicTypes.Curve
                     select graphic.Graphic as CurveObject).ToList();
             }
             catch (AggregateException aex)

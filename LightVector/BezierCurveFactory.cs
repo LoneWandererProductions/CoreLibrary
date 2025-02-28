@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/PathCreator.cs
+ * FILE:        LightVector/BezierCurveFactory.cs
  * PURPOSE:     Generate specific Graphic Output Information
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

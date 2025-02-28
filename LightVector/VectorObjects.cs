@@ -170,6 +170,6 @@ namespace LightVector
             /// <summary>
             /// Type of graphic object (Line, Curve, etc.).
             /// </summary>
-            public VectorObjects Type { get; set; }
+            public GraphicTypes Type { get; set; }
         }
     }

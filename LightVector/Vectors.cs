@@ -89,7 +89,7 @@ namespace LightVector
             {
                 foreach (var line in Lines)
                 {
-                    save = new SaveObject { Type = VectorObjects.Line, Graphic = line };
+                    save = new SaveObject { Type = GraphicTypes.Line, Graphic = line };
                     saveList.Add(save);
                 }
             }
@@ -98,7 +98,7 @@ namespace LightVector
             {
                 foreach (var curve in Curves)
                 {
-                    save = new SaveObject { Type = VectorObjects.Curve, Graphic = curve };
+                    save = new SaveObject { Type = GraphicTypes.Curve, Graphic = curve };
                     saveList.Add(save);
                 }
             }
@@ -145,7 +145,7 @@ namespace LightVector
         public Rectangle GetRectangle(Point point)
         {
             //TODO refine
-            return GraphicHelper.GetPoint(point);
+            return null;
         }
 
         /// <inheritdoc />

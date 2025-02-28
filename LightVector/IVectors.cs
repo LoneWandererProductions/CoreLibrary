@@ -16,7 +16,6 @@ using System.Windows;
 using System.Windows.Shapes;
 using DataFormatter;
 using Mathematics;
-using static LightVector.LineObject;
 
 namespace LightVector
 {

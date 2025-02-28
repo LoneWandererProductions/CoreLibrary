@@ -41,7 +41,7 @@ namespace CommonLibraryTests
                             StartPoint = new Vector2(10, 10),
                             EndPoint = new Vector2(50, 50)
                         },
-                        Type = VectorObjects.Line
+                        Type = GraphicTypes.Line
                     },
                     new SaveObject
                     {
@@ -55,7 +55,7 @@ namespace CommonLibraryTests
                             },
                             Tension = 0.5
                         },
-                        Type = VectorObjects.Curve
+                        Type = GraphicTypes.Curve
                     }
                 }
             };

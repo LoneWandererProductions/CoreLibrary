@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
-using System.Threading;
-using System.Windows;
 using LightVector;
 using NUnit.Framework;
-using static LightVector.LineObject;
 
 /*
  * COPYRIGHT:   See COPYING in the top level directory
