@@ -354,7 +354,7 @@ namespace LightVector
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>A  Polygon</returns>
-        internal static Polygons CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
+        internal static PolygonObject CreatePolygon(ObjFile objFile, Vector3D translation, int angleX, int angleY,
             int angleZ, int scale, int width, int height)
         {
             var projection = new Projection();
@@ -376,7 +376,7 @@ namespace LightVector
 
             var points = cache.ConvertAll(point => point.ToPoint());
 
-            return new Polygons { Points = points };
+            return new PolygonObject();
         }
 
         /// <summary>

@@ -28,6 +28,15 @@ namespace LightVector
         /// </summary>
         public Vector2 Direction { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tension.
+        /// See BezierCurveFactory for the use
+        /// </summary>
+        /// <value>
+        /// The tension.
+        /// </value>
+        public double Tension { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// Apply transformation method (scaling, rotation, etc.)
@@ -44,7 +53,7 @@ namespace LightVector
                     break;
                 case RotateTransform rotate:
                     // Rotate the direction vector
-                    float angleRad = (float)(rotate.Angle * (Math.PI / 180));
+                    var angleRad = (float)(rotate.Angle * (Math.PI / 180));
                     Direction = Vector2.Transform(Direction, Matrix3x2.CreateRotation(angleRad));
                     break;
             }

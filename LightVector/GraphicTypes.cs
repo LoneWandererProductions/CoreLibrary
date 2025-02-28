@@ -30,6 +30,21 @@ namespace LightVector
         /// <summary>
         ///     The curve
         /// </summary>
-        Curve = 2
+        Curve = 2,
+
+        /// <summary>
+        /// The polygon
+        /// </summary>
+        Polygon = 3,
+
+        /// <summary>
+        /// The circle
+        /// </summary>
+        Circle = 4,
+
+        /// <summary>
+        /// The oval
+        /// </summary>
+        Oval = 5
     }
 }

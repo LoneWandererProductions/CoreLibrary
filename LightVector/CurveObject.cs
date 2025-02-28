@@ -41,25 +41,29 @@ namespace LightVector
         /// <param name="transformation">The transformation to apply (scale, rotate, translate).</param>
         public override void ApplyTransformation(Transform transformation)
         {
-            for (int i = 0; i < Vectors.Count; i++)
+            for (var i = 0; i < Vectors.Count; i++)
             {
-                if (transformation is ScaleTransform scale)
+                switch (transformation)
                 {
-                    // Apply scaling transformation to each vector
-                    Vectors[i] = new Vector2(Vectors[i].X * (float)scale.ScaleX, Vectors[i].Y * (float)scale.ScaleY);
-                }
-                else if (transformation is RotateTransform rotate)
-                {
-                    // Apply rotation transformation to each vector
-                    Vectors[i] = RotateVector(Vectors[i], rotate.Angle);
-                }
-                else if (transformation is TranslateTransform translate)
-                {
-                    // Translation involves modifying the vector's position (x and y) directly
-                    Vectors[i] = new Vector2(Vectors[i].X + (float)translate.X, Vectors[i].Y + (float)translate.Y);
+                    case ScaleTransform scale:
+                        Vectors[i] = new Vector2(Vectors[i].X * scale.ScaleX, Vectors[i].Y * scale.ScaleY);
+                        break;
+                    case RotateTransform rotate:
+                        Vectors[i] = RotateVector(Vectors[i], rotate.Angle);
+                        break;
+                    case TranslateTransform translate:
+                        Vectors[i] = new Vector2(Vectors[i].X + (float)translate.X, Vectors[i].Y + (float)translate.Y);
+                        break;
+                    case ShearTransform shear:
+                        Vectors[i] = new Vector2(
+                            Vectors[i].X + (float)shear.ShearX * Vectors[i].Y,
+                            Vectors[i].Y + (float)shear.ShearY * Vectors[i].X
+                        );
+                        break;
                 }
             }
         }
+
 
         /// <summary>
         ///     Rotate a vector by a specified angle (in degrees).
@@ -70,15 +74,15 @@ namespace LightVector
         private Vector2 RotateVector(Vector2 vector, double angle)
         {
             // Convert angle to radians
-            double angleRad = angle * (Math.PI / 180);
+            var angleRad = angle * (Math.PI / 180);
 
             // Use the rotation matrix to rotate the vector
-            float cosTheta = (float)Math.Cos(angleRad);
-            float sinTheta = (float)Math.Sin(angleRad);
+            var cosTheta = (float)Math.Cos(angleRad);
+            var sinTheta = (float)Math.Sin(angleRad);
 
             // Rotate the vector
-            float xNew = vector.X * cosTheta - vector.Y * sinTheta;
-            float yNew = vector.X * sinTheta + vector.Y * cosTheta;
+            var xNew = vector.X * cosTheta - vector.Y * sinTheta;
+            var yNew = vector.X * sinTheta + vector.Y * cosTheta;
 
             return new Vector2(xNew, yNew);
         }
