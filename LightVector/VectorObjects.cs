@@ -78,7 +78,7 @@ namespace LightVector
     ///     The line object class.
     /// </summary>
     [Serializable]
-    public sealed class LineObject
+    public sealed class LineObject : GraphicObject
     {
         /// <summary>
         ///     Gets or sets the start point.
@@ -95,7 +95,7 @@ namespace LightVector
     ///     The curve object class.
     /// </summary>
     [Serializable]
-    public sealed class CurveObject
+    public sealed class CurveObject : GraphicObject
     {
         /// <summary>
         ///     Gets or sets the points.
@@ -155,6 +155,16 @@ namespace LightVector
         ///     The width.
         /// </value>
         public int Width { get; init; }
+
+        /// <summary>
+        /// Gets the height.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
+        public int Height { get; init; }
+
+        //TODO add more stuff
     }
 
     /// <summary>
