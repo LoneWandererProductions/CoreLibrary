@@ -17,7 +17,7 @@ namespace LightVector
     /// <summary>
     ///     The line vector class.
     /// </summary>
-    public sealed class LineVector
+    public sealed class GraphicLine
     {
         public int MasterId { get; init; }
 

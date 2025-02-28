@@ -13,10 +13,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Numerics; // Use System.Numerics.Vector2 for 2D vectors
+using System.Numerics;
 
 namespace LightVector
 {
+    /// <inheritdoc />
     /// <summary>
     ///     The curve object class.
     /// </summary>
@@ -33,6 +34,7 @@ namespace LightVector
         /// </summary>
         public double Tension { get; init; } = 1.0;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Applies a transformation to each vector in the curve object.
         /// </summary>

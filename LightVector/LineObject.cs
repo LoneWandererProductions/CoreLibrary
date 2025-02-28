@@ -12,10 +12,11 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
-using System.Numerics;  // Use System.Numerics for cross-platform math and geometry
+using System.Numerics;
 
 namespace LightVector
 {
+    /// <inheritdoc />
     /// <summary>
     ///     The line object class.
     /// </summary>
@@ -23,37 +24,29 @@ namespace LightVector
     public sealed class LineObject : GraphicObject
     {
         /// <summary>
-        ///     Gets or sets the start point.
+        /// The direction vector from the start point to the end point.
         /// </summary>
-        public Vector2 StartPoint { get; set; }
+        public Vector2 Direction { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the end point.
+        /// Apply transformation method (scaling, rotation, etc.)
+        /// Each subclass will override this method to implement specific transformation logic
         /// </summary>
-        public Vector2 EndPoint { get; set; }
-
+        /// <param name="transformation">The transformation.</param>
         public override void ApplyTransformation(Transform transformation)
         {
-            if (transformation is ScaleTransform scale)
+            switch (transformation)
             {
-                // Apply scaling transformation using Vector2
-                StartPoint *= new Vector2(scale.ScaleX, scale.ScaleY);
-                EndPoint *= new Vector2(scale.ScaleX, scale.ScaleY);
-            }
-            else if (transformation is RotateTransform rotate)
-            {
-                // Apply rotation transformation using Matrix3x2
-                float angleRad = (float)(rotate.Angle * (Math.PI / 180));  // Convert to radians
-                var rotationMatrix = Matrix3x2.CreateRotation(angleRad);
-
-                StartPoint = Vector2.Transform(StartPoint, rotationMatrix);
-                EndPoint = Vector2.Transform(EndPoint, rotationMatrix);
-            }
-            else if (transformation is TranslateTransform translate)
-            {
-                // Apply translation transformation using Vector2
-                StartPoint += new Vector2((float)translate.X, (float)translate.Y);
-                EndPoint += new Vector2((float)translate.X, (float)translate.Y);
+                case ScaleTransform scale:
+                    // Scale the direction vector
+                    Direction *= new Vector2(scale.ScaleX, scale.ScaleY);
+                    break;
+                case RotateTransform rotate:
+                    // Rotate the direction vector
+                    float angleRad = (float)(rotate.Angle * (Math.PI / 180));
+                    Direction = Vector2.Transform(Direction, Matrix3x2.CreateRotation(angleRad));
+                    break;
             }
         }
     }

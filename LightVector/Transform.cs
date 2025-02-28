@@ -5,7 +5,7 @@
         // Base class for all transformations (e.g., scaling, rotating, translating)
     }
 
-    public class ScaleTransform : Transform
+    public sealed class ScaleTransform : Transform
     {
         public float ScaleX { get; }
         public float ScaleY { get; }
@@ -17,7 +17,7 @@
         }
     }
 
-    public class RotateTransform : Transform
+    public sealed class RotateTransform : Transform
     {
         public double Angle { get; }
 
@@ -27,7 +27,7 @@
         }
     }
 
-    public class TranslateTransform : Transform
+    public sealed class TranslateTransform : Transform
     {
         public double X { get; }
         public double Y { get; }

@@ -12,8 +12,6 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
-using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
@@ -91,85 +89,4 @@ namespace LightVector
             // Each subclass will override this method to implement specific transformation logic
         }
     }
-
-        /// <summary>
-        ///     The polygon object class.
-        /// </summary>
-        [Serializable]
-        public sealed class Polygons
-        {
-            /// <summary>
-            ///     Gets or sets the points.
-            /// </summary>
-            public List<Point> Points { get; set; } = new();
-        }
-
-        /// <summary>
-        ///     Save Container
-        /// </summary>
-        [XmlRoot(ElementName = "Element")]
-        public sealed class SaveContainer
-        {
-            /// <summary>
-            ///     Gets or sets the objects.
-            /// </summary>
-            /// <value>
-            ///     The objects.
-            /// </value>
-            public List<SaveObject> Objects { get; init; } = new();
-
-            /// <summary>
-            ///     Gets or sets the width.
-            /// </summary>
-            /// <value>
-            ///     The width.
-            /// </value>
-            public int Width { get; init; }
-
-            /// <summary>
-            /// Gets the height.
-            /// </summary>
-            /// <value>
-            /// The height.
-            /// </value>
-            public int Height { get; init; }
-
-            //TODO add more stuff
-        }
-
-        /// <summary>
-        /// The save object class.
-        /// Save in a Dictionary, Id will be the Key and forwarder for the ParentId
-        /// </summary>
-        [Serializable]
-        [XmlInclude(typeof(LineObject))]
-        [XmlInclude(typeof(CurveObject))]
-        [XmlInclude(typeof(Polygons))]
-        public sealed class SaveObject
-        {
-            /// <summary>
-            /// Unique identifier for the object.
-            /// </summary>
-            public int Id { get; set; }
-
-            /// <summary>
-            /// Layer number, for sorting in rendering.
-            /// </summary>
-            public int Layer { get; set; }
-
-            /// <summary>
-            /// Reference starting point for object positioning.
-            /// </summary>
-            public Point StartCoordinates { get; set; }
-
-            /// <summary>
-            /// Graphic object (Line, Curve, Polygon).
-            /// </summary>
-            public GraphicObject Graphic { get; set; }
-
-            /// <summary>
-            /// Type of graphic object (Line, Curve, etc.).
-            /// </summary>
-            public GraphicTypes Type { get; set; }
-        }
-    }
+}

@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using DataFormatter;
@@ -237,7 +238,7 @@ namespace LightVector
             var columnX = (int)((vector.ColumnX * cos) - (vector.RowY * sin));
             var rowY = (int)((vector.ColumnX * sin) + (vector.RowY * cos));
 
-            var transVector = new LineVector
+            var transVector = new GraphicLine
             {
                 ColumnX = columnX,
                 RowY = rowY,
@@ -381,18 +382,18 @@ namespace LightVector
         /// <summary>
         ///     The generate line.
         /// </summary>
-        /// <param name="mVector">The mVector.</param>
+        /// <param name="line">The mVector.</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>The <see cref="LineObject" />.</returns>
-        private static LineObject GenerateLine(LineVector mVector, int width)
+        private static LineObject GenerateLine(GraphicLine line, int width)
         {
-            var start = IdToPoint(mVector.MasterId, width);
+            var start = IdToPoint(line.MasterId, width);
 
-            var end = new Vector2 { X = start.X + mVector.ColumnX, Y = start.Y + mVector.RowY };
+            var end = new Vector2 { X = start.X + line.ColumnX, Y = start.Y + line.RowY };
 
             return new LineObject
             {
-                StartPoint = start, EndPoint = end
+                Direction = end
                 //Fill = mVector.Fill,
                 //Stroke = mVector.Stroke,
                 //StrokeLineJoin = mVector.StrokeLineJoin,
@@ -405,19 +406,11 @@ namespace LightVector
         /// </summary>
         /// <param name="line">Line Object</param>
         /// <param name="width">length of the Picture</param>
-        /// <returns>The <see cref="LineVector" />.</returns>
-        private static LineVector GenerateLine(LineObject line, int width)
+        /// <returns>The <see cref="GraphicLine" />.</returns>
+        private static GraphicLine GenerateLine(LineObject line, int width)
         {
-            return new LineVector
-            {
-                MasterId = CalculateId(line.StartPoint, width),
-                ColumnX = (int)(line.EndPoint.X - line.StartPoint.X),
-                RowY = (int)(line.EndPoint.Y - line.StartPoint.Y)
-                //Fill = line.Fill,
-                //Stroke = line.Stroke,
-                //StrokeLineJoin = line.StrokeLineJoin,
-                //Thickness = line.Thickness
-            };
+            //TODO implement and separate
+            return new GraphicLine();
         }
 
         /// <summary>

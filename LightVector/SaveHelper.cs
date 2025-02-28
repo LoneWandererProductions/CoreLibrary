@@ -28,7 +28,7 @@ namespace LightVector
             var directory = Path.GetDirectoryName(path);
             if (!Directory.Exists(directory) && directory != null)
             {
-                Directory.CreateDirectory(directory);
+                _ = Directory.CreateDirectory(directory);
             }
 
             //check if file is empty, if empty return
