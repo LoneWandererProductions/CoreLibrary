@@ -8,13 +8,24 @@ namespace LightVector
     /// <summary>
     ///     The polygon object class.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public sealed class PolygonObject : GraphicObject
     {
         /// <summary>
         /// The list of vertices for the polygon.
         /// </summary>
         public List<Vector2> Vertices { get; set; } = new();
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
+        {
+            return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -43,7 +54,13 @@ namespace LightVector
             }
         }
 
-        private Vector2 RotateVector(Vector2 vector, double angle)
+        /// <summary>
+        /// Rotates the vector.
+        /// </summary>
+        /// <param name="vector">The vector.</param>
+        /// <param name="angle">The angle.</param>
+        /// <returns>Rotated Vector</returns>
+        private static Vector2 RotateVector(Vector2 vector, double angle)
         {
             // Convert angle to radians
             var angleRad = angle * (Math.PI / 180);

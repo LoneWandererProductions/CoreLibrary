@@ -15,7 +15,7 @@ namespace LightVector
     /// <summary>
     ///     Represents an oval (ellipse) object.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public sealed class OvalObject : GraphicObject
     {
         /// <summary>
@@ -32,6 +32,17 @@ namespace LightVector
         /// The vertical radius of the oval.
         /// </summary>
         public float RadiusY { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
+        {
+            return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+        }
 
         /// <inheritdoc />
         /// <summary>

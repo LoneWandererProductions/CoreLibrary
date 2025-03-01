@@ -1,10 +1,22 @@
-﻿namespace LightVector
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     LightVector
+ * FILE:        LightVector/Transform.cs
+ * PURPOSE:     Basic Transform Class 
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+namespace LightVector
 {
     public class Transform
     {
         // Base class for all transformations (e.g., scaling, rotating, translating)
     }
 
+    /// <summary>
+    /// Transform Scale
+    /// </summary>
+    /// <seealso cref="Transform" />
     public sealed class ScaleTransform : Transform
     {
         public float ScaleX { get; }
@@ -22,6 +34,10 @@
         }
     }
 
+    /// <summary>
+    /// Transform Rotate
+    /// </summary>
+    /// <seealso cref="Transform" />
     public sealed class RotateTransform : Transform
     {
         public double Angle { get; }
@@ -30,8 +46,16 @@
         {
             Angle = angle;
         }
+
+        public RotateTransform()
+        {
+        }
     }
 
+    /// <summary>
+    /// Transform Translate
+    /// </summary>
+    /// <seealso cref="Transform" />
     public sealed class TranslateTransform : Transform
     {
         public double X { get; }

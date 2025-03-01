@@ -20,7 +20,7 @@ namespace LightVector
     /// <summary>
     ///     The line object class.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public sealed class LineObject : GraphicObject
     {
         /// <summary>
@@ -36,6 +36,17 @@ namespace LightVector
         /// The tension.
         /// </value>
         public double Tension { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
+        {
+            return transformation is ScaleTransform or RotateTransform;
+        }
 
         /// <inheritdoc />
         /// <summary>

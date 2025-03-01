@@ -14,74 +14,69 @@ using System.Xml.Serialization;
 namespace LightVector
 {
     /// <summary>
-    ///     Basic Serializer
+    ///     Helper class for saving and loading XML files
     /// </summary>
     internal static class SaveHelper
     {
         /// <summary>
-        ///     Generic Serializer Of Objects
+        /// Serializes an object to XML and saves it to a file.
         /// </summary>
-        /// <param name="serializeObject">Target Object</param>
-        /// <param name="path">Target Path with extension</param>
-        internal static void XmlSerializerObject<T>(T serializeObject, string path)
+        public static void XmlSerializerObject<T>(T serializeObject, string path)
         {
-            var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory) && directory != null)
-            {
-                _ = Directory.CreateDirectory(directory);
-            }
-
-            //check if file is empty, if empty return
-            if (serializeObject.Equals(null))
+            if (serializeObject is null)
             {
                 Trace.WriteLine(WvgResources.ErrorSerializerEmpty + path);
                 File.Delete(path);
                 return;
             }
 
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             try
             {
-                var serializer = new XmlSerializer(serializeObject.GetType(),
-                    new[] { typeof(LineObject), typeof(CurveObject) });
-                using var tr = new StreamWriter(path);
-                serializer.Serialize(tr, serializeObject);
+                var serializer = new XmlSerializer(typeof(T));
+                using var writer = new StreamWriter(path);
+                serializer.Serialize(writer, serializeObject);
             }
             catch (Exception error)
             {
-                Trace.WriteLine(string.Concat(WvgResources.ErrorSerializer, error));
+                Trace.WriteLine(WvgResources.ErrorSerializer + error);
             }
         }
 
         /// <summary>
-        ///     DeSerializes Object Type of: MapObject
+        /// Deserializes an XML file into an object of type T.
         /// </summary>
-        /// <param name="path">Target Path</param>
-        internal static SaveContainer XmlDeSerializerSaveContainer(string path)
+        public static T XmlDeSerializerObject<T>(string path) where T : new()
         {
             if (!File.Exists(path))
             {
                 Trace.WriteLine(WvgResources.ErrorPath);
-                return new SaveContainer();
+                return new T();
             }
 
-            //check if file is empty, if empty return a new empty one
             if (new FileInfo(path).Length == 0)
             {
                 Trace.WriteLine(WvgResources.ErrorFileEmpty + path);
-                return new SaveContainer();
+                return new T();
             }
 
             try
             {
-                var serializer = new XmlSerializer(typeof(SaveContainer));
-                using Stream tr = File.OpenRead(path);
-                return (SaveContainer)serializer.Deserialize(tr);
+                var serializer = new XmlSerializer(typeof(T));
+                using Stream reader = File.OpenRead(path);
+                return (T)serializer.Deserialize(reader);
             }
             catch (Exception error)
             {
-                Trace.WriteLine(string.Concat(WvgResources.ErrorDeSerializer, error));
-                return new SaveContainer();
+                Trace.WriteLine(WvgResources.ErrorDeSerializer + error);
+                return new T();
             }
         }
     }
 }
+

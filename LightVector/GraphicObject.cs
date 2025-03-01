@@ -12,6 +12,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
@@ -23,7 +24,7 @@ namespace LightVector
     /// </summary>
     [XmlInclude(typeof(LineObject))]
     [XmlInclude(typeof(CurveObject))]
-    [Serializable]
+    [System.Serializable]
     public abstract class GraphicObject
     {
         /// <summary>
@@ -65,19 +66,45 @@ namespace LightVector
             set => Fill = string.IsNullOrEmpty(value) ? null : new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
         }
 
+        [XmlIgnore]
+        public Dictionary<string, object> OptionalAttributes { get; set; } = new();
+
+        // For XML serialization
+        [XmlArray("OptionalAttributes")]
+        [XmlArrayItem("Attribute")]
+        public List<SerializableAttribute> SerializableAttributes
+        {
+            get
+            {
+                var list = new List<SerializableAttribute>();
+                foreach (var kvp in OptionalAttributes)
+                {
+                    list.Add(new SerializableAttribute { Key = kvp.Key, Value = kvp.Value?.ToString() });
+                }
+                return list;
+            }
+            set
+            {
+                OptionalAttributes.Clear();
+                if (value != null)
+                {
+                    foreach (var attr in value)
+                    {
+                        OptionalAttributes[attr.Key] = attr.Value;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         ///     Optional
         /// </summary>
         public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
 
         /// <summary>
-        /// Gets or sets the index of the z.
+        /// Checks if this object supports the given transformation.
         /// </summary>
-        /// <value>
-        /// The index of the z.
-        /// </value>
-        public int ZIndex { get; set; } = 0;
-
+        public abstract bool SupportsTransformation(Transform transformation);
 
         /// <summary>
         /// Apply transformation method (scaling, rotation, etc.)
@@ -87,6 +114,15 @@ namespace LightVector
         public virtual void ApplyTransformation(Transform transformation)
         {
             // Each subclass will override this method to implement specific transformation logic
+        }
+
+        public sealed class SerializableAttribute
+        {
+            [XmlAttribute(nameof(Key))]
+            public string Key { get; set; }
+
+            [XmlAttribute(nameof(Value))]
+            public string Value { get; set; }
         }
     }
 }

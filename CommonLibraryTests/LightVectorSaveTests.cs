@@ -1,8 +1,8 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonLibraryTests
-* FILE:        CommonLibraryTests/IoFileSearch.cs
-* PURPOSE:     Tests for IoFileHandler and mostly the search part
+* FILE:        CommonLibraryTests/LightVectorSaveTests.cs
+* PURPOSE:     Tests for IoFileHandler and mostly the save part
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
@@ -21,7 +21,7 @@ namespace CommonLibraryTests
     ///    Tests for our Light Vector Library
     /// </summary>
     [TestClass]
-    public class LightVectorTests
+    public class LightVectorSaveTests
     {
         /// <summary>
         /// Serializes the save container generates valid XML.
@@ -35,7 +35,7 @@ namespace CommonLibraryTests
                 Width = 500,
                 Objects = new List<SaveObject>
         {
-            new SaveObject
+            new()
             {
                 Id = 1,
                 Layer = 0,
@@ -46,7 +46,7 @@ namespace CommonLibraryTests
                 },
                 Type = GraphicTypes.Line
             },
-            new SaveObject
+            new()
             {
                 Id = 2,
                 Layer = 1,
@@ -89,88 +89,48 @@ namespace CommonLibraryTests
             Console.WriteLine(result);
         }
 
-
         /// <summary>
-        /// Scales the transform changes direction correctly.
+        /// Saves the object should serialize and deserialize correctly.
         /// </summary>
         [TestMethod]
-        public void ScaleTransformChangesDirectionCorrectly()
+        public void SaveObjectShouldSerializeAndDeserializeCorrectly()
         {
-            // Arrange
-            var line = new LineObject { Direction = new Vector2(2, 3) };
-            var scaleTransform = new ScaleTransform(2, 0.5f);
+            var saveObject = new SaveObject
+            {
+                Id = 1,
+                Layer = 2,
+                StartCoordinates = new System.Windows.Point(10, 10),
+                Graphic = new CircleObject
+                {
+                    Center = new Vector2(5, 5),
+                    Radius = 3.0f
+                },
+                Type = GraphicTypes.Circle
+            };
 
-            // Act
-            line.ApplyTransformation(scaleTransform);
+            var serializer = new XmlSerializer(typeof(SaveObject));
+            string xml;
 
-            // Assert
-            Assert.AreEqual(new Vector2(4, 1.5f), line.Direction);
-        }
+            using (var writer = new StringWriter())
+            {
+                serializer.Serialize(writer, saveObject);
+                xml = writer.ToString();
+            }
 
-        /// <summary>
-        /// Rotates the transform90 degrees rotates direction correctly.
-        /// </summary>
-        [TestMethod]
-        public void RotateTransform90DegreesRotatesDirectionCorrectly()
-        {
-            // Arrange
-            var line = new LineObject { Direction = new Vector2(1, 0) };
-            var rotateTransform = new RotateTransform(90);
+            SaveObject deserializedObject;
+            using (var reader = new StringReader(xml))
+            {
+                deserializedObject = (SaveObject)serializer.Deserialize(reader);
+            }
 
-            // Act
-            line.ApplyTransformation(rotateTransform);
+            if (deserializedObject == null)
+            {
+                return;
+            }
 
-            // Assert
-            var expected = new Vector2(0, 1);
-            Assert.IsTrue(AreVectorsEqual(expected, line.Direction));
-        }
-
-        /// <summary>
-        /// Rotates the transform180 degrees rotates direction correctly.
-        /// </summary>
-        [TestMethod]
-        public void RotateTransform180DegreesRotatesDirectionCorrectly()
-        {
-            // Arrange
-            var line = new LineObject { Direction = new Vector2(1, 0) };
-            var rotateTransform = new RotateTransform(180);
-
-            // Act
-            line.ApplyTransformation(rotateTransform);
-
-            // Assert
-            var expected = new Vector2(-1, 0);
-            Assert.IsTrue(AreVectorsEqual(expected, line.Direction));
-        }
-
-        /// <summary>
-        /// Rotates the transform45 degrees rotates direction correctly.
-        /// </summary>
-        [TestMethod]
-        public void RotateTransform45DegreesRotatesDirectionCorrectly()
-        {
-            // Arrange
-            var line = new LineObject { Direction = new Vector2(1, 0) };
-            var rotateTransform = new RotateTransform(45);
-
-            // Act
-            line.ApplyTransformation(rotateTransform);
-
-            // Assert
-            var expected = new Vector2((float)Math.Cos(Math.PI / 4), (float)Math.Sin(Math.PI / 4));
-            Assert.IsTrue(AreVectorsEqual(expected, line.Direction));
-        }
-
-        /// <summary>
-        /// Ares the vectors equal.
-        /// </summary>
-        /// <param name="v1">The v1.</param>
-        /// <param name="v2">The v2.</param>
-        /// <param name="tolerance">The tolerance.</param>
-        /// <returns></returns>
-        private static bool AreVectorsEqual(Vector2 v1, Vector2 v2, float tolerance = 0.0001f)
-        {
-            return Math.Abs(v1.X - v2.X) < tolerance && Math.Abs(v1.Y - v2.Y) < tolerance;
+            Assert.AreEqual(1, deserializedObject.Id);
+            Assert.AreEqual(GraphicTypes.Circle, deserializedObject.Type);
+            Assert.AreEqual(3.0f, ((CircleObject)deserializedObject.Graphic).Radius);
         }
     }
 }

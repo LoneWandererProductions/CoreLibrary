@@ -15,7 +15,7 @@ namespace LightVector
     /// <summary>
     ///     Represents a circle object.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public sealed class CircleObject : GraphicObject
     {
         /// <summary>
@@ -27,6 +27,17 @@ namespace LightVector
         /// The radius of the circle.
         /// </summary>
         public float Radius { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
+        {
+            return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+        }
 
         /// <inheritdoc />
         /// <summary>

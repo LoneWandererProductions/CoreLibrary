@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     LightVector
+ * FILE:        LightVector/SaveObject.cs
+ * PURPOSE:     Container that is needed to save our data in an xml format.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -9,11 +17,11 @@ namespace LightVector
     /// Save in a Dictionary, Id will be the Key and forwarder for the ParentId.
     /// </summary>
     [Serializable]
-    [XmlInclude(typeof(LineObject))]        // Include for LineObject
-    [XmlInclude(typeof(CurveObject))]       // Include for CurveObject
-    [XmlInclude(typeof(PolygonObject))]     // Include for PolygonObject
-    [XmlInclude(typeof(CircleObject))]      // Include for CircleObject
-    [XmlInclude(typeof(OvalObject))]        // Include for OvalObject
+    [XmlInclude(typeof(LineObject))] // Include for LineObject
+    [XmlInclude(typeof(CurveObject))] // Include for CurveObject
+    [XmlInclude(typeof(PolygonObject))] // Include for PolygonObject
+    [XmlInclude(typeof(CircleObject))] // Include for CircleObject
+    [XmlInclude(typeof(OvalObject))] // Include for OvalObject
     public sealed class SaveObject
     {
         /// <summary>

@@ -21,23 +21,6 @@ namespace CommonLibraryGuiTests
     public sealed class VectorInterface
     {
         /// <summary>
-        ///     The width (const). Value: 100.
-        /// </summary>
-        private const int Width = 100;
-
-        private const int Height = 100;
-
-        /// <summary>
-        ///     The Vector Interface.
-        /// </summary>
-        private static Vectors _vector;
-
-        /// <summary>
-        ///     The path
-        /// </summary>
-        private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "test.obj");
-
-        /// <summary>
         ///     Test Increase Length of Vector
         /// </summary>
         [Test]

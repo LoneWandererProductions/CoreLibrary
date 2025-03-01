@@ -21,7 +21,7 @@ namespace LightVector
     /// <summary>
     ///     The curve object class.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public sealed class CurveObject : GraphicObject
     {
         /// <summary>
@@ -33,6 +33,17 @@ namespace LightVector
         ///     Gets or sets the tension.
         /// </summary>
         public double Tension { get; init; } = 1.0;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
+        {
+            return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+        }
 
         /// <inheritdoc />
         /// <summary>
