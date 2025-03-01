@@ -48,12 +48,12 @@ namespace CommonLibraryTests
                         Id = 2,
                         Layer = 1,
                         StartCoordinates = new Point(15, 20),
-                        Graphic = new CurveObject
+                        Graphic = new BezierCurve
                         {
                             Vectors = new List<Vector2> { new(10, 10), new(20, 40), new(50, 50) },
                             Tension = 0.5
                         },
-                        Type = GraphicTypes.Curve
+                        Type = GraphicTypes.BezierCurve
                     }
                 }
             };

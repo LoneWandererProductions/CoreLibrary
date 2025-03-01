@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/CurveObject.cs
- * PURPOSE:     Hold the Curve Object
+ * FILE:        LightVector/BezierCurve.cs
+ * PURPOSE:     Hold the CurvBecier e Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
  */
@@ -22,7 +22,7 @@ namespace LightVector
     ///     The curve object class.
     /// </summary>
     [System.Serializable]
-    public sealed class CurveObject : GraphicObject
+    public sealed class BezierCurve : GraphicObject
     {
         /// <summary>
         ///     Gets or sets the vectors (Vector2).
@@ -75,14 +75,13 @@ namespace LightVector
             }
         }
 
-
         /// <summary>
         ///     Rotate a vector by a specified angle (in degrees).
         /// </summary>
         /// <param name="vector">The vector to rotate.</param>
         /// <param name="angle">The angle of rotation in degrees.</param>
         /// <returns>The rotated vector.</returns>
-        private Vector2 RotateVector(Vector2 vector, double angle)
+        private static Vector2 RotateVector(Vector2 vector, double angle)
         {
             // Convert angle to radians
             var angleRad = angle * (Math.PI / 180);

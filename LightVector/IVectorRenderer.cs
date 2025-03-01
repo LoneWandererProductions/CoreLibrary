@@ -8,11 +8,15 @@
 
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System.Windows.Media;
 
 namespace LightVector
 {
+    /// <summary>
+    /// Interface for Vector Render
+    /// </summary>
     public interface IVectorRenderer
     {
         /// <summary>

@@ -63,7 +63,7 @@ namespace LightVector
             }
         }
 
-        private Vector2 RotateVector(Vector2 vector, double angle)
+        private static Vector2 RotateVector(Vector2 vector, double angle)
         {
             // Convert angle to radians
             var angleRad = angle * (Math.PI / 180);

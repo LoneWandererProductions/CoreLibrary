@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     LightVector
+ * FILE:        LightVector/PolygonObject.cs
+ * PURPOSE:     Generic Polygon Object
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 

@@ -28,9 +28,9 @@ namespace LightVector
         Line = 1,
 
         /// <summary>
-        ///     The curve
+        ///     The bezier curve
         /// </summary>
-        Curve = 2,
+        BezierCurve = 2,
 
         /// <summary>
         ///     The polygon

@@ -12,7 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Mathematics;
+using System.Numerics;
 
 namespace LightVector
 {
@@ -27,7 +27,7 @@ namespace LightVector
         /// <param name="points">The vector points to define the curve.</param>
         /// <param name="tension">The tension factor to adjust the curve's shape.</param>
         /// <returns>The generated <see cref="Path" /> representing the Bezier curve.</returns>
-        internal static Path CreateBezierCurve(List<Vector2D> points, double tension)
+        internal static Path CreateBezierCurve(List<Vector2> points, double tension)
         {
             if (points == null || points.Count < 2)
             {
@@ -73,7 +73,7 @@ namespace LightVector
         /// <param name="points">The input vector points.</param>
         /// <param name="tension">The tension factor to modify the curve.</param>
         /// <returns>The calculated control points for the curve.</returns>
-        private static IEnumerable<Point> GenerateCurvePoints(IReadOnlyList<Vector2D> points, double tension)
+        private static IEnumerable<Point> GenerateCurvePoints(IReadOnlyList<Vector2> points, double tension)
         {
             if (points.Count < 2)
             {

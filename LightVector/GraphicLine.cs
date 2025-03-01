@@ -19,6 +19,12 @@ namespace LightVector
     /// </summary>
     public sealed class GraphicLine
     {
+        /// <summary>
+        /// Gets the master identifier.
+        /// </summary>
+        /// <value>
+        /// The master identifier.
+        /// </value>
         public int MasterId { get; init; }
 
         /// <summary>

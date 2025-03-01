@@ -18,7 +18,7 @@ namespace LightVector
     /// </summary>
     [Serializable]
     [XmlInclude(typeof(LineObject))] // Include for LineObject
-    [XmlInclude(typeof(CurveObject))] // Include for CurveObject
+    [XmlInclude(typeof(BezierCurve))] // Include for CurveObject
     [XmlInclude(typeof(PolygonObject))] // Include for PolygonObject
     [XmlInclude(typeof(CircleObject))] // Include for CircleObject
     [XmlInclude(typeof(OvalObject))] // Include for OvalObject

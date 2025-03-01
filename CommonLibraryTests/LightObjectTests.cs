@@ -27,7 +27,7 @@ namespace CommonLibraryTests
         public void ApplyScaleTransformationShouldScaleVectorsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
+            var curve = new BezierCurve { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var scaleTransform = new ScaleTransform(2, 3);
 
@@ -46,7 +46,7 @@ namespace CommonLibraryTests
         public void ApplyRotateTransformationShouldRotateVectorsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject
+            var curve = new BezierCurve
             {
                 Vectors = new List<Vector2>
                 {
@@ -75,7 +75,7 @@ namespace CommonLibraryTests
         public void ApplyTranslateTransformationShouldTranslateVectorsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
+            var curve = new BezierCurve { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var translateTransform = new TranslateTransform(5, -3);
 
@@ -94,7 +94,7 @@ namespace CommonLibraryTests
         public void ApplyMultipleTransformationsShouldApplyAllTransformationsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
+            var curve = new BezierCurve { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var scaleTransform = new ScaleTransform(2, 3); // First scale
             var rotateTransform = new RotateTransform(90); // Then rotate 90 degrees
@@ -118,7 +118,7 @@ namespace CommonLibraryTests
         public void ApplyEmptyTransformationShouldNotChangeVectors()
         {
             // Arrange
-            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
+            var curve = new BezierCurve { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var emptyTransform = new Transform(); // Assuming you have an empty transformation class
 
@@ -137,7 +137,7 @@ namespace CommonLibraryTests
         public void ApplyMultipleScalesShouldCorrectlyApplyEachScale()
         {
             // Arrange
-            var curve = new CurveObject
+            var curve = new BezierCurve
             {
                 Vectors = new List<Vector2>
                 {

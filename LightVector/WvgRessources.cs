@@ -14,21 +14,6 @@ namespace LightVector
     internal static class WvgResources
     {
         /// <summary>
-        ///     The error empty vector list (const). Value: @"Vectors were empty".
-        /// </summary>
-        internal const string ErrorEmptyVectorList = "Vectors were empty";
-
-        /// <summary>
-        ///     The error zero division (const). Value: @"Division though zero".
-        /// </summary>
-        internal const string ErrorZeroDivision = "Division though zero";
-
-        /// <summary>
-        ///     The error parallel threading (const). Value: @"Unhandled Exception while Threading: ".
-        /// </summary>
-        internal const string ErrorParallelThreading = "Unhandled Exception while Threading: ";
-
-        /// <summary>
         ///     The error path (const). Value: @"Empty Path provided".
         /// </summary>
         internal const string ErrorPath = "Empty Path provided";

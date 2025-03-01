@@ -22,7 +22,7 @@ namespace LightVector
     ///     Contains all the basic Options
     /// </summary>
     [XmlInclude(typeof(LineObject))]
-    [XmlInclude(typeof(CurveObject))]
+    [XmlInclude(typeof(BezierCurve))]
     [System.Serializable]
     public abstract class GraphicObject
     {
@@ -117,10 +117,25 @@ namespace LightVector
             // Each subclass will override this method to implement specific transformation logic
         }
 
+        /// <summary>
+        /// Helper for Serialization of Dictionaries
+        /// </summary>
         public sealed class SerializableAttribute
         {
+            /// <summary>
+            /// Gets or sets the key.
+            /// </summary>
+            /// <value>
+            /// The key.
+            /// </value>
             [XmlAttribute(nameof(Key))] public string Key { get; set; }
 
+            /// <summary>
+            /// Gets or sets the value.
+            /// </summary>
+            /// <value>
+            /// The value.
+            /// </value>
             [XmlAttribute(nameof(Value))] public string Value { get; set; }
         }
     }

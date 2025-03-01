@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     LightVector
+ * FILE:        LightVector/SaveContainer.cs
+ * PURPOSE:     Container that holds some basic Image Informations
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace LightVector
@@ -19,6 +27,7 @@ namespace LightVector
 
         /// <summary>
         ///     Gets or sets the width.
+        ///     For now unused
         /// </summary>
         /// <value>
         ///     The width.
@@ -27,12 +36,11 @@ namespace LightVector
 
         /// <summary>
         ///     Gets the height.
+        ///     For now unused
         /// </summary>
         /// <value>
         ///     The height.
         /// </value>
         public int Height { get; init; }
-
-        //TODO add more stuff
     }
 }

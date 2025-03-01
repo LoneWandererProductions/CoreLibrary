@@ -22,8 +22,21 @@ namespace LightVector
     /// <seealso cref="IGraphicManager" />
     public class GraphicManager : IGraphicManager
     {
+        /// <summary>
+        /// The objects
+        /// </summary>
         private readonly Dictionary<int, SaveObject> _objects = new();
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Adds the object.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="graphic">The graphic.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="startCoordinates">The start coordinates.</param>
+        /// <param name="attributes">The attributes.</param>
+        /// <exception cref="T:System.InvalidOperationException">An object with ID {id} already exists.</exception>
         public void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
             Dictionary<string, object>? attributes = null)
         {
@@ -60,8 +73,8 @@ namespace LightVector
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="transformation">The transformation.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">No object found with ID {id}.</exception>
+        /// <returns>Status of the transformation.</returns>
+        /// <exception cref="KeyNotFoundException">No object found with ID {id}.</exception>
         public bool ApplyTransformation(int id, Transform transformation)
         {
             if (!_objects.ContainsKey(id))
@@ -97,7 +110,7 @@ namespace LightVector
         ///     Removes the object.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns></returns>
+        /// <returns>Status of removal.</returns>
         public bool RemoveObject(int id)
         {
             return _objects.Remove(id);
@@ -109,7 +122,7 @@ namespace LightVector
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="newLayer">The new layer.</param>
-        /// <returns></returns>
+        /// <returns>Status of Update.</returns>
         public bool UpdateObjectLayer(int id, int newLayer)
         {
             if (!_objects.TryGetValue(id, out var obj))
@@ -127,7 +140,7 @@ namespace LightVector
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="newAttributes">The new attributes.</param>
-        /// <returns></returns>
+        /// <returns>Status of Attribute updates.</returns>
         public bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes)
         {
             if (!_objects.TryGetValue(id, out var obj))
@@ -168,12 +181,17 @@ namespace LightVector
             }
         }
 
-        private GraphicTypes GetGraphicType(GraphicObject graphic)
+        /// <summary>
+        /// Gets the type of the graphic.
+        /// </summary>
+        /// <param name="graphic">The graphic.</param>
+        /// <returns>Type of graphic.</returns>
+        private static GraphicTypes GetGraphicType(GraphicObject graphic)
         {
             return graphic switch
             {
                 LineObject => GraphicTypes.Line,
-                CurveObject => GraphicTypes.Curve,
+                BezierCurve => GraphicTypes.BezierCurve,
                 PolygonObject => GraphicTypes.Polygon,
                 CircleObject => GraphicTypes.Circle,
                 OvalObject => GraphicTypes.Oval,
