@@ -48,6 +48,13 @@ namespace LightVector
             return canvas;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Renders to image.
+        /// </summary>
+        /// <returns>
+        /// Converts to a WPF Image
+        /// </returns>
         public ImageSource RenderToImage()
         {
             var canvas = (Canvas)RenderToContainer();
@@ -61,7 +68,7 @@ namespace LightVector
             return renderBitmap;
         }
 
-        private Shape ConvertToWpfObject(SaveObject obj)
+        private static Shape ConvertToWpfObject(SaveObject obj)
         {
             switch (obj.Type)
             {
