@@ -178,8 +178,9 @@ namespace Mathematics
             var sb = new StringBuilder();
             for (var i = 0; i < Vertices.Length; i++)
             {
-                sb.Append(i).Append(MathResources.Separator).Append(Vertices[i].ToString()).Append(Environment.NewLine);
+                sb.Append(i).Append(MathResources.Separator).Append(Vertices[i]).Append(Environment.NewLine);
             }
+
             return sb.ToString();
         }
 
@@ -205,8 +206,16 @@ namespace Mathematics
         /// </returns>
         public static bool operator ==(PolyTriangle first, PolyTriangle second)
         {
-            if (first is null && second is null) return true;
-            if (first is null || second is null) return false;
+            if (first is null && second is null)
+            {
+                return true;
+            }
+
+            if (first is null || second is null)
+            {
+                return false;
+            }
+
             return first.Equals(second);
         }
 

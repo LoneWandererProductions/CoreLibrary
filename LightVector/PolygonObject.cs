@@ -12,13 +12,13 @@ namespace LightVector
     public sealed class PolygonObject : GraphicObject
     {
         /// <summary>
-        /// The list of vertices for the polygon.
+        ///     The list of vertices for the polygon.
         /// </summary>
         public List<Vector2> Vertices { get; set; } = new();
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         /// <param name="transformation"></param>
         /// <returns>If specific transformation is supported</returns>
@@ -29,7 +29,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Apply transformation method (scaling, rotation, etc.) to each vertex of the polygon.
+        ///     Apply transformation method (scaling, rotation, etc.) to each vertex of the polygon.
         /// </summary>
         /// <param name="transformation">The transformation.</param>
         public override void ApplyTransformation(Transform transformation)
@@ -48,14 +48,15 @@ namespace LightVector
                         break;
                     case TranslateTransform translate:
                         // Apply translation transformation to each vertex
-                        Vertices[i] = new Vector2(Vertices[i].X + (float)translate.X, Vertices[i].Y + (float)translate.Y);
+                        Vertices[i] = new Vector2(Vertices[i].X + (float)translate.X,
+                            Vertices[i].Y + (float)translate.Y);
                         break;
                 }
             }
         }
 
         /// <summary>
-        /// Rotates the vector.
+        ///     Rotates the vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
         /// <param name="angle">The angle.</param>
@@ -70,8 +71,8 @@ namespace LightVector
             var sinTheta = (float)Math.Sin(angleRad);
 
             // Rotate the vector
-            var xNew = vector.X * cosTheta - vector.Y * sinTheta;
-            var yNew = vector.X * sinTheta + vector.Y * cosTheta;
+            var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
+            var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
 
             return new Vector2(xNew, yNew);
         }

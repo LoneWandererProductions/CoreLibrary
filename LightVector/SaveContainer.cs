@@ -26,10 +26,10 @@ namespace LightVector
         public int Width { get; init; }
 
         /// <summary>
-        /// Gets the height.
+        ///     Gets the height.
         /// </summary>
         /// <value>
-        /// The height.
+        ///     The height.
         /// </value>
         public int Height { get; init; }
 

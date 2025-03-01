@@ -14,16 +14,13 @@ namespace LightVector
     }
 
     /// <summary>
-    /// Transform Scale
+    ///     Transform Scale
     /// </summary>
     /// <seealso cref="Transform" />
     public sealed class ScaleTransform : Transform
     {
-        public float ScaleX { get; }
-        public float ScaleY { get; }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScaleTransform"/> class.
+        ///     Initializes a new instance of the <see cref="ScaleTransform" /> class.
         /// </summary>
         /// <param name="scaleX">The scale x.</param>
         /// <param name="scaleY">The scale y.</param>
@@ -32,16 +29,17 @@ namespace LightVector
             ScaleX = scaleX;
             ScaleY = scaleY;
         }
+
+        public float ScaleX { get; }
+        public float ScaleY { get; }
     }
 
     /// <summary>
-    /// Transform Rotate
+    ///     Transform Rotate
     /// </summary>
     /// <seealso cref="Transform" />
     public sealed class RotateTransform : Transform
     {
-        public double Angle { get; }
-
         public RotateTransform(double angle)
         {
             Angle = angle;
@@ -50,22 +48,23 @@ namespace LightVector
         public RotateTransform()
         {
         }
+
+        public double Angle { get; }
     }
 
     /// <summary>
-    /// Transform Translate
+    ///     Transform Translate
     /// </summary>
     /// <seealso cref="Transform" />
     public sealed class TranslateTransform : Transform
     {
-        public double X { get; }
-        public double Y { get; }
-
         public TranslateTransform(double x, double y)
         {
             X = x;
             Y = y;
         }
-    }
 
+        public double X { get; }
+        public double Y { get; }
+    }
 }

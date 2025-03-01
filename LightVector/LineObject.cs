@@ -24,22 +24,22 @@ namespace LightVector
     public sealed class LineObject : GraphicObject
     {
         /// <summary>
-        /// The direction vector from the start point to the end point.
+        ///     The direction vector from the start point to the end point.
         /// </summary>
         public Vector2 Direction { get; set; }
 
         /// <summary>
-        /// Gets or sets the tension.
-        /// See BezierCurveFactory for the use
+        ///     Gets or sets the tension.
+        ///     See BezierCurveFactory for the use
         /// </summary>
         /// <value>
-        /// The tension.
+        ///     The tension.
         /// </value>
         public double Tension { get; set; }
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         /// <param name="transformation"></param>
         /// <returns>If specific transformation is supported</returns>
@@ -50,8 +50,8 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Apply transformation method (scaling, rotation, etc.)
-        /// Each subclass will override this method to implement specific transformation logic
+        ///     Apply transformation method (scaling, rotation, etc.)
+        ///     Each subclass will override this method to implement specific transformation logic
         /// </summary>
         /// <param name="transformation">The transformation.</param>
         public override void ApplyTransformation(Transform transformation)

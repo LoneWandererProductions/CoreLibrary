@@ -15,26 +15,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Test various stuff from my vector objects
+    ///     Test various stuff from my vector objects
     /// </summary>
     [TestClass]
     public class LightObjectTests
     {
         /// <summary>
-        /// Applies the scale transformation should scale vectors correctly.
+        ///     Applies the scale transformation should scale vectors correctly.
         /// </summary>
         [TestMethod]
         public void ApplyScaleTransformationShouldScaleVectorsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject
-            {
-                Vectors = new List<Vector2>
-                {
-                    new(1, 2),
-                    new(3, 4)
-                }
-            };
+            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var scaleTransform = new ScaleTransform(2, 3);
 
@@ -47,7 +40,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the rotate transformation should rotate vectors correctly.
+        ///     Applies the rotate transformation should rotate vectors correctly.
         /// </summary>
         [TestMethod]
         public void ApplyRotateTransformationShouldRotateVectorsCorrectly()
@@ -57,7 +50,7 @@ namespace CommonLibraryTests
             {
                 Vectors = new List<Vector2>
                 {
-                    new(1, 0)  // Starting vector (1, 0)
+                    new(1, 0) // Starting vector (1, 0)
                 }
             };
 
@@ -67,7 +60,7 @@ namespace CommonLibraryTests
             curve.ApplyTransformation(rotateTransform);
 
             // Define a small tolerance for floating-point comparison
-            float tolerance = 1e-6f;
+            var tolerance = 1e-6f;
 
             // Assert
             Assert.IsTrue(Math.Abs(curve.Vectors[0].X - 0) < tolerance, "X component not as expected");
@@ -76,20 +69,13 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Applies the translate transformation should translate vectors correctly.
+        ///     Applies the translate transformation should translate vectors correctly.
         /// </summary>
         [TestMethod]
         public void ApplyTranslateTransformationShouldTranslateVectorsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject
-            {
-                Vectors = new List<Vector2>
-                {
-                    new(1, 2),
-                    new(3, 4)
-                }
-            };
+            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var translateTransform = new TranslateTransform(5, -3);
 
@@ -102,20 +88,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the multiple transformations should apply all transformations correctly.
+        ///     Applies the multiple transformations should apply all transformations correctly.
         /// </summary>
         [TestMethod]
         public void ApplyMultipleTransformationsShouldApplyAllTransformationsCorrectly()
         {
             // Arrange
-            var curve = new CurveObject
-            {
-                Vectors = new List<Vector2>
-                {
-                    new(1, 2),
-                    new(3, 4)
-                }
-            };
+            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var scaleTransform = new ScaleTransform(2, 3); // First scale
             var rotateTransform = new RotateTransform(90); // Then rotate 90 degrees
@@ -133,20 +112,13 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Applies the empty transformation should not change vectors.
+        ///     Applies the empty transformation should not change vectors.
         /// </summary>
         [TestMethod]
         public void ApplyEmptyTransformationShouldNotChangeVectors()
         {
             // Arrange
-            var curve = new CurveObject
-            {
-                Vectors = new List<Vector2>
-                {
-                    new(1, 2),
-                    new(3, 4)
-                }
-            };
+            var curve = new CurveObject { Vectors = new List<Vector2> { new(1, 2), new(3, 4) } };
 
             var emptyTransform = new Transform(); // Assuming you have an empty transformation class
 
@@ -159,7 +131,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the multiple scales should correctly apply each scale.
+        ///     Applies the multiple scales should correctly apply each scale.
         /// </summary>
         [TestMethod]
         public void ApplyMultipleScalesShouldCorrectlyApplyEachScale()
@@ -169,7 +141,7 @@ namespace CommonLibraryTests
             {
                 Vectors = new List<Vector2>
                 {
-                    new(3, 3)  // Initial vector
+                    new(3, 3) // Initial vector
                 }
             };
 
@@ -187,20 +159,14 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Polygons the object should initialize with vertices.
+        ///     Polygons the object should initialize with vertices.
         /// </summary>
         [TestMethod]
         public void PolygonObjectShouldInitializeWithVertices()
         {
             var polygon = new PolygonObject
             {
-                Vertices = new List<Vector2>
-                {
-                    new(0, 0),
-                    new(1, 0),
-                    new(1, 1),
-                    new(0, 1)
-                }
+                Vertices = new List<Vector2> { new(0, 0), new(1, 0), new(1, 1), new(0, 1) }
             };
 
             Assert.AreEqual(4, polygon.Vertices.Count);
@@ -208,33 +174,24 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Circles the object should initialize correctly.
+        ///     Circles the object should initialize correctly.
         /// </summary>
         [TestMethod]
         public void CircleObjectShouldInitializeCorrectly()
         {
-            var circle = new CircleObject
-            {
-                Center = new Vector2(5, 5),
-                Radius = 3.0f
-            };
+            var circle = new CircleObject { Center = new Vector2(5, 5), Radius = 3.0f };
 
             Assert.AreEqual(new Vector2(5, 5), circle.Center);
             Assert.AreEqual(3.0f, circle.Radius);
         }
 
         /// <summary>
-        /// Ovals the object should initialize correctly.
+        ///     Ovals the object should initialize correctly.
         /// </summary>
         [TestMethod]
         public void OvalObjectShouldInitializeCorrectly()
         {
-            var oval = new OvalObject
-            {
-                Center = new Vector2(2, 2),
-                RadiusX = 5.0f,
-                RadiusY = 3.0f
-            };
+            var oval = new OvalObject { Center = new Vector2(2, 2), RadiusX = 5.0f, RadiusY = 3.0f };
 
             Assert.AreEqual(new Vector2(2, 2), oval.Center);
             Assert.AreEqual(5.0f, oval.RadiusX);
@@ -242,20 +199,14 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the transformation should scale polygon correctly.
+        ///     Applies the transformation should scale polygon correctly.
         /// </summary>
         [TestMethod]
         public void ApplyTransformationShouldScalePolygonCorrectly()
         {
             var polygon = new PolygonObject
             {
-                Vertices = new List<Vector2>
-                {
-                    new(1, 1),
-                    new(2, 1),
-                    new(2, 2),
-                    new(1, 2)
-                }
+                Vertices = new List<Vector2> { new(1, 1), new(2, 1), new(2, 2), new(1, 2) }
             };
 
             var scaleTransform = new ScaleTransform(2, 2);
@@ -268,16 +219,12 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the transformation should translate circle correctly.
+        ///     Applies the transformation should translate circle correctly.
         /// </summary>
         [TestMethod]
         public void ApplyTransformationShouldTranslateCircleCorrectly()
         {
-            var circle = new CircleObject
-            {
-                Center = new Vector2(5, 5),
-                Radius = 3.0f
-            };
+            var circle = new CircleObject { Center = new Vector2(5, 5), Radius = 3.0f };
 
             var translateTransform = new TranslateTransform(2, -1);
             circle.ApplyTransformation(translateTransform);
@@ -286,17 +233,12 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Applies the transformation should rotate oval correctly.
+        ///     Applies the transformation should rotate oval correctly.
         /// </summary>
         [TestMethod]
         public void ApplyTransformationShouldRotateOvalCorrectly()
         {
-            var oval = new OvalObject
-            {
-                Center = new Vector2(0, 0),
-                RadiusX = 5,
-                RadiusY = 3
-            };
+            var oval = new OvalObject { Center = new Vector2(0, 0), RadiusX = 5, RadiusY = 3 };
 
             var rotateTransform = new RotateTransform(90);
             oval.ApplyTransformation(rotateTransform);
@@ -306,7 +248,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Scales the transform changes direction correctly.
+        ///     Scales the transform changes direction correctly.
         /// </summary>
         [TestMethod]
         public void ScaleTransformChangesDirectionCorrectly()
@@ -323,7 +265,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Rotates the transform90 degrees rotates direction correctly.
+        ///     Rotates the transform90 degrees rotates direction correctly.
         /// </summary>
         [TestMethod]
         public void RotateTransform90DegreesRotatesDirectionCorrectly()
@@ -341,7 +283,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Rotates the transform180 degrees rotates direction correctly.
+        ///     Rotates the transform180 degrees rotates direction correctly.
         /// </summary>
         [TestMethod]
         public void RotateTransform180DegreesRotatesDirectionCorrectly()
@@ -359,7 +301,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Rotates the transform45 degrees rotates direction correctly.
+        ///     Rotates the transform45 degrees rotates direction correctly.
         /// </summary>
         [TestMethod]
         public void RotateTransform45DegreesRotatesDirectionCorrectly()
@@ -377,7 +319,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Ares the vectors equal.
+        ///     Ares the vectors equal.
         /// </summary>
         /// <param name="v1">The v1.</param>
         /// <param name="v2">The v2.</param>
@@ -387,6 +329,5 @@ namespace CommonLibraryTests
         {
             return Math.Abs(v1.X - v2.X) < tolerance && Math.Abs(v1.Y - v2.Y) < tolerance;
         }
-
     }
 }

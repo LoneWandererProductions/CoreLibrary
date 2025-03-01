@@ -19,7 +19,7 @@ namespace LightVector
     internal static class SaveHelper
     {
         /// <summary>
-        /// Serializes an object to XML and saves it to a file.
+        ///     Serializes an object to XML and saves it to a file.
         /// </summary>
         public static void XmlSerializerObject<T>(T serializeObject, string path)
         {
@@ -49,7 +49,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Deserializes an XML file into an object of type T.
+        ///     Deserializes an XML file into an object of type T.
         /// </summary>
         public static T XmlDeSerializerObject<T>(string path) where T : new()
         {
@@ -79,4 +79,3 @@ namespace LightVector
         }
     }
 }
-

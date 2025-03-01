@@ -53,6 +53,7 @@ namespace Mathematics
                         y += signY;
                         error -= dx2;
                     }
+
                     x += signX;
                     error += dy2;
                 }
@@ -69,6 +70,7 @@ namespace Mathematics
                         x += signX;
                         error -= dy2;
                     }
+
                     y += signY;
                     error += dx2;
                 }
@@ -118,11 +120,13 @@ namespace Mathematics
                         y += signY;
                         error1 -= dx2;
                     }
+
                     if (error2 > 0)
                     {
                         z += signZ;
                         error2 -= dx2;
                     }
+
                     x += signX;
                     error1 += dy2;
                     error2 += dz2;
@@ -141,11 +145,13 @@ namespace Mathematics
                         y += signY;
                         error1 -= dz2;
                     }
+
                     if (error2 > 0)
                     {
                         x += signX;
                         error2 -= dz2;
                     }
+
                     z += signZ;
                     error1 += dy2;
                     error2 += dx2;
@@ -164,11 +170,13 @@ namespace Mathematics
                         x += signX;
                         error1 -= dy2;
                     }
+
                     if (error2 > 0)
                     {
                         z += signZ;
                         error2 -= dy2;
                     }
+
                     y += signY;
                     error1 += dx2;
                     error2 += dz2;
@@ -180,4 +188,3 @@ namespace Mathematics
         }
     }
 }
-

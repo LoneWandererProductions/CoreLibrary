@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Generic Vector Tests
+    ///     Generic Vector Tests
     /// </summary>
     [TestClass]
     public class VectorTests
@@ -247,6 +247,5 @@ namespace CommonLibraryTests
             Assert.IsTrue(v1.Y.Equals(1), "Y");
             Assert.IsTrue(v1.Z.Equals(1), "Z");
         }
-
     }
 }

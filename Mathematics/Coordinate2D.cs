@@ -182,17 +182,23 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Calculates the unique identifier (ID) for a coordinate in a 2D grid, given the X and Y coordinates and the grid width.
+        ///     Calculates the unique identifier (ID) for a coordinate in a 2D grid, given the X and Y coordinates and the grid
+        ///     width.
         ///     The method uses a row-major order (X is incremented first, then Y) to generate a linear ID for the coordinate.
         /// </summary>
-        /// <param name="width">The width of the 2D grid, i.e., the number of columns. This is used to calculate the linear ID based on the X and Y coordinates.</param>
+        /// <param name="width">
+        ///     The width of the 2D grid, i.e., the number of columns. This is used to calculate the linear ID
+        ///     based on the X and Y coordinates.
+        /// </param>
         /// <returns>
         ///     The unique identifier (ID) corresponding to the given X and Y coordinates in a 2D grid.
         ///     The ID is calculated using the formula: ID = (Y * width) + X.
         /// </returns>
         /// <remarks>
-        ///     This method assumes that the grid is indexed in row-major order, where each row contains a number of elements equal to the grid's width.
-        ///     The ID starts from 0 for the top-left corner (X = 0, Y = 0) and increases as you move rightward through the rows, then down to the next row.
+        ///     This method assumes that the grid is indexed in row-major order, where each row contains a number of elements equal
+        ///     to the grid's width.
+        ///     The ID starts from 0 for the top-left corner (X = 0, Y = 0) and increases as you move rightward through the rows,
+        ///     then down to the next row.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int CalculateId(int width)
@@ -215,7 +221,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Converts a given identifier (ID) in a 2D grid to its corresponding X-coordinate.
-        ///     The ID is treated as a linear index into a 2D grid, and this method computes the 
+        ///     The ID is treated as a linear index into a 2D grid, and this method computes the
         ///     X-coordinate based on that index and the grid's width.
         /// </summary>
         /// <param name="masterId">The identifier (linear index) of the coordinate in the grid.</param>
@@ -225,7 +231,7 @@ namespace Mathematics
         /// </returns>
         /// <remarks>
         ///     This method uses the modulus operator to "wrap" the identifier into a valid X-coordinate.
-        ///     It assumes that the IDs are assigned in a row-major order, starting at the top-left corner 
+        ///     It assumes that the IDs are assigned in a row-major order, starting at the top-left corner
         ///     and progressing left to right, top to bottom across the grid.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -236,7 +242,7 @@ namespace Mathematics
 
         /// <summary>
         ///     Converts a given identifier (ID) in a 2D grid to its corresponding Y-coordinate.
-        ///     The ID is treated as a linear index into a 2D grid, and this method computes the 
+        ///     The ID is treated as a linear index into a 2D grid, and this method computes the
         ///     Y-coordinate based on that index and the grid's width.
         /// </summary>
         /// <param name="masterId">The identifier (linear index) of the coordinate in the grid.</param>
@@ -247,7 +253,8 @@ namespace Mathematics
         /// <remarks>
         ///     This method uses integer division to calculate the row (Y-coordinate) of the identifier.
         ///     It assumes that the IDs are assigned in a row-major order, where each new row increments the Y-coordinate.
-        ///     For example, if width = 5, the ID 6 would map to the second row (Y = 1), and ID 12 would map to the third row (Y = 2).
+        ///     For example, if width = 5, the ID 6 would map to the second row (Y = 1), and ID 12 would map to the third row (Y =
+        ///     2).
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int IdToY(int masterId, int width)

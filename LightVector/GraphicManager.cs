@@ -8,6 +8,7 @@
 
 // ReSharper disable UnusedType.Global
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -16,17 +17,20 @@ namespace LightVector
 {
     /// <inheritdoc />
     /// <summary>
-    /// Entry for our Vector Interface
+    ///     Entry for our Vector Interface
     /// </summary>
     /// <seealso cref="IGraphicManager" />
     public class GraphicManager : IGraphicManager
     {
         private readonly Dictionary<int, SaveObject> _objects = new();
 
-        public void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates, Dictionary<string, object>? attributes = null)
+        public void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
+            Dictionary<string, object>? attributes = null)
         {
             if (_objects.ContainsKey(id))
+            {
                 throw new InvalidOperationException($"An object with ID {id} already exists.");
+            }
 
             var saveObject = new SaveObject
             {
@@ -52,7 +56,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Applies the transformation.
+        ///     Applies the transformation.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="transformation">The transformation.</param>
@@ -61,13 +65,17 @@ namespace LightVector
         public bool ApplyTransformation(int id, Transform transformation)
         {
             if (!_objects.ContainsKey(id))
+            {
                 throw new KeyNotFoundException($"No object found with ID {id}.");
+            }
 
             var obj = _objects[id];
 
             // Check if the object supports the transformation
             if (!obj.Graphic.SupportsTransformation(transformation))
+            {
                 return false;
+            }
 
             obj.Graphic.ApplyTransformation(transformation);
             return true;
@@ -75,7 +83,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the object by identifier.
+        ///     Gets the object by identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -86,7 +94,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Removes the object.
+        ///     Removes the object.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -97,7 +105,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Updates the object layer.
+        ///     Updates the object layer.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="newLayer">The new layer.</param>
@@ -105,7 +113,9 @@ namespace LightVector
         public bool UpdateObjectLayer(int id, int newLayer)
         {
             if (!_objects.TryGetValue(id, out var obj))
+            {
                 return false;
+            }
 
             obj.Layer = newLayer;
             return true;
@@ -113,7 +123,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Updates the object attributes.
+        ///     Updates the object attributes.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="newAttributes">The new attributes.</param>
@@ -121,7 +131,9 @@ namespace LightVector
         public bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes)
         {
             if (!_objects.TryGetValue(id, out var obj))
+            {
                 return false;
+            }
 
             foreach (var (key, value) in newAttributes)
             {
@@ -133,7 +145,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Saves to file.
+        ///     Saves to file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         public void SaveToFile(string filePath)
@@ -143,7 +155,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Loads from file.
+        ///     Loads from file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         public void LoadFromFile(string filePath)
@@ -151,7 +163,9 @@ namespace LightVector
             var loadedObjects = SaveHelper.XmlDeSerializerObject<List<SaveObject>>(filePath);
             _objects.Clear();
             foreach (var obj in loadedObjects)
+            {
                 _objects[obj.Id] = obj;
+            }
         }
 
         private GraphicTypes GetGraphicType(GraphicObject graphic)

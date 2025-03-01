@@ -219,7 +219,7 @@ namespace LightVector
         /// <param name="degree">Degree we want to Rotate</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>The <see cref="LineObject" />.</returns>
-        internal static LineObject LineRotate(LineObject line, int degree, int width)
+        private static LineObject LineRotate(LineObject line, int degree, int width)
         {
             //no need to do anything
             if (degree is 360 or 0)
@@ -292,7 +292,7 @@ namespace LightVector
         /// <param name="factor">Scale Factor</param>
         /// <param name="width">length of the Picture</param>
         /// <returns>The <see cref="LineObject" />.</returns>
-        internal static LineObject LineScale(LineObject line, int factor, int width)
+        private static LineObject LineScale(LineObject line, int factor, int width)
         {
             //no need to do anything
             if (factor == 1)
@@ -342,7 +342,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Creates the polygon.
+        ///     Creates the polygon.
         /// </summary>
         /// <param name="objFile">The object file.</param>
         /// <param name="translation">The translation.</param>

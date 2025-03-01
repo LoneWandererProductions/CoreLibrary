@@ -9,19 +9,18 @@
 namespace LightVector
 {
     /// <summary>
-    /// Sheer Transform for Curve
+    ///     Sheer Transform for Curve
     /// </summary>
     /// <seealso cref="Transform" />
     public abstract class ShearTransform : Transform
     {
-        public double ShearX { get; }
-        public double ShearY { get; }
-
         protected ShearTransform(double shearX, double shearY)
         {
             ShearX = shearX;
             ShearY = shearY;
         }
-    }
 
+        public double ShearX { get; }
+        public double ShearY { get; }
+    }
 }

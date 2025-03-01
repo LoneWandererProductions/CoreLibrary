@@ -28,7 +28,7 @@ namespace Mathematics
         {
             var count = Math.Pow(2, list.Count);
 
-            for (var i = 1; i < count; i++)  // Start from 1 to exclude empty set
+            for (var i = 1; i < count; i++) // Start from 1 to exclude empty set
             {
                 var str = Convert.ToString(i, 2).PadLeft(list.Count, '0');
 

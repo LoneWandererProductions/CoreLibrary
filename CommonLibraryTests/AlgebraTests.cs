@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Test for Permutations mostly now
+    ///     Test for Permutations mostly now
     /// </summary>
     [TestClass]
     public class AlgebraTests

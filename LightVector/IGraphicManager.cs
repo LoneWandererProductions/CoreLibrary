@@ -18,17 +18,20 @@
  */
 
 
+#nullable enable
 using System.Collections.Generic;
 using System.Windows;
 
 namespace LightVector
 {
     /// <summary>
-    /// Interface for our Vector Library
+    ///     Interface for our Vector Library
     /// </summary>
     public interface IGraphicManager
     {
-        void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates, Dictionary<string, object>? attributes = null);
+        void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
+            Dictionary<string, object>? attributes = null);
+
         bool ApplyTransformation(int id, Transform transformation);
 
         SaveObject? GetObjectById(int id);

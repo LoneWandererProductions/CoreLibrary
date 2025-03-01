@@ -17,12 +17,12 @@ using Mathematics;
 namespace LightVector
 {
     /// <summary>
-    /// Factory for generating Bezier curves from vector-based points.
+    ///     Factory for generating Bezier curves from vector-based points.
     /// </summary>
     internal static class BezierCurveFactory
     {
         /// <summary>
-        /// Generates a Bezier curve from a list of points with a specified tension.
+        ///     Generates a Bezier curve from a list of points with a specified tension.
         /// </summary>
         /// <param name="points">The vector points to define the curve.</param>
         /// <param name="tension">The tension factor to adjust the curve's shape.</param>
@@ -39,7 +39,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Builds a Bezier path using the calculated points.
+        ///     Builds a Bezier path using the calculated points.
         /// </summary>
         /// <param name="points">The calculated points defining the curve.</param>
         /// <returns>The generated <see cref="Path" /> for the Bezier curve.</returns>
@@ -68,17 +68,20 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Generates the points for the Bezier curve based on the input points and tension.
+        ///     Generates the points for the Bezier curve based on the input points and tension.
         /// </summary>
         /// <param name="points">The input vector points.</param>
         /// <param name="tension">The tension factor to modify the curve.</param>
         /// <returns>The calculated control points for the curve.</returns>
         private static IEnumerable<Point> GenerateCurvePoints(IReadOnlyList<Vector2D> points, double tension)
         {
-            if (points.Count < 2) return Enumerable.Empty<Point>();
+            if (points.Count < 2)
+            {
+                return Enumerable.Empty<Point>();
+            }
 
             var controlScale = tension / 0.5 * 0.175;
-            var resultPoints = new List<Point> { new Point(points[0].X, points[0].Y) };
+            var resultPoints = new List<Point> { new(points[0].X, points[0].Y) };
 
             for (var i = 0; i < points.Count - 1; i++)
             {
@@ -105,6 +108,5 @@ namespace LightVector
 
             return resultPoints;
         }
-
     }
 }

@@ -19,18 +19,18 @@ namespace LightVector
     public sealed class CircleObject : GraphicObject
     {
         /// <summary>
-        /// The center of the circle.
+        ///     The center of the circle.
         /// </summary>
         public Vector2 Center { get; set; }
 
         /// <summary>
-        /// The radius of the circle.
+        ///     The radius of the circle.
         /// </summary>
         public float Radius { get; set; }
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         /// <param name="transformation"></param>
         /// <returns>If specific transformation is supported</returns>
@@ -41,7 +41,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Apply transformation (scaling, rotation, translation) to the circle.
+        ///     Apply transformation (scaling, rotation, translation) to the circle.
         /// </summary>
         /// <param name="transformation">The transformation.</param>
         public override void ApplyTransformation(Transform transformation)
@@ -73,8 +73,8 @@ namespace LightVector
             var sinTheta = (float)Math.Sin(angleRad);
 
             // Rotate the vector
-            var xNew = vector.X * cosTheta - vector.Y * sinTheta;
-            var yNew = vector.X * sinTheta + vector.Y * cosTheta;
+            var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
+            var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
 
             return new Vector2(xNew, yNew);
         }

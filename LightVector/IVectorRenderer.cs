@@ -6,21 +6,25 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable MemberCanBeInternal
+
+using System.Windows.Media;
+
 namespace LightVector
 {
     public interface IVectorRenderer
     {
         /// <summary>
-        /// Renders to container.
+        ///     Renders to container.
         /// </summary>
         /// <returns>Returns a framework-specific container</returns>
         object RenderToContainer();
 
         /// <summary>
-        /// Renders to image.
+        ///     Renders to image.
         /// </summary>
         /// <returns>Converts to a WPF Image</returns>
-        System.Windows.Media.ImageSource RenderToImage();
+        ImageSource RenderToImage();
     }
-
 }

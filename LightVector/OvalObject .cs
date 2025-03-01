@@ -19,23 +19,23 @@ namespace LightVector
     public sealed class OvalObject : GraphicObject
     {
         /// <summary>
-        /// The center of the oval.
+        ///     The center of the oval.
         /// </summary>
         public Vector2 Center { get; set; }
 
         /// <summary>
-        /// The horizontal radius of the oval.
+        ///     The horizontal radius of the oval.
         /// </summary>
         public float RadiusX { get; set; }
 
         /// <summary>
-        /// The vertical radius of the oval.
+        ///     The vertical radius of the oval.
         /// </summary>
         public float RadiusY { get; set; }
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         /// <param name="transformation"></param>
         /// <returns>If specific transformation is supported</returns>
@@ -46,7 +46,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Apply transformation (scaling, rotation, translation) to the oval.
+        ///     Apply transformation (scaling, rotation, translation) to the oval.
         /// </summary>
         /// <param name="transformation">The transformation.</param>
         public override void ApplyTransformation(Transform transformation)
@@ -72,15 +72,15 @@ namespace LightVector
         private Vector2 RotateVector(Vector2 vector, double angle)
         {
             // Convert angle to radians
-            double angleRad = angle * (Math.PI / 180);
+            var angleRad = angle * (Math.PI / 180);
 
             // Apply rotation matrix
-            float cosTheta = (float)Math.Cos(angleRad);
-            float sinTheta = (float)Math.Sin(angleRad);
+            var cosTheta = (float)Math.Cos(angleRad);
+            var sinTheta = (float)Math.Sin(angleRad);
 
             // Rotate the vector
-            float xNew = vector.X * cosTheta - vector.Y * sinTheta;
-            float yNew = vector.X * sinTheta + vector.Y * cosTheta;
+            var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
+            var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
 
             return new Vector2(xNew, yNew);
         }

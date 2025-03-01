@@ -11,7 +11,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -63,11 +62,12 @@ namespace LightVector
         public string FillColor
         {
             get => Fill?.Color.ToString();
-            set => Fill = string.IsNullOrEmpty(value) ? null : new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+            set => Fill = string.IsNullOrEmpty(value)
+                ? null
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
         }
 
-        [XmlIgnore]
-        public Dictionary<string, object> OptionalAttributes { get; set; } = new();
+        [XmlIgnore] public Dictionary<string, object> OptionalAttributes { get; set; } = new();
 
         // For XML serialization
         [XmlArray("OptionalAttributes")]
@@ -81,6 +81,7 @@ namespace LightVector
                 {
                     list.Add(new SerializableAttribute { Key = kvp.Key, Value = kvp.Value?.ToString() });
                 }
+
                 return list;
             }
             set
@@ -102,13 +103,13 @@ namespace LightVector
         public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
 
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         public abstract bool SupportsTransformation(Transform transformation);
 
         /// <summary>
-        /// Apply transformation method (scaling, rotation, etc.)
-        ///  Each subclass will override this method to implement specific transformation logic
+        ///     Apply transformation method (scaling, rotation, etc.)
+        ///     Each subclass will override this method to implement specific transformation logic
         /// </summary>
         /// <param name="transformation">The transformation.</param>
         public virtual void ApplyTransformation(Transform transformation)
@@ -118,11 +119,9 @@ namespace LightVector
 
         public sealed class SerializableAttribute
         {
-            [XmlAttribute(nameof(Key))]
-            public string Key { get; set; }
+            [XmlAttribute(nameof(Key))] public string Key { get; set; }
 
-            [XmlAttribute(nameof(Value))]
-            public string Value { get; set; }
+            [XmlAttribute(nameof(Value))] public string Value { get; set; }
         }
     }
 }

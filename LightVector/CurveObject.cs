@@ -36,7 +36,7 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if this object supports the given transformation.
+        ///     Checks if this object supports the given transformation.
         /// </summary>
         /// <param name="transformation"></param>
         /// <returns>If specific transformation is supported</returns>
@@ -67,8 +67,8 @@ namespace LightVector
                         break;
                     case ShearTransform shear:
                         Vectors[i] = new Vector2(
-                            Vectors[i].X + (float)shear.ShearX * Vectors[i].Y,
-                            Vectors[i].Y + (float)shear.ShearY * Vectors[i].X
+                            Vectors[i].X + ((float)shear.ShearX * Vectors[i].Y),
+                            Vectors[i].Y + ((float)shear.ShearY * Vectors[i].X)
                         );
                         break;
                 }
@@ -92,8 +92,8 @@ namespace LightVector
             var sinTheta = (float)Math.Sin(angleRad);
 
             // Rotate the vector
-            var xNew = vector.X * cosTheta - vector.Y * sinTheta;
-            var yNew = vector.X * sinTheta + vector.Y * cosTheta;
+            var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
+            var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
 
             return new Vector2(xNew, yNew);
         }

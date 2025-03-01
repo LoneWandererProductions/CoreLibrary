@@ -5,6 +5,7 @@
  * PURPOSE:     Tests for the Fracture Class
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
 using System;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Tests for my fraction class.
+    ///     Tests for my fraction class.
     /// </summary>
     [TestClass]
     public class FractureTests
@@ -46,7 +47,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test various fraction operations
+        ///     Test various fraction operations
         /// </summary>
         [TestMethod]
         public void FracturesOperations()
@@ -174,7 +175,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Test for large numbers
+        ///     Test for large numbers
         /// </summary>
         [TestMethod]
         public void FractionLargeNumbers()
@@ -185,4 +186,3 @@ namespace CommonLibraryTests
         }
     }
 }
-
