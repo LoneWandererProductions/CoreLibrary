@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqliteHelper", "SqliteHelpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pathfinder", "Pathfinder\Pathfinder.csproj", "{11FC1146-0A4B-4BE4-B397-B8ABA252BCC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreInject", "CoreInject\CoreInject.csproj", "{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,10 @@ Global
 		{11FC1146-0A4B-4BE4-B397-B8ABA252BCC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11FC1146-0A4B-4BE4-B397-B8ABA252BCC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11FC1146-0A4B-4BE4-B397-B8ABA252BCC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
