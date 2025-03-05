@@ -4,56 +4,70 @@ using System.Linq;
 
 namespace CoreInject
 {
-    public class SimpleInjector
+    public sealed class SimpleInjector
     {
+        /// <summary>
+        /// Stores registered service factories.
+        /// </summary>
         private readonly Dictionary<Type, Func<object>> _registrations = new();
 
-        private Dictionary<Type, object> _scopedInstances = new();
-
+        /// <summary>
+        /// The current scope for scoped dependencies.
+        /// </summary>
         private SimpleScope? _currentScope;
 
         /// <summary>
-        /// Registers the singleton.
+        /// Registers a singleton instance of a service.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type.</typeparam>
         public void RegisterSingleton<TService, TImplementation>() where TImplementation : TService, new()
         {
             if (_registrations.ContainsKey(typeof(TService)))
             {
-                throw new Exception($"Service {typeof(TService).Name} is already registered.");
+                throw new InvalidOperationException($"Service {typeof(TService).Name} is already registered as singleton.");
             }
 
-
-            var instance = new TImplementation(); // Create once
-            _registrations[typeof(TService)] = () => instance;
+            TImplementation instance = new();
+            _registrations[typeof(TService)] = () => instance; // Always return the same instance
         }
 
+
+        /// <summary>
+        /// Registers a pre-existing instance as a service.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <param name="instance">The instance to register.</param>
         public void RegisterInstance<TService>(TService instance)
         {
+            if (_registrations.ContainsKey(typeof(TService)))
+            {
+                throw new InvalidOperationException($"Service {typeof(TService).Name} is already registered.");
+            }
+
             _registrations[typeof(TService)] = () => instance;
         }
 
         /// <summary>
-        /// Registers the transient.
+        /// Registers a service as transient, meaning a new instance is created each time.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type.</typeparam>
         public void RegisterTransient<TService, TImplementation>() where TImplementation : TService, new()
         {
             if (_registrations.ContainsKey(typeof(TService)))
             {
-                throw new Exception($"Service {typeof(TService).Name} is already registered.");
+                throw new InvalidOperationException($"Service {typeof(TService).Name} is already registered.");
             }
 
-            _registrations[typeof(TService)] = () => new TImplementation(); // New instance every time
+            _registrations[typeof(TService)] = () => new TImplementation();
         }
 
         /// <summary>
-        /// Registers the scoped.
+        /// Registers a service as scoped, meaning the instance persists within a scope.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type.</typeparam>
         public void RegisterScoped<TService, TImplementation>() where TImplementation : TService, new()
         {
             _registrations[typeof(TService)] = () =>
@@ -62,61 +76,54 @@ namespace CoreInject
                 {
                     throw new InvalidOperationException("No active scope. Call BeginScope() first.");
                 }
+
                 return _currentScope.Resolve<TService>(() => new TImplementation());
             };
         }
 
         /// <summary>
-        /// Resolves this instance.
+        /// Resolves an instance of the requested service type.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <returns>The resolved service instance.</returns>
         public TService Resolve<TService>()
         {
+            if (_currentScope != null && _registrations.ContainsKey(typeof(TService)))
+            {
+                return _currentScope.Resolve<TService>(() => (TService)_registrations[typeof(TService)]());
+            }
+
             return (TService)Resolve(typeof(TService));
         }
 
+
         /// <summary>
-        /// Resolves the specified service type.
+        /// Resolves a service by its type.
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception">
-        /// No constructor found for {serviceType.Name}
-        /// or
-        /// Failed to create instance of {serviceType.Name}
-        /// </exception>
+        /// <param name="serviceType">The type of the service.</param>
+        /// <returns>The resolved service instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the service cannot be resolved.</exception>
         private object Resolve(Type serviceType)
         {
-            // If the service type is an interface or abstract class, we need to check if it's registered
-            if (!_registrations.ContainsKey(serviceType) && (serviceType.IsInterface || serviceType.IsAbstract))
+            if (!_registrations.TryGetValue(serviceType, out var factory))
             {
-                throw new Exception($"Service {serviceType.Name} is not registered.");
+                throw new InvalidOperationException($"Service {serviceType.Name} is not registered.");
             }
 
-            // If the service is registered, resolve it
-            if (_registrations.ContainsKey(serviceType))
-            {
-                return _registrations[serviceType]();
-            }
-
-            // Try to create automatically (Constructor Injection)
-            var constructor = serviceType.GetConstructors().FirstOrDefault()
-                              ?? throw new Exception($"No constructor found for {serviceType.Name}");
-
-            var parameters = constructor.GetParameters()
-                .Select(param => Resolve(param.ParameterType))
-                .ToArray();
-
-            return Activator.CreateInstance(serviceType, parameters)
-                   ?? throw new Exception($"Failed to create instance of {serviceType.Name}");
+            return factory();
         }
 
+        /// <summary>
+        /// Starts a new dependency scope.
+        /// </summary>
         public void BeginScope()
         {
             _currentScope = new SimpleScope();
         }
 
+        /// <summary>
+        /// Ends the current dependency scope.
+        /// </summary>
         public void EndScope()
         {
             _currentScope?.Dispose();

@@ -1,12 +1,6 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/SimpleInjectorTests.cs
- * PURPOSE:     Tests for our small scale Injector Framework
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-
-using System;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using CoreInject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,14 +9,23 @@ namespace CommonLibraryTests
     [TestClass]
     public class SimpleInjectorTests
     {
+        /// <summary>
+        /// The injector
+        /// </summary>
         private SimpleInjector _injector;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _injector = new SimpleInjector();
         }
 
+        /// <summary>
+        /// Registers the singleton should create single instance.
+        /// </summary>
         [TestMethod]
         public void RegisterSingletonShouldCreateSingleInstance()
         {
@@ -34,6 +37,9 @@ namespace CommonLibraryTests
             Assert.AreSame(firstInstance, secondInstance, "Singleton instances should be the same.");
         }
 
+        /// <summary>
+        /// Registers the transient should create different instances.
+        /// </summary>
         [TestMethod]
         public void RegisterTransientShouldCreateDifferentInstances()
         {
@@ -45,6 +51,9 @@ namespace CommonLibraryTests
             Assert.AreNotSame(firstInstance, secondInstance, "Transient instances should be different.");
         }
 
+        /// <summary>
+        /// Registers the instance should use registered instance.
+        /// </summary>
         [TestMethod]
         public void RegisterInstanceShouldUseRegisteredInstance()
         {
@@ -56,6 +65,9 @@ namespace CommonLibraryTests
             Assert.AreSame(mockService, resolvedService, "Instance should be the same as the registered instance.");
         }
 
+        /// <summary>
+        /// Registers the scoped should maintain scope within scope.
+        /// </summary>
         [TestMethod]
         public void RegisterScopedShouldMaintainScopeWithinScope()
         {
@@ -75,11 +87,14 @@ namespace CommonLibraryTests
             Assert.AreNotSame(firstInstance, thirdInstance, "Scoped instances should be different between scopes.");
         }
 
+        /// <summary>
+        /// Resolves the unregistered service should throw exception.
+        /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveUnregisteredServiceShouldThrowException()
         {
-            _injector.Resolve<IService>();  // Should throw Exception as IService is not registered
+            _injector.Resolve<IService>(); // Should throw Exception as IService is not registered
         }
 
         [TestMethod]
@@ -87,7 +102,51 @@ namespace CommonLibraryTests
         public void RegisterScopedWithoutScopeShouldThrowException()
         {
             _injector.RegisterScoped<IService, Service>(); // No active scope
-            _injector.Resolve<IService>();  // Should throw InvalidOperationException
+            _injector.Resolve<IService>(); // Should throw InvalidOperationException
+        }
+
+        // --- New Tests for RegisterFromAssembly and TryResolve ---
+
+        /// <summary>
+        /// Registers from assembly should register services correctly.
+        /// </summary>
+        [TestMethod]
+        public void RegisterFromAssemblyShouldRegisterServicesCorrectly()
+        {
+            // Arrange: Create a dummy assembly with implementations
+            var assembly = Assembly.GetExecutingAssembly(); // Use current assembly for testing
+
+            // Register from assembly
+            _injector.RegisterFromAssembly(assembly);
+
+            // Act: Resolve the service
+            var service = _injector.Resolve<IService>();
+
+            // Assert: Ensure the registered service was correctly resolved
+            Assert.IsNotNull(service, "Service should be resolved.");
+        }
+
+        [TestMethod]
+        public void TryResolveShouldReturnNullForUnregisteredService()
+        {
+            // Act: Try to resolve an unregistered service
+            var service = _injector.TryResolve<IService>();
+
+            // Assert: Ensure that null is returned for an unregistered service
+            Assert.IsNull(service, "TryResolve should return null for unregistered services.");
+        }
+
+        [TestMethod]
+        public void TryResolveShouldReturnResolvedService()
+        {
+            // Arrange: Register a service
+            _injector.RegisterTransient<IService, Service>();
+
+            // Act: Try to resolve the registered service
+            var service = _injector.TryResolve<IService>();
+
+            // Assert: Ensure that the service is resolved successfully
+            Assert.IsNotNull(service, "TryResolve should return the resolved service.");
         }
     }
 
@@ -99,19 +158,18 @@ namespace CommonLibraryTests
         void DoStuff();
     }
 
+    /// <inheritdoc />
     /// <summary>
-    /// Mock classes for testing
+    /// Concrete service implementation for testing
     /// </summary>
-    /// <seealso cref="CommonLibraryTests.IService" />
     public class Service : IService
     {
         public void DoStuff() { }
     }
 
     /// <summary>
-    /// Mock classes for testing
+    /// Mock service for testing
     /// </summary>
-    /// <seealso cref="CommonLibraryTests.IService" />
     public class MockService : IService
     {
         public void DoStuff() { }
