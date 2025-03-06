@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        Communication.cs
+ * FILE:        CommonLibraryTests/Communication.cs
  * PURPOSE:     Test for our communication
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -16,6 +16,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// Some random stuff
+    /// </summary>
     [TestClass]
     public class Communication
     {
@@ -79,12 +82,4 @@ namespace CommonLibraryTests
             listener.StopListening();
         }
     }
-
-    //[TestMethod]
-    //public async Task Untested()
-    //{
-    //    //var str = await HttpClientManager.CallSoapServiceAsync();
-
-    //    //Trace.WriteLine(str);
-    //}
 }

@@ -1,10 +1,17 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreWorker
+ * FILE:        CoreInject/CoreInjector.cs
+ * PURPOSE:     Our CoreInject, collects all the Services
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CoreInject
 {
-    public sealed class SimpleInjector
+    public sealed class CoreInjector
     {
         /// <summary>
         /// Stores registered service factories.
@@ -31,7 +38,6 @@ namespace CoreInject
             TImplementation instance = new();
             _registrations[typeof(TService)] = () => instance; // Always return the same instance
         }
-
 
         /// <summary>
         /// Registers a pre-existing instance as a service.

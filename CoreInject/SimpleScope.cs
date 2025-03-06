@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreWorker
+ * FILE:        CoreInject/SimpleScope.cs
+ * PURPOSE:     The Scope part of my Implementation, well mostly guess work.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections.Generic;
 
 namespace CoreInject

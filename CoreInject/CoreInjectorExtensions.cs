@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreWorker
+ * FILE:        CoreInject/CoreInjectorExtensions.cs
+ * PURPOSE:     Possible useful Extension for our Injector.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
@@ -9,14 +16,14 @@ using System.Reflection;
 
 namespace CoreInject
 {
-    public static class SimpleInjectorExtensions
+    public static class CoreInjectorExtensions
     {
         /// <summary>
         /// Automatically registers all classes that implement an interface in the given assembly.
         /// </summary>
         /// <param name="injector">The SimpleInjector instance.</param>
         /// <param name="assembly">The assembly to scan for implementations.</param>
-        public static void RegisterFromAssembly(this SimpleInjector injector, Assembly assembly)
+        public static void RegisterFromAssembly(this CoreInjector injector, Assembly assembly)
         {
             var types = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract)
@@ -27,7 +34,7 @@ namespace CoreInject
                 // Try to register the service
                 try
                 {
-                    var method = typeof(SimpleInjector)
+                    var method = typeof(CoreInjector)
                         .GetMethod("RegisterTransient", BindingFlags.Public | BindingFlags.Instance)
                         ?.MakeGenericMethod(type.Interface, type.Implementation);
 
@@ -46,7 +53,7 @@ namespace CoreInject
         /// </summary>
         /// <param name="injector">The SimpleInjector instance.</param>
         /// <param name="assemblies">The assemblies to scan for implementations.</param>
-        public static void RegisterFromAssemblies(this SimpleInjector injector, IEnumerable<Assembly> assemblies)
+        public static void RegisterFromAssemblies(this CoreInjector injector, IEnumerable<Assembly> assemblies)
         {
             foreach (var assembly in assemblies)
             {
@@ -59,7 +66,7 @@ namespace CoreInject
                     // Try to register the service
                     try
                     {
-                        var method = typeof(SimpleInjector)
+                        var method = typeof(CoreInjector)
                             .GetMethod("RegisterTransient", BindingFlags.Public | BindingFlags.Instance)
                             ?.MakeGenericMethod(type.Interface, type.Implementation);
 
@@ -75,10 +82,10 @@ namespace CoreInject
         }
 
 
-        private static bool IsServiceRegistered(this SimpleInjector injector, Type serviceType)
+        private static bool IsServiceRegistered(this CoreInjector injector, Type serviceType)
         {
             // Check if the service is already registered in the injector
-            var field = typeof(SimpleInjector)
+            var field = typeof(CoreInjector)
                 .GetField("_registrations", BindingFlags.NonPublic | BindingFlags.Instance);
             var registrations = (Dictionary<Type, Func<object>>)field.GetValue(injector);
             return registrations.ContainsKey(serviceType);
@@ -90,7 +97,7 @@ namespace CoreInject
         /// <typeparam name="TService">The service type.</typeparam>
         /// <param name="injector">The SimpleInjector instance.</param>
         /// <returns>The resolved service or null if not found.</returns>
-        public static TService? TryResolve<TService>(this SimpleInjector injector) where TService : class
+        public static TService? TryResolve<TService>(this CoreInjector injector) where TService : class
         {
             try
             {

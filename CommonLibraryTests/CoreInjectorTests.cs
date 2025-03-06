@@ -1,18 +1,28 @@
-﻿using System;
-using System.Linq;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        CommonLibraryTests/CoreInjectorTests.cs
+ * PURPOSE:     Some basic tests for our Injector
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Reflection;
 using CoreInject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// Part of my Dependency Injection Journey
+    /// </summary>
     [TestClass]
-    public class SimpleInjectorTests
+    public class CoreInjectorTests
     {
         /// <summary>
         /// The injector
         /// </summary>
-        private SimpleInjector _injector;
+        private CoreInjector _injector;
 
         /// <summary>
         /// Setups this instance.
@@ -20,7 +30,7 @@ namespace CommonLibraryTests
         [TestInitialize]
         public void Setup()
         {
-            _injector = new SimpleInjector();
+            _injector = new CoreInjector();
         }
 
         /// <summary>
