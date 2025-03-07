@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.35425.106
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{9B2741D2-443A-4136-B9A4-1191686DA4AD}"
 EndProject
@@ -66,6 +66,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreInject", "CoreInject\CoreInject.csproj", "{1CDFBB9C-63F7-4F33-A0F3-03969F825BB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreWorker", "CoreWorker\CoreWorker.csproj", "{A59040DA-D599-492F-B461-30E5E4F8FAAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreMemoryLog", "CoreMemoryLog\CoreMemoryLog.csproj", "{E00B7A21-BE6D-414E-AB8F-C0E7B7A1068A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,6 +187,10 @@ Global
 		{A59040DA-D599-492F-B461-30E5E4F8FAAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59040DA-D599-492F-B461-30E5E4F8FAAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A59040DA-D599-492F-B461-30E5E4F8FAAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00B7A21-BE6D-414E-AB8F-C0E7B7A1068A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00B7A21-BE6D-414E-AB8F-C0E7B7A1068A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00B7A21-BE6D-414E-AB8F-C0E7B7A1068A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00B7A21-BE6D-414E-AB8F-C0E7B7A1068A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

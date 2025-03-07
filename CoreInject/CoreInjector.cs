@@ -39,6 +39,16 @@ namespace CoreInject
             _registrations[typeof(TService)] = () => instance; // Always return the same instance
         }
 
+        public void RegisterSingleton<TService>(Func<CoreInjector, TService> factory)
+        {
+            if (_registrations.ContainsKey(typeof(TService)))
+            {
+                throw new InvalidOperationException($"Service {typeof(TService).Name} is already registered as singleton.");
+            }
+
+            _registrations[typeof(TService)] = () => factory(this);  // Pass 'this' to factory
+        }
+
         /// <summary>
         /// Registers a pre-existing instance as a service.
         /// </summary>

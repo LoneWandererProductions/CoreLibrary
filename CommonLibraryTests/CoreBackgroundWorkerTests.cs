@@ -6,12 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreInject;
+using CoreMemoryLog;
 using CoreWorker;
-using Debugger;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
@@ -25,26 +26,6 @@ namespace CommonLibraryTests
         private CoreInjector _injector;
 
         /// <summary>
-        ///  In-memory logger for testing purposes
-        /// </summary>
-        /// <seealso cref="ILogger" />
-        private sealed class InMemoryLogger : ILogger
-        {
-            /// <summary>
-            /// Gets the logs.
-            /// </summary>
-            /// <value>
-            /// The logs.
-            /// </value>
-            public List<string> Logs { get; } = new List<string>();
-
-            public void LogInformation(string message)
-            {
-                Logs.Add(message);
-            }
-        }
-
-        /// <summary>
         /// Setup: Initialize CoreInjector container for dependency injection
         /// </summary>
         [TestInitialize]
@@ -52,15 +33,19 @@ namespace CommonLibraryTests
         {
             _injector = new CoreInjector();
 
-            // Register the InMemoryLogger and CoreBackgroundWorker in the DI container
-            var logger = new InMemoryLogger();
-            _injector.RegisterInstance<ILogger>(logger);
-            _injector.RegisterSingleton<ICoreBackgroundWorker, TestBackgroundWorker>();
+            // Register ILogger first
+            _injector.RegisterInstance<ILogger>(new InMemoryLogger());
+
+            // Register TestBackgroundWorker with constructor injection
+            _injector.RegisterSingleton<ICoreBackgroundWorker>((injector) =>
+            {
+                var logger = injector.Resolve<ILogger>();
+                return new TestBackgroundWorker(logger); // Inject the logger
+            });
         }
 
-
         /// <summary>
-        /// Test: Ensure the background worker starts and stops correctly
+        /// Cores the background worker should start and stop correctly.
         /// </summary>
         [TestMethod]
         public async Task CoreBackgroundWorkerShouldStartAndStopCorrectly()
@@ -71,17 +56,43 @@ namespace CommonLibraryTests
 
             // Act: Start the worker
             worker.Start();
-            await Task.Delay(1500); // Let the worker run for a short time
+            await Task.Delay(3000); // Wait longer to allow logging to occur
 
             // Assert: Check that the worker logged the "running" message
-            Assert.IsTrue(logger?.Logs.Exists(log => log.Contains("Test worker is running")) ?? false,
+            var log = logger.GetLog();
+            Assert.IsTrue(log.Any(l => l.Message.Contains("Test worker is running")),
                 "Worker did not log 'running' message.");
+            Assert.IsTrue(log.Any(l => l.Message.Contains("Test worker has started")),
+                "Worker did not log 'start' message.");
 
             // Act: Stop the worker
             worker.Stop();
 
-            // Assert: No error during stopping
-            Assert.IsTrue(true); // Placeholder, can be expanded for better validation
+            log = logger.GetLog();
+            // Assert: Check that the worker logged the "stopped" message
+            Assert.IsTrue(log.Any(l => l.Message.Contains("Worker was canceled")),
+                "Worker did not log 'stopped' message.");
+        }
+
+        /// <summary>
+        /// Cores the background worker should handle cancellation.
+        /// </summary>
+        [TestMethod]
+        public async Task CoreBackgroundWorkerShouldHandleCancellation()
+        {
+            // Arrange: Resolve the worker and logger from the DI container
+            var worker = _injector.Resolve<ICoreBackgroundWorker>();
+            var logger = _injector.Resolve<ILogger>() as InMemoryLogger;
+
+            // Act: Start the worker and cancel it shortly after
+            worker.Start();
+            await Task.Delay(1000);  // Give the worker time to start
+            worker.Stop();  // Stop the worker before it finishes
+
+            // Assert: Check cancellation logging
+            var log = logger.GetLog();
+            Assert.IsTrue(log.Any(l => l.Message.Contains("Worker was canceled")),
+                "Worker did not log cancellation.");
         }
 
         // Cleanup: Dispose of the container if needed
@@ -96,28 +107,49 @@ namespace CommonLibraryTests
         /// <summary>
         /// Concrete implementation of CoreBackgroundWorker for testing.
         /// </summary>
-        private sealed class TestBackgroundWorker : CoreBackgroundWorker
+        /// <summary>
+        /// Concrete implementation of CoreBackgroundWorker for testing.
+        /// </summary>
+        private class TestBackgroundWorker : ICoreBackgroundWorker
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
-            /// </summary>
-            /// <param name="logger">The logger.</param>
-            public TestBackgroundWorker(ILogger logger) : base(logger) { }
+            private readonly ILogger _logger;
+            private CancellationTokenSource _cancellationTokenSource;
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
-            /// </summary>
             public TestBackgroundWorker()
             { }
+
+            public TestBackgroundWorker(ILogger logger)
+            {
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            }
 
             /// <summary>
             /// Defines the worker task that must be implemented in a derived class.
             /// </summary>
             /// <param name="cancellationToken"></param>
-            protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+            public async Task ExecuteAsync(CancellationToken cancellationToken)
             {
+                _logger.LogInformation("Test worker is running...");  // Log the message
                 await Task.Delay(500, cancellationToken); // Simulate work with a short delay
             }
+
+            // Optional: Override Start if you want to add more behavior when starting
+            public void Start()
+            {
+                _logger.LogInformation("Test worker has started.");
+
+                _cancellationTokenSource = new CancellationTokenSource();
+                // Start the worker task
+                Task.Run(() => ExecuteAsync(_cancellationTokenSource.Token));
+            }
+
+            public void Stop()
+            {
+                _logger.LogInformation("Worker was canceled.");
+                // Cancel the operation if it's running
+                _cancellationTokenSource?.Cancel();
+            }
         }
+
     }
 }
