@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using CoreMemoryLog;
 
 namespace Serializer
 {
@@ -40,12 +41,15 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Logs the provided message. For demonstration purposes, this logs to the console.
-        ///     In a real application, use a proper logging framework.
+        /// Logs the provided message. For demonstration purposes, this logs to the console.
+        /// In a real application, use a proper logging framework.
         /// </summary>
+        /// <param name="level">The Log Level.</param>
         /// <param name="message">The message to log.</param>
-        private static void Log(string message)
+        /// <param name="ex">The exception.</param>
+        private static void Log(LogLevel level, string message, Exception ex = null)
         {
+            InMemoryLogger.Instance.Log(level, message, nameof(Serialize), ex);
             Trace.WriteLine($"[{DateTime.Now}] {message}");
         }
 
@@ -69,12 +73,12 @@ namespace Serializer
                 var serializer = new XmlSerializer(typeof(T));
                 using var writer = new StreamWriter(path, false, Encoding.UTF8);
                 serializer.Serialize(writer, obj);
-                Log($"Object of type {typeof(T)} successfully serialized to {path}");
+                Log(LogLevel.Information, $"Object of type {typeof(T)} successfully serialized to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new SerializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -97,12 +101,12 @@ namespace Serializer
             {
                 using var fileStream = new FileStream(path, FileMode.Create);
                 new XmlSerializer(typeof(List<T>)).Serialize(fileStream, obj);
-                Log($"List of type {typeof(T)} successfully serialized to {path}");
+                Log(LogLevel.Information, $"List of type {typeof(T)} successfully serialized to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new SerializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -128,13 +132,13 @@ namespace Serializer
                 );
 
                 SerializeDictionary(myDictionary, path);
-                Log(
+                Log(LogLevel.Information,
                     $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully serialized to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new SerializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 
@@ -176,12 +180,12 @@ namespace Serializer
 
                 using var streamWriter = new StreamWriter(path);
                 streamWriter.Write(stringWriter.ToString());
-                Log($"Dictionary serialized and saved to {path}");
+                Log(LogLevel.Information,$"Dictionary serialized and saved to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
-                throw new SerializationException($"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
             }
         }
 

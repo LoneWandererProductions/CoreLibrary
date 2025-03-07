@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security;
 using System.Xml;
+using CoreMemoryLog;
 using FileHandler;
 
 // ReSharper disable once UnusedMember.Global, it is used, or should be at least
@@ -52,7 +53,9 @@ namespace Serializer
                 return elements[0]?.InnerText;
             }
 
-            throw new XmlException(SerialResources.ErrorPropertyNotFound);
+            InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound);
+
+            return null;
         }
 
         /// <summary>
@@ -80,7 +83,8 @@ namespace Serializer
 
             if (elements.Count == 0)
             {
-                throw new XmlException(SerialResources.ErrorPropertyNotFound);
+                InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound);
+                return null;
             }
 
             for (var i = 0; i < elements.Count; i++)
@@ -106,29 +110,10 @@ namespace Serializer
             {
                 doc.Load(path);
             }
-            catch (FileNotFoundException ex)
+            catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException
+                or IOException or NotSupportedException or SecurityException)
             {
-                throw new FileNotFoundException(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-            catch (XmlException ex)
-            {
-                throw new XmlException(ex.Message);
-            }
-            catch (IOException ex)
-            {
-                throw new IOException(ex.Message);
-            }
-            catch (NotSupportedException ex)
-            {
-                throw new NotSupportedException(ex.Message);
-            }
-            catch (SecurityException ex)
-            {
-                throw new SecurityException(ex.Message);
+                InMemoryLogger.Instance.Log(LogLevel.Error, ex.Message, ex);
             }
 
             return doc;

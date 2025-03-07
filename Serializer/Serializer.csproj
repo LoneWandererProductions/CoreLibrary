@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CoreMemoryLog\CoreMemoryLog.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
   </ItemGroup>
 

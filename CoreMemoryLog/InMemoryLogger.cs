@@ -25,7 +25,7 @@ namespace CoreMemoryLog
     /// logs by level.
     /// </para>
     /// </summary>
-    public class InMemoryLogger : ILogger, IInMemoryLogger
+    public sealed class InMemoryLogger : ILogger, IInMemoryLogger
     {
         /// <summary>
         /// The instance
@@ -149,6 +149,7 @@ namespace CoreMemoryLog
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets all logs for a specific library.
         /// </summary>
@@ -156,13 +157,10 @@ namespace CoreMemoryLog
         /// <returns>All logs for the specified library.</returns>
         public IEnumerable<LogEntry> GetLogsByLibrary(string libraryName)
         {
-            if (_libraryLogs.TryGetValue(libraryName, out var libraryQueue))
-            {
-                return libraryQueue.ToList();
-            }
-            return Enumerable.Empty<LogEntry>();
+            return _libraryLogs.TryGetValue(libraryName, out var libraryQueue) ? libraryQueue.ToList() : Enumerable.Empty<LogEntry>();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets all logs from all libraries.
         /// </summary>
@@ -183,6 +181,7 @@ namespace CoreMemoryLog
             return _ILoggerLogs.ToList();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Clears the logs for a specific library.
         /// </summary>
@@ -195,6 +194,7 @@ namespace CoreMemoryLog
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Clears all logs.
         /// </summary>
@@ -206,6 +206,7 @@ namespace CoreMemoryLog
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the latest logs for a specific library.
         /// </summary>
@@ -220,6 +221,7 @@ namespace CoreMemoryLog
                 .Reverse(); // Reverse back to original order
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Checks if logs of a specific level exist for a given library.
         /// </summary>
@@ -232,6 +234,7 @@ namespace CoreMemoryLog
                    _libraryLogs[libraryName].Any(log => log.Level == logLevel);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets logs of a specific level for a given library.
         /// </summary>
