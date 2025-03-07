@@ -198,6 +198,7 @@ namespace CoreMemoryLog
                 : Enumerable.Empty<LogEntry>();
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Logs the given message with the information level.
         /// </summary>
@@ -210,6 +211,7 @@ namespace CoreMemoryLog
             LogToQueue(_iLoggerLogs, LogLevel.Information, message, exception, callerMethod);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Logs the given message with the warning level.
         /// </summary>
@@ -221,6 +223,7 @@ namespace CoreMemoryLog
             LogToQueue(_iLoggerLogs, LogLevel.Warning, message, exception, callerMethod);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Logs the given message with the error level.
         /// </summary>
@@ -232,6 +235,7 @@ namespace CoreMemoryLog
             LogToQueue(_iLoggerLogs, LogLevel.Error, message, exception, callerMethod);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Generic log method for ILogger to log messages with any log level.
         /// </summary>

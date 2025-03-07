@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMemberInSuper.Global
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

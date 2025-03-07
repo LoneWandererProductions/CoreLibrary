@@ -25,6 +25,7 @@ namespace CoreInject
         /// </summary>
         private readonly Dictionary<Type, object> _scopedInstances = new();
 
+        /// <inheritdoc />
         /// <summary>
         ///     Disposes all disposable objects registered in the scope and clears stored instances.
         /// </summary>
