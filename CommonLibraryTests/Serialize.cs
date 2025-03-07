@@ -9,6 +9,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using CoreMemoryLog;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serializer;
@@ -117,25 +119,10 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Tests the serialize dictionary invalid path throws exception.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(Serializer.Serialize.SerializationException))]
-        public void TestSerializeDictionaryInvalidPathThrowsException()
-        {
-            // Arrange
-            var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
-            var path = "invalid\0path.xml";
-
-            // Act
-            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
-        }
-
-        /// <summary>
         ///     Tests the load dictionary from XML valid path returns dictionary.
         /// </summary>
         [TestMethod]
-        public void Test_LoadDictionaryFromXmlValidPathReturnsDictionary()
+        public void TestLoadDictionaryFromXmlValidPathReturnsDictionary()
         {
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
@@ -163,22 +150,14 @@ namespace CommonLibraryTests
             var path = "nonexistent.xml";
 
             // Act
-            _ = DeSerialize.LoadDictionaryFromXml<string, string>(path);
-        }
+            var result = DeSerialize.LoadDictionaryFromXml<string, string>(path);
 
-        /// <summary>
-        ///     Tests the load dictionary from XML empty file throws exception.
-        /// </summary>
-        [TestMethod]
-        public void TestLoadDictionaryFromXmlEmptyFileThrowsException()
-        {
-            // Arrange
-            var path = "empty.xml";
-            File.WriteAllText(path, string.Empty);
+            //Assert
+            Assert.IsNull(result, "Result was not null");
 
-            // Act & Assert
-            _ = Assert.ThrowsException<ArgumentException>(() =>
-                DeSerialize.LoadDictionaryFromXml<string, string>(path));
+            var log = InMemoryLogger.Instance.GetLatestLogs("Serializer", 1);
+
+            Assert.IsTrue(log.First().Message.Contains("Error"), "Log was empty.");
         }
     }
 }

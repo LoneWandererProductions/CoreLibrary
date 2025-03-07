@@ -1,5 +1,5 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     Serializer
  * FILE:        Serializer/XmlTools.cs
  * PURPOSE:     Some Xml Tools
@@ -10,10 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Xml;
 using CoreMemoryLog;
-using FileHandler;
 
 // ReSharper disable once UnusedMember.Global, it is used, or should be at least
 // ReSharper disable once MemberCanBePrivate.Global, should be visible to the outside
@@ -22,20 +22,20 @@ namespace Serializer
 {
     /// <summary>
     ///     The XML tools class.
-    ///     Important: Object we Serialize must be public!
+    ///     Important: Object we serialize must be public!
     /// </summary>
     public static class XmlTools
     {
         /// <summary>
-        ///     Read a specific Attributes Value
+        ///     Read a specific attribute value.
         /// </summary>
-        /// <param name="path">Target Path with extension</param>
-        /// <param name="property">Property of the XML File</param>
-        /// <returns>First Value as string.Can return null.</returns>
+        /// <param name="path">Target file path with extension.</param>
+        /// <param name="property">The property in the XML file.</param>
+        /// <returns>First value as string. Can return null.</returns>
         public static string GetFirstAttributeFromXml(string path, string property)
         {
-            //if File exists
-            if (!FileHandleSearch.FileExists(path))
+            // Check if file exists
+            if (!File.Exists(path))
             {
                 return null;
             }
@@ -47,32 +47,29 @@ namespace Serializer
             }
 
             var elements = doc.GetElementsByTagName(property);
-
-            if (elements.Count != 0)
+            if (elements.Count > 0)
             {
                 return elements[0]?.InnerText;
             }
 
-            InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound);
-
+            InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound, "Serializer");
             return null;
         }
 
         /// <summary>
-        ///     Read a specific Attributes Value
+        ///     Read all values of a specific property from the XML file.
         /// </summary>
-        /// <param name="path">Target Path with extension</param>
-        /// <param name="property">Property of the XML File</param>
-        /// <returns>All Values in a string list. Can return null.</returns>
+        /// <param name="path">Target file path with extension.</param>
+        /// <param name="property">The property in the XML file.</param>
+        /// <returns>A list of all values found. Can return null.</returns>
         public static List<string> GetAttributesFromXml(string path, string property)
         {
-            //if File exists
-            if (!FileHandleSearch.FileExists(path))
+            // Check if file exists
+            if (!File.Exists(path))
             {
                 return null;
             }
 
-            var lst = new List<string>();
             var doc = LoadXml(path);
             if (doc == null)
             {
@@ -80,28 +77,22 @@ namespace Serializer
             }
 
             var elements = doc.GetElementsByTagName(property);
-
             if (elements.Count == 0)
             {
-                InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound);
+                InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound, "Serializer");
                 return null;
             }
 
-            for (var i = 0; i < elements.Count; i++)
-            {
-                var id = elements[i]?.InnerText;
-                lst.Add(id);
-            }
+            // Add all element values to the list
 
-            //return all elements
-            return lst;
+            return (from XmlNode element in elements select element?.InnerText).ToList();
         }
 
         /// <summary>
-        ///     Load a XML File
+        ///     Load an XML file.
         /// </summary>
-        /// <param name="path">Target Path with extension</param>
-        /// <returns>XML File or Error</returns>
+        /// <param name="path">Target file path with extension.</param>
+        /// <returns>XML document or null in case of error.</returns>
         [return: MaybeNull]
         public static XmlDocument LoadXml(string path)
         {
@@ -110,10 +101,10 @@ namespace Serializer
             {
                 doc.Load(path);
             }
-            catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException
-                                           or IOException or NotSupportedException or SecurityException)
+            catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException or IOException or NotSupportedException or SecurityException)
             {
-                InMemoryLogger.Instance.Log(LogLevel.Error, ex.Message, ex);
+                InMemoryLogger.Instance.Log(LogLevel.Error, ex.Message, "Serializer", ex);
+                return null;
             }
 
             return doc;

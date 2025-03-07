@@ -195,7 +195,7 @@ namespace CommonLibraryTests
             //the rest is null because it is a fresh created file no need to check it.
 
             _ = await FileHandleDelete.DeleteFile(file);
-            var check = FileHandleSearch.FileExists(file);
+            var check = File.Exists(file);
             Assert.IsFalse(check, "File not deleted");
         }
 
@@ -251,7 +251,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(check, "Deleted File");
 
             _ = FileHandleDelete.DeleteFile(file);
-            check = FileHandleSearch.FileExists(file);
+            check = File.Exists(file);
             Assert.IsFalse(check, "File not deleted");
         }
     }

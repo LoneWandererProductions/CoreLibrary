@@ -24,22 +24,6 @@ namespace FileHandler
     public static class FileHandleSearch
     {
         /// <summary>
-        ///     Check if File Exists
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>If File exists <see cref="bool" />.</returns>
-        /// <exception cref="FileHandlerException">>No Correct Path was provided</exception>
-        public static bool FileExists(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
-
-            return File.Exists(path);
-        }
-
-        /// <summary>
         ///     Collects all files with a specific Extension
         /// </summary>
         /// <param name="path">Target Folder</param>

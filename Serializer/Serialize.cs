@@ -1,9 +1,9 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     Serializer
  * FILE:        Serializer/Serialize.cs
- * PURPOSE:     Serialize Objects, Lists and Dictionaries
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PURPOSE:     Serialize Objects, Lists, and Dictionaries
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
@@ -22,8 +22,8 @@ using CoreMemoryLog;
 namespace Serializer
 {
     /// <summary>
-    ///     Helper Class to Serialize and DeSerialize Objects for persistent Saving of Data
-    ///     Important: Object we Serialize must be public!
+    ///     Helper class to serialize and deserialize objects for persistent data saving.
+    ///     Important: Objects we serialize must be public!
     /// </summary>
     public static class Serialize
     {
@@ -41,59 +41,46 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Logs the provided message. For demonstration purposes, this logs to the console.
-        ///     In a real application, use a proper logging framework.
+        ///     Logs messages using the InMemoryLogger.
         /// </summary>
-        /// <param name="level">The Log Level.</param>
+        /// <param name="level">The log level.</param>
         /// <param name="message">The message to log.</param>
-        /// <param name="ex">The exception.</param>
+        /// <param name="ex">The exception (optional).</param>
         private static void Log(LogLevel level, string message, Exception ex = null)
         {
-            InMemoryLogger.Instance.Log(level, message, nameof(Serialize), ex);
+            InMemoryLogger.Instance.Log(level, message, "Serializer", ex);
             Trace.WriteLine($"[{DateTime.Now}] {message}");
         }
 
         /// <summary>
-        ///     Generic Serializer Of Objects
+        ///     Serializes an object to an XML file.
         /// </summary>
-        /// <typeparam name="T">Generic Type</typeparam>
-        /// <param name="obj">Target Object</param>
-        /// <param name="path">Target Path with extension</param>
         public static void SaveObjectToXml<T>(T obj, string path)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
+            if (obj == null) throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
 
             EnsureDirectoryExists(path);
 
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
                 using var writer = new StreamWriter(path, false, Encoding.UTF8);
-                serializer.Serialize(writer, obj);
+                new XmlSerializer(typeof(T)).Serialize(writer, obj);
                 Log(LogLevel.Information, $"Object of type {typeof(T)} successfully serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or
+                                       UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw;
             }
         }
 
         /// <summary>
-        ///     Generic Serializer Of List Objects
+        ///     Serializes a list of objects to an XML file.
         /// </summary>
-        /// <typeparam name="T">Generic Type</typeparam>
-        /// <param name="obj">The obj.</param>
-        /// <param name="path">The path.</param>
         public static void SaveLstObjectToXml<T>(List<T> obj, string path)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
+            if (obj == null) throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
 
             EnsureDirectoryExists(path);
 
@@ -103,24 +90,20 @@ namespace Serializer
                 new XmlSerializer(typeof(List<T>)).Serialize(fileStream, obj);
                 Log(LogLevel.Information, $"List of type {typeof(T)} successfully serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or
+                                       UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw;
             }
         }
 
         /// <summary>
-        ///     Serializes Dictionary Type of: Tile Dictionary
+        ///     Serializes a dictionary to an XML file.
         /// </summary>
-        /// <param name="dct">Dictionary Tile</param>
-        /// <param name="path">Target Path</param>
         public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path)
         {
-            if (dct == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
+            if (dct == null) throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
 
             EnsureDirectoryExists(path);
 
@@ -132,22 +115,19 @@ namespace Serializer
                 );
 
                 SerializeDictionary(myDictionary, path);
-                Log(LogLevel.Information,
-                    $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully serialized to {path}");
+                Log(LogLevel.Information, $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or
+                                       UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw;
             }
         }
 
         /// <summary>
-        ///     Converts generic Object into a XML string
+        ///     Converts an object into an XML string.
         /// </summary>
-        /// <typeparam name="T">Generic Type of Object</typeparam>
-        /// <param name="obj">Object to Serialize</param>
-        /// <returns>Object as XML string</returns>
         private static string Handle<T>(T obj)
         {
             using var stringWriter = new StringWriter();
@@ -156,16 +136,11 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Helper class for Dictionary Object also used for external use
+        ///     Serializes a dictionary into an XML file.
         /// </summary>
-        /// <param name="dct">Type Id String</param>
-        /// <param name="path">File Destination</param>
         private static void SerializeDictionary(Dictionary<string, string> dct, string path)
         {
-            if (dct == null)
-            {
-                throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
-            }
+            if (dct == null) throw new ArgumentException(SerialResources.ErrorSerializerEmpty);
 
             EnsureDirectoryExists(path);
 
@@ -182,19 +157,12 @@ namespace Serializer
                 streamWriter.Write(stringWriter.ToString());
                 Log(LogLevel.Information, $"Dictionary serialized and saved to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException or
+                                       UnauthorizedAccessException or ArgumentException or IOException)
             {
                 Log(LogLevel.Error, $"{SerialResources.ErrorSerializerXml} {ex.Message}", ex);
+                throw;
             }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Custom exception for serialization errors.
-        /// </summary>
-        public sealed class SerializationException : Exception
-        {
         }
     }
 }

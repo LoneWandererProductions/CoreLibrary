@@ -132,14 +132,14 @@ namespace CommonLibraryTests
             _ = await FileHandleDelete.DeleteFile(fileOne);
 
             // Check synchronously if the file still exists
-            var check = FileHandleSearch.FileExists(fileOne);
+            var check = File.Exists(fileOne);
             Assert.IsFalse(check, "File not deleted");
 
             // Delete the second file asynchronously and await it
             _ = await FileHandleDelete.DeleteFile(info);
 
             // Check synchronously if the second file still exists
-            check = FileHandleSearch.FileExists(info);
+            check = File.Exists(info);
             Assert.IsFalse(check, "File not deleted");
         }
 
@@ -255,7 +255,7 @@ namespace CommonLibraryTests
             var count = await FileNameConverter.RemoveAppendage("_", _renamePath, false);
             Assert.AreEqual(3, count, "Not enough files renamed");
 
-            var check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "second__"));
+            var check = File.Exists(Path.Combine(_renamePath, "second__"));
             Assert.IsTrue(check, "File was not correct");
 
             var file = "_second__".RemoveAppendage("_");
@@ -265,7 +265,7 @@ namespace CommonLibraryTests
             count = await FileNameConverter.AddAppendage("_", _renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
-            check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "_second__"));
+            check = File.Exists(Path.Combine(_renamePath, "_second__"));
             Assert.IsTrue(check, "File was not correct");
 
             file = "_second__".AddAppendage("_");
@@ -276,7 +276,7 @@ namespace CommonLibraryTests
             count = await FileNameConverter.ReplacePart("_", string.Empty, _renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
-            check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "second"));
+            check = File.Exists(Path.Combine(_renamePath, "second"));
             Assert.IsTrue(check, "File was not correct");
 
             file = "_second__".ReplacePart("_", string.Empty);
@@ -286,7 +286,7 @@ namespace CommonLibraryTests
             count = await FileNameConverter.ReOrderNumbers(_renamePath, false);
             Assert.AreEqual(5, count, "Not enough files renamed");
 
-            check = FileHandleSearch.FileExists(Path.Combine(_renamePath, "fifth_234234234"));
+            check = File.Exists(Path.Combine(_renamePath, "fifth_234234234"));
             Assert.IsTrue(check, "File was not correct");
 
             file = "_234234234_fifth".ReOrderNumbers();

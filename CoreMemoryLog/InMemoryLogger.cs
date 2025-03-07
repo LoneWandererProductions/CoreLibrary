@@ -30,12 +30,12 @@ namespace CoreMemoryLog
         /// <summary>
         ///     The instance
         /// </summary>
-        private static readonly Lazy<InMemoryLogger> _instance = new(() => new InMemoryLogger());
+        private static readonly Lazy<InMemoryLogger> MemoryInstance = new(() => new InMemoryLogger());
 
         /// <summary>
         ///     The i logger logs
         /// </summary>
-        private readonly ConcurrentQueue<LogEntry> _ILoggerLogs = new();
+        private readonly ConcurrentQueue<LogEntry> _iLoggerLogs = new();
 
         /// <summary>
         ///     The library logs
@@ -70,8 +70,9 @@ namespace CoreMemoryLog
         /// <value>
         ///     The instance.
         /// </value>
-        public static InMemoryLogger Instance => _instance.Value;
+        public static InMemoryLogger Instance => MemoryInstance.Value;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Logs a message with a specified log level and library name.
         /// </summary>
@@ -206,7 +207,7 @@ namespace CoreMemoryLog
         public void LogInformation(string message, Exception exception = null,
             [CallerMemberName] string callerMethod = "")
         {
-            LogToQueue(_ILoggerLogs, LogLevel.Information, message, exception, callerMethod);
+            LogToQueue(_iLoggerLogs, LogLevel.Information, message, exception, callerMethod);
         }
 
         /// <summary>
@@ -217,7 +218,7 @@ namespace CoreMemoryLog
         /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
         public void LogWarning(string message, Exception exception = null, [CallerMemberName] string callerMethod = "")
         {
-            LogToQueue(_ILoggerLogs, LogLevel.Warning, message, exception, callerMethod);
+            LogToQueue(_iLoggerLogs, LogLevel.Warning, message, exception, callerMethod);
         }
 
         /// <summary>
@@ -228,7 +229,7 @@ namespace CoreMemoryLog
         /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
         public void LogError(string message, Exception exception = null, [CallerMemberName] string callerMethod = "")
         {
-            LogToQueue(_ILoggerLogs, LogLevel.Error, message, exception, callerMethod);
+            LogToQueue(_iLoggerLogs, LogLevel.Error, message, exception, callerMethod);
         }
 
         /// <summary>
@@ -250,7 +251,7 @@ namespace CoreMemoryLog
         /// <returns>All logs from the ILogger log queue.</returns>
         public List<LogEntry> GetLog()
         {
-            return _ILoggerLogs.ToList();
+            return _iLoggerLogs.ToList();
         }
 
         /// <summary>
