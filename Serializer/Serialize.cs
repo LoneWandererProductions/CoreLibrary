@@ -25,7 +25,7 @@ namespace Serializer
     ///     Helper Class to Serialize and DeSerialize Objects for persistent Saving of Data
     ///     Important: Object we Serialize must be public!
     /// </summary>
-    public static partial class Serialize
+    public static class Serialize
     {
         /// <summary>
         ///     Ensures that the directory for the given path exists.
@@ -41,8 +41,8 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Logs the provided message. For demonstration purposes, this logs to the console.
-        /// In a real application, use a proper logging framework.
+        ///     Logs the provided message. For demonstration purposes, this logs to the console.
+        ///     In a real application, use a proper logging framework.
         /// </summary>
         /// <param name="level">The Log Level.</param>
         /// <param name="message">The message to log.</param>
@@ -180,7 +180,7 @@ namespace Serializer
 
                 using var streamWriter = new StreamWriter(path);
                 streamWriter.Write(stringWriter.ToString());
-                Log(LogLevel.Information,$"Dictionary serialized and saved to {path}");
+                Log(LogLevel.Information, $"Dictionary serialized and saved to {path}");
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)
@@ -193,7 +193,7 @@ namespace Serializer
         /// <summary>
         ///     Custom exception for serialization errors.
         /// </summary>
-        public sealed partial class SerializationException : Exception
+        public sealed class SerializationException : Exception
         {
         }
     }

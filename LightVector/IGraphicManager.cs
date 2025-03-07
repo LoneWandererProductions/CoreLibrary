@@ -25,12 +25,12 @@ using System.Windows;
 namespace LightVector
 {
     /// <summary>
-    /// Interface for our Vector Library
+    ///     Interface for our Vector Library
     /// </summary>
     public interface IGraphicManager
     {
         /// <summary>
-        /// Adds the object.
+        ///     Adds the object.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="graphic">The graphic.</param>
@@ -41,7 +41,7 @@ namespace LightVector
             Dictionary<string, object>? attributes = null);
 
         /// <summary>
-        /// Applies the transformation.
+        ///     Applies the transformation.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="transformation">The transformation.</param>
@@ -49,7 +49,7 @@ namespace LightVector
         bool ApplyTransformation(int id, Transform transformation);
 
         /// <summary>
-        /// Gets the object by identifier.
+        ///     Gets the object by identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>

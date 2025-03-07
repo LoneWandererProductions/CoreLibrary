@@ -30,9 +30,9 @@ namespace Debugger
                         Trace.WriteLine($"[{log.Timestamp}] {log.Level}: {log.Message}");
                     }
                 }
+
                 await Task.Delay(_pollingInterval, cancellationToken);
             }
         }
     }
-
 }

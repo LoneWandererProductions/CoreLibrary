@@ -15,7 +15,7 @@ using System.Windows.Media;
 namespace LightVector
 {
     /// <summary>
-    /// Interface for Vector Render
+    ///     Interface for Vector Render
     /// </summary>
     public interface IVectorRenderer
     {

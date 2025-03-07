@@ -15,19 +15,35 @@ namespace CoreInject
 {
     /// <inheritdoc />
     /// <summary>
-    /// Manages a scope for resolving and tracking instances of services.
-    /// Ensures that services registered within the same scope return the same instance.
+    ///     Manages a scope for resolving and tracking instances of services.
+    ///     Ensures that services registered within the same scope return the same instance.
     /// </summary>
     public sealed class SimpleScope : IDisposable
     {
         /// <summary>
-        /// Stores instances of services that should persist within the current scope.
+        ///     Stores instances of services that should persist within the current scope.
         /// </summary>
         private readonly Dictionary<Type, object> _scopedInstances = new();
 
         /// <summary>
-        /// Resolves a service within the scope, ensuring that the same instance is returned
-        /// for subsequent resolutions within the same scope.
+        ///     Disposes all disposable objects registered in the scope and clears stored instances.
+        /// </summary>
+        public void Dispose()
+        {
+            foreach (var instance in _scopedInstances.Values)
+            {
+                if (instance is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+
+            _scopedInstances.Clear();
+        }
+
+        /// <summary>
+        ///     Resolves a service within the scope, ensuring that the same instance is returned
+        ///     for subsequent resolutions within the same scope.
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="factory">A factory function to create a new instance if none exists.</param>
@@ -48,22 +64,6 @@ namespace CoreInject
             instance = factory();
             _scopedInstances[typeof(TService)] = instance;
             return (TService)instance;
-        }
-
-        /// <summary>
-        /// Disposes all disposable objects registered in the scope and clears stored instances.
-        /// </summary>
-        public void Dispose()
-        {
-            foreach (var instance in _scopedInstances.Values)
-            {
-                if (instance is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-            }
-
-            _scopedInstances.Clear();
         }
     }
 }

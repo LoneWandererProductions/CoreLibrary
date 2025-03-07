@@ -11,7 +11,7 @@
 namespace LightVector
 {
     /// <summary>
-    /// Empty Constructor
+    ///     Empty Constructor
     /// </summary>
     public class Transform
     {
@@ -37,18 +37,18 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Gets the scale x.
+        ///     Gets the scale x.
         /// </summary>
         /// <value>
-        /// The scale x.
+        ///     The scale x.
         /// </value>
         public float ScaleX { get; }
 
         /// <summary>
-        /// Gets the scale y.
+        ///     Gets the scale y.
         /// </summary>
         /// <value>
-        /// The scale y.
+        ///     The scale y.
         /// </value>
         public float ScaleY { get; }
     }
@@ -61,7 +61,7 @@ namespace LightVector
     public sealed class RotateTransform : Transform
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RotateTransform"/> class.
+        ///     Initializes a new instance of the <see cref="RotateTransform" /> class.
         /// </summary>
         /// <param name="angle">The angle.</param>
         public RotateTransform(double angle)
@@ -70,10 +70,10 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Gets the angle.
+        ///     Gets the angle.
         /// </summary>
         /// <value>
-        /// The angle.
+        ///     The angle.
         /// </value>
         public double Angle { get; }
     }
@@ -86,7 +86,7 @@ namespace LightVector
     public sealed class TranslateTransform : Transform
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TranslateTransform"/> class.
+        ///     Initializes a new instance of the <see cref="TranslateTransform" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -97,18 +97,18 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Gets the x.
+        ///     Gets the x.
         /// </summary>
         /// <value>
-        /// The x.
+        ///     The x.
         /// </value>
         public double X { get; }
 
         /// <summary>
-        /// Gets the y.
+        ///     Gets the y.
         /// </summary>
         /// <value>
-        /// The y.
+        ///     The y.
         /// </value>
         public double Y { get; }
     }

@@ -19,7 +19,7 @@ namespace CoreInject
     public static class CoreInjectorExtensions
     {
         /// <summary>
-        /// Automatically registers all classes that implement an interface in the given assembly.
+        ///     Automatically registers all classes that implement an interface in the given assembly.
         /// </summary>
         /// <param name="injector">The SimpleInjector instance.</param>
         /// <param name="assembly">The assembly to scan for implementations.</param>
@@ -49,7 +49,7 @@ namespace CoreInject
         }
 
         /// <summary>
-        /// Automatically registers all classes that implement an interface in the given assembly.
+        ///     Automatically registers all classes that implement an interface in the given assembly.
         /// </summary>
         /// <param name="injector">The SimpleInjector instance.</param>
         /// <param name="assemblies">The assemblies to scan for implementations.</param>
@@ -92,7 +92,7 @@ namespace CoreInject
         }
 
         /// <summary>
-        /// Attempts to resolve a service without throwing an exception if not found.
+        ///     Attempts to resolve a service without throwing an exception if not found.
         /// </summary>
         /// <typeparam name="TService">The service type.</typeparam>
         /// <param name="injector">The SimpleInjector instance.</param>

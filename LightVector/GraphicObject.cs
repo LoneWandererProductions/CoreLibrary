@@ -118,25 +118,27 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Helper for Serialization of Dictionaries
+        ///     Helper for Serialization of Dictionaries
         /// </summary>
         public sealed class SerializableAttribute
         {
             /// <summary>
-            /// Gets or sets the key.
+            ///     Gets or sets the key.
             /// </summary>
             /// <value>
-            /// The key.
+            ///     The key.
             /// </value>
-            [XmlAttribute(nameof(Key))] public string Key { get; set; }
+            [XmlAttribute(nameof(Key))]
+            public string Key { get; set; }
 
             /// <summary>
-            /// Gets or sets the value.
+            ///     Gets or sets the value.
             /// </summary>
             /// <value>
-            /// The value.
+            ///     The value.
             /// </value>
-            [XmlAttribute(nameof(Value))] public string Value { get; set; }
+            [XmlAttribute(nameof(Value))]
+            public string Value { get; set; }
         }
     }
 }

@@ -28,8 +28,8 @@ namespace Serializer
     public static class DeSerialize
     {
         /// <summary>
-        /// Logs the provided message. For demonstration purposes, this logs to the console.
-        /// In a real application, use a proper logging framework.
+        ///     Logs the provided message. For demonstration purposes, this logs to the console.
+        ///     In a real application, use a proper logging framework.
         /// </summary>
         /// <param name="level">The Log Level.</param>
         /// <param name="message">The message to log.</param>
@@ -48,12 +48,14 @@ namespace Serializer
         {
             if (!FileHandleSearch.FileExists(path))
             {
-                Log(LogLevel.Error, "File already exists.", new ArgumentException($"{SerialResources.ErrorPath} {path}"));
+                Log(LogLevel.Error, "File already exists.",
+                    new ArgumentException($"{SerialResources.ErrorPath} {path}"));
             }
 
             if (!FileContent(path))
             {
-                Log(LogLevel.Error, "File was not empty.", new ArgumentException($"{SerialResources.ErrorFileEmpty} {path}"));
+                Log(LogLevel.Error, "File was not empty.",
+                    new ArgumentException($"{SerialResources.ErrorFileEmpty} {path}"));
             }
         }
 
@@ -136,12 +138,15 @@ namespace Serializer
                 using var reader = new StreamReader(path, Encoding.UTF8);
                 var list = (List<Item>)new XmlSerializer(typeof(List<Item>)).Deserialize(reader);
 
-                var result = list.ToDictionary(
-                    item => Deserialize<TKey>(item.Key),
-                    item => Deserialize<TValue>(item.Value));
-                Log(LogLevel.Information,
-                     $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully deserialized from {path}");
-                return result;
+                if (list != null)
+                {
+                    var result = list.ToDictionary(
+                        item => Deserialize<TKey>(item.Key),
+                        item => Deserialize<TValue>(item.Value));
+                    Log(LogLevel.Information,
+                        $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} successfully deserialized from {path}");
+                    return result;
+                }
             }
             catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
                                            or UnauthorizedAccessException or ArgumentException or IOException)

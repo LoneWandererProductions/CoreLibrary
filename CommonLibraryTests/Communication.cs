@@ -17,7 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Some random stuff
+    ///     Some random stuff
     /// </summary>
     [TestClass]
     public class Communication

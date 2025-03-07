@@ -9,17 +9,17 @@
 namespace CoreWorker
 {
     /// <summary>
-    /// Interface what we expect
+    ///     Interface what we expect
     /// </summary>
     public interface ICoreBackgroundWorker
     {
         /// <summary>
-        /// Starts this instance.
+        ///     Starts this instance.
         /// </summary>
         void Start();
 
         /// <summary>
-        /// Stops this instance.
+        ///     Stops this instance.
         /// </summary>
         void Stop();
     }

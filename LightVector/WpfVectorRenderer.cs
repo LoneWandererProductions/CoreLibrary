@@ -21,18 +21,18 @@ namespace LightVector
 {
     /// <inheritdoc />
     /// <summary>
-    /// Sample Implementation for an WPF Renderer
+    ///     Sample Implementation for an WPF Renderer
     /// </summary>
     /// <seealso cref="IVectorRenderer" />
     public class WpfVectorRenderer : IVectorRenderer
     {
         /// <summary>
-        /// The vector objects
+        ///     The vector objects
         /// </summary>
         private readonly List<SaveObject> _vectorObjects;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WpfVectorRenderer"/> class.
+        ///     Initializes a new instance of the <see cref="WpfVectorRenderer" /> class.
         /// </summary>
         /// <param name="vectorObjects">The vector objects.</param>
         public WpfVectorRenderer(IEnumerable<SaveObject> vectorObjects)
@@ -42,10 +42,10 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Renders to container.
+        ///     Renders to container.
         /// </summary>
         /// <returns>
-        /// Returns a framework-specific container
+        ///     Returns a framework-specific container
         /// </returns>
         public object RenderToContainer()
         {
@@ -84,10 +84,10 @@ namespace LightVector
 
         /// <inheritdoc />
         /// <summary>
-        /// Renders to image.
+        ///     Renders to image.
         /// </summary>
         /// <returns>
-        /// Converts to a WPF Image
+        ///     Converts to a WPF Image
         /// </returns>
         public ImageSource RenderToImage()
         {
@@ -103,7 +103,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Converts to WPF object.
+        ///     Converts to WPF object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>Image Object to Wpf Shape</returns>
@@ -122,7 +122,8 @@ namespace LightVector
                 case GraphicTypes.BezierCurve:
                     var bezierObject = (BezierCurve)obj.Graphic;
                     var tension = bezierObject.Tension; // Default tension if not provided
-                    return BezierCurveFactory.CreateBezierCurve(bezierObject.Vectors, tension); // Now returns the generated path from the factory
+                    return BezierCurveFactory.CreateBezierCurve(bezierObject.Vectors,
+                        tension); // Now returns the generated path from the factory
 
                 case GraphicTypes.Polygon:
                     var polygonObject = (PolygonObject)obj.Graphic;
@@ -144,7 +145,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Creates the line.
+        ///     Creates the line.
         /// </summary>
         /// <param name="lineObject">The line object.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
@@ -170,7 +171,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Creates the polygon.
+        ///     Creates the polygon.
         /// </summary>
         /// <param name="polygonObject">The polygon object.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
@@ -178,7 +179,8 @@ namespace LightVector
         private static Shape CreatePolygon(PolygonObject polygonObject, Point startCoordinates)
         {
             // Convert the list of vertices into a collection of Points, offset by the startCoordinates
-            var points = new PointCollection(polygonObject.Vertices.Select(v => new Point(v.X + startCoordinates.X, v.Y + startCoordinates.Y)));
+            var points = new PointCollection(polygonObject.Vertices.Select(v =>
+                new Point(v.X + startCoordinates.X, v.Y + startCoordinates.Y)));
 
             return new Polygon
             {
@@ -191,14 +193,15 @@ namespace LightVector
 
 
         /// <summary>
-        /// Creates the circle.
+        ///     Creates the circle.
         /// </summary>
         /// <param name="circleObject">The circle object.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
         private static Shape CreateCircle(CircleObject circleObject, Point startCoordinates)
         {
-            var circle = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), circleObject.Radius, circleObject.Radius);
+            var circle = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), circleObject.Radius,
+                circleObject.Radius);
 
             return new Path
             {
@@ -210,14 +213,15 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Creates the oval.
+        ///     Creates the oval.
         /// </summary>
         /// <param name="ovalObject">The oval object.</param>
         /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
         private static Shape CreateOval(OvalObject ovalObject, Point startCoordinates)
         {
-            var oval = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), ovalObject.RadiusX, ovalObject.RadiusY);
+            var oval = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), ovalObject.RadiusX,
+                ovalObject.RadiusY);
 
             return new Path
             {

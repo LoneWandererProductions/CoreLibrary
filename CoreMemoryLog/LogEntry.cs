@@ -21,5 +21,4 @@ namespace CoreMemoryLog
 
         public string LibraryName { get; set; }
     }
-
 }

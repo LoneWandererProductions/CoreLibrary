@@ -14,18 +14,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Part of my Dependency Injection Journey
+    ///     Part of my Dependency Injection Journey
     /// </summary>
     [TestClass]
     public class CoreInjectorTests
     {
         /// <summary>
-        /// The injector
+        ///     The injector
         /// </summary>
         private CoreInjector _injector;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -34,7 +34,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Registers the singleton should create single instance.
+        ///     Registers the singleton should create single instance.
         /// </summary>
         [TestMethod]
         public void RegisterSingletonShouldCreateSingleInstance()
@@ -48,7 +48,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Registers the transient should create different instances.
+        ///     Registers the transient should create different instances.
         /// </summary>
         [TestMethod]
         public void RegisterTransientShouldCreateDifferentInstances()
@@ -62,7 +62,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Registers the instance should use registered instance.
+        ///     Registers the instance should use registered instance.
         /// </summary>
         [TestMethod]
         public void RegisterInstanceShouldUseRegisteredInstance()
@@ -76,7 +76,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Registers the scoped should maintain scope within scope.
+        ///     Registers the scoped should maintain scope within scope.
         /// </summary>
         [TestMethod]
         public void RegisterScopedShouldMaintainScopeWithinScope()
@@ -98,7 +98,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Resolves the unregistered service should throw exception.
+        ///     Resolves the unregistered service should throw exception.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -118,7 +118,7 @@ namespace CommonLibraryTests
         // --- New Tests for RegisterFromAssembly and TryResolve ---
 
         /// <summary>
-        /// Registers from assembly should register services correctly.
+        ///     Registers from assembly should register services correctly.
         /// </summary>
         [TestMethod]
         public void RegisterFromAssemblyShouldRegisterServicesCorrectly()
@@ -161,7 +161,7 @@ namespace CommonLibraryTests
     }
 
     /// <summary>
-    /// Mock classes for testing
+    ///     Mock classes for testing
     /// </summary>
     public interface IService
     {
@@ -170,7 +170,7 @@ namespace CommonLibraryTests
 
     /// <inheritdoc />
     /// <summary>
-    /// Concrete service implementation for testing
+    ///     Concrete service implementation for testing
     /// </summary>
     public class Service : IService
     {
@@ -178,7 +178,7 @@ namespace CommonLibraryTests
     }
 
     /// <summary>
-    /// Mock service for testing
+    ///     Mock service for testing
     /// </summary>
     public class MockService : IService
     {

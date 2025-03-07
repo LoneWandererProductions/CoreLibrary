@@ -17,7 +17,7 @@ namespace LightVector
     public abstract class ShearTransform : Transform
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ShearTransform"/> class.
+        ///     Initializes a new instance of the <see cref="ShearTransform" /> class.
         /// </summary>
         /// <param name="shearX">The shear x.</param>
         /// <param name="shearY">The shear y.</param>
@@ -28,18 +28,18 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Gets the shear x.
+        ///     Gets the shear x.
         /// </summary>
         /// <value>
-        /// The shear x.
+        ///     The shear x.
         /// </value>
         public double ShearX { get; }
 
         /// <summary>
-        /// Gets the shear y.
+        ///     Gets the shear y.
         /// </summary>
         /// <value>
-        /// The shear y.
+        ///     The shear y.
         /// </value>
         public double ShearY { get; }
     }

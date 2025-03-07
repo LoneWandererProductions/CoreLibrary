@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Part of my Dependency Injection Journey
+    ///     Part of my Dependency Injection Journey
     /// </summary>
     [TestClass]
     public class CoreBackgroundWorkerTests
@@ -26,7 +26,7 @@ namespace CommonLibraryTests
         private CoreInjector _injector;
 
         /// <summary>
-        /// Setup: Initialize CoreInjector container for dependency injection
+        ///     Setup: Initialize CoreInjector container for dependency injection
         /// </summary>
         [TestInitialize]
         public void SetUp()
@@ -37,7 +37,7 @@ namespace CommonLibraryTests
             _injector.RegisterInstance<ILogger>(new InMemoryLogger());
 
             // Register TestBackgroundWorker with constructor injection
-            _injector.RegisterSingleton<ICoreBackgroundWorker>((injector) =>
+            _injector.RegisterSingleton<ICoreBackgroundWorker>(injector =>
             {
                 var logger = injector.Resolve<ILogger>();
                 return new TestBackgroundWorker(logger); // Inject the logger
@@ -45,7 +45,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cores the background worker should start and stop correctly.
+        ///     Cores the background worker should start and stop correctly.
         /// </summary>
         [TestMethod]
         public async Task CoreBackgroundWorkerShouldStartAndStopCorrectly()
@@ -75,7 +75,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Cores the background worker should handle cancellation.
+        ///     Cores the background worker should handle cancellation.
         /// </summary>
         [TestMethod]
         public async Task CoreBackgroundWorkerShouldHandleCancellation()
@@ -86,8 +86,8 @@ namespace CommonLibraryTests
 
             // Act: Start the worker and cancel it shortly after
             worker.Start();
-            await Task.Delay(1000);  // Give the worker time to start
-            worker.Stop();  // Stop the worker before it finishes
+            await Task.Delay(1000); // Give the worker time to start
+            worker.Stop(); // Stop the worker before it finishes
 
             // Assert: Check cancellation logging
             var log = logger.GetLog();
@@ -105,10 +105,10 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Concrete implementation of CoreBackgroundWorker for testing.
+        ///     Concrete implementation of CoreBackgroundWorker for testing.
         /// </summary>
         /// <summary>
-        /// Concrete implementation of CoreBackgroundWorker for testing.
+        ///     Concrete implementation of CoreBackgroundWorker for testing.
         /// </summary>
         private class TestBackgroundWorker : ICoreBackgroundWorker
         {
@@ -116,21 +116,12 @@ namespace CommonLibraryTests
             private CancellationTokenSource _cancellationTokenSource;
 
             public TestBackgroundWorker()
-            { }
+            {
+            }
 
             public TestBackgroundWorker(ILogger logger)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            }
-
-            /// <summary>
-            /// Defines the worker task that must be implemented in a derived class.
-            /// </summary>
-            /// <param name="cancellationToken"></param>
-            public async Task ExecuteAsync(CancellationToken cancellationToken)
-            {
-                _logger.LogInformation("Test worker is running...");  // Log the message
-                await Task.Delay(500, cancellationToken); // Simulate work with a short delay
             }
 
             // Optional: Override Start if you want to add more behavior when starting
@@ -149,7 +140,16 @@ namespace CommonLibraryTests
                 // Cancel the operation if it's running
                 _cancellationTokenSource?.Cancel();
             }
-        }
 
+            /// <summary>
+            ///     Defines the worker task that must be implemented in a derived class.
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            public async Task ExecuteAsync(CancellationToken cancellationToken)
+            {
+                _logger.LogInformation("Test worker is running..."); // Log the message
+                await Task.Delay(500, cancellationToken); // Simulate work with a short delay
+            }
+        }
     }
 }

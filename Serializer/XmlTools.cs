@@ -111,7 +111,7 @@ namespace Serializer
                 doc.Load(path);
             }
             catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException
-                or IOException or NotSupportedException or SecurityException)
+                                           or IOException or NotSupportedException or SecurityException)
             {
                 InMemoryLogger.Instance.Log(LogLevel.Error, ex.Message, ex);
             }

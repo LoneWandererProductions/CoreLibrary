@@ -70,7 +70,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Rotates the vector.
+        ///     Rotates the vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
         /// <param name="angle">The angle.</param>

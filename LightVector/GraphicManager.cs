@@ -23,13 +23,13 @@ namespace LightVector
     public class GraphicManager : IGraphicManager
     {
         /// <summary>
-        /// The objects
+        ///     The objects
         /// </summary>
         private readonly Dictionary<int, SaveObject> _objects = new();
 
         /// <inheritdoc />
         /// <summary>
-        /// Adds the object.
+        ///     Adds the object.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="graphic">The graphic.</param>
@@ -182,7 +182,7 @@ namespace LightVector
         }
 
         /// <summary>
-        /// Gets the type of the graphic.
+        ///     Gets the type of the graphic.
         /// </summary>
         /// <param name="graphic">The graphic.</param>
         /// <returns>Type of graphic.</returns>
