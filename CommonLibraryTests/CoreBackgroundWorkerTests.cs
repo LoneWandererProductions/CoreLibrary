@@ -7,6 +7,7 @@
  */
 
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CoreInject;
 using CoreWorker;
@@ -54,7 +55,7 @@ namespace CommonLibraryTests
             // Register the InMemoryLogger and CoreBackgroundWorker in the DI container
             var logger = new InMemoryLogger();
             _injector.RegisterInstance<ILogger>(logger);
-            _injector.RegisterSingleton<ICoreBackgroundWorker, CoreBackgroundWorker>();
+            _injector.RegisterSingleton<ICoreBackgroundWorker, TestBackgroundWorker>();
         }
 
 
@@ -70,17 +71,17 @@ namespace CommonLibraryTests
 
             // Act: Start the worker
             worker.Start();
-            await Task.Delay(1000); // Let the worker run for a short time
+            await Task.Delay(1500); // Let the worker run for a short time
 
             // Assert: Check that the worker logged the "running" message
-            //Assert.IsTrue(logger?.Logs.Exists(log => log.Contains("Worker is running")) ?? false,
-            //    "Worker did not log 'running' message.");
+            Assert.IsTrue(logger?.Logs.Exists(log => log.Contains("Test worker is running")) ?? false,
+                "Worker did not log 'running' message.");
 
             // Act: Stop the worker
             worker.Stop();
 
             // Assert: No error during stopping
-            Assert.IsTrue(true); // You can replace this with additional verification if needed
+            Assert.IsTrue(true); // Placeholder, can be expanded for better validation
         }
 
         // Cleanup: Dispose of the container if needed
@@ -90,6 +91,33 @@ namespace CommonLibraryTests
             // There's no explicit Dispose method in CoreInjector, 
             // but you can clean up scopes if required.
             _injector.EndScope();
+        }
+
+        /// <summary>
+        /// Concrete implementation of CoreBackgroundWorker for testing.
+        /// </summary>
+        private sealed class TestBackgroundWorker : CoreBackgroundWorker
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            /// </summary>
+            /// <param name="logger">The logger.</param>
+            public TestBackgroundWorker(ILogger logger) : base(logger) { }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            /// </summary>
+            public TestBackgroundWorker()
+            { }
+
+            /// <summary>
+            /// Defines the worker task that must be implemented in a derived class.
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+            {
+                await Task.Delay(500, cancellationToken); // Simulate work with a short delay
+            }
         }
     }
 }

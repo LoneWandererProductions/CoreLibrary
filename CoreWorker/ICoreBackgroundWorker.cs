@@ -24,4 +24,3 @@ namespace CoreWorker
         void Stop();
     }
 }
-

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreWorker
  * FILE:        CoreWorker/CoreBackgroundWorker.cs
- * PURPOSE:     Actual Implementation of a BackgroundWorker
+ * PURPOSE:     An sample Implementation of a BackgroundWorker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -15,26 +15,26 @@ using Debugger;
 
 namespace CoreWorker
 {
-    public sealed class CoreBackgroundWorker : ICoreBackgroundWorker
+    /// <summary>
+    /// Our basic Framework for the worker.
+    /// </summary>
+    /// <seealso cref="CoreWorker.ICoreBackgroundWorker" />
+    public abstract class CoreBackgroundWorker : ICoreBackgroundWorker
     {
         private readonly ILogger _logger;
         private Task? _task;
         private CancellationTokenSource _cts = new();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CoreBackgroundWorker"/> class.
-        /// Parameterless constructor, providing a default logger
+        /// Default constructor: Uses an in-memory logger if none is provided.
         /// </summary>
-        public CoreBackgroundWorker()
-        {
-            _logger = default; // to be implemented 
-        }
+        protected CoreBackgroundWorker() : this(new InMemoryLogger()) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CoreBackgroundWorker"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public CoreBackgroundWorker(ILogger logger)
+        protected CoreBackgroundWorker(ILogger logger)
         {
             _logger = logger;
         }
@@ -64,6 +64,11 @@ namespace CoreWorker
                 }
             });
         }
+
+        /// <summary>
+        /// Defines the worker task that must be implemented in a derived class.
+        /// </summary>
+        protected abstract Task ExecuteAsync(CancellationToken cancellationToken);
 
         /// <inheritdoc />
         /// <summary>
