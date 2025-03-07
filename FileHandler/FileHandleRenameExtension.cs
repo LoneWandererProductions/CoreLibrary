@@ -33,7 +33,7 @@ namespace FileHandler
         /// <returns>
         ///     string with the removed appendage
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     str or appendage was empty
         /// </exception>
         public static string RemoveAppendage(this string str, string appendage,
@@ -63,7 +63,7 @@ namespace FileHandler
         /// <returns>
         ///     string with added appendage
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         ///     str or appendage was empty
         /// </exception>
         public static string AddAppendage(this string str, string appendage,
@@ -92,7 +92,7 @@ namespace FileHandler
         /// <returns>
         ///     string with replaced substring
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">str was empty</exception>
+        /// <exception cref="ArgumentNullException">str was empty</exception>
         public static string ReplacePart(this string str, string targetStr, string update,
             StringComparison comparison = StringComparison.Ordinal)
         {

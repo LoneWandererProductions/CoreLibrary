@@ -162,7 +162,7 @@ namespace Imaging
         ///     Handles the exception.
         /// </summary>
         /// <param name="ex">The ex.</param>
-        /// <exception cref="System.ApplicationException"></exception>
+        /// <exception cref="ApplicationException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void HandleException(Exception ex)
         {
@@ -190,7 +190,7 @@ namespace Imaging
         /// </summary>
         /// <param name="method">The method.</param>
         /// <param name="image">The image.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap image)
         {
@@ -209,7 +209,7 @@ namespace Imaging
         /// </summary>
         /// <param name="method">The method.</param>
         /// <param name="image">The BitmapImage.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, BitmapImage image)
         {
@@ -291,7 +291,7 @@ namespace Imaging
         ///     Validates the file path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="IOException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateFilePath(string path)
         {

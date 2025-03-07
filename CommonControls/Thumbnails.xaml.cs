@@ -34,7 +34,7 @@ namespace CommonControls
     /// <summary>
     ///     Basic Image Thumbnails
     /// </summary>
-    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="UserControl" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     /// <inheritdoc cref="Window" />
     public sealed partial class Thumbnails : IDisposable

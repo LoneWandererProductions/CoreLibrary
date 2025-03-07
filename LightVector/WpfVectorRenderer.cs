@@ -107,7 +107,7 @@ namespace LightVector
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>Image Object to Wpf Shape</returns>
-        /// <exception cref="System.NotSupportedException">Unknown graphic type: {obj.Type}</exception>
+        /// <exception cref="NotSupportedException">Unknown graphic type: {obj.Type}</exception>
         private static Shape ConvertToWpfObject(SaveObject obj)
         {
             switch (obj.Type)

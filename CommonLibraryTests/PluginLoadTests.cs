@@ -223,7 +223,7 @@ namespace CommonLibraryTests
     /// <summary>
     ///     Plugin for tests
     /// </summary>
-    /// <seealso cref="Plugin.IPlugin" />
+    /// <seealso cref="IPlugin" />
     public class MockPlugin : BasePlugin
     {
         /// <summary>
@@ -347,7 +347,7 @@ namespace CommonLibraryTests
     /// <summary>
     ///     Plugin for tests, async
     /// </summary>
-    /// <seealso cref="Plugin.IAsyncPlugin" />
+    /// <seealso cref="IAsyncPlugin" />
     public class MockAsyncPlugin : IAsyncPlugin
     {
         /// <summary>

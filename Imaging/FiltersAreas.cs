@@ -30,7 +30,7 @@ namespace Imaging
         /// <returns>
         ///     Generates a filter for a certain area
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">
         ///     filter - null
         ///     or
         ///     shape - null

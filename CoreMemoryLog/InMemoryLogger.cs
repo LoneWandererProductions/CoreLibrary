@@ -27,8 +27,32 @@ namespace CoreMemoryLog
     /// </summary>
     public class InMemoryLogger : ILogger, IInMemoryLogger
     {
+        /// <summary>
+        /// The instance
+        /// </summary>
+        private static readonly Lazy<InMemoryLogger> _instance = new(() => new InMemoryLogger());
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        public static InMemoryLogger Instance => _instance.Value;
+
+        /// <summary>
+        /// The library logs
+        /// </summary>
         private readonly ConcurrentDictionary<string, ConcurrentQueue<LogEntry>> _libraryLogs = new();
+
+        /// <summary>
+        /// The i logger logs
+        /// </summary>
         private readonly ConcurrentQueue<LogEntry> _ILoggerLogs = new();
+
+        /// <summary>
+        /// The maximum log entries
+        /// </summary>
         private readonly int _maxLogEntries;
 
         /// <summary>

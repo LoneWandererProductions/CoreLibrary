@@ -16,7 +16,7 @@ namespace Plugin
     /// <summary>
     ///     Collects all events of the plugins
     /// </summary>
-    /// <seealso cref="Plugin.IEventAggregator" />
+    /// <seealso cref="IEventAggregator" />
     public class EventAggregator : IEventAggregator
     {
         /// <summary>

@@ -18,7 +18,7 @@ namespace Plugin
     ///     Abstract Implementation of Plugin
     ///     The user can pick and choose what he needs in a cleaner ways
     /// </summary>
-    /// <seealso cref="Plugin.IPlugin" />
+    /// <seealso cref="IPlugin" />
     public abstract class BasePlugin : IPlugin
     {
         /// <inheritdoc />
@@ -103,7 +103,7 @@ namespace Plugin
         /// <returns>
         ///     Result object
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         public virtual object ExecuteCommand(int id)
         {
             // Default implementation or throw NotImplementedException
@@ -121,7 +121,7 @@ namespace Plugin
         /// <returns>
         ///     int as Id, can be used by the dev to define or get the type of Plugin this is
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         public virtual int GetPluginType(int id)
         {
             // Default implementation or throw NotImplementedException

@@ -20,7 +20,7 @@ namespace SQLiteGui
     /// <summary>
     ///     View Model
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     public sealed class SqLiteGuiViewModel : ViewModelBase
     {
         /// <summary>

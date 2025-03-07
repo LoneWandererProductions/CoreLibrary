@@ -51,7 +51,7 @@ namespace ExtendedSystemObjects
         ///     Initializes a new instance of the <see cref="ImmutableLookupMap{TKey, TValue}" /> class.
         /// </summary>
         /// <param name="data">A dictionary containing the key-value pairs to initialize the map.</param>
-        /// <exception cref="System.ArgumentNullException">data</exception>
+        /// <exception cref="ArgumentNullException">data</exception>
         public ImmutableLookupMap(IDictionary<TKey, TValue> data)
         {
             if (data == null)
@@ -122,7 +122,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">The key {key} was not found in the lookup map.</exception>
+        /// <exception cref="KeyNotFoundException">The key {key} was not found in the lookup map.</exception>
         public TValue Get(TKey key)
         {
             var hash = GetHash(key, _keys.Length);

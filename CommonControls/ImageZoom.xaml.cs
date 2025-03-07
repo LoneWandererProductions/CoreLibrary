@@ -302,7 +302,7 @@ namespace CommonControls
         /// </summary>
         /// <param name="d">The d.</param>
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as ImageZoom;
