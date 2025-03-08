@@ -1,11 +1,13 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     CommonLibraryTests
  * FILE:        CommonLibraryTests/XmlToolsTests.cs
  * PURPOSE:     Test for XML tools
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serializer;
 using System.IO;
@@ -13,20 +15,31 @@ using System.Xml;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// Some XML tests
+    /// </summary>
     [TestClass]
     public class XmlToolsTests
     {
         /// <summary>
+        /// The test XML
+        /// </summary>
+        private static readonly string TestXml = "test.xml";
+
+        /// <summary>
         /// The test XML path
         /// </summary>
-        private const string TestXmlPath = "test.xml";
+        private static string _testXmlPath;
 
         /// <summary>
         /// Creates the test XML file.
         /// </summary>
-        /// <param name="path">The path.</param>
-        private static void CreateTestXmlFile(string path)
+        /// <param name="relativePath">The relative path.</param>
+        private static void CreateTestXmlFile(string relativePath)
         {
+            string directory = AppDomain.CurrentDomain.BaseDirectory; // Gets the directory where the test is running
+            _testXmlPath = Path.Combine(directory, relativePath);
+
             var xmlDoc = new XmlDocument();
             var declaration = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
             xmlDoc.AppendChild(declaration);
@@ -36,71 +49,93 @@ namespace CommonLibraryTests
 
             var itemElement = xmlDoc.CreateElement("Item");
             itemElement.SetAttribute("Number", "1");
-            itemElement.SetAttribute("GenericText", "Test Item");
             itemElement.SetAttribute("Other", "100.5");
-            rootElement.AppendChild(itemElement);
 
-            xmlDoc.Save(path);
+            // Add GenericText as an attribute (for attribute-based tests)
+            itemElement.SetAttribute("GenericText", "Test Item");
+
+            // Add GenericText as an element (for element-based tests)
+            var genericTextElement = xmlDoc.CreateElement("GenericText");
+            genericTextElement.InnerText = "Test Item";
+            itemElement.AppendChild(genericTextElement);
+
+            rootElement.AppendChild(itemElement);
+            xmlDoc.Save(_testXmlPath);
         }
 
+        /// <summary>
+        /// Sets up.
+        /// </summary>
         [TestInitialize]
         public void SetUp()
         {
             // Create a sample XML file before running tests
-            if (File.Exists(TestXmlPath))
+            if (File.Exists(_testXmlPath))
             {
-                File.Delete(TestXmlPath);
+                File.Delete(_testXmlPath);
             }
 
-            CreateTestXmlFile(TestXmlPath);
+            CreateTestXmlFile(TestXml);
         }
 
         [TestCleanup]
         public void CleanUp()
         {
             // Clean up test file after tests
-            if (File.Exists(TestXmlPath))
+            if (File.Exists(_testXmlPath))
             {
-                File.Delete(TestXmlPath);
+                File.Delete(_testXmlPath);
             }
         }
 
+        /// <summary>
+        /// Gets the first attribute from XML valid property returns correct value.
+        /// </summary>
         [TestMethod]
-        public void GetFirstAttributeFromXml_ValidProperty_ReturnsCorrectValue()
+        public void GetFirstAttributeFromXmlValidPropertyReturnsCorrectValue()
         {
             // Act
-            var result = XmlTools.GetFirstAttributeFromXml(TestXmlPath, "GenericText");
+            var result = XmlTools.GetFirstAttributeFromXml(_testXmlPath, "GenericText");
 
             // Assert
             Assert.AreEqual("Test Item", result);
         }
 
+        /// <summary>
+        /// Gets the first attribute from XML property not found returns null.
+        /// </summary>
         [TestMethod]
-        public void GetFirstAttributeFromXml_PropertyNotFound_ReturnsNull()
+        public void GetFirstAttributeFromXmlPropertyNotFoundReturnsNull()
         {
             // Act
-            var result = XmlTools.GetFirstAttributeFromXml(TestXmlPath, "NonExistentProperty");
+            var result = XmlTools.GetFirstAttributeFromXml(_testXmlPath, "NonExistentProperty");
 
             // Assert
             Assert.IsNull(result);
         }
 
+        /// <summary>
+        /// Gets the attributes from XML valid property returns correct values.
+        /// </summary>
         [TestMethod]
-        public void GetAttributesFromXml_ValidProperty_ReturnsCorrectValues()
+        public void GetAttributesFromXmlValidPropertyReturnsCorrectValues()
         {
             // Act
-            var result = XmlTools.GetAttributesFromXml(TestXmlPath, "GenericText");
+            var result = XmlTools.GetAttributesFromXml(_testXmlPath, "GenericText");
 
             // Assert
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Test Item", result[0]);
         }
 
+        /// <summary>
+        /// Gets the attributes from XML property not found returns null.
+        /// </summary>
         [TestMethod]
-        public void GetAttributesFromXml_PropertyNotFound_ReturnsNull()
+        public void GetAttributesFromXmlPropertyNotFoundReturnsNull()
         {
             // Act
-            var result = XmlTools.GetAttributesFromXml(TestXmlPath, "NonExistentProperty");
+            var result = XmlTools.GetAttributesFromXml(_testXmlPath, "NonExistentProperty");
 
             // Assert
             Assert.IsNull(result);
@@ -132,11 +167,42 @@ namespace CommonLibraryTests
             Assert.IsNull(result);
         }
 
+        /// <summary>
+        /// Gets the attributes from XML file does not exist returns null.
+        /// </summary>
         [TestMethod]
-        public void GetAttributesFromXml_FileDoesNotExist_ReturnsNull()
+        public void GetAttributesFromXmlFileDoesNotExistReturnsNull()
         {
             // Act
             var result = XmlTools.GetAttributesFromXml("nonexistent.xml", "GenericText");
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        /// <summary>
+        /// Gets the elements from XML valid element returns correct values.
+        /// </summary>
+        [TestMethod]
+        public void GetElementsFromXmlValidElementReturnsCorrectValues()
+        {
+            // Act
+            List<string> result = XmlTools.GetElementsFromXml(_testXmlPath, "GenericText");
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual(1, result.Count, "There should be exactly one GenericText element.");
+            Assert.AreEqual("Test Item", result[0], "Element value should match expected.");
+        }
+
+        /// <summary>
+        /// Gets the elements from XML file does not exist returns null.
+        /// </summary>
+        [TestMethod]
+        public void GetElementsFromXmlFileDoesNotExistReturnsNull()
+        {
+            // Act
+            var result = XmlTools.GetElementsFromXml("nonexistent.xml", "GenericText");
 
             // Assert
             Assert.IsNull(result);

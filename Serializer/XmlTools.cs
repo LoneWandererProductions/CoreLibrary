@@ -63,7 +63,6 @@ namespace Serializer
         /// <returns>First value as string. Can return null.</returns>
         public static string GetFirstAttributeFromXml(string path, string property)
         {
-            // Check if file exists
             if (!File.Exists(path))
             {
                 return null;
@@ -75,13 +74,42 @@ namespace Serializer
                 return string.Empty;
             }
 
-            var elements = doc.GetElementsByTagName(property);
-            if (elements.Count > 0)
+            var item = doc.DocumentElement?.SelectSingleNode("//Item");
+
+            var attribute = item?.Attributes[property];
+
+            if (attribute != null)
             {
-                return elements[0]?.InnerText;
+                return attribute.Value;
             }
 
-            LogError($"Property '{property}' not found in XML file: {path}");
+            LogError($"Attribute '{property}' not found in XML file: {path}");
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the elements from XML.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="elementName">Name of the element.</param>
+        /// <returns>Element from Name</returns>
+        public static List<string> GetElementsFromXml(string path, string elementName)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            var doc = LoadXml(path);
+
+            var elements = doc?.GetElementsByTagName(elementName);
+
+            if (elements?.Count != 0)
+            {
+                return elements?.Cast<XmlNode>().Select(e => e.InnerText).ToList();
+            }
+
+            LogError($"Element '{elementName}' not found in XML file: {path}");
             return null;
         }
 
@@ -93,7 +121,6 @@ namespace Serializer
         /// <returns>A list of all values found. Can return null.</returns>
         public static List<string> GetAttributesFromXml(string path, string property)
         {
-            // Check if file exists
             if (!File.Exists(path))
             {
                 return null;
@@ -105,16 +132,33 @@ namespace Serializer
                 return null;
             }
 
-            var elements = doc.GetElementsByTagName(property);
-            if (elements.Count == 0)
+            var items = doc.DocumentElement?.SelectNodes("//Item");
+            if (items == null || items.Count == 0)
             {
-                LogError($"Property '{property}' not found in XML file: {path}");
+                LogError($"No <Item> elements found in XML file: {path}");
                 return null;
             }
 
-            // Add all element values to the list
-            return (from XmlNode element in elements select element?.InnerText).ToList();
+            var values = new List<string>();
+
+            foreach (XmlNode item in items)
+            {
+                var attribute = item.Attributes[property];
+                if (attribute != null)
+                {
+                    values.Add(attribute.Value);
+                }
+            }
+
+            if (values.Count == 0)
+            {
+                LogError($"Attribute '{property}' not found in XML file: {path}");
+                return null;
+            }
+
+            return values;
         }
+
 
         /// <summary>
         ///     Load an XML file.

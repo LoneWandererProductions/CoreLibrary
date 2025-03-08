@@ -62,25 +62,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Check if our XmlTools works
-        /// </summary>
-        [TestMethod]
-        public void XmlToolTests()
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(SerializeTests),
-                "testProperty.xml");
-
-            Serializer.Serialize.SaveObjectToXml(ResourcesGeneral.DataItemOne, path);
-
-            var cache = XmlTools.GetFirstAttributeFromXml(path, "Number");
-
-            //Display
-            Assert.AreEqual("1", cache, "Correct Display");
-
-            _ = FileHandleDelete.DeleteFile(path);
-        }
-
-        /// <summary>
         ///     Tests the serialize dictionary null dictionary throws exception.
         /// </summary>
         [TestMethod]
