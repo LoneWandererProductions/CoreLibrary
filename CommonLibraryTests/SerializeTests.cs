@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Serialize.cs
+ * FILE:        CommonLibraryTests/SerializeTests.cs
  * PURPOSE:     Test for Serializer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -21,7 +21,7 @@ namespace CommonLibraryTests
     ///     Serializer unit test class.
     /// </summary>
     [TestClass]
-    public sealed class Serialize
+    public sealed class SerializeTests
     {
         /// <summary>
         ///     Check if our basic functions do Work out
@@ -67,7 +67,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void XmlToolTests()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Serialize),
+            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(SerializeTests),
                 "testProperty.xml");
 
             Serializer.Serialize.SaveObjectToXml(ResourcesGeneral.DataItemOne, path);

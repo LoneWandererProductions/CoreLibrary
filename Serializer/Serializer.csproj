@@ -8,8 +8,4 @@
     <Copyright>Lone Wanderer Productions</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CoreMemoryLog\CoreMemoryLog.csproj" />
-  </ItemGroup>
-
 </Project>

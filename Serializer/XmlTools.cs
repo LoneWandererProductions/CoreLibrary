@@ -3,8 +3,12 @@
  * PROJECT:     Serializer
  * FILE:        Serializer/XmlTools.cs
  * PURPOSE:     Some Xml Tools
+ *              Logging Via Events
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
@@ -13,10 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Xml;
-using CoreMemoryLog;
-
-// ReSharper disable once UnusedMember.Global, it is used, or should be at least
-// ReSharper disable once MemberCanBePrivate.Global, should be visible to the outside
 
 namespace Serializer
 {
@@ -26,6 +26,35 @@ namespace Serializer
     /// </summary>
     public static class XmlTools
     {
+        /// <summary>
+        ///     Event triggered when an error occurs.
+        /// </summary>
+        public static event Action<string, Exception> OnError;
+
+        /// <summary>
+        ///     Event triggered for informational messages.
+        /// </summary>
+        public static event Action<string> OnInformation;
+
+        /// <summary>
+        /// Logs the error.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="ex">The ex.</param>
+        private static void LogError(string message, Exception ex = null)
+        {
+            OnError?.Invoke(message, ex);
+        }
+
+        /// <summary>
+        /// Logs the information.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private static void LogInformation(string message)
+        {
+            OnInformation?.Invoke(message);
+        }
+
         /// <summary>
         ///     Read a specific attribute value.
         /// </summary>
@@ -52,7 +81,7 @@ namespace Serializer
                 return elements[0]?.InnerText;
             }
 
-            InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound, "Serializer");
+            LogError($"Property '{property}' not found in XML file: {path}");
             return null;
         }
 
@@ -79,12 +108,11 @@ namespace Serializer
             var elements = doc.GetElementsByTagName(property);
             if (elements.Count == 0)
             {
-                InMemoryLogger.Instance.Log(LogLevel.Error, SerialResources.ErrorPropertyNotFound, "Serializer");
+                LogError($"Property '{property}' not found in XML file: {path}");
                 return null;
             }
 
             // Add all element values to the list
-
             return (from XmlNode element in elements select element?.InnerText).ToList();
         }
 
@@ -100,10 +128,11 @@ namespace Serializer
             try
             {
                 doc.Load(path);
+                LogInformation($"Successfully loaded XML file: {path}");
             }
             catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException or IOException or NotSupportedException or SecurityException)
             {
-                InMemoryLogger.Instance.Log(LogLevel.Error, ex.Message, "Serializer", ex);
+                LogError($"Error loading XML file: {path} - {ex.Message}", ex);
                 return null;
             }
 

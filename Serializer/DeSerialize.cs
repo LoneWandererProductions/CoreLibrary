@@ -3,10 +3,12 @@
  * PROJECT:     Serializer
  * FILE:        Serializer/DeSerialize.cs
  * PURPOSE:     De Serialize Objects, Lists and Dictionaries
+ *              Logging done Via Events.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable EventNeverSubscribedTo.Global
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using CoreMemoryLog;
 
 namespace Serializer
 {
@@ -26,11 +27,21 @@ namespace Serializer
     public static class DeSerialize
     {
         /// <summary>
+        /// Event for logging messages
+        /// </summary>
+        public static event Action<string, Exception> OnError;
+
+        /// <summary>
+        /// Occurs when [on information].
+        /// </summary>
+        public static event Action<string> OnInformation;
+
+        /// <summary>
         /// Logs the provided message.
         /// </summary>
-        private static void Log(LogLevel level, string message, Exception ex = null)
+        private static void Log(string message, Exception ex = null)
         {
-            InMemoryLogger.Instance.Log(level, message, "Serializer", ex);
+            OnError?.Invoke(message, ex);
             Trace.WriteLine($"[{DateTime.Now}] {message}");
         }
 
@@ -41,13 +52,13 @@ namespace Serializer
         {
             if (!File.Exists(path))
             {
-                Log(LogLevel.Error, $"File does not exist: {path}", new ArgumentException(path));
+                Log( $"File does not exist: {path}", new ArgumentException(path));
                 throw new ArgumentException($"File does not exist: {path}");
             }
 
             if (!FileContent(path))
             {
-                Log(LogLevel.Error, $"File is empty: {path}", new ArgumentException(path));
+                Log($"File is empty: {path}", new ArgumentException(path));
                 throw new ArgumentException($"File is empty: {path}");
             }
         }
@@ -68,12 +79,12 @@ namespace Serializer
             {
                 using var reader = new StreamReader(path, Encoding.UTF8);
                 var result = new XmlSerializer(typeof(T)).Deserialize(reader) as T;
-                Log(LogLevel.Information, $"Object of type {typeof(T)} successfully deserialized from {path}");
+                OnInformation?.Invoke($"Object of type {typeof(T)} successfully deserialized from {path}");
                 return result;
             }
             catch (Exception ex)
             {
-                Log(LogLevel.Error, $"Error deserializing object from {path}: {ex.Message}", ex);
+                Log($"Error deserializing object from {path}: {ex.Message}", ex);
                 return null;
             }
         }
@@ -90,12 +101,13 @@ namespace Serializer
                 var serializer = new XmlSerializer(typeof(List<T>));
                 using var stream = new FileStream(path, FileMode.Open);
                 var result = (List<T>)serializer.Deserialize(stream);
-                Log(LogLevel.Information, $"List of type {typeof(T)} successfully deserialized from {path}");
+
+                OnInformation?.Invoke($"List of type {typeof(T)} successfully deserialized from {path}");
                 return result;
             }
             catch (Exception ex)
             {
-                Log(LogLevel.Error, $"Error deserializing list from {path}: {ex.Message}", ex);
+                Log($"Error deserializing list from {path}: {ex.Message}", ex);
                 return null;
             }
         }
@@ -117,13 +129,13 @@ namespace Serializer
                     var result = list.ToDictionary(
                         item => Deserialize<TKey>(item.Key),
                         item => Deserialize<TValue>(item.Value));
-                    Log(LogLevel.Information, $"Dictionary successfully deserialized from {path}");
+                    OnInformation?.Invoke($"Dictionary successfully deserialized from {path}");
                     return result;
                 }
             }
             catch (Exception ex)
             {
-                Log(LogLevel.Error, $"Error deserializing dictionary from {path}: {ex.Message}", ex);
+                Log( $"Error deserializing dictionary from {path}: {ex.Message}", ex);
             }
 
             return null;
@@ -142,7 +154,7 @@ namespace Serializer
             }
             catch (Exception ex)
             {
-                Log(LogLevel.Error, $"Error deserializing string: {ex.Message}", ex);
+                Log($"Error deserializing string: {ex.Message}", ex);
                 return default;
             }
         }
