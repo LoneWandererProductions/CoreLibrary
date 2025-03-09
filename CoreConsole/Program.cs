@@ -8,19 +8,19 @@
 
 using System;
 using System.Collections.Generic;
-using CoreBuilder;
 using System.IO;
 using System.Text.RegularExpressions;
+using CoreBuilder;
 
 namespace CoreConsole
 {
     /// <summary>
-    /// Entry Point for my tools and future utilities.
+    ///     Entry Point for my tools and future utilities.
     /// </summary>
     internal static class Program
     {
         /// <summary>
-        /// Defines the entry point of the application.
+        ///     Defines the entry point of the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
@@ -31,16 +31,17 @@ namespace CoreConsole
             // Ensure the user has provided the necessary arguments
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: ResXtractConsole <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
+                Console.WriteLine(
+                    "Usage: ResXtractConsole <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
                 return;
             }
 
-            string projectPath = args[0];
-            string outputResourceFile = args[1];
+            var projectPath = args[0];
+            var outputResourceFile = args[1];
 
             // Check if user wants to add any ignore list or patterns
-            List<string> ignoreList = new List<string>();
-            List<Regex> ignorePatterns = new List<Regex>();
+            var ignoreList = new List<string>();
+            var ignorePatterns = new List<Regex>();
 
             // Optionally, read the ignore list from a file if provided
             if (args.Length > 2 && File.Exists(args[2]))

@@ -9,37 +9,37 @@
 namespace CoreMemoryLog
 {
     /// <summary>
-    /// Entries of our Log
+    ///     Entries of our Log
     /// </summary>
     public enum LogLevel
     {
         /// <summary>
-        /// The trace
+        ///     The trace
         /// </summary>
         Trace = 0,
 
         /// <summary>
-        /// The debug
+        ///     The debug
         /// </summary>
         Debug = 1,
 
         /// <summary>
-        /// The information
+        ///     The information
         /// </summary>
         Information = 2,
 
         /// <summary>
-        /// The warning
+        ///     The warning
         /// </summary>
         Warning = 3,
 
         /// <summary>
-        /// The error
+        ///     The error
         /// </summary>
         Error = 4,
 
         /// <summary>
-        /// The critical
+        ///     The critical
         /// </summary>
         Critical = 5
     }

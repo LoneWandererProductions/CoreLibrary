@@ -154,11 +154,6 @@ namespace SqliteHelper
         internal const string SqlLiteDataTypeText = "text";
 
         /// <summary>
-        ///     The convert to (const). Value: " to: ".
-        /// </summary>
-        internal const string ConvertTo = " to: ";
-
-        /// <summary>
         ///     The error check (const). Value: "Error".
         /// </summary>
         internal const string ErrorCheck = "Error";

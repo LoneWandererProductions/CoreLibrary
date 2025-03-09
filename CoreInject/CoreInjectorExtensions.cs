@@ -17,7 +17,7 @@ using System.Reflection;
 namespace CoreInject
 {
     /// <summary>
-    /// Some Extension for our Injector
+    ///     Some Extension for our Injector
     /// </summary>
     public static class CoreInjectorExtensions
     {
@@ -86,12 +86,12 @@ namespace CoreInject
 
 
         /// <summary>
-        /// Determines whether [is service registered] [the specified service type].
+        ///     Determines whether [is service registered] [the specified service type].
         /// </summary>
         /// <param name="injector">The injector.</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>
-        ///   <c>true</c> if [is service registered] [the specified service type]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is service registered] [the specified service type]; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsServiceRegistered(this CoreInjector injector, Type serviceType)
         {

@@ -33,7 +33,7 @@ namespace CommonLibraryTests
 
             var paths = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
 
-            Serializer.Serialize.SaveObjectToXml(obj, paths);
+            Serialize.SaveObjectToXml(obj, paths);
 
             var test = DeSerialize.LoadObjectFromXml<XmlItem>(paths);
 
@@ -52,7 +52,7 @@ namespace CommonLibraryTests
 
             var paths = Path.Combine(Directory.GetCurrentDirectory(), "testList.xml");
 
-            Serializer.Serialize.SaveLstObjectToXml(lst, paths);
+            Serialize.SaveLstObjectToXml(lst, paths);
 
             var rslt = DeSerialize.LoadListFromXml<XmlItem>(paths);
 
@@ -72,7 +72,7 @@ namespace CommonLibraryTests
             var path = "test.xml";
 
             // Act
-            Serializer.Serialize.SaveDctObjectToXml((Dictionary<string, string>)null, path);
+            Serialize.SaveDctObjectToXml((Dictionary<string, string>)null, path);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace CommonLibraryTests
             var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
 
             // Act
-            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+            Serialize.SaveDctObjectToXml(dictionary, path);
 
             // Assert
             Assert.IsTrue(File.Exists(path));
@@ -108,7 +108,7 @@ namespace CommonLibraryTests
             // Arrange
             var dictionary = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
             var path = Path.Combine(Directory.GetCurrentDirectory(), "test.xml");
-            Serializer.Serialize.SaveDctObjectToXml(dictionary, path);
+            Serialize.SaveDctObjectToXml(dictionary, path);
 
             // Act
             var result = DeSerialize.LoadDictionaryFromXml<string, string>(path);

@@ -37,7 +37,7 @@ namespace Serializer
         public static event Action<string> OnInformation;
 
         /// <summary>
-        /// Logs the error.
+        ///     Logs the error.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="ex">The ex.</param>
@@ -47,7 +47,7 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Logs the information.
+        ///     Logs the information.
         /// </summary>
         /// <param name="message">The message.</param>
         private static void LogInformation(string message)
@@ -88,7 +88,7 @@ namespace Serializer
         }
 
         /// <summary>
-        /// Gets the elements from XML.
+        ///     Gets the elements from XML.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="elementName">Name of the element.</param>
@@ -174,7 +174,8 @@ namespace Serializer
                 doc.Load(path);
                 LogInformation($"Successfully loaded XML file: {path}");
             }
-            catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException or IOException or NotSupportedException or SecurityException)
+            catch (Exception ex) when (ex is FileNotFoundException or ArgumentException or XmlException or IOException
+                                           or NotSupportedException or SecurityException)
             {
                 LogError($"Error loading XML file: {path} - {ex.Message}", ex);
                 return null;
