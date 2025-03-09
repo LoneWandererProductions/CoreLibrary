@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -25,7 +24,7 @@ namespace SqliteHelper
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Suggests a table Format don't expect any wonders
+        ///     Suggests a table format; don't expect any wonders.
         /// </summary>
         /// <param name="obj">Generic Object</param>
         /// <returns>Table Suggestion</returns>
@@ -34,21 +33,29 @@ namespace SqliteHelper
         {
             if (obj == null)
             {
+                MessageHandling.SetMessage("Object is null in ConvertObjectToTableColumns.", 0);
                 return null;
             }
 
             var tableColumns = new DictionaryTableColumns();
 
-            foreach (var propertyInfo in obj.GetType().GetProperties())
+            try
             {
-                var column = new TableColumns
+                foreach (var propertyInfo in obj.GetType().GetProperties())
                 {
-                    DataType = GetDataType(propertyInfo.PropertyType.Name),
-                    PrimaryKey = false,
-                    Unique = false,
-                    NotNull = false
-                };
-                tableColumns.DColumns.Add(propertyInfo.Name, column);
+                    var column = new TableColumns
+                    {
+                        DataType = GetDataType(propertyInfo.PropertyType.Name),
+                        PrimaryKey = false,
+                        Unique = false,
+                        NotNull = false
+                    };
+                    tableColumns.DColumns.Add(propertyInfo.Name, column);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHandling.SetMessage($"Error in ConvertObjectToTableColumns: {ex.Message}", 0);
             }
 
             return tableColumns;
@@ -56,44 +63,63 @@ namespace SqliteHelper
 
         /// <inheritdoc />
         /// <summary>
-        ///     Convert Single Object into List of strings
-        ///     Works with Enum, sort of no guarantees
-        ///     if an Attribute is empty it will add an empty string
+        ///     Convert a single object into a list of strings.
+        ///     Works with Enum, but no guarantees.
         /// </summary>
         /// <param name="obj">Generic Object</param>
         /// <returns>List of Attribute as String, can return null.</returns>
         [return: MaybeNull]
         public List<string> ConvertObjectToAttributes(object obj)
         {
-            //well obvious don't fuck with me and don't expect an Debug Message
-            return obj == null ? null : ConvertAttributes(obj);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Converts to table set.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>TableSet of Attribute,  can return null.</returns>
-        [return: MaybeNull]
-        public TableSet ConvertObjectToTableSet(object obj)
-        {
-            //well obvious don't fuck with me and don't expect an Debug Message
             if (obj == null)
             {
+                MessageHandling.SetMessage("Object is null in ConvertObjectToAttributes.", 0);
                 return null;
             }
 
-            var attributes = ConvertAttributes(obj);
-
-            return attributes == null ? null : new TableSet(attributes);
+            try
+            {
+                return ConvertAttributes(obj);
+            }
+            catch (Exception ex)
+            {
+                MessageHandling.SetMessage($"Error in ConvertObjectToAttributes: {ex.Message}", 0);
+                return null;
+            }
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Fill in Attributes by Name into Object
-        ///     Strictly depends on the Order so well it is quite fragile
-        ///     Works with Enum, sort of no guarantees
+        ///     Converts to a table set.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>TableSet of Attribute, can return null.</returns>
+        [return: MaybeNull]
+        public TableSet ConvertObjectToTableSet(object obj)
+        {
+            if (obj == null)
+            {
+                MessageHandling.SetMessage("Object is null in ConvertObjectToTableSet.", 0);
+                return null;
+            }
+
+            try
+            {
+                var attributes = ConvertAttributes(obj);
+                return attributes == null ? null : new TableSet(attributes);
+            }
+            catch (Exception ex)
+            {
+                MessageHandling.SetMessage($"Error in ConvertObjectToTableSet: {ex.Message}", 0);
+                return null;
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Fill in attributes by name into the object.
+        ///     Strictly depends on the order, so it's quite fragile.
+        ///     Works with Enum, but no guarantees.
         /// </summary>
         /// <param name="attributes">Dictionary of Attribute Names and Values</param>
         /// <param name="obj">Object to be filled</param>
@@ -103,6 +129,7 @@ namespace SqliteHelper
         {
             if (attributes == null || obj == null || attributes.Count != obj.GetType().GetProperties().Length)
             {
+                MessageHandling.SetMessage("Attributes count mismatch in FillObjectFromAttributes.", 0);
                 return null;
             }
 
@@ -121,14 +148,14 @@ namespace SqliteHelper
             catch (Exception ex) when (ex is ArgumentException or TargetException or TargetParameterCountException
                                            or MethodAccessException or TargetInvocationException or OverflowException)
             {
-                Trace.WriteLine(ex);
+                MessageHandling.SetMessage($"Error in FillObjectFromAttributes: {ex.Message}", 0);
             }
 
             return obj;
         }
 
         /// <summary>
-        ///     Converts the attribute.
+        ///     Converts the attributes.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>List of Attribute as String, can return null</returns>
@@ -153,7 +180,7 @@ namespace SqliteHelper
             }
             catch (Exception ex) when (ex is ArgumentNullException or TargetParameterCountException)
             {
-                Trace.WriteLine(ex);
+                MessageHandling.SetMessage($"Error in ConvertAttributes: {ex.Message}", 0);
                 return null;
             }
 
@@ -161,7 +188,7 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Try to convert Data Type into the correct Format
+        ///     Try to convert Data Type into the correct format.
         /// </summary>
         /// <param name="dataType">Get C# Data Type</param>
         /// <returns>SqlLite DataType</returns>
@@ -179,3 +206,4 @@ namespace SqliteHelper
         }
     }
 }
+

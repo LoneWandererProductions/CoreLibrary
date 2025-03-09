@@ -14,16 +14,6 @@ namespace SqliteHelper
     internal static class SqliteHelperResources
     {
         /// <summary>
-        ///     0 cid not needed by us, id of column
-        ///     1 name
-        ///     2 type
-        ///     3 not null is 1 is true
-        ///     4 default Value
-        ///     5 Primary Key 1 is primary Key
-        /// </summary>
-        internal const string TableContentsName = "1";
-
-        /// <summary>
         ///     The data source (const). Value: "Data Source=".
         /// </summary>
         internal const string DataSource = "Data Source=";
@@ -172,21 +162,6 @@ namespace SqliteHelper
         ///     The error check (const). Value: "Error".
         /// </summary>
         internal const string ErrorCheck = "Error";
-
-        /// <summary>
-        ///     The message error (const). Value: "Error: ".
-        /// </summary>
-        internal const string MessageError = "Error: ";
-
-        /// <summary>
-        ///     The message warning (const). Value: "Warning: ".
-        /// </summary>
-        internal const string MessageWarning = "Warning: ";
-
-        /// <summary>
-        ///     The message info (const). Value: "Information: ".
-        /// </summary>
-        internal const string MessageInfo = "Information: ";
 
         /// <summary>
         ///     The message initiate (const). Value: "Initiate: ".

@@ -19,62 +19,54 @@ using System.Linq;
 namespace SqliteHelper
 {
     /// <summary>
-    ///     The sql lite processing class.
+    ///     The SQLite processing class for handling database schema operations.
     /// </summary>
     internal static class SqliteProcessing
     {
+        // Constants for easier readability and better maintainability
+        private const string PrimaryKey = "1";
+        private const string NotNull = "1";
+        private const string Unique = "1";
+
         /// <summary>
-        ///     Still missing if unique
-        ///     Adds Type, not null, Primary Key
-        ///     Collects all Attributes of the Column
+        ///     Converts the headers of a SQL table into a dictionary of column information.
         /// </summary>
-        /// <param name="table">Table with infos of all Columns</param>
-        /// <returns>Dictionary with Name of the Column as Key, and all further Information as Value</returns>
+        /// <param name="table">DataTable representing the table schema.</param>
+        /// <returns>A dictionary where the key is the column name and the value contains the column information.</returns>
         [return: MaybeNull]
         internal static Dictionary<string, TableColumns> ConvertTableHeaders(DataTable table)
         {
             var headers = new Dictionary<string, TableColumns>();
 
-            //0 cid not needed by us, id of column
-            //1 name
-            //2 type
-            //3 not null is 1 is true
-            //4 default Value
-            //5 Primary Key 1 is primary Key
             foreach (DataRow row in table.Rows)
             {
                 if (row == null)
-                {
                     continue;
-                }
 
                 var column = new TableColumns
                 {
-                    NotNull = row.ItemArray[3].ToString() == SqliteHelperResources.TableContentsName,
-                    RowId = row.ItemArray[0].ToString(),
-                    PrimaryKey = row.ItemArray[5].ToString() == SqliteHelperResources.TableContentsName,
-                    Unique = row.ItemArray[5].ToString() == SqliteHelperResources.TableContentsName
+                    NotNull = row.ItemArray[3].ToString() == NotNull,
+                    RowId = row.ItemArray[0]?.ToString(),
+                    PrimaryKey = row.ItemArray[5].ToString() == PrimaryKey,
+                    Unique = row.ItemArray[5].ToString() == Unique
                 };
 
-                column = SetDataType(column, row.ItemArray[2].ToString());
+                column = SetDataType(column, row.ItemArray[2]?.ToString());
 
                 if (column == null)
-                {
-                    return null;
-                }
+                    return null;  // Early exit if type is invalid
 
-                headers.Add(row.ItemArray[1].ToString(), column);
+                headers.Add(row.ItemArray[1]?.ToString(), column);
             }
 
             return headers;
         }
 
         /// <summary>
-        ///     Looks up the Indexes for the called table
-        ///     1 Name we only need that one
+        ///     Extracts unique column headers from the table's index data.
         /// </summary>
-        /// <param name="table">Table of all Index Information</param>
-        /// <returns>List of the Names with unique Columns</returns>
+        /// <param name="table">DataTable containing index information.</param>
+        /// <returns>A list of unique column names.</returns>
         internal static List<string> CheckUniqueTableHeaders(DataTable table)
         {
             return table.Rows.Cast<DataRow>()
@@ -84,11 +76,10 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Input is the Name of the Index
-        ///     2 Name of Header
+        ///     Retrieves the name of the column from the index table.
         /// </summary>
-        /// <param name="table">Table with the Index Information</param>
-        /// <returns>Name of the Column</returns>
+        /// <param name="table">DataTable containing index information.</param>
+        /// <returns>The name of the indexed column.</returns>
         internal static string GetTableHeader(DataTable table)
         {
             return table.Rows.Cast<DataRow>()
@@ -97,12 +88,13 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Sets Status of Unique
+        ///     Adds the unique status to the table columns based on the provided unique headers.
         /// </summary>
-        /// <param name="tableInfo">Dictionary of Table Information</param>
-        /// <param name="uniqueHeaders">List of Unique Columns</param>
-        /// <returns>Dictionary of Table Information with Unique checked</returns>
-        internal static Dictionary<string, TableColumns> AddUniqueStatus(Dictionary<string, TableColumns> tableInfo,
+        /// <param name="tableInfo">A dictionary containing the table columns.</param>
+        /// <param name="uniqueHeaders">A list of unique column names.</param>
+        /// <returns>The updated table information dictionary with unique status applied.</returns>
+        internal static Dictionary<string, TableColumns> AddUniqueStatus(
+            Dictionary<string, TableColumns> tableInfo,
             List<string> uniqueHeaders)
         {
             foreach (var header in uniqueHeaders)
@@ -117,11 +109,11 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Checks if Source Type is convert-able to Target Type
+        ///     Checks if a value of one type can be converted to another type.
         /// </summary>
-        /// <param name="convert">Target Type as String</param>
-        /// <param name="value">Source Type as SqlLiteDataTypes</param>
-        /// <returns>Convert-able true or false</returns>
+        /// <param name="convert">The target SQLite data type to check against.</param>
+        /// <param name="value">The value to convert, expressed as a string.</param>
+        /// <returns>True if the value can be converted to the target type, otherwise false.</returns>
         internal static bool CheckConvert(SqLiteDataTypes convert, string value)
         {
             return convert switch
@@ -130,17 +122,16 @@ namespace SqliteHelper
                 SqLiteDataTypes.Decimal => decimal.TryParse(value, out _),
                 SqLiteDataTypes.Integer => int.TryParse(value, out _),
                 SqLiteDataTypes.Real => double.TryParse(value, out _),
-                //it is a string so probably
-                SqLiteDataTypes.Text => true,
+                SqLiteDataTypes.Text => true, // Text is always convertible from string
                 _ => false
             };
         }
 
         /// <summary>
-        ///     Converts SqlLite Table in our own "preferred" format
+        ///     Converts a DataTable to a custom formatted DataSet.
         /// </summary>
-        /// <param name="dt">Result Set as Table</param>
-        /// <returns>Converted Table into String</returns>
+        /// <param name="dt">The DataTable to convert.</param>
+        /// <returns>A DataSet containing the converted table data.</returns>
         internal static DataSet ConvertToTableMultipleSet(DataTable dt)
         {
             return new DataSet
@@ -152,40 +143,32 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Set DataType of TableColumns Object
+        ///     Sets the data type for a TableColumns object based on the provided type string.
         /// </summary>
-        /// <param name="column">TableColumns Object</param>
-        /// <param name="type">Expected Type</param>
-        /// <returns>TableColumn with appreciated DataType</returns>
+        /// <param name="column">The TableColumns object to update.</param>
+        /// <param name="type">The type string from the SQLite schema.</param>
+        /// <returns>The updated TableColumns object, or null if the type is invalid.</returns>
         [return: MaybeNull]
         private static TableColumns SetDataType(TableColumns column, string type)
         {
-            switch (type.ToLower())
+            return type.ToLower() switch
             {
-                case SqliteHelperResources.SqlLiteDataTypeInteger:
-                    column.DataType = SqLiteDataTypes.Integer;
-                    return column;
+                SqliteHelperResources.SqlLiteDataTypeInteger => column.WithDataType(SqLiteDataTypes.Integer),
+                SqliteHelperResources.SqlLiteDataTypeDecimal => column.WithDataType(SqLiteDataTypes.Decimal),
+                SqliteHelperResources.SqlLiteDataTypeDateTime => column.WithDataType(SqLiteDataTypes.DateTime),
+                SqliteHelperResources.SqlLiteDataTypeReal => column.WithDataType(SqLiteDataTypes.Real),
+                SqliteHelperResources.SqlLiteDataTypeText => column.WithDataType(SqLiteDataTypes.Text),
+                _ => LogInvalidType(type) // Log invalid type and return null
+            };
+        }
 
-                case SqliteHelperResources.SqlLiteDataTypeDecimal:
-                    column.DataType = SqLiteDataTypes.Decimal;
-                    return column;
-
-                case SqliteHelperResources.SqlLiteDataTypeDateTime:
-                    column.DataType = SqLiteDataTypes.DateTime;
-                    return column;
-
-                case SqliteHelperResources.SqlLiteDataTypeReal:
-                    column.DataType = SqLiteDataTypes.Real;
-                    return column;
-
-                case SqliteHelperResources.SqlLiteDataTypeText:
-                    column.DataType = SqLiteDataTypes.Text;
-                    return column;
-
-                default:
-                    Trace.WriteLine($"{SqliteHelperResources.TraceCouldNotConvert}{type}");
-                    return null;
-            }
+        private static TableColumns LogInvalidType(string type)
+        {
+            Trace.WriteLine($"{SqliteHelperResources.TraceCouldNotConvert}{type}");
+            return null;
         }
     }
+
+    // Extension method for TableColumns to set the data type.
 }
+

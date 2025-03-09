@@ -7,7 +7,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -15,73 +14,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
+
 // ReSharper disable ArrangeBraces_foreach
 
 namespace SqliteHelper
 {
-    /// <summary>
-    ///     SqlLite Data types
-    ///     https://www.sqlite.org/datatype3.html
-    /// </summary>
-    public enum SqLiteDataTypes
-    {
-        /// <summary>
-        ///     The Text Data Type = 0.
-        /// </summary>
-        Text = 0,
-
-        /// <summary>
-        ///     The DateTime Data Type = 1.
-        /// </summary>
-        DateTime = 1,
-
-        /// <summary>
-        ///     The Integer Data Type = 2.
-        /// </summary>
-        Integer = 2,
-
-        /// <summary>
-        ///     The Real Data Type = 3.
-        /// </summary>
-        Real = 3,
-
-        /// <summary>
-        ///     The Decimal Data Type = 4.
-        /// </summary>
-        Decimal = 4
-    }
-
-    /// <summary>
-    ///     Compare Operators
-    /// </summary>
-    public enum CompareOperator
-    {
-        /// <summary>
-        ///     None = 0.
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        ///     The Equal Operator = 1.
-        /// </summary>
-        Equal = 1,
-
-        /// <summary>
-        ///     The Not equal Operator= 2.
-        /// </summary>
-        NotEqual = 2,
-
-        /// <summary>
-        ///     The Like Operator = 3.
-        /// </summary>
-        Like = 3,
-
-        /// <summary>
-        ///     The Not like Operator = 4.
-        /// </summary>
-        NotLike = 4
-    }
-
     /// <summary>
     ///     Just execute our queries here
     /// </summary>
@@ -95,7 +32,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Send our Message to the Subscribers
         /// </summary>
-        public EventHandler<MessageItem> setMessage;
+        public EventHandler<MessageItem> SetMessage { get; set; }
 
         /// <summary>
         ///     Switch to a new database Context
@@ -135,7 +72,10 @@ namespace SqliteHelper
                 return false;
             }
 
-            SQLiteConnection.CreateFile(SqliteConnectionConfig.FullPath);
+            if (!File.Exists(SqliteConnectionConfig.FullPath))
+            {
+                File.Create(SqliteConnectionConfig.FullPath).Dispose(); // Creates an empty file
+            }
 
             _message = new MessageItem
             {
@@ -811,7 +751,7 @@ namespace SqliteHelper
                 using var conn = new SQLiteConnection(SqliteConnectionConfig.ConnectionString);
                 conn.Open(); // throws if invalid
             }
-            catch (SQLiteException ex1)
+            catch (SQLiteException ex1) // Change exception type
             {
                 _message = new MessageItem { Message = ex1.ToString(), Level = 0 };
                 OnError(_message);
@@ -906,50 +846,59 @@ namespace SqliteHelper
         [return: MaybeNull]
         private DataTable SelectDataTable(string sqlQuery)
         {
-            DataTable dt = null;
-
-            var cmd = new SQLiteCommand { CommandText = sqlQuery, CommandTimeout = SqliteConnectionConfig.TimeOut };
-
-            using var conn = GetConn();
-            if (conn == null)
-            {
-                return null;
-            }
-
-            var command = new SQLiteCommand(cmd.CommandText, conn);
-            var da = new SQLiteDataAdapter(command);
-
-            _message = new MessageItem
-            {
-                Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
-            };
-            OnError(_message);
+            DataTable dt = new();
 
             try
             {
-                dt = new DataTable();
-                da.Fill(dt);
-            }
-            //Normal Sql Exceptions
-            catch (SQLiteException ex1)
-            {
-                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
+                using var conn = GetConn();
+                if (conn == null) return null;
+
+                using var command = new SQLiteCommand(sqlQuery, conn)
+                {
+                    CommandTimeout = SqliteConnectionConfig.TimeOut
+                };
+
+                using var reader = command.ExecuteReader();
+
+                dt.Load(reader); // Fills the DataTable
+
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
+                };
                 OnError(_message);
             }
-            //check if something went wrong when we selected something
-            catch (NullReferenceException ex1)
+            catch (SQLiteException ex)
             {
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqliteHelperResources.ErrorInSelectStatement, sqlQuery), Level = 1
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
                 };
                 OnError(_message);
-                _message = new MessageItem { Message = ex1.ToString(), Level = 0 };
+            }
+            catch (NullReferenceException ex)
+            {
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.ErrorInSelectStatement}{sqlQuery}",
+                    Level = 1
+                };
+                OnError(_message);
+
+                _message = new MessageItem
+                {
+                    Message = ex.ToString(),
+                    Level = 0
+                };
                 OnError(_message);
             }
 
             return dt;
         }
+
+
 
         /// <summary>
         ///     Selects a Table with a specific result output
@@ -990,60 +939,60 @@ namespace SqliteHelper
         /// <param name="tableInfo">Headers, Data Type and Constraints of the table</param>
         /// <param name="checking">Shall we check the input</param>
         /// <returns>Success Status</returns>
-        private bool ExecuteInsertQuery(string sqlQuery, IReadOnlyCollection<TableSet> table,
-            Dictionary<string, TableColumns> tableInfo, bool checking)
+        private bool ExecuteInsertQuery(
+            string sqlQuery,
+            IReadOnlyCollection<TableSet> table,
+            Dictionary<string, TableColumns> tableInfo,
+            bool checking)
         {
-            //establish Connection
+            // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return false;
-            }
+            if (conn == null) return false;
 
-            //begin Transaction
+            // Begin transaction
             using var tr = conn.BeginTransaction();
-            //Try to execute our stuff
+
+
             try
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
                 cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
+                cmd.CommandText = sqlQuery;
 
-                //for checks only
+                var checkCount = 0;
+                var paramCache = new Dictionary<int, SQLiteParameter>();
 
-                var checkCount = -1;
+                var syntax = new SqliteSyntax(SetMessage);
 
-                //loop into all parameters
                 foreach (var row in table)
                 {
                     if (checking)
                     {
-                        checkCount++;
+                        if (checkCount >= tableInfo.Count)
+                            checkCount = 0;
 
                         var convert = tableInfo.ElementAt(checkCount).Value;
-                        var check = AdvancedSyntaxCheck(tableInfo, table, row, convert);
-                        if (!check)
-                        {
+                        if (!syntax.AdvancedSyntaxCheck(tableInfo, table, row, convert))
                             return false;
-                        }
 
-                        /*
-                         * Reset after max Count, missed that one.
-                         * I did not reset it, which works fine if rows are equal or smaller than columns but that was a massive fuck up on my part.
-                         */
-                        if (checkCount == tableInfo.Count - 1)
-                        {
-                            checkCount = -1;
-                        }
+                        checkCount++;
                     }
 
-                    cmd.CommandText = sqlQuery;
+                    cmd.Parameters.Clear(); // Ensure no leftover parameters
 
                     for (var i = 0; i < row.Row.Count; i++)
                     {
-                        var cell = row.Row[i];
-                        _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqliteHelperResources.Param, i),
-                            cell));
+                        if (!paramCache.TryGetValue(i, out var param))
+                        {
+                            param = new SQLiteParameter($"{SqliteHelperResources.Param}{i}", row.Row[i]);
+                            cmd.Parameters.Add(param);
+                            paramCache[i] = param;
+                        }
+                        else
+                        {
+                            param.Value = row.Row[i];
+                        }
                     }
 
                     cmd.ExecuteNonQuery();
@@ -1053,23 +1002,28 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
+
+                return true;
             }
-            //catch error
-            catch (SQLiteException ex1)
+            catch (SQLiteException ex)
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
-
-                return false;
             }
 
-            return true;
+            return false;
         }
+
 
         /// <summary>
         ///     Update Table
@@ -1081,55 +1035,62 @@ namespace SqliteHelper
         /// </returns>
         private int ExecuteUpdateQuery(string sqlQuery, IReadOnlyList<string> lst)
         {
-            var lines = -1;
+            var affectedRows = -1;
 
-            //establish Connection
+            // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return -1;
-            }
+            if (conn == null) return -1;
 
-            //begin Transaction
+            // Begin transaction
             using var tr = conn.BeginTransaction();
-            //Try to execute our stuff
+
             try
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
                 cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
-
                 cmd.CommandText = sqlQuery;
 
-                //loop into all parameters
+                // Use parameter caching for efficiency
+                var paramCache = new Dictionary<int, SQLiteParameter>();
+
                 for (var i = 0; i < lst.Count; i++)
                 {
-                    var row = lst[i];
-                    _ = cmd.Parameters.Add(new SQLiteParameter(string.Concat(SqliteHelperResources.Param, i), row));
+                    if (!paramCache.TryGetValue(i, out var param))
+                    {
+                        param = new SQLiteParameter($"{SqliteHelperResources.Param}{i}", lst[i]);
+                        cmd.Parameters.Add(param);
+                        paramCache[i] = param;
+                    }
+                    else
+                    {
+                        param.Value = lst[i];
+                    }
                 }
 
-                lines = cmd.ExecuteNonQuery();
-
+                affectedRows = cmd.ExecuteNonQuery();
                 tr.Commit();
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
             }
-            //catch error
-            catch (SQLiteException ex1)
+            catch (SQLiteException ex)
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
-
-                return lines;
             }
 
-            return lines;
+            return affectedRows;
         }
 
         /// <summary>
@@ -1139,122 +1100,45 @@ namespace SqliteHelper
         /// <returns>Count of rows</returns>
         private int ExecuteDeleteQuery(string sqlQuery)
         {
-            var lines = -1;
+            var affectedRows = -1;
 
-            //establish Connection
+            // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return -1;
-            }
+            if (conn == null) return -1;
 
-            //begin Transaction
+            // Begin transaction
             using var tr = conn.BeginTransaction();
-            //Try to execute our stuff
+
             try
             {
                 using var cmd = conn.CreateCommand();
                 cmd.Transaction = tr;
                 cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
-
                 cmd.CommandText = sqlQuery;
 
-                lines = cmd.ExecuteNonQuery();
-
+                affectedRows = cmd.ExecuteNonQuery();
                 tr.Commit();
 
                 _message = new MessageItem
                 {
-                    Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
             }
-            //catch error
-            catch (SQLiteException ex1)
+            catch (SQLiteException ex)
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = string.Concat(ex1, sqlQuery), Level = 0 };
-                OnError(_message);
-
-                return lines;
-            }
-
-            return lines;
-        }
-
-        /// <summary>
-        ///     Basic sanity checks
-        /// </summary>
-        /// <param name="tableInfo">Headers, Data Type and Constraints of the table</param>
-        /// <param name="table">Table Collection</param>
-        /// <param name="row">Table Collection</param>
-        /// <param name="convert">Table Collection</param>
-        /// <returns>true if no errors were found</returns>
-        private bool AdvancedSyntaxCheck(ICollection tableInfo,
-            IEnumerable<TableSet> table,
-            TableSet row, TableColumns convert)
-        {
-            if (tableInfo.Count != table.First().Row.Count)
-            {
                 _message = new MessageItem
                 {
-                    Message = SqliteHelperResources.ErrorMoreElementsToAddThanRows, Level = 0
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
                 };
                 OnError(_message);
-
-                return false;
             }
 
-            var count = 0;
-
-            foreach (var rows in row.Row)
-            {
-                var uniqueList = new List<string> { rows };
-                count++;
-
-                //check if nullable
-                if (rows == null && !convert.NotNull)
-                {
-                    _message = new MessageItem { Message = SqliteHelperResources.ErrorNotNullAble, Level = 0 };
-                    OnError(_message);
-
-                    return false;
-                }
-
-                //check if convert-able Type
-                var check = SqliteProcessing.CheckConvert(convert.DataType, rows);
-
-                if (!check)
-                {
-                    _message = new MessageItem
-                    {
-                        Message = string.Concat(SqliteHelperResources.ErrorWrongType, rows,
-                            SqliteHelperResources.ConvertTo,
-                            convert.DataType),
-                        Level = 0
-                    };
-                    OnError(_message);
-
-                    return false;
-                }
-
-                //check if Unique, etc ...
-                if (row.Row.Count != count
-                    || uniqueList.Distinct().Count() == uniqueList.Count
-                    || (!convert.PrimaryKey && !convert.Unique)
-                   )
-                {
-                    continue;
-                }
-
-                _message = new MessageItem { Message = SqliteHelperResources.ErrorNotUnique, Level = 0 };
-                OnError(_message);
-
-                return false;
-            }
-
-            return true;
+            return affectedRows;
         }
 
         /// <summary>
@@ -1459,39 +1343,44 @@ namespace SqliteHelper
                 connection.Open();
                 return connection;
             }
-            /*
-            * we should fail loud with an Exception, would be cleaner,
-            * but wrong Connections are not that rare.The User gets the messages and the Queries will have to handle it separately
-            * So not the right way, but the way we handle it
-            */
+            catch (BadImageFormatException ex) // Incorrect architecture (e.g., x86 vs x64)
+            {
+                _message = new MessageItem
+                {
+                    Message = $"BadImageFormatException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Level = 0
+                };
+                OnError(_message);
+            }
+            catch (DllNotFoundException ex) // Missing SQLite native library
+            {
+                _message = new MessageItem
+                {
+                    Message = $"DllNotFoundException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Level = 0
+                };
+                OnError(_message);
+            }
+            catch (SQLiteException ex) // General SQLite errors
+            {
+                _message = new MessageItem
+                {
+                    Message = $"SQLiteException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Level = 0
+                };
+                OnError(_message);
+            }
+            catch (Exception ex) // Catch-all for unexpected errors
+            {
+                _message = new MessageItem
+                {
+                    Message = $"Unexpected Exception: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Level = 0
+                };
+                OnError(_message);
+            }
 
-            catch (SQLiteException ex)
-            {
-                _message = new MessageItem
-                {
-                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
-                };
-                OnError(_message);
-                return null;
-            }
-            catch (BadImageFormatException ex)
-            {
-                _message = new MessageItem
-                {
-                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
-                };
-                OnError(_message);
-                return null;
-            }
-            catch (DllNotFoundException ex)
-            {
-                _message = new MessageItem
-                {
-                    Message = string.Concat(ex, SqliteConnectionConfig.ConnectionString), Level = 0
-                };
-                OnError(_message);
-                return null;
-            }
+            return null;
         }
 
         /// <summary>
@@ -1500,7 +1389,7 @@ namespace SqliteHelper
         /// <param name="dbMessage">Message</param>
         private void OnError(MessageItem dbMessage)
         {
-            setMessage?.Invoke(this, dbMessage);
+            SetMessage?.Invoke(this, dbMessage);
         }
     }
 }

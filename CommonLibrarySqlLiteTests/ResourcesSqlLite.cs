@@ -101,32 +101,116 @@ namespace CommonLibrarySqlLiteTests
         /// </summary>
         internal static readonly string Root = Environment.CurrentDirectory;
 
+        /// <summary>
+        /// Gets the path database crash.
+        /// </summary>
+        /// <value>
+        /// The path database crash.
+        /// </value>
         internal static string PathDbCrash => Path.Combine(Root, DbCrash);
 
+        /// <summary>
+        /// Gets the path database select.
+        /// </summary>
+        /// <value>
+        /// The path database select.
+        /// </value>
         internal static string PathDbSelect => Path.Combine(Root, DbDatabaseSelect);
 
+        /// <summary>
+        /// Gets the path copy table.
+        /// </summary>
+        /// <value>
+        /// The path copy table.
+        /// </value>
         internal static string PathCopyTable => Path.Combine(Root, DbCopyTable);
 
+        /// <summary>
+        /// Gets the path copy table advanced.
+        /// </summary>
+        /// <value>
+        /// The path copy table advanced.
+        /// </value>
         internal static string PathCopyTableAdvanced => Path.Combine(Root, DbCopyTableAdvanced);
 
+        /// <summary>
+        /// Gets the path database create.
+        /// </summary>
+        /// <value>
+        /// The path database create.
+        /// </value>
         internal static string PathDbCreate => Path.Combine(Root, DbDatabaseCreate);
 
+        /// <summary>
+        /// Gets the path database row delete.
+        /// </summary>
+        /// <value>
+        /// The path database row delete.
+        /// </value>
         internal static string PathDbRowDelete => Path.Combine(Root, DbDeleteRow);
 
+        /// <summary>
+        /// Gets the path database create complex.
+        /// </summary>
+        /// <value>
+        /// The path database create complex.
+        /// </value>
         internal static string PathDbCreateComplex => Path.Combine(Root, DbComplex);
 
+        /// <summary>
+        /// Gets the path database database select in.
+        /// </summary>
+        /// <value>
+        /// The path database database select in.
+        /// </value>
         internal static string PathDbDbSelectIn => Path.Combine(Root, DbSelectIn);
 
+        /// <summary>
+        /// Gets the path pragma table information.
+        /// </summary>
+        /// <value>
+        /// The path pragma table information.
+        /// </value>
         internal static string PathPragmaTableInfo => Path.Combine(Root, DbPragmaIndexList);
 
+        /// <summary>
+        /// Gets the path database table status.
+        /// </summary>
+        /// <value>
+        /// The path database table status.
+        /// </value>
         internal static string PathDatabaseTableStatus => Path.Combine(Root, DbTableStatus);
 
+        /// <summary>
+        /// Gets the path database table unique status.
+        /// </summary>
+        /// <value>
+        /// The path database table unique status.
+        /// </value>
         internal static string PathDbTableUniqueStatus => Path.Combine(Root, DbUniqueStatus);
 
+        /// <summary>
+        /// Gets the path database update.
+        /// </summary>
+        /// <value>
+        /// The path database update.
+        /// </value>
         internal static string PathDbUpdate => Path.Combine(Root, DbUpdate);
 
+        /// <summary>
+        /// Gets the path database advanced select.
+        /// </summary>
+        /// <value>
+        /// The path database advanced select.
+        /// </value>
         public static string PathDbAdvancedSelect => Path.Combine(Root, DbAdvancedSelect);
 
+        /// <summary>
+        /// Gets the path database detach.
+        /// </summary>
+        /// <value>
+        /// The path database detach.
+        /// </value>
         public static string PathDbDetach => Path.Combine(Root, DbDetach);
     }
 }

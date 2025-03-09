@@ -8,4 +8,8 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoreMemoryLog\CoreMemoryLog.csproj" />
+  </ItemGroup>
+
 </Project>

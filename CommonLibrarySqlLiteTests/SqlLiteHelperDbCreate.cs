@@ -125,8 +125,6 @@ namespace CommonLibrarySqlLiteTests
 
             config.SendMessage += SharedHelperClass.DebugPrints;
 
-            config.DbVersion = 3;
-
             config.MaxLinesError = 10;
 
             config.MaxLinesLog = 20;

@@ -5,10 +5,8 @@
  * PURPOSE:     Collects all Errors and Status Messages
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
-
-using System;
+using CoreMemoryLog;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace SqliteHelper
 {
@@ -17,15 +15,8 @@ namespace SqliteHelper
     /// </summary>
     internal static class MessageHandling
     {
-        /// <summary>
-        ///     The error log.
-        /// </summary>
-        private static int _errorLog;
-
-        /// <summary>
-        ///     The message log.
-        /// </summary>
-        private static int _messageLog;
+        // Store references to the InMemoryLogger instance for both error and regular logs
+        private static readonly InMemoryLogger Logger = InMemoryLogger.Instance;
 
         /// <summary>
         ///     Logs all activities
@@ -59,57 +50,56 @@ namespace SqliteHelper
         /// <param name="logLvl">Level of Error, 0 is error, 1 is warning, 2 is information, later we can add higher lvl</param>
         internal static string SetMessage(string error, int logLvl)
         {
-            switch (logLvl)
+            // Map logLvl to LogLevel (you can extend this if more levels are needed)
+            LogLevel level = logLvl switch
             {
-                case 0:
-                    LastError = string.Concat(SqliteHelperResources.MessageError, DateTime.Now,
-                        SqliteHelperResources.End, Environment.NewLine, error);
-                    break;
-                case 1:
-                    LastError = string.Concat(SqliteHelperResources.MessageWarning, DateTime.Now,
-                        SqliteHelperResources.End, Environment.NewLine, error);
-                    break;
-                case 2:
-                    LastError = string.Concat(SqliteHelperResources.MessageInfo, DateTime.Now,
-                        SqliteHelperResources.End, Environment.NewLine, error);
-                    break;
-                default: return string.Empty;
+                0 => LogLevel.Error,
+                1 => LogLevel.Warning,
+                2 => LogLevel.Information,
+                _ => LogLevel.Information
+            };
+
+            // Log the message using InMemoryLogger
+            Logger.Log(level, error, "SqliteHelper");
+
+            // Store the message in the ListError for future reference
+            if (logLvl == 0) // Error messages only for this list
+            {
+                ListError.Add(error);
+                LastError = error; // Update last error message
             }
 
-            if (_errorLog == MaxLinesError)
-            {
-                ListError.RemoveAt(0);
-            }
+            // Optionally add to the log file for backup
+            LogFile.Add(error);
+            TrimLogsIfNeeded();
 
-            if (_messageLog == MaxLinesError)
-            {
-                LogFile.RemoveAt(0);
-            }
-
-            if (logLvl == 0)
-            {
-                ListError.Add(LastError);
-                _errorLog++;
-            }
-
-            LogFile.Add(LastError);
-
-            _messageLog++;
-
-            Trace.WriteLine(string.Concat(LastError, Environment.NewLine));
-
-            return LastError;
+            // Return a confirmation string or the error message itself
+            return $"Message logged: {error}";
         }
 
         /// <summary>
-        ///     If we delete, create or Switch Database Context we don't need the old error Logs
+        ///     Clears the list of errors
         /// </summary>
         internal static void ClearErrors()
         {
-            LastError = SqliteHelperResources.ErrorCheck;
-            ListError.Clear();
-            LogFile.Clear();
-            ListError.Clear();
+            ListError.Clear(); // Clear only the ListError, not the InMemoryLogger
+            LastError = null; // Clear the last error message
+        }
+
+        /// <summary>
+        ///     Trims the logs if the size exceeds the MaxLinesError or MaxLinesLog
+        /// </summary>
+        private static void TrimLogsIfNeeded()
+        {
+            if (ListError.Count > MaxLinesError)
+            {
+                ListError.RemoveAt(0); // Remove the oldest error
+            }
+
+            if (LogFile.Count > MaxLinesLog)
+            {
+                LogFile.RemoveAt(0); // Remove the oldest log
+            }
         }
     }
 }

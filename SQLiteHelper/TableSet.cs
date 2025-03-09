@@ -91,12 +91,7 @@ namespace SqliteHelper
                 return null;
             }
 
-            if (Row == null)
-            {
-                return null;
-            }
-
-            return Row[height].Row;
+            return Row?[height].Row;
         }
 
         /// <summary>

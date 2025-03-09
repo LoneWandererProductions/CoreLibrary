@@ -78,12 +78,7 @@ namespace SqliteHelper
         [return: MaybeNull]
         internal static List<List<string>> ExportCsv(DataSet table)
         {
-            if (table == null)
-            {
-                return null;
-            }
-
-            return Converge(table);
+            return table == null ? null : Converge(table);
         }
 
         /// <summary>

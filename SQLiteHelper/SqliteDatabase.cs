@@ -16,9 +16,6 @@ using System.Linq;
 // ReSharper disable UnusedAutoPropertyAccessor.Global, it is not used yet
 // ReSharper disable MemberCanBeInternal, these are public information and Methods, they should be visible to the outside
 
-// TODO Add new Interface for attach detach and faster access and async
-// https://stackoverflow.com/questions/53183370/c-sharp-how-to-start-an-async-method-without-await-its-complete
-
 namespace SqliteHelper
 {
     /// <inheritdoc cref="ISqliteDatabase" />
@@ -670,53 +667,27 @@ namespace SqliteHelper
         {
             if (csv == null || csv.Count == 0)
             {
+                // Log or handle the error of empty CSV
                 return false;
             }
 
-            // If 'headers' is true, the first row of the CSV will be treated as headers
-            var tableHeaders = new DictionaryTableColumns();
-
-            if (headers)
+            var tableHeaders = CreateTableHeaders(csv, headers);
+            if (tableHeaders == null)
             {
-                var headerRow = csv[0]; // First row as headers
-                foreach (var columnName in headerRow)
-                {
-                    tableHeaders.DColumns.Add(columnName, new TableColumns
-                    {
-                        DataType = SqLiteDataTypes.Text, // Assuming TEXT as default data type
-                        Unique = false, // Default value
-                        PrimaryKey = false, // Default value
-                        NotNull = false // Default value
-                    });
-                }
-
-                csv.RemoveAt(0); // Remove the header row from CSV data
-            }
-            else
-            {
-                // Handle case where headers are not included in the CSV (You may define default column names)
-                for (var i = 0; i < csv[0].Count; i++)
-                {
-                    tableHeaders.DColumns.Add($"{SqliteHelperResources.ColumnName}{i + 1}", new TableColumns
-                    {
-                        DataType = SqLiteDataTypes.Text, // Default data type
-                        Unique = false, // Default value
-                        PrimaryKey = false, // Default value
-                        NotNull = false // Default value
-                    });
-                }
-            }
-
-            // Create the table using the inferred or provided headers
-            var check = _execute.CreateTable(tableAlias, tableHeaders);
-            if (!check)
-            {
+                // Log or handle failure in creating headers
                 return false;
             }
 
-            // Load the CSV data into a DataTable (or equivalent structure)
-            var table = SqliteHelper.LoadCsv(csv,
-                false); // Now 'headers' is false since we removed the first row if headers were used
+            // Create the table based on inferred headers
+            bool tableCreated = _execute.CreateTable(tableAlias, tableHeaders);
+            if (!tableCreated)
+            {
+                // Log or handle the failure of creating the table
+                return false;
+            }
+
+            // Load CSV data and insert rows into the database
+            var table = SqliteHelper.LoadCsv(csv, headers);
             return _execute.InsertMultipleRow(tableAlias, table, true);
         }
 
@@ -735,12 +706,7 @@ namespace SqliteHelper
             var table = _execute.SimpleSelect(tableAlias);
             var info = _execute.PragmaTable_Info(tableAlias);
 
-            if (headers)
-            {
-                return SqliteHelper.ExportCsv(table, info);
-            }
-
-            return SqliteHelper.ExportCsv(table);
+            return headers ? SqliteHelper.ExportCsv(table, info) : SqliteHelper.ExportCsv(table);
         }
 
         /// <inheritdoc />
@@ -769,8 +735,53 @@ namespace SqliteHelper
         private void InitiateSystem()
         {
             _execute = new SqliteExecute();
-            _execute.setMessage += SetMessage;
+            _execute.SetMessage += SetMessage;
             MessageHandling.ClearErrors();
+        }
+
+        /// <summary>
+        /// Creates the table headers.
+        /// </summary>
+        /// <param name="csv">The CSV.</param>
+        /// <param name="headers">if set to <c>true</c> [headers].</param>
+        /// <returns>DictionaryTableColumns extraction.</returns>
+        private static DictionaryTableColumns CreateTableHeaders(IList<List<string>> csv, bool headers)
+        {
+            var tableHeaders = new DictionaryTableColumns();
+
+            if (headers)
+            {
+                // Treat the first row as headers
+                foreach (var columnName in csv[0])
+                {
+                    // Default column settings; can be customized if needed
+                    tableHeaders.DColumns[columnName] = new TableColumns
+                    {
+                        DataType = SqLiteDataTypes.Text,
+                        Unique = false,
+                        PrimaryKey = false,
+                        NotNull = false
+                    };
+                }
+
+                csv.RemoveAt(0); // Remove the header row after processing
+            }
+            else
+            {
+                // Generate default column names for CSV with no header
+                for (var i = 0; i < csv[0].Count; i++)
+                {
+                    tableHeaders.DColumns[$"{SqliteHelperResources.ColumnName}{i + 1}"] = new TableColumns
+                    {
+                        DataType = SqLiteDataTypes.Text,
+                        Unique = false,
+                        PrimaryKey = false,
+                        NotNull = false
+                    };
+                }
+            }
+
+            return tableHeaders;
         }
 
         /// <summary>
@@ -783,67 +794,5 @@ namespace SqliteHelper
             var message = MessageHandling.SetMessage(e.Message, e.Level);
             SendMessage?.Invoke(this, message);
         }
-    }
-
-    /// <summary>
-    ///     Simple Container that holds System Messages
-    /// </summary>
-    internal sealed class MessageItem
-    {
-        /// <summary>
-        ///     Gets or sets the Error level.
-        /// </summary>
-        internal int Level { init; get; }
-
-        /// <summary>
-        ///     Gets or sets the message.
-        /// </summary>
-        internal string Message { init; get; }
-    }
-
-    /// <summary>
-    ///     Collection of generic Connection Infos
-    /// </summary>
-    public sealed class Config
-    {
-        /// <summary>
-        ///     Gets or sets the location.
-        /// </summary>
-        public string Location { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the Database name.
-        /// </summary>
-        public string DbName { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the time out.
-        /// </summary>
-        public int TimeOut { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the db version.
-        /// </summary>
-        public int DbVersion { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the last Errors.
-        /// </summary>
-        public string LastError { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the List Errors.
-        /// </summary>
-        public List<string> ListErrors { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the max lines error.
-        /// </summary>
-        public int MaxLinesError { get; internal init; }
-
-        /// <summary>
-        ///     Gets or sets the max lines log.
-        /// </summary>
-        public int MaxLinesLog { get; internal init; }
     }
 }
