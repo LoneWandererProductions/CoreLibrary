@@ -898,8 +898,6 @@ namespace SqliteHelper
             return dt;
         }
 
-
-
         /// <summary>
         ///     Selects a Table with a specific result output
         /// </summary>
