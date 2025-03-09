@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBuilder", "CoreBuilder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBuilderTests", "CoreBuilderTests\CoreBuilderTests.csproj", "{0A9EB351-1490-46AB-8601-D362DF6E04E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreConsole", "CoreConsole\CoreConsole.csproj", "{DCFEFD26-8D4E-4AE5-9C06-17CBFB25A019}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,6 +205,10 @@ Global
 		{0A9EB351-1490-46AB-8601-D362DF6E04E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9EB351-1490-46AB-8601-D362DF6E04E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9EB351-1490-46AB-8601-D362DF6E04E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFEFD26-8D4E-4AE5-9C06-17CBFB25A019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCFEFD26-8D4E-4AE5-9C06-17CBFB25A019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFEFD26-8D4E-4AE5-9C06-17CBFB25A019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCFEFD26-8D4E-4AE5-9C06-17CBFB25A019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
