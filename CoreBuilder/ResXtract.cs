@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,21 +9,37 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder
 {
-    public class ResXtract : IResourceExtractor
+    /// <summary>
+    /// Small tool to create string Resource files
+    /// </summary>
+    /// <seealso cref="CoreBuilder.IResourceExtractor" />
+    public sealed class ResXtract : IResourceExtractor
     {
         private readonly List<string> _ignoreList;
         private readonly List<Regex> _ignorePatterns;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResXtract"/> class.
+        /// </summary>
+        /// <param name="ignoreList">The ignore list.</param>
+        /// <param name="ignorePatterns">The ignore patterns.</param>
         public ResXtract(List<string> ignoreList = null, List<Regex> ignorePatterns = null)
         {
             _ignoreList = ignoreList ?? new List<string>();
             _ignorePatterns = ignorePatterns ?? new List<Regex>();
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Processes the given project directory, extracting string literals
+        /// and replacing them with resource references.
+        /// </summary>
+        /// <param name="projectPath">The root directory of the C# project.</param>
+        /// <param name="outputResourceFile">Path to generate the resource file.</param>
         public void ProcessProject(string projectPath, string outputResourceFile)
         {
             var files = Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
-                                  .Where(f => !f.EndsWith(".xaml")); // Exclude XAML files
+                .Where(f => !f.EndsWith(".xaml", StringComparison.Ordinal)); // Exclude XAML files
             var extractedStrings = new List<string>();
 
             foreach (var code in from file in files where !ShouldIgnoreFile(file) select File.ReadAllText(file))
@@ -33,11 +50,21 @@ namespace CoreBuilder
             GenerateResourceFile(extractedStrings.Distinct().ToList(), outputResourceFile);
         }
 
+        /// <summary>
+        /// Should ignore file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
         public bool ShouldIgnoreFile(string filePath)
         {
             return _ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern => pattern.IsMatch(filePath));
         }
 
+        /// <summary>
+        /// Extracts the strings.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns></returns>
         public IEnumerable<string> ExtractStrings(string code)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
@@ -61,8 +88,13 @@ namespace CoreBuilder
             return stringLiterals;
         }
 
-
-        private IEnumerable<(string original, string extracted, List<string> placeholders)> ExtractInterpolatedStrings(string code)
+        /// <summary>
+        /// Extracts the interpolated strings.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns></returns>
+        private IEnumerable<(string original, string extracted, List<string> placeholders)> ExtractInterpolatedStrings(
+            string code)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var root = syntaxTree.GetRoot();
@@ -74,7 +106,7 @@ namespace CoreBuilder
                 var staticParts = new List<string>();
                 var placeholders = new List<string>();
 
-                int index = 0;
+                var index = 0;
                 foreach (var content in node.Contents)
                 {
                     if (content is InterpolatedStringTextSyntax textPart)
@@ -89,18 +121,25 @@ namespace CoreBuilder
                     }
                 }
 
-                string extractedString = string.Join("", staticParts);
+                var extractedString = string.Join("", staticParts);
                 interpolatedStrings.Add((node.ToString(), extractedString, placeholders));
             }
 
             return interpolatedStrings;
         }
 
-        public void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath)
+        /// <summary>
+        /// Generates the resource file.
+        /// </summary>
+        /// <param name="extractedStrings">The extracted strings.</param>
+        /// <param name="outputFilePath">The output file path.</param>
+        public static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath)
         {
             var counter = 1;
 
-            var resourceStrings = (from str in extractedStrings let resourceKey = $"Resource{counter++}" select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
+            var resourceStrings = (from str in extractedStrings
+                let resourceKey = $"Resource{counter++}"
+                select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
 
             // Write to the output resource file
             File.WriteAllLines(outputFilePath, resourceStrings);

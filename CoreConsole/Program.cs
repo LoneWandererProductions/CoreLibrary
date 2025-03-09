@@ -5,6 +5,10 @@ namespace CoreConsole
 {
     internal static class Program
     {
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
         {
             // Display welcome message
@@ -17,8 +21,8 @@ namespace CoreConsole
                 return;
             }
 
-            string projectPath = args[0];
-            string outputResourceFile = args[1];
+            var projectPath = args[0];
+            var outputResourceFile = args[1];
 
             // Create an instance of the ResXtract tool
             var extractor = new ResXtract();

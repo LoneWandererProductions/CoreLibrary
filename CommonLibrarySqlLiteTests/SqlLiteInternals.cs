@@ -108,7 +108,8 @@ namespace CommonLibrarySqlLiteTests
 
             foreach (var item in cache.DColumns)
             {
-                Trace.WriteLine(string.Concat(item.Key, " , ", item.Value.DataType, " , ", item.Value.Unique + " , ", item.Value.PrimaryKey));
+                Trace.WriteLine(string.Concat(item.Key, " , ", item.Value.DataType, " , ", item.Value.Unique + " , ",
+                    item.Value.PrimaryKey));
             }
 
             // Check constraints like Unique and PrimaryKey for specific columns
@@ -150,4 +151,3 @@ namespace CommonLibrarySqlLiteTests
         }
     }
 }
-

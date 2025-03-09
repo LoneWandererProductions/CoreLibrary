@@ -5,8 +5,9 @@
  * PURPOSE:     Collects all Errors and Status Messages
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
-using CoreMemoryLog;
+
 using System.Collections.Generic;
+using CoreMemoryLog;
 
 namespace SqliteHelper
 {
@@ -51,7 +52,7 @@ namespace SqliteHelper
         internal static string SetMessage(string error, int logLvl)
         {
             // Map logLvl to LogLevel (you can extend this if more levels are needed)
-            LogLevel level = logLvl switch
+            var level = logLvl switch
             {
                 0 => LogLevel.Error,
                 1 => LogLevel.Warning,

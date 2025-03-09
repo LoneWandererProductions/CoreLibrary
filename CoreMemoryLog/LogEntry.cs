@@ -14,55 +14,55 @@ using System;
 namespace CoreMemoryLog
 {
     /// <summary>
-    /// Logger Object, holds all needed data
+    ///     Logger Object, holds all needed data
     /// </summary>
     public sealed class LogEntry
     {
         /// <summary>
-        /// Gets or sets the level.
+        ///     Gets or sets the level.
         /// </summary>
         /// <value>
-        /// The level.
+        ///     The level.
         /// </value>
         public LogLevel Level { get; set; }
 
         /// <summary>
-        /// Gets or sets the message.
+        ///     Gets or sets the message.
         /// </summary>
         /// <value>
-        /// The message.
+        ///     The message.
         /// </value>
         public string Message { get; init; }
 
         /// <summary>
-        /// Gets or sets the timestamp.
+        ///     Gets or sets the timestamp.
         /// </summary>
         /// <value>
-        /// The timestamp.
+        ///     The timestamp.
         /// </value>
         public DateTime Timestamp { get; init; }
 
         /// <summary>
-        /// Gets or sets the exception.
+        ///     Gets or sets the exception.
         /// </summary>
         /// <value>
-        /// The exception.
+        ///     The exception.
         /// </value>
         public Exception Exception { get; init; }
 
         /// <summary>
-        /// Gets or sets the caller method.
+        ///     Gets or sets the caller method.
         /// </summary>
         /// <value>
-        /// The caller method.
+        ///     The caller method.
         /// </value>
         public string CallerMethod { get; init; } // Stores the calling method name
 
         /// <summary>
-        /// Gets or sets the name of the library that called the Log.
+        ///     Gets or sets the name of the library that called the Log.
         /// </summary>
         /// <value>
-        /// The name of the library.
+        ///     The name of the library.
         /// </value>
         public string LibraryName { get; init; }
     }

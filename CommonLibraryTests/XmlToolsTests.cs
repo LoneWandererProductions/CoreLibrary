@@ -7,37 +7,36 @@
  */
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Serializer;
 using System.IO;
 using System.Xml;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Serializer;
 
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Some XML tests
+    ///     Some XML tests
     /// </summary>
     [TestClass]
     public class XmlToolsTests
     {
         /// <summary>
-        /// The test XML
+        ///     The test XML
         /// </summary>
         private static readonly string TestXml = "test.xml";
 
         /// <summary>
-        /// The test XML path
+        ///     The test XML path
         /// </summary>
         private static string _testXmlPath;
 
         /// <summary>
-        /// Creates the test XML file.
+        ///     Creates the test XML file.
         /// </summary>
         /// <param name="relativePath">The relative path.</param>
         private static void CreateTestXmlFile(string relativePath)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory; // Gets the directory where the test is running
+            var directory = AppDomain.CurrentDomain.BaseDirectory; // Gets the directory where the test is running
             _testXmlPath = Path.Combine(directory, relativePath);
 
             var xmlDoc = new XmlDocument();
@@ -64,7 +63,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Sets up.
+        ///     Sets up.
         /// </summary>
         [TestInitialize]
         public void SetUp()
@@ -89,7 +88,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the first attribute from XML valid property returns correct value.
+        ///     Gets the first attribute from XML valid property returns correct value.
         /// </summary>
         [TestMethod]
         public void GetFirstAttributeFromXmlValidPropertyReturnsCorrectValue()
@@ -102,7 +101,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the first attribute from XML property not found returns null.
+        ///     Gets the first attribute from XML property not found returns null.
         /// </summary>
         [TestMethod]
         public void GetFirstAttributeFromXmlPropertyNotFoundReturnsNull()
@@ -115,7 +114,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the attributes from XML valid property returns correct values.
+        ///     Gets the attributes from XML valid property returns correct values.
         /// </summary>
         [TestMethod]
         public void GetAttributesFromXmlValidPropertyReturnsCorrectValues()
@@ -129,7 +128,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the attributes from XML property not found returns null.
+        ///     Gets the attributes from XML property not found returns null.
         /// </summary>
         [TestMethod]
         public void GetAttributesFromXmlPropertyNotFoundReturnsNull()
@@ -142,7 +141,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Loads the XML invalid file returns null.
+        ///     Loads the XML invalid file returns null.
         /// </summary>
         [TestMethod]
         public void LoadXmlInvalidFileReturnsNull()
@@ -155,7 +154,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the first attribute from XML file does not exist returns null.
+        ///     Gets the first attribute from XML file does not exist returns null.
         /// </summary>
         [TestMethod]
         public void GetFirstAttributeFromXmlFileDoesNotExistReturnsNull()
@@ -168,7 +167,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the attributes from XML file does not exist returns null.
+        ///     Gets the attributes from XML file does not exist returns null.
         /// </summary>
         [TestMethod]
         public void GetAttributesFromXmlFileDoesNotExistReturnsNull()
@@ -181,13 +180,13 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the elements from XML valid element returns correct values.
+        ///     Gets the elements from XML valid element returns correct values.
         /// </summary>
         [TestMethod]
         public void GetElementsFromXmlValidElementReturnsCorrectValues()
         {
             // Act
-            List<string> result = XmlTools.GetElementsFromXml(_testXmlPath, "GenericText");
+            var result = XmlTools.GetElementsFromXml(_testXmlPath, "GenericText");
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null.");
@@ -196,7 +195,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Gets the elements from XML file does not exist returns null.
+        ///     Gets the elements from XML file does not exist returns null.
         /// </summary>
         [TestMethod]
         public void GetElementsFromXmlFileDoesNotExistReturnsNull()
