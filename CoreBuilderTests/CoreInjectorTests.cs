@@ -11,7 +11,7 @@ using System.Reflection;
 using CoreInject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CoreBuilderTests
 {
     /// <summary>
     ///     Part of my Dependency Injection Journey

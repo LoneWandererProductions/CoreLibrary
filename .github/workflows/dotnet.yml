@@ -1,3 +1,6 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
 name: .NET
 
 on:
@@ -17,7 +20,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x  # Updated to a more recent LTS version
+        dotnet-version: 5.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -34,12 +37,20 @@ jobs:
       run: dotnet test --no-build --verbosity normal --filter "Category=Part2" --no-restore
       timeout-minutes: 5
 
-    # Detailed logging for debugging (consider a more structured approach)
+    # Detailed logging for debugging
     - name: Test with Detailed Logging
-      run: dotnet test --no-build --verbosity detailed --no-restore --logger "console;verbosity=detailed"
+      run: dotnet test --no-build --verbosity detailed --no-restore > result.log; tail -n 20 result.log
 
-    # Check for stuck processes if needed (consider additional logic to handle stuck processes)
+    # Check for stuck processes if needed
     - name: Check for Stuck Processes
+      run: tasklist /FI "IMAGENAME eq vstest.console.exe"
+
+    # Cleanup to force the workflow to exit in case of long waits
+    - name: Cleanup Processes
       run: |
-        tasklist /FI "IMAGENAME eq vstest.console.exe"
-        # Optionally, add logic to kill stuck processes if necessary
+        echo "Checking for stuck processes"
+        taskkill /IM vstest.console.exe /F || echo "No processes to kill"
+        timeout /T 10 /NOBREAK
+
+    - name: Exit Workflow (Force)
+      run: exit 0

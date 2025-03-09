@@ -21,23 +21,23 @@ using System.Xml.Serialization;
 namespace Serializer
 {
     /// <summary>
-    ///     Helper Class to Serialize and Deserialize Objects, Lists, and Dictionaries
-    ///     Important: Object we Serialize must be public!
+    /// Helper Class to Serialize and Deserialize Objects, Lists, and Dictionaries
+    /// Important: Object we Serialize must be public!
     /// </summary>
     public static class DeSerialize
     {
         /// <summary>
-        ///     Event for logging messages
+        /// Event for logging messages
         /// </summary>
         public static event Action<string, Exception> OnError;
 
         /// <summary>
-        ///     Occurs when [on information].
+        /// Occurs when [on information].
         /// </summary>
         public static event Action<string> OnInformation;
 
         /// <summary>
-        ///     Logs the provided message.
+        /// Logs the provided message.
         /// </summary>
         private static void Log(string message, Exception ex = null)
         {
@@ -46,13 +46,13 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Validates that the file exists and is not empty.
+        /// Validates that the file exists and is not empty.
         /// </summary>
         private static void ValidateFilePath(string path)
         {
             if (!File.Exists(path))
             {
-                Log($"File does not exist: {path}", new ArgumentException(path));
+                Log( $"File does not exist: {path}", new ArgumentException(path));
                 throw new ArgumentException($"File does not exist: {path}");
             }
 
@@ -64,15 +64,12 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Checks if the file has content.
+        /// Checks if the file has content.
         /// </summary>
-        private static bool FileContent(string path)
-        {
-            return new FileInfo(path).Length > 0;
-        }
+        private static bool FileContent(string path) => new FileInfo(path).Length > 0;
 
         /// <summary>
-        ///     Deserializes an object from XML.
+        /// Deserializes an object from XML.
         /// </summary>
         public static T LoadObjectFromXml<T>(string path) where T : class, new()
         {
@@ -93,7 +90,7 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Deserializes a list from XML.
+        /// Deserializes a list from XML.
         /// </summary>
         public static List<T> LoadListFromXml<T>(string path) where T : class, new()
         {
@@ -116,7 +113,7 @@ namespace Serializer
         }
 
         /// <summary>
-        ///     Deserializes a dictionary from XML.
+        /// Deserializes a dictionary from XML.
         /// </summary>
         public static Dictionary<TKey, TValue> LoadDictionaryFromXml<TKey, TValue>(string path)
         {
@@ -138,14 +135,14 @@ namespace Serializer
             }
             catch (Exception ex)
             {
-                Log($"Error deserializing dictionary from {path}: {ex.Message}", ex);
+                Log( $"Error deserializing dictionary from {path}: {ex.Message}", ex);
             }
 
             return null;
         }
 
         /// <summary>
-        ///     Generic deserializer for a string.
+        /// Generic deserializer for a string.
         /// </summary>
         private static T Deserialize<T>(string serialized)
         {
@@ -163,3 +160,4 @@ namespace Serializer
         }
     }
 }
+

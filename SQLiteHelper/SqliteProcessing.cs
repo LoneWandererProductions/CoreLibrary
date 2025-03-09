@@ -41,9 +41,7 @@ namespace SqliteHelper
             foreach (DataRow row in table.Rows)
             {
                 if (row == null)
-                {
                     continue;
-                }
 
                 var column = new TableColumns
                 {
@@ -56,9 +54,7 @@ namespace SqliteHelper
                 column = SetDataType(column, row.ItemArray[2]?.ToString());
 
                 if (column == null)
-                {
-                    return null; // Early exit if type is invalid
-                }
+                    return null;  // Early exit if type is invalid
 
                 headers.Add(row.ItemArray[1]?.ToString(), column);
             }
@@ -175,3 +171,4 @@ namespace SqliteHelper
 
     // Extension method for TableColumns to set the data type.
 }
+

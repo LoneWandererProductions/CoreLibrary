@@ -15,7 +15,7 @@ using CoreMemoryLog;
 using CoreWorker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CoreBuilderTests
 {
     /// <summary>
     ///     Part of my Dependency Injection Journey

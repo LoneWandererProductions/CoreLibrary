@@ -1,33 +1,41 @@
-<p>Some basic helper Libraries.</p>
-<br>
-External Dependencies are:<br>
-System.Drawing and Skia<br>
-<br>
-For one this collection of libraries can do:<br>
-<br>
-- Generic Interpreter for command line like commands and expressions<br>
-- Some custom controls<br>
-- Generic Extension for Lists and Dictionaries<br>
-- SqlLite Extension and simple Frontend to view and edit SqlLite Databases<br>
-- Generic Serializer for Objects, Dictionaries and Lists<br>
-- A fast LookUp Dictionary
-- A Ram Memory Cache
-- Image Comparer Library<br>
-- Simple Image manipulation, with filters and format conversion<br>
-- Simple abstraction for File Handling, Search, delete, copy, get File Informations, etc ... <br>
-- Csv Reader/ writer, rough implementation for obj. Files<br>
-- Basic Implementation of Vector Graphics<br>
-- 3D Projection and Display<br>
-- A generic Debug Solution for logging and Debugging at runtime with or without Gui<br>
-- Some wrappers around the win32k and the Operating System to add some missing features, also added Registry manipulation<br>
-- Skeleton Plugin Interface<br>
-- An A* Pathfinder Implementation<br>
-- Some basic Dialogs like an SQL Login Screen or the removed Folder Browser<br>
-- A basic render Engine with Skia<br>
-<br>
-Some Math Operations:<br>
-- Generic Matrix Calculation<br>
-- 3D Vector Calculations<br>
-- Fracturs<br>
-- Some basic Statistic calculations<br>
-</p>
+# Helper Libraries
+
+This repository contains a collection of basic helper libraries designed for various utilities and tasks. The libraries are lightweight, easy to use, and extendable.
+
+## External Dependencies:
+- **System.Drawing**
+- **SkiaSharp**
+
+## Features:
+
+### General Libraries:
+- **Generic Interpreter:** For handling command-line-like commands and expressions.
+- **Custom Controls:** A set of reusable custom controls for UI development.
+- **Extension Methods:** Includes generic extensions for `Lists` and `Dictionaries`.
+- **SQLite Extensions:** Provides extensions and a simple frontend for viewing and editing SQLite databases.
+- **Generic Serializer:** Serializes objects, dictionaries, and lists for easy persistence.
+- **Fast Lookup Dictionary:** A high-performance dictionary designed for fast lookups.
+- **RAM Memory Cache:** Implements a caching mechanism to store objects in memory.
+- **Image Comparer Library:** A library for comparing images efficiently.
+- **Image Manipulation:** Basic image manipulation features, including filters and format conversions.
+- **File Handling Abstraction:** Simple abstractions for file handling (search, delete, copy, get file information, etc.).
+- **CSV Reader/Writer:** A rough implementation for reading and writing CSV files; supports object file handling.
+- **Vector Graphics Implementation:** A basic implementation for rendering vector graphics.
+- **3D Projection:** Provides tools for basic 3D projections and display.
+- **Debugging and Logging:** A generic debugging solution that works with or without a GUI.
+- **Win32k Wrappers:** Includes wrappers around Win32k and OS features to add missing functionalities, including registry manipulation.
+- **Plugin Interface:** A skeleton implementation for creating plugins.
+- **A* Pathfinder:** A basic implementation of the A* pathfinding algorithm.
+- **Dialogs:** A set of basic dialogs, including an SQL login screen and a folder browser dialog.
+
+### Math Utilities:
+- **Matrix Calculation:** Generic matrix operations.
+- **3D Vector Calculations:** Provides tools for 3D vector math.
+- **Fractals:** Includes basic fractal generation and manipulation.
+- **Statistics:** Implements basic statistical calculations (mean, median, variance, etc.).
+
+### Coding Utilities:
+- **Resource String Generator:** Automatically generates a resource string class from code files.
+- **In-Memory Logger:** A simple in-memory logging utility for runtime debugging and tracing.
+- **Home brew Interpretation of Dependency Injection:** Implements basic homegrown dependency injection for better manageability of services and objects.
+- **Worker Service:** A basic worker service framework to handle background tasks or long-running operations.

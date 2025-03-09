@@ -851,10 +851,7 @@ namespace SqliteHelper
             try
             {
                 using var conn = GetConn();
-                if (conn == null)
-                {
-                    return null;
-                }
+                if (conn == null) return null;
 
                 using var command = new SQLiteCommand(sqlQuery, conn)
                 {
@@ -867,24 +864,34 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
             }
             catch (SQLiteException ex)
             {
-                _message = new MessageItem { Message = $"{ex}{sqlQuery}", Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
             }
             catch (NullReferenceException ex)
             {
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.ErrorInSelectStatement}{sqlQuery}", Level = 1
+                    Message = $"{SqliteHelperResources.ErrorInSelectStatement}{sqlQuery}",
+                    Level = 1
                 };
                 OnError(_message);
 
-                _message = new MessageItem { Message = ex.ToString(), Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = ex.ToString(),
+                    Level = 0
+                };
                 OnError(_message);
             }
 
@@ -938,10 +945,7 @@ namespace SqliteHelper
         {
             // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return false;
-            }
+            if (conn == null) return false;
 
             // Begin transaction
             using var tr = conn.BeginTransaction();
@@ -964,15 +968,11 @@ namespace SqliteHelper
                     if (checking)
                     {
                         if (checkCount >= tableInfo.Count)
-                        {
                             checkCount = 0;
-                        }
 
                         var convert = tableInfo.ElementAt(checkCount).Value;
                         if (!syntax.AdvancedSyntaxCheck(tableInfo, table, row, convert))
-                        {
                             return false;
-                        }
 
                         checkCount++;
                     }
@@ -1000,7 +1000,8 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
 
@@ -1010,7 +1011,11 @@ namespace SqliteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = $"{ex}{sqlQuery}", Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
             }
 
@@ -1032,10 +1037,7 @@ namespace SqliteHelper
 
             // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return -1;
-            }
+            if (conn == null) return -1;
 
             // Begin transaction
             using var tr = conn.BeginTransaction();
@@ -1069,7 +1071,8 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
             }
@@ -1077,7 +1080,11 @@ namespace SqliteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = $"{ex}{sqlQuery}", Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
             }
 
@@ -1095,10 +1102,7 @@ namespace SqliteHelper
 
             // Establish connection
             using var conn = GetConn();
-            if (conn == null)
-            {
-                return -1;
-            }
+            if (conn == null) return -1;
 
             // Begin transaction
             using var tr = conn.BeginTransaction();
@@ -1115,7 +1119,8 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
             }
@@ -1123,7 +1128,11 @@ namespace SqliteHelper
             {
                 tr.Rollback();
 
-                _message = new MessageItem { Message = $"{ex}{sqlQuery}", Level = 0 };
+                _message = new MessageItem
+                {
+                    Message = $"{ex}{sqlQuery}",
+                    Level = 0
+                };
                 OnError(_message);
             }
 
@@ -1336,8 +1345,7 @@ namespace SqliteHelper
             {
                 _message = new MessageItem
                 {
-                    Message =
-                        $"BadImageFormatException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Message = $"BadImageFormatException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
                     Level = 0
                 };
                 OnError(_message);
@@ -1346,8 +1354,7 @@ namespace SqliteHelper
             {
                 _message = new MessageItem
                 {
-                    Message =
-                        $"DllNotFoundException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Message = $"DllNotFoundException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
                     Level = 0
                 };
                 OnError(_message);
@@ -1356,8 +1363,7 @@ namespace SqliteHelper
             {
                 _message = new MessageItem
                 {
-                    Message =
-                        $"SQLiteException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Message = $"SQLiteException: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
                     Level = 0
                 };
                 OnError(_message);
@@ -1366,8 +1372,7 @@ namespace SqliteHelper
             {
                 _message = new MessageItem
                 {
-                    Message =
-                        $"Unexpected Exception: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
+                    Message = $"Unexpected Exception: {ex.Message} | ConnectionString: {SqliteConnectionConfig.ConnectionString}",
                     Level = 0
                 };
                 OnError(_message);

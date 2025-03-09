@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreConsole
+ * FILE:        CoreConsole/ResXtract.cs
+ * PURPOSE:     String Resource extractor.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,12 +18,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace CoreBuilder
 {
     /// <summary>
-    /// Small tool to create string Resource files
+    /// Our Code resource refactor tool. In this case strings.
     /// </summary>
     /// <seealso cref="CoreBuilder.IResourceExtractor" />
     public sealed class ResXtract : IResourceExtractor
     {
+        /// <summary>
+        /// The ignore list
+        /// </summary>
         private readonly List<string> _ignoreList;
+
+        /// <summary>
+        /// The ignore patterns
+        /// </summary>
         private readonly List<Regex> _ignorePatterns;
 
         /// <summary>
@@ -35,11 +50,15 @@ namespace CoreBuilder
         /// and replacing them with resource references.
         /// </summary>
         /// <param name="projectPath">The root directory of the C# project.</param>
-        /// <param name="outputResourceFile">Path to generate the resource file.</param>
-        public void ProcessProject(string projectPath, string outputResourceFile)
+        /// <param name="outputResourceFile">Path to generate the resource file. If null, a default file will be used.</param>
+        /// <param name="appendToExisting">If true, appends to the existing resource file, otherwise overwrites it.</param>
+        public void ProcessProject(string projectPath, string outputResourceFile = null, bool appendToExisting = false)
         {
+            // If no output file is provided, set a default file
+            outputResourceFile ??= @"C:\path\to\default\ResourceFile.cs";
+
             var files = Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
-                .Where(f => !f.EndsWith(".xaml", StringComparison.Ordinal)); // Exclude XAML files
+                .Where(f => !f.EndsWith(".xaml", StringComparison.Ordinal) && !f.Contains("resource", StringComparison.OrdinalIgnoreCase)); // Exclude XAML and files containing "resource"
             var extractedStrings = new List<string>();
 
             foreach (var code in from file in files where !ShouldIgnoreFile(file) select File.ReadAllText(file))
@@ -47,14 +66,14 @@ namespace CoreBuilder
                 extractedStrings.AddRange(ExtractStrings(code));
             }
 
-            GenerateResourceFile(extractedStrings.Distinct().ToList(), outputResourceFile);
+            GenerateResourceFile(extractedStrings.Distinct().ToList(), outputResourceFile, appendToExisting);
         }
 
         /// <summary>
-        /// Should ignore file.
+        /// The ignore file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        /// <returns></returns>
+        /// <returns>If file should be ignored</returns>
         public bool ShouldIgnoreFile(string filePath)
         {
             return _ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern => pattern.IsMatch(filePath));
@@ -65,15 +84,19 @@ namespace CoreBuilder
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns></returns>
-        public IEnumerable<string> ExtractStrings(string code)
+        public static IEnumerable<string> ExtractStrings(string code)
         {
+            // Parse the code to a syntax tree
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var root = syntaxTree.GetRoot();
 
+            // List to hold the strings we find
             var stringLiterals = new List<string>();
+
+            // Extract interpolated strings first, ensuring we extract the correct parts
             var interpolatedStrings = ExtractInterpolatedStrings(code);
 
-            // Add regular string literals
+            // Add regular string literals from the syntax tree
             stringLiterals.AddRange(root.DescendantNodes()
                 .OfType<LiteralExpressionSyntax>()
                 .Where(l => l.IsKind(SyntaxKind.StringLiteralExpression))
@@ -82,19 +105,20 @@ namespace CoreBuilder
             // Add interpolated string literals (only the extracted format string)
             foreach (var (_, extracted, _) in interpolatedStrings) // Discarding the `original` and `placeholders`
             {
-                stringLiterals.Add(extracted);
+                stringLiterals.Add(extracted); // Only adding the `extracted` part of the tuple
             }
 
             return stringLiterals;
         }
 
+
+
         /// <summary>
         /// Extracts the interpolated strings.
         /// </summary>
         /// <param name="code">The code.</param>
-        /// <returns></returns>
-        private IEnumerable<(string original, string extracted, List<string> placeholders)> ExtractInterpolatedStrings(
-            string code)
+        /// <returns>List of string that needs replacing</returns>
+        private static IEnumerable<(string original, string extracted, List<string> placeholders)> ExtractInterpolatedStrings(string code)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var root = syntaxTree.GetRoot();
@@ -106,7 +130,7 @@ namespace CoreBuilder
                 var staticParts = new List<string>();
                 var placeholders = new List<string>();
 
-                var index = 0;
+                int index = 0;
                 foreach (var content in node.Contents)
                 {
                     if (content is InterpolatedStringTextSyntax textPart)
@@ -121,7 +145,7 @@ namespace CoreBuilder
                     }
                 }
 
-                var extractedString = string.Join("", staticParts);
+                string extractedString = string.Join("", staticParts);
                 interpolatedStrings.Add((node.ToString(), extractedString, placeholders));
             }
 
@@ -133,16 +157,45 @@ namespace CoreBuilder
         /// </summary>
         /// <param name="extractedStrings">The extracted strings.</param>
         /// <param name="outputFilePath">The output file path.</param>
-        public static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath)
+        /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
+        public static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath, bool appendToExisting = false)
         {
             var counter = 1;
+            var resourceStrings = (from str in extractedStrings let resourceKey = $"Resource{counter++}" select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
 
-            var resourceStrings = (from str in extractedStrings
-                let resourceKey = $"Resource{counter++}"
-                select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
+            // Ensure the file is a valid C# file
+            if (appendToExisting && File.Exists(outputFilePath))
+            {
+                // Read the existing file to ensure we are appending within a valid class structure
+                var existingCode = File.ReadAllText(outputFilePath);
 
-            // Write to the output resource file
-            File.WriteAllLines(outputFilePath, resourceStrings);
+                // Check if the file already contains a class with resources
+                if (!existingCode.Contains("public static class Resource"))
+                {
+                    // If no class exists, create one and append
+                    existingCode = existingCode.TrimEnd() + "\npublic static class Resource {\n" + string.Join("\n", resourceStrings) + "\n}\n";
+                    File.WriteAllText(outputFilePath, existingCode);
+                }
+                else
+                {
+                    // Otherwise, append the resource strings to the existing class
+                    var classStartIndex = existingCode.IndexOf("public static class Resource");
+                    var classEndIndex = existingCode.LastIndexOf("}", classStartIndex);
+
+                    var beforeClass = existingCode.Substring(0, classEndIndex);
+                    var afterClass = existingCode.Substring(classEndIndex);
+
+                    // Append inside the class but outside of any existing methods
+                    var updatedClass = beforeClass + "\n" + string.Join("\n", resourceStrings) + "\n" + afterClass;
+                    File.WriteAllText(outputFilePath, updatedClass);
+                }
+            }
+            else
+            {
+                // Create a new file (or overwrite if it exists)
+                var newClassContent = "public static class Resource {\n" + string.Join("\n", resourceStrings) + "\n}";
+                File.WriteAllText(outputFilePath, newClassContent);
+            }
         }
     }
 }

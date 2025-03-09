@@ -1,8 +1,22 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreConsole
+ * FILE:        CoreConsole/Program.cs
+ * PURPOSE:     Basic Console app, to get my own tools running
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
+using System.Collections.Generic;
 using CoreBuilder;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace CoreConsole
 {
+    /// <summary>
+    /// Entry Point for my tools and future utilities.
+    /// </summary>
     internal static class Program
     {
         /// <summary>
@@ -17,15 +31,44 @@ namespace CoreConsole
             // Ensure the user has provided the necessary arguments
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: ResXtractConsole <projectPath> <outputResourceFile>");
+                Console.WriteLine("Usage: ResXtractConsole <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
                 return;
             }
 
-            var projectPath = args[0];
-            var outputResourceFile = args[1];
+            string projectPath = args[0];
+            string outputResourceFile = args[1];
 
-            // Create an instance of the ResXtract tool
-            var extractor = new ResXtract();
+            // Check if user wants to add any ignore list or patterns
+            List<string> ignoreList = new List<string>();
+            List<Regex> ignorePatterns = new List<Regex>();
+
+            // Optionally, read the ignore list from a file if provided
+            if (args.Length > 2 && File.Exists(args[2]))
+            {
+                ignoreList = new List<string>(File.ReadAllLines(args[2]));
+                Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
+            }
+
+            // Optionally, read the ignore patterns from a file if provided
+            if (args.Length > 3 && File.Exists(args[3]))
+            {
+                foreach (var pattern in File.ReadAllLines(args[3]))
+                {
+                    try
+                    {
+                        ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
+                    }
+                }
+
+                Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
+            }
+
+            // Create an instance of the ResXtract tool with the provided ignore list and patterns
+            var extractor = new ResXtract(ignoreList, ignorePatterns);
 
             try
             {
@@ -41,6 +84,9 @@ namespace CoreConsole
                 // If something goes wrong, print an error message
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
     }
 }

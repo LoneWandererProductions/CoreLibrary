@@ -679,7 +679,7 @@ namespace SqliteHelper
             }
 
             // Create the table based on inferred headers
-            var tableCreated = _execute.CreateTable(tableAlias, tableHeaders);
+            bool tableCreated = _execute.CreateTable(tableAlias, tableHeaders);
             if (!tableCreated)
             {
                 // Log or handle the failure of creating the table
@@ -740,7 +740,7 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Creates the table headers.
+        /// Creates the table headers.
         /// </summary>
         /// <param name="csv">The CSV.</param>
         /// <param name="headers">if set to <c>true</c> [headers].</param>
@@ -757,7 +757,10 @@ namespace SqliteHelper
                     // Default column settings; can be customized if needed
                     tableHeaders.DColumns[columnName] = new TableColumns
                     {
-                        DataType = SqLiteDataTypes.Text, Unique = false, PrimaryKey = false, NotNull = false
+                        DataType = SqLiteDataTypes.Text,
+                        Unique = false,
+                        PrimaryKey = false,
+                        NotNull = false
                     };
                 }
 
@@ -770,7 +773,10 @@ namespace SqliteHelper
                 {
                     tableHeaders.DColumns[$"{SqliteHelperResources.ColumnName}{i + 1}"] = new TableColumns
                     {
-                        DataType = SqLiteDataTypes.Text, Unique = false, PrimaryKey = false, NotNull = false
+                        DataType = SqLiteDataTypes.Text,
+                        Unique = false,
+                        PrimaryKey = false,
+                        NotNull = false
                     };
                 }
             }

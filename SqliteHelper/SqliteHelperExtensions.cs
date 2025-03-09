@@ -9,12 +9,12 @@
 namespace SqliteHelper
 {
     /// <summary>
-    ///     Useful Extensions, to be extended
+    /// Useful Extensions, to be extended
     /// </summary>
     internal static class SqliteHelperExtensions
     {
         /// <summary>
-        ///     Withes the type of the data.
+        /// Withes the type of the data.
         /// </summary>
         /// <param name="column">The column.</param>
         /// <param name="dataType">Type of the data.</param>
