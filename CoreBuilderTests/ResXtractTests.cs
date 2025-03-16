@@ -87,7 +87,7 @@ namespace CoreBuilderTests
             var outputFilePath = Path.Combine(Environment.CurrentDirectory, "TestResources.cs");
 
             // Act: Generate resource file (it will overwrite if the file exists)
-            ResXtract.GenerateResourceFile(extractedStrings, outputFilePath, false);
+            ResXtract.GenerateResourceFile(extractedStrings, outputFilePath);
 
             // Assert: Check if the file exists and contains expected content
             Assert.IsTrue(File.Exists(outputFilePath));
