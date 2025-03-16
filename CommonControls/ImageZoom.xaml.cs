@@ -12,6 +12,7 @@
 // ReSharper disable MissingSpace
 
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -96,7 +97,7 @@ namespace CommonControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        ///     The selected free form points command property
+        /// The selected free form points command property
         /// </summary>
         public static readonly DependencyProperty SelectedFreeFormPointsCommandProperty =
             DependencyProperty.Register(nameof(SelectedFreeFormPointsCommand), typeof(ICommand), typeof(ImageZoom),
@@ -136,10 +137,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -175,10 +173,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Gets or sets the selected free form points command.
+        /// Gets or sets the selected free form points command.
         /// </summary>
         /// <value>
-        ///     The selected free form points command.
+        /// The selected free form points command.
         /// </value>
         public ICommand SelectedFreeFormPointsCommand
         {
@@ -302,22 +300,16 @@ namespace CommonControls
         /// </summary>
         /// <param name="d">The d.</param>
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="System.NotImplementedException"></exception>
         private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as ImageZoom;
-            if (control == null)
-            {
-                return; // Ensure that we are working with an ImageZoom instance
-            }
+            if (control == null) return; // Ensure that we are working with an ImageZoom instance
 
             var newTool = (ImageZoomTools)e.NewValue;
 
             // Detach the previous adorner if needed
-            if (control.SelectionAdorner == null)
-            {
-                return;
-            }
+            if (control.SelectionAdorner == null) return;
 
             control.SelectionAdorner.Tool = newTool; // Update the tool in the adorner
             control.SelectionAdorner.ClearFreeFormPoints(); // Reset any existing free-form points if applicable
@@ -348,6 +340,9 @@ namespace CommonControls
             // Set GifSource and subscribe to the ImageLoaded event
             BtmImage.ImageLoaded += BtmImage_ImageLoaded;
             BtmImage.GifSource = ImageGifPath;
+
+            // Ensure the adorner updates with the new zoom scale
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
@@ -370,6 +365,9 @@ namespace CommonControls
 
             // Reattach adorner for the new image (ensures correct behavior)
             AttachAdorner(SelectionTool);
+
+            // Ensure the adorner updates with the new zoom scale
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
@@ -380,10 +378,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -430,7 +425,6 @@ namespace CommonControls
             }
         }
 
-
         /// <summary>
         ///     Handles the MouseDown event of the Grid control.
         /// </summary>
@@ -440,12 +434,17 @@ namespace CommonControls
         {
             // Capture and track the mouse.
             _mouseDown = true;
-            _startPoint = e.GetPosition(MainCanvas);
-            _originPoint.X = BtmImage.RenderTransform.Value.OffsetX;
-            _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
+
+            // Get the mouse position relative to the canvas
+            Point rawPoint = e.GetPosition(MainCanvas);
+
+            //TODO problem with our DPI and multiple Monitor Setup
+            _startPoint = rawPoint;
+
+            // Capture the mouse
             _ = MainCanvas.CaptureMouse();
 
-            AttachAdorner(SelectionTool); // Attach Adorner based on current tool
+            AttachAdorner(SelectionTool);
 
             switch (SelectionTool)
             {
@@ -454,15 +453,11 @@ namespace CommonControls
                 case ImageZoomTools.Trace:
                     SelectionAdorner.IsTracing = true;
                     break;
-
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
-                    break;
                 case ImageZoomTools.FreeForm:
-                    e.GetPosition(BtmImage);
                     break;
                 default:
-                    // nothing
                     return;
             }
         }
@@ -503,7 +498,7 @@ namespace CommonControls
 
                     // Implement logic for FreeFormPoints
                     var points = SelectionAdorner.FreeFormPoints;
-                    if (points is { Count: > 0 })
+                    if (points is {Count: > 0})
                     {
                         // Process the collected freeform points
                         if (SelectedFreeFormPointsCommand?.CanExecute(points) == true)
@@ -542,7 +537,6 @@ namespace CommonControls
             }
         }
 
-
         /// <summary>
         ///     Handles the MouseMove event of the Canvas control.
         /// </summary>
@@ -550,10 +544,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
@@ -613,6 +604,9 @@ namespace CommonControls
                 var newZoomScale = Scale.ScaleX * zoomFactor; // Assume uniform scaling, so use ScaleX
 
                 UpdateZoomScale(newZoomScale); // Centralize logic for updating the zoom scale
+
+                // Ensure the adorner updates with the new zoom scale
+                SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
             }
         }
 
@@ -647,17 +641,11 @@ namespace CommonControls
         /// <param name="disposing">Whether the method was called by Dispose or the finalizer.</param>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return; // Early exit if already disposed
-            }
+            if (_disposed) return; // Early exit if already disposed
 
             lock (_lock) // Ensure thread-safety
             {
-                if (_disposed)
-                {
-                    return; // Double-check in case Dispose was called by another thread
-                }
+                if (_disposed) return; // Double-check in case Dispose was called by another thread
 
                 if (disposing)
                 {
@@ -665,20 +653,12 @@ namespace CommonControls
 
                     // Unsubscribe event handlers
                     if (SelectedFrame != null)
-                    {
                         foreach (var d in SelectedFrame.GetInvocationList())
-                        {
                             SelectedFrame -= (DelegateFrame)d;
-                        }
-                    }
 
                     if (SelectedPoint != null)
-                    {
                         foreach (var d in SelectedPoint.GetInvocationList())
-                        {
                             SelectedPoint -= (DelegatePoint)d;
-                        }
-                    }
 
                     // Dispose image resources
                     BtmImage?.StopAnimation();
@@ -694,10 +674,7 @@ namespace CommonControls
 
                     SelectionAdorner = null;
 
-                    if (BtmImage != null)
-                    {
-                        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
-                    }
+                    if (BtmImage != null) BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
 
                     // Release UI interaction resources
                     MainCanvas.ReleaseMouseCapture();

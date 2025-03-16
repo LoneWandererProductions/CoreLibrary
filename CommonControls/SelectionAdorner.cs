@@ -95,8 +95,8 @@ namespace CommonControls
         public void UpdateSelection(Point start, Point end)
         {
             // Apply transformation to the start and end points if necessary
-            _startPoint = _imageTransform.Transform(start);
-            _endPoint = _imageTransform.Transform(end);
+            _startPoint = TransformMousePosition(start);
+            _endPoint = TransformMousePosition(end);
 
             InvalidateVisual();
         }
@@ -126,8 +126,7 @@ namespace CommonControls
         /// <param name="transform">The new transform to apply.</param>
         public void UpdateImageTransform(Transform transform)
         {
-            _imageTransform =
-                transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
+            _imageTransform = transform ?? Transform.Identity;
             InvalidateVisual();
         }
 
@@ -138,11 +137,13 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            var transformedPoint = TransformMousePosition(e.GetPosition(this));
+
             if (Tool == ImageZoomTools.Trace && e.LeftButton == MouseButtonState.Pressed)
             {
                 IsTracing = true;
                 FreeFormPoints.Clear(); // Clear existing points for a new trace
-                FreeFormPoints.Add(_imageTransform.Transform(e.GetPosition(this)));
+                FreeFormPoints.Add(transformedPoint);
                 CaptureMouse(); // Ensure we capture all mouse events
             }
         }
@@ -156,7 +157,7 @@ namespace CommonControls
         {
             if (IsTracing && e.LeftButton == MouseButtonState.Pressed)
             {
-                var currentPoint = _imageTransform.Transform(e.GetPosition(this));
+                var currentPoint = TransformMousePosition(e.GetPosition(this));
                 FreeFormPoints.Add(currentPoint);
                 InvalidateVisual(); // Redraw to show the updated trace
             }
@@ -174,6 +175,14 @@ namespace CommonControls
                 IsTracing = false;
                 ReleaseMouseCapture(); // Release mouse capture
             }
+        }
+
+        private Point TransformMousePosition(Point mousePosition)
+        {
+            if (_imageTransform == null)
+                return mousePosition;
+
+            return _imageTransform.Inverse.Transform(mousePosition);
         }
 
         /// <inheritdoc />
@@ -206,7 +215,7 @@ namespace CommonControls
                     Y = (int)selectionRect.Y,
                     Width = (int)selectionRect.Width,
                     Height = (int)selectionRect.Height,
-                    Tool = Tool // Store the current tool as a string
+                    Tool = Tool// Store the current tool as a string
                 };
 
                 switch (Tool)
@@ -220,8 +229,8 @@ namespace CommonControls
                     case ImageZoomTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
-                            selectionRect.Left + (selectionRect.Width / 2),
-                            selectionRect.Top + (selectionRect.Height / 2));
+                            selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
 
                         // Draw the ellipse with the calculated center and half the width and height as radii
                         drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2,
