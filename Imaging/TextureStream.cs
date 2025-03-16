@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 // ReSharper disable UnusedMember.Local
 
@@ -76,17 +75,11 @@ namespace Imaging
                 double value;
 
                 if (useTurbulence)
-                {
                     value = Turbulence(x, y, turbulenceSize);
-                }
                 else if (useSmoothNoise)
-                {
                     value = SmoothNoise(x, y);
-                }
                 else
-                {
                     value = Noise[y % NoiseHeight, x % NoiseWidth];
-                }
 
                 var colorValue = minValue + (int)((maxValue - minValue) * value);
                 colorValue = Math.Max(minValue, Math.Min(maxValue, colorValue));
@@ -129,7 +122,8 @@ namespace Imaging
             for (var x = 0; x < width; x++)
             {
                 var value = Turbulence(x, y, turbulenceSize);
-                var l = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
+                var cloudDensity = Math.Pow(value, 1.8); // Adjust contrast (1.8 = sharper clouds)
+                var l = Math.Clamp(minValue + (int)(cloudDensity * (maxValue - minValue)), minValue, maxValue);
                 var color = Color.FromArgb(alpha, l, l, l);
                 pixelData.Add((x, y, color));
             }
@@ -175,8 +169,8 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var xyValue = (x * xPeriod / NoiseWidth) + (y * yPeriod / NoiseHeight) +
-                              (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
+                var xyValue = x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight +
+                              turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
                 var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
                 var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
@@ -225,10 +219,10 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var xValue = (x - (width / 2.0)) / width;
-                var yValue = (y - (height / 2.0)) / height;
-                var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
-                                (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
+                var xValue = (x - width / 2.0) / width;
+                var yValue = (y - height / 2.0) / height;
+                var distValue = Math.Sqrt(xValue * xValue + yValue * yValue) +
+                                turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
                 var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
@@ -276,9 +270,9 @@ namespace Imaging
             for (var x = 0; x < width; x++)
             {
                 var turbulenceValue = Turbulence(x, y, turbulenceSize);
-                var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
-                var yValue = ((y - (height / 2.0)) / height) +
-                             (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+                var xValue = (x - width / 2.0) / width + turbulencePower * turbulenceValue / 256.0;
+                var yValue = (y - height / 2.0) / height +
+                             turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0;
 
                 var sineValue = 22.0 *
                                 Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
@@ -320,39 +314,53 @@ namespace Imaging
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
 
-            var crosshatchBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            var crosshatchBitmap = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.Transparent); // Set background to transparent
+            graphics.Clear(Color.White); // Background color
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
+            // Convert angles from degrees to radians
+            var radAngle1 = angle1 * Math.PI / 180.0;
+            var radAngle2 = angle2 * Math.PI / 180.0;
 
-            void DrawLines(double angle)
-            {
-                var radians = angle * Math.PI / 180.0;
-                var cosA = Math.Cos(radians);
-                var sinA = Math.Sin(radians);
+            // Calculate the line direction vectors
+            var dx1 = Math.Cos(radAngle1);
+            var dy1 = Math.Sin(radAngle1);
+            var dx2 = Math.Cos(radAngle2);
+            var dy2 = Math.Sin(radAngle2);
 
-                // The farthest diagonal distance in the image to ensure full coverage
-                var diagonalLength = (int)Math.Sqrt((width * width) + (height * height));
+            // Draw first set of lines
+            for (var y = 0; y < height; y += lineSpacing)
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)(width * dx1 + width * dy1),
+                    (int)(y * dx1 + width * dy1));
 
-                for (var d = -diagonalLength; d < diagonalLength; d += lineSpacing)
-                {
-                    var x1 = (int)(d * cosA);
-                    var y1 = (int)(d * sinA);
-                    var x2 = (int)((d + diagonalLength) * cosA);
-                    var y2 = (int)((d + diagonalLength) * sinA);
+            for (var x = 0; x < width; x += lineSpacing)
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)(x * dx1 + height * dx1),
+                    (int)(height * dx1 + height * dy1));
 
-                    graphics.DrawLine(pen, x1, y1, x2, y2);
-                }
-            }
+            // Draw second set of lines
+            for (var y = 0; y < height; y += lineSpacing)
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)(width * dx2 + height * dy2),
+                    (int)(y * dx2 + height * dy2));
 
-            // Draw the two crosshatch line sets
-            DrawLines(angle1);
-            DrawLines(angle2);
+            for (var x = 0; x < width; x += lineSpacing)
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)(x * dx2 + width * dx2),
+                    (int)(width * dx2 + height * dy2));
 
             return crosshatchBitmap;
         }
-
 
         /// <summary>
         ///     Generates a concrete texture bitmap.
@@ -418,21 +426,23 @@ namespace Imaging
 
 
             //no Simd for now
-            using var g = Graphics.FromImage(canvasBitmap.Bitmap);
-            g.Clear(Color.White);
-
-            // Draw vertical fibers
-            for (var x = 0; x < width; x += lineSpacing)
+            using (var g = Graphics.FromImage(canvasBitmap.Bitmap))
             {
-                using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
-                g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
-            }
+                g.Clear(Color.White);
 
-            // Draw horizontal fibers
-            for (var y = 0; y < height; y += lineSpacing)
-            {
-                using var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor));
-                g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
+                // Draw vertical fibers
+                for (var x = 0; x < width; x += lineSpacing)
+                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                    {
+                        g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
+                    }
+
+                // Draw horizontal fibers
+                for (var y = 0; y < height; y += lineSpacing)
+                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                    {
+                        g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
+                    }
             }
 
             return canvasBitmap.Bitmap;
@@ -447,9 +457,7 @@ namespace Imaging
             var random = new Random();
             for (var y = 0; y < NoiseHeight; y++)
             for (var x = 0; x < NoiseWidth; x++)
-            {
                 Noise[y, x] = random.NextDouble(); // Random value between 0.0 and 1.0
-            }
         }
 
         /// <summary>
@@ -463,14 +471,16 @@ namespace Imaging
         {
             var value = 0.0;
             var initialSize = size;
+
             while (size >= 1)
             {
                 value += SmoothNoise(x / size, y / size) * size;
                 size /= 2;
             }
 
-            return Math.Abs(value / initialSize);
+            return value / initialSize; // Normalize
         }
+
 
         /// <summary>
         ///     Smooths the noise.
@@ -480,21 +490,22 @@ namespace Imaging
         /// <returns>Generate Noise</returns>
         private static double SmoothNoise(double x, double y)
         {
-            var intX = (int)x;
+            var intX = (int)Math.Floor(x);
             var fracX = x - intX;
-            var intY = (int)y;
+            var intY = (int)Math.Floor(y);
             var fracY = y - intY;
 
-            var v1 = Noise[intY % NoiseHeight, intX % NoiseWidth];
-            var v2 = Noise[intY % NoiseHeight, (intX + 1) % NoiseWidth];
-            var v3 = Noise[(intY + 1) % NoiseHeight, intX % NoiseWidth];
-            var v4 = Noise[(intY + 1) % NoiseHeight, (intX + 1) % NoiseWidth];
+            var v1 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
+            var v2 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
+            var v3 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
+            var v4 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
 
             var i1 = ImageHelper.Interpolate(v1, v2, fracX);
             var i2 = ImageHelper.Interpolate(v3, v4, fracX);
 
             return ImageHelper.Interpolate(i1, i2, fracY);
         }
+
 
         /// <summary>
         ///     Adds a minor random variation to an integer value within a given range.

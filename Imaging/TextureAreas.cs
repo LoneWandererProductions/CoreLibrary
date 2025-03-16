@@ -38,14 +38,10 @@ namespace Imaging
             Point? startPoint = null)
         {
             if (width <= 0 || height <= 0)
-            {
                 throw new ArgumentException(ImagingResources.InvalidDimensions);
-            }
 
             if (imageSettings == null)
-            {
                 throw new ArgumentNullException(nameof(imageSettings), ImagingResources.ImageSettingsNull);
-            }
 
             // Default start point
             var actualStartPoint = startPoint ?? new Point(0, 0);
@@ -83,8 +79,7 @@ namespace Imaging
                 TextureType.Canvas => TextureStream.GenerateCanvasBitmap(
                     width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha),
 
-                _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
-                    ImagingResources.UnsupportedTexture)
+                _ => throw new ArgumentOutOfRangeException(nameof(texture), texture, ImagingResources.UnsupportedTexture)
             };
 
             // Validate shape parameters and apply mask
