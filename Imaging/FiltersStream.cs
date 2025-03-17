@@ -786,7 +786,7 @@ namespace Imaging
                 new(centerX - width / 2, centerY - height / 2, width, height)
             };
 
-            for (var i = 1; i <= 3; i++) // Adding 3 additional regions with varying sizes
+            for (var i = 1; i <= numAdditionalRegions; i++) // Adding 3 additional regions with varying sizes
             {
                 var newWidth = width - i * step;
                 var newHeight = height - i * step;

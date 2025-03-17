@@ -121,10 +121,20 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var value = Turbulence(x, y, turbulenceSize);
-                var cloudDensity = Math.Pow(value, 1.8); // Adjust contrast (1.8 = sharper clouds)
-                var l = Math.Clamp(minValue + (int)(cloudDensity * (maxValue - minValue)), minValue, maxValue);
-                var color = Color.FromArgb(alpha, l, l, l);
+                var turbulenceValue = Turbulence(x, y, turbulenceSize);
+
+                // Compute luminance with turbulence effect but keeping a good contrast
+                var L = (byte)Math.Clamp(180 + (turbulenceValue * 30), 180, 220);  // Lightness varies but doesn't go too bright
+
+                // Reduce saturation for a more muted light blue
+                var S = 80;
+
+                // Keep hue at 200° for light blue
+                var H = 200;
+
+                // Convert HSL to RGB
+                var color = HsLtoRgb(H, S, L);
+
                 pixelData.Add((x, y, color));
             }
 
@@ -169,9 +179,12 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var xyValue = x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight +
-                              turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
-                var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
+                var xyValue = (x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight) +
+                              turbulencePower * Turbulence(x, y, turbulenceSize) / 128.0 +
+                              (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
+
+                    var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
+
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
                 var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
                 var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
@@ -479,6 +492,61 @@ namespace Imaging
             }
 
             return value / initialSize; // Normalize
+        }
+
+        /// <summary>
+        /// HSL to RGB.
+        /// </summary>
+        /// <param name="h">The h.</param>
+        /// <param name="s">The s.</param>
+        /// <param name="l">The l.</param>
+        /// <returns>The converted color.</returns>
+        private static Color HsLtoRgb(double h, double s, double l)
+        {
+            h /= 360.0; // Normalize Hue to [0,1]
+            s /= 255.0; // Normalize Saturation to [0,1]
+            l /= 255.0; // Normalize Lightness to [0,1]
+
+            double r, g, b;
+
+            if (s == 0)
+            {
+                // Grayscale (no saturation)
+                r = g = b = l;
+            }
+            else
+            {
+                var q = l < 0.5 ? l * (1 + s) : (l + s - l * s);
+                var p = 2 * l - q;
+
+                r = HueToRgb(p, q, h + 1.0 / 3.0);
+                g = HueToRgb(p, q, h);
+                b = HueToRgb(p, q, h - 1.0 / 3.0);
+            }
+
+            return Color.FromArgb(
+                255, // Full alpha
+                (int)(r * 255),
+                (int)(g * 255),
+                (int)(b * 255)
+            );
+        }
+
+        /// <summary>
+        /// Hues to RGB.
+        /// </summary>
+        /// <param name="p">The p.</param>
+        /// <param name="q">The q.</param>
+        /// <param name="t">The t.</param>
+        /// <returns>Hue to Rgb</returns>
+        private static double HueToRgb(double p, double q, double t)
+        {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1.0 / 6.0) return p + (q - p) * 6 * t;
+            if (t < 1.0 / 2.0) return q;
+            if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6;
+            return p;
         }
 
 

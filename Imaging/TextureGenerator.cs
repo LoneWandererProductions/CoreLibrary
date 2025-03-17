@@ -166,7 +166,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Generates the texture overlay.
+        ///     Generates the texture overlay.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="height">The height.</param>
@@ -176,11 +176,13 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters.</param>
         /// <param name="width">The width.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         public Bitmap GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null)

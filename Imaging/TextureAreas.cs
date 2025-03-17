@@ -79,7 +79,8 @@ namespace Imaging
                 TextureType.Canvas => TextureStream.GenerateCanvasBitmap(
                     width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha),
 
-                _ => throw new ArgumentOutOfRangeException(nameof(texture), texture, ImagingResources.UnsupportedTexture)
+                _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
+                    ImagingResources.UnsupportedTexture)
             };
 
             // Validate shape parameters and apply mask
