@@ -231,12 +231,27 @@ namespace Imaging
         {
             var config = ImageSettings.GetSettings(TextureType.Crosshatch);
 
+            //return _Tester.GenerateMarbleBitmap(
+            //    width,
+            //    height,
+            //    config.MinValue,
+            //    config.MaxValue,
+            //    config.Alpha,
+            //    config.XPeriod,
+            //    config.YPeriod,
+            //    config.TurbulencePower,
+            //    config.TurbulenceSize
+            //);
+
             return TextureStream.GenerateConcreteBitmap(
                 width,
                 height,
                 config.MinValue,
                 config.MaxValue,
                 config.Alpha,
+                config.XPeriod,
+                config.YPeriod,
+                config.TurbulencePower,
                 config.TurbulenceSize
             );
         }

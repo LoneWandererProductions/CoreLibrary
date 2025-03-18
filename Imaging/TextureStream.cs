@@ -33,7 +33,7 @@ namespace Imaging
         /// <summary>
         ///     The noise
         /// </summary>
-        private static readonly double[,] Noise = new double[NoiseHeight, NoiseWidth];
+        private static double[,] Noise = new double[NoiseHeight, NoiseWidth];
 
         /// <summary>
         ///     Generates the noise bitmap.
@@ -376,45 +376,50 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Generates a concrete texture bitmap.
+        /// Generates a concrete texture bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="minValue">The minimum grayscale value.</param>
         /// <param name="maxValue">The maximum grayscale value.</param>
         /// <param name="alpha">The alpha transparency level.</param>
+        /// <param name="xPeriod">The x period, Defines repetition of marble veins.</param>
+        /// <param name="yPeriod">The y period,  Defines direction of veins.</param>
+        /// <param name="turbulencePower">The turbulence power.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
-        /// <returns>Concrete Texture Bitmap</returns>
+        /// <returns>
+        /// Concrete Texture Bitmap
+        /// </returns>
         internal static Bitmap GenerateConcreteBitmap(
             int width,
             int height,
             int minValue = 50,
             int maxValue = 200,
             int alpha = 255,
+            double xPeriod = 5.0,
+            double yPeriod = 10.0,
+            double turbulencePower = 5.0,
             double turbulenceSize = 16)
         {
-            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
-            GenerateBaseNoise();
-
-            var concreteBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
+            var noiseGen = new NoiseGenerator(width, height);
+            var bitmap = new Bitmap(width, height);
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                // Turbulence creates irregular, rough texture
-                var noiseValue = Turbulence(x, y, turbulenceSize);
-                var colorValue = minValue + (int)((maxValue - minValue) * noiseValue);
+                for (var x = 0; x < width; x++)
+                {
+                    var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
+                                  (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
 
-                // Add minor random variation for a "gritty" look
-                colorValue = Math.Clamp(colorValue + RandomVariation(-15, 15), minValue, maxValue);
+                    var sineValue = 256 * Math.Abs(Math.Sin(xyValue * Math.PI));
 
-                var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
-                pixelData.Add((x, y, color));
+                    var grayscale = Math.Clamp((int)sineValue, minValue, maxValue);
+                    var color = Color.FromArgb(alpha, grayscale, grayscale, grayscale);
+                    bitmap.SetPixel(x, y, color);
+                }
             }
 
-            concreteBitmap.SetPixelsSimd(pixelData.ToArray());
-            return concreteBitmap.Bitmap;
+            return bitmap;
         }
 
         /// <summary>
@@ -461,7 +466,6 @@ namespace Imaging
             return canvasBitmap.Bitmap;
         }
 
-
         /// <summary>
         ///     Generates the base noise.
         /// </summary>
@@ -491,7 +495,7 @@ namespace Imaging
                 size /= 2;
             }
 
-            return value / initialSize; // Normalize
+            return (value / initialSize) * 255.0;
         }
 
         /// <summary>
@@ -573,7 +577,6 @@ namespace Imaging
 
             return ImageHelper.Interpolate(i1, i2, fracY);
         }
-
 
         /// <summary>
         ///     Adds a minor random variation to an integer value within a given range.

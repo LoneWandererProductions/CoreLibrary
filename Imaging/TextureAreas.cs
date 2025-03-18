@@ -74,7 +74,7 @@ namespace Imaging
                     settings.Angle2, settings.Alpha),
 
                 TextureType.Concrete => TextureStream.GenerateConcreteBitmap(
-                    width, height, settings.MinValue, settings.MaxValue, settings.Alpha, settings.TurbulenceSize),
+                    width, height, settings.MinValue, settings.MaxValue, settings.Alpha, settings.XPeriod, settings.YPeriod, settings.TurbulencePower, settings.TurbulenceSize),
 
                 TextureType.Canvas => TextureStream.GenerateCanvasBitmap(
                     width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha),

@@ -459,7 +459,7 @@ namespace Imaging
             // Convert to grayscale
             var grayBitmap = FilterImage(image, FiltersType.GrayScale);
 
-            // Define the color palette for dithering
+            // Define the color palette for dithering, todo add this to the Config
             var palette = new List<Color> { Color.Black, Color.White };
 
             // Floyd-Steinberg dithering matrix
