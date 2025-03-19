@@ -166,7 +166,9 @@ public static class FileInfoFetcher
     /// Retrieves a list of files (not directories) in the specified directory along with their metadata.
     /// </summary>
     /// <param name="directory">The directory to search for files in.</param>
-    /// <returns>A list of FileData objects containing file information for each file found.</returns>
+    /// <returns>
+    /// A list of FileData objects containing file information for each file found.
+    /// </returns>
     public static List<FileData> GetFiles(string directory)
     {
         // List to hold the file data
