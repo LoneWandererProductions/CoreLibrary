@@ -129,6 +129,7 @@ namespace Imaging
                 TextureType.Crosshatch,
                 new HashSet<string>
                 {
+                    nameof(TextureConfiguration.Alpha),
                     nameof(TextureConfiguration.LineSpacing),
                     nameof(TextureConfiguration.LineColor),
                     nameof(TextureConfiguration.LineThickness),
@@ -140,8 +141,12 @@ namespace Imaging
                 TextureType.Concrete,
                 new HashSet<string>
                 {
+                    nameof(TextureConfiguration.Alpha),
                     nameof(TextureConfiguration.MinValue),
                     nameof(TextureConfiguration.MaxValue),
+                    nameof(TextureConfiguration.YPeriod),
+                    nameof(TextureConfiguration.XPeriod),
+                    nameof(TextureConfiguration.TurbulencePower),
                     nameof(TextureConfiguration.TurbulenceSize)
                 }
             },
@@ -149,6 +154,7 @@ namespace Imaging
                 TextureType.Canvas,
                 new HashSet<string>
                 {
+                    nameof(TextureConfiguration.Alpha),
                     nameof(TextureConfiguration.LineSpacing),
                     nameof(TextureConfiguration.LineColor),
                     nameof(TextureConfiguration.LineThickness)
