@@ -12,7 +12,7 @@
 // ReSharper disable MissingSpace
 
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -97,7 +97,7 @@ namespace CommonControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// The selected free form points command property
+        ///     The selected free form points command property
         /// </summary>
         public static readonly DependencyProperty SelectedFreeFormPointsCommandProperty =
             DependencyProperty.Register(nameof(SelectedFreeFormPointsCommand), typeof(ICommand), typeof(ImageZoom),
@@ -173,10 +173,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the selected free form points command.
+        ///     Gets or sets the selected free form points command.
         /// </summary>
         /// <value>
-        /// The selected free form points command.
+        ///     The selected free form points command.
         /// </value>
         public ICommand SelectedFreeFormPointsCommand
         {
@@ -372,6 +372,7 @@ namespace CommonControls
 
         /// <summary>
         ///     Called when [image source changed].
+        ///     TODO add an option to not reset anything
         /// </summary>
         private void OnImageSourceChanged()
         {
@@ -436,7 +437,7 @@ namespace CommonControls
             _mouseDown = true;
 
             // Get the mouse position relative to the canvas
-            Point rawPoint = e.GetPosition(MainCanvas);
+            var rawPoint = e.GetPosition(MainCanvas);
 
             //TODO problem with our DPI and multiple Monitor Setup
             _startPoint = rawPoint;
@@ -487,10 +488,18 @@ namespace CommonControls
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
-                case ImageZoomTools.FreeForm:
+
                     var frame = SelectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                     SelectedFrameCommand.Execute(frame);
+                    break;
+                case ImageZoomTools.FreeForm:
+                    // Get the mouse position relative to the canvas
+                    var rawPoint = e.GetPosition(MainCanvas);
+
+                    //TODO problem with our DPI and multiple Monitor Setup
+
+                    SelectionAdorner.FreeFormPoints.Add(rawPoint);
                     break;
 
                 case ImageZoomTools.Trace:
@@ -498,13 +507,12 @@ namespace CommonControls
 
                     // Implement logic for FreeFormPoints
                     var points = SelectionAdorner.FreeFormPoints;
-                    if (points is {Count: > 0})
+
+                    if (points is { Count: > 0 })
                     {
                         // Process the collected freeform points
                         if (SelectedFreeFormPointsCommand?.CanExecute(points) == true)
-                        {
                             SelectedFreeFormPointsCommand.Execute(points);
-                        }
 
                         // Optionally, log or display the points
                         Trace.WriteLine($"Trace tool completed with {points.Count} points.");
@@ -523,17 +531,16 @@ namespace CommonControls
                     return;
             }
 
-            if (SelectionAdorner != null)
-            {
-                // Get the AdornerLayer for the image
-                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+            if (SelectionAdorner == null) return;
 
-                if (adornerLayer != null)
-                {
-                    // Remove the SelectionAdorner
-                    adornerLayer.Remove(SelectionAdorner);
-                    SelectionAdorner = null; // Clear the reference
-                }
+            // Get the AdornerLayer for the image
+            var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+
+            if (adornerLayer != null)
+            {
+                // Remove the SelectionAdorner
+                adornerLayer.Remove(SelectionAdorner);
+                SelectionAdorner = null; // Clear the reference
             }
         }
 
@@ -608,6 +615,35 @@ namespace CommonControls
                 // Ensure the adorner updates with the new zoom scale
                 SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
             }
+        }
+
+        /// <summary>
+        /// Handles the MouseRightButtonUp event of the Canvas control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (SelectionTool == ImageZoomTools.FreeForm)
+            {
+                CompleteFreeFormSelection();
+            }
+        }
+
+        /// <summary>
+        /// Completes the free form selection.
+        /// </summary>
+        private void CompleteFreeFormSelection()
+        {
+            var frame = SelectionAdorner.CurrentSelectionFrame;
+            SelectedFrame?.Invoke(frame); // Notify listeners that selection is done
+
+            if (SelectedFrameCommand?.CanExecute(frame) == true)
+            {
+                SelectedFrameCommand.Execute(frame); // Execute any bound command
+            }
+
+            SelectionAdorner.FreeFormPoints.Clear(); // Reset collected points for the next freeform drawing
         }
 
         /// <summary>

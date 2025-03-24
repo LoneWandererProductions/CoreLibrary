@@ -14,7 +14,8 @@
                 MouseDown="Canvas_MouseDown"
                 MouseUp="Canvas_MouseUp"
                 MouseMove="Canvas_MouseMove"
-                MouseWheel="Canvas_MouseWheel">
+                MouseWheel="Canvas_MouseWheel"
+                MouseRightButtonUp="Canvas_MouseRightButtonUp">
                 <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <imag:ImageGif
                         Stretch="None"
