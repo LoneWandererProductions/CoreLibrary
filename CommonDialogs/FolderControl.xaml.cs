@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -154,53 +155,50 @@ namespace CommonDialogs
         ///     Function to set items (folders and files) asynchronously
         /// </summary>
         /// <param name="path">The path.</param>
-        private void SetItems(string path)
+        private async void SetItems(string path)
         {
-            string[] directories;
+            var directories = Array.Empty<string>();
             var files = Array.Empty<string>();
 
-            if (Directory.Exists(path))
+            // Use asynchronous loading to prevent UI freezing
+            await Task.Run(() =>
             {
-                // Get all directories in the current path
-                directories = Directory.GetDirectories(path);
-
-                // Optionally, get all files in the current path
-                if (ShowFiles)
+                if (Directory.Exists(path))
                 {
-                    files = Directory.GetFiles(path);
+                    directories = Directory.GetDirectories(path);
+                    if (ShowFiles)
+                    {
+                        files = Directory.GetFiles(path);
+                    }
                 }
-            }
-            else
-            {
-                // If path does not exist, get logical drives
-                directories = Directory.GetLogicalDrives();
-            }
+                else
+                {
+                    directories = Directory.GetLogicalDrives();
+                }
+            });
 
             // Clear TreeView before repopulating
             FoldersItem.Items.Clear();
 
-            // Add directories to the TreeView
-            foreach (var dir in directories)
+            // Add directories asynchronously
+            foreach (var item in directories.Select(CreateTreeViewItem))
             {
-                var item = CreateTreeViewItem(dir);
-                FoldersItem.Items.Add(item);
+                _ = FoldersItem.Items.Add(item);
             }
 
-            // Optionally add files to the TreeView
+            // Optionally add files asynchronously
             if (ShowFiles)
             {
-                foreach (var item in files.Select(file => new TreeViewItem
-                         {
-                             Header = Path.GetFileName(file), Tag = file
-                         }))
+                foreach (var fileItem in files.Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
                 {
-                    FoldersItem.Items.Add(item);
+                    _ = FoldersItem.Items.Add(fileItem);
                 }
             }
 
             // Update Paths property with the current path
             Paths = path;
         }
+
 
         /// <summary>
         ///     Creates the TreeView item.
@@ -226,42 +224,46 @@ namespace CommonDialogs
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void FolderExpanded(object sender, RoutedEventArgs e)
+        private async void FolderExpanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
             if (item.Items.Count != 1 || item.Items[0] != null)
             {
-                return;
+                return; // Already expanded
             }
 
             item.Items.Clear();
+            var path = item.Tag.ToString();
 
             try
             {
-                // Load subdirectories
-                foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!)
-                             .Select(CreateTreeViewItem))
+                var subDirs = await Task.Run(() => Directory.GetDirectories(path));
+
+                foreach (var subItem in subDirs.Select(CreateTreeViewItem))
                 {
                     item.Items.Add(subItem);
                 }
 
-                // Optionally load files
-                if (!ShowFiles)
+                if (ShowFiles)
                 {
-                    return;
-                }
+                    var files = await Task.Run(() => Directory.GetFiles(path));
 
-                foreach (var fileItem in Directory.GetFiles(item.Tag.ToString()!).Select(file =>
-                             new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
-                {
-                    item.Items.Add(fileItem);
+                    foreach (var fileItem in files.Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                    {
+                        item.Items.Add(fileItem);
+                    }
                 }
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine(ex);
+                Trace.WriteLine($"Access denied to {path}: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine($"Error accessing {path}: {ex.Message}");
             }
         }
+
 
         /// <summary>
         ///     Event handler for when a folder is selected
@@ -271,10 +273,9 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{Object}" /> instance containing the event data.</param>
         private void FoldersItemSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var tree = sender as TreeView;
-            if (tree?.SelectedItem is TreeViewItem selection)
+            if (e.NewValue is TreeViewItem {Tag: string selectedPath})
             {
-                Paths = selection.Tag.ToString();
+                Paths = selectedPath;
             }
         }
 

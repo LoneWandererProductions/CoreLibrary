@@ -1,9 +1,9 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     CommonDialogs
  * FILE:        CommonDialogs/InputBox.xaml.cs
- * PURPOSE:     FolderView Control, can be used independent of the FolderBrowser
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PURPOSE:     FolderView Control, can be used independently of the FolderBrowser
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -15,36 +15,26 @@ namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     A Simple Input Box
+    ///     A simple Input Box dialog for user input.
     /// </summary>
     public sealed partial class InputBox
     {
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InputBox" /> class.
+        ///     Initializes a new instance of the <see cref="InputBox" /> class with no header or text.
         /// </summary>
-        public InputBox()
-        {
-            InitializeComponent();
-        }
+        public InputBox() : this(string.Empty, string.Empty) { }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InputBox" /> class.
+        ///     Initializes a new instance of the <see cref="InputBox" /> class with a specified header.
         /// </summary>
-        /// <param name="header">The header.</param>
-        public InputBox(string header)
-        {
-            InitializeComponent();
-            Title = header;
-        }
+        /// <param name="header">The header text for the InputBox title.</param>
+        public InputBox(string header) : this(header, string.Empty) { }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InputBox" /> class.
+        ///     Initializes a new instance of the <see cref="InputBox" /> class with a specified header and text.
         /// </summary>
-        /// <param name="header">The header.</param>
-        /// <param name="text">The text.</param>
+        /// <param name="header">The header text for the InputBox title.</param>
+        /// <param name="text">The content text displayed inside the InputBox.</param>
         public InputBox(string header, string text)
         {
             InitializeComponent();
@@ -53,18 +43,13 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     Gets the input text.
+        ///     Gets the input text entered by the user.
         /// </summary>
-        /// <value>
-        ///     The input text.
-        /// </value>
-        public string InputText { get; private set; }
+        public string InputText { get; private set; } = string.Empty;
 
         /// <summary>
-        ///     Handles the Click event of the BtnOkay control.
+        ///     Handles the click event of the "Okay" button.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnOkay_Click(object sender, RoutedEventArgs e)
         {
             InputText = InputTextBox.Text;
@@ -72,13 +57,8 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        ///     Handles the Click event of the BtnClose control.
+        ///     Handles the click event of the "Close" button, closing the InputBox without saving any input.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
     }
 }

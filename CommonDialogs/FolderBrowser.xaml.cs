@@ -1,72 +1,75 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
+ * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     CommonDialogs
  * FILE:        CommonDialogs/FolderBrowser.xaml.cs
  * PURPOSE:     Old FolderBrowser restored
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 
-//TODO add basic Folder Infos
+// TODO: Add basic Folder Infos
 
 namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Simple Folder Browser
-    ///     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.design.toolboxitem?view=net-5.0
+    ///     Simple Folder Browser dialog.
     /// </summary>
     [ToolboxItem(false)]
     public sealed partial class FolderBrowser
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initiate Dialog
+        ///     Initializes a new instance of the FolderBrowser dialog.
         /// </summary>
-        internal FolderBrowser()
-        {
-            InitializeComponent();
-        }
+        internal FolderBrowser() : this(string.Empty) { }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initiate Dialog
+        ///     Initializes the dialog with a specified starting folder.
         /// </summary>
-        /// <param name="startFolder">target Folder</param>
+        /// <param name="startFolder">The target folder to start in.</param>
         public FolderBrowser(string startFolder)
         {
-            InitializeComponent();
-            VFolder.Initiate(startFolder);
+            try
+            {
+                InitializeComponent();
+                VFolder.Initiate(startFolder);
+            }
+            catch (Exception ex)
+            {
+                // Handle potential XAML loading errors
+                Console.WriteLine($"Error initializing FolderBrowser: {ex.Message}");
+            }
         }
 
         /// <summary>
-        ///     Selected Path
+        ///     The selected path after closing the dialog.
         /// </summary>
-        internal string Root { get; private set; }
+        internal string? Root { get; private set; }
 
         /// <summary>
-        ///     Just close
+        ///     Handles the OK button click event to confirm folder selection.
         /// </summary>
-        /// <param name="sender">Object</param>
-        /// <param name="e">Event type</param>
-        private void BtnOk_Click(object sender, RoutedEventArgs e)
-        {
-            Root = FolderControl.Root;
-            Close();
-        }
+        private void BtnOk_Click(object sender, RoutedEventArgs e) => HandleButtonClick(true);
 
         /// <summary>
-        ///     Close and reset selected folder
+        ///     Handles the Cancel button click event to reset the folder and close.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The routed event arguments.</param>
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e) => HandleButtonClick(false);
+
+        /// <summary>
+        ///     Handles both OK and Cancel clicks to avoid duplicate code.
+        /// </summary>
+        /// <param name="isOkClicked">True if OK was clicked, false for Cancel.</param>
+        private void HandleButtonClick(bool isOkClicked)
         {
-            Root = string.Empty;
+            Root = isOkClicked ? FolderControl.Root : null; // Set Root only if OK is clicked
             Close();
         }
     }

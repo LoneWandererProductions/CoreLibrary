@@ -229,7 +229,7 @@ namespace Debugger
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void MenLog_Click(object sender, RoutedEventArgs e)
         {
-            var file = FileIoHandler.HandleFileOpen(DebuggerResources.FileExt);
+            var file = DialogHandler.HandleFileOpen(DebuggerResources.FileExt);
 
             if (file != null && !File.Exists(file.FilePath))
             {
