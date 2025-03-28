@@ -9,24 +9,25 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using InterOp;
 
 /// <summary>
-/// File Fetcher Class to get basic information fast.
+///     File Fetcher Class to get basic information fast.
 /// </summary>
 public static class FileInfoFetcher
 {
     /// <summary>
-    /// Constant representing the file attribute for directories (0x10).
-    /// Used to distinguish files from directories during file searching.
+    ///     Constant representing the file attribute for directories (0x10).
+    ///     Used to distinguish files from directories during file searching.
     /// </summary>
-    const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
+    private const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
 
     /// <summary>
-    /// P/Invoke declaration for FindFirstFile function from kernel32.dll.
-    /// This function is used to find the first file matching the provided pattern.
-    /// See:
-    /// https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
+    ///     P/Invoke declaration for FindFirstFile function from kernel32.dll.
+    ///     This function is used to find the first file matching the provided pattern.
+    ///     See:
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfilew
     /// </summary>
     /// <param name="lpFileName">The directory or file pattern to search for.</param>
     /// <param name="lpFindFileData">The structure to hold file data returned by the function.</param>
@@ -35,10 +36,10 @@ public static class FileInfoFetcher
     public static extern IntPtr FindFirstFile(string lpFileName, ref WIN32_FIND_DATA lpFindFileData);
 
     /// <summary>
-    /// P/Invoke declaration for FindNextFile function from kernel32.dll.
-    /// This function is used to find the next file matching the search pattern.
-    /// See:
-    /// https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
+    ///     P/Invoke declaration for FindNextFile function from kernel32.dll.
+    ///     This function is used to find the next file matching the search pattern.
+    ///     See:
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findnextfilew
     /// </summary>
     /// <param name="hFindFile">Handle to the search operation.</param>
     /// <param name="lpFindFileData">The structure to hold the file data returned by the function.</param>
@@ -47,10 +48,10 @@ public static class FileInfoFetcher
     public static extern bool FindNextFile(IntPtr hFindFile, ref WIN32_FIND_DATA lpFindFileData);
 
     /// <summary>
-    /// P/Invoke declaration for FindClose function from kernel32.dll.
-    /// This function closes the handle to the search operation.
-    /// See:
-    /// https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
+    ///     P/Invoke declaration for FindClose function from kernel32.dll.
+    ///     This function closes the handle to the search operation.
+    ///     See:
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findclose
     /// </summary>
     /// <param name="hFindFile">Handle to the search operation to be closed.</param>
     /// <returns>True if successful, false otherwise.</returns>
@@ -58,127 +59,22 @@ public static class FileInfoFetcher
     public static extern bool FindClose(IntPtr hFindFile);
 
     /// <summary>
-    /// Structure that represents the file metadata returned by the FindFirstFile and FindNextFile functions.
-    /// See:
-    /// https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataa
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public struct WIN32_FIND_DATA
-    {
-        /// <summary>
-        /// File attributes (e.g., directory, hidden, etc.)
-        /// </summary>
-        public uint dwFileAttributes;
-
-        /// <summary>
-        /// Creation time of the file.
-        /// </summary>
-        public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-
-        /// <summary>
-        /// Last access time of the file.
-        /// </summary>
-        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-
-        /// <summary>
-        /// Last write time (modification time) of the file.
-        /// </summary>
-        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
-
-        /// <summary>
-        /// High part of the file size.
-        /// </summary>
-        public uint nFileSizeHigh;
-
-        /// <summary>
-        /// Low part of the file size.
-        /// </summary>
-        public uint nFileSizeLow;
-
-        /// <summary>
-        /// Reserved values for future use (not used in this case).
-        /// </summary>
-        public uint dwReserved0;
-        public uint dwReserved1;
-
-        /// <summary>
-        /// Full file name (including path).
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string cFileName;
-
-        /// <summary>
-        /// Alternate file name (in 8.3 format).
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-        public string cAlternateFileName;
-    }
-
-    /// <summary>
-    /// Custom class to hold useful file information like name, size, and timestamps.
-    /// </summary>
-    public class FileData
-    {
-        /// <summary>
-        /// Name of the file (including path).
-        /// </summary>
-        public string FileName { get; set; }
-
-        /// <summary>
-        /// Size of the file in bytes.
-        /// </summary>
-        public long FileSize { get; set; }
-
-        /// <summary>
-        /// Creation timestamp of the file.
-        /// </summary>
-        public DateTime CreationTime { get; set; }
-
-        /// <summary>
-        /// Last access timestamp of the file.
-        /// </summary>
-        public DateTime LastAccessTime { get; set; }
-
-        /// <summary>
-        /// Last write (modification) timestamp of the file.
-        /// </summary>
-        public DateTime LastWriteTime { get; set; }
-
-        /// <summary>
-        /// Constructor to initialize the file information.
-        /// </summary>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="fileSize">Size of the file in bytes.</param>
-        /// <param name="creationTime">Creation timestamp of the file.</param>
-        /// <param name="lastAccessTime">Last access timestamp of the file.</param>
-        /// <param name="lastWriteTime">Last write timestamp of the file.</param>
-        public FileData(string fileName, long fileSize, DateTime creationTime, DateTime lastAccessTime, DateTime lastWriteTime)
-        {
-            FileName = fileName;
-            FileSize = fileSize;
-            CreationTime = creationTime;
-            LastAccessTime = lastAccessTime;
-            LastWriteTime = lastWriteTime;
-        }
-    }
-
-    /// <summary>
-    /// Retrieves a list of files (not directories) in the specified directory along with their metadata.
+    ///     Retrieves a list of files (not directories) in the specified directory along with their metadata.
     /// </summary>
     /// <param name="directory">The directory to search for files in.</param>
     /// <returns>
-    /// A list of FileData objects containing file information for each file found.
+    ///     A list of FileData objects containing file information for each file found.
     /// </returns>
     public static List<FileData> GetFiles(string directory)
     {
         // List to hold the file data
-        List<FileData> files = new List<FileData>();
+        var files = new List<FileData>();
 
         // Structure to hold information about the file being retrieved
-        WIN32_FIND_DATA findFileData = new WIN32_FIND_DATA();
+        var findFileData = new WIN32_FIND_DATA();
 
         // Initiate the search for files in the specified directory
-        IntPtr findHandle = FindFirstFile(directory + @"\*", ref findFileData);
+        var findHandle = FindFirstFile(directory + @"\*", ref findFileData);
 
         // Ensure that we found at least one file
         if (findHandle != IntPtr.Zero)
@@ -189,14 +85,20 @@ public static class FileInfoFetcher
                 if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                 {
                     // Convert the file time structure to DateTime
-                    DateTime creationTime = DateTime.FromFileTimeUtc((((long)findFileData.ftCreationTime.dwHighDateTime) << 32) | (uint)findFileData.ftCreationTime.dwLowDateTime);
-                    DateTime lastAccessTime = DateTime.FromFileTimeUtc((((long)findFileData.ftLastAccessTime.dwHighDateTime) << 32) | (uint)findFileData.ftLastAccessTime.dwLowDateTime);
-                    DateTime lastWriteTime = DateTime.FromFileTimeUtc((((long)findFileData.ftLastWriteTime.dwHighDateTime) << 32) | (uint)findFileData.ftLastWriteTime.dwLowDateTime);
+                    var creationTime = DateTime.FromFileTimeUtc(
+                        ((long)findFileData.ftCreationTime.dwHighDateTime << 32) |
+                        (uint)findFileData.ftCreationTime.dwLowDateTime);
+                    var lastAccessTime = DateTime.FromFileTimeUtc(
+                        ((long)findFileData.ftLastAccessTime.dwHighDateTime << 32) |
+                        (uint)findFileData.ftLastAccessTime.dwLowDateTime);
+                    var lastWriteTime = DateTime.FromFileTimeUtc(
+                        ((long)findFileData.ftLastWriteTime.dwHighDateTime << 32) |
+                        (uint)findFileData.ftLastWriteTime.dwLowDateTime);
 
                     // Create a new FileData object to hold the file's metadata
-                    FileData file = new FileData(
+                    var file = new FileData(
                         findFileData.cFileName,
-                        ((long)findFileData.nFileSizeHigh << 32) | (uint)findFileData.nFileSizeLow,
+                        ((long)findFileData.nFileSizeHigh << 32) | findFileData.nFileSizeLow,
                         creationTime,
                         lastAccessTime,
                         lastWriteTime
@@ -213,5 +115,112 @@ public static class FileInfoFetcher
 
         // Return the list of file data
         return files;
+    }
+
+    /// <summary>
+    ///     Structure that represents the file metadata returned by the FindFirstFile and FindNextFile functions.
+    ///     See:
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-win32_find_dataa
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct WIN32_FIND_DATA
+    {
+        /// <summary>
+        ///     File attributes (e.g., directory, hidden, etc.)
+        /// </summary>
+        public uint dwFileAttributes;
+
+        /// <summary>
+        ///     Creation time of the file.
+        /// </summary>
+        public FILETIME ftCreationTime;
+
+        /// <summary>
+        ///     Last access time of the file.
+        /// </summary>
+        public FILETIME ftLastAccessTime;
+
+        /// <summary>
+        ///     Last write time (modification time) of the file.
+        /// </summary>
+        public FILETIME ftLastWriteTime;
+
+        /// <summary>
+        ///     High part of the file size.
+        /// </summary>
+        public uint nFileSizeHigh;
+
+        /// <summary>
+        ///     Low part of the file size.
+        /// </summary>
+        public uint nFileSizeLow;
+
+        /// <summary>
+        ///     Reserved values for future use (not used in this case).
+        /// </summary>
+        public uint dwReserved0;
+
+        public uint dwReserved1;
+
+        /// <summary>
+        ///     Full file name (including path).
+        /// </summary>
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string cFileName;
+
+        /// <summary>
+        ///     Alternate file name (in 8.3 format).
+        /// </summary>
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+        public string cAlternateFileName;
+    }
+
+    /// <summary>
+    ///     Custom class to hold useful file information like name, size, and timestamps.
+    /// </summary>
+    public class FileData
+    {
+        /// <summary>
+        ///     Constructor to initialize the file information.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="fileSize">Size of the file in bytes.</param>
+        /// <param name="creationTime">Creation timestamp of the file.</param>
+        /// <param name="lastAccessTime">Last access timestamp of the file.</param>
+        /// <param name="lastWriteTime">Last write timestamp of the file.</param>
+        public FileData(string fileName, long fileSize, DateTime creationTime, DateTime lastAccessTime,
+            DateTime lastWriteTime)
+        {
+            FileName = fileName;
+            FileSize = fileSize;
+            CreationTime = creationTime;
+            LastAccessTime = lastAccessTime;
+            LastWriteTime = lastWriteTime;
+        }
+
+        /// <summary>
+        ///     Name of the file (including path).
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        ///     Size of the file in bytes.
+        /// </summary>
+        public long FileSize { get; set; }
+
+        /// <summary>
+        ///     Creation timestamp of the file.
+        /// </summary>
+        public DateTime CreationTime { get; set; }
+
+        /// <summary>
+        ///     Last access timestamp of the file.
+        /// </summary>
+        public DateTime LastAccessTime { get; set; }
+
+        /// <summary>
+        ///     Last write (modification) timestamp of the file.
+        /// </summary>
+        public DateTime LastWriteTime { get; set; }
     }
 }

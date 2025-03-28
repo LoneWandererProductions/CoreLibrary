@@ -12,7 +12,7 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Attributes for our texture generators
+    ///     Attributes for our texture generators
     /// </summary>
     public sealed class TextureConfiguration
     {
@@ -163,42 +163,42 @@ namespace Imaging
         public double AngleSecondary { get; init; } = 135.0;
 
         /// <summary>
-        /// Gets or sets the wave frequency.
+        ///     Gets or sets the wave frequency.
         /// </summary>
         /// <value>
-        /// The wave frequency.
+        ///     The wave frequency.
         /// </value>
         public double WaveFrequency { get; init; } = 0.02;
 
         /// <summary>
-        /// Gets the wave amplitude.
+        ///     Gets the wave amplitude.
         /// </summary>
         /// <value>
-        /// The wave amplitude.
+        ///     The wave amplitude.
         /// </value>
         public double WaveAmplitude { get; init; } = 3;
 
         /// <summary>
-        /// Gets the randomization factor.
+        ///     Gets the randomization factor.
         /// </summary>
         /// <value>
-        /// The randomization factor.
+        ///     The randomization factor.
         /// </value>
         public double RandomizationFactor { get; init; } = 1.5;
 
         /// <summary>
-        /// Gets or sets the edge jaggedness limit.
+        ///     Gets or sets the edge jaggedness limit.
         /// </summary>
         /// <value>
-        /// The edge jaggedness limit.
+        ///     The edge jaggedness limit.
         /// </value>
         public int EdgeJaggednessLimit { get; init; } = 20;
 
         /// <summary>
-        /// Gets or sets the jaggedness threshold.
+        ///     Gets or sets the jaggedness threshold.
         /// </summary>
         /// <value>
-        /// The jaggedness threshold.
+        ///     The jaggedness threshold.
         /// </value>
         public int JaggednessThreshold { get; init; } = 10;
     }

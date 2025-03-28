@@ -14,7 +14,7 @@ namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
-    /// The error window.
+    ///     The error window.
     /// </summary>
     /// <seealso cref="T:System.Windows.Window" />
     /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
@@ -22,7 +22,7 @@ namespace CommonDialogs
     {
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonDialogs.CustomErrorDialog" /> class.
+        ///     Initializes a new instance of the <see cref="T:CommonDialogs.CustomErrorDialog" /> class.
         /// </summary>
         /// <param name="header">The header.</param>
         /// <param name="message">The message.</param>
@@ -44,10 +44,10 @@ namespace CommonDialogs
 
 
         /// <summary>
-        /// Handles the Click event of the CloseButton control.
+        ///     Handles the Click event of the CloseButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();

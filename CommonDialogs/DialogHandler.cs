@@ -49,7 +49,8 @@ namespace CommonDialogs
             return login.View.Connection;
         }
 
-        public static void ErrorDialog(string message, string source = null, string details = null, string header = null)
+        public static void ErrorDialog(string message, string source = null, string details = null,
+            string header = null)
         {
             var title = header ?? "Error";
             var error = new CustomErrorDialog(title, message, source, details);

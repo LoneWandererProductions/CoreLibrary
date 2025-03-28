@@ -59,6 +59,9 @@ namespace CommonDialogs
         /// <summary>
         ///     Handles the click event of the "Close" button, closing the InputBox without saving any input.
         /// </summary>
-        private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

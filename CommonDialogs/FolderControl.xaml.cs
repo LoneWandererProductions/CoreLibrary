@@ -189,7 +189,8 @@ namespace CommonDialogs
             // Optionally add files asynchronously
             if (ShowFiles)
             {
-                foreach (var fileItem in files.Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                foreach (var fileItem in files.Select(file =>
+                             new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
                 {
                     _ = FoldersItem.Items.Add(fileItem);
                 }
@@ -248,7 +249,8 @@ namespace CommonDialogs
                 {
                     var files = await Task.Run(() => Directory.GetFiles(path));
 
-                    foreach (var fileItem in files.Select(file => new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                    foreach (var fileItem in files.Select(file =>
+                                 new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
                     {
                         item.Items.Add(fileItem);
                     }
@@ -273,7 +275,7 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{Object}" /> instance containing the event data.</param>
         private void FoldersItemSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is TreeViewItem {Tag: string selectedPath})
+            if (e.NewValue is TreeViewItem { Tag: string selectedPath })
             {
                 Paths = selectedPath;
             }
