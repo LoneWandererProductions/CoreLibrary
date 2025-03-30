@@ -18,7 +18,7 @@ namespace ExtendedSystemObjects
     /// A dynamic enum framework that allows for the creation of custom enums with dynamic
     /// addition, removal, and retrieval of entries at runtime.
     /// </summary>
-    /// <typeparam name="T">The type that inherits from <see cref="DynamicEnum{T}"/>. This is typically a class that defines specific instances of the enum.</typeparam>
+    /// <typeparam name="T">The type that inherits from <see cref="T:ExtendedSystemObjects.DynamicEnum`1" />. This is typically a class that defines specific instances of the enum.</typeparam>
     public class DynamicEnum<T> : IEquatable<DynamicEnum<T>>, IComparable<DynamicEnum<T>> where T : DynamicEnum<T>
     {
         /// <summary>
@@ -133,10 +133,10 @@ namespace ExtendedSystemObjects
             {
                 return Equals(other);
             }
+
             return false;
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Determines whether two instances are equal using the equality operator.
         /// </summary>
@@ -153,7 +153,6 @@ namespace ExtendedSystemObjects
             return left.Equals(right);
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Determines whether two instances are not equal using the inequality operator.
         /// </summary>
