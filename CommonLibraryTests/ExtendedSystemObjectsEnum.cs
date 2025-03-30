@@ -26,8 +26,10 @@ namespace CommonLibraryTests
         /// </summary>
         public static readonly MyEnum OptionB = new("OptionB", 2);
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="MyEnum"/> class.
+        /// Initializes a new instance of the <see cref="T:CommonLibraryTests.MyEnum" /> class.
+        /// Must be public!
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
@@ -35,6 +37,9 @@ namespace CommonLibraryTests
     }
 
 
+    /// <summary>
+    /// Test our enums
+    /// </summary>
     [TestClass]
     public class ExtendedSystemObjectsEnum
     {
@@ -50,6 +55,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(2, optionB.Value);
         }
 
+        /// <summary>
+        /// Tests the add new entry.
+        /// </summary>
         [TestMethod]
         public void TestAddNewEntry()
         {
@@ -61,6 +69,9 @@ namespace CommonLibraryTests
             Assert.IsTrue(MyEnum.GetAll().Contains(customOption));
         }
 
+        /// <summary>
+        /// Tests the remove entry.
+        /// </summary>
         [TestMethod]
         public void TestRemoveEntry()
         {
@@ -73,6 +84,9 @@ namespace CommonLibraryTests
             Assert.IsFalse(MyEnum.GetAll().Contains(customOption));
         }
 
+        /// <summary>
+        /// Tests the switch statement.
+        /// </summary>
         [TestMethod]
         public void TestSwitchStatement()
         {
@@ -87,6 +101,9 @@ namespace CommonLibraryTests
             Assert.AreEqual("Matched OptionA", result);
         }
 
+        /// <summary>
+        /// Tests the try get existing.
+        /// </summary>
         [TestMethod]
         public void TestTryGetExisting()
         {
@@ -96,12 +113,49 @@ namespace CommonLibraryTests
             Assert.AreEqual("OptionA", result!.Name);
         }
 
+        /// <summary>
+        /// Tests the try get non existing.
+        /// </summary>
         [TestMethod]
         public void TestTryGetNonExisting()
         {
             bool exists = MyEnum.TryGet("NonExisting", out var result);
             Assert.IsFalse(exists);
             Assert.IsNull(result);
+        }
+
+        /// <summary>
+        /// Tests the pattern matching.
+        /// </summary>
+        [TestMethod]
+        public void TestPatternMatching()
+        {
+            var optionA = MyEnum.OptionA;
+            var optionB = MyEnum.OptionB;
+
+            // Check if pattern matching works for OptionA
+            var resultA = GetOptionDescription(optionA);
+            Assert.AreEqual("This is Option A with value 1.", resultA);
+
+            // Check if pattern matching works for OptionB
+            var resultB = GetOptionDescription(optionB);
+            Assert.AreEqual("This is Option B with value 2.", resultB);
+        }
+
+        // The method that uses pattern matching
+        /// <summary>
+        /// Gets the option description.
+        /// </summary>
+        /// <param name="option">The option.</param>
+        /// <returns>Test our enum</returns>
+        private static string GetOptionDescription(DynamicEnum<MyEnum> option)
+        {
+            return option switch
+            {
+                var o when o == MyEnum.OptionA => "This is Option A with value 1.",
+                var o when o == MyEnum.OptionB => "This is Option B with value 2.",
+                _ => "Unknown Option"
+            };
         }
     }
 }

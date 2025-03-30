@@ -19,7 +19,7 @@ namespace ExtendedSystemObjects
     /// addition, removal, and retrieval of entries at runtime.
     /// </summary>
     /// <typeparam name="T">The type that inherits from <see cref="DynamicEnum{T}"/>. This is typically a class that defines specific instances of the enum.</typeparam>
-    public class DynamicEnum<T> where T : DynamicEnum<T>
+    public class DynamicEnum<T> : IEquatable<DynamicEnum<T>>, IComparable<DynamicEnum<T>> where T : DynamicEnum<T>
     {
         /// <summary>
         /// A dictionary that holds all the enum values, indexed by their names.
@@ -112,6 +112,7 @@ namespace ExtendedSystemObjects
         /// </remarks>
         public static IReadOnlyCollection<T> GetAll() => Values.Values;
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts the enum entry to its string representation.
         /// </summary>
@@ -119,5 +120,82 @@ namespace ExtendedSystemObjects
         /// A <see cref="System.String"/> representing the name of the enum entry.
         /// </returns>
         public override string ToString() => Name;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether two instances are equal by comparing their name and value.
+        /// </summary>
+        /// <param name="obj">The object to compare.</param>
+        /// <returns>True if both instances are equal; otherwise, false.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is DynamicEnum<T> other)
+            {
+                return Equals(other);
+            }
+            return false;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether two instances are equal using the equality operator.
+        /// </summary>
+        /// <param name="left">The left instance.</param>
+        /// <param name="right">The right instance.</param>
+        /// <returns>True if the instances are equal; otherwise, false.</returns>
+        public static bool operator ==(DynamicEnum<T> left, DynamicEnum<T> right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Determines whether two instances are not equal using the inequality operator.
+        /// </summary>
+        /// <param name="left">The left instance.</param>
+        /// <param name="right">The right instance.</param>
+        /// <returns>True if the instances are not equal; otherwise, false.</returns>
+        public static bool operator !=(DynamicEnum<T> left, DynamicEnum<T> right) => !(left == right);
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets the hash code based on name and value.
+        /// </summary>
+        /// <returns>A hash code.</returns>
+        public override int GetHashCode() => HashCode.Combine(Name, Value);
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
+        /// </returns>
+        public bool Equals(DynamicEnum<T> other)
+        {
+            if (other == null) return false;
+
+            return Value == other.Value && Name == other.Name;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="other">An object to compare with this instance.</param>
+        /// <returns>
+        /// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+        /// <list type="table"><listheader><term> Value</term><description> Meaning</description></listheader><item><term> Less than zero</term><description> This instance precedes <paramref name="other" /> in the sort order.</description></item><item><term> Zero</term><description> This instance occurs in the same position in the sort order as <paramref name="other" />.</description></item><item><term> Greater than zero</term><description> This instance follows <paramref name="other" /> in the sort order.</description></item></list>
+        /// </returns>
+        public int CompareTo(DynamicEnum<T> other)
+        {
+            return other == null ? 1 : Value.CompareTo(other.Value);
+        }
     }
 }
