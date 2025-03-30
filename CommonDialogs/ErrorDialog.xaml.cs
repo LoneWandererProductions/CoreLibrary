@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/CustomErrorDialog.cs
+ * FILE:        CommonDialogs/ErrorDialog.cs
  * PURPOSE:     Viewer for our Error Dialog
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -18,7 +18,7 @@ namespace CommonDialogs
     /// </summary>
     /// <seealso cref="T:System.Windows.Window" />
     /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
-    public sealed partial class CustomErrorDialog
+    public sealed partial class ErrorDialog
     {
         /// <inheritdoc />
         /// <summary>
@@ -28,7 +28,7 @@ namespace CommonDialogs
         /// <param name="message">The message.</param>
         /// <param name="source">The source.</param>
         /// <param name="details">The details.</param>
-        public CustomErrorDialog(string header, string message, string source = null!, string details = null!)
+        public ErrorDialog(string header, string message, string source = null!, string details = null!)
         {
             InitializeComponent();
 

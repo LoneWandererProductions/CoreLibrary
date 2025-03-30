@@ -24,7 +24,7 @@ namespace CommonDialogs
         /// </summary>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>Selected Path</returns>
-        public static string ShowFolder(string folder = "")
+        public static string? ShowFolder(string folder = "")
         {
             if (!Directory.Exists(folder))
             {
@@ -49,13 +49,19 @@ namespace CommonDialogs
             return login.View.Connection;
         }
 
-        public static void ErrorDialog(string message, string source = null, string details = null,
-            string header = null)
+        /// <summary>
+        /// Errors the dialog.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="details">The details.</param>
+        /// <param name="title">The title.</param>
+        public static void ErrorDialog(string message, string source = "", string details = "",
+            string title = "Error")
         {
-            var title = header ?? "Error";
-            var error = new CustomErrorDialog(title, message, source, details);
+            var error = new ErrorDialog(title, message, source, details);
 
-            error.ShowDialog();
+            _ = error.ShowDialog();
         }
 
         /// <summary>

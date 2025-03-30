@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
 using System.Collections.Generic;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

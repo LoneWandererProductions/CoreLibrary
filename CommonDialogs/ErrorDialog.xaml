@@ -1,0 +1,32 @@
+﻿<Window x:Class="CommonDialogs.ErrorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Error"
+        Width="400" Height="200"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="ErrorTitleText" FontWeight="Bold" FontSize="16" Grid.Row="0" />
+        <TextBlock x:Name="ErrorMessageText" TextWrapping="Wrap" Grid.Row="1" />
+
+        <Expander Header="Details" Grid.Row="2">
+            <TextBlock x:Name="ErrorDetailsText" FontSize="12" TextWrapping="Wrap" />
+        </Expander>
+
+        <Button Content="OK" HorizontalAlignment="Center" Width="100" Margin="0,10,0,0" Click="CloseButton_Click" Grid.Row="3" />
+    </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+</Window>
