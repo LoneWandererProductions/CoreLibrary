@@ -423,12 +423,12 @@ namespace Imaging
 
             TextureSetting[TextureType.Concrete] = new TextureConfiguration
             {
-                MinValue = 50,
+                MinValue = 50, 
                 MaxValue = 200,
                 TurbulenceSize = 16,
                 XPeriod = 5.0,
                 YPeriod = 10.0,
-                TurbulencePower = 5.0
+                TurbulencePower = 5.0,
             };
 
             TextureSetting[TextureType.Canvas] = new TextureConfiguration
@@ -440,7 +440,7 @@ namespace Imaging
                 WaveAmplitude = 3,
                 RandomizationFactor = 1.5,
                 EdgeJaggednessLimit = 20,
-                JaggednessThreshold = 10
+                JaggednessThreshold= 10
             };
 
             // Add more default settings as needed
@@ -581,12 +581,8 @@ namespace Imaging
                 var settings = JsonSerializer.Deserialize<Dictionary<FiltersType, HashSet<string>>>(json);
 
                 if (settings != null)
-                {
                     foreach (var (imageFilters, filter) in settings)
-                    {
                         _filterPropertyMap[imageFilters] = filter;
-                    }
-                }
             }
             catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {
