@@ -6,11 +6,14 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Diagnostics;
+
 namespace CommonControls
 {
     /// <summary>
     ///     The Selection Frame on the Image
     /// </summary>
+    [DebuggerDisplay("X = {X}, Y = {Y}, G = {G}, Width = {Width}, Height = {Height}, Tool = {Tool}")]
     public sealed class SelectionFrame
     {
         /// <summary>

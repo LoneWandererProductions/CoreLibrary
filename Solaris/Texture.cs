@@ -9,11 +9,14 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using System.Diagnostics;
+
 namespace Solaris
 {
     /// <summary>
     ///     Texture Container
     /// </summary>
+    [DebuggerDisplay("Path = {Path}, Layer = {Layer}, Id = {Id}")]
     public sealed class Texture
     {
         /// <summary>

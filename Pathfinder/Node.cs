@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Diagnostics;
 
 namespace Pathfinder
 {
@@ -15,6 +16,7 @@ namespace Pathfinder
     ///     Represents a node in the A* pathfinder algorithm.
     /// </summary>
     /// <seealso cref="T:System.IComparable`1" />
+    [DebuggerDisplay("X = {X}, Y = {Y}, G = {G}, H = {H}, F = {F}, MovementCost = {MovementCost}")]
     public sealed class Node : IComparable<Node>
     {
         /// <summary>

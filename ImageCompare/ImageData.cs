@@ -10,11 +10,14 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedMember.Global
 
+using System.Diagnostics;
+
 namespace ImageCompare
 {
     /// <summary>
     ///     Container that holds all image Information
     /// </summary>
+    [DebuggerDisplay("ImagePath = {ImagePath}, R = {R}, G = {G}, B = {B}, Width = {Width}, Height = {Height}, Similarity = {Similarity}")]
     public sealed class ImageData
     {
         /// <summary>
