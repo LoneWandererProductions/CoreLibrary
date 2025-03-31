@@ -196,5 +196,23 @@ namespace ExtendedSystemObjects
         {
             return other == null ? 1 : Value.CompareTo(other.Value);
         }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="DynamicEnum{T}"/> to <see cref="System.Int32"/>.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator int(DynamicEnum<T> e) => e.Value;
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="DynamicEnum{T}"/> to <see cref="System.String"/>.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator string(DynamicEnum<T> e) => e.Name;
     }
 }

@@ -90,16 +90,19 @@ namespace CommonLibraryTests
         [TestMethod]
         public void TestSwitchStatement()
         {
-            var myEnum = MyEnum.OptionA;
-            string result = myEnum.Name switch
+            // Example DynamicEnum initialization (you should define your own classes inheriting DynamicEnum)
+            var myEnum = MyEnum.OptionA; // Assuming MyDynamicEnum is derived from DynamicEnum<T>
+
+            string result = myEnum.Value switch
             {
-                "OptionA" => "Matched OptionA",
-                "OptionB" => "Matched OptionB",
+                1 => "Matched OptionA", // Assuming OptionA has a Value of 1
+                2 => "Matched OptionB", // Assuming OptionB has a Value of 2
                 _ => "Unknown Option"
             };
 
             Assert.AreEqual("Matched OptionA", result);
         }
+
 
         /// <summary>
         /// Tests the try get existing.
