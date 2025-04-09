@@ -7,13 +7,13 @@
  */
 
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExtendedSystemObjects;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Test Class for our enum Implementation
+    ///     Test Class for our enum Implementation
     /// </summary>
     /// <seealso cref="ExtendedSystemObjects.DynamicEnum&lt;CommonLibraryTests.MyEnum&gt;" />
     /// <seealso cref="MyEnum" />
@@ -22,14 +22,14 @@ namespace CommonLibraryTests
         public static readonly MyEnum OptionA = new("OptionA", 1);
 
         /// <summary>
-        /// The option b
+        ///     The option b
         /// </summary>
         public static readonly MyEnum OptionB = new("OptionB", 2);
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonLibraryTests.MyEnum" /> class.
-        /// Must be public!
+        ///     Initializes a new instance of the <see cref="T:CommonLibraryTests.MyEnum" /> class.
+        ///     Must be public!
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
@@ -38,14 +38,14 @@ namespace CommonLibraryTests
 
 
     /// <summary>
-    /// Test our enums
+    ///     Test our enums
     /// </summary>
     [TestClass]
     public class ExtendedSystemObjectsEnum
     {
         [TestMethod]
         public void TestPredefinedOptions()
-        { 
+        {
             var optionA = MyEnum.OptionA;
             var optionB = MyEnum.OptionB;
 
@@ -56,7 +56,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the add new entry.
+        ///     Tests the add new entry.
         /// </summary>
         [TestMethod]
         public void TestAddNewEntry()
@@ -70,7 +70,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the remove entry.
+        ///     Tests the remove entry.
         /// </summary>
         [TestMethod]
         public void TestRemoveEntry()
@@ -85,7 +85,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the switch statement.
+        ///     Tests the switch statement.
         /// </summary>
         [TestMethod]
         public void TestSwitchStatement()
@@ -93,7 +93,7 @@ namespace CommonLibraryTests
             // Example DynamicEnum initialization (you should define your own classes inheriting DynamicEnum)
             var myEnum = MyEnum.OptionA; // Assuming MyDynamicEnum is derived from DynamicEnum<T>
 
-            string result = myEnum.Value switch
+            var result = myEnum.Value switch
             {
                 1 => "Matched OptionA", // Assuming OptionA has a Value of 1
                 2 => "Matched OptionB", // Assuming OptionB has a Value of 2
@@ -105,30 +105,30 @@ namespace CommonLibraryTests
 
 
         /// <summary>
-        /// Tests the try get existing.
+        ///     Tests the try get existing.
         /// </summary>
         [TestMethod]
         public void TestTryGetExisting()
         {
-            bool exists = MyEnum.TryGet("OptionA", out var result);
+            var exists = MyEnum.TryGet("OptionA", out var result);
             Assert.IsTrue(exists);
             Assert.IsNotNull(result);
             Assert.AreEqual("OptionA", result!.Name);
         }
 
         /// <summary>
-        /// Tests the try get non existing.
+        ///     Tests the try get non existing.
         /// </summary>
         [TestMethod]
         public void TestTryGetNonExisting()
         {
-            bool exists = MyEnum.TryGet("NonExisting", out var result);
+            var exists = MyEnum.TryGet("NonExisting", out var result);
             Assert.IsFalse(exists);
             Assert.IsNull(result);
         }
 
         /// <summary>
-        /// Tests the pattern matching.
+        ///     Tests the pattern matching.
         /// </summary>
         [TestMethod]
         public void TestPatternMatching()
@@ -147,7 +147,7 @@ namespace CommonLibraryTests
 
         // The method that uses pattern matching
         /// <summary>
-        /// Gets the option description.
+        ///     Gets the option description.
         /// </summary>
         /// <param name="option">The option.</param>
         /// <returns>Test our enum</returns>

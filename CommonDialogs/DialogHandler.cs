@@ -50,7 +50,7 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        /// Errors the dialog.
+        ///     Errors the dialog.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="source">The source.</param>

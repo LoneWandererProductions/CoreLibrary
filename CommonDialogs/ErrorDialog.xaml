@@ -20,7 +20,8 @@
             <TextBlock x:Name="ErrorDetailsText" FontSize="12" TextWrapping="Wrap" />
         </Expander>
 
-        <Button Content="OK" HorizontalAlignment="Center" Width="100" Margin="0,10,0,0" Click="CloseButton_Click" Grid.Row="3" />
+        <Button Content="OK" HorizontalAlignment="Center" Width="100" Margin="0,10,0,0" Click="CloseButton_Click"
+                Grid.Row="3" />
     </Grid>
     <Window.Resources>
         <ResourceDictionary>

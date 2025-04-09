@@ -99,7 +99,7 @@ namespace Imaging
             int height);
 
         /// <summary>
-        /// Generates the texture.
+        ///     Generates the texture.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -108,11 +108,13 @@ namespace Imaging
         /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>
-        /// Texture Bitmap
+        ///     Texture Bitmap
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     filter - null
+        ///     or
+        ///     shape - null
+        /// </exception>
         Bitmap GenerateTexture(
             int width,
             int height,
