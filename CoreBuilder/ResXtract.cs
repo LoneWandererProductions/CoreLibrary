@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreConsole
- * FILE:        CoreConsole/ResXtract.cs
+ * PROJECT:     CoreBuilder
+ * FILE:        CoreBuilder/ResXtract.cs
  * PURPOSE:     String Resource extractor.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

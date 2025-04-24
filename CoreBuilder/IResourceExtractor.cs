@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreConsole
- * FILE:        CoreConsole/IResourceExtractor.cs
+ * PROJECT:     CoreBuilder
+ * FILE:        CoreBuilder/IResourceExtractor.cs
  * PURPOSE:     String Resource Interface.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

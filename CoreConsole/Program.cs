@@ -26,64 +26,68 @@ namespace CoreConsole
         private static void Main(string[] args)
         {
             // Display welcome message
-            Console.WriteLine("ResXtract Console Application");
+            Console.WriteLine("Core Console Application");
 
-            // Ensure the user has provided the necessary arguments
             if (args.Length < 2)
             {
-                Console.WriteLine(
-                    "Usage: ResXtractConsole <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
+                Console.WriteLine("Usage: CoreConsole <operation> <projectPath> [options]");
+                Console.WriteLine("Operations:");
+                Console.WriteLine("  header <directoryPath>       Insert headers into C# files");
+                Console.WriteLine("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
                 return;
             }
 
-            var projectPath = args[0];
-            var outputResourceFile = args[1];
+            string operation = args[0];
 
-            // Check if user wants to add any ignore list or patterns
-            var ignoreList = new List<string>();
-            var ignorePatterns = new List<Regex>();
-
-            // Optionally, read the ignore list from a file if provided
-            if (args.Length > 2 && File.Exists(args[2]))
+            if (operation == "header" && args.Length == 2)
             {
-                ignoreList = new List<string>(File.ReadAllLines(args[2]));
-                Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
+                // Header insertion operation
+                string directoryPath = args[1];
+
+                IHeaderExtractor headerExtractor = new HeaderExtractor();
+                headerExtractor.ProcessFiles(directoryPath);
             }
-
-            // Optionally, read the ignore patterns from a file if provided
-            if (args.Length > 3 && File.Exists(args[3]))
+            else if (operation == "resxtract" && args.Length >= 3)
             {
-                foreach (var pattern in File.ReadAllLines(args[3]))
+                // ResXtract operation
+                string projectPath = args[1];
+                string outputResourceFile = args[2];
+
+                List<string> ignoreList = new List<string>();
+                List<Regex> ignorePatterns = new List<Regex>();
+
+                // Optionally read ignore list from file
+                if (args.Length > 3 && File.Exists(args[3]))
                 {
-                    try
-                    {
-                        ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
-                    }
+                    ignoreList = new List<string>(File.ReadAllLines(args[3]));
+                    Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
                 }
 
-                Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
+                // Optionally read ignore patterns from file
+                if (args.Length > 4 && File.Exists(args[4]))
+                {
+                    foreach (var pattern in File.ReadAllLines(args[4]))
+                    {
+                        try
+                        {
+                            ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
+                        }
+                    }
+
+                    Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
+                }
+
+                // Create an instance of ResXtractExtractor
+                IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
+                resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
             }
-
-            // Create an instance of the ResXtract tool with the provided ignore list and patterns
-            var extractor = new ResXtract(ignoreList, ignorePatterns);
-
-            try
+            else
             {
-                // Process the project to extract string literals from the code files
-                Console.WriteLine($"Processing project at: {projectPath}...");
-                extractor.ProcessProject(projectPath, outputResourceFile);
-
-                // Notify the user that the process was successful
-                Console.WriteLine($"Resource file has been successfully generated at: {outputResourceFile}");
-            }
-            catch (Exception ex)
-            {
-                // If something goes wrong, print an error message
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine("Invalid arguments or operation.");
             }
 
             Console.WriteLine("Press any key to exit...");
