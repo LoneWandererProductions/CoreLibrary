@@ -27,7 +27,8 @@ namespace ImageCompare
         /// <summary>
         ///     The render
         /// </summary>
-        private static readonly ImageRender Render = new();
+        private static IImageRender Render;
+
 
         /// <summary>
         ///     Compares a list of Images and returns the Difference in Percentage
@@ -108,6 +109,8 @@ namespace ImageCompare
         /// <returns>ImageColor Object</returns>
         internal static ImageColor GenerateData(Bitmap bitmap, string path)
         {
+            Render = new ImageRender();
+
             //resize
             bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
@@ -231,6 +234,8 @@ namespace ImageCompare
         /// <returns>The difference Bitmap</returns>
         internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
+            Render = new ImageRender();
+
             var width = Math.Min(first.Width, second.Width);
             var height = Math.Min(first.Height, second.Height);
 

@@ -13,19 +13,28 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <summary>
+    /// Some Basic Image Render tets
+    /// </summary>
     [TestClass]
     public class ImageRenderTests
     {
         private IImageRender _imageRender;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _imageRender = new ImageRender(); // Assuming ImageRender implements IImageRender
         }
 
+        /// <summary>
+        /// Fills the area with color start point not null remains not null.
+        /// </summary>
         [TestMethod]
-        public void FillAreaWithColor_StartPointNotNull_RemainsNotNull()
+        public void FillAreaWithColorStartPointNotNullRemainsNotNull()
         {
             // Arrange
             var image = new Bitmap(10, 10);

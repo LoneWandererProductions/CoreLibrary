@@ -24,7 +24,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Database Handler
         /// </summary>
-        private static SqliteDatabase _db;
+        private static ISqliteDatabase _db;
 
         /// <summary>
         ///     Where Clause for the Statements

@@ -25,7 +25,7 @@ namespace Imaging
     /// <summary>
     ///     The IImageRender interface.
     /// </summary>
-    internal interface IImageRender
+    public interface IImageRender
     {
         /// <summary>
         ///     Get the bitmap file.

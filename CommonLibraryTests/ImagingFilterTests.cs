@@ -18,7 +18,16 @@ namespace CommonLibraryTests
     [TestClass]
     public class ImagingFilterTests
     {
-        private readonly ImageRender _render = new();
+        /// <summary>
+        /// The render
+        /// </summary>
+        private IImageRender _render;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _render = new ImageRender(); // Assuming ImageRender implements IImageRender
+        }
 
         /// <summary>
         ///     Pixelates the small step width pixels changed.

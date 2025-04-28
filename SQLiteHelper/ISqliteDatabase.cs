@@ -17,7 +17,7 @@ namespace SqliteHelper
     /// <summary>
     ///     The ISqlLiteDatabase interface.
     /// </summary>
-    internal interface ISqliteDatabase
+    public interface ISqliteDatabase
     {
         /// <summary>
         ///     Gets the last Errors.
