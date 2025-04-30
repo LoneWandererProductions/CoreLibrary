@@ -21,14 +21,14 @@ namespace CoreBuilder
         /// <summary>
         /// Define the header template with placeholders for file info
         /// </summary>
-        private const string HeaderTemplate = @"
-/*
+        private const string HeaderTemplate = @"/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     {0}
  * FILE:        {1}
  * PURPOSE:     {2}
  * PROGRAMMER:  {3}
- */";
+ */
+";
 
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace CoreBuilder
         public void ProcessFiles(string directoryPath)
         {
             // Loop through all .cs files in the directory
-            foreach (string file in Directory.GetFiles(directoryPath, "*.cs"))
+            foreach (string file in Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories))
             {
                 // Read the file content
                 string fileContent = File.ReadAllText(file);
