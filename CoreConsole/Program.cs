@@ -25,7 +25,6 @@ namespace CoreConsole
         /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
         {
-            // Display welcome message
             Console.WriteLine("Core Console Application");
 
             if (args.Length < 2)
@@ -34,60 +33,135 @@ namespace CoreConsole
                 Console.WriteLine("Operations:");
                 Console.WriteLine("  header <directoryPath>       Insert headers into C# files");
                 Console.WriteLine("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
-                return;
-            }
 
-            string operation = args[0];
-
-            if (operation == "header" && args.Length == 2)
-            {
-                // Header insertion operation
-                string directoryPath = args[1];
-
-                IHeaderExtractor headerExtractor = new HeaderExtractor();
-                headerExtractor.ProcessFiles(directoryPath);
-            }
-            else if (operation == "resxtract" && args.Length >= 3)
-            {
-                // ResXtract operation
-                string projectPath = args[1];
-                string outputResourceFile = args[2];
-
-                List<string> ignoreList = new List<string>();
-                List<Regex> ignorePatterns = new List<Regex>();
-
-                // Optionally read ignore list from file
-                if (args.Length > 3 && File.Exists(args[3]))
+                Console.WriteLine();
+                Console.Write("No valid arguments provided. Would you like to enter them manually? (y/n): ");
+                string response = Console.ReadLine()?.Trim().ToLower();
+                if (response != "y")
                 {
-                    ignoreList = new List<string>(File.ReadAllLines(args[3]));
-                    Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
+                    Console.WriteLine("Exiting...");
+                    return;
                 }
 
-                // Optionally read ignore patterns from file
-                if (args.Length > 4 && File.Exists(args[4]))
+                Console.Write("Enter operation (header/resxtract): ");
+                string operationInput = Console.ReadLine()?.Trim().ToLower();
+
+                if (operationInput == "header")
                 {
-                    foreach (var pattern in File.ReadAllLines(args[4]))
+                    Console.Write("Enter directory path: ");
+                    string directoryPath = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(directoryPath))
                     {
-                        try
-                        {
-                            ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
-                        }
+                        IHeaderExtractor headerExtractor = new HeaderExtractor();
+                        headerExtractor.ProcessFiles(directoryPath);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Directory path is required.");
+                    }
+                }
+                else if (operationInput == "resxtract")
+                {
+                    Console.Write("Enter project path: ");
+                    string projectPath = Console.ReadLine();
+
+                    Console.Write("Enter output resource file path: ");
+                    string outputResourceFile = Console.ReadLine();
+
+                    List<string> ignoreList = new List<string>();
+                    List<Regex> ignorePatterns = new List<Regex>();
+
+                    Console.Write("Enter ignore list file path (optional): ");
+                    string ignoreListFile = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(ignoreListFile) && File.Exists(ignoreListFile))
+                    {
+                        ignoreList = new List<string>(File.ReadAllLines(ignoreListFile));
+                        Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
                     }
 
-                    Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
-                }
+                    Console.Write("Enter ignore pattern file path (optional): ");
+                    string ignorePatternFile = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(ignorePatternFile) && File.Exists(ignorePatternFile))
+                    {
+                        foreach (var pattern in File.ReadAllLines(ignorePatternFile))
+                        {
+                            try
+                            {
+                                ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
+                            }
+                        }
 
-                // Create an instance of ResXtractExtractor
-                IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
-                resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
+                        Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(projectPath) && !string.IsNullOrWhiteSpace(outputResourceFile))
+                    {
+                        IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
+                        resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Project path and output resource file are required.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid operation entered.");
+                }
             }
             else
             {
-                Console.WriteLine("Invalid arguments or operation.");
+                string operation = args[0];
+
+                if (operation == "header" && args.Length == 2)
+                {
+                    string directoryPath = args[1];
+                    IHeaderExtractor headerExtractor = new HeaderExtractor();
+                    headerExtractor.ProcessFiles(directoryPath);
+                }
+                else if (operation == "resxtract" && args.Length >= 3)
+                {
+                    string projectPath = args[1];
+                    string outputResourceFile = args[2];
+
+                    List<string> ignoreList = new List<string>();
+                    List<Regex> ignorePatterns = new List<Regex>();
+
+                    if (args.Length > 3 && File.Exists(args[3]))
+                    {
+                        ignoreList = new List<string>(File.ReadAllLines(args[3]));
+                        Console.WriteLine($"Loaded {ignoreList.Count} files to ignore.");
+                    }
+
+                    if (args.Length > 4 && File.Exists(args[4]))
+                    {
+                        foreach (var pattern in File.ReadAllLines(args[4]))
+                        {
+                            try
+                            {
+                                ignorePatterns.Add(new Regex(pattern, RegexOptions.IgnoreCase));
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error loading regex pattern: {pattern}. Exception: {ex.Message}");
+                            }
+                        }
+
+                        Console.WriteLine($"Loaded {ignorePatterns.Count} ignore patterns.");
+                    }
+
+                    IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
+                    resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid arguments or operation.");
+                }
             }
 
             Console.WriteLine("Press any key to exit...");
