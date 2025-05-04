@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter
+ * FILE:        ThreadedPrompt.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 

@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Interpreter
 * FILE:        Interpreter/IrtConst.cs

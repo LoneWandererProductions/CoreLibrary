@@ -1,6 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter
+ * FILE:        WindowPrompt.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter
  * FILE:        Interpreter/WindowPrompt.cs
  * PURPOSE:     Graphical Frontend for the Input
  * PROGRAMER:   Peter Geinitz (Wayfarer)

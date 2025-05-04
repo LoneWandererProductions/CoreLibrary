@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     InterpreteTests
+ * FILE:        CommandBuilder.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Your name here
+ */
+
+using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
 using Interpreter;
