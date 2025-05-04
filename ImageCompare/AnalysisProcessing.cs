@@ -27,8 +27,7 @@ namespace ImageCompare
         /// <summary>
         ///     The render
         /// </summary>
-        private static IImageRender Render;
-
+        private static IImageRender _render;
 
         /// <summary>
         ///     Compares a list of Images and returns the Difference in Percentage
@@ -109,10 +108,10 @@ namespace ImageCompare
         /// <returns>ImageColor Object</returns>
         internal static ImageColor GenerateData(Bitmap bitmap, string path)
         {
-            Render = new ImageRender();
+            _render = new ImageRender();
 
             //resize
-            bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
+            bitmap = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(bitmap);
@@ -138,7 +137,7 @@ namespace ImageCompare
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             //get greyscale
-            bitmap = Render.FilterImage(bitmap, FiltersType.GrayScale);
+            bitmap = _render.FilterImage(bitmap, FiltersType.GrayScale);
 
             //Get array Map for comparison
             dbm = DirectBitmap.GetInstance(bitmap);
@@ -234,12 +233,12 @@ namespace ImageCompare
         /// <returns>The difference Bitmap</returns>
         internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
-            Render = new ImageRender();
+            _render = new ImageRender();
 
             var width = Math.Min(first.Width, second.Width);
             var height = Math.Min(first.Height, second.Height);
 
-            var canvas = Render.CutBitmap(first, 0, 0, height, width);
+            var canvas = _render.CutBitmap(first, 0, 0, height, width);
 
             using var dbmCanvas = new DirectBitmap(canvas);
             using var dbmCompare = new DirectBitmap(second);
