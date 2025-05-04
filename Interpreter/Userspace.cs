@@ -21,7 +21,7 @@ namespace Interpreter
         /// <value>
         ///     The name of the userSpace.
         /// </value>
-        internal string UserSpaceName { get; init; }
+        public string UserSpaceName { get; init; }
 
         /// <summary>
         ///     Gets or sets the commands.
@@ -29,6 +29,6 @@ namespace Interpreter
         /// <value>
         ///     The commands.
         /// </value>
-        internal Dictionary<int, InCommand> Commands { get; init; }
+        public Dictionary<int, InCommand> Commands { get; init; }
     }
 }

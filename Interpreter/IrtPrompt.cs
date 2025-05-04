@@ -16,7 +16,7 @@ namespace Interpreter
     /// <summary>
     ///     Basic command Line Interpreter, bare bones for now
     /// </summary>
-    internal sealed class IrtPrompt
+    public sealed class IrtPrompt
     {
         /// <summary>
         ///     Command Register
@@ -46,7 +46,7 @@ namespace Interpreter
         /// <summary>
         ///     Send selected Command to the Subscriber
         /// </summary>
-        internal EventHandler<OutCommand> sendCommand;
+        public EventHandler<OutCommand> sendCommand;
 
         /// <summary>
         ///     Send selected Command to the Subscriber
@@ -66,7 +66,7 @@ namespace Interpreter
 
         /// <summary>Get the Engine Running</summary>
         /// <param name="use">The Command Structure</param>
-        internal void Initiate(UserSpace use)
+        public void Initiate(UserSpace use)
         {
             _com = use.Commands;
             _nameSpace = use.UserSpaceName;
@@ -79,7 +79,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="inputString">Input string</param>
         /// <returns>Results of our commands</returns>
-        internal void HandleInput(string inputString)
+        public void HandleInput(string inputString)
         {
             //clean string, remove trailing whitespace
             inputString = inputString.Trim().ToUpper(CultureInfo.CurrentCulture).ToUpper(CultureInfo.InvariantCulture);
