@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter
  * FILE:        Interpreter/WindowPrompt.cs
- * PURPOSE:     Graphical Frontend for the INput
+ * PURPOSE:     Graphical Frontend for the Input
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -40,7 +40,7 @@ namespace Interpreter
         /// <summary>
         ///     The interpret (readonly).
         /// </summary>
-        private readonly IrtPrompt _interpret;
+        private readonly IrtParserInput _interpret;
 
         /// <summary>
         ///     The in.
@@ -61,10 +61,10 @@ namespace Interpreter
         ///     Fire it up
         /// </summary>
         /// <param name="interpret">Our Interpreter</param>
-        internal WindowPrompt(IrtPrompt interpret)
+        internal WindowPrompt(IrtParserInput interpret)
         {
             _interpret = interpret;
-            _interpret.SendLog += SendLogs;
+            _interpret.SendInternalLog += SendLogs;
             InitializeComponent();
         }
 
@@ -109,17 +109,11 @@ namespace Interpreter
         /// </summary>
         private void UpKey()
         {
-            if (CodeInput.IsNullOrEmpty())
-            {
-                return;
-            }
+            if (CodeInput.IsNullOrEmpty()) return;
 
             _countUp++;
 
-            if (!CodeInput.ContainsKey(_countDown))
-            {
-                _countDown = 0;
-            }
+            if (!CodeInput.ContainsKey(_countDown)) _countDown = 0;
 
             TextBoxInputs.Text = CodeInput[_countUp];
             TextBoxInputs.ScrollToEnd();
@@ -130,17 +124,11 @@ namespace Interpreter
         /// </summary>
         private void DownKey()
         {
-            if (CodeInput.IsNullOrEmpty())
-            {
-                return;
-            }
+            if (CodeInput.IsNullOrEmpty()) return;
 
             _countDown--;
 
-            if (!CodeInput.ContainsKey(_countDown))
-            {
-                _countDown = 0;
-            }
+            if (!CodeInput.ContainsKey(_countDown)) _countDown = 0;
 
             TextBoxInputs.Text = CodeInput[_countDown];
         }
@@ -153,10 +141,7 @@ namespace Interpreter
             _countDown = CodeInput.Count;
 
             var input = TextBoxInputs.Text;
-            if (string.IsNullOrEmpty(input))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(input)) return;
 
             //Handle Input
             //save as id

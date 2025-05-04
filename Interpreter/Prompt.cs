@@ -3,7 +3,6 @@
  * PROJECT:     Interpreter
  * FILE:        Interpreter/Prompt.cs
  * PURPOSE:     Handle the Input, Entry point for all Commands
- *              Don't use in a multi thread Environment, not tested.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -12,24 +11,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using ExtendedSystemObjects;
 
 namespace Interpreter
 {
-    /// <inheritdoc cref="IDisposable" />
-    /// <inheritdoc cref="IPrompt" />
     /// <summary>
     ///     Bucket List:
     ///     - Overloads
     ///     - nested Commands
     /// </summary>
+    /// <seealso cref="IPrompt" />
+    /// <seealso cref="IDisposable" />
+    /// <inheritdoc cref="IDisposable" />
+    /// <inheritdoc cref="IPrompt" />
     public sealed class Prompt : IPrompt, IDisposable
     {
         /// <summary>
         ///     Used to interpret Commands
         /// </summary>
-        private static IrtPrompt _interpret;
+        private static IrtParserInput _interpret;
 
         /// <summary>
         ///     The count
@@ -37,9 +39,29 @@ namespace Interpreter
         private static int _count = -1;
 
         /// <summary>
+        ///     The feedback register
+        /// </summary>
+        private IrtFeedback _feedbackRegister;
+
+        /// <summary>
+        ///     The reference to the Container Handle
+        /// </summary>
+        private IrtHandleContainer _irtHandleContainer;
+
+        /// <summary>
+        ///     The lock input
+        /// </summary>
+        private bool _lockInput;
+
+        /// <summary>
         ///     User Input Windows
         /// </summary>
         private WindowPrompt _prompt;
+
+        /// <summary>
+        ///     The user feedback
+        /// </summary>
+        private Dictionary<int, UserFeedback> _userFeedback;
 
         /// <summary>
         ///     The collected Namespaces
@@ -70,7 +92,7 @@ namespace Interpreter
         /// <value>
         ///     <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
-        public bool Disposed { get; set; }
+        public bool Disposed { get; private set; }
 
         /// <summary>
         ///     Logs all activities
@@ -96,20 +118,24 @@ namespace Interpreter
         /// <param name="com">Command Register</param>
         /// <param name="userSpace">UserSpace of the register</param>
         /// <param name="extension">Optional Extension Methods</param>
+        /// <param name="userFeedback">Optional user Feedback Methods</param>
         public void Initiate(Dictionary<int, InCommand> com, string userSpace,
-            Dictionary<int, InCommand> extension = null)
+            Dictionary<int, InCommand> extension = null, Dictionary<int, UserFeedback> userFeedback = null)
         {
+            _lockInput = false;
             ResetState();
-
-            var use = new UserSpace { UserSpaceName = userSpace, Commands = com };
+            //Userspace handler
+            var use = new UserSpace { UserSpaceName = userSpace, Commands = com, ExtensionCommands = extension };
 
             //Upper is needed because of the way we compare commands in the Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
 
-            _interpret = new IrtPrompt(this);
+            //feedback stuff
+            _userFeedback = userFeedback;
+
+            _interpret = new IrtParserInput(this, _userFeedback);
             _interpret.Initiate(use);
-            _interpret.SendLog += SendLog;
-            _interpret.sendCommand += SendCommand;
+            _interpret.SendInternalLog += SendLog;
         }
 
         /// <inheritdoc />
@@ -128,7 +154,6 @@ namespace Interpreter
 
             var use = CreateUserSpace(userSpace, com);
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
-            _interpret.SendLog += SendLog;
         }
 
         /// <inheritdoc />
@@ -147,9 +172,10 @@ namespace Interpreter
         ///     Handle it within the code, no User Input
         /// </summary>
         /// <param name="input">Input string</param>
-        public void StartConsole(string input)
+        public void ConsoleInput(string input)
         {
-            _interpret?.HandleInput(input);
+            if (!_lockInput) _interpret?.HandleInput(input);
+            else CheckFeedback(input);
         }
 
         /// <inheritdoc />
@@ -172,12 +198,16 @@ namespace Interpreter
             SendLogs?.Invoke(nameof(Callback), message);
         }
 
+        // Event to handle feedback, using EventHandler for proper event pattern
+        internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
+
         /// <summary>Switches the name spaces.</summary>
         /// <param name="space">The Namespace we would like to use.</param>
         internal void SwitchNameSpaces(string space)
         {
+            space = space.ToUpper(CultureInfo.InvariantCulture);
             var use = CollectedSpaces[space];
-            _interpret.Initiate(use);
+            IrtParserInput.SwitchUserSpace(use);
         }
 
         /// <summary>
@@ -185,9 +215,10 @@ namespace Interpreter
         /// </summary>
         /// <param name="sender">Object</param>
         /// <param name="e">Type</param>
-        private void SendCommand(object sender, OutCommand e)
+        internal void SendCommand(object sender, OutCommand e)
         {
-            AddToLog(e.Command.ToString());
+            AddToLog(e.Command == IrtConst.Error ? e.ErrorMessage : e.Command.ToString());
+
             SendCommands?.Invoke(nameof(Prompt), e);
         }
 
@@ -196,7 +227,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="sender">Object</param>
         /// <param name="e">Type</param>
-        private void SendLog(object sender, string e)
+        internal void SendLog(object sender, string e)
         {
             AddToLog(e);
             SendLogs?.Invoke(nameof(Prompt), e);
@@ -211,14 +242,12 @@ namespace Interpreter
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {
                 _interpret = null;
+                _irtHandleContainer = null;
                 CollectedSpaces = null;
                 Log = null;
                 _prompt?.Close();
@@ -233,10 +262,7 @@ namespace Interpreter
         /// <param name="message">The message.</param>
         internal void AddToLog(string message)
         {
-            if (_count == MaxLines)
-            {
-                Log.Remove(Log.Keys.First());
-            }
+            if (_count == MaxLines) Log.Remove(Log.Keys.First());
 
             _count++;
             Log.Add(_count, message);
@@ -275,6 +301,58 @@ namespace Interpreter
         {
             // Finalizer calls Dispose(false)
             Dispose(false);
+        }
+
+        /// <summary>
+        ///     Requests the feedback.
+        /// </summary>
+        /// <param name="feedbackRequest">The feedback request.</param>
+        internal void RequestFeedback(IrtFeedback feedbackRequest)
+        {
+            if (string.IsNullOrEmpty(feedbackRequest.RequestId)) return;
+
+            //add my feedback request
+            _feedbackRegister = feedbackRequest;
+
+            SendLogs?.Invoke(this, feedbackRequest.Feedback.ToString());
+
+            _lockInput = true;
+        }
+
+        /// <summary>
+        ///     Checks the feedback.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        internal void CheckFeedback(string input)
+        {
+            var checkResult = IrtHelper.CheckInput(input, _feedbackRegister.Feedback.Options);
+            SendLogs(this, $"{IrtConst.FeedbackMessage} {input}");
+
+            switch (checkResult)
+            {
+                case >= 0:
+                    //add a check and switch for input
+                    // Trigger the event
+                    OnHandleFeedback(_feedbackRegister.GenerateFeedbackAnswer((AvailableFeedback)checkResult));
+
+                    _lockInput = false;
+                    return;
+                case IrtConst.Error:
+                    SendLogs(this, IrtConst.ErrorFeedbackOptions);
+                    break;
+                case IrtConst.ErrorOptionNotAvailable:
+                    SendLogs(this, IrtConst.ErrorFeedbackOptionNotAllowed);
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     Raises the <see cref="E:HandleFeedback" /> event.
+        /// </summary>
+        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
+        internal void OnHandleFeedback(IrtFeedbackInputEventArgs e)
+        {
+            HandleFeedback?.Invoke(this, e); // Null-conditional operator to safely invoke event
         }
     }
 }

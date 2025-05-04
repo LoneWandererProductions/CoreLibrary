@@ -1,12 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     OutCommand
+ * PROJECT:     Interpreter
  * FILE:        Interpreter/Prompt.cs
  * PURPOSE:     handles the converted Output of the Interpreter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Interpreter
 {
@@ -39,6 +41,46 @@ namespace Interpreter
         /// <value>
         ///     <c>true</c> if [extension used]; otherwise, <c>false</c>.
         /// </value>
-        public bool ExtensionUsed { get; internal init; }
+        public bool ExtensionUsed => ExtensionCommand != null;
+
+        /// <summary>
+        ///     Gets the error message.
+        /// </summary>
+        /// <value>
+        ///     The error message.
+        /// </value>
+        public string ErrorMessage { get; internal init; }
+
+        /// <summary>
+        ///     Gets the extension command.
+        ///     only relevant if ExtensionUsed is true
+        /// </summary>
+        /// <value>
+        ///     The extension command.
+        /// </value>
+        public ExtensionCommands ExtensionCommand { get; internal init; }
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>
+        ///     A string that represents the current object.
+        /// </returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{nameof(UsedNameSpace)}: {UsedNameSpace}");
+            sb.AppendLine($"{nameof(Command)}: {Command}");
+
+            if (Parameter?.Any() == true) sb.AppendLine($"{nameof(Parameter)}: {string.Join(", ", Parameter)}");
+
+            sb.AppendLine($"{nameof(ExtensionUsed)}: {ExtensionUsed}");
+
+            if (ExtensionUsed) sb.AppendLine($"{nameof(ExtensionCommand)}: {ExtensionCommand}");
+
+            if (!string.IsNullOrEmpty(ErrorMessage)) sb.AppendLine($"{nameof(ErrorMessage)}: {ErrorMessage}");
+
+            return sb.ToString();
+        }
     }
 }
