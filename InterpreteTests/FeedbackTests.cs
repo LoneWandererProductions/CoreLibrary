@@ -48,16 +48,17 @@ namespace InterpreteTests
             // Arrange
             var dctCommandOne = new Dictionary<int, InCommand>
             {
-                {
-                    0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" }
-                },
+                { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
                 {
                     1,
                     new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
                 },
                 {
                     2,
-                    new InCommand { Command = "com3", ParameterCount = 0, Description = "Special case no Parameter" }
+                    new InCommand
+                    {
+                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
                 }
             };
 
@@ -120,7 +121,11 @@ namespace InterpreteTests
                 return;
             }
 
-            if (e.Command == -1) _log = e.ErrorMessage;
+            if (e.Command == -1)
+            {
+                _log = e.ErrorMessage;
+            }
+
             _outCommand = e;
         }
     }

@@ -27,8 +27,7 @@ namespace InterpreteTests
         {
             return new Dictionary<int, InCommand>
             {
-                { 1, new InCommand { Command = "CMD1" } },
-                { 2, new InCommand { Command = "CMD2" } }
+                { 1, new InCommand { Command = "CMD1" } }, { 2, new InCommand { Command = "CMD2" } }
             };
         }
 
@@ -161,10 +160,7 @@ namespace InterpreteTests
         [TestMethod]
         public void CheckForKeyWordWithNonExistingCommandReturnsError()
         {
-            var commands = new Dictionary<int, InCommand>
-            {
-                { 1, new InCommand { Command = "TEST" } }
-            };
+            var commands = new Dictionary<int, InCommand> { { 1, new InCommand { Command = "TEST" } } };
 
             var result = IrtKernel.CheckForKeyWord("INVALID", commands);
 
@@ -238,8 +234,7 @@ namespace InterpreteTests
         {
             var commands = new Dictionary<int, InCommand>
             {
-                { 1, new InCommand { Command = "TEST" } },
-                { 2, new InCommand { Command = "VALID" } }
+                { 1, new InCommand { Command = "TEST" } }, { 2, new InCommand { Command = "VALID" } }
             };
 
             var result = IrtKernel.CheckForKeyWord("VALID", commands);
@@ -762,10 +757,7 @@ namespace InterpreteTests
         public void ValidateParametersWithCorrectParametersReturnsTrue()
         {
             // Arrange
-            var commands = new Dictionary<int, InCommand>
-            {
-                { 1, new InCommand { ParameterCount = 2 } }
-            };
+            var commands = new Dictionary<int, InCommand> { { 1, new InCommand { ParameterCount = 2 } } };
 
             // Act
             var result = IrtKernel.ValidateParameters(1, 2, commands);
@@ -781,10 +773,7 @@ namespace InterpreteTests
         public void ValidateParametersWithIncorrectParametersReturnsFalse()
         {
             // Arrange
-            var commands = new Dictionary<int, InCommand>
-            {
-                { 1, new InCommand { ParameterCount = 2 } }
-            };
+            var commands = new Dictionary<int, InCommand> { { 1, new InCommand { ParameterCount = 2 } } };
 
             // Act
             var result = IrtKernel.ValidateParameters(1, 3, commands);
@@ -846,7 +835,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Extracts the condition non if keyword.
+        ///     Extracts the condition non if keyword.
         /// </summary>
         [TestMethod]
         public void ExtractConditionNonIfKeyword()
@@ -859,7 +848,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Extracts the condition no condition.
+        ///     Extracts the condition no condition.
         /// </summary>
         [TestMethod]
         public void ExtractConditionNoCondition()
@@ -872,8 +861,8 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Extracts the condition multiple conditions.
-        /// Not supported right now!
+        ///     Extracts the condition multiple conditions.
+        ///     Not supported right now!
         /// </summary>
         [TestMethod]
         public void ExtractConditionMultipleConditions()
@@ -887,7 +876,7 @@ namespace InterpreteTests
 
 
         /// <summary>
-        /// Extracts the condition keyword case insensitive.
+        ///     Extracts the condition keyword case insensitive.
         /// </summary>
         [TestMethod]
         public void ExtractConditionKeywordCaseInsensitive()
@@ -939,10 +928,7 @@ namespace InterpreteTests
         public void GetCommandIndexFindsMatchingCommand()
         {
             // Arrange
-            var commands = new Dictionary<int, InCommand>
-            {
-                { 1, new InCommand { Command = "COMMAND" } }
-            };
+            var commands = new Dictionary<int, InCommand> { { 1, new InCommand { Command = "COMMAND" } } };
 
             // Act
             var result = IrtKernel.GetCommandIndex("COMMAND", commands);
@@ -958,10 +944,7 @@ namespace InterpreteTests
         public void GetCommandIndexDoesNotFindMatchingCommand()
         {
             // Arrange
-            var commands = new Dictionary<int, InCommand>
-            {
-                { 1, new InCommand { Command = "COMMAND" } }
-            };
+            var commands = new Dictionary<int, InCommand> { { 1, new InCommand { Command = "COMMAND" } } };
 
             // Act
             var result = IrtKernel.GetCommandIndex("UNKNOWN", commands);
@@ -980,9 +963,7 @@ namespace InterpreteTests
             const string input = "Command1; Command2; Command3";
             var expected = new CategorizedDictionary<int, string>
             {
-                { "Command", 0, "Command1" },
-                { "Command", 1, "Command2" },
-                { "Command", 2, "Command3" }
+                { "Command", 0, "Command1" }, { "Command", 1, "Command2" }, { "Command", 2, "Command3" }
             };
 
             // Act
@@ -1030,7 +1011,7 @@ namespace InterpreteTests
             {
                 { "Command", 0, "Command1" },
                 { "If_Condition", 1, "condition1" },
-                {"If", 2 , "Command2;"},
+                { "If", 2, "Command2;" },
                 { "Else", 3, "Command3;" },
                 { "If_Condition", 4, "condition2" },
                 { "If", 5, "Command4;" }
@@ -1070,10 +1051,7 @@ namespace InterpreteTests
         {
             // Arrange
             const string input = "if(condition)";
-            var expected = new CategorizedDictionary<int, string>
-            {
-                { "Error", 0, "if(condition)" }
-            };
+            var expected = new CategorizedDictionary<int, string> { { "Error", 0, "if(condition)" } };
 
             // Act
             var result = IrtKernel.GetBlocks(input);
@@ -1116,9 +1094,7 @@ namespace InterpreteTests
             const string input = "  Command1 ;  if (condition) { Command2; }  ";
             var expected = new CategorizedDictionary<int, string>
             {
-                { "Command", 0, "Command1" },
-                { "If_Condition", 1, "condition" },
-                { "If", 2, "Command2;" }
+                { "Command", 0, "Command1" }, { "If_Condition", 1, "condition" }, { "If", 2, "Command2;" }
             };
 
             // Act
@@ -1153,7 +1129,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Gets the error sample.
+        ///     Gets the error sample.
         /// </summary>
         [TestMethod]
         public void GetErrorSample()
@@ -1162,8 +1138,8 @@ namespace InterpreteTests
             const string input = "if (condition) { doSomething(); } else { doSomething2(); }";
             var expected = new CategorizedDictionary<int, string>
             {
-                { "If_Condition", 0, "condition" },  // This is the content inside the 'if' block
-                { "If", 1, "doSomething();" },  // This is the content inside the 'if' block
+                { "If_Condition", 0, "condition" }, // This is the content inside the 'if' block
+                { "If", 1, "doSomething();" }, // This is the content inside the 'if' block
                 { "Else", 2, "doSomething2();" } // This is the content inside the 'else' block
             };
 

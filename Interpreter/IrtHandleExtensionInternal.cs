@@ -92,7 +92,9 @@ namespace Interpreter
         internal void ProcessExtensionInternal(ExtensionCommands extension)
         {
             if (_disposed)
+            {
                 throw new ObjectDisposedException(nameof(IrtHandleExtensionInternal));
+            }
 
             switch (extension.ExtensionCommand)
             {
@@ -118,9 +120,13 @@ namespace Interpreter
         {
             var key = IrtKernel.CheckForKeyWord(extension.BaseCommand, IrtConst.InternCommands);
             if (key != IrtConst.Error)
+            {
                 HandleInternalCommand(extension, key);
+            }
             else
+            {
                 HandleExternalCommand(extension);
+            }
         }
 
         /// <summary>
@@ -164,10 +170,7 @@ namespace Interpreter
 
             var feedbackReceiver = new IrtFeedback
             {
-                RequestId = _myRequestId,
-                Feedback = feedback,
-                BranchId = 12,
-                AwaitedOutput = com
+                RequestId = _myRequestId, Feedback = feedback, BranchId = 12, AwaitedOutput = com
             };
 
             _prompt.RequestFeedback(feedbackReceiver);
@@ -180,7 +183,10 @@ namespace Interpreter
         /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
         private void HandleFeedback(object sender, IrtFeedbackInputEventArgs e)
         {
-            if (e.RequestId != _myRequestId) return;
+            if (e.RequestId != _myRequestId)
+            {
+                return;
+            }
 
             switch (e.BranchId)
             {
@@ -229,7 +235,9 @@ namespace Interpreter
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
             {

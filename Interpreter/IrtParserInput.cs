@@ -8,6 +8,7 @@
 
 // ReSharper disable UnusedMember.Local
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -189,7 +190,9 @@ namespace Interpreter
                 IrtConst.InternalExtensionCommands);
 
             if (extensionResult.Status == IrtConst.Error)
+            {
                 extensionResult = _irtExtension.CheckForExtension(_inputString, _nameSpace, _extension);
+            }
 
             // Process the extension result
             switch (extensionResult.Status)
@@ -217,7 +220,11 @@ namespace Interpreter
 
                 default:
                     var com = ProcessInput(inputString);
-                    if (com != null) SetResult(com);
+                    if (com != null)
+                    {
+                        SetResult(com);
+                    }
+
                     break;
             }
         }
@@ -257,6 +264,7 @@ namespace Interpreter
             var check = IrtKernel.CheckOverload(_com[key].Command, parameter.Count, _com);
 
             if (check != null)
+            {
                 return new OutCommand
                 {
                     Command = (int)check,
@@ -264,6 +272,7 @@ namespace Interpreter
                     UsedNameSpace = _nameSpace,
                     ExtensionCommand = extension
                 };
+            }
 
             SetErrorWithLog(IrtConst.SyntaxError);
 
@@ -346,9 +355,7 @@ namespace Interpreter
                 var feedback = _userFeedback[id];
                 var feedbackReceiver = new IrtFeedback
                 {
-                    RequestId = _myRequestId,
-                    Feedback = feedback,
-                    AwaitedOutput = command
+                    RequestId = _myRequestId, Feedback = feedback, AwaitedOutput = command
                 };
 
                 _prompt.RequestFeedback(feedbackReceiver);
@@ -362,7 +369,10 @@ namespace Interpreter
         /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
         private void HandleFeedback(object? sender, IrtFeedbackInputEventArgs e)
         {
-            if (e.RequestId != _myRequestId) return;
+            if (e.RequestId != _myRequestId)
+            {
+                return;
+            }
 
             switch (e.Answer)
             {
@@ -387,10 +397,7 @@ namespace Interpreter
         {
             var com = new OutCommand
             {
-                Command = IrtConst.Error,
-                Parameter = null,
-                UsedNameSpace = _nameSpace,
-                ErrorMessage = error
+                Command = IrtConst.Error, Parameter = null, UsedNameSpace = _nameSpace, ErrorMessage = error
             };
 
             _prompt.SendCommand(this, com);
@@ -406,11 +413,15 @@ namespace Interpreter
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
                 // Dispose managed resources here if needed
+            {
                 _irtHandleInternal?.Dispose();
+            }
 
             // Dispose unmanaged resources here if needed
 

@@ -19,7 +19,7 @@ namespace CommonLibraryTests
     public class ImagingFilterTests
     {
         /// <summary>
-        /// The render
+        ///     The render
         /// </summary>
         private IImageRender _render;
 

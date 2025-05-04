@@ -26,7 +26,10 @@ namespace Interpreter
                 if (ifIndex == -1)
                 {
                     // No more if-else blocks; add the remaining input as a command block
-                    if (string.IsNullOrWhiteSpace(input)) continue;
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        continue;
+                    }
 
                     var commands = IrtKernel.SplitParameter(input, IrtConst.NewCommand);
                     formattedBlocks.AddRange(commands);
@@ -36,7 +39,10 @@ namespace Interpreter
                 {
                     // Extract the command block before the if-statement
                     var beforeIf = input.Substring(0, ifIndex).Trim();
-                    if (!string.IsNullOrWhiteSpace(beforeIf)) formattedBlocks.Add(beforeIf);
+                    if (!string.IsNullOrWhiteSpace(beforeIf))
+                    {
+                        formattedBlocks.Add(beforeIf);
+                    }
 
                     // Isolate the if-else block and the remaining input
                     input = input.Substring(ifIndex);
@@ -60,6 +66,7 @@ namespace Interpreter
                 switch (command)
                 {
                     case IrtConst.InternalIf: // Handling if/else
+                        //TODO error here
                         var rest = IrtParserIfElse.GenerateIfElseCommands(block);
                         break;
                     default: // Handling regular commands and splitting by new command separator

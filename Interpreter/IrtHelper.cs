@@ -30,7 +30,10 @@ namespace Interpreter
             try
             {
                 using var reader = new StreamReader(filepath);
-                while (reader.ReadLine() is { } line) parts.Add(line);
+                while (reader.ReadLine() is { } line)
+                {
+                    parts.Add(line);
+                }
             }
             catch (IOException ex)
             {
@@ -58,10 +61,16 @@ namespace Interpreter
             input = input.Trim().ToUpper();
 
             // Check if input can be parsed to an AvailableFeedback enum value
-            if (!Enum.TryParse(input, true, out AvailableFeedback parsedFeedback)) return -1;
+            if (!Enum.TryParse(input, true, out AvailableFeedback parsedFeedback))
+            {
+                return -1;
+            }
 
             // Check if the parsed enum value is a key in the feedbackOptions dictionary
-            if (!feedbackOptions.ContainsKey(parsedFeedback)) return -2;
+            if (!feedbackOptions.ContainsKey(parsedFeedback))
+            {
+                return -2;
+            }
 
             // Return the integer value of the parsed enum
             return (int)parsedFeedback;

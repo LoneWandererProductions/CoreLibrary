@@ -158,6 +158,12 @@ namespace Interpreter
             }
         }
 
+        /// <summary>
+        /// Handles if else block.
+        /// </summary>
+        /// <param name="commands">The commands.</param>
+        /// <param name="currentPosition">The current position.</param>
+        /// <returns></returns>
         private async Task<int> HandleIfElseBlock(List<string> commands, int currentPosition)
         {
             // Request feedback
@@ -189,7 +195,10 @@ namespace Interpreter
 
             var (status, label) = IrtKernel.GetParameters(input, key, IrtConst.InternContainerCommands);
 
-            if (status != IrtConst.ParameterCommand || string.IsNullOrEmpty(label)) return false;
+            if (status != IrtConst.ParameterCommand || string.IsNullOrEmpty(label))
+            {
+                return false;
+            }
 
             // Example logic to determine the jump position from the label
             position = FindLabelPosition(label, commands);
@@ -212,7 +221,9 @@ namespace Interpreter
                 var input = commands[i];
                 var check = IrtKernel.CheckFormat(input, IrtConst.InternalLabel, label);
                 if (check) // Customize this condition to match your label logic
+                {
                     return i;
+                }
             }
 
             return -1; // Label not found
@@ -231,30 +242,29 @@ namespace Interpreter
         /// <param name="ifDepth">If depth.</param>
         private void ParseLine(string line, int lineCount, int ifDepth)
         {
-            var _dictionary = new CategorizedDictionary<int, string>();
+            var dictionary = new CategorizedDictionary<int, string>();
             if (line.StartsWith(":")) // Label
             {
-                _dictionary.Add("LABEL", lineCount, line);
+                dictionary.Add("LABEL", lineCount, line);
             }
             else if (line.Trim().StartsWith("goto")) // Goto
             {
-                _dictionary.Add("GOTO", lineCount, line);
+                dictionary.Add("GOTO", lineCount, line);
             }
             else if (line.Trim().StartsWith("if")) // If
             {
                 ifDepth++;
-                _dictionary.Add($"IF_{ifDepth}", lineCount, line);
+                dictionary.Add($"IF_{ifDepth}", lineCount, line);
             }
             else if (line.Trim().StartsWith("else")) // Else
             {
-                _dictionary.Add($"ELSE_{ifDepth}", lineCount, line);
+                dictionary.Add($"ELSE_{ifDepth}", lineCount, line);
             }
             else // Default
             {
-                _dictionary.Add("COMMAND", lineCount, line);
+                dictionary.Add("COMMAND", lineCount, line);
             }
         }
-
 
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
@@ -266,11 +276,16 @@ namespace Interpreter
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
                 // Dispose managed resources
+            {
                 _irtHandleInternal = null;
+            }
+
             _prompt = null;
 
             _disposed = true;

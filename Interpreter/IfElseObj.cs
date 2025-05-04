@@ -15,11 +15,11 @@ namespace Interpreter
         internal bool Nested { get; set; }
 
         /// <summary>
-        /// Gets or sets the commands.
-        /// int is the key and id and, string is the category, int is the position of master entry
+        ///     Gets or sets the commands.
+        ///     int is the key and id and, string is the category, int is the position of master entry
         /// </summary>
         /// <value>
-        /// The commands.
+        ///     The commands.
         /// </value>
         internal CategorizedDictionary<int, string> Commands { get; set; }
 

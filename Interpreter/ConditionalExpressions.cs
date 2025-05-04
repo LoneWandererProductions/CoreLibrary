@@ -30,7 +30,7 @@ using ExtendedSystemObjects;
 namespace Interpreter
 {
     /// <summary>
-    /// Create Category Dictionary and handle nested structures
+    ///     Create Category Dictionary and handle nested structures
     /// </summary>
     internal static class ConditionalExpressions
     {
@@ -41,15 +41,18 @@ namespace Interpreter
         /// <returns>A dictionary of IfElseObj objects representing each If-Else clause found.</returns>
         public static Dictionary<int, IfElseObj> ParseIfElseClauses(string input)
         {
-            if (string.IsNullOrEmpty(input)) return null;
+            if (string.IsNullOrEmpty(input))
+            {
+                return null;
+            }
 
             var ifElseClauses = new Dictionary<int, IfElseObj>();
-            ProcessInput(input, isElse: false, parentId: -1, layer: -1, position: 0, ifElseClauses);
+            ProcessInput(input, false, -1, -1, 0, ifElseClauses);
             return ifElseClauses;
         }
 
         /// <summary>
-        /// Processes the input and splits the input into IfElseObj objects.
+        ///     Processes the input and splits the input into IfElseObj objects.
         /// </summary>
         private static void ProcessInput(string input, bool isElse, int parentId, int layer, int position,
             IDictionary<int, IfElseObj> ifElseClauses)
@@ -80,12 +83,13 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Helper method to create an IfElseObj instance.
+        ///     Helper method to create an IfElseObj instance.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static IfElseObj CreateIfElseObj(string input, bool isElse, int parentId, int layer, int position, IDictionary<int, IfElseObj> master)
+        private static IfElseObj CreateIfElseObj(string input, bool isElse, int parentId, int layer, int position,
+            IDictionary<int, IfElseObj> master)
         {
-            return new()
+            return new IfElseObj
             {
                 Input = input,
                 Else = isElse,

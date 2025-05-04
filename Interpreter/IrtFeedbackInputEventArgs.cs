@@ -28,7 +28,7 @@ namespace Interpreter
         /// <value>
         ///     The request identifier.
         /// </value>
-        internal string RequestId { get; set; }
+        internal string RequestId { get; init; }
 
         /// <summary>
         ///     Gets or sets the branch identifier.
@@ -36,7 +36,7 @@ namespace Interpreter
         /// <value>
         ///     The branch identifier.
         /// </value>
-        internal int BranchId { get; set; }
+        internal int BranchId { get; init; }
 
         /// <summary>
         ///     Gets or sets the key.
@@ -44,7 +44,7 @@ namespace Interpreter
         /// <value>
         ///     The key.
         /// </value>
-        internal int Key { get; set; }
+        internal int Key { get; init; }
 
         /// <summary>
         ///     Gets or sets the command.
@@ -52,7 +52,7 @@ namespace Interpreter
         /// <value>
         ///     The command.
         /// </value>
-        internal string Command { get; set; }
+        internal string Command { get; init; }
 
         /// <summary>
         ///     Gets or sets the awaited output.
@@ -60,7 +60,7 @@ namespace Interpreter
         /// <value>
         ///     The awaited output.
         /// </value>
-        internal OutCommand AwaitedOutput { get; set; }
+        internal OutCommand AwaitedOutput { get; init; }
 
         /// <summary>
         ///     Gets or sets the answer.
@@ -68,6 +68,6 @@ namespace Interpreter
         /// <value>
         ///     The answer.
         /// </value>
-        internal AvailableFeedback Answer { get; set; }
+        internal AvailableFeedback Answer { get; init; }
     }
 }

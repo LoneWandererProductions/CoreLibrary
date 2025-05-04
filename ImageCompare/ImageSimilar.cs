@@ -85,10 +85,10 @@ namespace ImageCompare
         internal int Id { get; init; }
 
         /// <summary>
-        /// Gets the hash.
+        ///     Gets the hash.
         /// </summary>
         /// <value>
-        /// The hash.
+        ///     The hash.
         /// </value>
         public byte[] Hash { get; init; }
 

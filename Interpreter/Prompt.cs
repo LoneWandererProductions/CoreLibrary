@@ -174,8 +174,14 @@ namespace Interpreter
         /// <param name="input">Input string</param>
         public void ConsoleInput(string input)
         {
-            if (!_lockInput) _interpret?.HandleInput(input);
-            else CheckFeedback(input);
+            if (!_lockInput)
+            {
+                _interpret?.HandleInput(input);
+            }
+            else
+            {
+                CheckFeedback(input);
+            }
         }
 
         /// <inheritdoc />
@@ -242,7 +248,10 @@ namespace Interpreter
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (Disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
@@ -262,7 +271,10 @@ namespace Interpreter
         /// <param name="message">The message.</param>
         internal void AddToLog(string message)
         {
-            if (_count == MaxLines) Log.Remove(Log.Keys.First());
+            if (_count == MaxLines)
+            {
+                Log.Remove(Log.Keys.First());
+            }
 
             _count++;
             Log.Add(_count, message);
@@ -309,7 +321,10 @@ namespace Interpreter
         /// <param name="feedbackRequest">The feedback request.</param>
         internal void RequestFeedback(IrtFeedback feedbackRequest)
         {
-            if (string.IsNullOrEmpty(feedbackRequest.RequestId)) return;
+            if (string.IsNullOrEmpty(feedbackRequest.RequestId))
+            {
+                return;
+            }
 
             //add my feedback request
             _feedbackRegister = feedbackRequest;

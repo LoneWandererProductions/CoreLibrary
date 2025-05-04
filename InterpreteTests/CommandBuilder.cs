@@ -61,8 +61,7 @@ namespace InterpreteTests
 
             var expectedResults = new List<(int Key, string Category, string Value)>
             {
-                (0, "IF", "condition1"),
-                (1, "COMMAND", "com1"),
+                (0, "IF", "condition1"), (1, "COMMAND", "com1")
             };
 
             //// Assert
@@ -97,7 +96,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Parses if else clauses with nested if else returns correct structure.
+        ///     Parses if else clauses with nested if else returns correct structure.
         /// </summary>
         [TestMethod]
         public void ParseIfElseClausesWithNestedIfElseReturnsCorrectStructure()
@@ -121,14 +120,15 @@ namespace InterpreteTests
                         Nested = true,
                         Commands = new CategorizedDictionary<int, string>
                         {
-                            {"If_Condition", 0, "condition1"},
-                            {"If", 1, "Command1; if (condition2) { Command2; } else { Command3; }"},
-                            {"Else", 2, "Command4;"}
+                            { "If_Condition", 0, "condition1" },
+                            { "If", 1, "Command1; if (condition2) { Command2; } else { Command3; }" },
+                            { "Else", 2, "Command4;" }
                         }
                     }
                 },
                 {
-                    1, new IfElseObj
+                    1,
+                    new IfElseObj
                     {
                         Input = "if (condition2) { Command2; } else { Command3; }",
                         Else = false,
@@ -138,9 +138,9 @@ namespace InterpreteTests
                         Nested = true,
                         Commands = new CategorizedDictionary<int, string>
                         {
-                            {"If_Condition", 0, "condition2"},
-                            {"If", 1, "Command2;"},
-                            {"Else", 2, "Command3;"}
+                            { "If_Condition", 0, "condition2" },
+                            { "If", 1, "Command2;" },
+                            { "Else", 2, "Command3;" }
                         }
                     }
                 }

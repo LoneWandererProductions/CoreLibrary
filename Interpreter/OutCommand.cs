@@ -72,13 +72,22 @@ namespace Interpreter
             sb.AppendLine($"{nameof(UsedNameSpace)}: {UsedNameSpace}");
             sb.AppendLine($"{nameof(Command)}: {Command}");
 
-            if (Parameter?.Any() == true) sb.AppendLine($"{nameof(Parameter)}: {string.Join(", ", Parameter)}");
+            if (Parameter?.Any() == true)
+            {
+                sb.AppendLine($"{nameof(Parameter)}: {string.Join(", ", Parameter)}");
+            }
 
             sb.AppendLine($"{nameof(ExtensionUsed)}: {ExtensionUsed}");
 
-            if (ExtensionUsed) sb.AppendLine($"{nameof(ExtensionCommand)}: {ExtensionCommand}");
+            if (ExtensionUsed)
+            {
+                sb.AppendLine($"{nameof(ExtensionCommand)}: {ExtensionCommand}");
+            }
 
-            if (!string.IsNullOrEmpty(ErrorMessage)) sb.AppendLine($"{nameof(ErrorMessage)}: {ErrorMessage}");
+            if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                sb.AppendLine($"{nameof(ErrorMessage)}: {ErrorMessage}");
+            }
 
             return sb.ToString();
         }

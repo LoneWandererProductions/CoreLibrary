@@ -26,9 +26,13 @@ namespace Interpreter
         public void ConsoleInput(Guid callerId, string input)
         {
             if (_pendingInputs.TryRemove(callerId, out var tcs))
+            {
                 tcs.SetResult(input);
+            }
             else
+            {
                 Console.WriteLine($"No pending input request for caller {callerId}");
+            }
         }
     }
 }

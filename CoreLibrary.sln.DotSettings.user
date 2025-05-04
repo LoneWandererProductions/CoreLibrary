@@ -18,6 +18,9 @@
     &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibrarySqlLiteTests" Presentation="&amp;lt;CommonLibrarySqlLiteTests&amp;gt;" /&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=LOGFULL/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=LOGINFO/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Userspace/@EntryIndexedValue">True</s:Boolean>
 	
 	
 	

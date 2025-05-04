@@ -296,11 +296,17 @@ namespace Interpreter
             {
                 if (value.ParameterCount < 0)
                 {
-                    if (count >= Math.Abs(value.ParameterCount)) return key;
+                    if (count >= Math.Abs(value.ParameterCount))
+                    {
+                        return key;
+                    }
                 }
                 else
                 {
-                    if (value.ParameterCount == count) return key;
+                    if (value.ParameterCount == count)
+                    {
+                        return key;
+                    }
                 }
             }
 
@@ -335,7 +341,10 @@ namespace Interpreter
         /// <returns>True if the string matches the format; otherwise, false.</returns>
         internal static bool CheckFormat(string input, string command, string label)
         {
-            if (string.IsNullOrWhiteSpace(input)) return false;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return false;
+            }
 
             // Trim the input to remove leading and trailing whitespace
             var trimmedInput = input.Trim();
@@ -351,7 +360,9 @@ namespace Interpreter
 
             if (!upperInput.StartsWith(start, StringComparison.Ordinal) ||
                 !upperInput.EndsWith(end, StringComparison.Ordinal))
+            {
                 return false;
+            }
 
             // Extract the content within the parentheses
             var contentStartIndex = upperCommand.Length + 1;
@@ -375,14 +386,17 @@ namespace Interpreter
 
             // Remove the keyword if it appears at the start of the input (e.g., "if")
             if (input.StartsWith(keyword, StringComparison.OrdinalIgnoreCase))
+            {
                 input = input.Substring(keyword.Length).Trim();
+            }
 
             // Find the opening and closing parenthesis around the condition
-            var openParenIndex = input.IndexOf(IrtConst.BaseOpen);  // '('
+            var openParenIndex = input.IndexOf(IrtConst.BaseOpen); // '('
             var closeParenIndex = input.IndexOf(IrtConst.BaseClose); // ')'
 
             // If either of the parentheses are missing, return an empty condition
-            if (openParenIndex == IrtConst.Error || closeParenIndex == IrtConst.Error || closeParenIndex < openParenIndex)
+            if (openParenIndex == IrtConst.Error || closeParenIndex == IrtConst.Error ||
+                closeParenIndex < openParenIndex)
             {
                 return string.Empty;
             }
@@ -399,18 +413,26 @@ namespace Interpreter
         /// <returns>The index of the keyword if found, or -1 if not found.</returns>
         internal static int FindFirstKeywordIndex(string input, string keyword)
         {
-            if (string.IsNullOrEmpty(input)) return IrtConst.Error;
+            if (string.IsNullOrEmpty(input))
+            {
+                return IrtConst.Error;
+            }
 
             var position = input.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
 
             while (position != IrtConst.Error)
             {
                 var openParenIndex = position + keyword.Length;
-                while (openParenIndex < input.Length && char.IsWhiteSpace(input[openParenIndex])) openParenIndex++;
+                while (openParenIndex < input.Length && char.IsWhiteSpace(input[openParenIndex]))
+                {
+                    openParenIndex++;
+                }
 
                 if ((openParenIndex < input.Length && input[openParenIndex] == IrtConst.BaseOpen) ||
                     (openParenIndex < input.Length && input[openParenIndex] == IrtConst.AdvancedOpen))
+                {
                     return position;
+                }
 
                 position = input.IndexOf(keyword, position + 1, StringComparison.OrdinalIgnoreCase);
             }
@@ -437,10 +459,16 @@ namespace Interpreter
         internal static (string block, int elsePosition) ExtractFirstIfElse(string input)
         {
             var start = FindFirstKeywordIndex(input, "if");
-            if (start == -1) return (null, -1);
+            if (start == -1)
+            {
+                return (null, -1);
+            }
 
             var isMatch = IsValidIfStatement(input);
-            if (!isMatch) return (null, -1);
+            if (!isMatch)
+            {
+                return (null, -1);
+            }
 
             var end = start;
             var braceCount = 0;
@@ -460,8 +488,15 @@ namespace Interpreter
                 else if (cursor == '}')
                 {
                     braceCount--;
-                    if (braceCount != 0) continue;
-                    if (containsElse) continue;
+                    if (braceCount != 0)
+                    {
+                        continue;
+                    }
+
+                    if (containsElse)
+                    {
+                        continue;
+                    }
 
                     end = i;
                     break;
@@ -479,7 +514,10 @@ namespace Interpreter
 
             if (elseFound)
             {
-                if (end == input.Length) return (input.Substring(start, input.Length), elsePosition);
+                if (end == input.Length)
+                {
+                    return (input.Substring(start, input.Length), elsePosition);
+                }
 
                 for (var i = end; i < input.Length; i++)
                 {
@@ -493,14 +531,20 @@ namespace Interpreter
                     {
                         braceCount--;
 
-                        if (braceCount != 0) continue;
+                        if (braceCount != 0)
+                        {
+                            continue;
+                        }
 
                         end = i;
                         break;
                     }
                     else if (cursor == ';')
                     {
-                        if (braceCount != 0) continue;
+                        if (braceCount != 0)
+                        {
+                            continue;
+                        }
 
                         end = i;
                         break;
@@ -595,18 +639,26 @@ namespace Interpreter
             if (input.Contains(IrtConst.BaseOpen))
             {
                 var index = input.IndexOf(IrtConst.BaseOpen);
-                if (index >= 0) input = input.Substring(0, index).Trim();
+                if (index >= 0)
+                {
+                    input = input.Substring(0, index).Trim();
+                }
             }
 
             if (input.Contains(IrtConst.AdvancedOpen))
             {
                 var index = input.IndexOf(IrtConst.AdvancedOpen);
-                if (index >= 0) input = input.Substring(0, index).Trim();
+                if (index >= 0)
+                {
+                    input = input.Substring(0, index).Trim();
+                }
             }
 
             foreach (var (key, command) in commands)
                 if (string.Equals(input, command.Command, StringComparison.OrdinalIgnoreCase))
+                {
                     return key;
+                }
 
             return IrtConst.Error;
         }
@@ -632,7 +684,10 @@ namespace Interpreter
 
             // Step 2: Find and remove the first set of parentheses and the condition within it
             var openParenIndex = input.IndexOf('(');
-            if (openParenIndex == IrtConst.Error) return input;
+            if (openParenIndex == IrtConst.Error)
+            {
+                return input;
+            }
 
             var closeParenIndex = input.IndexOf(')', openParenIndex);
 
@@ -666,7 +721,10 @@ namespace Interpreter
 
             // Check if the string starts with "if(" and ends with ")"
             if (!input.StartsWith(IrtConst.InternalIf, StringComparison.CurrentCultureIgnoreCase) ||
-                input.EndsWith(IrtConst.BaseClose.ToString(), StringComparison.Ordinal)) return false;
+                input.EndsWith(IrtConst.BaseClose.ToString(), StringComparison.Ordinal))
+            {
+                return false;
+            }
 
             // Extract the content between "if(" and ")"
             var condition = ExtractCondition(input, IrtConst.InternalIf);

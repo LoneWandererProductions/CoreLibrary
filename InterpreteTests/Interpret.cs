@@ -88,7 +88,10 @@ namespace InterpreteTests
         public void TearDown()
         {
             _prompt?.Dispose();
-            if (File.Exists(Batch)) File.Delete(Batch);
+            if (File.Exists(Batch))
+            {
+                File.Delete(Batch);
+            }
         }
 
         /// <summary>
@@ -218,13 +221,24 @@ namespace InterpreteTests
             var dctCommandOne = new Dictionary<int, InCommand>
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
-                { 1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" } },
-                { 2, new InCommand { Command = "com3", ParameterCount = 0, Description = "Special case no Parameter" } }
+                {
+                    1,
+                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                },
+                {
+                    2,
+                    new InCommand
+                    {
+                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
+                }
             };
 
             var dctCommandTwo = new Dictionary<int, InCommand>
             {
-                { 1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 2" } },
+                {
+                    1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 2" }
+                },
                 { 4, new InCommand { Command = "Test", ParameterCount = 0, Description = "Here we go" } }
             };
 
@@ -294,7 +308,11 @@ namespace InterpreteTests
         /// <param name="e">Type</param>
         private static void SendCommands(object sender, OutCommand e)
         {
-            if (e.Command == -1) _log = e.ErrorMessage;
+            if (e.Command == -1)
+            {
+                _log = e.ErrorMessage;
+            }
+
             _outCommand = e;
         }
     }

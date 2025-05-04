@@ -205,7 +205,9 @@ namespace Interpreter
         private void CommandList()
         {
             foreach (var com in _commands.Values)
+            {
                 OnStatus($"{com.Command}{Environment.NewLine}{com.Description}");
+            }
         }
 
         /// <summary>Display all using and the Current in Use.</summary>
@@ -214,7 +216,9 @@ namespace Interpreter
         {
             OnStatus($"{IrtConst.Active}{nameSpace}");
             foreach (var key in _prompt.CollectedSpaces.Keys)
+            {
                 OnStatus(key);
+            }
         }
 
         /// <summary>
@@ -223,7 +227,9 @@ namespace Interpreter
         private void CommandLogError()
         {
             foreach (var entry in Logging.Log)
+            {
                 OnStatus($"{entry}{Environment.NewLine}");
+            }
         }
 
         /// <summary>
@@ -242,7 +248,9 @@ namespace Interpreter
         private void CommandLogFull()
         {
             foreach (var entry in new List<string>(_prompt.Log.Values))
+            {
                 _prompt.SendLogs?.Invoke(nameof(IrtHandleInternal), entry);
+            }
         }
 
         /// <summary>
@@ -261,7 +269,9 @@ namespace Interpreter
         internal void SetError(string error)
         {
             var com = new OutCommand
-                { Command = IrtConst.Error, Parameter = null, UsedNameSpace = _nameSpace, ErrorMessage = error };
+            {
+                Command = IrtConst.Error, Parameter = null, UsedNameSpace = _nameSpace, ErrorMessage = error
+            };
 
             OnCommand(com);
         }
@@ -294,12 +304,16 @@ namespace Interpreter
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
                 // Dispose managed resources here if needed
                 // Set the local dictionary reference to null to remove references without clearing the dictionary
+            {
                 _commands = null;
+            }
 
             // Dispose unmanaged resources here if needed
 

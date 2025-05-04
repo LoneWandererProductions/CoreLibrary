@@ -56,10 +56,16 @@ namespace Interpreter
             var message = new StringBuilder();
             message.Append(Message); // Start with the main message
 
-            if (!(Options?.Count > 0)) return message.ToString();
+            if (!(Options?.Count > 0))
+            {
+                return message.ToString();
+            }
 
             // Iterate through each key-value pair in Options
-            foreach (var (key, value) in Options) message.Append($" {key} {value},"); // Format key-value pairs
+            foreach (var (key, value) in Options)
+            {
+                message.Append($" {key} {value},"); // Format key-value pairs
+            }
 
             message.Length -= 2; // Remove the last ", " to avoid extra trailing comma
 

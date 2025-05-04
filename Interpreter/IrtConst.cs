@@ -391,27 +391,15 @@ namespace Interpreter
             Message = "You now have the following Options:",
             Options = new Dictionary<AvailableFeedback, string>
             {
-                {
-                    AvailableFeedback.Yes,
-                    "If you want to execute the Command type yes"
-                },
-                {
-                    AvailableFeedback.No,
-                    " if you want to stop executing the Command."
-                }
+                { AvailableFeedback.Yes, "If you want to execute the Command type yes" },
+                { AvailableFeedback.No, " if you want to stop executing the Command." }
             }
         };
 
         /// <summary>
         ///     The internal feedback
         /// </summary>
-        internal static readonly Dictionary<int, UserFeedback> InternalFeedback = new()
-        {
-            {
-                -1,
-                HelpFeedback
-            }
-        };
+        internal static readonly Dictionary<int, UserFeedback> InternalFeedback = new() { { -1, HelpFeedback } };
 
         /// <summary>
         ///     The internal Extension commands, will be used for all external UserSpaces.
@@ -428,8 +416,7 @@ namespace Interpreter
                 }
             },
             {
-                1,
-                new InCommand
+                1, new InCommand
                 {
                     Command = InternalHelpExtension,
                     Description =
@@ -454,8 +441,7 @@ namespace Interpreter
                 }
             },
             {
-                InternalHelpWithParameter,
-                new InCommand
+                InternalHelpWithParameter, new InCommand
                 {
                     Command = InternalCommandHelp,
                     Description =
@@ -467,9 +453,7 @@ namespace Interpreter
                 2,
                 new InCommand
                 {
-                    Command = InternalCommandList,
-                    Description = "List: List all external Commands.",
-                    ParameterCount = 0
+                    Command = InternalCommandList, Description = "List: List all external Commands.", ParameterCount = 0
                 }
             },
             {
@@ -512,14 +496,11 @@ namespace Interpreter
                 7,
                 new InCommand
                 {
-                    Command = InternalLogFull,
-                    Description = "Logfull : Enumerate full Log",
-                    ParameterCount = 0
+                    Command = InternalLogFull, Description = "Logfull : Enumerate full Log", ParameterCount = 0
                 }
             },
             {
-                InternalContainerId,
-                new InCommand
+                InternalContainerId, new InCommand
                 {
                     Command = InternalContainer,
                     Description =
@@ -553,8 +534,7 @@ namespace Interpreter
         internal static readonly Dictionary<int, InCommand> InternContainerCommands = new()
         {
             {
-                0,
-                new InCommand
+                0, new InCommand
                 {
                     Command = InternalIf,
                     Description =
@@ -563,8 +543,7 @@ namespace Interpreter
                 }
             },
             {
-                1,
-                new InCommand
+                1, new InCommand
                 {
                     Command = InternalElse,
                     Description =
@@ -573,8 +552,7 @@ namespace Interpreter
                 }
             },
             {
-                2,
-                new InCommand
+                2, new InCommand
                 {
                     Command = InternalGoto,
                     Description =
@@ -592,8 +570,7 @@ namespace Interpreter
                 }
             },
             {
-                4,
-                new InCommand
+                4, new InCommand
                 {
                     Command = InternalAwaitFeedback,
                     Description =

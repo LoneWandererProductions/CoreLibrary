@@ -23,6 +23,11 @@ namespace Interpreter
             return GenerateFormattedOutput(categorizeIfElse);
         }
 
+        /// <summary>
+        /// Generates the formatted output.
+        /// </summary>
+        /// <param name="categorizedClauses">The categorized clauses.</param>
+        /// <returns></returns>
         internal static List<(string Category, string Value)> GenerateFormattedOutput(
             List<(string Category, string Clause, string ParentCategory)> categorizedClauses)
         {
@@ -53,7 +58,10 @@ namespace Interpreter
 
                     // Process nested clauses
                     foreach (var nestedClause in categorizedClauses.Where(c => c.ParentCategory == clause.Category)
-                                 .ToList()) ProcessClause(nestedClause);
+                                 .ToList())
+                    {
+                        ProcessClause(nestedClause);
+                    }
 
                     output.Add(($"IF_LAYER_{layer}_END", ""));
                     openBlocks.Pop();
@@ -67,7 +75,10 @@ namespace Interpreter
 
                     // Process nested clauses
                     foreach (var nestedClause in categorizedClauses.Where(c => c.ParentCategory == clause.Category)
-                                 .ToList()) ProcessClause(nestedClause);
+                                 .ToList())
+                    {
+                        ProcessClause(nestedClause);
+                    }
 
                     output.Add(($"ELSE_LAYER_{layer}_END", ""));
                     openBlocks.Pop();
@@ -76,7 +87,9 @@ namespace Interpreter
 
             // Process only root elements (those without a parent)
             foreach (var rootClause in categorizedClauses.Where(c => string.IsNullOrEmpty(c.ParentCategory)).ToList())
+            {
                 ProcessClause(rootClause);
+            }
 
             return output;
         }
@@ -148,12 +161,17 @@ namespace Interpreter
             {
                 var ifIndex = IrtKernel.FindFirstKeywordIndex(code, "if");
                 if (ifIndex == -1)
+                {
                     break;
+                }
 
                 var codeFromIfIndex = code.Substring(ifIndex);
                 var (block, elsePosition) = IrtKernel.ExtractFirstIfElse(codeFromIfIndex);
 
-                if (string.IsNullOrWhiteSpace(block)) break;
+                if (string.IsNullOrWhiteSpace(block))
+                {
+                    break;
+                }
 
                 var ifElseClause = CreateIfElseClause(code, block, elsePosition, layer);
                 clauses.Add(ifElseClause);
@@ -161,11 +179,15 @@ namespace Interpreter
                 // Ensure extracted clauses are valid before recursive calls
                 var innerIfClause = ExtractInnerIfElse(ifElseClause.IfClause);
                 if (!string.IsNullOrEmpty(innerIfClause))
+                {
                     ParseIfElseClausesRecursively(innerIfClause, clauses, layer + 1);
+                }
 
                 var innerElseClause = ExtractInnerIfElse(ifElseClause.ElseClause);
                 if (!string.IsNullOrEmpty(innerElseClause))
+                {
                     ParseIfElseClausesRecursively(innerElseClause, clauses, layer + 1);
+                }
 
                 break;
             }
@@ -218,16 +240,25 @@ namespace Interpreter
         private static string ExtractInnerIfElse(string code)
         {
             // Check if the code contains an "if" keyword with an opening parenthesis
-            if (!IrtKernel.ContainsKeywordWithOpenParenthesis(code, "if")) return code;
+            if (!IrtKernel.ContainsKeywordWithOpenParenthesis(code, "if"))
+            {
+                return code;
+            }
 
             // Find the first "if" keyword and the corresponding opening brace '{'
             var ifIndex = code.IndexOf("if", StringComparison.OrdinalIgnoreCase);
             var openBraceIndex = code.IndexOf('{', ifIndex);
-            if (openBraceIndex == -1) return code; // No opening brace found, return original code
+            if (openBraceIndex == -1)
+            {
+                return code; // No opening brace found, return original code
+            }
 
             // Find the matching closing brace for this opening brace
             var closeBraceIndex = FindBlockEnd(code, openBraceIndex);
-            if (closeBraceIndex == -1) return code; // No closing brace found, return original code
+            if (closeBraceIndex == -1)
+            {
+                return code; // No closing brace found, return original code
+            }
 
             // Look for the next "if" keyword within this block
             var nextIfIndex = code.IndexOf("if", openBraceIndex + 1, closeBraceIndex - (openBraceIndex + 1),
@@ -235,7 +266,9 @@ namespace Interpreter
 
             if (nextIfIndex == -1)
                 // No nested "if" found, return the entire block
+            {
                 return code.Substring(openBraceIndex + 1, closeBraceIndex - openBraceIndex - 1).Trim();
+            }
 
             // Otherwise, return the code from the nested "if" onward
             return code.Substring(nextIfIndex, closeBraceIndex - nextIfIndex + 1).Trim();
@@ -252,6 +285,7 @@ namespace Interpreter
             var braceCount = 0;
 
             for (var i = start; i < code.Length; i++)
+            {
                 switch (code[i])
                 {
                     case '{':
@@ -259,10 +293,14 @@ namespace Interpreter
                         break;
                     case '}':
                         braceCount--;
-                        if (braceCount == 0) return i;
+                        if (braceCount == 0)
+                        {
+                            return i;
+                        }
 
                         break;
                 }
+            }
 
             return -1;
         }
