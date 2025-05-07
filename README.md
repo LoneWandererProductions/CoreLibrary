@@ -1,41 +1,117 @@
-# Helper Libraries
+### General Utilities
 
-This repository contains a collection of basic helper libraries designed for various utilities and tasks. The libraries are lightweight, easy to use, and extendable.
+- **Generic Interpreter**  
+  Command-line-like interpreter for executing user-defined commands or internal scripting.
 
-## External Dependencies:
-- **System.Drawing**
-- **SkiaSharp**
+- **Custom Controls**  
+  Reusable WPF UI components for forms, trees, tables, and dialogs.
 
-## Features:
+- **Extension Methods**  
+  Helpers for extending native types like `List<T>`, `Dictionary<K,V>`, and more.
 
-### General Libraries:
-- **Generic Interpreter:** For handling command-line-like commands and expressions.
-- **Custom Controls:** A set of reusable custom controls for UI development.
-- **Extension Methods:** Includes generic extensions for `Lists` and `Dictionaries`.
-- **SQLite Extensions:** Provides extensions and a simple frontend for viewing and editing SQLite databases.
-- **Generic Serializer:** Serializes objects, dictionaries, and lists for easy persistence.
-- **Fast Lookup Dictionary:** A high-performance dictionary designed for fast lookups.
-- **RAM Memory Cache:** Implements a caching mechanism to store objects in memory.
-- **Image Comparer Library:** A library for comparing images efficiently.
-- **Image Manipulation:** Basic image manipulation features, including filters and format conversions.
-- **File Handling Abstraction:** Simple abstractions for file handling (search, delete, copy, get file information, etc.).
-- **CSV Reader/Writer:** A rough implementation for reading and writing CSV files; supports object file handling.
-- **Vector Graphics Implementation:** A basic implementation for rendering vector graphics.
-- **3D Projection:** Provides tools for basic 3D projections and display.
-- **Debugging and Logging:** A generic debugging solution that works with or without a GUI.
-- **Win32k Wrappers:** Includes wrappers around Win32k and OS features to add missing functionalities, including registry manipulation.
-- **Plugin Interface:** A skeleton implementation for creating plugins.
-- **A* Pathfinder:** A basic implementation of the A* pathfinding algorithm.
-- **Dialogs:** A set of basic dialogs, including an SQL login screen and a folder browser dialog.
+- **SQLite Extensions**  
+  Methods and UI helpers for SQLite interactions; includes GUI frontend for data browsing and manipulation.
 
-### Math Utilities:
-- **Matrix Calculation:** Generic matrix operations.
-- **3D Vector Calculations:** Provides tools for 3D vector math.
-- **Fractals:** Includes basic fractal generation and manipulation.
-- **Statistics:** Implements basic statistical calculations (mean, median, variance, etc.).
+- **Generic Serializer**  
+  XML-based serialization for lists, dictionaries, and complex objects.
 
-### Coding Utilities:
-- **Resource String Generator:** Automatically generates a resource string class from code files.
-- **In-Memory Logger:** A simple in-memory logging utility for runtime debugging and tracing.
-- **Home brew Interpretation of Dependency Injection:** Implements basic homegrown dependency injection for better manageability of services and objects.
-- **Worker Service:** A basic worker service framework to handle background tasks or long-running operations.
+- **Fast Lookup Dictionary**  
+  Optimized data structure for extremely fast dictionary lookups.
+
+- **RAM Memory Cache**  
+  In-memory cache store for temporary object persistence.
+
+- **Image Manipulation & Comparison**  
+  Libraries for editing and comparing images; includes filters and format utilities.
+
+- **File Handling Abstraction**  
+  Unified file operation interface: copy, move, delete, metadata, etc.
+
+- **CSV Reader/Writer**  
+  Simple I/O utility to read/write CSV files and serialize object data.
+
+- **Vector Graphics Implementation**  
+  Basic tools for rendering vector shapes and paths.
+
+- **3D Projection Tools**  
+  Simple 3D projection and transformation library for experimental visual rendering.
+
+- **Debugging & Logging Framework**  
+  Structured logging and in-memory debug tracing, optionally UI-bound.
+
+- **Win32k Wrappers**  
+  Access low-level system features like registry editing and native dialogs.
+
+- **Plugin Interface**  
+  Plugin system with loading/unloading and discovery support.
+
+- **A* Pathfinder**  
+  Grid-based A* algorithm for turn-based strategy/pathfinding needs.
+
+- **Dialogs**  
+  Custom dialogs including SQL login, folder pickers, etc.
+
+### Math Utilities
+
+- **Matrix Calculation**  
+  Basic matrix math: addition, multiplication, inversion, etc.
+
+- **3D Vector Calculations**  
+  Vector math used in rendering, physics, and pathfinding.
+
+- **Fractals**  
+  Tools for procedural generation of fractal imagery.
+
+- **Statistics**  
+  Calculate mean, median, variance, and basic statistical analysis.
+
+### Coding & Framework Tools
+
+- **Resource String Generator**  
+  Auto-generates strongly typed string classes from raw resource files.
+
+- **In-Memory Logger**  
+  Lightweight logger that keeps runtime logs in memory.
+
+- **Simple Dependency Injection**  
+  Minimal DI container to inject and manage services across projects.
+
+- **Worker Service Framework**  
+  Manages background threads and long-running jobs with clean abstraction.
+
+---
+
+| Module                      | Purpose / Description                           |
+| --------------------------- | ----------------------------------------------- |
+| `CommonLibraryTests`        | Unit tests for common libraries                 |
+| `Imaging`                   | Image manipulation tools                        |
+| `CommonControls`            | Shared WPF custom controls                      |
+| `SQLiteHelper`              | SQLite DB interaction & abstraction             |
+| `Mathematics`               | Math utilities and calculation libraries        |
+| `CommonLibrarySqlLiteTests` | Tests for SQLite-related features               |
+| `ExtendedSystemObjects`     | Extensions for .NET base classes                |
+| `FileHandler`               | File system abstraction (copy, move, etc.)      |
+| `RenderEngine`              | Experimental 2D/3D rendering backend            |
+| `SQLiteGui`                 | UI frontend for SQLiteHelper                    |
+| `Debugger`                  | Custom debugging tools with UI support          |
+| `ImageCompare`              | Pixel-based image comparison utility            |
+| `CommonDialogs`             | Prebuilt WPF dialogs (folders, login, etc.)     |
+| `Interpreter`               | Text command processor and parser               |
+| `CommonLibraryGuiTests`     | GUI testing for common components               |
+| `Solaris`                   | 2D chessboard-style tile renderer               |
+| `LightVector`               | Likely lightweight vector math tools (confirm?) |
+| `Serializer`                | XML serialization of data and structures        |
+| `DataFormatter`             | CSV reading/writing and formatting              |
+| `Communication`             | (Add description)                               |
+| `CoreBuilderTests`          | Tests for image/vector building tools           |
+| `PluginLoader`              | Plugin management and loading system            |
+| `CommonFilter`              | WPF control to filter data tables               |
+| `CoreBuilder`               | Possibly utilities for image/vector creation    |
+| `Pathfinder`                | A\* pathfinding for grid-based maps             |
+| `InterOp`                   | Some useful bindings to Windows libraries.      |
+| `CoreInject`                | Minimal DI/injection support                    |
+| `CoreConsole`               | (Add description)                               |
+| `CoreMemoryLog`             | In-memory runtime logger                        |
+| `Plugin`                    | Base classes/interfaces for plugin system       |
+| `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
+| `CoreWorker`                | Worker service abstraction                      |
