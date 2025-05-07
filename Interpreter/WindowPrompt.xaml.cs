@@ -1,8 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter
+ * FILE:        WindowPrompt.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter
  * FILE:        Interpreter/WindowPrompt.cs
- * PURPOSE:     Graphical Frontend for the INput
+ * PURPOSE:     Graphical Frontend for the Input
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -40,7 +48,7 @@ namespace Interpreter
         /// <summary>
         ///     The interpret (readonly).
         /// </summary>
-        private readonly IrtPrompt _interpret;
+        private readonly IrtParserInput _interpret;
 
         /// <summary>
         ///     The in.
@@ -61,10 +69,10 @@ namespace Interpreter
         ///     Fire it up
         /// </summary>
         /// <param name="interpret">Our Interpreter</param>
-        internal WindowPrompt(IrtPrompt interpret)
+        internal WindowPrompt(IrtParserInput interpret)
         {
             _interpret = interpret;
-            _interpret.SendLog += SendLogs;
+            _interpret.SendInternalLog += SendLogs;
             InitializeComponent();
         }
 

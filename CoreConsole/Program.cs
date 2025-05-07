@@ -32,11 +32,12 @@ namespace CoreConsole
                 Console.WriteLine("Usage: CoreConsole <operation> <projectPath> [options]");
                 Console.WriteLine("Operations:");
                 Console.WriteLine("  header <directoryPath>       Insert headers into C# files");
-                Console.WriteLine("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
+                Console.WriteLine(
+                    "  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
 
                 Console.WriteLine();
                 Console.Write("No valid arguments provided. Would you like to enter them manually? (y/n): ");
-                string response = Console.ReadLine()?.Trim().ToLower();
+                var response = Console.ReadLine()?.Trim().ToLower();
                 if (response != "y")
                 {
                     Console.WriteLine("Exiting...");
@@ -44,12 +45,12 @@ namespace CoreConsole
                 }
 
                 Console.Write("Enter operation (header/resxtract): ");
-                string operationInput = Console.ReadLine()?.Trim().ToLower();
+                var operationInput = Console.ReadLine()?.Trim().ToLower();
 
                 if (operationInput == "header")
                 {
                     Console.Write("Enter directory path: ");
-                    string directoryPath = Console.ReadLine();
+                    var directoryPath = Console.ReadLine();
 
                     if (!string.IsNullOrWhiteSpace(directoryPath))
                     {
@@ -64,16 +65,16 @@ namespace CoreConsole
                 else if (operationInput == "resxtract")
                 {
                     Console.Write("Enter project path: ");
-                    string projectPath = Console.ReadLine();
+                    var projectPath = Console.ReadLine();
 
                     Console.Write("Enter output resource file path: ");
-                    string outputResourceFile = Console.ReadLine();
+                    var outputResourceFile = Console.ReadLine();
 
-                    List<string> ignoreList = new List<string>();
-                    List<Regex> ignorePatterns = new List<Regex>();
+                    var ignoreList = new List<string>();
+                    var ignorePatterns = new List<Regex>();
 
                     Console.Write("Enter ignore list file path (optional): ");
-                    string ignoreListFile = Console.ReadLine();
+                    var ignoreListFile = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(ignoreListFile) && File.Exists(ignoreListFile))
                     {
                         ignoreList = new List<string>(File.ReadAllLines(ignoreListFile));
@@ -81,7 +82,7 @@ namespace CoreConsole
                     }
 
                     Console.Write("Enter ignore pattern file path (optional): ");
-                    string ignorePatternFile = Console.ReadLine();
+                    var ignorePatternFile = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(ignorePatternFile) && File.Exists(ignorePatternFile))
                     {
                         foreach (var pattern in File.ReadAllLines(ignorePatternFile))
@@ -116,21 +117,21 @@ namespace CoreConsole
             }
             else
             {
-                string operation = args[0];
+                var operation = args[0];
 
                 if (operation == "header" && args.Length == 2)
                 {
-                    string directoryPath = args[1];
+                    var directoryPath = args[1];
                     IHeaderExtractor headerExtractor = new HeaderExtractor();
                     headerExtractor.ProcessFiles(directoryPath);
                 }
                 else if (operation == "resxtract" && args.Length >= 3)
                 {
-                    string projectPath = args[1];
-                    string outputResourceFile = args[2];
+                    var projectPath = args[1];
+                    var outputResourceFile = args[2];
 
-                    List<string> ignoreList = new List<string>();
-                    List<Regex> ignorePatterns = new List<Regex>();
+                    var ignoreList = new List<string>();
+                    var ignorePatterns = new List<Regex>();
 
                     if (args.Length > 3 && File.Exists(args[3]))
                     {

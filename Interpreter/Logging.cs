@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter
- * FILE:        Interpreter/ErrorLogging.cs
+ * FILE:        Interpreter/Logging.cs
  * PURPOSE:     The usual error Logging
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ namespace Interpreter
     /// <summary>
     ///     The error logging class.
     /// </summary>
-    internal static class ErrorLogging
+    internal static class Logging
     {
         /// <summary>
         ///     The log

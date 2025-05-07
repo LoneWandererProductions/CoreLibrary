@@ -24,7 +24,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="filepath">path of the .txt file</param>
         /// <returns>the values as String[]. Can return null.</returns>
-        public static string ReadBatchFile(string filepath)
+        internal static string ReadBatchFile(string filepath)
         {
             var parts = new List<string>();
             try
@@ -47,6 +47,33 @@ namespace Interpreter
             }
 
             return parts.Aggregate(string.Empty, string.Concat);
+        }
+
+
+        /// <summary>
+        ///     Checks the input.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="feedbackOptions">The feedback options.</param>
+        /// <returns>Id of the option or the fitting error</returns>
+        internal static int CheckInput(string input, Dictionary<AvailableFeedback, string> feedbackOptions)
+        {
+            input = input.Trim().ToUpper();
+
+            // Check if input can be parsed to an AvailableFeedback enum value
+            if (!Enum.TryParse(input, true, out AvailableFeedback parsedFeedback))
+            {
+                return -1;
+            }
+
+            // Check if the parsed enum value is a key in the feedbackOptions dictionary
+            if (!feedbackOptions.ContainsKey(parsedFeedback))
+            {
+                return -2;
+            }
+
+            // Return the integer value of the parsed enum
+            return (int)parsedFeedback;
         }
     }
 }

@@ -13,13 +13,12 @@ using System.Text.RegularExpressions;
 namespace CoreBuilder
 {
     /// <summary>
-    /// License Header Builder
+    ///     License Header Builder
     /// </summary>
     public class HeaderExtractor : IHeaderExtractor
     {
-
         /// <summary>
-        /// Define the header template with placeholders for file info
+        ///     Define the header template with placeholders for file info
         /// </summary>
         private const string HeaderTemplate = @"/*
  * COPYRIGHT:   See COPYING in the top level directory
@@ -32,11 +31,11 @@ namespace CoreBuilder
 
 
         /// <summary>
-        /// Method to check if the file content already contains a header
+        ///     Method to check if the file content already contains a header
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>
-        ///   <c>true</c> if the specified content contains header; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified content contains header; otherwise, <c>false</c>.
         /// </returns>
         public bool ContainsHeader(string content)
         {
@@ -45,19 +44,19 @@ namespace CoreBuilder
         }
 
         /// <summary>
-        /// Method to extract namespace from the C# file content
+        ///     Method to extract namespace from the C# file content
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>Extracted Namespace</returns>
         public string ExtractNamespace(string content)
         {
             // Find the first namespace declaration in the file
-            Match match = Regex.Match(content, @"namespace\s+(\S+);");
+            var match = Regex.Match(content, @"namespace\s+(\S+);");
             return match.Success ? match.Groups[1].Value : "UnknownNamespace";
         }
 
         /// <summary>
-        /// Method to insert header into the file content
+        ///     Method to insert header into the file content
         /// </summary>
         /// <param name="fileContent">Content of the file.</param>
         /// <param name="fileName">Name of the file.</param>
@@ -66,24 +65,24 @@ namespace CoreBuilder
         /// <returns>File with Header.</returns>
         public string InsertHeader(string fileContent, string fileName, string purpose, string programmerName)
         {
-            string namespaceName = ExtractNamespace(fileContent);
-            string header = string.Format(HeaderTemplate, namespaceName, fileName, purpose, programmerName);
+            var namespaceName = ExtractNamespace(fileContent);
+            var header = string.Format(HeaderTemplate, namespaceName, fileName, purpose, programmerName);
 
             // Insert the header at the beginning of the file content
             return header + Environment.NewLine + fileContent;
         }
 
         /// <summary>
-        /// Method to process a list of files and insert headers where necessary
+        ///     Method to process a list of files and insert headers where necessary
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
         public void ProcessFiles(string directoryPath)
         {
             // Loop through all .cs files in the directory
-            foreach (string file in Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories))
             {
                 // Read the file content
-                string fileContent = File.ReadAllText(file);
+                var fileContent = File.ReadAllText(file);
 
                 // Skip file if it already contains a header
                 if (ContainsHeader(fileContent))
@@ -93,7 +92,8 @@ namespace CoreBuilder
                 }
 
                 // Create the header and insert it
-                string updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Your name here");
+                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here",
+                    "Your name here");
 
                 // Save the updated content back to the file
                 File.WriteAllText(file, updatedContent);

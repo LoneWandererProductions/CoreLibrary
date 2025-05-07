@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    /// Some Basic Image Render tets
+    ///     Some Basic Image Render tets
     /// </summary>
     [TestClass]
     public class ImageRenderTests
@@ -22,7 +22,7 @@ namespace CommonLibraryTests
         private IImageRender _imageRender;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -31,7 +31,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Fills the area with color start point not null remains not null.
+        ///     Fills the area with color start point not null remains not null.
         /// </summary>
         [TestMethod]
         public void FillAreaWithColorStartPointNotNullRemainsNotNull()

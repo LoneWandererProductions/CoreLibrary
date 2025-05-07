@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using ExtendedSystemObjects;
 
 namespace ImageCompare
@@ -16,6 +17,8 @@ namespace ImageCompare
     ///     Struct for checking duplicate Images
     /// </summary>
     /// <seealso cref="T:System.IComparable`1" />
+    [DebuggerDisplay(
+        "R = {R}, G = {G}, B = {B}, Id = {Id}")]
     internal readonly struct ImageDuplicate : IComparable<ImageDuplicate>
     {
         /// <summary>
