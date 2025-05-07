@@ -110,7 +110,7 @@
 | `Pathfinder`                | A\* pathfinding for grid-based maps             |
 | `InterOp`                   | Some useful bindings to Windows libraries.      |
 | `CoreInject`                | Minimal DI/injection support                    |
-| `CoreConsole`               | (Add description)                               |
+| `CoreConsole`               | Quick Console to use some of my applications    |
 | `CoreMemoryLog`             | In-memory runtime logger                        |
 | `Plugin`                    | Base classes/interfaces for plugin system       |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
