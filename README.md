@@ -102,7 +102,7 @@
 | `LightVector`               | Likely lightweight vector math tools (confirm?) |
 | `Serializer`                | XML serialization of data and structures        |
 | `DataFormatter`             | CSV reading/writing and formatting              |
-| `Communication`             | (Add description)                               |
+| `Communication`             | Some Network adn webservice                     |
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
 | `PluginLoader`              | Plugin management and loading system            |
 | `CommonFilter`              | WPF control to filter data tables               |
