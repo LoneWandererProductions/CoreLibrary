@@ -29,9 +29,9 @@ namespace CoreBuilder
  */
 ";
 
-
         /// <summary>
         ///     Method to check if the file content already contains a header
+        ///     Simple check for the presence of "COPYRIGHT" or similar keywords to detect existing headers
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>
@@ -39,9 +39,15 @@ namespace CoreBuilder
         /// </returns>
         public bool ContainsHeader(string content)
         {
-            // Simple check for the presence of "COPYRIGHT" or similar keywords to detect existing headers
-            return Regex.IsMatch(content, @"^\s*/\*\s*\*COPYRIGHT.*\*/", RegexOptions.IgnoreCase);
+            foreach (var line in content.Split('\n'))
+            {
+                var trimmed = line.Trim().ToLowerInvariant();
+                if (trimmed.Contains("copyright", StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            }
+            return false;
         }
+
 
         /// <summary>
         ///     Method to extract namespace from the C# file content
@@ -50,9 +56,16 @@ namespace CoreBuilder
         /// <returns>Extracted Namespace</returns>
         public string ExtractNamespace(string content)
         {
-            // Find the first namespace declaration in the file
-            var match = Regex.Match(content, @"namespace\s+(\S+);");
-            return match.Success ? match.Groups[1].Value : "UnknownNamespace";
+            foreach (var line in content.Split('\n'))
+            {
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("namespace ", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var parts = trimmed.Split(new[] { ' ', '{' }, StringSplitOptions.RemoveEmptyEntries);
+                    return parts.Length > 1 ? parts[1] : "UnknownNamespace";
+                }
+            }
+            return "UnknownNamespace";
         }
 
         /// <summary>
