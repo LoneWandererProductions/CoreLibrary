@@ -8,7 +8,6 @@
 
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace CoreBuilder
 {
@@ -86,32 +85,30 @@ namespace CoreBuilder
         }
 
         /// <summary>
-        ///     Method to process a list of files and insert headers where necessary
+        /// Method to process a list of files and insert headers where necessary
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
-        public void ProcessFiles(string directoryPath)
+        /// <param name="includeSubdirectories">if set to <c>true</c> [subdirectories].</param>
+        public void ProcessFiles(string directoryPath, bool includeSubdirectories)
         {
-            // Loop through all .cs files in the directory
-            foreach (var file in Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories))
+            var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            foreach (var file in Directory.GetFiles(directoryPath, "*.cs", searchOption))
             {
-                // Read the file content
                 var fileContent = File.ReadAllText(file);
 
-                // Skip file if it already contains a header
                 if (ContainsHeader(fileContent))
                 {
                     Console.WriteLine($"Skipping {file}, header already exists.");
                     continue;
                 }
 
-                // Create the header and insert it
-                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here",
-                    "Your name here");
+                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Your name here");
 
-                // Save the updated content back to the file
                 File.WriteAllText(file, updatedContent);
                 Console.WriteLine($"Header inserted in {file}");
             }
         }
+
     }
 }

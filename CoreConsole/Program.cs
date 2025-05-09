@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreConsole
- * FILE:        CoreConsole/Program.cs
- * PURPOSE:     Basic Console app, to get my own tools running
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     CoreConsole
+* FILE:        CoreConsole/Program.cs
+* PURPOSE:     Basic Console app, to get my own tools running
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Collections.Generic;
@@ -55,7 +55,7 @@ namespace CoreConsole
                     if (!string.IsNullOrWhiteSpace(directoryPath))
                     {
                         IHeaderExtractor headerExtractor = new HeaderExtractor();
-                        headerExtractor.ProcessFiles(directoryPath);
+                        headerExtractor.ProcessFiles(directoryPath, true);
                     }
                     else
                     {
@@ -123,7 +123,7 @@ namespace CoreConsole
                 {
                     var directoryPath = args[1];
                     IHeaderExtractor headerExtractor = new HeaderExtractor();
-                    headerExtractor.ProcessFiles(directoryPath);
+                    headerExtractor.ProcessFiles(directoryPath, true);
                 }
                 else if (operation == "resxtract" && args.Length >= 3)
                 {

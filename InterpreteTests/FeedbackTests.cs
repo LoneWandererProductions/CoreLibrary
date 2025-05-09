@@ -30,11 +30,6 @@ namespace InterpreteTests
         private static OutCommand _outCommand;
 
         /// <summary>
-        ///     The prompt
-        /// </summary>
-        private readonly Prompt _prompt = new();
-
-        /// <summary>
         ///     The user feedback
         /// </summary>
         private readonly Dictionary<int, UserFeedback> _userFeedback = new();

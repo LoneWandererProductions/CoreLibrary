@@ -43,6 +43,6 @@ namespace CoreBuilder
         ///     Processes the files.
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
-        void ProcessFiles(string directoryPath);
+        void ProcessFiles(string directoryPath, bool includeSubdirectories);
     }
 }

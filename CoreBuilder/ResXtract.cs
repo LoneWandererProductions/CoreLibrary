@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
- * FILE:        CoreBuilder/ResXtract.cs
- * PURPOSE:     String Resource extractor.
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     CoreBuilder
+* FILE:        CoreBuilder/ResXtract.cs
+* PURPOSE:     String Resource extractor.
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Collections.Generic;
@@ -167,8 +167,8 @@ namespace CoreBuilder
         {
             var counter = 1;
             var resourceStrings = (from str in extractedStrings
-                let resourceKey = $"Resource{counter++}"
-                select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
+                                   let resourceKey = $"Resource{counter++}"
+                                   select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
 
             // Ensure the file is a valid C# file
             if (appendToExisting && File.Exists(outputFilePath))
