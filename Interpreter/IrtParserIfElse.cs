@@ -32,7 +32,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Generates the formatted output.
+        ///     Generates the formatted output.
         /// </summary>
         /// <param name="categorizedClauses">The categorized clauses.</param>
         /// <returns></returns>

@@ -159,7 +159,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Handles if else block.
+        ///     Handles if else block.
         /// </summary>
         /// <param name="commands">The commands.</param>
         /// <param name="currentPosition">The current position.</param>

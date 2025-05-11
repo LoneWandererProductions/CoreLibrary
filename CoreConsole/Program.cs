@@ -96,6 +96,9 @@ namespace CoreConsole
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Initiates this instance.
+        /// </summary>
         private static void Initiate()
         {
             _prompt = new Prompt();
@@ -129,6 +132,11 @@ namespace CoreConsole
             }
         }
 
+        /// <summary>
+        /// Sends the commands.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
         private static void SendCommands(object sender, OutCommand e)
         {
             lock (ConsoleLock)
@@ -201,6 +209,11 @@ namespace CoreConsole
             //TODO
         }
 
+        /// <summary>
+        /// Handles the header.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <returns></returns>
         private static string HandleHeader(OutCommand package)
         {
             var directoryPath = package.Parameter[0];
@@ -214,6 +227,11 @@ namespace CoreConsole
             return "Directory path is required.";
         }
 
+        /// <summary>
+        /// Handles the resource xtract.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <returns></returns>
         private static string HandleResxtract(OutCommand package)
         {
             var projectPath = package.Parameter[0];

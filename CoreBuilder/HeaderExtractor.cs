@@ -33,7 +33,7 @@ namespace CoreBuilder
 
         /// <inheritdoc />
         /// <summary>
-        /// Method to process a list of files and insert headers where necessary
+        ///     Method to process a list of files and insert headers where necessary
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="includeSubdirectories">if set to <c>true</c> [subdirectories].</param>
@@ -52,7 +52,8 @@ namespace CoreBuilder
                     continue;
                 }
 
-                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Your name here");
+                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here",
+                    "Your name here");
 
                 File.WriteAllText(file, updatedContent);
                 log.AppendLine($"Header inserted in {file}");
@@ -72,7 +73,8 @@ namespace CoreBuilder
         /// </returns>
         private static bool ContainsHeader(string content)
         {
-            return content.Split('\n').Select(line => line.Trim().ToLowerInvariant()).Any(trimmed => trimmed.Contains("copyright", StringComparison.InvariantCultureIgnoreCase));
+            return content.Split('\n').Select(line => line.Trim().ToLowerInvariant()).Any(trimmed =>
+                trimmed.Contains("copyright", StringComparison.InvariantCultureIgnoreCase));
         }
 
 
@@ -91,7 +93,7 @@ namespace CoreBuilder
                     continue;
                 }
 
-                var parts = trimmed.Split(new[] {' ', '{'}, StringSplitOptions.RemoveEmptyEntries);
+                var parts = trimmed.Split(new[] { ' ', '{' }, StringSplitOptions.RemoveEmptyEntries);
                 return parts.Length > 1 ? parts[1] : "UnknownNamespace";
             }
 
