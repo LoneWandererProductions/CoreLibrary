@@ -8,13 +8,16 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace CoreBuilder
 {
+    /// <inheritdoc />
     /// <summary>
     ///     License Header Builder
     /// </summary>
-    public class HeaderExtractor : IHeaderExtractor
+    public sealed class HeaderExtractor : IHeaderExtractor
     {
         /// <summary>
         ///     Define the header template with placeholders for file info
@@ -28,6 +31,37 @@ namespace CoreBuilder
  */
 ";
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Method to process a list of files and insert headers where necessary
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        /// <param name="includeSubdirectories">if set to <c>true</c> [subdirectories].</param>
+        public string ProcessFiles(string directoryPath, bool includeSubdirectories)
+        {
+            var log = new StringBuilder();
+            var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            foreach (var file in Directory.GetFiles(directoryPath, "*.cs", searchOption))
+            {
+                var fileContent = File.ReadAllText(file);
+
+                if (ContainsHeader(fileContent))
+                {
+                    log.AppendLine($"Skipping {file}, header already exists.");
+                    continue;
+                }
+
+                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Your name here");
+
+                File.WriteAllText(file, updatedContent);
+                log.AppendLine($"Header inserted in {file}");
+            }
+
+            return log.ToString();
+        }
+
+
         /// <summary>
         ///     Method to check if the file content already contains a header
         ///     Simple check for the presence of "COPYRIGHT" or similar keywords to detect existing headers
@@ -36,15 +70,9 @@ namespace CoreBuilder
         /// <returns>
         ///     <c>true</c> if the specified content contains header; otherwise, <c>false</c>.
         /// </returns>
-        public bool ContainsHeader(string content)
+        private static bool ContainsHeader(string content)
         {
-            foreach (var line in content.Split('\n'))
-            {
-                var trimmed = line.Trim().ToLowerInvariant();
-                if (trimmed.Contains("copyright", StringComparison.InvariantCultureIgnoreCase))
-                    return true;
-            }
-            return false;
+            return content.Split('\n').Select(line => line.Trim().ToLowerInvariant()).Any(trimmed => trimmed.Contains("copyright", StringComparison.InvariantCultureIgnoreCase));
         }
 
 
@@ -53,17 +81,20 @@ namespace CoreBuilder
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>Extracted Namespace</returns>
-        public string ExtractNamespace(string content)
+        private static string ExtractNamespace(string content)
         {
             foreach (var line in content.Split('\n'))
             {
                 var trimmed = line.Trim();
-                if (trimmed.StartsWith("namespace ", StringComparison.InvariantCultureIgnoreCase))
+                if (!trimmed.StartsWith("namespace ", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    var parts = trimmed.Split(new[] { ' ', '{' }, StringSplitOptions.RemoveEmptyEntries);
-                    return parts.Length > 1 ? parts[1] : "UnknownNamespace";
+                    continue;
                 }
+
+                var parts = trimmed.Split(new[] {' ', '{'}, StringSplitOptions.RemoveEmptyEntries);
+                return parts.Length > 1 ? parts[1] : "UnknownNamespace";
             }
+
             return "UnknownNamespace";
         }
 
@@ -75,40 +106,13 @@ namespace CoreBuilder
         /// <param name="purpose">The purpose.</param>
         /// <param name="programmerName">Name of the programmer.</param>
         /// <returns>File with Header.</returns>
-        public string InsertHeader(string fileContent, string fileName, string purpose, string programmerName)
+        private static string InsertHeader(string fileContent, string fileName, string purpose, string programmerName)
         {
             var namespaceName = ExtractNamespace(fileContent);
             var header = string.Format(HeaderTemplate, namespaceName, fileName, purpose, programmerName);
 
             // Insert the header at the beginning of the file content
-            return header + Environment.NewLine + fileContent;
+            return string.Concat(header, Environment.NewLine, fileContent);
         }
-
-        /// <summary>
-        /// Method to process a list of files and insert headers where necessary
-        /// </summary>
-        /// <param name="directoryPath">The directory path.</param>
-        /// <param name="includeSubdirectories">if set to <c>true</c> [subdirectories].</param>
-        public void ProcessFiles(string directoryPath, bool includeSubdirectories)
-        {
-            var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-
-            foreach (var file in Directory.GetFiles(directoryPath, "*.cs", searchOption))
-            {
-                var fileContent = File.ReadAllText(file);
-
-                if (ContainsHeader(fileContent))
-                {
-                    Console.WriteLine($"Skipping {file}, header already exists.");
-                    continue;
-                }
-
-                var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Your name here");
-
-                File.WriteAllText(file, updatedContent);
-                Console.WriteLine($"Header inserted in {file}");
-            }
-        }
-
     }
 }

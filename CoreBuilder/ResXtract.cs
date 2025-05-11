@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -31,17 +30,17 @@ namespace CoreBuilder
         /// <summary>
         ///     The ignore patterns
         /// </summary>
-        private readonly List<Regex> _ignorePatterns;
+        private readonly List<string> _ignorePatterns;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ResXtract" /> class.
         /// </summary>
         /// <param name="ignoreList">The ignore list.</param>
         /// <param name="ignorePatterns">The ignore patterns.</param>
-        public ResXtract(List<string> ignoreList = null, List<Regex> ignorePatterns = null)
+        public ResXtract(List<string> ignoreList = null, List<string> ignorePatterns = null)
         {
             _ignoreList = ignoreList ?? new List<string>();
-            _ignorePatterns = ignorePatterns ?? new List<Regex>();
+            _ignorePatterns = ignorePatterns ?? new List<string>();
         }
 
         /// <inheritdoc />
@@ -78,9 +77,10 @@ namespace CoreBuilder
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>If file should be ignored</returns>
-        public bool ShouldIgnoreFile(string filePath)
+        private bool ShouldIgnoreFile(string filePath)
         {
-            return _ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern => pattern.IsMatch(filePath));
+            return _ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern =>
+                filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace CoreBuilder
         /// <param name="extractedStrings">The extracted strings.</param>
         /// <param name="outputFilePath">The output file path.</param>
         /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
-        public static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath,
+        private static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath,
             bool appendToExisting = false)
         {
             var counter = 1;

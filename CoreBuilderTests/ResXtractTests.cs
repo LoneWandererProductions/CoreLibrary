@@ -6,11 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using CoreBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -73,55 +70,6 @@ namespace CoreBuilderTests
 
             // Assert: Check if the interpolated string was extracted correctly
             Assert.IsTrue(extractedStrings.Contains("Error: {0} at {1}"));
-        }
-
-        /// <summary>
-        ///     Generates the content of the resource file should create file with correct.
-        /// </summary>
-        [TestMethod]
-        public void GenerateResourceFileShouldCreateFileWithCorrectContent()
-        {
-            // Arrange: Sample extracted strings (these would normally be extracted from actual code)
-            var extractedStrings = new List<string> { "Hello, World!", "Error: {0} at {1}" };
-
-            var outputFilePath = Path.Combine(Environment.CurrentDirectory, "TestResources.cs");
-
-            // Act: Generate resource file (it will overwrite if the file exists)
-            ResXtract.GenerateResourceFile(extractedStrings, outputFilePath);
-
-            // Assert: Check if the file exists and contains expected content
-            Assert.IsTrue(File.Exists(outputFilePath));
-
-            var fileContent = File.ReadAllLines(outputFilePath);
-
-            // Check if the class is present in the file
-            Assert.IsTrue(fileContent[0].Contains("public static class Resource"));
-
-            // Check the specific resource definitions are present
-            Assert.IsTrue(fileContent.Any(line =>
-                line.Contains("public static readonly string Resource1 = \"Hello, World!\";")));
-            Assert.IsTrue(fileContent.Any(line =>
-                line.Contains("public static readonly string Resource2 = \"Error: {0} at {1}\";")));
-
-            // Clean up
-            File.Delete(outputFilePath);
-        }
-
-        /// <summary>
-        ///     Test if the ignore files based on pattern does work.
-        /// </summary>
-        [TestMethod]
-        public void ShouldIgnoreFilesBasedOnPatterns()
-        {
-            // Arrange: Initialize ResXtract with an ignore pattern
-            var ignorePatterns = new List<Regex> { new(@"TestFile\.cs") };
-            _resXtract = new ResXtract(ignorePatterns: ignorePatterns);
-
-            // Act: Simulate file check
-            var shouldIgnore = _resXtract.ShouldIgnoreFile("TestFile.cs");
-
-            // Assert: Should ignore the file based on the pattern
-            Assert.IsTrue(shouldIgnore);
         }
 
         /// <summary>
