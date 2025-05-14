@@ -12,6 +12,7 @@ using System.IO;
 using System.Threading;
 using CoreBuilder;
 using Interpreter;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CoreConsole
 {
@@ -213,7 +214,7 @@ namespace CoreConsole
         /// Handles the header.
         /// </summary>
         /// <param name="package">The package.</param>
-        /// <returns></returns>
+        /// <returns>Added headers.</returns>
         private static string HandleHeader(OutCommand package)
         {
             var directoryPath = package.Parameter[0];
@@ -231,7 +232,7 @@ namespace CoreConsole
         /// Handles the resource xtract.
         /// </summary>
         /// <param name="package">The package.</param>
-        /// <returns></returns>
+        /// <returns>Result of the extraction.</returns>
         private static string HandleResxtract(OutCommand package)
         {
             var projectPath = package.Parameter[0];
@@ -274,6 +275,26 @@ namespace CoreConsole
             return $"Resxtract operation completed successfully: {outputResourceFile} created.";
         }
 
+        public static void RunAnalyzers(string path, IEnumerable<ICodeAnalyzer> analyzers)
+        {
+            //TODO
+            var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
+
+            foreach (var file in files)
+            {
+                var content = File.ReadAllText(file);
+                var syntaxTree = CSharpSyntaxTree.ParseText(content);
+
+                foreach (var analyzer in analyzers)
+                {
+                    var diagnostics = analyzer.Analyze(file, content, syntaxTree);
+                    foreach (var diagnostic in diagnostics)
+                    {
+                        Console.WriteLine(diagnostic);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         ///     Listen to Messages
