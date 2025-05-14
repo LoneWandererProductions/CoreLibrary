@@ -221,8 +221,7 @@ namespace CoreConsole
             if (!string.IsNullOrWhiteSpace(directoryPath))
             {
                 IHeaderExtractor headerExtractor = new HeaderExtractor();
-                var message = headerExtractor.ProcessFiles(directoryPath, true);
-                return message;
+                return headerExtractor.ProcessFiles(directoryPath, true);
             }
 
             return "Directory path is required.";
@@ -287,10 +286,9 @@ namespace CoreConsole
 
                 foreach (var analyzer in analyzers)
                 {
-                    var diagnostics = analyzer.Analyze(file, content, syntaxTree);
-                    foreach (var diagnostic in diagnostics)
+                    foreach (var diagnostic in analyzer.Analyze(file, content, syntaxTree))
                     {
-                        Console.WriteLine(diagnostic);
+                        _prompt.Callback(diagnostic.ToString());
                     }
                 }
             }
