@@ -274,6 +274,11 @@ namespace CoreConsole
             return $"Resxtract operation completed successfully: {outputResourceFile} created.";
         }
 
+        /// <summary>
+        /// Runs the analyzers.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="analyzers">The analyzers.</param>
         public static void RunAnalyzers(string path, IEnumerable<ICodeAnalyzer> analyzers)
         {
             //TODO
