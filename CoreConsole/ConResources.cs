@@ -21,6 +21,14 @@ namespace CoreConsole
                 {
                     Command = "resxtract", ParameterCount = 2, Description = "Extract resources from project files"
                 }
+            },
+            {
+                2, new InCommand
+                {
+                    Command = "analyzer",
+                    ParameterCount = 2,
+                    Description = "Some basic code Checks for c# source files."
+                }
             }
         };
     }

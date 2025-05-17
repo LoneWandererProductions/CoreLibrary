@@ -29,6 +29,7 @@ namespace CoreConsole
         private static Prompt _prompt;
         private static readonly object ConsoleLock = new();
         private static bool _isEventTriggered;
+        private static readonly List<ICodeAnalyzer> Analyzers = new();
 
         /// <summary>
         ///     Defines the entry point of the application.
@@ -197,6 +198,11 @@ namespace CoreConsole
                     result = HandleHeader(outCommand);
                     _prompt.Callback(result);
                     break;
+                case "analyzer":
+                    result = RunAnalyzers(outCommand);
+                    _prompt.Callback(result);
+                    break;
+
 
                 default:
                     //TODO
@@ -274,29 +280,32 @@ namespace CoreConsole
             return $"Resxtract operation completed successfully: {outputResourceFile} created.";
         }
 
-        /// <summary>
-        /// Runs the analyzers.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="analyzers">The analyzers.</param>
-        public static void RunAnalyzers(string path, IEnumerable<ICodeAnalyzer> analyzers)
+        private static string RunAnalyzers(OutCommand package)
         {
-            //TODO
+            var path = package.Parameter[0];
+
             var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
+
+            Analyzers.Add(new DoubleNewlineAnalyzer());
+            Analyzers.Add(new LicenseHeaderAnalyzer());
+
+            var result = string.Empty;
 
             foreach (var file in files)
             {
                 var content = File.ReadAllText(file);
                 var syntaxTree = CSharpSyntaxTree.ParseText(content);
 
-                foreach (var analyzer in analyzers)
+                foreach (var analyzer in Analyzers)
                 {
                     foreach (var diagnostic in analyzer.Analyze(file, content, syntaxTree))
                     {
-                        _prompt.Callback(diagnostic.ToString());
+                        result += diagnostic.ToString();
                     }
                 }
             }
+
+            return result;
         }
 
         /// <summary>
