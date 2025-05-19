@@ -223,15 +223,21 @@ namespace CoreConsole
         /// <returns>Added headers.</returns>
         private static string HandleHeader(OutCommand package)
         {
-            var directoryPath = package.Parameter[0];
-            if (!string.IsNullOrWhiteSpace(directoryPath))
+            var directoryPath = CleanPath(package.Parameter[0]);
+            if (string.IsNullOrWhiteSpace(directoryPath))
             {
-                IHeaderExtractor headerExtractor = new HeaderExtractor();
-                return headerExtractor.ProcessFiles(directoryPath, true);
+                return "Directory path is required.";
             }
 
-            return "Directory path is required.";
+            if (!Directory.Exists(directoryPath))
+            {
+                return $"Error: Directory path '{directoryPath}' does not exist.";
+            }
+
+            IHeaderExtractor headerExtractor = new HeaderExtractor();
+            return headerExtractor.ProcessFiles(directoryPath, true);
         }
+
 
         /// <summary>
         /// Handles the resource xtract.
@@ -240,8 +246,8 @@ namespace CoreConsole
         /// <returns>Result of the extraction.</returns>
         private static string HandleResxtract(OutCommand package)
         {
-            var projectPath = package.Parameter[0];
-            var outputResourceFile = package.Parameter[1];
+            var projectPath = CleanPath(package.Parameter[0]);
+            var outputResourceFile = CleanPath(package.Parameter[1]);
 
             if (string.IsNullOrWhiteSpace(projectPath))
             {
@@ -259,12 +265,19 @@ namespace CoreConsole
                 return $"Error: The project path '{projectPath}' does not exist.";
             }
 
-            // Check if the output resource file is valid or can be created
+            // Optionally check if the output file's directory exists and is writable
             try
             {
+                var outputDir = Path.GetDirectoryName(outputResourceFile);
+                if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                {
+                    return $"Error: The directory for output resource file '{outputDir}' does not exist.";
+                }
+
+                // Optional: Check if file exists, maybe warn about overwrite
                 if (File.Exists(outputResourceFile))
                 {
-                    // Optionally, you could prompt the user about overwriting
+                    // could add warning here or prompt if interactive
                 }
             }
             catch (Exception ex)
@@ -280,9 +293,19 @@ namespace CoreConsole
             return $"Resxtract operation completed successfully: {outputResourceFile} created.";
         }
 
+        /// <summary>
+        /// Runs the analyzers.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <returns>Result of code analysis.</returns>
         private static string RunAnalyzers(OutCommand package)
         {
-            var path = package.Parameter[0];
+            var path = CleanPath(package.Parameter[0]);
+
+            if (!Directory.Exists(path))
+            {
+                return $"Error: Directory path '{path}' does not exist.";
+            }
 
             var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
 
@@ -307,6 +330,26 @@ namespace CoreConsole
 
             return result;
         }
+
+
+        /// <summary>
+        /// Removes enclosing double quotes from a path if present.
+        /// </summary>
+        private static string CleanPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return path;
+
+            path = path.Trim();
+
+            if (path.StartsWith("\"") && path.EndsWith("\"") && path.Length > 1)
+            {
+                path = path.Substring(1, path.Length - 2);
+            }
+
+            return path;
+        }
+
 
         /// <summary>
         ///     Listen to Messages
