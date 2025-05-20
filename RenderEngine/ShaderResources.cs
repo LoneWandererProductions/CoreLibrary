@@ -31,16 +31,20 @@ namespace RenderEngine
         ///     The vertex shader source.
         /// </value>
         public static string VertexShaderSource => @"
-                #version 450 core
-                layout(location = 0) in vec2 aPosition;
-                layout(location = 1) in vec3 aColor;
-                out vec3 vColor;
-                void main()
-                {
-                    gl_Position = vec4(aPosition, 0.0, 1.0);
-                    vColor = aColor;
-                }
-            ";
+            #version 450 core
+
+            layout(location = 0) in vec3 aPosition;  // Changed from vec2 to vec3
+            layout(location = 1) in vec3 aColor;
+
+            out vec3 vColor;
+
+            void main()
+            {
+                gl_Position = vec4(aPosition, 1.0);  // Use all three position values
+                vColor = aColor;
+            }
+        ";
+
 
         /// <summary>
         ///     Gets the fragment shader source.
@@ -115,23 +119,6 @@ namespace RenderEngine
             {
                 gl_Position = vec4(aPosition, 1.0);
                 vColor = aColor; // Pass the vertex color to the fragment shader
-            }
-        ";
-
-        /// <summary>
-        ///     Gets the vertex color fragment shader.
-        /// </summary>
-        /// <value>
-        ///     The vertex color fragment shader.
-        /// </value>
-        public static string VertexColorFragmentShader => @"
-            #version 450 core
-            in vec3 vColor;          // Interpolated color from vertex shader
-            out vec4 FragColor;      // Output color
-
-            void main()
-            {
-                FragColor = vec4(vColor, 1.0); // Use the interpolated vertex color
             }
         ";
 

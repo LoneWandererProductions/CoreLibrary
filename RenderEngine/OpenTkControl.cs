@@ -71,6 +71,8 @@ namespace RenderEngine
                     GL.ClearColor(0.1f, 0.2f, 0.3f, 1.0f); // Set background color
                 };
 
+                GL.Enable(EnableCap.DepthTest);
+
                 _glControl.Paint += GlControl_Paint;
                 _glControl.Resize += GlControl_Resize;
             }
