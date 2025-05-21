@@ -49,7 +49,7 @@ namespace Interpreter
         /// <summary>
         ///     The user feedback
         /// </summary>
-        private readonly Dictionary<int, UserFeedback> _userFeedback;
+        private readonly Dictionary<int, UserFeedback>? _userFeedback;
 
         /// <summary>
         ///     The disposed
@@ -88,7 +88,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="prompt">The prompt.</param>
         /// <param name="userFeedback">The optional user feedback.</param>
-        public IrtParserInput(Prompt prompt, Dictionary<int, UserFeedback> userFeedback = null)
+        public IrtParserInput(Prompt prompt, Dictionary<int, UserFeedback>? userFeedback = null)
         {
             _prompt = prompt;
             _myRequestId = Guid.NewGuid().ToString();
@@ -234,7 +234,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="inputString">Input string</param>
         /// <param name="extension">Optional extension commands</param>
-        internal OutCommand? ProcessInput(string inputString, ExtensionCommands extension = null)
+        internal OutCommand? ProcessInput(string inputString, ExtensionCommands? extension = null)
         {
             if (_com == null)
             {

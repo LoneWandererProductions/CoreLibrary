@@ -192,12 +192,10 @@ namespace RenderEngine
                     continue;
                 }
 
-                using (var directBitmap = new DirectBitmap(filePaths[i]))
-                {
-                    var pixels = directBitmap.Bytes();
-                    GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
-                        directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-                }
+                using var directBitmap = new DirectBitmap(filePaths[i]);
+                var pixels = directBitmap.Bytes();
+                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
+                    directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,

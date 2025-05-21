@@ -99,7 +99,7 @@ namespace CoreConsole
         }
 
         /// <summary>
-        /// Initiates this instance.
+        ///     Initiates this instance.
         /// </summary>
         private static void Initiate()
         {
@@ -111,9 +111,10 @@ namespace CoreConsole
             _prompt.Callback("Usage: CoreConsole <operation> <projectPath> [options]");
             _prompt.Callback("Operations:");
             _prompt.Callback("  header <directoryPath>       Insert headers into C# files");
-            _prompt.Callback("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]       Generate Resource Files for string Resources.");
+            _prompt.Callback(
+                "  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]       Generate Resource Files for string Resources.");
             _prompt.Callback("  analyzer <projectPath>      do various checks on .cs files.");
-            
+
             while (true)
             {
                 lock (ConsoleLock)
@@ -136,7 +137,7 @@ namespace CoreConsole
         }
 
         /// <summary>
-        /// Sends the commands.
+        ///     Sends the commands.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The e.</param>
@@ -218,7 +219,7 @@ namespace CoreConsole
         }
 
         /// <summary>
-        /// Handles the header.
+        ///     Handles the header.
         /// </summary>
         /// <param name="package">The package.</param>
         /// <returns>Added headers.</returns>
@@ -241,7 +242,7 @@ namespace CoreConsole
 
 
         /// <summary>
-        /// Handles the resource xtract.
+        ///     Handles the resource xtract.
         /// </summary>
         /// <param name="package">The package.</param>
         /// <returns>Result of the extraction.</returns>
@@ -295,7 +296,7 @@ namespace CoreConsole
         }
 
         /// <summary>
-        /// Runs the analyzers.
+        ///     Runs the analyzers.
         /// </summary>
         /// <param name="package">The package.</param>
         /// <returns>Result of code analysis.</returns>
@@ -334,12 +335,14 @@ namespace CoreConsole
 
 
         /// <summary>
-        /// Removes enclosing double quotes from a path if present.
+        ///     Removes enclosing double quotes from a path if present.
         /// </summary>
         private static string CleanPath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
+            {
                 return path;
+            }
 
             path = path.Trim();
 

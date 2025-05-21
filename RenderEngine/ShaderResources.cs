@@ -3,7 +3,7 @@
 namespace RenderEngine
 {
     /// <summary>
-    ///     A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
+    ///     A static class containing different shader programs (vertex and fragment shader) for various rendering effects.
     /// </summary>
     internal static class ShaderResource
     {

@@ -187,8 +187,8 @@ namespace CoreBuilder
                 else
                 {
                     // Otherwise, append the resource strings to the existing class
-                    var classStartIndex = existingCode.IndexOf("public static class Resource");
-                    var classEndIndex = existingCode.LastIndexOf("}", classStartIndex);
+                    var classStartIndex = existingCode.IndexOf("public static class Resource", StringComparison.Ordinal);
+                    var classEndIndex = existingCode.LastIndexOf("}", classStartIndex, StringComparison.Ordinal);
 
                     var beforeClass = existingCode.Substring(0, classEndIndex);
                     var afterClass = existingCode.Substring(classEndIndex);

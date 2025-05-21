@@ -99,7 +99,7 @@ namespace CoreBuilderTests
         [TestCleanup]
         public void TearDown()
         {
-            // There's no explicit Dispose method in CoreInjector, 
+            // There's no explicit Dispose method in CoreInjector,
             // but you can clean up scopes if required.
             _injector.EndScope();
         }

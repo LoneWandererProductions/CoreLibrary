@@ -10,7 +10,7 @@ namespace CoreBuilder
         public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent, SyntaxTree syntaxTree)
         {
             var lines = fileContent.Split('\n');
-            for (int i = 1; i < lines.Length - 1; i++)
+            for (var i = 1; i < lines.Length - 1; i++)
             {
                 if (string.IsNullOrWhiteSpace(lines[i]) && string.IsNullOrWhiteSpace(lines[i - 1]))
                 {
@@ -19,5 +19,4 @@ namespace CoreBuilder
             }
         }
     }
-
 }

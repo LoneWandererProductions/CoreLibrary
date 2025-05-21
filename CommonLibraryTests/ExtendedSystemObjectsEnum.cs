@@ -12,13 +12,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Test Class for our enum Implementation
     /// </summary>
-    /// <seealso cref="ExtendedSystemObjects.DynamicEnum&lt;CommonLibraryTests.MyEnum&gt;" />
-    /// <seealso cref="MyEnum" />
+    /// <seealso cref="T:CommonLibraryTests.MyEnum" />
     public sealed class MyEnum : DynamicEnum<MyEnum>
     {
+        /// <summary>
+        /// The option a
+        /// </summary>
         public static readonly MyEnum OptionA = new("OptionA", 1);
 
         /// <summary>

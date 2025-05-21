@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="ErrorTitleText" FontWeight="Bold" FontSize="16" Grid.Row="0" />
-        <TextBlock x:Name="ErrorMessageText" TextWrapping="Wrap" Margin="0,21,0,23" Grid.RowSpan="2" />
+        <TextBlock x:Name="ErrorMessageText" TextWrapping="Wrap" Margin="0,21,0,23" Grid.Row="0" Grid.RowSpan="2" />
 
         <Expander Header="Details" Grid.Row="1">
             <TextBlock x:Name="ErrorDetailsText" FontSize="12" TextWrapping="Wrap" />

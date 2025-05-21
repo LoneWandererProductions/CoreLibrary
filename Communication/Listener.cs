@@ -6,22 +6,22 @@ using System.Threading;
 
 namespace Communication
 {
-    public class Listener
+    public sealed class Listener
     {
         private readonly int _port = 12345;
-        private readonly TcpListener tcpListener;
+        private readonly TcpListener _tcpListener;
         private bool isRunning;
 
         public Listener(int port)
         {
             _port = port;
-            tcpListener = new TcpListener(IPAddress.Any, port);
+            _tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
         public void StartListening(CancellationToken cancellationToken)
         {
             isRunning = true;
-            tcpListener.Start();
+            _tcpListener.Start();
             Console.WriteLine($"Listening on port {_port}...");
 
             while (isRunning)
@@ -34,9 +34,9 @@ namespace Communication
 
                 try
                 {
-                    if (tcpListener.Pending()) // Non-blocking accept
+                    if (_tcpListener.Pending()) // Non-blocking accept
                     {
-                        var client = tcpListener.AcceptTcpClient();
+                        var client = _tcpListener.AcceptTcpClient();
                         ThreadPool.QueueUserWorkItem(HandleClient, client);
                     }
                 }
@@ -50,7 +50,7 @@ namespace Communication
         public void StopListening()
         {
             isRunning = false;
-            tcpListener.Stop();
+            _tcpListener.Stop();
             Console.WriteLine("Server stopped.");
         }
 
