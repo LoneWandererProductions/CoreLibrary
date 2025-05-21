@@ -324,7 +324,7 @@ namespace CoreConsole
                 {
                     foreach (var diagnostic in analyzer.Analyze(file, content, syntaxTree))
                     {
-                        result += diagnostic.ToString();
+                        result += string.Concat(diagnostic.ToString(), Environment.NewLine);
                     }
                 }
             }
