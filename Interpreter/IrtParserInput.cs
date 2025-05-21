@@ -234,7 +234,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="inputString">Input string</param>
         /// <param name="extension">Optional extension commands</param>
-        internal OutCommand ProcessInput(string inputString, ExtensionCommands extension = null)
+        internal OutCommand? ProcessInput(string inputString, ExtensionCommands extension = null)
         {
             if (_com == null)
             {
@@ -274,7 +274,7 @@ namespace Interpreter
                 };
             }
 
-            SetErrorWithLog(IrtConst.SyntaxError);
+            SetErrorWithLog(IrtConst.SyntaxErrorParameterCount);
 
             return null;
         }

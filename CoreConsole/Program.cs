@@ -111,8 +111,9 @@ namespace CoreConsole
             _prompt.Callback("Usage: CoreConsole <operation> <projectPath> [options]");
             _prompt.Callback("Operations:");
             _prompt.Callback("  header <directoryPath>       Insert headers into C# files");
-            _prompt.Callback("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]");
-
+            _prompt.Callback("  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]       Generate Resource Files for string Resources.");
+            _prompt.Callback("  analyzer <projectPath>      do various checks on .cs files.");
+            
             while (true)
             {
                 lock (ConsoleLock)
@@ -186,19 +187,19 @@ namespace CoreConsole
 
             string result;
 
-            switch (outCommand.UsedNameSpace)
+            switch (outCommand.Command)
             {
                 //Just show some stuff
-                case "resxtract":
+                case ConResources.Header:
                     result = HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
 
-                case "header":
+                case ConResources.Resxtract:
                     result = HandleHeader(outCommand);
                     _prompt.Callback(result);
                     break;
-                case "analyzer":
+                case ConResources.Analyzer:
                     result = RunAnalyzers(outCommand);
                     _prompt.Callback(result);
                     break;
@@ -206,7 +207,7 @@ namespace CoreConsole
 
                 default:
                     //TODO
-                    _prompt.CallbacksWindow("Error: Command not found.");
+                    _prompt.Callback("Error: Command not found.");
                     break;
             }
         }

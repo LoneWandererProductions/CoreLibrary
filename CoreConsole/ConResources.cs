@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection.Metadata;
 using Interpreter;
 
 namespace CoreConsole
@@ -8,13 +9,17 @@ namespace CoreConsole
     /// </summary>
     internal static class ConResources
     {
+        internal const int Header = 0;
+        internal const int Resxtract = 1;
+        internal const int Analyzer = 2;
+
         /// <summary>
-        /// The DCT command one
+        /// The available commands
         /// </summary>
         internal static readonly Dictionary<int, InCommand> DctCommandOne = new()
         {
             {
-                0, new InCommand { Command = "header", ParameterCount = 1, Description = "Insert headers into C# files" }
+                Header, new InCommand { Command = "header", ParameterCount = 1, Description = "Insert headers into C# files" }
             },
             {
                 1, new InCommand
@@ -23,10 +28,10 @@ namespace CoreConsole
                 }
             },
             {
-                2, new InCommand
+                Analyzer, new InCommand
                 {
                     Command = "analyzer",
-                    ParameterCount = 2,
+                    ParameterCount = 1,
                     Description = "Some basic code Checks for c# source files."
                 }
             }

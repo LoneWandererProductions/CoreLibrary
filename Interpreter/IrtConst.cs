@@ -227,6 +227,11 @@ namespace Interpreter
         internal const string SyntaxError = "Error in the Syntax: ";
 
         /// <summary>
+        /// The syntax error parameter count (const). Value: "Problems with the provided parameter cound the and the expected amount.".
+        /// </summary>
+        internal const string SyntaxErrorParameterCount = "Problems with the provided parameter cound the and the expected amount.";
+
+        /// <summary>
         ///     The message info (const). Value: "Information: ".
         /// </summary>
         internal const string MessageInfo = "Information: ";
