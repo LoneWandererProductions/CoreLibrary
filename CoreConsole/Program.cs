@@ -191,12 +191,12 @@ namespace CoreConsole
             {
                 //Just show some stuff
                 case ConResources.Header:
-                    result = HandleResxtract(outCommand);
+                    result = HandleHeader(outCommand);
                     _prompt.Callback(result);
                     break;
 
                 case ConResources.Resxtract:
-                    result = HandleHeader(outCommand);
+                    result = HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
                 case ConResources.Analyzer:
