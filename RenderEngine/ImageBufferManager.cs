@@ -22,7 +22,7 @@ namespace RenderEngine
             Clear(0, 0, 0, 0);
         }
 
-        public Span<byte> BufferSpan => new Span<byte>(_bufferPtr.ToPointer(), _bufferSize);
+        public Span<byte> BufferSpan => new(_bufferPtr.ToPointer(), _bufferSize);
 
         public int Width { get; }
         public int Height { get; }

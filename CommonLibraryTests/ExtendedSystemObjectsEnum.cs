@@ -20,7 +20,7 @@ namespace CommonLibraryTests
     public sealed class MyEnum : DynamicEnum<MyEnum>
     {
         /// <summary>
-        /// The option a
+        ///     The option a
         /// </summary>
         public static readonly MyEnum OptionA = new("OptionA", 1);
 

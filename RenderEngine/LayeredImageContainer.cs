@@ -108,7 +108,7 @@ namespace RenderEngine
             }
 
             // Handle remaining pixels
-            for (var i = (length / vectorSize) * vectorSize; i < length; i += bytesPerPixel)
+            for (var i = length / vectorSize * vectorSize; i < length; i += bytesPerPixel)
             {
                 var ob = overlaySpan[i];
                 var og = overlaySpan[i + 1];

@@ -54,7 +54,8 @@ namespace CommonLibraryTests
             var cancellationTokenSource = new CancellationTokenSource();
 
             // Start the listener in a separate task to simulate real-world usage
-            var listenerTask = Task.Run(() => listener.StartListening(cancellationTokenSource.Token), cancellationTokenSource.Token);
+            var listenerTask = Task.Run(() => listener.StartListening(cancellationTokenSource.Token),
+                cancellationTokenSource.Token);
 
             // Wait for a brief moment to ensure the server is up and listening
             await Task.Delay(1000, cancellationTokenSource.Token);
