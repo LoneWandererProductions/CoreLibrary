@@ -8,8 +8,8 @@ namespace RenderEngine
     public unsafe class UnmanagedImageBuffer : IDisposable
     {
         private readonly IntPtr _bufferPtr;
-        private readonly int _bytesPerPixel;
         private readonly int _bufferSize;
+        private readonly int _bytesPerPixel;
 
         public UnmanagedImageBuffer(int width, int height, int bytesPerPixel = 4)
         {
@@ -22,20 +22,23 @@ namespace RenderEngine
             Clear(0, 0, 0, 0);
         }
 
-        public Span<byte> BufferSpan
-        {
-            get
-            {
-                {
-                    return new Span<byte>(_bufferPtr.ToPointer(), _bufferSize);
-                }
-            }
-        }
+        public Span<byte> BufferSpan => new Span<byte>(_bufferPtr.ToPointer(), _bufferSize);
 
         public int Width { get; }
         public int Height { get; }
 
-        private int GetPixelOffset(int x, int y) => (y * Width + x) * _bytesPerPixel;
+        public void Dispose()
+        {
+            if (_bufferPtr != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(_bufferPtr);
+            }
+        }
+
+        private int GetPixelOffset(int x, int y)
+        {
+            return ((y * Width) + x) * _bytesPerPixel;
+        }
 
         public void SetPixel(int x, int y, byte a, byte r, byte g, byte b)
         {
@@ -80,22 +83,15 @@ namespace RenderEngine
                 pixelBytes[i + 2] = r;
                 pixelBytes[i + 3] = a;
             }
-            return new Vector<byte>(pixelBytes);
-        }
 
-        public void Dispose()
-        {
-            if (_bufferPtr != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(_bufferPtr);
-            }
+            return new Vector<byte>(pixelBytes);
         }
 
         // --------- New Methods -------------
 
         /// <summary>
-        /// Apply multiple pixel changes (x,y,color in BGRA format) directly to buffer.
-        /// No allocation, just writes into existing buffer.
+        ///     Apply multiple pixel changes (x,y,color in BGRA format) directly to buffer.
+        ///     No allocation, just writes into existing buffer.
         /// </summary>
         public void ApplyChanges(ReadOnlySpan<(int x, int y, uint bgra)> changes)
         {
@@ -104,27 +100,31 @@ namespace RenderEngine
             foreach (var (x, y, bgra) in changes)
             {
                 if ((uint)x >= (uint)Width || (uint)y >= (uint)Height)
+                {
                     continue;
+                }
 
                 var offset = GetPixelOffset(x, y);
 
                 // BGRA is stored as bytes, but we have a uint bgra packed:
                 // Decompose uint into bytes:
-                buffer[offset] = (byte)(bgra & 0xFF);           // B
-                buffer[offset + 1] = (byte)(bgra >> 8 & 0xFF); // G
-                buffer[offset + 2] = (byte)(bgra >> 16 & 0xFF);// R
-                buffer[offset + 3] = (byte)(bgra >> 24 & 0xFF);// A
+                buffer[offset] = (byte)(bgra & 0xFF); // B
+                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF); // G
+                buffer[offset + 2] = (byte)((bgra >> 16) & 0xFF); // R
+                buffer[offset + 3] = (byte)((bgra >> 24) & 0xFF); // A
             }
         }
 
         /// <summary>
-        /// Replace entire unmanaged buffer with a new byte span (must be correct size).
-        /// Uses SIMD acceleration if available.
+        ///     Replace entire unmanaged buffer with a new byte span (must be correct size).
+        ///     Uses SIMD acceleration if available.
         /// </summary>
         public void ReplaceBuffer(ReadOnlySpan<byte> fullBuffer)
         {
             if (fullBuffer.Length != _bufferSize)
+            {
                 throw new ArgumentException("Input buffer size does not match.");
+            }
 
             var buffer = BufferSpan;
 
@@ -134,23 +134,20 @@ namespace RenderEngine
                 var simdCount = _bufferSize / vectorSize;
                 var remainder = _bufferSize % vectorSize;
 
-                unsafe
+                fixed (byte* srcPtr = fullBuffer)
                 {
-                    fixed (byte* srcPtr = fullBuffer)
+                    var dstPtr = (byte*)_bufferPtr;
+
+                    for (var i = 0; i < simdCount; i++)
                     {
-                        var dstPtr = (byte*)_bufferPtr;
+                        var vec = Avx.LoadVector256(srcPtr + (i * vectorSize));
+                        Avx.Store(dstPtr + (i * vectorSize), vec);
+                    }
 
-                        for (var i = 0; i < simdCount; i++)
-                        {
-                            var vec = Avx.LoadVector256(srcPtr + i * vectorSize);
-                            Avx.Store(dstPtr + i * vectorSize, vec);
-                        }
-
-                        // copy remaining bytes
-                        for (var i = _bufferSize - remainder; i < _bufferSize; i++)
-                        {
-                            buffer[i] = fullBuffer[i];
-                        }
+                    // copy remaining bytes
+                    for (var i = _bufferSize - remainder; i < _bufferSize; i++)
+                    {
+                        buffer[i] = fullBuffer[i];
                     }
                 }
             }
@@ -161,20 +158,23 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Returns a Span<byte> representing the pixel data for a horizontal run starting at (x,y).
-        /// Length is count pixels (count * bytesPerPixel bytes).
-        /// No bounds checking, so use carefully or add your own.
+        ///     Returns a Span
+        ///     <byte>
+        ///         representing the pixel data for a horizontal run starting at (x,y).
+        ///         Length is count pixels (count * bytesPerPixel bytes).
+        ///         No bounds checking, so use carefully or add your own.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Span<byte> GetPixelSpan(int x, int y, int count)
         {
             if (x < 0 || y < 0 || x + count > Width || y >= Height)
+            {
                 throw new ArgumentOutOfRangeException();
+            }
 
             var offset = GetPixelOffset(x, y);
             var length = count * _bytesPerPixel;
             return BufferSpan.Slice(offset, length);
         }
-
     }
 }
