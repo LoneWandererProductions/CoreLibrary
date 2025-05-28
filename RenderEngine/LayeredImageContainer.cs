@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace RenderEngine
 {
@@ -19,10 +18,7 @@ namespace RenderEngine
 
         public void Dispose()
         {
-            foreach (var layer in _layers)
-            {
-                layer.Dispose();
-            }
+            foreach (var layer in _layers) layer.Dispose();
 
             _layers.Clear();
         }
@@ -30,9 +26,7 @@ namespace RenderEngine
         public void AddLayer(UnmanagedImageBuffer layer)
         {
             if (layer.Width != _width || layer.Height != _height)
-            {
                 throw new ArgumentException("Layer size does not match container size.");
-            }
 
             _layers.Add(layer);
         }
@@ -48,20 +42,14 @@ namespace RenderEngine
 
         public UnmanagedImageBuffer Composite()
         {
-            if (_layers.Count == 0)
-            {
-                throw new InvalidOperationException("No layers to composite.");
-            }
+            if (_layers.Count == 0) throw new InvalidOperationException("No layers to composite.");
 
             var result = new UnmanagedImageBuffer(_width, _height);
             result.Clear(0, 0, 0, 0); // start transparent
 
             var targetSpan = result.BufferSpan;
 
-            foreach (var layer in _layers)
-            {
-                AlphaBlend(targetSpan, layer.BufferSpan);
-            }
+            foreach (var layer in _layers) AlphaBlend(targetSpan, layer.BufferSpan);
 
             return result;
         }
@@ -69,63 +57,40 @@ namespace RenderEngine
         private static void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
         {
             var length = baseSpan.Length;
-            var vectorSize = Vector<byte>.Count;
             var bytesPerPixel = 4;
 
-            // Process per pixel (4 bytes at a time)
-            for (var i = 0; i <= length - vectorSize; i += vectorSize)
+            for (var i = 0; i < length; i += bytesPerPixel)
             {
-                Vector<byte> baseVec = new(baseSpan.Slice(i, vectorSize));
-                Vector<byte> overVec = new(overlaySpan.Slice(i, vectorSize));
+                var srcB = overlaySpan[i];
+                var srcG = overlaySpan[i + 1];
+                var srcR = overlaySpan[i + 2];
+                var srcAByte = overlaySpan[i + 3];
+                var srcA = srcAByte / 255f;
 
-                Span<byte> blendedBytes = stackalloc byte[vectorSize];
+                if (srcA <= 0)
+                    continue;
 
-                for (var j = 0; j < vectorSize; j += 4)
+                var dstB = baseSpan[i];
+                var dstG = baseSpan[i + 1];
+                var dstR = baseSpan[i + 2];
+                var dstAByte = baseSpan[i + 3];
+                var dstA = dstAByte / 255f;
+
+                var outA = srcA + dstA * (1 - srcA);
+
+                if (outA <= 0)
                 {
-                    var ob = overVec[j];
-                    var og = overVec[j + 1];
-                    var orr = overVec[j + 2];
-                    var oa = overVec[j + 3];
-
-                    var alpha = oa / 255f;
-
-                    if (oa == 0)
-                    {
-                        blendedBytes[j] = baseVec[j];
-                        blendedBytes[j + 1] = baseVec[j + 1];
-                        blendedBytes[j + 2] = baseVec[j + 2];
-                        blendedBytes[j + 3] = baseVec[j + 3];
-                        continue;
-                    }
-
-                    blendedBytes[j] = (byte)((ob * alpha) + (baseVec[j] * (1 - alpha)));
-                    blendedBytes[j + 1] = (byte)((og * alpha) + (baseVec[j + 1] * (1 - alpha)));
-                    blendedBytes[j + 2] = (byte)((orr * alpha) + (baseVec[j + 2] * (1 - alpha)));
-                    blendedBytes[j + 3] = 255; // full opacity
-                }
-
-                blendedBytes.CopyTo(baseSpan.Slice(i, vectorSize));
-            }
-
-            // Handle remaining pixels
-            for (var i = length / vectorSize * vectorSize; i < length; i += bytesPerPixel)
-            {
-                var ob = overlaySpan[i];
-                var og = overlaySpan[i + 1];
-                var orr = overlaySpan[i + 2];
-                var oa = overlaySpan[i + 3];
-
-                var alpha = oa / 255f;
-
-                if (oa == 0)
-                {
+                    baseSpan[i] = 0;
+                    baseSpan[i + 1] = 0;
+                    baseSpan[i + 2] = 0;
+                    baseSpan[i + 3] = 0;
                     continue;
                 }
 
-                baseSpan[i] = (byte)((ob * alpha) + (baseSpan[i] * (1 - alpha)));
-                baseSpan[i + 1] = (byte)((og * alpha) + (baseSpan[i + 1] * (1 - alpha)));
-                baseSpan[i + 2] = (byte)((orr * alpha) + (baseSpan[i + 2] * (1 - alpha)));
-                baseSpan[i + 3] = 255;
+                baseSpan[i] = (byte)Math.Round((srcB * srcA + dstB * dstA * (1 - srcA)) / outA);
+                baseSpan[i + 1] = (byte)Math.Round((srcG * srcA + dstG * dstA * (1 - srcA)) / outA);
+                baseSpan[i + 2] = (byte)Math.Round((srcR * srcA + dstR * dstA * (1 - srcA)) / outA);
+                baseSpan[i + 3] = (byte)Math.Round(outA * 255);
             }
         }
     }

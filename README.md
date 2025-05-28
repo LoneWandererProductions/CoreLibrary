@@ -21,6 +21,9 @@
 - **RAM Memory Cache**  
   In-memory cache store for temporary object persistence.
 
+- **Memory Manager**  
+  Some experimental work on custom Memory Management.
+
 - **Image Manipulation & Comparison**  
   Libraries for editing and comparing images; includes filters and format utilities.
 
@@ -92,6 +95,7 @@
 | `ExtendedSystemObjects`     | Extensions for .NET base classes                |
 | `FileHandler`               | File system abstraction (copy, move, etc.)      |
 | `RenderEngine`              | Experimental 2D/3D rendering backend            |
+| `RenderEngineTests`         | All Tests related to rendering                  |
 | `SQLiteGui`                 | UI frontend for SQLiteHelper                    |
 | `Debugger`                  | Custom debugging tools with UI support          |
 | `ImageCompare`              | Pixel-based image comparison utility            |
