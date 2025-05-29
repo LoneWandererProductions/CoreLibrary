@@ -48,7 +48,7 @@
 - **Plugin Interface**  
   Plugin system with loading/unloading and discovery support.
 
-- **A* Pathfinder**  
+- **Pathfinder**  
   Grid-based A* algorithm for turn-based strategy/pathfinding needs.
 
 - **Dialogs**  
@@ -103,10 +103,10 @@
 | `Interpreter`               | Text command processor and parser               |
 | `CommonLibraryGuiTests`     | GUI testing for common components               |
 | `Solaris`                   | 2D chessboard-style tile renderer               |
-| `LightVector`               | Likely lightweight vector math tools (confirm?) |
+| `LightVector`               | Likely lightweight vector math tools            |
 | `Serializer`                | XML serialization of data and structures        |
 | `DataFormatter`             | CSV reading/writing and formatting              |
-| `Communication`             | Some Network adn webservice                     |
+| `Communication`             | Some Network and webservice                     |
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
 | `PluginLoader`              | Plugin management and loading system            |
 | `CommonFilter`              | WPF control to filter data tables               |
