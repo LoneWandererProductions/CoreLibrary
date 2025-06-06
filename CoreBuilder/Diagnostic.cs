@@ -8,6 +8,9 @@
 
 namespace CoreBuilder
 {
+    /// <summary>
+    /// Diagnostic Result
+    /// </summary>
     public sealed class Diagnostic
     {
         /// <summary>
@@ -23,10 +26,36 @@ namespace CoreBuilder
             Message = message;
         }
 
+        /// <summary>
+        /// Gets the file path.
+        /// </summary>
+        /// <value>
+        /// The file path.
+        /// </value>
         public string FilePath { get; }
+
+        /// <summary>
+        /// Gets the line number.
+        /// </summary>
+        /// <value>
+        /// The line number.
+        /// </value>
         public int LineNumber { get; }
+
+        /// <summary>
+        /// Gets the message.
+        /// </summary>
+        /// <value>
+        /// The message.
+        /// </value>
         public string Message { get; }
 
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             return $"{FilePath}({LineNumber}): {Message}";

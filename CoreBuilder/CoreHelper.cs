@@ -12,6 +12,9 @@ using System.Linq;
 
 namespace CoreBuilder
 {
+    /// <summary>
+    /// Staic Helper class
+    /// </summary>
     internal static class CoreHelper
     {
         /// <summary>

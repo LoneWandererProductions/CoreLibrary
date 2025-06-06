@@ -23,6 +23,9 @@ namespace CoreBuilderTests
     [TestClass]
     public class CoreBackgroundWorkerTests
     {
+        /// <summary>
+        /// The injector
+        /// </summary>
         private CoreInjector _injector;
 
         /// <summary>
@@ -115,10 +118,18 @@ namespace CoreBuilderTests
             private readonly ILogger _logger;
             private CancellationTokenSource _cancellationTokenSource;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            /// </summary>
             public TestBackgroundWorker()
             {
             }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            /// </summary>
+            /// <param name="logger">The logger.</param>
+            /// <exception cref="System.ArgumentNullException">logger</exception>
             public TestBackgroundWorker(ILogger logger)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -142,9 +153,9 @@ namespace CoreBuilderTests
             }
 
             /// <summary>
-            ///     Defines the worker task that must be implemented in a derived class.
+            /// Defines the worker task that must be implemented in a derived class.
             /// </summary>
-            /// <param name="cancellationToken"></param>
+            /// <param name="cancellationToken">The cancellation token.</param>
             public async Task ExecuteAsync(CancellationToken cancellationToken)
             {
                 _logger.LogInformation("Test worker is running..."); // Log the message

@@ -25,7 +25,7 @@ namespace CoreInject
         /// <summary>
         ///     The current scope for managing scoped dependencies.
         /// </summary>
-        private SimpleScope? _currentScope;
+        private SimpleScope _currentScope;
 
         /// <summary>
         ///     Registers a singleton service with a specific implementation type.

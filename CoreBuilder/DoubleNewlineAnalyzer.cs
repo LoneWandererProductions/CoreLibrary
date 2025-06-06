@@ -11,10 +11,27 @@ using Microsoft.CodeAnalysis;
 
 namespace CoreBuilder
 {
+    /// <summary>
+    /// Finds double linebreaks.
+    /// </summary>
+    /// <seealso cref="CoreBuilder.ICodeAnalyzer" />
     public class DoubleNewlineAnalyzer : ICodeAnalyzer
     {
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name => "DoubleNewline";
 
+        /// <summary>
+        /// Analyzes the specified file path.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="fileContent">Content of the file.</param>
+        /// <param name="syntaxTree">The syntax tree.</param>
+        /// <returns>Diagnostic results.</returns>
         public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent, SyntaxTree syntaxTree)
         {
             var lines = fileContent.Split('\n');

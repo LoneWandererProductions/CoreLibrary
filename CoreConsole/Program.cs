@@ -23,12 +23,22 @@ namespace CoreConsole
     internal static class Program
     {
         /// <summary>
-        ///     The user space for code.
+        /// The prompt
         /// </summary>
-
         private static Prompt _prompt;
+
+        /// <summary>
+        /// The console lock
+        /// </summary>
         private static readonly object ConsoleLock = new();
+        /// <summary>
+        /// The is event triggered
+        /// </summary>
         private static bool _isEventTriggered;
+
+        /// <summary>
+        /// The analyzers
+        /// </summary>
         private static readonly List<ICodeAnalyzer> Analyzers = new();
 
         /// <summary>
@@ -317,6 +327,7 @@ namespace CoreConsole
 
             var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
 
+            //add our analyzers
             Analyzers.Add(new DoubleNewlineAnalyzer());
             Analyzers.Add(new LicenseHeaderAnalyzer());
 

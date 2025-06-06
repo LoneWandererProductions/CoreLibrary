@@ -84,7 +84,6 @@ namespace CoreInject
             }
         }
 
-
         /// <summary>
         ///     Determines whether [is service registered] [the specified service type].
         /// </summary>
