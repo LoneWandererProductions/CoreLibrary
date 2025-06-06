@@ -291,8 +291,17 @@ namespace CoreConsole
             var ignorePatterns = new List<string>(); // Optional: leave empty
 
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
-            extractor.ProcessProject(projectPath, outputResourceFile);
-            return $"Resxtract operation completed successfully: {outputResourceFile} created.";
+            var changedFiles = extractor.ProcessProject(projectPath, outputResourceFile);
+
+            if (changedFiles.Count == 0)
+            {
+                return $"Resxtract operation completed: No string literals found to extract.";
+            }
+
+            var changedFilesList = string.Join(Environment.NewLine + "  - ", changedFiles);
+
+            return $"Resxtract operation completed successfully: {outputResourceFile} created.{Environment.NewLine}" +
+                   $"Changed files:{Environment.NewLine}  - {changedFilesList}";
         }
 
         /// <summary>
