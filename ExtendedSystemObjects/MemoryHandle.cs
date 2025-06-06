@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        MemoryHandle.cs
+ * PURPOSE:     Handle for manual memory Allocation
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 
 namespace ExtendedSystemObjects
 {

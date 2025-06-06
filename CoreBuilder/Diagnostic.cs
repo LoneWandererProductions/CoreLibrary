@@ -1,4 +1,12 @@
-﻿namespace CoreBuilder
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreBuilder
+ * FILE:        Diagnostic.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+namespace CoreBuilder
 {
     public sealed class Diagnostic
     {

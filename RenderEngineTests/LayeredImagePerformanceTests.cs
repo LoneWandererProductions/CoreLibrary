@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     RenderEngineTests
+ * FILE:        LayeredImagePerformanceTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RenderEngine;

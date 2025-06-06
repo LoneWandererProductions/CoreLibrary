@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        PathfinderTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

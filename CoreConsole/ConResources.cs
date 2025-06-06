@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreConsole
+ * FILE:        ConResources.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using Interpreter;
 
 namespace CoreConsole

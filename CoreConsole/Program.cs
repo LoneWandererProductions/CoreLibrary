@@ -152,11 +152,6 @@ namespace CoreConsole
 
                 HandleCommands(e);
 
-                if (e.ExtensionUsed)
-                {
-                    HandleExtensionCommands(e);
-                }
-
                 _prompt.Callback("Event processing completed.");
 
                 _isEventTriggered = false;
@@ -213,11 +208,6 @@ namespace CoreConsole
             }
         }
 
-        private static void HandleExtensionCommands(OutCommand outCommand)
-        {
-            //TODO
-        }
-
         /// <summary>
         ///     Handles the header.
         /// </summary>
@@ -239,7 +229,6 @@ namespace CoreConsole
             IHeaderExtractor headerExtractor = new HeaderExtractor();
             return headerExtractor.ProcessFiles(directoryPath, true);
         }
-
 
         /// <summary>
         ///     Handles the resource xtract.

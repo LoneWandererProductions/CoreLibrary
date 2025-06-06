@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        FastMathBenchmarkTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Diagnostics;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

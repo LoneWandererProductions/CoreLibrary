@@ -1,4 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        MemoryManagerTest.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using ExtendedSystemObjects;
 

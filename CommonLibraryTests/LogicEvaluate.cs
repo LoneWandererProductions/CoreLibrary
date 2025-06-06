@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonLibraryTests
+ * FILE:        LogicEvaluate.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using CommonFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -1,4 +1,12 @@
-﻿// ReSharper disable UnusedMember.Global
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreMemoryLog
+ * FILE:        ILogger.cs
+ * PURPOSE:     Sample Logger Interface
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +14,9 @@ using System.Runtime.CompilerServices;
 
 namespace CoreMemoryLog
 {
+    /// <summary>
+    /// ILogger Contract
+    /// </summary>
     public interface ILogger
     {
         /// <summary>
@@ -42,6 +53,10 @@ namespace CoreMemoryLog
         /// <param name="callerMethod">The caller method.</param>
         void LogError(string message, Exception exception = null, [CallerMemberName] string callerMethod = "");
 
+        /// <summary>
+        /// Gets the log.
+        /// </summary>
+        /// <returns>Get Log Entries.</returns>
         List<LogEntry> GetLog();
     }
 }

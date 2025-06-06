@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        MemoryManager.cs
+ * PURPOSE:     Really stupid simple Memory Allocator. More an Experiment than real world value.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
