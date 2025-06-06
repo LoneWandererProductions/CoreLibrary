@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreConsole
  * FILE:        ConResources.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Namespaces and Commands for my command line Tool
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -16,9 +16,30 @@ namespace CoreConsole
     /// </summary>
     internal static class ConResources
     {
+        /// <summary>
+        /// The user space fore code
+        /// </summary>
+        internal const string UserSpaceCode = "CodeUtilities";
+
+        /// <summary>
+        /// The header
+        /// </summary>
         internal const int Header = 0;
+
+        /// <summary>
+        /// The resxtract
+        /// </summary>
         internal const int Resxtract = 1;
-        internal const int Analyzer = 2;
+
+        /// <summary>
+        /// The resxtract overload
+        /// </summary>
+        internal const int ResxtractOverload = 2;
+
+        /// <summary>
+        /// The analyzer
+        /// </summary>
+        internal const int Analyzer = 3;
 
         /// <summary>
         ///     The available commands
@@ -27,13 +48,29 @@ namespace CoreConsole
         {
             {
                 Header,
-                new InCommand { Command = "header", ParameterCount = 1, Description = "Insert headers into C# files" }
-            },
-            {
-                1,
                 new InCommand
                 {
-                    Command = "resxtract", ParameterCount = 2, Description = "Extract resources from project files"
+                    Command = "header",
+                    ParameterCount = 1,
+                    Description = "Inserts standard headers into all C# source files in the specified project directory. (1 parameter: <projectPath>)"
+                }
+            },
+            {
+                Resxtract,
+                new InCommand
+                {
+                    Command = "resxtract",
+                    ParameterCount = 2,
+                    Description = "Extracts string literals from project files and writes them to the specified resource file. (2 parameters: <projectPath> <outputResxFile>)"
+                }
+            },
+            {
+                ResxtractOverload,
+                new InCommand
+                {
+                    Command = "resxtract",
+                    ParameterCount = 1,
+                    Description = "Extracts string literals and generates a .resx file with an automatically determined name and location. (1 parameter: <projectPath>)"
                 }
             },
             {
@@ -42,9 +79,10 @@ namespace CoreConsole
                 {
                     Command = "analyzer",
                     ParameterCount = 1,
-                    Description = "Some basic code Checks for c# source files."
+                    Description = "Performs basic static analysis on all C# files in the specified directory. (1 parameter: <directoryPath>)"
                 }
             }
         };
+
     }
 }

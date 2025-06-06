@@ -214,10 +214,10 @@ namespace Interpreter
         /// <param name="nameSpace">The name space.</param>
         private void CommandUsing(string nameSpace)
         {
-            OnStatus($"{IrtConst.Active}{nameSpace}");
+            OnStatus(IrtConst.Active);
             foreach (var key in _prompt.CollectedSpaces.Keys)
             {
-                OnStatus(key);
+                OnStatus(key.ToLower());
             }
         }
 

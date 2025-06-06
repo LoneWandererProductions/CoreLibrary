@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using CoreBuilder;
 using Interpreter;
@@ -22,9 +23,8 @@ namespace CoreConsole
     internal static class Program
     {
         /// <summary>
-        ///     The user space one
+        ///     The user space for code.
         /// </summary>
-        private const string UserSpaceOne = "NameSpaceOne";
 
         private static Prompt _prompt;
         private static readonly object ConsoleLock = new();
@@ -106,14 +106,12 @@ namespace CoreConsole
             _prompt = new Prompt();
             _prompt.SendLogs += SendLogs;
             _prompt.SendCommands += SendCommands;
-            _prompt.Initiate(ConResources.DctCommandOne, UserSpaceOne);
-            _prompt.AddCommands(ConResources.DctCommandOne, UserSpaceOne);
-            _prompt.Callback("Usage: CoreConsole <operation> <projectPath> [options]");
-            _prompt.Callback("Operations:");
-            _prompt.Callback("  header <directoryPath>       Insert headers into C# files");
-            _prompt.Callback(
-                "  resxtract <projectPath> <outputResourceFile> [<ignoreListFile> <ignorePatternFile>]       Generate Resource Files for string Resources.");
-            _prompt.Callback("  analyzer <projectPath>      do various checks on .cs files.");
+            _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode);
+            _prompt.AddCommands(ConResources.DctCommandOne, ConResources.UserSpaceCode);
+            _prompt.Callback(Environment.NewLine);
+            _prompt.ConsoleInput("using");
+            _prompt.Callback(Environment.NewLine);
+            _prompt.ConsoleInput("list");
 
             while (true)
             {
@@ -195,6 +193,12 @@ namespace CoreConsole
                     result = HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
+
+                case ConResources.ResxtractOverload:
+                    result = HandleResxtract(outCommand);
+                    _prompt.Callback(result);
+                    break;
+
                 case ConResources.Analyzer:
                     result = RunAnalyzers(outCommand);
                     _prompt.Callback(result);
@@ -202,7 +206,6 @@ namespace CoreConsole
 
 
                 default:
-                    //TODO
                     _prompt.Callback("Error: Command not found.");
                     break;
             }
@@ -237,59 +240,64 @@ namespace CoreConsole
         /// <returns>Result of the extraction.</returns>
         private static string HandleResxtract(OutCommand package)
         {
+            if (package.Parameter.Count == 0)
+            {
+                return "Error: Project path is required.";
+            }
+
             var projectPath = CleanPath(package.Parameter[0]);
-            var outputResourceFile = CleanPath(package.Parameter[1]);
+            var outputResourceFile = package.Parameter.Count >= 2
+                ? CleanPath(package.Parameter[1])
+                : null;
 
             if (string.IsNullOrWhiteSpace(projectPath))
             {
                 return "Error: Project path is required.";
             }
 
-            if (string.IsNullOrWhiteSpace(outputResourceFile))
-            {
-                return "Error: Output resource file path is required.";
-            }
-
-            // Check if the project path exists
             if (!Directory.Exists(projectPath))
             {
                 return $"Error: The project path '{projectPath}' does not exist.";
             }
 
-            // Optionally check if the output file's directory exists and is writable
-            try
+            // Only validate output file path if provided
+            if (!string.IsNullOrWhiteSpace(outputResourceFile))
             {
-                var outputDir = Path.GetDirectoryName(outputResourceFile);
-                if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                try
                 {
-                    return $"Error: The directory for output resource file '{outputDir}' does not exist.";
-                }
+                    var outputDir = Path.GetDirectoryName(outputResourceFile);
+                    if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                    {
+                        return $"Error: The directory for output resource file '{outputDir}' does not exist.";
+                    }
 
-                // Optional: Check if file exists, maybe warn about overwrite
-                if (File.Exists(outputResourceFile))
+                    // Optional: warn if file exists
+                    if (File.Exists(outputResourceFile))
+                    {
+                        // Could add a warning here
+                    }
+                }
+                catch (Exception ex)
                 {
-                    // could add warning here or prompt if interactive
+                    return $"Error accessing output resource file: {ex.Message}";
                 }
             }
-            catch (Exception ex)
-            {
-                return $"Error accessing output resource file: {ex.Message}";
-            }
 
-            var ignoreList = new List<string>(); // Optional: leave empty for now
-            var ignorePatterns = new List<string>(); // Optional: leave empty
+            var ignoreList = new List<string>();
+            var ignorePatterns = new List<string>();
 
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
-            var changedFiles = extractor.ProcessProject(projectPath, outputResourceFile);
+            var changedFiles = extractor.ProcessProject(projectPath, outputResourceFile); // `null` is okay here
 
             if (changedFiles.Count == 0)
             {
-                return $"Resxtract operation completed: No string literals found to extract.";
+                return "Resxtract operation completed: No string literals found to extract.";
             }
 
-            var changedFilesList = string.Join(Environment.NewLine + "  - ", changedFiles);
+            var actualOutputFile = changedFiles.Last(); // Last item is outputResourceFile (by design)
+            var changedFilesList = string.Join(Environment.NewLine + "  - ", changedFiles.Take(changedFiles.Count - 1));
 
-            return $"Resxtract operation completed successfully: {outputResourceFile} created.{Environment.NewLine}" +
+            return $"Resxtract operation completed successfully: {actualOutputFile} created.{Environment.NewLine}" +
                    $"Changed files:{Environment.NewLine}  - {changedFilesList}";
         }
 
@@ -331,7 +339,6 @@ namespace CoreConsole
             return result;
         }
 
-
         /// <summary>
         ///     Removes enclosing double quotes from a path if present.
         /// </summary>
@@ -351,7 +358,6 @@ namespace CoreConsole
 
             return path;
         }
-
 
         /// <summary>
         ///     Listen to Messages
