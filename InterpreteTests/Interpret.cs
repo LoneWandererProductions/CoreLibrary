@@ -209,7 +209,7 @@ namespace InterpreteTests
             Assert.AreEqual(4, _outCommand.Command, "Command ID mismatch.");
 
             _prompt.ConsoleInput("using");
-            Assert.IsTrue(_log.StartsWith(UserSpaceTwo.ToUpper(), StringComparison.Ordinal),
+            Assert.IsTrue(_log.StartsWith(UserSpaceTwo.ToLower(), StringComparison.Ordinal),
                 "Namespace switch mismatch.");
         }
 
