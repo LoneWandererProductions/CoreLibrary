@@ -1,17 +1,9 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
- * FILE:        ShaderResources.cs
- * PURPOSE:     Your file purpose here
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
- */
-
-// ReSharper disable UnusedType.Global
+﻿// ReSharper disable UnusedType.Global
 
 namespace RenderEngine
 {
     /// <summary>
-    ///     A static class containing different shader programs (vertex and fragment shader) for various rendering effects.
+    ///     A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
     /// </summary>
     internal static class ShaderResource
     {
