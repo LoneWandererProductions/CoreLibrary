@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Listener.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Simple port checker.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -14,25 +14,47 @@ using System.Threading;
 
 namespace Communication
 {
+    /// <summary>
+    /// Simple Port Listener
+    /// </summary>
     public sealed class Listener
     {
-        private readonly int _port = 12345;
-        private readonly TcpListener _tcpListener;
-        private bool isRunning;
+        /// <summary>
+        /// The port
+        /// </summary>
+        private readonly int _port;
 
+        /// <summary>
+        /// The TCP listener
+        /// </summary>
+        private readonly TcpListener _tcpListener;
+
+        /// <summary>
+        /// The is running
+        /// </summary>
+        private bool _isRunning;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Listener"/> class.
+        /// </summary>
+        /// <param name="port">The port.</param>
         public Listener(int port)
         {
             _port = port;
             _tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
+        /// <summary>
+        /// Starts the listening.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public void StartListening(CancellationToken cancellationToken)
         {
-            isRunning = true;
+            _isRunning = true;
             _tcpListener.Start();
             Console.WriteLine($"Listening on port {_port}...");
 
-            while (isRunning)
+            while (_isRunning)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -55,20 +77,27 @@ namespace Communication
             }
         }
 
+        /// <summary>
+        /// Stops the listening.
+        /// </summary>
         public void StopListening()
         {
-            isRunning = false;
+            _isRunning = false;
             _tcpListener.Stop();
             Console.WriteLine("Server stopped.");
         }
 
+        /// <summary>
+        /// Handles the client.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private static void HandleClient(object obj)
         {
             var client = (TcpClient)obj;
             var stream = client.GetStream();
 
             // Respond with a simple message (acting as the "ping response")
-            var response = "PONG";
+            const string response = "PONG";
             var buffer = Encoding.ASCII.GetBytes(response);
             stream.Write(buffer, 0, buffer.Length);
 

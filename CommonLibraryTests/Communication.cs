@@ -65,11 +65,11 @@ namespace CommonLibraryTests
             {
                 var stream = client.GetStream();
                 var requestMessage = Encoding.ASCII.GetBytes("PING");
-                stream.Write(requestMessage, 0, requestMessage.Length);
+                await stream.WriteAsync(requestMessage, 0, requestMessage.Length, cancellationTokenSource.Token);
 
                 // Read the response
                 var buffer = new byte[1024];
-                var bytesRead = stream.Read(buffer, 0, buffer.Length);
+                var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationTokenSource.Token);
                 var response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                 // Assert - Verify the response is "PONG"

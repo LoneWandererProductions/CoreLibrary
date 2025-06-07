@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 namespace CoreMemoryLog
 {
     /// <summary>
-    /// ILogger Contract
+    ///     ILogger Contract
     /// </summary>
     public interface ILogger
     {
@@ -54,7 +54,7 @@ namespace CoreMemoryLog
         void LogError(string message, Exception exception = null, [CallerMemberName] string callerMethod = "");
 
         /// <summary>
-        /// Gets the log.
+        ///     Gets the log.
         /// </summary>
         /// <returns>Get Log Entries.</returns>
         List<LogEntry> GetLog();

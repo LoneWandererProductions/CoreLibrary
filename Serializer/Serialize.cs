@@ -81,7 +81,7 @@ namespace Serializer
         {
             if (obj == null)
             {
-                throw new ArgumentException("Object cannot be null.");
+                throw new ArgumentException(SerialResources.ErrorObjectNull);
             }
 
             EnsureDirectoryExists(path); // Ensure the directory exists before writing
@@ -112,7 +112,7 @@ namespace Serializer
         {
             if (obj == null)
             {
-                throw new ArgumentException("Object cannot be null.");
+                throw new ArgumentException(SerialResources.ErrorObjectNull);
             }
 
             EnsureDirectoryExists(path); // Ensure the directory exists before writing
@@ -144,7 +144,7 @@ namespace Serializer
         {
             if (dct == null)
             {
-                throw new ArgumentException("Dictionary cannot be null.");
+                throw new ArgumentException(SerialResources.ErrorDictionaryNull);
             }
 
             EnsureDirectoryExists(path); // Ensure the directory exists before writing
@@ -191,7 +191,7 @@ namespace Serializer
         {
             if (dct == null)
             {
-                throw new ArgumentException("Dictionary cannot be null.");
+                throw new ArgumentException(SerialResources.ErrorDictionaryNull);
             }
 
             EnsureDirectoryExists(path); // Ensure the directory exists before writing

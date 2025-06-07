@@ -224,7 +224,7 @@ namespace CommonLibraryTests
     ///     Plugin for tests
     /// </summary>
     /// <seealso cref="IPlugin" />
-    public class MockPlugin : BasePlugin
+    public sealed class MockPlugin : BasePlugin
     {
         /// <summary>
         ///     Gets the name.
@@ -348,7 +348,7 @@ namespace CommonLibraryTests
     ///     Plugin for tests, async
     /// </summary>
     /// <seealso cref="IAsyncPlugin" />
-    public class MockAsyncPlugin : IAsyncPlugin
+    public sealed class MockAsyncPlugin : IAsyncPlugin
     {
         /// <summary>
         ///     The event aggregator

@@ -134,12 +134,7 @@ namespace Interpreter
         /// <summary>
         ///     The internal command await feedback, used for user feedback (const). Value: "AWAITFEEDBACK".
         /// </summary>
-        internal const string InternalAwaitFeedback = "AWAITFEEDBACK";
-
-        /// <summary>
-        ///     The error no commands provided (const). Value: "No Commands were provided".
-        /// </summary>
-        internal const string ErrorNoCommandsProvided = "No Commands were provided";
+        private const string InternalAwaitFeedback = "AWAITFEEDBACK";
 
         /// <summary>
         ///     The error UserSpace not Found (const). Value: "Error UserSpace not found".
@@ -227,11 +222,11 @@ namespace Interpreter
         internal const string SyntaxError = "Error in the Syntax: ";
 
         /// <summary>
-        ///     The syntax error parameter count (const). Value: "Problems with the provided parameter cound the and the expected
+        ///     The syntax error parameter count (const). Value: "Problems with the provided parameter count the and the expected
         ///     amount.".
         /// </summary>
         internal const string SyntaxErrorParameterCount =
-            "Problems with the provided parameter cound the and the expected amount.";
+            "Problems with the provided parameter count the and the expected amount.";
 
         /// <summary>
         ///     The message info (const). Value: "Information: ".
@@ -261,7 +256,7 @@ namespace Interpreter
         /// <summary>
         ///     The message log statistics (const). Value: "General Information about the Log.".
         /// </summary>
-        internal const string MessageLogStatistics = "General Information abount the Log.";
+        internal const string MessageLogStatistics = "General Information about the Log.";
 
         /// <summary>
         ///     The end (const). Value: ";".
@@ -620,7 +615,7 @@ namespace Interpreter
                 $"{InternCommands[InternalBatchId].Command} : {InternCommands[InternalBatchId].Description}",
                 $"{InternCommands[10].Command} : {InternCommands[10].Description}",
                 "As a word of warning, do not try to overwrite internal Commands, they will be always executed first. Duplicate commands in different Namespaces are allowed otherwise.",
-                "Furthermore, there are Extension Commands that alter the behaviour of all Commands. They are added with a '.' to an existing command.",
+                "Furthermore, there are Extension Commands that alter the behavior of all Commands. They are added with a '.' to an existing command.",
                 "The Internal Extensions are:",
                 $"{InternalExtensionCommands[0].Command} : {InternalExtensionCommands[0].Description}",
                 $"{InternalExtensionCommands[1].Command} : {InternalExtensionCommands[1].Description}",

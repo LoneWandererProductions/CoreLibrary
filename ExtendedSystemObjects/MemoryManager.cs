@@ -12,11 +12,11 @@ using System.Runtime.InteropServices;
 
 namespace ExtendedSystemObjects
 {
-    public class MemoryManager : IDisposable
+    public sealed class MemoryManager : IDisposable
     {
         private IntPtr _buffer;
-        private int _capacity;
-        private List<AllocationEntry> _entries = new();
+        private readonly int _capacity;
+        private readonly List<AllocationEntry> _entries = new();
         private Dictionary<int, AllocationEntry> _handleMap = new();
         private int _nextHandleId = 1;
 
@@ -26,21 +26,28 @@ namespace ExtendedSystemObjects
             _buffer = Marshal.AllocHGlobal(size);
         }
 
+        public void Dispose()
+        {
+            Marshal.FreeHGlobal(_buffer);
+            _entries.Clear();
+            _handleMap.Clear();
+        }
+
         public MemoryHandle Allocate(int size)
         {
-            if (size <= 0) throw new ArgumentException("Size must be greater than 0.");
+            if (size <= 0)
+            {
+                throw new ArgumentException("Size must be greater than 0.");
+            }
 
             var offset = FindFreeSpot(size);
             if (offset + size > _capacity)
+            {
                 throw new OutOfMemoryException("Insufficient memory.");
+            }
 
             var handleId = _nextHandleId++;
-            var entry = new AllocationEntry
-            {
-                Offset = offset,
-                Size = size,
-                HandleId = handleId
-            };
+            var entry = new AllocationEntry { Offset = offset, Size = size, HandleId = handleId };
 
             _entries.Add(entry);
             _entries.Sort((a, b) => a.Offset.CompareTo(b.Offset));
@@ -55,17 +62,22 @@ namespace ExtendedSystemObjects
             foreach (var entry in _entries)
             {
                 if (offset + size <= entry.Offset)
+                {
                     return offset;
+                }
 
                 offset = entry.Offset + entry.Size;
             }
+
             return offset;
         }
 
         public IntPtr Resolve(MemoryHandle handle)
         {
             if (!_handleMap.TryGetValue(handle.Id, out var entry))
+            {
                 throw new InvalidOperationException("Invalid handle.");
+            }
 
             return _buffer + entry.Offset;
         }
@@ -73,7 +85,9 @@ namespace ExtendedSystemObjects
         public void Free(MemoryHandle handle)
         {
             if (_handleMap.Remove(handle.Id, out var entry))
+            {
                 _entries.Remove(entry);
+            }
         }
 
         public unsafe void Compact()
@@ -101,13 +115,6 @@ namespace ExtendedSystemObjects
             Marshal.FreeHGlobal(_buffer);
             _buffer = newBuffer;
             _handleMap = newMap;
-        }
-
-        public void Dispose()
-        {
-            Marshal.FreeHGlobal(_buffer);
-            _entries.Clear();
-            _handleMap.Clear();
         }
 
         private class AllocationEntry

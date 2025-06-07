@@ -46,7 +46,7 @@ namespace CommonLibraryTests
             Point? startPoint = new Point(3, 3); // Non-null start point
 
             // Act
-            var result = _imageRender.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);
+            _imageRender.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);
 
             // Assert
             Assert.IsNotNull(startPoint, "startPoint should not be null after method call");

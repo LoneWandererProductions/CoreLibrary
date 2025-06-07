@@ -181,7 +181,7 @@ namespace InterOp
         /// <summary>
         ///     Custom class to hold useful file information like name, size, and timestamps.
         /// </summary>
-        public class FileData
+        public sealed class FileData
         {
             /// <summary>
             ///     Constructor to initialize the file information.

@@ -61,7 +61,8 @@ namespace CoreBuilder
                         continue;
                     }
 
-                    var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here", "Peter Geinitz (Wayfarer)");
+                    var updatedContent = InsertHeader(fileContent, Path.GetFileName(file), "Your file purpose here",
+                        "Peter Geinitz (Wayfarer)");
                     File.WriteAllText(file, updatedContent);
 
                     log.AppendLine($"Header inserted in {file}");

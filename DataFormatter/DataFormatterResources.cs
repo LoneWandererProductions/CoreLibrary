@@ -31,11 +31,6 @@ namespace DataFormatter
         internal const char Comment = '#';
 
         /// <summary>
-        ///     The Splitter string (const). Value:  ",".
-        /// </summary>
-        internal const string Splitter = ",";
-
-        /// <summary>
         ///     The string X (const). Value: "X: ".
         /// </summary>
         internal const string StrX = "X: ";
@@ -56,10 +51,8 @@ namespace DataFormatter
         internal const string ErrorFileEmpty = "Error reading CSV file: ";
 
         /// <summary>
-        ///     The Error data was empty (const). Value: "CSV data cannot be null.".
+        /// The error writing to file (const). Value: "Error writing to file: ".
         /// </summary>
-        internal const string ErrorDataEmpty = "CSV data cannot be null.";
-
         internal const string ErrorWritingToFile = "Error writing to file: ";
 
         /// <summary>

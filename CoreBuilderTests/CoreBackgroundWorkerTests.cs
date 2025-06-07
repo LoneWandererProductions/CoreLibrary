@@ -24,7 +24,7 @@ namespace CoreBuilderTests
     public class CoreBackgroundWorkerTests
     {
         /// <summary>
-        /// The injector
+        ///     The injector
         /// </summary>
         private CoreInjector _injector;
 
@@ -98,7 +98,10 @@ namespace CoreBuilderTests
                 "Worker did not log cancellation.");
         }
 
-        // Cleanup: Dispose of the container if needed
+        /// <summary>
+        ///     Cleanup: Dispose of the container if needed
+        ///     Tears down.
+        /// </summary>
         [TestCleanup]
         public void TearDown()
         {
@@ -119,14 +122,14 @@ namespace CoreBuilderTests
             private CancellationTokenSource _cancellationTokenSource;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            ///     Initializes a new instance of the <see cref="TestBackgroundWorker" /> class.
             /// </summary>
             public TestBackgroundWorker()
             {
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="TestBackgroundWorker"/> class.
+            ///     Initializes a new instance of the <see cref="TestBackgroundWorker" /> class.
             /// </summary>
             /// <param name="logger">The logger.</param>
             /// <exception cref="System.ArgumentNullException">logger</exception>
@@ -153,7 +156,7 @@ namespace CoreBuilderTests
             }
 
             /// <summary>
-            /// Defines the worker task that must be implemented in a derived class.
+            ///     Defines the worker task that must be implemented in a derived class.
             /// </summary>
             /// <param name="cancellationToken">The cancellation token.</param>
             public async Task ExecuteAsync(CancellationToken cancellationToken)

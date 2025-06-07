@@ -52,14 +52,14 @@ namespace Serializer
         {
             if (!File.Exists(path))
             {
-                Log($"File does not exist: {path}", new ArgumentException(path));
-                throw new ArgumentException($"File does not exist: {path}");
+                Log($"{SerialResources.ErrorPath} {path}", new ArgumentException(path));
+                throw new ArgumentException($"{SerialResources.ErrorPath} {path}");
             }
 
             if (!FileContent(path))
             {
-                Log($"File is empty: {path}", new ArgumentException(path));
-                throw new ArgumentException($"File is empty: {path}");
+                Log($"{SerialResources.ErrorFileEmpty} {path}", new ArgumentException(path));
+                throw new ArgumentException($" {SerialResources.ErrorFileEmpty} {path}");
             }
         }
 

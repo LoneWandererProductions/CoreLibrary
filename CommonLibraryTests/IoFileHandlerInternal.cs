@@ -138,7 +138,7 @@ namespace CommonLibraryTests
             File.Create(Path.Combine(path, "file2.txt")).Dispose();
 
             var appendix = ".txt";
-            var subdirectories = false;
+            const bool subdirectories = false;
 
             try
             {

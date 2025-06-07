@@ -172,7 +172,7 @@ namespace CoreBuilderTests
     /// <summary>
     ///     Concrete service implementation for testing
     /// </summary>
-    public class Service : IService
+    public sealed class Service : IService
     {
         public void DoStuff() { }
     }
@@ -180,7 +180,7 @@ namespace CoreBuilderTests
     /// <summary>
     ///     Mock service for testing
     /// </summary>
-    public class MockService : IService
+    public sealed class MockService : IService
     {
         public void DoStuff() { }
     }

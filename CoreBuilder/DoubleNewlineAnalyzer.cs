@@ -11,22 +11,25 @@ using Microsoft.CodeAnalysis;
 
 namespace CoreBuilder
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Finds double linebreaks.
+    ///     Finds double line breaks.
     /// </summary>
-    /// <seealso cref="CoreBuilder.ICodeAnalyzer" />
-    public class DoubleNewlineAnalyzer : ICodeAnalyzer
+    /// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
+    public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer
     {
+        /// <inheritdoc />
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         /// <value>
-        /// The name.
+        ///     The name.
         /// </value>
         public string Name => "DoubleNewline";
 
+        /// <inheritdoc />
         /// <summary>
-        /// Analyzes the specified file path.
+        ///     Analyzes the specified file path.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="fileContent">Content of the file.</param>

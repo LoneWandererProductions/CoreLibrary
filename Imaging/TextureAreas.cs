@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+#nullable enable
 using System;
 using System.Drawing;
 
@@ -38,7 +39,7 @@ namespace Imaging
             TextureType texture,
             MaskShape shape,
             ImageRegister imageSettings,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null)
         {
             if (width <= 0 || height <= 0)

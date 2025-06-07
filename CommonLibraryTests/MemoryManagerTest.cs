@@ -6,9 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using ExtendedSystemObjects;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {

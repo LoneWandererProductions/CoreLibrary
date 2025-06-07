@@ -159,7 +159,7 @@ namespace CommonLibraryGuiTests
                 var bitmapSource = BitmapToBitmapSource(_testBitmap);
 
                 // Simulate rendering in Media.Image
-                new System.Windows.Controls.Image { Source = bitmapSource };
+                _ = new System.Windows.Controls.Image { Source = bitmapSource };
             }
 
             stopwatch.Stop();

@@ -19,28 +19,23 @@ namespace Serializer
         internal const string Separator = " , ";
 
         /// <summary>
-        ///     Error property was not found (const). Value: "Could not find Property".
+        ///     Error in path (const). Value: "File does not exist:".
         /// </summary>
-        internal const string ErrorPropertyNotFound = "Could not find Property";
+        internal const string ErrorPath = "File does not exist:";
 
         /// <summary>
-        ///     Error in path (const). Value: "No File Found: ".
+        ///     Error File is empty (const). Value: "File is empty: ".
         /// </summary>
-        internal const string ErrorPath = "No File Found: ";
+        internal const string ErrorFileEmpty = "File is empty: ";
 
         /// <summary>
-        ///     Error File is empty (const). Value: "File was empty: ".
+        /// The error object null (const). Value: "Object cannot be null.".
         /// </summary>
-        internal const string ErrorFileEmpty = "File was empty: ";
+        internal const string ErrorObjectNull = "Object cannot be null.";
 
         /// <summary>
-        ///     Error could not File was empty (const). Value: "Object was Empty: ".
+        /// The error dictionary null (const). Value: "Dictionary cannot be null.".
         /// </summary>
-        internal const string ErrorSerializerEmpty = "Object was Empty: ";
-
-        /// <summary>
-        ///     Error string in serializer XML.
-        /// </summary>
-        internal const string ErrorSerializerXml = "Could not Serialize, Error in XML: ";
+        internal const string ErrorDictionaryNull = "Dictionary cannot be null.";
     }
 }

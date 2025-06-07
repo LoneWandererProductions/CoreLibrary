@@ -16,22 +16,22 @@ using CoreMemoryLog;
 namespace Debugger
 {
     /// <summary>
-    /// The Full Logger Class
+    ///     The Full Logger Class
     /// </summary>
     public class FullLogger
     {
         /// <summary>
-        /// The in memory logger
+        ///     The in memory logger
         /// </summary>
         private readonly IInMemoryLogger _inMemoryLogger;
 
         /// <summary>
-        /// The polling interval
+        ///     The polling interval
         /// </summary>
         private readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(5); // Adjust as needed
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FullLogger"/> class.
+        ///     Initializes a new instance of the <see cref="FullLogger" /> class.
         /// </summary>
         /// <param name="inMemoryLogger">The in memory logger.</param>
         public FullLogger(IInMemoryLogger inMemoryLogger)
@@ -40,7 +40,7 @@ namespace Debugger
         }
 
         /// <summary>
-        /// Starts the polling asynchronous.
+        ///     Starts the polling asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task StartPollingAsync(CancellationToken cancellationToken)

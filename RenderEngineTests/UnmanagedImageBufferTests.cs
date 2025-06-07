@@ -30,7 +30,7 @@ namespace RenderEngineTests
             using var buffer = new UnmanagedImageBuffer(2, 2);
             buffer.SetPixel(1, 1, 255, 100, 150, 200); // A,R,G,B
 
-            var offset = (1 + 1 * 2) * 4;
+            var offset = (1 + (1 * 2)) * 4;
             var span = buffer.BufferSpan;
 
             Assert.AreEqual(200, span[offset]); // B
@@ -78,7 +78,7 @@ namespace RenderEngineTests
             Assert.AreEqual(0xFF, span[3]); // A
 
             // Check pixel (1,1)
-            var offset = (1 + 1 * 2) * 4;
+            var offset = (1 + (1 * 2)) * 4;
             Assert.AreEqual(0x56, span[offset]);
             Assert.AreEqual(0x34, span[offset + 1]);
             Assert.AreEqual(0x12, span[offset + 2]);
@@ -90,16 +90,16 @@ namespace RenderEngineTests
         {
             using var buffer = new UnmanagedImageBuffer(2, 2);
 
-            var newData = new byte[]
-            {
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
-            };
+            var newData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
             buffer.ReplaceBuffer(newData);
 
             var span = buffer.BufferSpan;
 
-            for (var i = 0; i < newData.Length; i++) Assert.AreEqual(newData[i], span[i]);
+            for (var i = 0; i < newData.Length; i++)
+            {
+                Assert.AreEqual(newData[i], span[i]);
+            }
         }
 
         [TestMethod]

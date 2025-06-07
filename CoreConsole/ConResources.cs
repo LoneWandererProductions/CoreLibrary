@@ -17,27 +17,27 @@ namespace CoreConsole
     internal static class ConResources
     {
         /// <summary>
-        /// The user space fore code
+        ///     The user space fore code
         /// </summary>
         internal const string UserSpaceCode = "CodeUtilities";
 
         /// <summary>
-        /// The header
+        ///     The header
         /// </summary>
         internal const int Header = 0;
 
         /// <summary>
-        /// The resxtract
+        ///     The resxtract
         /// </summary>
         internal const int Resxtract = 1;
 
         /// <summary>
-        /// The resxtract overload
+        ///     The resxtract overload
         /// </summary>
         internal const int ResxtractOverload = 2;
 
         /// <summary>
-        /// The analyzer
+        ///     The analyzer
         /// </summary>
         internal const int Analyzer = 3;
 
@@ -52,7 +52,8 @@ namespace CoreConsole
                 {
                     Command = "header",
                     ParameterCount = 1,
-                    Description = "Inserts standard headers into all C# source files in the specified project directory. (1 parameter: <projectPath>)"
+                    Description =
+                        "Inserts standard headers into all C# source files in the specified project directory. (1 parameter: <projectPath>)"
                 }
             },
             {
@@ -61,7 +62,8 @@ namespace CoreConsole
                 {
                     Command = "resxtract",
                     ParameterCount = 2,
-                    Description = "Extracts string literals from project files and writes them to the specified resource file. (2 parameters: <projectPath> <outputResxFile>)"
+                    Description =
+                        "Extracts string literals from project files and writes them to the specified resource file. (2 parameters: <projectPath> <outputResxFile>)"
                 }
             },
             {
@@ -70,7 +72,8 @@ namespace CoreConsole
                 {
                     Command = "resxtract",
                     ParameterCount = 1,
-                    Description = "Extracts string literals and generates a .resx file with an automatically determined name and location. (1 parameter: <projectPath>)"
+                    Description =
+                        "Extracts string literals and generates a .resx file with an automatically determined name and location. (1 parameter: <projectPath>)"
                 }
             },
             {
@@ -79,7 +82,8 @@ namespace CoreConsole
                 {
                     Command = "analyzer",
                     ParameterCount = 1,
-                    Description = "Performs basic static analysis on all C# files in the specified directory. (1 parameter: <directoryPath>)"
+                    Description =
+                        "Performs basic static analysis on all C# files in the specified directory. (1 parameter: <directoryPath>)"
                 }
             }
         };

@@ -236,12 +236,6 @@ namespace Interpreter
         /// <param name="extension">Optional extension commands</param>
         internal OutCommand? ProcessInput(string inputString, ExtensionCommands? extension = null)
         {
-            if (_com == null)
-            {
-                SetError(IrtConst.ErrorNoCommandsProvided);
-                return null;
-            }
-
             var key = IrtKernel.CheckForKeyWord(inputString, IrtConst.InternCommands);
             if (key != IrtConst.Error)
             {

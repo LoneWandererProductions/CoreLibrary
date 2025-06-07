@@ -16,10 +16,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Our Code resource refactor tool. In this case strings.
     /// </summary>
-    /// <seealso cref="CoreBuilder.IResourceExtractor" />
+    /// <seealso cref="T:CoreBuilder.IResourceExtractor" />
     public sealed class ResXtract : IResourceExtractor
     {
         /// <summary>
@@ -52,7 +53,8 @@ namespace CoreBuilder
         /// <param name="outputResourceFile">Path to generate the resource file. If null, a default file will be used.</param>
         /// <param name="appendToExisting">If true, appends to the existing resource file, otherwise overwrites it.</param>
         /// <returns>List of changed Files with directory.</returns>
-        public List<string> ProcessProject(string projectPath, string outputResourceFile = null, bool appendToExisting = false)
+        public List<string> ProcessProject(string projectPath, string outputResourceFile = null,
+            bool appendToExisting = false)
         {
             // If no output file is provided, set a default file path relative to the project path
             outputResourceFile ??= Path.Combine(projectPath, "ResourceFile.cs");
@@ -70,7 +72,10 @@ namespace CoreBuilder
 
             foreach (var file in files)
             {
-                if (ShouldIgnoreFile(file)) continue;
+                if (ShouldIgnoreFile(file))
+                {
+                    continue;
+                }
 
                 var code = File.ReadAllText(file);
                 var strings = ExtractStrings(code).ToList();

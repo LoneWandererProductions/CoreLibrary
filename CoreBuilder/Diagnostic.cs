@@ -9,7 +9,7 @@
 namespace CoreBuilder
 {
     /// <summary>
-    /// Diagnostic Result
+    ///     Diagnostic Result
     /// </summary>
     public sealed class Diagnostic
     {
@@ -19,7 +19,7 @@ namespace CoreBuilder
         /// <param name="filePath">The file path.</param>
         /// <param name="lineNumber">The line number.</param>
         /// <param name="message">The message.</param>
-        public Diagnostic(string filePath, int lineNumber, string message)
+        internal Diagnostic(string filePath, int lineNumber, string message)
         {
             FilePath = filePath;
             LineNumber = lineNumber;
@@ -27,34 +27,34 @@ namespace CoreBuilder
         }
 
         /// <summary>
-        /// Gets the file path.
+        ///     Gets the file path.
         /// </summary>
         /// <value>
-        /// The file path.
+        ///     The file path.
         /// </value>
         public string FilePath { get; }
 
         /// <summary>
-        /// Gets the line number.
+        ///     Gets the line number.
         /// </summary>
         /// <value>
-        /// The line number.
+        ///     The line number.
         /// </value>
         public int LineNumber { get; }
 
         /// <summary>
-        /// Gets the message.
+        ///     Gets the message.
         /// </summary>
         /// <value>
-        /// The message.
+        ///     The message.
         /// </value>
         public string Message { get; }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

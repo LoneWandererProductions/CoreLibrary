@@ -12,28 +12,29 @@ using Microsoft.CodeAnalysis;
 
 namespace CoreBuilder
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Find missing License Header.
+    ///     Find missing License Header.
     /// </summary>
-    /// <seealso cref="CoreBuilder.ICodeAnalyzer" />
-    public class LicenseHeaderAnalyzer : ICodeAnalyzer
+    /// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
+    public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
     {
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         /// <value>
-        /// The name.
+        ///     The name.
         /// </value>
         public string Name => "LicenseHeader";
 
         /// <summary>
-        /// Analyzes the specified file path.
+        ///     Analyzes the specified file path.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="fileContent">Content of the file.</param>
         /// <param name="syntaxTree">The syntax tree.</param>
         /// <returns>
-        /// Code Analyzer results.
+        ///     Code Analyzer results.
         /// </returns>
         public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent, SyntaxTree syntaxTree)
         {

@@ -134,7 +134,7 @@ namespace InterpreteTests
             _prompt.ConsoleInput("coM1(1)");
 
             // Act & Assert
-            Assert.IsTrue(_log.Contains("Problems with the provided parameter cound the and the expected amount."),
+            Assert.IsTrue(_log.Contains("Problems with the provided parameter count the and the expected amount."),
                 "Syntax error message mismatch.");
             Assert.AreEqual(-1, _outCommand.Command, "Command ID mismatch.");
 
@@ -187,7 +187,7 @@ namespace InterpreteTests
 
             _prompt.ConsoleInput("coM1(1,3)");
             Assert.AreEqual(-1, _outCommand.Command, "Command ID mismatch.");
-            Assert.IsTrue(_log.Contains("Problems with the provided parameter cound the and the expected amount."),
+            Assert.IsTrue(_log.Contains("Problems with the provided parameter count the and the expected amount."),
                 "Syntax error message mismatch.");
         }
 

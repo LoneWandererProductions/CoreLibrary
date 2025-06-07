@@ -23,21 +23,22 @@ namespace CoreConsole
     internal static class Program
     {
         /// <summary>
-        /// The prompt
+        ///     The prompt
         /// </summary>
         private static Prompt _prompt;
 
         /// <summary>
-        /// The console lock
+        ///     The console lock
         /// </summary>
         private static readonly object ConsoleLock = new();
+
         /// <summary>
-        /// The is event triggered
+        ///     The is event triggered
         /// </summary>
         private static bool _isEventTriggered;
 
         /// <summary>
-        /// The analyzers
+        ///     The analyzers
         /// </summary>
         private static readonly List<ICodeAnalyzer> Analyzers = new();
 

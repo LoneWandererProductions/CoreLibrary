@@ -21,6 +21,9 @@ namespace ExtendedSystemObjects
             _manager = manager;
         }
 
-        public IntPtr GetPointer() => _manager.Resolve(this);
+        public IntPtr GetPointer()
+        {
+            return _manager.Resolve(this);
+        }
     }
 }
