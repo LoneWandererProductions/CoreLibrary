@@ -51,7 +51,7 @@ namespace DataFormatter
         internal const string ErrorFileEmpty = "Error reading CSV file: ";
 
         /// <summary>
-        /// The error writing to file (const). Value: "Error writing to file: ".
+        ///     The error writing to file (const). Value: "Error writing to file: ".
         /// </summary>
         internal const string ErrorWritingToFile = "Error writing to file: ";
 

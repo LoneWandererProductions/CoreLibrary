@@ -47,8 +47,7 @@ namespace CoreConsole
         internal static readonly Dictionary<int, InCommand> DctCommandOne = new()
         {
             {
-                Header,
-                new InCommand
+                Header, new InCommand
                 {
                     Command = "header",
                     ParameterCount = 1,
@@ -57,8 +56,7 @@ namespace CoreConsole
                 }
             },
             {
-                Resxtract,
-                new InCommand
+                Resxtract, new InCommand
                 {
                     Command = "resxtract",
                     ParameterCount = 2,
@@ -67,8 +65,7 @@ namespace CoreConsole
                 }
             },
             {
-                ResxtractOverload,
-                new InCommand
+                ResxtractOverload, new InCommand
                 {
                     Command = "resxtract",
                     ParameterCount = 1,
@@ -77,8 +74,7 @@ namespace CoreConsole
                 }
             },
             {
-                Analyzer,
-                new InCommand
+                Analyzer, new InCommand
                 {
                     Command = "analyzer",
                     ParameterCount = 1,

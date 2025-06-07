@@ -145,14 +145,14 @@ namespace Pathfinder
         }
 
         /// <summary>
-        /// Gets the neighboring nodes for a given node based on the grid and movement costs.
+        ///     Gets the neighboring nodes for a given node based on the grid and movement costs.
         /// </summary>
         /// <param name="node">The node to get neighbors for.</param>
         /// <param name="grid">The grid representing the environment.</param>
         /// <param name="goalX">The goal x.</param>
         /// <param name="goalY">The goal y.</param>
         /// <returns>
-        /// A list of neighboring nodes.
+        ///     A list of neighboring nodes.
         /// </returns>
         private List<Node> GetNeighbors(Node node, int[,] grid, int goalX, int goalY)
         {

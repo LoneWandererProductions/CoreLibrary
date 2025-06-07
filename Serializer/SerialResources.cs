@@ -29,12 +29,12 @@ namespace Serializer
         internal const string ErrorFileEmpty = "File is empty: ";
 
         /// <summary>
-        /// The error object null (const). Value: "Object cannot be null.".
+        ///     The error object null (const). Value: "Object cannot be null.".
         /// </summary>
         internal const string ErrorObjectNull = "Object cannot be null.";
 
         /// <summary>
-        /// The error dictionary null (const). Value: "Dictionary cannot be null.".
+        ///     The error dictionary null (const). Value: "Dictionary cannot be null.".
         /// </summary>
         internal const string ErrorDictionaryNull = "Dictionary cannot be null.";
     }

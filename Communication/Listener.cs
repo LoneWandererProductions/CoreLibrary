@@ -15,27 +15,27 @@ using System.Threading;
 namespace Communication
 {
     /// <summary>
-    /// Simple Port Listener
+    ///     Simple Port Listener
     /// </summary>
     public sealed class Listener
     {
         /// <summary>
-        /// The port
+        ///     The port
         /// </summary>
         private readonly int _port;
 
         /// <summary>
-        /// The TCP listener
+        ///     The TCP listener
         /// </summary>
         private readonly TcpListener _tcpListener;
 
         /// <summary>
-        /// The is running
+        ///     The is running
         /// </summary>
         private bool _isRunning;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Listener"/> class.
+        ///     Initializes a new instance of the <see cref="Listener" /> class.
         /// </summary>
         /// <param name="port">The port.</param>
         public Listener(int port)
@@ -45,7 +45,7 @@ namespace Communication
         }
 
         /// <summary>
-        /// Starts the listening.
+        ///     Starts the listening.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         public void StartListening(CancellationToken cancellationToken)
@@ -78,7 +78,7 @@ namespace Communication
         }
 
         /// <summary>
-        /// Stops the listening.
+        ///     Stops the listening.
         /// </summary>
         public void StopListening()
         {
@@ -88,7 +88,7 @@ namespace Communication
         }
 
         /// <summary>
-        /// Handles the client.
+        ///     Handles the client.
         /// </summary>
         /// <param name="obj">The object.</param>
         private static void HandleClient(object obj)
