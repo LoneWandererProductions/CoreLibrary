@@ -11,19 +11,32 @@ using System.Collections.Generic;
 
 namespace RenderEngine
 {
-    // Layered image container:
+    /// <summary>
+    ///     Provides a container for multiple image layers stored as unmanaged buffers,
+    ///     allowing fast compositing and alpha blending of layered images.
+    /// </summary>
     public sealed class LayeredImageContainer : IDisposable
     {
         private readonly int _height;
         private readonly List<UnmanagedImageBuffer> _layers = new();
         private readonly int _width;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LayeredImageContainer"/> class
+        ///     with the specified width and height.
+        /// </summary>
+        /// <param name="width">The width of the container and all layers.</param>
+        /// <param name="height">The height of the container and all layers.</param>
         public LayeredImageContainer(int width, int height)
         {
             _width = width;
             _height = height;
         }
 
+        /// <summary>
+        ///     Releases all resources used by the <see cref="LayeredImageContainer"/>,
+        ///     including all contained <see cref="UnmanagedImageBuffer"/> layers.
+        /// </summary>
         public void Dispose()
         {
             foreach (var layer in _layers)
@@ -34,6 +47,13 @@ namespace RenderEngine
             _layers.Clear();
         }
 
+        /// <summary>
+        ///     Adds an existing unmanaged image buffer as a layer.
+        /// </summary>
+        /// <param name="layer">The <see cref="UnmanagedImageBuffer"/> to add as a layer.</param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if the layer's dimensions do not match the container's size.
+        /// </exception>
         public void AddLayer(UnmanagedImageBuffer layer)
         {
             if (layer.Width != _width || layer.Height != _height)
@@ -44,7 +64,12 @@ namespace RenderEngine
             _layers.Add(layer);
         }
 
-        // New method to add a blank layer (all transparent)
+        /// <summary>
+        ///     Adds a new empty (fully transparent) layer to the container.
+        /// </summary>
+        /// <returns>
+        ///     The newly created <see cref="UnmanagedImageBuffer"/> representing the blank layer.
+        /// </returns>
         public UnmanagedImageBuffer AddEmptyLayer()
         {
             var newLayer = new UnmanagedImageBuffer(_width, _height);
@@ -53,6 +78,14 @@ namespace RenderEngine
             return newLayer;
         }
 
+        /// <summary>
+        ///     Composites all layers in the container using alpha blending,
+        ///     producing a single combined <see cref="UnmanagedImageBuffer"/>.
+        /// </summary>
+        /// <returns>
+        ///     A new <see cref="UnmanagedImageBuffer"/> representing the composited image.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Thrown if no layers exist to composite.</exception>
         public UnmanagedImageBuffer Composite()
         {
             if (_layers.Count == 0)
@@ -74,14 +107,15 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Alphas the blend.
+        ///     Performs alpha blending of an overlay image onto a base image buffer.
+        ///     Both buffers must be in BGRA format with 4 bytes per pixel.
         /// </summary>
-        /// <param name="baseSpan">The base span.</param>
-        /// <param name="overlaySpan">The overlay span.</param>
+        /// <param name="baseSpan">The span of bytes representing the base image buffer.</param>
+        /// <param name="overlaySpan">The span of bytes representing the overlay image buffer.</param>
         private static void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
         {
             var length = baseSpan.Length;
-            var bytesPerPixel = 4;
+            const int bytesPerPixel = 4;
 
             for (var i = 0; i < length; i += bytesPerPixel)
             {
