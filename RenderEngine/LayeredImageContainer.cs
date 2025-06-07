@@ -11,6 +11,7 @@ using System.Collections.Generic;
 
 namespace RenderEngine
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Provides a container for multiple image layers stored as unmanaged buffers,
     ///     allowing fast compositing and alpha blending of layered images.

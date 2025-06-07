@@ -13,6 +13,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace RenderEngine
 {
+    /// <inheritdoc />
     /// <summary>
     /// Represents an unmanaged memory buffer for storing image pixel data with direct memory access,
     /// optimized for fast pixel manipulation and bulk operations using SIMD acceleration where available.
@@ -67,6 +68,7 @@ namespace RenderEngine
         /// </summary>
         public int Height { get; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Frees the unmanaged buffer memory.
         /// </summary>
