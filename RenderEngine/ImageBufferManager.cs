@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ImageBufferManager.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     A way to store images in a fast way.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -19,6 +19,12 @@ namespace RenderEngine
         private readonly int _bufferSize;
         private readonly int _bytesPerPixel;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnmanagedImageBuffer"/> class.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="bytesPerPixel">The bytes per pixel.</param>
         public UnmanagedImageBuffer(int width, int height, int bytesPerPixel = 4)
         {
             Width = width;

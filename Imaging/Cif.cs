@@ -359,7 +359,7 @@ namespace Imaging
                     info = string.Concat(info, sortedList[i], ImagingResources.Indexer);
                 }
 
-                info = string.Concat(info, sortedList[sortedList.Count], Environment.NewLine);
+                info = string.Concat(info, sortedList[^1], Environment.NewLine);
             }
 
             return info;

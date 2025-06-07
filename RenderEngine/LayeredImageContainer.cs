@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        LayeredImageContainer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Layered Image Container to overlay Images in a quick way.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -73,6 +73,11 @@ namespace RenderEngine
             return result;
         }
 
+        /// <summary>
+        /// Alphas the blend.
+        /// </summary>
+        /// <param name="baseSpan">The base span.</param>
+        /// <param name="overlaySpan">The overlay span.</param>
         private static void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
         {
             var length = baseSpan.Length;
