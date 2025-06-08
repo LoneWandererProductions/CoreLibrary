@@ -315,31 +315,30 @@ namespace Imaging
             lock (_syncLock)
             {
                 var colorArgb = color.ToArgb();
-                var vectorCount = Vector<int>.Count;
-                var colorVector = new Vector<int>(colorArgb);
 
-                // Loop over the rectangle's rows.
-                for (var y = y2; y < y2 + height && y < Height; y++)
-                    // Loop over the rectangle's columns with SIMD optimizations.
-                for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
+                // Early exit if nothing to draw
+                if (Bits == null || Bits.Length < Width * Height)
+                    throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
+
+                var bitsSpan = new Span<int>(Bits);
+
+                for (int y = y2; y < y2 + height && y < Height; y++)
                 {
-                    var startIndex = x + (y * Width);
-                    // Ensure we don't go out of bounds.
-                    if (startIndex + vectorCount <= Bits.Length)
-                    {
-                        colorVector.CopyTo(Bits, startIndex);
-                    }
-                    else
-                        // Handle remainder if not divisible by vectorCount
-                    {
-                        for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
-                        {
-                            Bits[startIndex + j] = colorArgb;
-                        }
-                    }
+                    int startX = Math.Max(x1, 0);
+                    int endX = Math.Min(x1 + width, Width);
+                    int spanLength = endX - startX;
+
+                    if (spanLength <= 0)
+                        continue;
+
+                    int rowStartIndex = y * Width + startX;
+
+                    // Fill the horizontal slice of the row
+                    bitsSpan.Slice(rowStartIndex, spanLength).Fill(colorArgb);
                 }
             }
         }
+
 
         /// <summary>
         ///     Sets the area.
@@ -430,9 +429,6 @@ namespace Imaging
                 {
                     throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
                 }
-
-                // Convert the Bits array to a Span for more efficient access
-                var bitsSpan = new Span<int>(Bits);
 
                 // Process pixels in blocks using Span
                 for (var i = 0; i < pixelArray.Length; i += vectorCount)

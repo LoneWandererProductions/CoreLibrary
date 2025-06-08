@@ -23,13 +23,30 @@ namespace CommonLibraryTests
     [TestClass]
     public class DirectBitmapTests
     {
+        /// <summary>
+        /// The codebase
+        /// </summary>
         private static readonly string Codebase = Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// The executable folder
+        /// </summary>
         private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
+
+        /// <summary>
+        /// The project folder
+        /// </summary>
         private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
 
+        /// <summary>
+        /// The sample images folder
+        /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder =
             new(Path.Combine(ProjectFolder?.FullName ?? string.Empty, "Images"));
 
+        /// <summary>
+        /// Directs the bitmap operations should match colors correctly.
+        /// </summary>
         [TestMethod]
         public void DirectBitmapOperationsShouldMatchColorsCorrectly()
         {
@@ -94,27 +111,37 @@ namespace CommonLibraryTests
         [TestMethod]
         public void VerticalLineDrawingPerformanceComparison()
         {
-            const int width = 1000, height = 1000, lineWidth = 1;
+            const int width = 1000, height = 1000;
+            const int lineWidth = 8;
+
+            // Initialize resources once
             using var bitmap = new Bitmap(width, height);
             using var brush = new SolidBrush(Color.Black);
             var directBitmap = DirectBitmap.GetInstance(bitmap);
 
-            WarmUpVerticalLineDrawing(bitmap, brush, directBitmap, lineWidth, height);
+            // Clear bits to avoid memory effects from previous data
+            Array.Clear(directBitmap.Bits, 0, directBitmap.Bits.Length);
 
+            // Benchmark System.Drawing
             var systemTime = MeasurePerformance(100, () =>
             {
                 using var graphics = Graphics.FromImage(bitmap);
                 graphics.FillRectangle(brush, 0, 0, lineWidth, height);
             });
 
+            // Benchmark your DirectBitmap
             var directBitmapTime = MeasurePerformance(100, () =>
-                directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
+            {
+                directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black);
+            });
 
             Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
 
+            // Allow a little slack if in CI
             var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 2.0 : 1.0;
             AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
         }
+
 
         /// <summary>
         ///     Warms up vertical line drawing.
@@ -169,8 +196,11 @@ namespace CommonLibraryTests
             }
         }
 
+        /// <summary>
+        /// Draws the single vertical line within bounds should modify bits correctly.
+        /// </summary>
         [TestMethod]
-        public void DrawSingleVerticalLineWithinBounds_ShouldModifyBitsCorrectly()
+        public void DrawSingleVerticalLineWithinBoundsShouldModifyBitsCorrectly()
         {
             const int width = 10, height = 10;
             var target = new DirectBitmap(width + 1, height + 1);
@@ -185,6 +215,9 @@ namespace CommonLibraryTests
             }
         }
 
+        /// <summary>
+        /// Tests the bytes conversion.
+        /// </summary>
         [TestMethod]
         public void TestBytesConversion()
         {
@@ -208,7 +241,13 @@ namespace CommonLibraryTests
             Assert.AreEqual(0xFF, byteArray[3]);
         }
 
-        private static void WarmUpDrawing(Bitmap bitmap, Pen blackPen, DirectBitmap directBitmap)
+        /// <summary>
+        /// Warms up drawing.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="blackPen">The black pen.</param>
+        /// <param name="directBitmap">The direct bitmap.</param>
+        private static void WarmUpDrawing(Image bitmap, Pen blackPen, DirectBitmap directBitmap)
         {
             for (var i = 0; i < 10; i++)
             {
