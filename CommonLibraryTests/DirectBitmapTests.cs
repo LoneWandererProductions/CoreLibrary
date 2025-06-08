@@ -24,28 +24,28 @@ namespace CommonLibraryTests
     public class DirectBitmapTests
     {
         /// <summary>
-        /// The codebase
+        ///     The codebase
         /// </summary>
         private static readonly string Codebase = Directory.GetCurrentDirectory();
 
         /// <summary>
-        /// The executable folder
+        ///     The executable folder
         /// </summary>
         private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
 
         /// <summary>
-        /// The project folder
+        ///     The project folder
         /// </summary>
         private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
 
         /// <summary>
-        /// The sample images folder
+        ///     The sample images folder
         /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder =
             new(Path.Combine(ProjectFolder?.FullName ?? string.Empty, "Images"));
 
         /// <summary>
-        /// Directs the bitmap operations should match colors correctly.
+        ///     Directs the bitmap operations should match colors correctly.
         /// </summary>
         [TestMethod]
         public void DirectBitmapOperationsShouldMatchColorsCorrectly()
@@ -197,7 +197,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Draws the single vertical line within bounds should modify bits correctly.
+        ///     Draws the single vertical line within bounds should modify bits correctly.
         /// </summary>
         [TestMethod]
         public void DrawSingleVerticalLineWithinBoundsShouldModifyBitsCorrectly()
@@ -216,7 +216,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Tests the bytes conversion.
+        ///     Tests the bytes conversion.
         /// </summary>
         [TestMethod]
         public void TestBytesConversion()
@@ -242,7 +242,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Warms up drawing.
+        ///     Warms up drawing.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="blackPen">The black pen.</param>

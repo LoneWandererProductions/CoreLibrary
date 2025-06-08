@@ -318,20 +318,24 @@ namespace Imaging
 
                 // Early exit if nothing to draw
                 if (Bits == null || Bits.Length < Width * Height)
+                {
                     throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
+                }
 
                 var bitsSpan = new Span<int>(Bits);
 
-                for (int y = y2; y < y2 + height && y < Height; y++)
+                for (var y = y2; y < y2 + height && y < Height; y++)
                 {
-                    int startX = Math.Max(x1, 0);
-                    int endX = Math.Min(x1 + width, Width);
-                    int spanLength = endX - startX;
+                    var startX = Math.Max(x1, 0);
+                    var endX = Math.Min(x1 + width, Width);
+                    var spanLength = endX - startX;
 
                     if (spanLength <= 0)
+                    {
                         continue;
+                    }
 
-                    int rowStartIndex = y * Width + startX;
+                    var rowStartIndex = (y * Width) + startX;
 
                     // Fill the horizontal slice of the row
                     bitsSpan.Slice(rowStartIndex, spanLength).Fill(colorArgb);

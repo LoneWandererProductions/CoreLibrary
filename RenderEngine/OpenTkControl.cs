@@ -37,7 +37,7 @@ namespace RenderEngine
             private int _shaderProgram;
             private int _skyboxShader;
             private int _skyboxTexture;
-            private int _skyboxVAO, _skyboxVBO;
+            private int _skyboxVao, _skyboxVbo;
             private int _vao, _vbo;
 
             public OpenTkControl()
@@ -120,18 +120,19 @@ namespace RenderEngine
 
             private void InitializeSkybox()
             {
-                _skyboxShader = OpenTkHelper.LoadShader(RenderResource.ShaderSkyboxVertex, RenderResource.ShaderSkyboxFragment);
+                _skyboxShader = OpenTkHelper.LoadShader(RenderResource.ShaderSkyboxVertex,
+                    RenderResource.ShaderSkyboxFragment);
 
                 _skyboxTexture = OpenTkHelper.LoadCubeMap(new[]
                 {
                     "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"
                 });
 
-                _skyboxVAO = GL.GenVertexArray();
-                _skyboxVBO = GL.GenBuffer();
+                _skyboxVao = GL.GenVertexArray();
+                _skyboxVbo = GL.GenBuffer();
 
-                GL.BindVertexArray(_skyboxVAO);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, _skyboxVBO);
+                GL.BindVertexArray(_skyboxVao);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _skyboxVbo);
                 GL.BufferData(BufferTarget.ArrayBuffer, ShaderResource.SkyboxVertices.Length * sizeof(float),
                     ShaderResource.SkyboxVertices, BufferUsageHint.StaticDraw);
             }
@@ -145,7 +146,7 @@ namespace RenderEngine
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.TextureCubeMap, _skyboxTexture);
 
-                GL.BindVertexArray(_skyboxVAO);
+                GL.BindVertexArray(_skyboxVao);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
 
                 GL.DepthFunc(DepthFunction.Less);

@@ -16,8 +16,8 @@ namespace RenderEngine
 {
     public class OpenTkWpfControl : UserControl
     {
-        private int _backgroundTexture = -1;
         private readonly GLWpfControl _glControl;
+        private int _backgroundTexture = -1;
         private int _shaderProgram;
         private int _vao, _vbo;
 

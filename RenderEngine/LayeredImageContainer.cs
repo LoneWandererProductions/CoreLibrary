@@ -19,31 +19,23 @@ namespace RenderEngine
     public sealed class LayeredImageContainer : IDisposable
     {
         /// <summary>
-        /// The height
+        ///     The height
         /// </summary>
         private readonly int _height;
 
         /// <summary>
-        /// The layers
+        ///     The layers
         /// </summary>
         private readonly List<UnmanagedImageBuffer> _layers = new();
 
         /// <summary>
-        /// The width
+        ///     The width
         /// </summary>
         private readonly int _width;
 
         /// <summary>
-        /// Gets the layer count.
-        /// </summary>
-        /// <value>
-        /// The layer count.
-        /// </value>
-        public int LayerCount => _layers.Count;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LayeredImageContainer" /> class
-        /// with the specified width and height.
+        ///     Initializes a new instance of the <see cref="LayeredImageContainer" /> class
+        ///     with the specified width and height.
         /// </summary>
         /// <param name="width">The width of the container and all layers.</param>
         /// <param name="height">The height of the container and all layers.</param>
@@ -52,6 +44,14 @@ namespace RenderEngine
             _width = width;
             _height = height;
         }
+
+        /// <summary>
+        ///     Gets the layer count.
+        /// </summary>
+        /// <value>
+        ///     The layer count.
+        /// </value>
+        public int LayerCount => _layers.Count;
 
         /// <inheritdoc />
         /// <summary>
@@ -127,6 +127,12 @@ namespace RenderEngine
             return result;
         }
 
+        /// <summary>
+        ///     Composites the layers.
+        /// </summary>
+        /// <param name="layerIndices">The layer indices.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">layerIndices</exception>
         public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
         {
             var result = new UnmanagedImageBuffer(_width, _height);
@@ -136,7 +142,10 @@ namespace RenderEngine
             foreach (var index in layerIndices)
             {
                 if (index < 0 || index >= _layers.Count)
-                    throw new ArgumentOutOfRangeException(nameof(layerIndices), string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+                {
+                    throw new ArgumentOutOfRangeException(nameof(layerIndices),
+                        string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+                }
 
                 var layerSpan = _layers[index].BufferSpan;
                 AlphaBlend(targetSpan, layerSpan);
@@ -145,18 +154,34 @@ namespace RenderEngine
             return result;
         }
 
+        /// <summary>
+        ///     Inserts the layer.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="layer">The layer.</param>
+        /// <exception cref="System.ArgumentException"></exception>
         public void InsertLayer(int index, UnmanagedImageBuffer layer)
         {
             if (layer.Width != _width || layer.Height != _height)
+            {
                 throw new ArgumentException(RenderResource.ErrorLayerSizeMismatch);
+            }
 
             _layers.Insert(index, layer);
         }
 
+        /// <summary>
+        ///     Removes the layer.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
         public void RemoveLayer(int index)
         {
             if (index < 0 || index >= _layers.Count)
-                throw new ArgumentOutOfRangeException(nameof(index), string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+            {
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+            }
 
             _layers.RemoveAt(index);
         }
