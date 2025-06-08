@@ -26,8 +26,19 @@ namespace RenderEngine
     /// </remarks>
     public sealed unsafe class UnmanagedImageBuffer : IDisposable
     {
+        /// <summary>
+        /// The buffer PTR
+        /// </summary>
         private readonly IntPtr _bufferPtr;
+
+        /// <summary>
+        /// The buffer size
+        /// </summary>
         private readonly int _bufferSize;
+
+        /// <summary>
+        /// The bytes per pixel
+        /// </summary>
         private readonly int _bytesPerPixel;
 
         /// <summary>
@@ -215,7 +226,7 @@ namespace RenderEngine
         {
             if (fullBuffer.Length != _bufferSize)
             {
-                throw new ArgumentException("Input buffer size does not match.");
+                throw new ArgumentException(RenderResource.ErrorInputBuffer);
             }
 
             var buffer = BufferSpan;

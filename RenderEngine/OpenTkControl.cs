@@ -44,7 +44,7 @@ namespace RenderEngine
             {
                 if (!OpenTkHelper.IsOpenGlCompatible())
                 {
-                    throw new NotSupportedException("OpenGL 4.5 or higher is required but not available.");
+                    throw new NotSupportedException(RenderResource.ErrorOpenGl);
                 }
 
                 InitializeGlControl();
@@ -120,7 +120,7 @@ namespace RenderEngine
 
             private void InitializeSkybox()
             {
-                _skyboxShader = OpenTkHelper.LoadShader("skybox_vertex.glsl", "skybox_fragment.glsl");
+                _skyboxShader = OpenTkHelper.LoadShader(RenderResource.ShaderSkyboxVertex, RenderResource.ShaderSkyboxFragment);
 
                 _skyboxTexture = OpenTkHelper.LoadCubeMap(new[]
                 {

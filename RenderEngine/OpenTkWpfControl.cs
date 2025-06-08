@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     RenderEngine
+ * FILE:        OpenTkWpfControl.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using OpenTK.Graphics.OpenGL4;
@@ -37,7 +45,7 @@ namespace RenderEngine
         {
             if (!OpenTkHelper.IsOpenGlCompatible())
             {
-                throw new NotSupportedException("OpenGL 4.5 or higher required.");
+                throw new NotSupportedException(RenderResource.ErrorOpenGl);
             }
 
             InitializeShaders();

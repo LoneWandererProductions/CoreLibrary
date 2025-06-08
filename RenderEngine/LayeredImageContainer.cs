@@ -18,13 +18,32 @@ namespace RenderEngine
     /// </summary>
     public sealed class LayeredImageContainer : IDisposable
     {
+        /// <summary>
+        /// The height
+        /// </summary>
         private readonly int _height;
+
+        /// <summary>
+        /// The layers
+        /// </summary>
         private readonly List<UnmanagedImageBuffer> _layers = new();
+
+        /// <summary>
+        /// The width
+        /// </summary>
         private readonly int _width;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LayeredImageContainer" /> class
-        ///     with the specified width and height.
+        /// Gets the layer count.
+        /// </summary>
+        /// <value>
+        /// The layer count.
+        /// </value>
+        public int LayerCount => _layers.Count;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LayeredImageContainer" /> class
+        /// with the specified width and height.
         /// </summary>
         /// <param name="width">The width of the container and all layers.</param>
         /// <param name="height">The height of the container and all layers.</param>
@@ -34,9 +53,10 @@ namespace RenderEngine
             _height = height;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Releases all resources used by the <see cref="LayeredImageContainer" />,
-        ///     including all contained <see cref="UnmanagedImageBuffer" /> layers.
+        ///     Releases all resources used by the <see cref="T:RenderEngine.LayeredImageContainer" />,
+        ///     including all contained <see cref="T:RenderEngine.UnmanagedImageBuffer" /> layers.
         /// </summary>
         public void Dispose()
         {
@@ -59,7 +79,7 @@ namespace RenderEngine
         {
             if (layer.Width != _width || layer.Height != _height)
             {
-                throw new ArgumentException("Layer size does not match container size.");
+                throw new ArgumentException(RenderResource.ErrorLayerSize);
             }
 
             _layers.Add(layer);
@@ -91,7 +111,7 @@ namespace RenderEngine
         {
             if (_layers.Count == 0)
             {
-                throw new InvalidOperationException("No layers to composite.");
+                throw new InvalidOperationException(RenderResource.ErrorNoLayers);
             }
 
             var result = new UnmanagedImageBuffer(_width, _height);
@@ -105,6 +125,40 @@ namespace RenderEngine
             }
 
             return result;
+        }
+
+        public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
+        {
+            var result = new UnmanagedImageBuffer(_width, _height);
+            result.Clear(0, 0, 0, 0);
+
+            var targetSpan = result.BufferSpan;
+            foreach (var index in layerIndices)
+            {
+                if (index < 0 || index >= _layers.Count)
+                    throw new ArgumentOutOfRangeException(nameof(layerIndices), string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+
+                var layerSpan = _layers[index].BufferSpan;
+                AlphaBlend(targetSpan, layerSpan);
+            }
+
+            return result;
+        }
+
+        public void InsertLayer(int index, UnmanagedImageBuffer layer)
+        {
+            if (layer.Width != _width || layer.Height != _height)
+                throw new ArgumentException(RenderResource.ErrorLayerSizeMismatch);
+
+            _layers.Insert(index, layer);
+        }
+
+        public void RemoveLayer(int index)
+        {
+            if (index < 0 || index >= _layers.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+
+            _layers.RemoveAt(index);
         }
 
         /// <summary>
