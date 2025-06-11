@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/CvsLayeredHandler.cs
- * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword. Mostly needed for my Lif file format
+ * FILE:        DataFormatter/SegmentedCsvHandler.cs
+ * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -11,7 +11,10 @@ using System.Text;
 
 namespace DataFormatter
 {
-    public static class CvsLayeredHandler
+    /// <summary>
+    /// Separate multible csv files via keywords.
+    /// </summary>
+    public static class SegmentedCsvHandler
     {
         /// <summary>
         ///     Writes the CSV with layer keywords.

@@ -22,7 +22,7 @@ namespace DataFormatter
         ///     Gets the parts.
         /// </summary>
         /// <param name="str">The string.</param>
-        /// <param separator="separator"></param>
+        /// <param separator="separator">The splitter for the csv file.</param>
         /// <param name="separator">the splitter used in the csv</param>
         /// <returns>split Parts</returns>
         internal static List<string> GetParts(string str, char separator)
