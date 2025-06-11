@@ -118,7 +118,14 @@ namespace CoreBuilderTests
         /// </summary>
         private class TestBackgroundWorker : ICoreBackgroundWorker
         {
+            /// <summary>
+            /// The logger
+            /// </summary>
             private readonly ILogger _logger;
+
+            /// <summary>
+            /// The cancellation token source
+            /// </summary>
             private CancellationTokenSource _cancellationTokenSource;
 
             /// <summary>
