@@ -54,7 +54,7 @@ namespace CoreInject
         {
             if (factory == null)
             {
-                throw new ArgumentNullException(nameof(factory), "Factory function cannot be null.");
+                throw new ArgumentNullException(nameof(factory), CoreInjectResource.ErrorFactoryNull);
             }
 
             if (_scopedInstances.TryGetValue(typeof(TService), out var instance))
