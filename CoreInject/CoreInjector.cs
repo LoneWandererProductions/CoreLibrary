@@ -38,7 +38,8 @@ namespace CoreInject
         {
             if (_registrations.ContainsKey(typeof(TService)))
             {
-                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceRegisteredSingleTon, typeof(TService).Name));
+                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceRegisteredSingleTon,
+                    typeof(TService).Name));
             }
 
             TImplementation instance = new();
@@ -56,7 +57,8 @@ namespace CoreInject
         {
             if (_registrations.ContainsKey(typeof(TService)))
             {
-                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceRegistered, typeof(TService).Name));
+                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceRegistered,
+                    typeof(TService).Name));
             }
 
             _registrations[typeof(TService)] = () => factory(this); // Pass 'this' to factory
@@ -141,7 +143,8 @@ namespace CoreInject
         {
             if (!_registrations.TryGetValue(serviceType, out var factory))
             {
-                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceNotRegistered, serviceType.Name));
+                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceNotRegistered,
+                    serviceType.Name));
             }
 
             return factory();

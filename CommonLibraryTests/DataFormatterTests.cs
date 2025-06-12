@@ -129,18 +129,14 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Writes the CSV with layer keywords creates expected output.
+        ///     Writes the CSV with layer keywords creates expected output.
         /// </summary>
         [TestMethod]
         public void WriteCsvWithLayerKeywordsCreatesExpectedOutput()
         {
             // Arrange
             var tempPath = Path.GetTempFileName();
-            var csvLayers = new List<List<string>>
-            {
-                new() { "1,2,3", "4,5,6" },
-                new() { "7,8,9" }
-            };
+            var csvLayers = new List<List<string>> { new() { "1,2,3", "4,5,6" }, new() { "7,8,9" } };
             const char separator = ',';
             const string keyword = "#LAYER";
 
@@ -148,14 +144,7 @@ namespace CommonLibraryTests
             SegmentedCsvHandler.WriteCsvWithLayerKeywords(tempPath, separator, csvLayers, keyword);
 
             // Assert
-            var expected = new[]
-            {
-                "1,2,3",
-                "4,5,6",
-                "#LAYER0",
-                "7,8,9",
-                "#LAYER1"
-            };
+            var expected = new[] { "1,2,3", "4,5,6", "#LAYER0", "7,8,9", "#LAYER1" };
             var actual = File.ReadAllLines(tempPath);
             CollectionAssert.AreEqual(expected, actual);
 

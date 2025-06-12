@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
 
 namespace CoreBuilder
 {
@@ -33,9 +32,8 @@ namespace CoreBuilder
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="fileContent">Content of the file.</param>
-        /// <param name="syntaxTree">The syntax tree.</param>
         /// <returns>Diagnostic results.</returns>
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent, SyntaxTree syntaxTree)
+        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
             var lines = fileContent.Split('\n');
             for (var i = 1; i < lines.Length - 1; i++)

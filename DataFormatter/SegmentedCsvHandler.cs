@@ -12,7 +12,7 @@ using System.Text;
 namespace DataFormatter
 {
     /// <summary>
-    /// Separate multible csv files via keywords.
+    ///     Separate multible csv files via keywords.
     /// </summary>
     public static class SegmentedCsvHandler
     {

@@ -39,7 +39,8 @@ namespace CoreInject
                 try
                 {
                     var method = typeof(CoreInjector)
-                        .GetMethod(CoreInjectResource.MethodRegisterTransient, BindingFlags.Public | BindingFlags.Instance)
+                        .GetMethod(CoreInjectResource.MethodRegisterTransient,
+                            BindingFlags.Public | BindingFlags.Instance)
                         ?.MakeGenericMethod(type.Interface, type.Implementation);
 
                     method?.Invoke(injector, null);
@@ -47,7 +48,8 @@ namespace CoreInject
                 catch (InvalidOperationException ex)
                 {
                     // Log and handle any errors if needed, this should not happen anymore
-                    throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorRegisteringService, type.Interface.Name, ex.Message)); 
+                    throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorRegisteringService,
+                        type.Interface.Name, ex.Message));
                 }
             }
         }
@@ -71,7 +73,8 @@ namespace CoreInject
                     try
                     {
                         var method = typeof(CoreInjector)
-                            .GetMethod(CoreInjectResource.MethodRegisterTransient, BindingFlags.Public | BindingFlags.Instance)
+                            .GetMethod(CoreInjectResource.MethodRegisterTransient,
+                                BindingFlags.Public | BindingFlags.Instance)
                             ?.MakeGenericMethod(type.Interface, type.Implementation);
 
                         method?.Invoke(injector, null);
@@ -79,7 +82,8 @@ namespace CoreInject
                     catch (InvalidOperationException ex)
                     {
                         // Log and handle any errors if needed, this should not happen anymore
-                        throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorRegisteringService, type.Interface.Name, ex.Message));
+                        throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorRegisteringService,
+                            type.Interface.Name, ex.Message));
                     }
                 }
             }
@@ -98,7 +102,7 @@ namespace CoreInject
             // Check if the service is already registered in the injector
             var field = typeof(CoreInjector)
                 .GetField(CoreInjectResource.VariableRegister, BindingFlags.NonPublic | BindingFlags.Instance);
-            var registrations = (Dictionary<Type, Func<object>>)field.GetValue(injector);
+            var registrations = field?.GetValue(injector) as Dictionary<Type, Func<object>>;
             return registrations.ContainsKey(serviceType);
         }
 

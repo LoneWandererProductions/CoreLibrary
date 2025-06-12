@@ -54,7 +54,8 @@ namespace CoreBuilder
         /// <param name="appendToExisting">If true, appends to the existing resource file, otherwise overwrites it.</param>
         /// <param name="replace">if set to <c>true</c> [replace].</param>
         /// <returns>List of changed Files with directory.</returns>
-        public List<string> ProcessProject(string projectPath, string outputResourceFile = null, bool appendToExisting = false, bool replace = false)
+        public List<string> ProcessProject(string projectPath, string outputResourceFile = null,
+            bool appendToExisting = false, bool replace = false)
         {
             outputResourceFile ??= Path.Combine(projectPath, "ResourceFile.cs");
 
@@ -72,27 +73,36 @@ namespace CoreBuilder
             // 1️⃣ Extract all strings first
             foreach (var file in files)
             {
-                if (ShouldIgnoreFile(file)) continue;
+                if (ShouldIgnoreFile(file))
+                {
+                    continue;
+                }
 
                 var code = File.ReadAllText(file);
                 var strings = ExtractStrings(code);
 
                 foreach (var str in strings)
+                {
                     allExtractedStrings.Add(str);
+                }
             }
 
             // 2️⃣ Generate string-to-resource map
-            var stringToResourceMap = GenerateResourceMap(allExtractedStrings, appendToExisting ? outputResourceFile : null);
+            var stringToResourceMap =
+                GenerateResourceMap(allExtractedStrings, appendToExisting ? outputResourceFile : null);
 
             if (replace)
             {
                 // 3️⃣ Rewrite source files
                 foreach (var file in files)
                 {
-                    if (ShouldIgnoreFile(file)) continue;
+                    if (ShouldIgnoreFile(file))
+                    {
+                        continue;
+                    }
 
                     var code = File.ReadAllText(file);
-                    var rewrite = new StringLiteralRewriter(stringToResourceMap);
+                    var rewrite = new StringLiteralRewrite(stringToResourceMap);
                     var rewrittenCode = rewrite.Rewrite(code);
 
                     if (code == rewrittenCode)
@@ -121,7 +131,7 @@ namespace CoreBuilder
         {
             // Check if it's on the ignore list or matches known patterns
             if (_ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern =>
-                filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
+                    filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
             {
                 return true;
             }
@@ -205,13 +215,14 @@ namespace CoreBuilder
 
 
         /// <summary>
-        /// Generates the resource map.
-        /// Generates a mapping of string to Resource key
+        ///     Generates the resource map.
+        ///     Generates a mapping of string to Resource key
         /// </summary>
         /// <param name="strings">The strings.</param>
         /// <param name="existingFile">The existing file.</param>
         /// <returns>Extracted strings.</returns>
-        private static Dictionary<string, string> GenerateResourceMap(IEnumerable<string> strings, string existingFile = null)
+        private static Dictionary<string, string> GenerateResourceMap(IEnumerable<string> strings,
+            string existingFile = null)
         {
             var map = new Dictionary<string, string>();
             var counter = 1;
@@ -219,7 +230,7 @@ namespace CoreBuilder
             if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
             {
                 // Parse existing keys if appending
-                foreach (var line in (string[])File.ReadAllLines(existingFile))
+                foreach (var line in File.ReadAllLines(existingFile))
                 {
                     var trimmed = line.Trim();
 
@@ -241,7 +252,9 @@ namespace CoreBuilder
             foreach (var str in strings.Distinct())
             {
                 if (!map.ContainsKey(str))
+                {
                     map[str] = $"Resource{counter++}";
+                }
             }
 
             return map;
@@ -253,7 +266,8 @@ namespace CoreBuilder
         /// <param name="resourceMap">The extracted strings.</param>
         /// <param name="outputFilePath">The output file path.</param>
         /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
-        private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string outputFilePath, bool appendToExisting)
+        private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string outputFilePath,
+            bool appendToExisting)
         {
             var resourceEntries = resourceMap.OrderBy(kvp => kvp.Value)
                 .Select(kvp => $"public static readonly string {kvp.Value} = \"{kvp.Key.Replace("\"", "\\\"")}\";")

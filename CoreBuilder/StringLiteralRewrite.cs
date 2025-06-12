@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder
 {
-    public class StringLiteralRewriter : CSharpSyntaxRewriter
+    internal sealed class StringLiteralRewrite : CSharpSyntaxRewriter
     {
         private readonly Dictionary<string, string> _stringToResourceMap;
 
-        public StringLiteralRewriter(Dictionary<string, string> stringToResourceMap)
+        internal StringLiteralRewrite(Dictionary<string, string> stringToResourceMap)
         {
             _stringToResourceMap = stringToResourceMap;
         }
 
-        public string Rewrite(string code)
+        internal string Rewrite(string code)
         {
             var tree = CSharpSyntaxTree.ParseText(code);
             var root = tree.GetRoot();
@@ -25,6 +24,8 @@ namespace CoreBuilder
 
         public override SyntaxNode VisitLiteralExpression(LiteralExpressionSyntax node)
         {
+            if (node == null) return null;
+
             if (!node.IsKind(SyntaxKind.StringLiteralExpression))
             {
                 return base.VisitLiteralExpression(node);
