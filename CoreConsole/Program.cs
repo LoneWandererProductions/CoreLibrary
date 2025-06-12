@@ -48,7 +48,9 @@ namespace CoreConsole
         /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
         {
-            Console.WriteLine("Core Console Application");
+            //add our analyzers
+            Analyzers.Add(new DoubleNewlineAnalyzer());
+            Analyzers.Add(new LicenseHeaderAnalyzer());
 
             if (args.Length < 2)
             {
@@ -117,6 +119,7 @@ namespace CoreConsole
             _prompt = new Prompt();
             _prompt.SendLogs += SendLogs;
             _prompt.SendCommands += SendCommands;
+            _prompt.Callback("Core Console Application");
             _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode);
             _prompt.AddCommands(ConResources.DctCommandOne, ConResources.UserSpaceCode);
             _prompt.Callback(Environment.NewLine);
@@ -183,7 +186,7 @@ namespace CoreConsole
                 // Simulate some work
                 _prompt.Callback("The application will close after a short delay.");
 
-                _prompt.Dispose();
+                _prompt?.Dispose();
                 // Introduce a small delay before closing
                 Thread.Sleep(3000); // Delay for 3000 milliseconds (3 seconds)
                 // Close the console application
@@ -327,10 +330,6 @@ namespace CoreConsole
             }
 
             var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
-
-            //add our analyzers
-            Analyzers.Add(new DoubleNewlineAnalyzer());
-            Analyzers.Add(new LicenseHeaderAnalyzer());
 
             var result = string.Empty;
 
