@@ -19,14 +19,17 @@ namespace CoreBuilder
     public interface IResourceExtractor
     {
         /// <summary>
-        ///     Processes the given project directory, extracting string literals
-        ///     and replacing them with resource references.
+        /// Processes the given project directory, extracting string literals
+        /// and replacing them with resource references.
         /// </summary>
         /// <param name="projectPath">The root directory of the C# project.</param>
         /// <param name="outputResourceFile">Path to generate the resource file.</param>
         /// <param name="appendToExisting">Indicates whether to append to an existing file or create a new one.</param>
-        /// <returns>List of changed Files with directory.</returns>
+        /// <param name="replace">if set to <c>true</c> [replace].</param>
+        /// <returns>
+        /// List of changed Files with directory.
+        /// </returns>
         List<string> ProcessProject(string projectPath, string outputResourceFile = null,
-            bool appendToExisting = false);
+            bool appendToExisting = false, bool replace = false);
     }
 }

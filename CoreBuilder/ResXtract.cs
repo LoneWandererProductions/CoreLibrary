@@ -52,11 +52,10 @@ namespace CoreBuilder
         /// <param name="projectPath">The root directory of the C# project.</param>
         /// <param name="outputResourceFile">Path to generate the resource file. If null, a default file will be used.</param>
         /// <param name="appendToExisting">If true, appends to the existing resource file, otherwise overwrites it.</param>
+        /// <param name="replace">if set to <c>true</c> [replace].</param>
         /// <returns>List of changed Files with directory.</returns>
-        public List<string> ProcessProject(string projectPath, string outputResourceFile = null,
-            bool appendToExisting = false)
+        public List<string> ProcessProject(string projectPath, string outputResourceFile = null, bool appendToExisting = false, bool replace = false)
         {
-            // If no output file is provided, set a default file path relative to the project path
             outputResourceFile ??= Path.Combine(projectPath, "ResourceFile.cs");
 
             var files = Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
@@ -67,28 +66,48 @@ namespace CoreBuilder
                             !f.Contains(@"\bin\", StringComparison.OrdinalIgnoreCase) &&
                             !f.Contains(@"\.vs\", StringComparison.OrdinalIgnoreCase));
 
-            var extractedStrings = new List<string>();
+            var allExtractedStrings = new HashSet<string>();
             var changedFiles = new List<string>();
 
+            // 1️⃣ Extract all strings first
             foreach (var file in files)
             {
-                if (ShouldIgnoreFile(file))
-                {
-                    continue;
-                }
+                if (ShouldIgnoreFile(file)) continue;
 
                 var code = File.ReadAllText(file);
-                var strings = ExtractStrings(code).ToList();
+                var strings = ExtractStrings(code);
 
-                if (strings.Any())
+                foreach (var str in strings)
+                    allExtractedStrings.Add(str);
+            }
+
+            // 2️⃣ Generate string-to-resource map
+            var stringToResourceMap = GenerateResourceMap(allExtractedStrings, appendToExisting ? outputResourceFile : null);
+
+            if (replace)
+            {
+                // 3️⃣ Rewrite source files
+                foreach (var file in files)
                 {
-                    extractedStrings.AddRange(strings);
-                    changedFiles.Add(Path.GetFullPath(file)); // Store full path of changed file
+                    if (ShouldIgnoreFile(file)) continue;
+
+                    var code = File.ReadAllText(file);
+                    var rewrite = new StringLiteralRewriter(stringToResourceMap);
+                    var rewrittenCode = rewrite.Rewrite(code);
+
+                    if (code == rewrittenCode)
+                    {
+                        continue;
+                    }
+
+                    File.WriteAllText(file, rewrittenCode);
+                    changedFiles.Add(Path.GetFullPath(file));
                 }
             }
 
-            GenerateResourceFile(extractedStrings.Distinct().ToList(), outputResourceFile, appendToExisting);
-            changedFiles.Add(Path.GetFullPath(outputResourceFile)); // Also include generated resource file
+            // 4️⃣ Generate the resource file
+            GenerateResourceFile(stringToResourceMap, outputResourceFile, appendToExisting);
+            changedFiles.Add(Path.GetFullPath(outputResourceFile));
 
             return changedFiles;
         }
@@ -102,7 +121,7 @@ namespace CoreBuilder
         {
             // Check if it's on the ignore list or matches known patterns
             if (_ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern =>
-                    filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
+                filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
             {
                 return true;
             }
@@ -164,73 +183,107 @@ namespace CoreBuilder
                 var index = 0;
                 foreach (var content in node.Contents)
                 {
-                    if (content is InterpolatedStringTextSyntax textPart)
+                    switch (content)
                     {
-                        staticParts.Add(textPart.TextToken.ValueText);
-                    }
-                    else if (content is InterpolationSyntax exprPart)
-                    {
-                        staticParts.Add($"{{{index}}}");
-                        placeholders.Add(exprPart.Expression.ToString());
-                        index++;
+                        case InterpolatedStringTextSyntax textPart:
+                            staticParts.Add(textPart.TextToken.ValueText);
+                            break;
+                        case InterpolationSyntax exprPart:
+                            staticParts.Add($"{{{index}}}");
+                            placeholders.Add(exprPart.Expression.ToString());
+                            index++;
+                            break;
                     }
                 }
 
-                var extractedString = string.Join("", staticParts);
+                var extractedString = string.Concat(staticParts);
                 interpolatedStrings.Add((node.ToString(), extractedString, placeholders));
             }
 
             return interpolatedStrings;
         }
 
+
+        /// <summary>
+        /// Generates the resource map.
+        /// Generates a mapping of string to Resource key
+        /// </summary>
+        /// <param name="strings">The strings.</param>
+        /// <param name="existingFile">The existing file.</param>
+        /// <returns>Extracted strings.</returns>
+        private static Dictionary<string, string> GenerateResourceMap(IEnumerable<string> strings, string existingFile = null)
+        {
+            var map = new Dictionary<string, string>();
+            var counter = 1;
+
+            if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
+            {
+                // Parse existing keys if appending
+                foreach (var line in (string[])File.ReadAllLines(existingFile))
+                {
+                    var trimmed = line.Trim();
+
+                    if (!(trimmed.StartsWith("public static readonly string Resource") ||
+                          trimmed.StartsWith("internal static readonly string Resource") ||
+                          trimmed.StartsWith("internal const string Resource")))
+                    {
+                        continue;
+                    }
+
+                    var name = trimmed.Split('=')[0].Split(' ').Last();
+                    var value = trimmed.Split('=')[1].Trim().Trim('"', ';');
+                    map[value] = name;
+                }
+
+                counter = map.Count + 1;
+            }
+
+            foreach (var str in strings.Distinct())
+            {
+                if (!map.ContainsKey(str))
+                    map[str] = $"Resource{counter++}";
+            }
+
+            return map;
+        }
+
         /// <summary>
         ///     Generates the resource file.
         /// </summary>
-        /// <param name="extractedStrings">The extracted strings.</param>
+        /// <param name="resourceMap">The extracted strings.</param>
         /// <param name="outputFilePath">The output file path.</param>
         /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
-        private static void GenerateResourceFile(IEnumerable<string> extractedStrings, string outputFilePath,
-            bool appendToExisting = false)
+        private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string outputFilePath, bool appendToExisting)
         {
-            var counter = 1;
-            var resourceStrings = (from str in extractedStrings
-                let resourceKey = $"Resource{counter++}"
-                select $"public static readonly string {resourceKey} = \"{str}\";").ToList();
+            var resourceEntries = resourceMap.OrderBy(kvp => kvp.Value)
+                .Select(kvp => $"public static readonly string {kvp.Value} = \"{kvp.Key.Replace("\"", "\\\"")}\";")
+                .ToList();
 
-            // Ensure the file is a valid C# file
             if (appendToExisting && File.Exists(outputFilePath))
             {
-                // Read the existing file to ensure we are appending within a valid class structure
                 var existingCode = File.ReadAllText(outputFilePath);
 
-                // Check if the file already contains a class with resources
                 if (!existingCode.Contains("public static class Resource"))
                 {
-                    // If no class exists, create one and append
                     existingCode = existingCode.TrimEnd() + "\npublic static class Resource {\n" +
-                                   string.Join("\n", resourceStrings) + "\n}\n";
-                    File.WriteAllText(outputFilePath, existingCode);
+                                   string.Join("\n", resourceEntries) + "\n}\n";
                 }
                 else
                 {
-                    // Otherwise, append the resource strings to the existing class
-                    var classStartIndex =
-                        existingCode.IndexOf("public static class Resource", StringComparison.Ordinal);
-                    var classEndIndex = existingCode.LastIndexOf("}", classStartIndex, StringComparison.Ordinal);
-
-                    var beforeClass = existingCode.Substring(0, classEndIndex);
-                    var afterClass = existingCode.Substring(classEndIndex);
-
-                    // Append inside the class but outside of any existing methods
-                    var updatedClass = beforeClass + "\n" + string.Join("\n", resourceStrings) + "\n" + afterClass;
-                    File.WriteAllText(outputFilePath, updatedClass);
+                    var classEndIndex = existingCode.LastIndexOf('}');
+                    var updated = existingCode.Substring(0, classEndIndex) +
+                                  "\n" + string.Join("\n", resourceEntries) + "\n" +
+                                  existingCode.Substring(classEndIndex);
+                    existingCode = updated;
                 }
+
+                File.WriteAllText(outputFilePath, existingCode);
             }
             else
             {
-                // Create a new file (or overwrite if it exists)
-                var newClassContent = "public static class Resource {\n" + string.Join("\n", resourceStrings) + "\n}";
-                File.WriteAllText(outputFilePath, newClassContent);
+                var classDef = "public static class Resource {\n" +
+                               string.Join("\n", resourceEntries) + "\n}";
+                File.WriteAllText(outputFilePath, classDef);
             }
         }
     }
