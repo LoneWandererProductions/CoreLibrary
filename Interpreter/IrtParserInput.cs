@@ -34,7 +34,7 @@ namespace Interpreter
         /// <summary>
         ///     Extension Command Register
         /// </summary>
-        private static Dictionary<int, InCommand> _extension;
+        private static Dictionary<int, InCommand>? _extension;
 
         /// <summary>
         ///     My request identifier
@@ -125,7 +125,7 @@ namespace Interpreter
             _irtExtension = new IrtExtension();
             _irtHandleInternal = new IrtHandleInternal(use.Commands, use.UserSpaceName, _prompt);
             _irtHandleExtensionInternal =
-                new IrtHandleExtensionInternal(this, use.Commands, _prompt, _irtHandleInternal);
+                new IrtHandleExtensionInternal(this, use.Commands, _prompt, _irtHandleInternal, _userFeedback);
 
             // Notify log about loading up
             var log = Logging.SetLastError(IrtConst.InformationStartup, 2);

@@ -30,6 +30,11 @@ namespace Interpreter
         private Dictionary<int, InCommand> _commands;
 
         /// <summary>
+        /// The user feedback, only for external extensions.
+        /// </summary>
+        private Dictionary<int, UserFeedback> _userFeedback;
+
+        /// <summary>
         ///     Indicates whether the object has been disposed.
         /// </summary>
         private bool _disposed;
@@ -57,18 +62,20 @@ namespace Interpreter
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IrtHandleExtensionInternal" /> class with specified parameters.
+        /// Initializes a new instance of the <see cref="IrtHandleExtensionInternal" /> class with specified parameters.
         /// </summary>
         /// <param name="irtPrompt">Instance of IrtParser.</param>
         /// <param name="commands">Dictionary of commands.</param>
         /// <param name="prompt">Instance of Prompt.</param>
         /// <param name="irtInternal">Instance of IrtHandleInternal.</param>
+        /// <param name="userFeedback">The user feedback.</param>
         public IrtHandleExtensionInternal(IrtParserInput irtPrompt, Dictionary<int, InCommand> commands, Prompt prompt,
-            IrtHandleInternal irtInternal)
+            IrtHandleInternal irtInternal, Dictionary<int, UserFeedback> userFeedback = null)
         {
             _irtHandlePrompt = irtPrompt;
             _commands = commands;
             _prompt = prompt;
+            _userFeedback = userFeedback;
             _prompt.HandleFeedback += HandleFeedback;
             _myRequestId = Guid.NewGuid().ToString();
             _irtHandleInternal = irtInternal;
@@ -119,13 +126,14 @@ namespace Interpreter
         private void ProcessHelpCommand(ExtensionCommands extension)
         {
             var key = IrtKernel.CheckForKeyWord(extension.BaseCommand, IrtConst.InternCommands);
+
             if (key != IrtConst.Error)
             {
                 HandleInternalCommand(extension, key);
             }
             else
             {
-                HandleExternalCommand(extension);
+                HandleExternalCommand(extension, _userFeedback);
             }
         }
 
@@ -144,15 +152,22 @@ namespace Interpreter
                 irtInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
             }
 
-            var feedback = IrtConst.InternalFeedback[-1];
-            var feedbackReceiver = new IrtFeedback
+            //if none is avaiable use the standard one from Internal
+            //if not we use the provided one
+            if (_userFeedback?.TryGetValue(extension.FeedBackId, out var feedback) != true)
             {
-                RequestId = _myRequestId,
-                Feedback = feedback,
-                BranchId = 11,
-                Key = key,
-                Command = extension.BaseCommand
-            };
+                feedback = IrtConst.InternalFeedback[-1];
+            }
+
+            var feedbackReceiver = new IrtFeedback
+                {
+                    RequestId = _myRequestId,
+                    Feedback = feedback,
+                    BranchId = 11,
+                    Key = key,
+                    Command = extension.BaseCommand
+                };
+
             _prompt.RequestFeedback(feedbackReceiver);
         }
 
@@ -160,12 +175,13 @@ namespace Interpreter
         ///     Handles external commands.
         /// </summary>
         /// <param name="extension">The extension command.</param>
-        private void HandleExternalCommand(ExtensionCommands extension)
+        private void HandleExternalCommand(ExtensionCommands extension, Dictionary<int, UserFeedback> userFeedback)
         {
             var com = _irtHandlePrompt.ProcessInput(extension.BaseCommand);
             var command = _commands[com.Command];
             _irtHandleInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
 
+            //TODO completly wrong here
             var feedback = IrtConst.InternalFeedback[-1];
 
             var feedbackReceiver = new IrtFeedback

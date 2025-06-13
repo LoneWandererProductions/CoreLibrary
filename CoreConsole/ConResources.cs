@@ -85,6 +85,36 @@ namespace CoreConsole
         };
 
         /// <summary>
+        ///     For commands that need your feedback
+        /// </summary>
+        internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
+
+        internal static readonly Dictionary<int, InCommand> ExtensionCommands = new()
+        {
+            {
+                Header, new InCommand
+                {
+                    Command = "dryrun",
+                    ParameterCount = 0,
+                    FeedbackId =1,
+                    Description =
+                        "Show results and optional run commands"
+                }
+            }
+        };
+
+        private static readonly UserFeedback ReplaceFeedback = new()
+        {
+            Before = true,
+            Message = "Do you want to commit the following changes?",
+            Options = new Dictionary<AvailableFeedback, string>
+            {
+                { AvailableFeedback.Yes, "If you want to execute the Command type yes" },
+                { AvailableFeedback.No, " If you want to stop executing the Command type no." }
+            }
+        };
+
+        /// <summary>
         /// The resource1
         /// </summary>
         internal const string ResourceHeader = "header";

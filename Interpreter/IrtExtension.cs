@@ -92,6 +92,7 @@ namespace Interpreter
                 // Check for parameter overload
                 var overloadCheck = IrtKernel.CheckOverload(extensionCommands[commandKey].Command, parameters.Count,
                     extensionCommands);
+
                 if (overloadCheck == null)
                 {
                     return (null, IrtConst.ParameterMismatch);
@@ -104,6 +105,8 @@ namespace Interpreter
             exCommand.ExtensionNameSpace = nameSpace;
             exCommand.ExtensionCommand = commandKey;
             exCommand.ExtensionParameter = parameters;
+            //get the feedback id
+            exCommand.FeedBackId = extensionCommands[commandKey].FeedbackId;
             exCommand.BaseCommand = baseCommand;
 
             return (exCommand, IrtConst.ExtensionFound);

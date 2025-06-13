@@ -34,6 +34,14 @@ namespace Interpreter
         ///     Gets or sets the parameter.
         /// </summary>
         public List<string> ExtensionParameter { get; internal set; }
+        /// <summary>
+        /// Gets the feedback identifier.
+        /// Define the feedback id
+        /// </summary>
+        /// <value>
+        /// The feedback identifier.
+        /// </value>
+        public int FeedBackId { get; internal set; }
 
         /// <summary>
         ///     Gets or sets the base command.

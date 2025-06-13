@@ -30,11 +30,6 @@ namespace InterpreteTests
         private static OutCommand _outCommand;
 
         /// <summary>
-        ///     The user feedback
-        /// </summary>
-        private readonly Dictionary<int, UserFeedback> _userFeedback = new();
-
-        /// <summary>
         ///     Feedback and extension test.
         /// </summary>
         [TestMethod]

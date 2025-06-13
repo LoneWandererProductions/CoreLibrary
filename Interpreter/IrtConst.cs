@@ -298,7 +298,6 @@ namespace Interpreter
         /// </summary>
         internal const char AdvancedOpen = '{';
 
-
         /// <summary>
         ///     The close Clause, Standard is')'
         /// </summary>
@@ -394,7 +393,7 @@ namespace Interpreter
             Options = new Dictionary<AvailableFeedback, string>
             {
                 { AvailableFeedback.Yes, "If you want to execute the Command type yes" },
-                { AvailableFeedback.No, " if you want to stop executing the Command." }
+                { AvailableFeedback.No, " If you want to stop executing the Command type no." }
             }
         };
 
@@ -582,7 +581,6 @@ namespace Interpreter
             }
         };
 
-
         /// <summary>
         ///     Basic internal Help
         /// </summary>
@@ -627,6 +625,7 @@ namespace Interpreter
             );
         }
 
+        //TODO build everthing as a query with goto and if else
         //TODO add repeat as internal replacement for while
         //TODO add while
         //TODO add void Sub Procedure.
