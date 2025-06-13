@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 using Interpreter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,6 +29,25 @@ namespace InterpreteTests
         ///     The out command
         /// </summary>
         private static OutCommand _outCommand;
+
+        /// <summary>
+        ///     For commands that need your feedback
+        /// </summary>
+        internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
+
+        /// <summary>
+        /// The replace feedback
+        /// </summary>
+        private static readonly UserFeedback ReplaceFeedback = new()
+        {
+            Before = true,
+            Message = "Do you want to commit the following changes?",
+            Options = new Dictionary<AvailableFeedback, string>
+            {
+                { AvailableFeedback.Yes, "If you want to execute the Command type yes" },
+                { AvailableFeedback.No, " If you want to stop executing the Command type no." }
+            }
+        };
 
         /// <summary>
         ///     Feedback and extension test.
@@ -85,6 +105,64 @@ namespace InterpreteTests
             Trace.WriteLine(_log);
             Trace.WriteLine(_outCommand.ToString());
         }
+
+        /// <summary>
+        ///     Feedback and extension external test.
+        /// </summary>
+        [TestMethod]
+        public void FeedbackExtensionExternal()
+        {
+            // Arrange
+            var dctCommandOne = new Dictionary<int, InCommand>
+            {
+                { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
+                {
+                    1,
+                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                },
+                {
+                    2,
+                    new InCommand
+                    {
+                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
+                }
+            };
+
+            // Act
+            var prompt = new Prompt();
+            prompt.SendLogs += SendLogs;
+            prompt.SendCommands += SendCommands;
+            //prompt.Initiate(dctCommandOne, "UserSpace 1", extension: Feedback);
+            //prompt.ConsoleInput("coM1(1,2).Help()");
+            //prompt.ConsoleInput("");
+
+
+            //Assert.IsFalse(_log.Contains("Help com1"), "No help provided.");
+            //// Assert
+            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
+
+            //prompt.ConsoleInput("mehh");
+
+            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
+
+            //prompt.ConsoleInput(" yeS   ");
+
+            //Trace.WriteLine(_outCommand.ToString());
+
+            //Assert.IsNotNull(_outCommand, "Out Command was not empty.");
+
+            //prompt.ConsoleInput("List().Help()");
+            //Assert.IsTrue(_log.Contains("You now have the following Options:"), "Wrong Options provided.");
+
+            //prompt.ConsoleInput("YeS   ");
+
+            //Assert.IsTrue(_log.Contains("Special case"), "Wrong Commands listed");
+
+            //Trace.WriteLine(_log);
+            //Trace.WriteLine(_outCommand.ToString());
+        }
+
 
         /// <summary>
         ///     Listen to Messages
