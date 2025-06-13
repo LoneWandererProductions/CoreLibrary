@@ -147,26 +147,28 @@ namespace Interpreter
             var command = IrtConst.InternCommands[key];
 
             using (var irtInternal =
-                   new IrtHandleInternal(IrtConst.InternCommands, IrtConst.InternalNameSpace, _prompt))
+                new IrtHandleInternal(IrtConst.InternCommands, IrtConst.InternalNameSpace, _prompt))
             {
                 irtInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
             }
 
+            UserFeedback feedback = null;
+
             //if none is avaiable use the standard one from Internal
             //if not we use the provided one
-            if (_userFeedback?.TryGetValue(extension.FeedBackId, out var feedback) != true)
+            if (_userFeedback?.TryGetValue(extension.FeedBackId, out feedback) != true)
             {
                 feedback = IrtConst.InternalFeedback[-1];
             }
 
             var feedbackReceiver = new IrtFeedback
-                {
-                    RequestId = _myRequestId,
-                    Feedback = feedback,
-                    BranchId = 11,
-                    Key = key,
-                    Command = extension.BaseCommand
-                };
+            {
+                RequestId = _myRequestId,
+                Feedback = feedback,
+                BranchId = 11,
+                Key = key,
+                Command = extension.BaseCommand
+            };
 
             _prompt.RequestFeedback(feedbackReceiver);
         }
