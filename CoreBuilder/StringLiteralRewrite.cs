@@ -24,7 +24,10 @@ namespace CoreBuilder
 
         public override SyntaxNode VisitLiteralExpression(LiteralExpressionSyntax node)
         {
-            if (node == null) return null;
+            if (node == null)
+            {
+                return null;
+            }
 
             if (!node.IsKind(SyntaxKind.StringLiteralExpression))
             {

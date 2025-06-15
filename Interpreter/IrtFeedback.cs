@@ -87,7 +87,8 @@ namespace Interpreter
         /// </summary>
         public override string ToString()
         {
-            return $"[Feedback: Cmd={Command}, Key={Key}, ReqId={RequestId}, Branch={BranchId}, Output={AwaitedOutput}]";
+            return
+                $"[Feedback: Cmd={Command}, Key={Key}, ReqId={RequestId}, Branch={BranchId}, Output={AwaitedOutput}]";
         }
     }
 }

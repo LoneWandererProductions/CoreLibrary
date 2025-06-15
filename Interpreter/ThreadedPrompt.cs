@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Interpreter
 {
-    //TODO implement for multihreading
+    //TODO implement for multi threading
     public class ThreadedPrompt
     {
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<string>> _pendingInputs;

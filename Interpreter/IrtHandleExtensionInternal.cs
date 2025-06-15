@@ -30,11 +30,6 @@ namespace Interpreter
         private Dictionary<int, InCommand> _commands;
 
         /// <summary>
-        /// The user feedback, only for external extensions.
-        /// </summary>
-        private Dictionary<int, UserFeedback> _userFeedback;
-
-        /// <summary>
         ///     Indicates whether the object has been disposed.
         /// </summary>
         private bool _disposed;
@@ -55,6 +50,11 @@ namespace Interpreter
         private Prompt _prompt;
 
         /// <summary>
+        ///     The user feedback, only for external extensions.
+        /// </summary>
+        private readonly Dictionary<int, UserFeedback> _userFeedback;
+
+        /// <summary>
         ///     Prevents a default instance of the <see cref="IrtHandleExtensionInternal" /> class from being created.
         /// </summary>
         private IrtHandleExtensionInternal()
@@ -62,7 +62,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IrtHandleExtensionInternal" /> class with specified parameters.
+        ///     Initializes a new instance of the <see cref="IrtHandleExtensionInternal" /> class with specified parameters.
         /// </summary>
         /// <param name="irtPrompt">Instance of IrtParser.</param>
         /// <param name="commands">Dictionary of commands.</param>
@@ -133,7 +133,7 @@ namespace Interpreter
             }
             else
             {
-                HandleExternalCommand(extension, _userFeedback);
+                HandleExternalCommand(extension);
             }
         }
 
@@ -147,16 +147,14 @@ namespace Interpreter
             var command = IrtConst.InternCommands[key];
 
             using (var irtInternal =
-                new IrtHandleInternal(IrtConst.InternCommands, IrtConst.InternalNameSpace, _prompt))
+                   new IrtHandleInternal(IrtConst.InternCommands, IrtConst.InternalNameSpace, _prompt))
             {
                 irtInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
             }
 
-            UserFeedback feedback = null;
-
-            //if none is avaiable use the standard one from Internal
+            //if none is available use the standard one from Internal
             //if not we use the provided one
-            if (_userFeedback?.TryGetValue(extension.FeedBackId, out feedback) != true)
+            if (_userFeedback?.TryGetValue(extension.FeedBackId, out var feedback) != true)
             {
                 feedback = IrtConst.InternalFeedback[-1];
             }
@@ -174,10 +172,10 @@ namespace Interpreter
         }
 
         /// <summary>
-        ///     Handles external commands.
+        /// Handles external commands.
         /// </summary>
         /// <param name="extension">The extension command.</param>
-        private void HandleExternalCommand(ExtensionCommands extension, Dictionary<int, UserFeedback> userFeedback)
+        private void HandleExternalCommand(ExtensionCommands extension)
         {
             var com = _irtHandlePrompt.ProcessInput(extension.BaseCommand);
             var command = _commands[com.Command];

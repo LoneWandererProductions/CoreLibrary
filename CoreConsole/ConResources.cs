@@ -42,6 +42,57 @@ namespace CoreConsole
         internal const int Analyzer = 3;
 
         /// <summary>
+        ///     The resource1
+        /// </summary>
+        internal const string ResourceHeader = "header";
+
+        internal const string ResourceEventTriggered = "Event triggered. Processing...";
+
+        internal const string ResourceEventProcessing = "Event processing completed.";
+
+        internal const string ResourceCsExtension = "*.cs";
+
+        internal const string ResourceListCmd = "list";
+
+        internal const string ResourceInput = "Enter something: ";
+
+        internal const string ResourceResxtract = "resxtract";
+
+        internal const string ResourceResxtractOutput = "Resxtract operation completed successfully: {0} created.{1}";
+
+        internal const string ResourceEventWait = "Event is processing. Please wait...";
+
+        internal const string ResourceUsingCmd = "using";
+
+        internal const string ErrorDirectory = "Error: Directory path '{0}' does not exist.";
+
+        internal const string ErrorProjectPath = "Error: The project path '{0}' does not exist.";
+
+        internal const string ErrorDirectoryOutput =
+            "Error: The directory for output resource file '{0}' does not exist.";
+
+        internal const string ErrorAccessFile = "Error accessing output resource file: {0}";
+
+        internal const string Resource12 = "The application will close after a short delay.";
+        internal const string Resource13 = "Error: Command not found.";
+        internal const string Resource14 = "Directory path is required.";
+        internal const string Resource15 = "Error: Project path is required.";
+        internal const string Resource16 = "Resxtract operation completed: No string literals found to extract.";
+        internal const string Resource17 = "  - ";
+
+        internal const string Resource19 = "\"";
+
+        internal const string Resource20 = "Loaded {0} files to ignore.";
+        internal const string Resource21 = "Error loading regex pattern: {0}. Exception: {1}";
+        internal const string Resource22 = "Loaded {0} ignore patterns.";
+
+
+        internal const string Resource28 = "Changed files:{0}  - {1}";
+        internal const string Resource3 = "Invalid arguments or operation.";
+        internal const string Resource4 = "Press any key to exit...";
+        internal const string Resource5 = "Core Console Application";
+
+        /// <summary>
         ///     The available commands
         /// </summary>
         internal static readonly Dictionary<int, InCommand> DctCommandOne = new()
@@ -96,7 +147,7 @@ namespace CoreConsole
                 {
                     Command = "dryrun",
                     ParameterCount = 0,
-                    FeedbackId =1,
+                    FeedbackId = 1,
                     Description =
                         "Show results and optional run commands"
                 }
@@ -113,56 +164,5 @@ namespace CoreConsole
                 { AvailableFeedback.No, " If you want to stop executing the Command type no." }
             }
         };
-
-        /// <summary>
-        /// The resource1
-        /// </summary>
-        internal const string ResourceHeader = "header";
-
-        internal const string ResourceEventTriggered = "Event triggered. Processing...";
-
-        internal const string ResourceEventProcessing = "Event processing completed.";
-
-        internal const string ResourceCsExtension = "*.cs";
-
-        internal const string ResourceListCmd = "list";
-
-        internal const string ResourceInput = "Enter something: ";
-
-        internal const string ResourceResxtract = "resxtract";
-
-        internal const string ResourceResxtractOutput = "Resxtract operation completed successfully: {0} created.{1}";
-
-        internal const string ResourceEventWait = "Event is processing. Please wait...";
-
-        internal const string ResourceUsingCmd = "using";
-
-        internal const string ErrorDirectory = "Error: Directory path '{0}' does not exist.";
-
-        internal const string ErrorProjectPath = "Error: The project path '{0}' does not exist.";
-
-        internal const string ErrorDirectoryOutput = "Error: The directory for output resource file '{0}' does not exist.";
-
-        internal const string ErrorAccessFile = "Error accessing output resource file: {0}";
-
-        internal const string Resource12 = "The application will close after a short delay.";
-        internal const string Resource13 = "Error: Command not found.";
-        internal const string Resource14 = "Directory path is required.";
-        internal const string Resource15 = "Error: Project path is required.";
-        internal const string Resource16 = "Resxtract operation completed: No string literals found to extract.";
-        internal const string Resource17 = "  - ";
-
-        internal const string Resource19 = "\"";
-
-        internal const string Resource20 = "Loaded {0} files to ignore.";
-        internal const string Resource21 = "Error loading regex pattern: {0}. Exception: {1}";
-        internal const string Resource22 = "Loaded {0} ignore patterns.";
-
-
-        internal const string Resource28 = "Changed files:{0}  - {1}";
-        internal const string Resource3 = "Invalid arguments or operation.";
-        internal const string Resource4 = "Press any key to exit...";
-        internal const string Resource5 = "Core Console Application";
-
     }
 }

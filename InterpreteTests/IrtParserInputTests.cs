@@ -14,23 +14,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace InterpreteTests
 {
     /// <summary>
-    /// IrtParserInput Test Class
+    ///     IrtParserInput Test Class
     /// </summary>
     [TestClass]
     public class IrtParserInputTests
     {
         /// <summary>
-        /// The parser input
+        ///     The parser input
         /// </summary>
         private IrtParserInput _parserInput;
 
         /// <summary>
-        /// The prompt
+        ///     The prompt
         /// </summary>
         private Prompt _prompt;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -44,15 +44,11 @@ namespace InterpreteTests
                 { 1, new InCommand { Command = "help", ParameterCount = 0 } }
             };
 
-            IrtParserInput.SwitchUserSpace(new UserSpace
-            {
-                Commands = commandDict,
-                UserSpaceName = "TestSpace"
-            });
+            IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "TestSpace" });
         }
 
         /// <summary>
-        /// Switches the user space changes user space.
+        ///     Switches the user space changes user space.
         /// </summary>
         [TestMethod]
         public void SwitchUserSpaceChangesUserSpace()
@@ -62,11 +58,7 @@ namespace InterpreteTests
                 { 5, new InCommand { Command = "newcmd", ParameterCount = 0 } }
             };
 
-            var newSpace = new UserSpace
-            {
-                UserSpaceName = "NewSpace",
-                Commands = newCommands
-            };
+            var newSpace = new UserSpace { UserSpaceName = "NewSpace", Commands = newCommands };
 
             IrtParserInput.SwitchUserSpace(newSpace);
 
@@ -85,11 +77,7 @@ namespace InterpreteTests
                 { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } }
             };
 
-            IrtParserInput.SwitchUserSpace(new UserSpace
-            {
-                Commands = commandDict,
-                UserSpaceName = "DefaultSpace"
-            });
+            IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
             var input = "com1(1,2)";
 
@@ -104,7 +92,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Processes the input returns null for unknown command.
+        ///     Processes the input returns null for unknown command.
         /// </summary>
         [TestMethod]
         public void ProcessInputReturnsNullForUnknownCommand()
@@ -115,11 +103,7 @@ namespace InterpreteTests
                 { 0, new InCommand { Command = "com1", ParameterCount = 2 } }
             };
 
-            IrtParserInput.SwitchUserSpace(new UserSpace
-            {
-                Commands = commandDict,
-                UserSpaceName = "DefaultSpace"
-            });
+            IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
             var input = "unknown(1,2)";
 
@@ -131,7 +115,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Processes the input returns null for wrong parameter count.
+        ///     Processes the input returns null for wrong parameter count.
         /// </summary>
         [TestMethod]
         public void ProcessInputReturnsNullForWrongParameterCount()
@@ -142,11 +126,7 @@ namespace InterpreteTests
                 { 0, new InCommand { Command = "com1", ParameterCount = 2 } }
             };
 
-            IrtParserInput.SwitchUserSpace(new UserSpace
-            {
-                Commands = commandDict,
-                UserSpaceName = "DefaultSpace"
-            });
+            IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
             var input = "com1(1)"; // only 1 parameter, should be 2
 
@@ -158,7 +138,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Processes the input handles single parameter command.
+        ///     Processes the input handles single parameter command.
         /// </summary>
         [TestMethod]
         public void ProcessInputHandlesSingleParameterCommand()
@@ -169,11 +149,7 @@ namespace InterpreteTests
                 { 1, new InCommand { Command = "com2", ParameterCount = 1 } }
             };
 
-            IrtParserInput.SwitchUserSpace(new UserSpace
-            {
-                Commands = commandDict,
-                UserSpaceName = "Space2"
-            });
+            IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "Space2" });
 
             var input = "com2(123)";
 
@@ -187,7 +163,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Handles the input help command works.
+        ///     Handles the input help command works.
         /// </summary>
         [TestMethod]
         public void HandleInputHelpCommandWorks()
@@ -197,7 +173,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Handles the input empty line handled gracefully.
+        ///     Handles the input empty line handled gracefully.
         /// </summary>
         [TestMethod]
         public void HandleInputEmptyLineHandledGracefully()
@@ -207,7 +183,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Disposes the can be called multiple times safely.
+        ///     Disposes the can be called multiple times safely.
         /// </summary>
         [TestMethod]
         public void DisposeCanBeCalledMultipleTimesSafely()

@@ -24,7 +24,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="block">The block.</param>
         /// <returns>Our if clause ready to be added to Command Register</returns>
-        internal static List<(string Category, string Value)> GenerateIfElseCommands(string block)
+        internal static IEnumerable<(string Category, string Value)> GenerateIfElseCommands(string block)
         {
             var ifElse = ParseIfElseClauses(block);
             var categorizeIfElse = CategorizeIfElseClauses(ifElse);

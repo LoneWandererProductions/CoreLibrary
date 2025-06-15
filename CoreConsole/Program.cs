@@ -5,6 +5,7 @@
 * PURPOSE:     Basic Console app, to get my own tools running
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,22 +26,26 @@ namespace CoreConsole
         ///     The prompt
         /// </summary>
         private static Prompt _prompt;
+
         /// <summary>
         ///     The console lock
         /// </summary>
         private static readonly object ConsoleLock = new();
+
         /// <summary>
         ///     The is event triggered
         /// </summary>
         private static bool _isEventTriggered;
+
         /// <summary>
         ///     The analyzers
         /// </summary>
         private static readonly List<ICodeAnalyzer> Analyzers = new();
+
         /// <summary>
         ///     Defines the entry point of the application.
         /// </summary>
-        /// <param name = "args">The arguments.</param>
+        /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
         {
             //add our analyzers
@@ -69,7 +74,7 @@ namespace CoreConsole
                     if (args.Length > 3 && File.Exists(args[3]))
                     {
                         ignoreList = new List<string>(File.ReadAllLines(args[3]));
-                        Console.WriteLine(string.Format(ConResources.Resource20, ignoreList.Count));
+                        Console.WriteLine(ConResources.Resource20, ignoreList.Count);
                     }
 
                     if (args.Length > 4 && File.Exists(args[4]))
@@ -82,11 +87,11 @@ namespace CoreConsole
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(string.Format(ConResources.Resource21, pattern, ex.Message));
+                                Console.WriteLine(ConResources.Resource21, pattern, ex.Message);
                             }
                         }
 
-                        Console.WriteLine(string.Format(ConResources.Resource22, ignorePatterns.Count));
+                        Console.WriteLine(ConResources.Resource22, ignorePatterns.Count);
                     }
 
                     IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
@@ -116,6 +121,7 @@ namespace CoreConsole
             _prompt.ConsoleInput(ConResources.ResourceUsingCmd);
             _prompt.Callback(Environment.NewLine);
             _prompt.ConsoleInput(ConResources.ResourceListCmd);
+
             while (true)
             {
                 lock (ConsoleLock)
@@ -139,8 +145,8 @@ namespace CoreConsole
         /// <summary>
         ///     Sends the commands.
         /// </summary>
-        /// <param name = "sender">The sender.</param>
-        /// <param name = "e">The e.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
         private static void SendCommands(object sender, OutCommand e)
         {
             lock (ConsoleLock)
@@ -157,7 +163,7 @@ namespace CoreConsole
         /// <summary>
         ///     Handles the commands.
         /// </summary>
-        /// <param name = "outCommand">The out command.</param>
+        /// <param name="outCommand">The out command.</param>
         private static void HandleCommands(OutCommand outCommand)
         {
             if (outCommand.Command == -1)
@@ -205,7 +211,7 @@ namespace CoreConsole
         /// <summary>
         ///     Handles the header.
         /// </summary>
-        /// <param name = "package">The package.</param>
+        /// <param name="package">The package.</param>
         /// <returns>Added headers.</returns>
         private static string HandleHeader(OutCommand package)
         {
@@ -227,7 +233,7 @@ namespace CoreConsole
         /// <summary>
         ///     Handles the resource xtract.
         /// </summary>
-        /// <param name = "package">The package.</param>
+        /// <param name="package">The package.</param>
         /// <returns>Result of the extraction.</returns>
         private static string HandleResxtract(OutCommand package)
         {
@@ -262,7 +268,7 @@ namespace CoreConsole
                     // Optional: warn if file exists
                     if (File.Exists(outputResourceFile))
                     {
-                    // Could add a warning here
+                        // Could add a warning here
                     }
                 }
                 catch (Exception ex)
@@ -274,21 +280,24 @@ namespace CoreConsole
             var ignoreList = new List<string>();
             var ignorePatterns = new List<string>();
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
-            var changedFiles = extractor.ProcessProject(projectPath, outputResourceFile, replace: true); // `null` is okay here
+            var changedFiles =
+                extractor.ProcessProject(projectPath, outputResourceFile, replace: true); // `null` is okay here
             if (changedFiles.Count == 0)
             {
                 return ConResources.Resource16;
             }
 
             var actualOutputFile = changedFiles.Last(); // Last item is outputResourceFile (by design)
-            var changedFilesList = string.Join(Environment.NewLine + ConResources.Resource17, changedFiles.Take(changedFiles.Count - 1));
-            return string.Format(ConResources.ResourceResxtractOutput, actualOutputFile, Environment.NewLine) + string.Format(ConResources.Resource28, Environment.NewLine, changedFilesList);
+            var changedFilesList = string.Join(Environment.NewLine + ConResources.Resource17,
+                changedFiles.Take(changedFiles.Count - 1));
+            return string.Format(ConResources.ResourceResxtractOutput, actualOutputFile, Environment.NewLine) +
+                   string.Format(ConResources.Resource28, Environment.NewLine, changedFilesList);
         }
 
         /// <summary>
         ///     Runs the analyzers.
         /// </summary>
-        /// <param name = "package">The package.</param>
+        /// <param name="package">The package.</param>
         /// <returns>Result of code analysis.</returns>
         private static string RunAnalyzers(OutCommand package)
         {
@@ -338,8 +347,8 @@ namespace CoreConsole
         /// <summary>
         ///     Listen to Messages
         /// </summary>
-        /// <param name = "sender">Object</param>
-        /// <param name = "e">Type</param>
+        /// <param name="sender">Object</param>
+        /// <param name="e">Type</param>
         private static void SendLogs(object sender, string e)
         {
             lock (ConsoleLock)

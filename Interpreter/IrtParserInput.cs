@@ -24,12 +24,12 @@ namespace Interpreter
         /// <summary>
         ///     Command Register
         /// </summary>
-        private static Dictionary<int, InCommand> _com;
+        private static Dictionary<int, InCommand>? _com;
 
         /// <summary>
         ///     Namespace of Commands
         /// </summary>
-        private static string _nameSpace;
+        private static string? _nameSpace;
 
         /// <summary>
         ///     Extension Command Register

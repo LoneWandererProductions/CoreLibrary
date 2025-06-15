@@ -53,6 +53,7 @@ namespace Interpreter
                     }
 
                     // Isolate the if-else block and the remaining input
+                    //TODO else is unused
                     input = input.Substring(ifIndex);
                     var (ifElseBlock, elsePosition) = IrtKernel.ExtractFirstIfElse(input);
 

@@ -8,7 +8,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection.PortableExecutable;
 using Interpreter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -36,7 +35,7 @@ namespace InterpreteTests
         internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
-        /// The replace feedback
+        ///     The replace feedback
         /// </summary>
         private static readonly UserFeedback ReplaceFeedback = new()
         {
@@ -117,10 +116,12 @@ namespace InterpreteTests
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
                 {
-                    1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                    1,
+                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
                 },
                 {
-                    2, new InCommand
+                    2,
+                    new InCommand
                     {
                         Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
                     }
@@ -145,7 +146,7 @@ namespace InterpreteTests
             var prompt = new Prompt();
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
-            prompt.Initiate(dctCommandOne, "UserSpace 1", extension: extensionCommands, Feedback);
+            prompt.Initiate(dctCommandOne, "UserSpace 1", extensionCommands, Feedback);
             prompt.ConsoleInput("coM1(1,2).Dryrun()");
             prompt.ConsoleInput("");
 

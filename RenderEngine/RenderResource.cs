@@ -17,7 +17,7 @@
 
         internal const string ShaderSkyboxFragment = "skybox_fragment.glsl";
 
-        internal static readonly string ErrorLayerSizeMismatch = "Layer size mismatch.";
+        internal const string ErrorLayerSizeMismatch = "Layer size mismatch.";
 
         internal static readonly string Resource10 = "right.jpg";
         internal static readonly string Resource11 = "left.jpg";
