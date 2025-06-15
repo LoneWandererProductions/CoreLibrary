@@ -188,7 +188,7 @@ namespace CoreConsole
                     result = HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
-                case ConResources.ResxtractOverload:
+                case ConResources.ResXtractOverload:
                     result = HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;

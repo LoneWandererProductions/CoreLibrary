@@ -9,12 +9,14 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Diagnostics;
 
 namespace Interpreter
 {
     /// <summary>
     ///     Simple Element of the Register
     /// </summary>
+    [DebuggerDisplay("{ToString()}")]
     public sealed class InCommand
     {
         /// <summary>

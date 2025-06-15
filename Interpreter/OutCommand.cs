@@ -7,6 +7,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace Interpreter
     /// <summary>
     ///     Only simple Methods with Parameter that are not Collections for now
     /// </summary>
+    [DebuggerDisplay("{ToString()}")]
     public sealed class OutCommand
     {
         /// <summary>

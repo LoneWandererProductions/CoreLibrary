@@ -277,7 +277,7 @@ namespace Interpreter
             }
 
             _count++;
-            Log.Add(_count, message);
+            Log?.Add(_count, message);
         }
 
         /// <summary>

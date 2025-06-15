@@ -117,14 +117,26 @@ namespace InterpreteTests
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
                 {
-                    1,
-                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                    1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
                 },
                 {
-                    2,
-                    new InCommand
+                    2, new InCommand
                     {
                         Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
+                }
+            };
+
+            Dictionary<int, InCommand> extensionCommands = new()
+            {
+                {
+                    0, new InCommand
+                    {
+                        Command = "dryrun",
+                        ParameterCount = 0,
+                        FeedbackId = 1,
+                        Description =
+                            "Show results and optional run commands"
                     }
                 }
             };
@@ -133,9 +145,9 @@ namespace InterpreteTests
             var prompt = new Prompt();
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
-            //prompt.Initiate(dctCommandOne, "UserSpace 1", extension: Feedback);
-            //prompt.ConsoleInput("coM1(1,2).Help()");
-            //prompt.ConsoleInput("");
+            prompt.Initiate(dctCommandOne, "UserSpace 1", extension: extensionCommands, Feedback);
+            prompt.ConsoleInput("coM1(1,2).Dryrun()");
+            prompt.ConsoleInput("");
 
 
             //Assert.IsFalse(_log.Contains("Help com1"), "No help provided.");

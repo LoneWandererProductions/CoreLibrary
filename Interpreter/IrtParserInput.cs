@@ -212,6 +212,7 @@ namespace Interpreter
                     }
                     else
                     {
+                        //TODO result is wrong.
                         var command = ProcessInput(inputString, extensionResult.Extension);
                         SetResult(command);
                     }
@@ -236,6 +237,12 @@ namespace Interpreter
         /// <param name="extension">Optional extension commands</param>
         internal OutCommand? ProcessInput(string inputString, ExtensionCommands? extension = null)
         {
+            if (extension != null)
+            {
+                //remove the extension string, and handle only the base command.
+                inputString = extension.BaseCommand;
+            }
+
             var key = IrtKernel.CheckForKeyWord(inputString, IrtConst.InternCommands);
             if (key != IrtConst.Error)
             {
@@ -330,7 +337,7 @@ namespace Interpreter
         /// <param name="command">The command.</param>
         private void SetResult(OutCommand command)
         {
-            if (_com[command.Command].FeedbackId == 0)
+            if (_com[command.Command]?.FeedbackId == 0)
             {
                 _prompt.SendCommand(this, command);
             }

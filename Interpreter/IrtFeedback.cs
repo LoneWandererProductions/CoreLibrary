@@ -6,11 +6,14 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Diagnostics;
+
 namespace Interpreter
 {
     /// <summary>
     ///     Control Object that checks if User Feedback is needed
     /// </summary>
+    [DebuggerDisplay("{ToString()}")]
     internal sealed class IrtFeedback
     {
         /// <summary>
@@ -77,6 +80,14 @@ namespace Interpreter
                 AwaitedOutput = AwaitedOutput,
                 Answer = answer
             };
+        }
+
+        /// <summary>
+        ///     Returns a string representation of this feedback.
+        /// </summary>
+        public override string ToString()
+        {
+            return $"[Feedback: Cmd={Command}, Key={Key}, ReqId={RequestId}, Branch={BranchId}, Output={AwaitedOutput}]";
         }
     }
 }

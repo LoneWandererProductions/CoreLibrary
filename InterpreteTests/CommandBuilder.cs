@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     InterpreteTests
  * FILE:        CommandBuilder.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Some full command tests mosttly for the scripting part and if else
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

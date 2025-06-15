@@ -34,7 +34,7 @@ namespace CoreConsole
         /// <summary>
         ///     The resxtract overload
         /// </summary>
-        internal const int ResxtractOverload = 2;
+        internal const int ResXtractOverload = 2;
 
         /// <summary>
         ///     The analyzer
@@ -65,7 +65,7 @@ namespace CoreConsole
                 }
             },
             {
-                ResxtractOverload, new InCommand
+                ResXtractOverload, new InCommand
                 {
                     Command = "resxtract",
                     ParameterCount = 1,
