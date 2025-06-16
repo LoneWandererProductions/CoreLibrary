@@ -47,7 +47,7 @@ namespace CommonExtendedObjectsTests
                         res += spanOne[iOne + k] * spanTwo[iTwo];
                     }
 
-                    spanResult[i * w + j] = res;
+                    spanResult[(i * w) + j] = res;
                 }
             }
 

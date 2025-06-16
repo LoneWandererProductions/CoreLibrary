@@ -19,46 +19,41 @@ namespace ExtendedSystemObjects
 {
     /// <inheritdoc />
     /// <summary>
-    /// Represents a high-performance, low-overhead array of integers
-    /// backed by unmanaged memory. Designed for performance-critical
-    /// scenarios where garbage collection overhead must be avoided.
+    ///     Represents a high-performance, low-overhead array of integers
+    ///     backed by unmanaged memory. Designed for performance-critical
+    ///     scenarios where garbage collection overhead must be avoided.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
     public sealed unsafe class IntArray : IDisposable
     {
         /// <summary>
-        /// The buffer
+        ///     The buffer
         /// </summary>
         private IntPtr _buffer;
 
         /// <summary>
-        /// The length
-        /// </summary>
-        private int _length;
-
-        /// <summary>
-        /// The pointer
+        ///     The pointer
         /// </summary>
         private int* _ptr;
 
         /// <summary>
-        /// Gets the current number of elements in the array.
-        /// </summary>
-        public int Length => _length;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IntArray"/> class with the specified size.
+        ///     Initializes a new instance of the <see cref="IntArray" /> class with the specified size.
         /// </summary>
         /// <param name="size">The number of elements to allocate.</param>
         public IntArray(int size)
         {
-            _length = size;
+            Length = size;
             _buffer = Marshal.AllocHGlobal(size * sizeof(int));
             _ptr = (int*)_buffer;
         }
 
         /// <summary>
-        /// Gets or sets the element at the specified index.
+        ///     Gets the current number of elements in the array.
+        /// </summary>
+        public int Length { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the element at the specified index.
         /// </summary>
         /// <param name="i">The index of the element.</param>
         /// <returns>The value at the specified index.</returns>
@@ -69,7 +64,10 @@ namespace ExtendedSystemObjects
             get
             {
 #if DEBUG
-                if (i < 0 || i >= _length) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
 #endif
                 return _ptr[i];
             }
@@ -77,43 +75,63 @@ namespace ExtendedSystemObjects
             set
             {
 #if DEBUG
-                if (i < 0 || i >= _length) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
 #endif
                 _ptr[i] = value;
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Removes the element at the specified index by shifting remaining elements left.
+        ///     Frees the unmanaged memory held by the array.
+        ///     After disposal, the instance should not be used.
+        /// </summary>
+        public void Dispose()
+        {
+            Marshal.FreeHGlobal(_buffer);
+            _buffer = IntPtr.Zero;
+            Length = 0;
+        }
+
+        /// <summary>
+        ///     Removes the element at the specified index by shifting remaining elements left.
         /// </summary>
         /// <param name="index">The index of the element to remove.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
 #if DEBUG
-            if (index < 0 || index >= _length) throw new IndexOutOfRangeException();
+            if (index < 0 || index >= Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
 #endif
             var ptr = (int*)_buffer;
 
-            for (var i = index; i < _length - 1; i++)
+            for (var i = index; i < Length - 1; i++)
             {
                 ptr[i] = ptr[i + 1];
             }
 
-            _length--; // Reduces logical size, but memory is not freed
+            Length--; // Reduces logical size, but memory is not freed
         }
 
 
         /// <summary>
-        /// Remove multiple indices from IntArray efficiently
-        /// Assumes indicesToRemove contains zero or more indices (in any order)
-        /// Removes all specified indices from the array
+        ///     Remove multiple indices from IntArray efficiently
+        ///     Assumes indicesToRemove contains zero or more indices (in any order)
+        ///     Removes all specified indices from the array
         /// </summary>
         /// <param name="indicesToRemove">The indices to remove.</param>
         public void RemoveMultiple(int[] indicesToRemove)
         {
             if (indicesToRemove == null || indicesToRemove.Length == 0)
+            {
                 return;
+            }
 
             // Sort indices ascending (important!)
             Array.Sort(indicesToRemove);
@@ -121,18 +139,22 @@ namespace ExtendedSystemObjects
             // Validate indices within bounds
 #if DEBUG
             foreach (var idx in indicesToRemove)
-                if (idx < 0 || idx >= _length)
+            {
+                if (idx < 0 || idx >= Length)
+                {
                     throw new IndexOutOfRangeException($"Index {idx} is out of range.");
+                }
+            }
 #endif
 
             if (IsSequential(indicesToRemove))
             {
                 // Optimized path for continuous block removal
-                int start = indicesToRemove[0];
-                int count = indicesToRemove.Length;
+                var start = indicesToRemove[0];
+                var count = indicesToRemove.Length;
 
                 // Move tail elements left by count positions
-                int tailLength = _length - (start + count);
+                var tailLength = Length - (start + count);
                 if (tailLength > 0)
                 {
                     Buffer.MemoryCopy(
@@ -143,25 +165,25 @@ namespace ExtendedSystemObjects
                     );
                 }
 
-                _length -= count;
+                Length -= count;
             }
             else
             {
                 // General multi-block removal, no assumption on indices continuity
 
-                int srcIndex = 0;
-                int dstIndex = 0;
+                var srcIndex = 0;
+                var dstIndex = 0;
 
                 foreach (var removeIndex in indicesToRemove)
                 {
-                    int lengthToCopy = removeIndex - srcIndex;
+                    var lengthToCopy = removeIndex - srcIndex;
 
                     if (lengthToCopy > 0)
                     {
                         Buffer.MemoryCopy(
                             _ptr + srcIndex,
                             _ptr + dstIndex,
-                            (_length - dstIndex) * sizeof(int),
+                            (Length - dstIndex) * sizeof(int),
                             lengthToCopy * sizeof(int)
                         );
                         dstIndex += lengthToCopy;
@@ -171,91 +193,86 @@ namespace ExtendedSystemObjects
                 }
 
                 // Copy remaining tail block after last removed index
-                int tailLength = _length - srcIndex;
+                var tailLength = Length - srcIndex;
                 if (tailLength > 0)
                 {
                     Buffer.MemoryCopy(
                         _ptr + srcIndex,
                         _ptr + dstIndex,
-                        (_length - dstIndex) * sizeof(int),
+                        (Length - dstIndex) * sizeof(int),
                         tailLength * sizeof(int)
                     );
                     dstIndex += tailLength;
                 }
 
-                _length = dstIndex;
+                Length = dstIndex;
             }
         }
 
         /// <summary>
-        /// Resizes the internal array to the specified new size.
-        /// Contents will be preserved up to the minimum of old and new size.
+        ///     Resizes the internal array to the specified new size.
+        ///     Contents will be preserved up to the minimum of old and new size.
         /// </summary>
         /// <param name="newSize">The new size of the array.</param>
         public void Resize(int newSize)
         {
             _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
             _ptr = (int*)_buffer;
-            _length = newSize;
+            Length = newSize;
         }
 
         /// <summary>
-        /// Clears the array by setting all elements to zero.
+        ///     Clears the array by setting all elements to zero.
         /// </summary>
         public void Clear()
         {
             var ptr = (int*)_buffer;
-            for (var i = 0; i < _length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 ptr[i] = 0;
             }
         }
 
         /// <summary>
-        /// Returns a span over the current memory buffer, enabling safe, fast access.
+        ///     Returns a span over the current memory buffer, enabling safe, fast access.
         /// </summary>
-        /// <returns>A <see cref="Span{Int32}"/> over the internal buffer.</returns>
-        public Span<int> AsSpan() => new((void*)_buffer, _length);
+        /// <returns>A <see cref="Span{Int32}" /> over the internal buffer.</returns>
+        public Span<int> AsSpan()
+        {
+            return new((void*)_buffer, Length);
+        }
 
         /// <summary>
-        /// Determines whether the specified sorted indices is sequential.
+        ///     Determines whether the specified sorted indices is sequential.
         /// </summary>
         /// <param name="sortedIndices">The sorted indices.</param>
         /// <returns>
-        ///   <c>true</c> if the specified sorted indices is sequential; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified sorted indices is sequential; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsSequential(IReadOnlyList<int> sortedIndices)
         {
-            if (sortedIndices is not {Count: > 1})
+            if (sortedIndices is not { Count: > 1 })
+            {
                 return true;
+            }
 
-            for (int i = 1; i < sortedIndices.Count; i++)
+            for (var i = 1; i < sortedIndices.Count; i++)
             {
                 if (sortedIndices[i] != sortedIndices[i - 1] + 1)
+                {
                     return false;
+                }
             }
 
             return true;
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="IntArray"/> class.
+        ///     Finalizes an instance of the <see cref="IntArray" /> class.
         /// </summary>
         ~IntArray()
         {
             Dispose();
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Frees the unmanaged memory held by the array.
-        /// After disposal, the instance should not be used.
-        /// </summary>
-        public void Dispose()
-        {
-            Marshal.FreeHGlobal(_buffer);
-            _buffer = IntPtr.Zero;
-            _length = 0;
         }
     }
 }

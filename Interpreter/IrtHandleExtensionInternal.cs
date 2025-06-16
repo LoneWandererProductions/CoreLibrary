@@ -25,6 +25,11 @@ namespace Interpreter
         private readonly string _myRequestId;
 
         /// <summary>
+        ///     The user feedback, only for external extensions.
+        /// </summary>
+        private readonly Dictionary<int, UserFeedback> _userFeedback;
+
+        /// <summary>
         ///     Dictionary of available commands.
         /// </summary>
         private Dictionary<int, InCommand> _commands;
@@ -48,11 +53,6 @@ namespace Interpreter
         ///     Instance of Prompt to handle command input/output.
         /// </summary>
         private Prompt _prompt;
-
-        /// <summary>
-        ///     The user feedback, only for external extensions.
-        /// </summary>
-        private readonly Dictionary<int, UserFeedback> _userFeedback;
 
         /// <summary>
         ///     Prevents a default instance of the <see cref="IrtHandleExtensionInternal" /> class from being created.
@@ -174,7 +174,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Handles external commands.
+        ///     Handles external commands.
         /// </summary>
         /// <param name="extension">The extension command.</param>
         private void HandleExternalCommand(ExtensionCommands extension)

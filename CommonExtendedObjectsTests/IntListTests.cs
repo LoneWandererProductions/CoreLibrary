@@ -6,10 +6,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonExtendedObjectsTests
 {
@@ -17,7 +18,7 @@ namespace CommonExtendedObjectsTests
     public class IntListTests
     {
         /// <summary>
-        /// Adds the pop peek behavior.
+        ///     Adds the pop peek behavior.
         /// </summary>
         [TestMethod]
         public void AddPopPeekBehavior()
@@ -44,7 +45,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Pops the empty throws.
+        ///     Pops the empty throws.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -55,7 +56,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Peeks the empty throws.
+        ///     Peeks the empty throws.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -66,48 +67,59 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Capacities the resizes correctly.
+        ///     Capacities the resizes correctly.
         /// </summary>
         [TestMethod]
         public void CapacityResizesCorrectly()
         {
             using var list = new IntList(2);
             for (var i = 0; i < 1000; i++)
+            {
                 list.Add(i);
+            }
 
             Assert.AreEqual(1000, list.Count);
             Assert.AreEqual(999, list[999]);
         }
 
         /// <summary>
-        /// Performances the benchmark.
+        ///     Performances the benchmark.
         /// </summary>
         [TestMethod]
         public void PerformanceBenchmark()
         {
-            const int N = 1_000_000;
+            const int n = 1_000_000;
 
             // IntList timing
-            using var intList = new IntList(N);
+            using var intList = new IntList(n);
             var sw = Stopwatch.StartNew();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < n; i++)
+            {
                 intList.Add(i);
+            }
+
             sw.Stop();
             var intListTime = sw.ElapsedMilliseconds;
 
             // List<int> timing
-            var list = new System.Collections.Generic.List<int>(N);
+            var list = new List<int>(n);
             sw.Restart();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < n; i++)
+            {
                 list.Add(i);
+            }
+
             sw.Stop();
             var listTime = sw.ElapsedMilliseconds;
 
             // Stack<int> timing
-            var stack = new System.Collections.Generic.Stack<int>(N);
+            var stack = new Stack<int>(n);
             sw.Restart();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < n; i++)
+            {
                 stack.Push(i);
+            }
+
             sw.Stop();
             var stackTime = sw.ElapsedMilliseconds;
 

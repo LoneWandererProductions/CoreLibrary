@@ -21,17 +21,17 @@ namespace CommonExtendedObjectsTests
     public class PerformanceTests
     {
         /// <summary>
-        /// The data
+        ///     The data
         /// </summary>
         private Dictionary<int, string> _data;
 
         /// <summary>
-        /// The immutable lookup map
+        ///     The immutable lookup map
         /// </summary>
         private ImmutableLookupMap<int, string> _immutableLookupMap;
 
         /// <summary>
-        /// The read only dictionary
+        ///     The read only dictionary
         /// </summary>
         private ReadOnlyDictionary<int, string> _readOnlyDictionary;
 

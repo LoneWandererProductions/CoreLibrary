@@ -17,35 +17,41 @@ namespace CommonExtendedObjectsTests
     public class IntArrayTests
     {
         /// <summary>
-        /// The size
+        ///     The size
         /// </summary>
         private const int Size = 1_000_000;
 
         /// <summary>
-        /// Indexings the should get and set values correctly.
+        ///     Indexing the should get and set values correctly.
         /// </summary>
         [TestMethod]
         public void IndexingShouldGetAndSetValuesCorrectly()
         {
             var arr = new IntArray(5);
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = i * 10;
+            }
 
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 Assert.AreEqual(i * 10, arr[i]);
+            }
 
             arr.Dispose();
         }
 
         /// <summary>
-        /// Removes at should remove element and shift left.
+        ///     Removes at should remove element and shift left.
         /// </summary>
         [TestMethod]
         public void RemoveAtShouldRemoveElementAndShiftLeft()
         {
             var arr = new IntArray(5);
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = i;
+            }
 
             arr.RemoveAt(2);
 
@@ -56,7 +62,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Resizes the should change length and preserve old data.
+        ///     Resizes the should change length and preserve old data.
         /// </summary>
         [TestMethod]
         public void ResizeShouldChangeLengthAndPreserveOldData()
@@ -77,25 +83,29 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Clears the should zero out all elements.
+        ///     Clears the should zero out all elements.
         /// </summary>
         [TestMethod]
         public void ClearShouldZeroOutAllElements()
         {
             var arr = new IntArray(4);
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = 42;
+            }
 
             arr.Clear();
 
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 Assert.AreEqual(0, arr[i]);
+            }
 
             arr.Dispose();
         }
 
         /// <summary>
-        /// Compares the int array vs int array dot net performance.
+        ///     Compares the int array vs int array dot net performance.
         /// </summary>
         [TestMethod]
         public void CompareIntArrayvsIntArrayDotNetPerformance()
@@ -106,12 +116,16 @@ namespace CommonExtendedObjectsTests
             var intArray = new IntArray(Size);
             stopwatch.Restart();
 
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 intArray[i] = i;
+            }
 
             long intArraySum = 0;
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 intArraySum += intArray[i];
+            }
 
             stopwatch.Stop();
             var customTime = stopwatch.ElapsedMilliseconds;
@@ -123,12 +137,16 @@ namespace CommonExtendedObjectsTests
             var nativeArray = new int[Size];
             stopwatch.Restart();
 
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 nativeArray[i] = i;
+            }
 
             long nativeSum = 0;
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 nativeSum += nativeArray[i];
+            }
 
             stopwatch.Stop();
             var nativeTime = stopwatch.ElapsedMilliseconds;
@@ -146,16 +164,18 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Removes the multiple should remove sequential indices.
+        ///     Removes the multiple should remove sequential indices.
         /// </summary>
         [TestMethod]
         public void RemoveMultipleShouldRemoveSequentialIndices()
         {
             var arr = new IntArray(10);
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = i + 1; // [1..10]
+            }
 
-            var toRemove = new int[] { 3, 4, 5 }; // remove elements at indices 3,4,5 (4th,5th,6th elements)
+            var toRemove = new[] { 3, 4, 5 }; // remove elements at indices 3,4,5 (4th,5th,6th elements)
 
             var sw = Stopwatch.StartNew();
             arr.RemoveMultiple(toRemove);
@@ -178,16 +198,18 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Removes the multiple should remove non sequential indices.
+        ///     Removes the multiple should remove non sequential indices.
         /// </summary>
         [TestMethod]
         public void RemoveMultipleShouldRemoveNonSequentialIndices()
         {
             var arr = new IntArray(10);
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = i + 1; // [1..10]
+            }
 
-            var toRemove = new int[] { 1, 3, 6 }; // remove elements at indices 1,3,6
+            var toRemove = new[] { 1, 3, 6 }; // remove elements at indices 1,3,6
 
             var sw = Stopwatch.StartNew();
             arr.RemoveMultiple(toRemove);
@@ -200,7 +222,7 @@ namespace CommonExtendedObjectsTests
             // Remaining elements: indices 0,2,4,5,7,8,9
             // Values: 1, 3, 5, 6, 8, 9, 10
             int[] expected = { 1, 3, 5, 6, 8, 9, 10 };
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
             {
                 Assert.AreEqual(expected[i], arr[i]);
             }
