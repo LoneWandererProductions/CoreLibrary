@@ -126,88 +126,54 @@ namespace ExtendedSystemObjects
         ///     Removes all specified indices from the array
         /// </summary>
         /// <param name="indicesToRemove">The indices to remove.</param>
-        public void RemoveMultiple(int[] indicesToRemove)
+        /// <summary>
+        /// Removes multiple elements efficiently. If the indices are sequential and sorted,
+        /// uses a fast bulk-removal path. Otherwise falls back to element-wise compaction.
+        /// </summary>
+        /// <param name="indices">Indices to remove. Must be sorted and within bounds.</param>
+        public void RemoveMultiple(ReadOnlySpan<int> indices)
         {
-            if (indicesToRemove == null || indicesToRemove.Length == 0)
+            if (indices.Length == 0) return;
+
+            // === Fast-path: Trivial sequential sequence ===
+            // If [3,4,5,6] then indices[^1] - indices[0] == indices.Length - 1
+            if (indices.Length > 1 && indices[^1] - indices[0] == indices.Length - 1)
             {
+                int start = indices[0];
+                int count = indices.Length;
+
+#if DEBUG
+                if (start < 0 || start + count > Length)
+                    throw new IndexOutOfRangeException();
+#endif
+
+                int moveCount = Length - (start + count);
+                if (moveCount > 0)
+                    Buffer.MemoryCopy(_ptr + start + count, _ptr + start, moveCount * sizeof(int), moveCount * sizeof(int));
+
+                Length -= count;
                 return;
             }
 
-            // Sort indices ascending (important!)
-            Array.Sort(indicesToRemove);
+            // === Fallback: Compact array by skipping indices ===
+            int readIndex = 0, writeIndex = 0, removeIndex = 0;
 
-            // Validate indices within bounds
-#if DEBUG
-            foreach (var idx in indicesToRemove)
+            while (readIndex < Length)
             {
-                if (idx < 0 || idx >= Length)
+                if (removeIndex < indices.Length && readIndex == indices[removeIndex])
                 {
-                    throw new IndexOutOfRangeException($"Index {idx} is out of range.");
+                    readIndex++;
+                    removeIndex++;
+                }
+                else
+                {
+                    _ptr[writeIndex++] = _ptr[readIndex++];
                 }
             }
-#endif
 
-            if (IsSequential(indicesToRemove))
-            {
-                // Optimized path for continuous block removal
-                var start = indicesToRemove[0];
-                var count = indicesToRemove.Length;
-
-                // Move tail elements left by count positions
-                var tailLength = Length - (start + count);
-                if (tailLength > 0)
-                {
-                    Buffer.MemoryCopy(
-                        _ptr + start + count,
-                        _ptr + start,
-                        tailLength * sizeof(int),
-                        tailLength * sizeof(int)
-                    );
-                }
-
-                Length -= count;
-            }
-            else
-            {
-                // General multi-block removal, no assumption on indices continuity
-
-                var srcIndex = 0;
-                var dstIndex = 0;
-
-                foreach (var removeIndex in indicesToRemove)
-                {
-                    var lengthToCopy = removeIndex - srcIndex;
-
-                    if (lengthToCopy > 0)
-                    {
-                        Buffer.MemoryCopy(
-                            _ptr + srcIndex,
-                            _ptr + dstIndex,
-                            (Length - dstIndex) * sizeof(int),
-                            lengthToCopy * sizeof(int)
-                        );
-                        dstIndex += lengthToCopy;
-                    }
-
-                    srcIndex = removeIndex + 1;
-                }
-
-                // Copy remaining tail block after last removed index
-                var tailLength = Length - srcIndex;
-                if (tailLength > 0)
-                {
-                    Buffer.MemoryCopy(
-                        _ptr + srcIndex,
-                        _ptr + dstIndex,
-                        (Length - dstIndex) * sizeof(int),
-                        tailLength * sizeof(int)
-                    );
-                    dstIndex += tailLength;
-                }
-
-                Length = dstIndex;
-            }
+            Length = writeIndex;
         }
+
 
         /// <summary>
         ///     Resizes the internal array to the specified new size.
@@ -240,31 +206,6 @@ namespace ExtendedSystemObjects
         public Span<int> AsSpan()
         {
             return new((void*)_buffer, Length);
-        }
-
-        /// <summary>
-        ///     Determines whether the specified sorted indices is sequential.
-        /// </summary>
-        /// <param name="sortedIndices">The sorted indices.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified sorted indices is sequential; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsSequential(IReadOnlyList<int> sortedIndices)
-        {
-            if (sortedIndices is not { Count: > 1 })
-            {
-                return true;
-            }
-
-            for (var i = 1; i < sortedIndices.Count; i++)
-            {
-                if (sortedIndices[i] != sortedIndices[i - 1] + 1)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         /// <summary>

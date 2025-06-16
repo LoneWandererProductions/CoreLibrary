@@ -255,58 +255,41 @@ namespace ExtendedSystemObjects
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
         public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
         {
+            if (numbers == null || numbers.Count == 0 || sequenceLength <= 1)
+                return null;
+
             numbers.Sort();
-            var max = numbers.Max();
+            var numberSet = new HashSet<int>(numbers);
 
-            var sequenceGroups = new List<List<int>>();
-            var currentSequence = new List<int>();
-            var observer = new List<int>();
+            var result = new List<KeyValuePair<int, int>>();
+            var visited = new HashSet<int>();
 
-            foreach (var element in numbers)
+            foreach (var num in numbers)
             {
-                var cache = Math.Abs(element);
-                var count = cache;
-
-                do
-                {
-                    if (currentSequence.Contains(cache))
-                    {
-                        break;
-                    }
-
-                    count += stepWidth;
-
-                    if (observer.Contains(count))
-                    {
-                        continue;
-                    }
-
-                    if (!numbers.Contains(count))
-                    {
-                        break;
-                    }
-
-                    currentSequence.Add(count);
-                    observer.Add(count);
-                } while (count < max);
-
-                if (currentSequence.Count == 0)
-                {
+                if (visited.Contains(num))
                     continue;
+
+                int current = num;
+                int streak = 1;
+
+                // Try to build sequence by jumping stepWidth repeatedly
+                while (numberSet.Contains(current + stepWidth))
+                {
+                    current += stepWidth;
+                    streak++;
                 }
 
-                currentSequence.AddFirst(cache);
-                sequenceGroups.Add(currentSequence);
-                currentSequence = new List<int>();
+                if (streak >= sequenceLength)
+                {
+                    result.Add(new KeyValuePair<int, int>(num, current));
+
+                    // Mark all in this sequence as visited to avoid duplicates
+                    for (int val = num; val <= current; val += stepWidth)
+                        visited.Add(val);
+                }
             }
 
-            return sequenceGroups.Count == 0
-                ? null
-                : (from stack in sequenceGroups
-                    where stack.Count >= sequenceLength
-                    let start = stack[0]
-                    let end = stack[^1]
-                    select new KeyValuePair<int, int>(start, end)).ToList();
+            return result.Count == 0 ? null : result;
         }
 
         /// <summary>
