@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
+ * PROJECT:     CommonExtendedObjectsTests
  * FILE:        ImmutableLookupMapTests.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -12,7 +12,7 @@ using System.Diagnostics;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonExtendedObjectsTests
 {
     /// <summary>
     ///     Generic tests for speed.
@@ -20,8 +20,19 @@ namespace CommonLibraryTests
     [TestClass]
     public class PerformanceTests
     {
+        /// <summary>
+        /// The data
+        /// </summary>
         private Dictionary<int, string> _data;
+
+        /// <summary>
+        /// The immutable lookup map
+        /// </summary>
         private ImmutableLookupMap<int, string> _immutableLookupMap;
+
+        /// <summary>
+        /// The read only dictionary
+        /// </summary>
         private ReadOnlyDictionary<int, string> _readOnlyDictionary;
 
         /// <summary>

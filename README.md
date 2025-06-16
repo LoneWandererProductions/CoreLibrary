@@ -87,6 +87,7 @@
 | Module                      | Purpose / Description                           |
 | --------------------------- | ----------------------------------------------- |
 | `CommonLibraryTests`        | Unit tests for common libraries                 |
+| `CommonExtendedObjectsTests`| Unit tests for ExtendedSystemObjects            |
 | `Imaging`                   | Image manipulation tools                        |
 | `CommonControls`            | Shared WPF custom controls                      |
 | `SQLiteHelper`              | SQLite DB interaction & abstraction             |

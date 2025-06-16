@@ -1,17 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Transactions.cs
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        CommonExtendedObjectsTests/Transactions.cs
  * PURPOSE:     Test the Transaction Log
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Linq;
-using CommonControls;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonExtendedObjectsTests
 {
     /// <summary>
     ///     InterOps testing

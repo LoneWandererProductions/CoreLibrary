@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ExtendedSystemObjectsSetOperation.cs
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        CommonExtendedObjectsTests/ExtendedSystemObjectsSetOperation.cs
  * PURPOSE:     Tests for ExtendedSystemObjects, Set Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonExtendedObjectsTests
 {
     /// <summary>
     ///     Test for Base Set Operations

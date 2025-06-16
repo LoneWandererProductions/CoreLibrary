@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Utilities.cs
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        CommonExtendedObjectsTests/Utilities.cs
  * PURPOSE:     Test for utility Class
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonExtendedObjectsTests
 {
     /// <summary>
     ///     Basic tests for the utility Class

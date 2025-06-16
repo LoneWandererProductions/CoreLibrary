@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ExtendedSystemObjects.cs
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        CommonExtendedObjectsTests/ExtendedSystemObjects.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -18,7 +18,7 @@ using ExtendedSystemObjects;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonExtendedObjectsTests
 {
     /// <summary>
     ///     CommonLibraryTests Extended system objects unit test class.

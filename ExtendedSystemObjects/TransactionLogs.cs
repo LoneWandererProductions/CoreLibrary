@@ -200,7 +200,7 @@ namespace ExtendedSystemObjects
         {
             lock (_lock)
             {
-                if (Changelog == null || Changelog.Count == 0)
+                if (Changelog?.IsEmpty != false)
                 {
                     return 0;
                 }

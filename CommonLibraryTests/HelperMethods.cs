@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
  * FILE:        CommonLibraryTests/HelperMethods.cs
- * PURPOSE:    Helper Methods
+ * PURPOSE:     Helper Methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
