@@ -2,11 +2,12 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/IntArray.cs
- * PURPOSE:     A high-performance array implementation with reduced features.
+ * PURPOSE:     A high-performance array implementation with reduced features. Limited to integer Values.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace ExtendedSystemObjects
@@ -30,6 +31,11 @@ namespace ExtendedSystemObjects
         private int _length;
 
         /// <summary>
+        /// The pointer
+        /// </summary>
+        private int* _ptr;
+
+        /// <summary>
         /// Gets the current number of elements in the array.
         /// </summary>
         public int Length => _length;
@@ -42,6 +48,7 @@ namespace ExtendedSystemObjects
         {
             _length = size;
             _buffer = Marshal.AllocHGlobal(size * sizeof(int));
+            _ptr = (int*)_buffer;
         }
 
         /// <summary>
@@ -52,19 +59,21 @@ namespace ExtendedSystemObjects
         /// <exception cref="IndexOutOfRangeException">Thrown in debug mode when the index is out of bounds.</exception>
         public int this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
 #if DEBUG
                 if (i < 0 || i >= _length) throw new IndexOutOfRangeException();
 #endif
-                return *((int*)_buffer + i);
+                return _ptr[i];
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
 #if DEBUG
                 if (i < 0 || i >= _length) throw new IndexOutOfRangeException();
 #endif
-                *((int*)_buffer + i) = value;
+                _ptr[i] = value;
             }
         }
 
@@ -72,6 +81,7 @@ namespace ExtendedSystemObjects
         /// Removes the element at the specified index by shifting remaining elements left.
         /// </summary>
         /// <param name="index">The index of the element to remove.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
 #if DEBUG
@@ -95,6 +105,7 @@ namespace ExtendedSystemObjects
         public void Resize(int newSize)
         {
             _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
+            _ptr = (int*)_buffer;
             _length = newSize;
         }
 
@@ -115,6 +126,14 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <returns>A <see cref="Span{Int32}"/> over the internal buffer.</returns>
         public Span<int> AsSpan() => new((void*)_buffer, _length);
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="IntArray"/> class.
+        /// </summary>
+        ~IntArray()
+        {
+            Dispose();
+        }
 
         /// <summary>
         /// Frees the unmanaged memory held by the array.
