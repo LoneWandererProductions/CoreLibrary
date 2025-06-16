@@ -125,18 +125,21 @@ namespace ExtendedSystemObjects
         /// <exception cref="KeyNotFoundException">The key {key} was not found in the lookup map.</exception>
         public TValue Get(TKey key)
         {
-            var capacity = _keys.Length;
-            var baseHash = GetHash(key, capacity);
+            var hash = GetHash(key, _keys.Length);
+            var originalHash = hash;
 
-            for (int i = 0; i < capacity; i++)
+            while (_keyPresence[hash])
             {
-                var hash = (baseHash + i * i) % capacity;
-
-                if (!_keyPresence[hash])
-                    break; // Key not found
-
                 if (_keys[hash].Equals(key))
+                {
                     return _values[hash];
+                }
+
+                hash = (hash + 1) % _keys.Length; // Linear probing
+                if (hash == originalHash)
+                {
+                    break; // Full cycle, key not found
+                }
             }
 
             throw new KeyNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
@@ -150,20 +153,21 @@ namespace ExtendedSystemObjects
         /// <returns>The value amd bool check if it exists.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            var capacity = _keys.Length;
-            var baseHash = GetHash(key, capacity);
+            var hash = GetHash(key, _keys.Length);
+            var originalHash = hash;
 
-            for (int i = 0; i < capacity; i++)
+            while (_keyPresence[hash])
             {
-                var hash = (baseHash + i * i) % capacity;
-
-                if (!_keyPresence[hash])
-                    break; // Key not found
-
                 if (_keys[hash].Equals(key))
                 {
                     value = _values[hash];
                     return true;
+                }
+
+                hash = (hash + 1) % _keys.Length; // Linear probing
+                if (hash == originalHash)
+                {
+                    break; // Full cycle, key not found
                 }
             }
 
@@ -182,8 +186,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHash(TKey key, int capacity)
         {
-            // Mask sign bit to avoid negative numbers
-            return (key.GetHashCode() & 0x7FFFFFFF) % capacity;
+            return Math.Abs(key.GetHashCode() % capacity);
         }
 
         /// <summary>

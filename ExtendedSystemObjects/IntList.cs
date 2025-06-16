@@ -6,28 +6,29 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Runtime.InteropServices;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     /// A high-performance list of integers backed by unmanaged memory.
     /// Supports fast adding, popping, and random access with minimal overhead.
     /// Designed for scenarios where manual memory management is needed.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
-    public unsafe class IntList : IDisposable
+    /// <seealso cref="T:System.IDisposable" />
+    public sealed unsafe class IntList : IDisposable
     {
         /// <summary>
         /// The buffer
         /// </summary>
         private IntPtr _buffer;
-
-        /// <summary>
-        /// The count
-        /// </summary>
-        private int _count;
 
         /// <summary>
         /// The capacity
@@ -37,7 +38,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Gets the number of elements contained in the <see cref="IntList"/>.
         /// </summary>
-        public int Count => _count;
+        public int Count { get; private set; }
 
         /// <summary>
         /// Pointer to the unmanaged buffer holding the integer elements.
@@ -70,8 +71,8 @@ namespace ExtendedSystemObjects
         /// <param name="value">The integer value to add.</param>
         public void Add(int value)
         {
-            EnsureCapacity(_count + 1);
-            _ptr[_count++] = value;
+            EnsureCapacity(Count + 1);
+            _ptr[Count++] = value;
         }
 
         /// <summary>
@@ -81,9 +82,10 @@ namespace ExtendedSystemObjects
         /// <exception cref="InvalidOperationException">Thrown when the list is empty.</exception>
         public int Pop()
         {
-            if (_count == 0)
+            if (Count == 0)
                 throw new InvalidOperationException("Stack empty");
-            return _ptr[--_count];
+
+            return _ptr[--Count];
         }
 
         /// <summary>
@@ -93,9 +95,10 @@ namespace ExtendedSystemObjects
         /// <exception cref="InvalidOperationException">Thrown when the list is empty.</exception>
         public int Peek()
         {
-            if (_count == 0)
+            if (Count == 0)
                 throw new InvalidOperationException("Stack empty");
-            return _ptr[_count - 1];
+
+            return _ptr[Count - 1];
         }
 
         /// <summary>
@@ -109,14 +112,14 @@ namespace ExtendedSystemObjects
             get
             {
 #if DEBUG
-                if (i < 0 || i >= _count) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Count) throw new IndexOutOfRangeException();
 #endif
                 return _ptr[i];
             }
             set
             {
 #if DEBUG
-                if (i < 0 || i >= _count) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Count) throw new IndexOutOfRangeException();
 #endif
                 _ptr[i] = value;
             }
@@ -131,7 +134,7 @@ namespace ExtendedSystemObjects
         {
             if (min <= _capacity) return;
 
-            int newCapacity = _capacity * 2;
+            var newCapacity = _capacity * 2;
             if (newCapacity < min)
                 newCapacity = min;
 
@@ -145,7 +148,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            _count = 0;
+            Count = 0;
         }
 
         /// <summary>
@@ -153,7 +156,7 @@ namespace ExtendedSystemObjects
         /// Allows fast, safe access to the underlying data.
         /// </summary>
         /// <returns>A <see cref="Span{Int32}"/> representing the list's contents.</returns>
-        public Span<int> AsSpan() => new((void*)_buffer, _count);
+        public Span<int> AsSpan() => new((void*)_buffer, Count);
 
         /// <summary>
         /// Finalizes an instance of the <see cref="IntList"/> class, releasing unmanaged resources.
@@ -163,8 +166,9 @@ namespace ExtendedSystemObjects
             Dispose();
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Frees unmanaged resources used by the <see cref="IntList"/>.
+        /// Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
         /// After calling this method, the instance should not be used.
         /// </summary>
         public void Dispose()
@@ -174,7 +178,8 @@ namespace ExtendedSystemObjects
                 Marshal.FreeHGlobal(_buffer);
                 _buffer = IntPtr.Zero;
             }
-            _count = 0;
+
+            Count = 0;
             _capacity = 0;
         }
     }
