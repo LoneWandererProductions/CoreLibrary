@@ -11,6 +11,7 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -102,6 +103,90 @@ namespace ExtendedSystemObjects
             _length--; // Reduces logical size, but memory is not freed
         }
 
+
+        /// <summary>
+        /// Remove multiple indices from IntArray efficiently
+        /// Assumes indicesToRemove contains zero or more indices (in any order)
+        /// Removes all specified indices from the array
+        /// </summary>
+        /// <param name="indicesToRemove">The indices to remove.</param>
+        public void RemoveMultiple(int[] indicesToRemove)
+        {
+            if (indicesToRemove == null || indicesToRemove.Length == 0)
+                return;
+
+            // Sort indices ascending (important!)
+            Array.Sort(indicesToRemove);
+
+            // Validate indices within bounds
+#if DEBUG
+            foreach (var idx in indicesToRemove)
+                if (idx < 0 || idx >= _length)
+                    throw new IndexOutOfRangeException($"Index {idx} is out of range.");
+#endif
+
+            if (IsSequential(indicesToRemove))
+            {
+                // Optimized path for continuous block removal
+                int start = indicesToRemove[0];
+                int count = indicesToRemove.Length;
+
+                // Move tail elements left by count positions
+                int tailLength = _length - (start + count);
+                if (tailLength > 0)
+                {
+                    Buffer.MemoryCopy(
+                        _ptr + start + count,
+                        _ptr + start,
+                        tailLength * sizeof(int),
+                        tailLength * sizeof(int)
+                    );
+                }
+
+                _length -= count;
+            }
+            else
+            {
+                // General multi-block removal, no assumption on indices continuity
+
+                int srcIndex = 0;
+                int dstIndex = 0;
+
+                foreach (var removeIndex in indicesToRemove)
+                {
+                    int lengthToCopy = removeIndex - srcIndex;
+
+                    if (lengthToCopy > 0)
+                    {
+                        Buffer.MemoryCopy(
+                            _ptr + srcIndex,
+                            _ptr + dstIndex,
+                            (_length - dstIndex) * sizeof(int),
+                            lengthToCopy * sizeof(int)
+                        );
+                        dstIndex += lengthToCopy;
+                    }
+
+                    srcIndex = removeIndex + 1;
+                }
+
+                // Copy remaining tail block after last removed index
+                int tailLength = _length - srcIndex;
+                if (tailLength > 0)
+                {
+                    Buffer.MemoryCopy(
+                        _ptr + srcIndex,
+                        _ptr + dstIndex,
+                        (_length - dstIndex) * sizeof(int),
+                        tailLength * sizeof(int)
+                    );
+                    dstIndex += tailLength;
+                }
+
+                _length = dstIndex;
+            }
+        }
+
         /// <summary>
         /// Resizes the internal array to the specified new size.
         /// Contents will be preserved up to the minimum of old and new size.
@@ -131,6 +216,27 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <returns>A <see cref="Span{Int32}"/> over the internal buffer.</returns>
         public Span<int> AsSpan() => new((void*)_buffer, _length);
+
+        /// <summary>
+        /// Determines whether the specified sorted indices is sequential.
+        /// </summary>
+        /// <param name="sortedIndices">The sorted indices.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified sorted indices is sequential; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsSequential(IReadOnlyList<int> sortedIndices)
+        {
+            if (sortedIndices is not {Count: > 1})
+                return true;
+
+            for (int i = 1; i < sortedIndices.Count; i++)
+            {
+                if (sortedIndices[i] != sortedIndices[i - 1] + 1)
+                    return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Finalizes an instance of the <see cref="IntArray"/> class.

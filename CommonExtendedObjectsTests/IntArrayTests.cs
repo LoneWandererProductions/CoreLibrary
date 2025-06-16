@@ -144,5 +144,68 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(customTime < 2000, $"IntArray took too long: {customTime}ms");
             Assert.IsTrue(nativeTime < 2000, $"int[] took too long: {nativeTime}ms");
         }
+
+        /// <summary>
+        /// Removes the multiple should remove sequential indices.
+        /// </summary>
+        [TestMethod]
+        public void RemoveMultipleShouldRemoveSequentialIndices()
+        {
+            var arr = new IntArray(10);
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = i + 1; // [1..10]
+
+            var toRemove = new int[] { 3, 4, 5 }; // remove elements at indices 3,4,5 (4th,5th,6th elements)
+
+            var sw = Stopwatch.StartNew();
+            arr.RemoveMultiple(toRemove);
+            sw.Stop();
+
+            Console.WriteLine($"RemoveMultiple (sequential) took {sw.ElapsedTicks} ticks");
+
+            Assert.AreEqual(7, arr.Length);
+
+            // Remaining should be: 1,2,3,7,8,9,10 (indices:0,1,2,3,4,5,6)
+            Assert.AreEqual(1, arr[0]);
+            Assert.AreEqual(2, arr[1]);
+            Assert.AreEqual(3, arr[2]);
+            Assert.AreEqual(7, arr[3]);
+            Assert.AreEqual(8, arr[4]);
+            Assert.AreEqual(9, arr[5]);
+            Assert.AreEqual(10, arr[6]);
+
+            arr.Dispose();
+        }
+
+        /// <summary>
+        /// Removes the multiple should remove non sequential indices.
+        /// </summary>
+        [TestMethod]
+        public void RemoveMultipleShouldRemoveNonSequentialIndices()
+        {
+            var arr = new IntArray(10);
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = i + 1; // [1..10]
+
+            var toRemove = new int[] { 1, 3, 6 }; // remove elements at indices 1,3,6
+
+            var sw = Stopwatch.StartNew();
+            arr.RemoveMultiple(toRemove);
+            sw.Stop();
+
+            Console.WriteLine($"RemoveMultiple (non-sequential) took {sw.ElapsedTicks} ticks");
+
+            Assert.AreEqual(7, arr.Length);
+
+            // Remaining elements: indices 0,2,4,5,7,8,9
+            // Values: 1, 3, 5, 6, 8, 9, 10
+            int[] expected = { 1, 3, 5, 6, 8, 9, 10 };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Assert.AreEqual(expected[i], arr[i]);
+            }
+
+            arr.Dispose();
+        }
     }
 }
