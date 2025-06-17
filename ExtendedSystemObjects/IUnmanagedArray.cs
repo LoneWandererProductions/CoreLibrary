@@ -22,5 +22,4 @@ namespace ExtendedSystemObjects
         void Resize(int newSize);
         void Clear();
     }
-
 }

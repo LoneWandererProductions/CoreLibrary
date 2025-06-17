@@ -8,4 +8,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <SuppressNET6CompatibilityCheck>true</SuppressNET6CompatibilityCheck>
+  </PropertyGroup>
+
 </Project>
