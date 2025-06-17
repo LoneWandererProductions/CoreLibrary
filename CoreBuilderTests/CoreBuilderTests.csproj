@@ -20,4 +20,9 @@
     <ProjectReference Include="..\CoreWorker\CoreWorker.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <SuppressNET6CompatibilityCheck>true</SuppressNET6CompatibilityCheck>
+  </PropertyGroup>
+
 </Project>
