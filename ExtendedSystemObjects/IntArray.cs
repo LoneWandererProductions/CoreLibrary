@@ -17,8 +17,9 @@ namespace ExtendedSystemObjects
     /// backed by unmanaged memory. Designed for performance-critical
     /// scenarios where garbage collection overhead must be avoided.
     /// </summary>
+    /// <seealso cref="ExtendedSystemObjects.IUnmanagedArray" />
     /// <seealso cref="System.IDisposable" />
-    public unsafe class IntArray : IDisposable
+    public unsafe class IntArray : IUnmanagedArray<int>, IDisposable
     {
         /// <summary>
         /// The buffer

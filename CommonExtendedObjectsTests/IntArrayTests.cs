@@ -117,7 +117,7 @@ namespace CommonExtendedObjectsTests
             var customTime = stopwatch.ElapsedMilliseconds;
             intArray.Dispose();
 
-            Console.WriteLine($"IntArray (unmanaged) time: {customTime} ms");
+            Trace.WriteLine($"IntArray (unmanaged) time: {customTime} ms");
 
             // === Native int[] Test ===
             var nativeArray = new int[Size];
@@ -133,7 +133,7 @@ namespace CommonExtendedObjectsTests
             stopwatch.Stop();
             var nativeTime = stopwatch.ElapsedMilliseconds;
 
-            Console.WriteLine($"int[] (managed) time: {nativeTime} ms");
+            Trace.WriteLine($"int[] (managed) time: {nativeTime} ms");
 
             // === Sanity Check ===
             var expected = (long)(Size - 1) * Size / 2;
@@ -143,6 +143,52 @@ namespace CommonExtendedObjectsTests
             // Optional performance sanity check (loose threshold)
             Assert.IsTrue(customTime < 2000, $"IntArray took too long: {customTime}ms");
             Assert.IsTrue(nativeTime < 2000, $"int[] took too long: {nativeTime}ms");
+
+            // === UnmanagedArray<T> Test ===
+            var genericArray = new UnmanagedArray<int>(Size);
+            stopwatch.Restart();
+
+            for (int i = 0; i < Size; i++)
+                genericArray[i] = i;
+
+            long genericSum = 0;
+            for (int i = 0; i < Size; i++)
+                genericSum += genericArray[i];
+
+            stopwatch.Stop();
+            var genericTime = stopwatch.ElapsedMilliseconds;
+            genericArray.Dispose();
+
+            Trace.WriteLine($"UnmanagedArray<int> time: {genericTime} ms");
+            Assert.AreEqual(expected, genericSum, "UnmanagedArray sum mismatch");
+
+        }
+
+        /// <summary>
+        /// Indexings the should work for int array.
+        /// </summary>
+        [TestMethod]
+        public void IndexingShouldWorkForIntArray() => RunIndexingTest(new IntArray(5));
+
+        /// <summary>
+        /// Indexings the should work for unmanaged array.
+        /// </summary>
+        [TestMethod]
+        public void IndexingShouldWorkForUnmanagedArray() => RunIndexingTest(new UnmanagedArray<int>(5));
+
+        /// <summary>
+        /// Runs the indexing test.
+        /// </summary>
+        /// <param name="arr">The arr.</param>
+        private static void RunIndexingTest(IUnmanagedArray<int> arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = i * 10;
+
+            for (int i = 0; i < arr.Length; i++)
+                Assert.AreEqual(i * 10, arr[i]);
+
+            arr.Dispose();
         }
     }
 }
