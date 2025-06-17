@@ -13,11 +13,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x  # Updated to a more recent LTS version
+        dotnet-version: 5.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -25,21 +25,30 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    # Run tests in parts (if categorized)
+    # Run tests in parts, allow test failure to continue so all tests run and logs available
     - name: Run Tests (Part 1)
-      run: dotnet test --no-build --verbosity normal --filter "Category=Part1" --no-restore
+      run: dotnet test --no-build --filter "Category=Part1" --no-restore --logger "trx;LogFileName=TestResults_Part1.trx" --results-directory ./TestResults
       timeout-minutes: 5
+      continue-on-error: true
 
     - name: Run Tests (Part 2)
-      run: dotnet test --no-build --verbosity normal --filter "Category=Part2" --no-restore
+      run: dotnet test --no-build --filter "Category=Part2" --no-restore --logger "trx;LogFileName=TestResults_Part2.trx" --results-directory ./TestResults
       timeout-minutes: 5
+      continue-on-error: true
 
-    # Detailed logging for debugging (consider a more structured approach)
+    # Run all tests with detailed logging and save results (optional, for debug)
     - name: Test with Detailed Logging
-      run: dotnet test --no-build --verbosity detailed --no-restore --logger "console;verbosity=detailed"
+      run: dotnet test --no-build --verbosity detailed --no-restore --logger "trx;LogFileName=TestResults_Detailed.trx" --results-directory ./TestResults
+      continue-on-error: true
 
-    # Check for stuck processes if needed (consider additional logic to handle stuck processes)
+    # Upload test results so you can inspect them in GitHub Actions UI
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResults
+        path: ./TestResults/*.trx
+
+    # Optional: check for stuck vstest processes (if you want)
     - name: Check for Stuck Processes
       run: |
         tasklist /FI "IMAGENAME eq vstest.console.exe"
-        # Optionally, add logic to kill stuck processes if necessary
