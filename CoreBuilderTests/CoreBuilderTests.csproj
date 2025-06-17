@@ -25,4 +25,8 @@
     <SuppressNET6CompatibilityCheck>true</SuppressNET6CompatibilityCheck>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
 </Project>
