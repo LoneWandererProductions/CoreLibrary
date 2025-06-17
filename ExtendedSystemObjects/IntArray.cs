@@ -20,12 +20,11 @@ namespace ExtendedSystemObjects
     ///     backed by unmanaged memory. Designed for performance-critical
     ///     scenarios where garbage collection overhead must be avoided.
     /// </summary>
-    public sealed unsafe class IntArray : IUnmanagedArray<int>, IDisposable
+    public sealed unsafe class IntArray : IUnmanagedArray<int>
     {
         private IntPtr _buffer;
-        private int* _ptr;
 
-        private int _capacity;
+        private int* _ptr;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IntArray" /> class with the specified size.
@@ -33,9 +32,12 @@ namespace ExtendedSystemObjects
         /// <param name="size">The number of elements to allocate.</param>
         public IntArray(int size)
         {
-            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
+            if (size < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size));
+            }
 
-            _capacity = size;
+            Capacity = size;
             Length = size;
 
             _buffer = Marshal.AllocHGlobal(size * sizeof(int));
@@ -45,14 +47,14 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Gets the current allocated capacity.
+        /// </summary>
+        private int Capacity { get; set; }
+
+        /// <summary>
         ///     Gets the current number of elements in the array.
         /// </summary>
         public int Length { get; private set; }
-
-        /// <summary>
-        ///     Gets the current allocated capacity.
-        /// </summary>
-        public int Capacity => _capacity;
 
         public int this[int i]
         {
@@ -60,7 +62,10 @@ namespace ExtendedSystemObjects
             get
             {
 #if DEBUG
-                if (i < 0 || i >= Length) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
 #endif
                 return _ptr[i];
             }
@@ -68,33 +73,108 @@ namespace ExtendedSystemObjects
             set
             {
 #if DEBUG
-                if (i < 0 || i >= Length) throw new IndexOutOfRangeException();
+                if (i < 0 || i >= Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
 #endif
                 _ptr[i] = value;
             }
         }
 
         /// <summary>
-        /// Inserts 'count' copies of 'value' at the given index.
+        ///     Resizes the internal buffer to the new capacity.
+        ///     If newSize is smaller than current Length, Length is reduced.
+        /// </summary>
+        public void Resize(int newSize)
+        {
+            if (newSize < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newSize));
+            }
+
+            if (newSize == Capacity)
+            {
+                return;
+            }
+
+            var newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
+            var newPtr = (int*)newBuffer;
+
+            // If growing, zero out the newly allocated portion
+            if (newSize > Capacity)
+            {
+                var newRegion = new Span<int>(newPtr + Capacity, newSize - Capacity);
+                newRegion.Clear();
+            }
+
+            _buffer = newBuffer;
+            _ptr = newPtr;
+            Capacity = newSize;
+
+            if (Length > newSize)
+            {
+                Length = newSize;
+            }
+        }
+
+
+        /// <summary>
+        ///     Clears all elements to zero.
+        /// </summary>
+        public void Clear()
+        {
+            for (var i = 0; i < Length; i++)
+            {
+                _ptr[i] = 0;
+            }
+        }
+
+        /// <summary>
+        ///     Frees unmanaged memory.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_buffer != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(_buffer);
+                _buffer = IntPtr.Zero;
+                _ptr = null;
+                Length = 0;
+                Capacity = 0;
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Inserts 'count' copies of 'value' at the given index.
         /// </summary>
         public void InsertAt(int index, int value, int count = 1)
         {
-            if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (index < 0 || index > Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
 
             EnsureCapacity(Length + count);
 
-            int shiftCount = Length - index;
+            var shiftCount = Length - index;
             if (shiftCount > 0)
             {
                 Buffer.MemoryCopy(
                     _ptr + index,
                     _ptr + index + count,
-                    (_capacity - (index)) * sizeof(int), // size of dest from index onward
+                    (Capacity - index) * sizeof(int), // size of dest from index onward
                     shiftCount * sizeof(int));
             }
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 _ptr[index + i] = value;
             }
@@ -103,15 +183,18 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes the element at the specified index by shifting remaining elements left.
+        ///     Removes the element at the specified index by shifting remaining elements left.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
 #if DEBUG
-            if (index < 0 || index >= Length) throw new IndexOutOfRangeException();
+            if (index < 0 || index >= Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
 #endif
-            for (int i = index; i < Length - 1; i++)
+            for (var i = index; i < Length - 1; i++)
             {
                 _ptr[i] = _ptr[i + 1];
             }
@@ -120,29 +203,35 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes multiple elements efficiently, given sorted indices.
+        ///     Removes multiple elements efficiently, given sorted indices.
         /// </summary>
         public void RemoveMultiple(ReadOnlySpan<int> indices)
         {
-            if (indices.Length == 0) return;
+            if (indices.Length == 0)
+            {
+                return;
+            }
 
             // Fast path for consecutive indices
             if (indices.Length > 1 && indices[^1] - indices[0] == indices.Length - 1)
             {
-                int start = indices[0];
-                int count = indices.Length;
+                var start = indices[0];
+                var count = indices.Length;
 
 #if DEBUG
-                if (start < 0 || start + count > Length) throw new IndexOutOfRangeException();
+                if (start < 0 || start + count > Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
 #endif
 
-                int moveCount = Length - (start + count);
+                var moveCount = Length - (start + count);
                 if (moveCount > 0)
                 {
                     Buffer.MemoryCopy(
                         _ptr + start + count,
                         _ptr + start,
-                        (_capacity - start) * sizeof(int),
+                        (Capacity - start) * sizeof(int),
                         moveCount * sizeof(int));
                 }
 
@@ -170,48 +259,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Resizes the internal buffer to the new capacity.
-        /// If newSize is smaller than current Length, Length is reduced.
-        /// </summary>
-        public void Resize(int newSize)
-        {
-            if (newSize < 0) throw new ArgumentOutOfRangeException(nameof(newSize));
-
-            if (newSize == _capacity)
-                return;
-
-            IntPtr newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
-            int* newPtr = (int*)newBuffer;
-
-            // If growing, zero out the newly allocated portion
-            if (newSize > _capacity)
-            {
-                Span<int> newRegion = new Span<int>(newPtr + _capacity, newSize - _capacity);
-                newRegion.Clear();
-            }
-
-            _buffer = newBuffer;
-            _ptr = newPtr;
-            _capacity = newSize;
-
-            if (Length > newSize)
-                Length = newSize;
-        }
-
-
-        /// <summary>
-        /// Clears all elements to zero.
-        /// </summary>
-        public void Clear()
-        {
-            for (int i = 0; i < Length; i++)
-            {
-                _ptr[i] = 0;
-            }
-        }
-
-        /// <summary>
-        /// Returns a Span over the used portion of the array.
+        ///     Returns a Span over the used portion of the array.
         /// </summary>
         public Span<int> AsSpan()
         {
@@ -219,35 +267,23 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Ensures capacity to hold at least minCapacity elements.
-        /// Grows capacity exponentially if needed.
+        ///     Ensures capacity to hold at least minCapacity elements.
+        ///     Grows capacity exponentially if needed.
         /// </summary>
         public void EnsureCapacity(int minCapacity)
         {
-            if (minCapacity <= _capacity) return;
-
-            int newCapacity = _capacity == 0 ? 4 : _capacity;
-            while (newCapacity < minCapacity)
-                newCapacity *= 2;
-
-            Resize(newCapacity);
-        }
-
-        /// <summary>
-        /// Frees unmanaged memory.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_buffer != IntPtr.Zero)
+            if (minCapacity <= Capacity)
             {
-                Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
-                _ptr = null;
-                Length = 0;
-                _capacity = 0;
+                return;
             }
 
-            GC.SuppressFinalize(this);
+            var newCapacity = Capacity == 0 ? 4 : Capacity;
+            while (newCapacity < minCapacity)
+            {
+                newCapacity *= 2;
+            }
+
+            Resize(newCapacity);
         }
 
         ~IntArray()

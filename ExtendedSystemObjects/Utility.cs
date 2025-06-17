@@ -256,7 +256,9 @@ namespace ExtendedSystemObjects
         public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
         {
             if (numbers == null || numbers.Count == 0 || sequenceLength <= 1)
+            {
                 return null;
+            }
 
             numbers.Sort();
             var numberSet = new HashSet<int>(numbers);
@@ -267,10 +269,12 @@ namespace ExtendedSystemObjects
             foreach (var num in numbers)
             {
                 if (visited.Contains(num))
+                {
                     continue;
+                }
 
-                int current = num;
-                int streak = 1;
+                var current = num;
+                var streak = 1;
 
                 // Try to build sequence by jumping stepWidth repeatedly
                 while (numberSet.Contains(current + stepWidth))
@@ -284,8 +288,10 @@ namespace ExtendedSystemObjects
                     result.Add(new KeyValuePair<int, int>(num, current));
 
                     // Mark all in this sequence as visited to avoid duplicates
-                    for (int val = num; val <= current; val += stepWidth)
+                    for (var val = num; val <= current; val += stepWidth)
+                    {
                         visited.Add(val);
+                    }
                 }
             }
 

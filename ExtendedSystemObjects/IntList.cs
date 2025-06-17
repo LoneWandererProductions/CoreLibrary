@@ -190,7 +190,7 @@ namespace ExtendedSystemObjects
         /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
         public Span<int> AsSpan()
         {
-            return new((void*)_buffer, Count);
+            return new Span<int>((void*)_buffer, Count);
         }
 
         /// <summary>

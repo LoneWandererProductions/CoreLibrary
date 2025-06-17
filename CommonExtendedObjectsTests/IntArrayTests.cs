@@ -166,12 +166,16 @@ namespace CommonExtendedObjectsTests
             var genericArray = new UnmanagedArray<int>(Size);
             stopwatch.Restart();
 
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 genericArray[i] = i;
+            }
 
             long genericSum = 0;
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
+            {
                 genericSum += genericArray[i];
+            }
 
             stopwatch.Stop();
             var genericTime = stopwatch.ElapsedMilliseconds;
@@ -179,32 +183,41 @@ namespace CommonExtendedObjectsTests
 
             Trace.WriteLine($"UnmanagedArray<int> time: {genericTime} ms");
             Assert.AreEqual(expected, genericSum, "UnmanagedArray sum mismatch");
-
         }
 
         /// <summary>
-        /// Indexings the should work for int array.
+        ///     Indexings the should work for int array.
         /// </summary>
         [TestMethod]
-        public void IndexingShouldWorkForIntArray() => RunIndexingTest(new IntArray(5));
+        public void IndexingShouldWorkForIntArray()
+        {
+            RunIndexingTest(new IntArray(5));
+        }
 
         /// <summary>
-        /// Indexings the should work for unmanaged array.
+        ///     Indexings the should work for unmanaged array.
         /// </summary>
         [TestMethod]
-        public void IndexingShouldWorkForUnmanagedArray() => RunIndexingTest(new UnmanagedArray<int>(5));
+        public void IndexingShouldWorkForUnmanagedArray()
+        {
+            RunIndexingTest(new UnmanagedArray<int>(5));
+        }
 
         /// <summary>
-        /// Runs the indexing test.
+        ///     Runs the indexing test.
         /// </summary>
         /// <param name="arr">The arr.</param>
         private static void RunIndexingTest(IUnmanagedArray<int> arr)
         {
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 arr[i] = i * 10;
+            }
 
-            for (int i = 0; i < arr.Length; i++)
+            for (var i = 0; i < arr.Length; i++)
+            {
                 Assert.AreEqual(i * 10, arr[i]);
+            }
 
             arr.Dispose();
         }

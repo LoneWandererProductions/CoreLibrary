@@ -113,9 +113,7 @@ namespace ExtendedSystemObjects
                 identifier = Utility.GetFirstAvailableIndex(_vault.Keys.ToList());
             }
 
-            var expiry = expiryTime;
-
-            var vaultItem = new VaultItem<TU>(data, expiry, description);
+            var vaultItem = new VaultItem<TU>(data, expiryTime, description);
 
             _lock.EnterWriteLock();
             try

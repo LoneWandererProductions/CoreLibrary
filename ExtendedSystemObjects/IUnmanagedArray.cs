@@ -12,7 +12,7 @@ namespace ExtendedSystemObjects
 {
     /// <inheritdoc />
     /// <summary>
-    /// Interface to make unmanaged arrays interchangeable.
+    ///     Interface to make unmanaged arrays interchangeable.
     /// </summary>
     /// <typeparam name="T">Generic Type</typeparam>
     /// <seealso cref="T:System.IDisposable" />
