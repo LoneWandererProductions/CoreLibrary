@@ -90,7 +90,7 @@ namespace ExtendedSystemObjects
                 Buffer.MemoryCopy(
                     _ptr + index,
                     _ptr + index + count,
-                    (_capacity - (index + count)) * sizeof(int),
+                    (_capacity - (index)) * sizeof(int), // size of dest from index onward
                     shiftCount * sizeof(int));
             }
 
@@ -177,13 +177,27 @@ namespace ExtendedSystemObjects
         {
             if (newSize < 0) throw new ArgumentOutOfRangeException(nameof(newSize));
 
-            _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
-            _ptr = (int*)_buffer;
+            if (newSize == _capacity)
+                return;
+
+            IntPtr newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
+            int* newPtr = (int*)newBuffer;
+
+            // If growing, zero out the newly allocated portion
+            if (newSize > _capacity)
+            {
+                Span<int> newRegion = new Span<int>(newPtr + _capacity, newSize - _capacity);
+                newRegion.Clear();
+            }
+
+            _buffer = newBuffer;
+            _ptr = newPtr;
             _capacity = newSize;
 
             if (Length > newSize)
                 Length = newSize;
         }
+
 
         /// <summary>
         /// Clears all elements to zero.

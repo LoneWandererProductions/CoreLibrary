@@ -1,14 +1,17 @@
-﻿using System;
+﻿// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     /// Unsafe array
     /// </summary>
     /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
-    /// <seealso cref="System.IDisposable" />
-    public unsafe class UnmanagedArray<T> : IUnmanagedArray<T>, IDisposable where T : unmanaged
+    /// <seealso cref="T:System.IDisposable" />
+    public sealed unsafe class UnmanagedArray<T> : IUnmanagedArray<T>, IDisposable where T : unmanaged
     {
         private IntPtr _buffer;
         private T* _ptr;
