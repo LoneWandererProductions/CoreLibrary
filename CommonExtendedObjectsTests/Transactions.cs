@@ -7,6 +7,7 @@
  */
 
 using System.Linq;
+using CommonControls;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

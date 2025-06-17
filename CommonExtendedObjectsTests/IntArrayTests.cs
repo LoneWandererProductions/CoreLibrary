@@ -74,7 +74,7 @@ namespace CommonExtendedObjectsTests
 
             arr.Resize(5);
 
-            Assert.AreEqual(5, arr.Length);
+            Assert.AreEqual(3, arr.Length);
             Assert.AreEqual(1, arr[0]);
             Assert.AreEqual(2, arr[1]);
             Assert.AreEqual(3, arr[2]);

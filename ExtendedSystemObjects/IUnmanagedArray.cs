@@ -10,11 +10,12 @@ using System;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interface to make unmanaged arrays interchangeable.
     /// </summary>
     /// <typeparam name="T">Generic Type</typeparam>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="T:System.IDisposable" />
     public interface IUnmanagedArray<T> : IDisposable
     {
         int Length { get; }
