@@ -1,11 +1,12 @@
-﻿using System;
+﻿// ReSharper disable MemberCanBePrivate.Global
+
+using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace ExtendedSystemObjects
 {
-    public sealed class UnmanagedKvStore : IDisposable
+    public sealed class SortedKvStore : IDisposable
     {
         private IntArray _keys;
         private IntArray _values;
@@ -13,7 +14,7 @@ namespace ExtendedSystemObjects
 
         public int Count { get; private set; }
 
-        public UnmanagedKvStore(int initialCapacity = 16)
+        public SortedKvStore(int initialCapacity = 16)
         {
             _keys = new IntArray(initialCapacity);
             _values = new IntArray(initialCapacity);
@@ -36,6 +37,7 @@ namespace ExtendedSystemObjects
                 {
                     _values[idx] = value;
                 }
+
                 return;
             }
 
@@ -96,18 +98,64 @@ namespace ExtendedSystemObjects
             }
         }
 
-        public void RemoveManyByKey(IEnumerable<int> keysToRemove)
+        public void RemoveManyByKey(ReadOnlySpan<int> keysToRemove)
         {
-            var removalSet = new HashSet<int>(keysToRemove);
+            if (keysToRemove.Length == 0)
+                return;
 
             var occSpan = _occupied.AsSpan()[..Count];
             var keysSpan = _keys.AsSpan()[..Count];
 
-            for (int i = 0; i < Count; i++)
+            // Optional: if keysToRemove is sorted, do a linear merge
+            // This path is faster than HashSet-based if input is sorted and large
+            bool isSorted = true;
+            for (int i = 1; i < keysToRemove.Length; i++)
             {
-                if (occSpan[i] != 0 && removalSet.Contains(keysSpan[i]))
+                if (keysToRemove[i] >= keysToRemove[i - 1])
                 {
-                    occSpan[i] = 0;
+                    continue;
+                }
+
+                isSorted = false;
+                break;
+            }
+
+            if (isSorted)
+            {
+                int i = 0, j = 0;
+                while (i < Count && j < keysToRemove.Length)
+                {
+                    int currentKey = keysSpan[i];
+                    int removeKey = keysToRemove[j];
+
+                    if (currentKey < removeKey)
+                    {
+                        i++;
+                    }
+                    else if (currentKey > removeKey)
+                    {
+                        j++;
+                    }
+                    else
+                    {
+                        if (occSpan[i] != 0)
+                            occSpan[i] = 0;
+
+                        i++;
+                        j++;
+                    }
+                }
+            }
+            else
+            {
+                // Fall back to binary search (cheap because keys are sorted in store)
+                for (int n = 0; n < keysToRemove.Length; n++)
+                {
+                    int idx = BinarySearch(keysToRemove[n]);
+                    if (idx >= 0 && occSpan[idx] != 0)
+                    {
+                        occSpan[idx] = 0;
+                    }
                 }
             }
         }
