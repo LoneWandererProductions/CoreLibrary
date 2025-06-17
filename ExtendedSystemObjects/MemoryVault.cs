@@ -10,7 +10,7 @@
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
-
+// ReSharper disable UnusedMethodReturnValue.Global
 
 using System;
 using System.Collections.Generic;

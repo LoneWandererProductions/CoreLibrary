@@ -25,6 +25,11 @@ namespace Interpreter
         private readonly string _myRequestId;
 
         /// <summary>
+        ///     The user feedback, only for external extensions.
+        /// </summary>
+        private readonly Dictionary<int, UserFeedback> _userFeedback;
+
+        /// <summary>
         ///     Dictionary of available commands.
         /// </summary>
         private Dictionary<int, InCommand> _commands;
@@ -48,11 +53,6 @@ namespace Interpreter
         ///     Instance of Prompt to handle command input/output.
         /// </summary>
         private Prompt _prompt;
-
-        /// <summary>
-        ///     The user feedback, only for external extensions.
-        /// </summary>
-        private readonly Dictionary<int, UserFeedback> _userFeedback;
 
         /// <summary>
         ///     Prevents a default instance of the <see cref="IrtHandleExtensionInternal" /> class from being created.
@@ -152,9 +152,11 @@ namespace Interpreter
                 irtInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
             }
 
+            UserFeedback feedback = null;
+
             //if none is available use the standard one from Internal
             //if not we use the provided one
-            if (_userFeedback?.TryGetValue(extension.FeedBackId, out var feedback) != true)
+            if (_userFeedback?.TryGetValue(extension.FeedBackId, out feedback) != true)
             {
                 feedback = IrtConst.InternalFeedback[-1];
             }
@@ -172,7 +174,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Handles external commands.
+        ///     Handles external commands.
         /// </summary>
         /// <param name="extension">The extension command.</param>
         private void HandleExternalCommand(ExtensionCommands extension)
