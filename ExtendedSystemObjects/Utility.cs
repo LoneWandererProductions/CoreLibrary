@@ -88,21 +88,37 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Binary search of an int element.
+        /// Performs binary search on a sorted span of integers.
         /// </summary>
-        /// <param name="sortedKeys">The sorted keys.</param>
-        /// <param name="count">The count.</param>
-        /// <param name="target">The target.</param>
-        /// <returns>Index of the element</returns>
+        /// <param name="sortedKeys">The sorted span of integers.</param>
+        /// <param name="target">The value to search for.</param>
+        /// <returns>
+        /// Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int BinarySearch(ReadOnlySpan<int> sortedKeys, int count, int target)
+        public static int BinarySearch(ReadOnlySpan<int> sortedKeys, int target)
+        {
+            return BinarySearch(sortedKeys, sortedKeys.Length, target);
+        }
+
+        /// <summary>
+        /// Internal binary search method using a specified count of elements.
+        /// </summary>
+        /// <param name="sortedKeys">The sorted span of integers.</param>
+        /// <param name="count">The number of elements to consider from the start of the span.</param>
+        /// <param name="target">The value to search for.</param>
+        /// <returns>
+        /// Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int BinarySearch(ReadOnlySpan<int> sortedKeys, int count, int target)
         {
             int left = 0, right = count - 1;
 
             while (left <= right)
             {
-                var mid = left + ((right - left) >> 1);
-                var midKey = sortedKeys[mid];
+                int mid = left + ((right - left) >> 1);
+                int midKey = sortedKeys[mid];
 
                 if (midKey == target)
                     return mid;

@@ -283,7 +283,7 @@ namespace CommonExtendedObjectsTests
             // Warm-up to avoid JIT bias
             for (int i = 0; i < 10_000; i++)
             {
-                Utility.BinarySearch(keysSpan, N, i * 2);
+                Utility.BinarySearch(keysSpan, i * 2);
             }
 
             var sw = Stopwatch.StartNew();
@@ -292,7 +292,7 @@ namespace CommonExtendedObjectsTests
             for (int i = 0; i < N; i++)
             {
                 int val = i * 2;
-                int idx = Utility.BinarySearch(keysSpan, N, val);
+                int idx = Utility.BinarySearch(keysSpan, val);
 
                 Assert.IsTrue(idx >= 0, $"Key {val} should be found.");
                 Assert.AreEqual(val, sortedKeys[idx]);
@@ -321,7 +321,7 @@ namespace CommonExtendedObjectsTests
             // Warm-up both methods
             for (int i = 0; i < 10_000; i++)
             {
-                Utility.BinarySearch(keysSpan, N, i * 2);
+                Utility.BinarySearch(keysSpan, i * 2);
                 Array.BinarySearch(sortedKeys, i * 2);
             }
 
