@@ -69,7 +69,7 @@ namespace ExtendedSystemObjects
         /// <param name="binary">The binary.</param>
         /// <param name="toBase">To base.</param>
         /// <returns>a binary string to target number system</returns>
-        public static int BinaryToBase(this string binary, int toBase)
+        public static int ParseStringToInt(this string binary, int toBase)
         {
             //2 was the base, convert back to base
             return Convert.ToInt32(binary, toBase);
