@@ -6,7 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -264,5 +266,92 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual((8, 9, 6), result[4]);
             Assert.AreEqual((10, 10, 7), result[5]);
         }
+
+        /// <summary>
+        /// Binaries the search performance and correctness.
+        /// </summary>
+        [TestMethod]
+        public void BinarySearchPerformanceAndCorrectness()
+        {
+            const int N = 1_000_000;
+            int[] sortedKeys = new int[N];
+            for (int i = 0; i < N; i++)
+                sortedKeys[i] = i * 2; // even numbers sorted
+
+            var keysSpan = sortedKeys.AsSpan();
+
+            // Warm-up to avoid JIT bias
+            for (int i = 0; i < 10_000; i++)
+            {
+                Utility.BinarySearch(keysSpan, N, i * 2);
+            }
+
+            var sw = Stopwatch.StartNew();
+
+            int foundCount = 0;
+            for (int i = 0; i < N; i++)
+            {
+                int val = i * 2;
+                int idx = Utility.BinarySearch(keysSpan, N, val);
+
+                Assert.IsTrue(idx >= 0, $"Key {val} should be found.");
+                Assert.AreEqual(val, sortedKeys[idx]);
+
+                foundCount++;
+            }
+
+            sw.Stop();
+
+            Trace.WriteLine($"BinarySearch found {foundCount} keys out of {N} in {sw.ElapsedMilliseconds} ms");
+
+            // Optional: Assert performance threshold (example: must finish under 200ms)
+            Assert.IsTrue(sw.ElapsedMilliseconds < 1000, $"BinarySearch took too long: {sw.ElapsedMilliseconds} ms");
+        }
+
+        [TestMethod]
+        public void CompareCustomVsArrayBinarySearch_Performance()
+        {
+            const int N = 1_000_000;
+            int[] sortedKeys = new int[N];
+            for (int i = 0; i < N; i++)
+                sortedKeys[i] = i * 2; // even numbers sorted
+
+            var keysSpan = sortedKeys.AsSpan();
+
+            // Warm-up both methods
+            for (int i = 0; i < 10_000; i++)
+            {
+                Utility.BinarySearch(keysSpan, N, i * 2);
+                Array.BinarySearch(sortedKeys, i * 2);
+            }
+
+            // Custom BinarySearch benchmark
+            var swCustom = Stopwatch.StartNew();
+            for (int i = 0; i < N; i++)
+            {
+                int val = i * 2;
+                int idx = Utility.BinarySearch(keysSpan, N, val);
+                Assert.IsTrue(idx >= 0);
+            }
+            swCustom.Stop();
+
+            // Array.BinarySearch benchmark
+            var swArray = Stopwatch.StartNew();
+            for (int i = 0; i < N; i++)
+            {
+                int val = i * 2;
+                int idx = Array.BinarySearch(sortedKeys, val);
+                Assert.IsTrue(idx >= 0);
+            }
+            swArray.Stop();
+
+            Trace.WriteLine($"Custom BinarySearch: {swCustom.ElapsedMilliseconds} ms");
+            Trace.WriteLine($"Array.BinarySearch: {swArray.ElapsedMilliseconds} ms");
+
+            // Optionally assert your method is within some factor of Array.BinarySearch
+            Assert.IsTrue(swCustom.ElapsedMilliseconds < swArray.ElapsedMilliseconds * 2,
+                $"Custom BinarySearch is too slow: {swCustom.ElapsedMilliseconds} ms vs {swArray.ElapsedMilliseconds} ms");
+        }
+
     }
 }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
@@ -21,11 +22,37 @@ namespace ExtendedSystemObjects
 
         public int Count { get; private set; }
 
-        public void Dispose()
+        /// <summary>
+        /// Gets the keys.
+        /// </summary>
+        /// <value>
+        /// The keys.
+        /// </value>
+        public IEnumerable<int> Keys
         {
-            _keys.Dispose();
-            _values.Dispose();
-            _occupied.Dispose();
+            get
+            {
+                for (int i = 0; i < Count; i++)
+                {
+                    if (_occupied[i] != 0)
+                        yield return _keys[i];
+                }
+            }
+        }
+
+        public int this[int key]
+        {
+            get
+            {
+                if (TryGet(key, out var value))
+                    return value;
+
+                throw new KeyNotFoundException($"Key {key} not found.");
+            }
+            set
+            {
+                Add(key, value); // Add already handles update or insert
+            }
         }
 
         public void Add(int key, int value)
@@ -59,7 +86,7 @@ namespace ExtendedSystemObjects
             Count++;
         }
 
-        public bool TryGetByKey(int key, out int value)
+        public bool TryGet(int key, out int value)
         {
             int left = 0, right = Count - 1;
             var keysSpan = _keys.AsSpan()[..Count];
@@ -95,7 +122,7 @@ namespace ExtendedSystemObjects
             return false;
         }
 
-        public void RemoveByKey(int key)
+        public void Remove(int key)
         {
             var idx = BinarySearch(key);
             if (idx >= 0 && _occupied[idx] != 0)
@@ -103,8 +130,20 @@ namespace ExtendedSystemObjects
                 _occupied[idx] = 0;
             }
         }
+        public bool TryRemove(int key, out int index)
+        {
+            index = BinarySearch(key);
+            if (index >= 0 && _occupied[index] != 0)
+            {
+                _occupied[index] = 0;
+                return true;
+            }
 
-        public void RemoveManyByKey(ReadOnlySpan<int> keysToRemove)
+            index = -1;
+            return false;
+        }
+
+        public void RemoveMany(ReadOnlySpan<int> keysToRemove)
         {
             if (keysToRemove.Length == 0)
             {
@@ -200,6 +239,28 @@ namespace ExtendedSystemObjects
             ArrayPool<int>.Shared.Return(rented);
         }
 
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            _keys.Clear();
+            _values.Clear();
+            _occupied.Clear();
+        }
+
+        ~SortedKvStore()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _keys.Dispose();
+            _values.Dispose();
+            _occupied.Dispose();
+        }
+
         private void EnsureCapacity()
         {
             // Delegate to IntArray.EnsureCapacity, using Count + 1 since we add one item
@@ -210,30 +271,8 @@ namespace ExtendedSystemObjects
 
         private int BinarySearch(int key)
         {
-            int left = 0, right = Count - 1;
-            var keysSpan = _keys.AsSpan()[..Count];
-
-            while (left <= right)
-            {
-                var mid = left + ((right - left) >> 1);
-                var midKey = keysSpan[mid];
-
-                if (midKey == key)
-                {
-                    return mid;
-                }
-
-                if (midKey < key)
-                {
-                    left = mid + 1;
-                }
-                else
-                {
-                    right = mid - 1;
-                }
-            }
-
-            return ~left;
+            return Utility.BinarySearch(_keys.AsSpan(), Count, key);
         }
+
     }
 }

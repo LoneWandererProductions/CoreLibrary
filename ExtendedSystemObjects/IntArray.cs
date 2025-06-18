@@ -22,8 +22,14 @@ namespace ExtendedSystemObjects
     /// </summary>
     public sealed unsafe class IntArray : IUnmanagedArray<int>
     {
+        /// <summary>
+        /// The buffer
+        /// </summary>
         private IntPtr _buffer;
 
+        /// <summary>
+        /// The pointer
+        /// </summary>
         private int* _ptr;
 
         /// <summary>
@@ -286,6 +292,9 @@ namespace ExtendedSystemObjects
             Resize(newCapacity);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="IntArray"/> class.
+        /// </summary>
         ~IntArray()
         {
             Dispose();

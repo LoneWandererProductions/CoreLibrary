@@ -88,6 +88,35 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Binary search of an int element.
+        /// </summary>
+        /// <param name="sortedKeys">The sorted keys.</param>
+        /// <param name="count">The count.</param>
+        /// <param name="target">The target.</param>
+        /// <returns>Index of the element</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int BinarySearch(ReadOnlySpan<int> sortedKeys, int count, int target)
+        {
+            int left = 0, right = count - 1;
+
+            while (left <= right)
+            {
+                var mid = left + ((right - left) >> 1);
+                var midKey = sortedKeys[mid];
+
+                if (midKey == target)
+                    return mid;
+
+                if (midKey < target)
+                    left = mid + 1;
+                else
+                    right = mid - 1;
+            }
+
+            return ~left;
+        }
+
+        /// <summary>
         ///     Gets the next element.
         /// </summary>
         /// <param name="position">The position.</param>
