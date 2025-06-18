@@ -7,6 +7,10 @@ using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public sealed class SortedKvStore : IDisposable
     {
         private readonly IntArray _keys;
@@ -130,6 +134,7 @@ namespace ExtendedSystemObjects
                 _occupied[idx] = 0;
             }
         }
+
         public bool TryRemove(int key, out int index)
         {
             index = BinarySearch(key);
@@ -249,11 +254,17 @@ namespace ExtendedSystemObjects
             _occupied.Clear();
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="SortedKvStore"/> class.
+        /// </summary>
         ~SortedKvStore()
         {
             Dispose();
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             _keys.Dispose();
