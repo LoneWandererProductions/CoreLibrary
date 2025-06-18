@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IIdHandling.cs
+ * PROJECT:     ExtendedSystemObjects.Interfaces
+ * FILE:        ExtendedSystemObjects.Interfaces/IIdHandling.cs
  * PURPOSE:     Interface to smooth out my way of switching between Lists and Dictionaries
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects
+namespace ExtendedSystemObjects.Interfaces
 {
     /// <summary>
     ///     Interface Id handling, for better handling of Dictionaries and list elements

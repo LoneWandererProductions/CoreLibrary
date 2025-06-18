@@ -11,6 +11,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {
@@ -57,11 +58,22 @@ namespace ExtendedSystemObjects
         /// </summary>
         private int Capacity { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the current number of elements in the array.
         /// </summary>
         public int Length { get; private set; }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the <see cref="!:T" /> at the specified index.
+        /// </summary>
+        /// <value>
+        /// The <see cref="!:T" />.
+        /// </value>
+        /// <param name="i">The i.</param>
+        /// <returns>Value at index.</returns>
+        /// <exception cref="T:System.IndexOutOfRangeException"></exception>
         public int this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -88,6 +100,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Resizes the internal buffer to the new capacity.
         ///     If newSize is smaller than current Length, Length is reduced.
@@ -125,6 +138,7 @@ namespace ExtendedSystemObjects
         }
 
 
+        /// <inheritdoc />
         /// <summary>
         ///     Clears all elements to zero.
         /// </summary>
@@ -136,6 +150,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Frees unmanaged memory.
         /// </summary>
@@ -188,6 +203,7 @@ namespace ExtendedSystemObjects
             Length += count;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Removes the element at the specified index by shifting remaining elements left.
         /// </summary>

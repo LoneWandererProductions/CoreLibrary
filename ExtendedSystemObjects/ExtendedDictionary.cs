@@ -7,11 +7,13 @@
  */
 
 // ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {

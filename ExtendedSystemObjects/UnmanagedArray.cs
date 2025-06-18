@@ -7,9 +7,12 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {
@@ -62,15 +65,16 @@ namespace ExtendedSystemObjects
             Clear();
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the <see cref="T" /> at the specified index.
+        ///     Gets or sets the <see cref="!:T" /> at the specified index.
         /// </summary>
         /// <value>
-        ///     The <see cref="T" />.
+        ///     The <see cref="!:T" />.
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns>The value at the specified index.</returns>
-        /// <exception cref="System.IndexOutOfRangeException"></exception>
+        /// <exception cref="T:System.IndexOutOfRangeException"></exception>
         public T this[int index]
         {
             get
@@ -137,11 +141,12 @@ namespace ExtendedSystemObjects
             Length += count;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Removes at.
         /// </summary>
         /// <param name="index">The index.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
         public void RemoveAt(int index)
         {
             if (index < 0 || index >= Length)
@@ -161,6 +166,7 @@ namespace ExtendedSystemObjects
             Length--;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Resizes the internal array to the specified new size.
         ///     Contents will be preserved up to the minimum of old and new size.
@@ -175,6 +181,7 @@ namespace ExtendedSystemObjects
                 Length = newSize;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Clears the array by setting all elements to zero.
         /// </summary>
@@ -201,7 +208,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Ases the span.
+        /// Access the span.
         /// </summary>
         /// <returns>Return all Values as Span</returns>
         public Span<T> AsSpan()
@@ -209,6 +216,7 @@ namespace ExtendedSystemObjects
             return new(_ptr, Length);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

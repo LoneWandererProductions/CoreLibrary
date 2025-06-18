@@ -9,6 +9,7 @@
 using System;
 using System.Diagnostics;
 using ExtendedSystemObjects;
+using ExtendedSystemObjects.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonExtendedObjectsTests

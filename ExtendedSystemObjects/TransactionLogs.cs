@@ -164,14 +164,15 @@ namespace ExtendedSystemObjects
             lock (_lock)
             {
                 if (!Changelog.TryGetValue(id, out var reference)) return -1;
+
                 var unique = reference.UniqueIdentifier;
 
-                foreach (var item in Changelog.Reverse())
+                foreach (var (key, logEntry) in Changelog.Reverse())
                 {
-                    if (item.Key >= id) continue;
+                    if (key >= id) continue;
 
-                    if (item.Value.UniqueIdentifier == unique && item.Value.State == LogState.Add)
-                        return item.Key;
+                    if (logEntry.UniqueIdentifier == unique && logEntry.State == LogState.Add)
+                        return key;
                 }
 
                 return -1;

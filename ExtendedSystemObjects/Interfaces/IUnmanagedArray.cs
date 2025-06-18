@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
+ * PROJECT:     ExtendedSystemObjects.Interfaces
+ * FILE:        ExtendedSystemObjects.Interfaces/IUnmanagedArray.cs
  * PURPOSE:     An Abstraction for UnmanagedArray and IntArray to make both exchangeable.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
 
-namespace ExtendedSystemObjects
+namespace ExtendedSystemObjects.Interfaces
 {
     /// <inheritdoc />
     /// <summary>
@@ -33,7 +33,7 @@ namespace ExtendedSystemObjects
         /// The <see cref="T"/>.
         /// </value>
         /// <param name="index">The index.</param>
-        /// <returns>Value at intex</returns>
+        /// <returns>Value at index</returns>
         T this[int index] { get; set; }
 
         /// <summary>

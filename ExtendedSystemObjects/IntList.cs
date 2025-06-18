@@ -13,6 +13,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {
