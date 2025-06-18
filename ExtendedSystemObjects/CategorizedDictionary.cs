@@ -145,12 +145,7 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                if (_data.ContainsKey(key))
-                {
-                    throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
-                }
-
-                _data[key] = (category, value);
+                AddInternal(category, key, value);
             }
             finally
             {
@@ -165,10 +160,20 @@ namespace ExtendedSystemObjects
         /// <param name="value">The value.</param>
         public void Add(TK key, TV value)
         {
+            Add(string.Empty, key, value);
+        }
+
+        /// <summary>
+        /// Removes the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>If item was removed</returns>
+        public bool Remove(TK key)
+        {
             _lock.EnterWriteLock();
             try
             {
-                Add(string.Empty, key, value);
+                return _data.Remove(key);
             }
             finally
             {
@@ -346,6 +351,22 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                _data.Clear();
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
         ///     Checks if two CategorizedDictionary instances are equal and provides a message.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -449,5 +470,23 @@ namespace ExtendedSystemObjects
                 return hashCode;
             }
         }
+
+        /// <summary>
+        /// Adds the internal.
+        /// </summary>
+        /// <param name="category">The category.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <exception cref="System.ArgumentException"></exception>
+        private void AddInternal(string category, TK key, TV value)
+        {
+            if (_data.ContainsKey(key))
+            {
+                throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
+            }
+
+            _data[key] = (category, value);
+        }
+
     }
 }
