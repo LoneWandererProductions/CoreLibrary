@@ -41,6 +41,11 @@ namespace ExtendedSystemObjects
         private int* _ptr;
 
         /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="IntList" /> class with the specified initial capacity.
         /// </summary>
         /// <param name="initialCapacity">The initial number of elements the list can hold without resizing. Default is 16.</param>
@@ -84,23 +89,6 @@ namespace ExtendedSystemObjects
 #endif
                 _ptr[i] = value;
             }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
-        ///     After calling this method, the instance should not be used.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_buffer != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
-            }
-
-            Count = 0;
-            _capacity = 0;
         }
 
         /// <summary>
@@ -153,6 +141,71 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Removes all elements from the list. The capacity remains unchanged.
+        /// </summary>
+        public void Clear()
+        {
+            Count = 0;
+        }
+
+        /// <summary>
+        ///     Returns a span over the valid elements of the list.
+        ///     Allows fast, safe access to the underlying data.
+        /// </summary>
+        /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
+        public Span<int> AsSpan()
+        {
+            return new Span<int>((void*)_buffer, Count);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
+        ///     After calling this method, the instance should not be used.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="IntList" /> class, releasing unmanaged resources.
+        /// </summary>
+        ~IntList()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            // Free unmanaged resources
+            if (_buffer != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(_buffer);
+                _buffer = IntPtr.Zero;
+                _ptr = null;
+                _capacity = 0;
+                Count = 0;
+            }
+
+            // If you had managed disposable members and disposing is true,
+            // dispose them here. None exist for now.
+
+            _disposed = true;  // Always set to true after dispose
+
+            // Suppress unused parameter warning
+            _ = disposing;
+        }
+
+        /// <summary>
         ///     Ensures the capacity of the internal buffer is at least the specified minimum size.
         ///     Resizes the buffer if necessary by doubling its capacity or setting it to the minimum required size.
         /// </summary>
@@ -173,32 +226,6 @@ namespace ExtendedSystemObjects
             _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newCapacity * sizeof(int)));
             _ptr = (int*)_buffer;
             _capacity = newCapacity;
-        }
-
-        /// <summary>
-        ///     Removes all elements from the list. The capacity remains unchanged.
-        /// </summary>
-        public void Clear()
-        {
-            Count = 0;
-        }
-
-        /// <summary>
-        ///     Returns a span over the valid elements of the list.
-        ///     Allows fast, safe access to the underlying data.
-        /// </summary>
-        /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
-        public Span<int> AsSpan()
-        {
-            return new Span<int>((void*)_buffer, Count);
-        }
-
-        /// <summary>
-        ///     Finalizes an instance of the <see cref="IntList" /> class, releasing unmanaged resources.
-        /// </summary>
-        ~IntList()
-        {
-            Dispose();
         }
     }
 }

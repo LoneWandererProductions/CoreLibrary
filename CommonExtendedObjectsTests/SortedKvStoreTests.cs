@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        CommonExtendedObjectsTests/SortedKvStoreTests.cs
+ * PURPOSE:     A generic test for my SortedKvStore
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
 using System.Diagnostics;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

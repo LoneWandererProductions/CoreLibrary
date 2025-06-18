@@ -1,4 +1,12 @@
-﻿// ReSharper disable MemberCanBeInternal
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
+ * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similiar to IntArray.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Runtime.InteropServices;
@@ -13,8 +21,34 @@ namespace ExtendedSystemObjects
     /// <seealso cref="T:System.IDisposable" />
     public sealed unsafe class UnmanagedArray<T> : IUnmanagedArray<T> where T : unmanaged
     {
+        /// <summary>
+        /// The buffer
+        /// </summary>
         private IntPtr _buffer;
+
+        /// <summary>
+        /// The pointer 
+        /// </summary>
         private T* _ptr;
+
+        /// <summary>
+        /// The capacity
+        /// </summary>
+        private int _capacity;
+
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
+        /// Gets the length.
+        /// </summary>
+        /// <value>
+        /// The length.
+        /// </value>
+        public int Length { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnmanagedArray{T}" /> class.
@@ -22,12 +56,12 @@ namespace ExtendedSystemObjects
         /// <param name="size">The size.</param>
         public UnmanagedArray(int size)
         {
+            _capacity = size;
             Length = size;
             _buffer = Marshal.AllocHGlobal(size * sizeof(T));
             _ptr = (T*)_buffer;
+            Clear();
         }
-
-        public int Length { get; private set; }
 
         /// <summary>
         ///     Gets or sets the <see cref="T" /> at the specified index.
@@ -62,7 +96,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-
         /// <summary>
         ///     Resizes the internal array to the specified new size.
         ///     Contents will be preserved up to the minimum of old and new size.
@@ -72,7 +105,9 @@ namespace ExtendedSystemObjects
         {
             _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(T)));
             _ptr = (T*)_buffer;
-            Length = newSize;
+            _capacity = newSize;
+            if (Length > newSize)
+                Length = newSize;
         }
 
         /// <summary>
@@ -84,20 +119,71 @@ namespace ExtendedSystemObjects
             AsSpan().Clear();
         }
 
+        /// <summary>
+        /// Ensures the capacity.
+        /// </summary>
+        /// <param name="minCapacity">The minimum capacity.</param>
+        public void EnsureCapacity(int minCapacity)
+        {
+            if (minCapacity <= _capacity)
+                return;
+
+            int newCapacity = _capacity == 0 ? 4 : _capacity;
+            while (newCapacity < minCapacity)
+                newCapacity *= 2;
+
+            Resize(newCapacity);
+        }
+
+        /// <summary>
+        /// Ases the span.
+        /// </summary>
+        /// <returns>Return all Values as Span</returns>
+        public Span<T> AsSpan()
+        {
+            return new(_ptr, Length);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="UnmanagedArray{T}"/> class.
+        /// </summary>
+        ~UnmanagedArray()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            // Only unmanaged cleanup here.
             if (_buffer != IntPtr.Zero)
             {
                 Marshal.FreeHGlobal(_buffer);
                 _buffer = IntPtr.Zero;
                 _ptr = null;
                 Length = 0;
+                _capacity = 0;
             }
-        }
 
-        public Span<T> AsSpan()
-        {
-            return new(_ptr, Length);
+            _disposed = true;
+
+            // 'disposing' parameter unused but required by pattern.
+            _ = disposing;
         }
     }
 }
