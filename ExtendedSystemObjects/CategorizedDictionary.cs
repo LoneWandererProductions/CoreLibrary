@@ -126,7 +126,7 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                return _data.Keys; // Create a copy for thread safety
+                return _data.Keys.ToList(); ; ; // Create a copy for thread safety
             }
             finally
             {
