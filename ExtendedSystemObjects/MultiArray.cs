@@ -17,14 +17,14 @@ using System.Text;
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// Provides utility extensions for 2D arrays (`[,]`) and jagged arrays (`[][]`),
-    /// including efficient operations such as swapping rows/columns, deep copying, comparing,
-    /// and converting to spans or between formats. 
-    /// Designed for use with unmanaged types to leverage unsafe memory access for performance.
+    ///     Provides utility extensions for 2D arrays (`[,]`) and jagged arrays (`[][]`),
+    ///     including efficient operations such as swapping rows/columns, deep copying, comparing,
+    ///     and converting to spans or between formats.
+    ///     Designed for use with unmanaged types to leverage unsafe memory access for performance.
     /// </summary>
     /// <remarks>
-    /// All methods are `static` and operate on arrays passed as parameters.
-    /// Unsafe context is used in several methods to improve performance via pointer access.
+    ///     All methods are `static` and operate on arrays passed as parameters.
+    ///     Unsafe context is used in several methods to improve performance via pointer access.
     /// </remarks>
     public static class MultiArray
     {

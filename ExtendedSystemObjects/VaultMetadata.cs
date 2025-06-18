@@ -16,7 +16,7 @@ using System.Collections.Generic;
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// Meta Data for thje clas
+    ///     Meta Data for the class
     /// </summary>
     public sealed class VaultMetadata
     {

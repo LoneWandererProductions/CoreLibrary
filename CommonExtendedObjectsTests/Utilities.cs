@@ -268,31 +268,33 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Binaries the search performance and correctness.
+        ///     Binaries the search performance and correctness.
         /// </summary>
         [TestMethod]
         public void BinarySearchPerformanceAndCorrectness()
         {
             const int N = 1_000_000;
-            int[] sortedKeys = new int[N];
-            for (int i = 0; i < N; i++)
+            var sortedKeys = new int[N];
+            for (var i = 0; i < N; i++)
+            {
                 sortedKeys[i] = i * 2; // even numbers sorted
+            }
 
             var keysSpan = sortedKeys.AsSpan();
 
             // Warm-up to avoid JIT bias
-            for (int i = 0; i < 10_000; i++)
+            for (var i = 0; i < 10_000; i++)
             {
                 Utility.BinarySearch(keysSpan, i * 2);
             }
 
             var sw = Stopwatch.StartNew();
 
-            int foundCount = 0;
-            for (int i = 0; i < N; i++)
+            var foundCount = 0;
+            for (var i = 0; i < N; i++)
             {
-                int val = i * 2;
-                int idx = Utility.BinarySearch(keysSpan, val);
+                var val = i * 2;
+                var idx = Utility.BinarySearch(keysSpan, val);
 
                 Assert.IsTrue(idx >= 0, $"Key {val} should be found.");
                 Assert.AreEqual(val, sortedKeys[idx]);
@@ -312,14 +314,16 @@ namespace CommonExtendedObjectsTests
         public void CompareCustomVsArrayBinarySearch_Performance()
         {
             const int N = 1_000_000;
-            int[] sortedKeys = new int[N];
-            for (int i = 0; i < N; i++)
+            var sortedKeys = new int[N];
+            for (var i = 0; i < N; i++)
+            {
                 sortedKeys[i] = i * 2; // even numbers sorted
+            }
 
             var keysSpan = sortedKeys.AsSpan();
 
             // Warm-up both methods
-            for (int i = 0; i < 10_000; i++)
+            for (var i = 0; i < 10_000; i++)
             {
                 Utility.BinarySearch(keysSpan, i * 2);
                 Array.BinarySearch(sortedKeys, i * 2);
@@ -327,22 +331,24 @@ namespace CommonExtendedObjectsTests
 
             // Custom BinarySearch benchmark
             var swCustom = Stopwatch.StartNew();
-            for (int i = 0; i < N; i++)
+            for (var i = 0; i < N; i++)
             {
-                int val = i * 2;
-                int idx = Utility.BinarySearch(keysSpan, N, val);
+                var val = i * 2;
+                var idx = Utility.BinarySearch(keysSpan, N, val);
                 Assert.IsTrue(idx >= 0);
             }
+
             swCustom.Stop();
 
             // Array.BinarySearch benchmark
             var swArray = Stopwatch.StartNew();
-            for (int i = 0; i < N; i++)
+            for (var i = 0; i < N; i++)
             {
-                int val = i * 2;
-                int idx = Array.BinarySearch(sortedKeys, val);
+                var val = i * 2;
+                var idx = Array.BinarySearch(sortedKeys, val);
                 Assert.IsTrue(idx >= 0);
             }
+
             swArray.Stop();
 
             Trace.WriteLine($"Custom BinarySearch: {swCustom.ElapsedMilliseconds} ms");
@@ -352,6 +358,5 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(swCustom.ElapsedMilliseconds < swArray.ElapsedMilliseconds * 2,
                 $"Custom BinarySearch is too slow: {swCustom.ElapsedMilliseconds} ms vs {swArray.ElapsedMilliseconds} ms");
         }
-
     }
 }

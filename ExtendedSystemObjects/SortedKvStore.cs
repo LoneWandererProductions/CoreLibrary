@@ -2,12 +2,14 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/SortedKvStore.cs
- * PURPOSE:     Represents a sorted key-value store with integer keys and integer values. Key must be unique. Occubied internally manages how to handle deletions.
+ * PURPOSE:     Represents a sorted key-value store with integer keys and integer values. Key must be unique. Occupied internally manages how to handle deletions.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Buffers;
@@ -15,31 +17,32 @@ using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Represents a sorted key-value store with integer keys and integer values.
-    /// Keys are kept sorted internally to allow efficient binary search operations.
-    /// The class supports insertion, removal, and lookup operations with dynamic storage growth.
+    ///     Represents a sorted key-value store with integer keys and integer values.
+    ///     Keys are kept sorted internally to allow efficient binary search operations.
+    ///     The class supports insertion, removal, and lookup operations with dynamic storage growth.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="T:System.IDisposable" />
     public sealed class SortedKvStore : IDisposable
     {
         /// <summary>
-        /// The keys
+        ///     The keys
         /// </summary>
         private readonly IntArray _keys;
 
         /// <summary>
-        /// The occupied Array, 0/1 flags
+        ///     The occupied Array, 0/1 flags
         /// </summary>
-        private readonly IntArray _occupied; 
+        private readonly IntArray _occupied;
 
         /// <summary>
-        /// The values
+        ///     The values
         /// </summary>
         private readonly IntArray _values;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SortedKvStore"/> class with a specified initial capacity.
+        ///     Initializes a new instance of the <see cref="SortedKvStore" /> class with a specified initial capacity.
         /// </summary>
         /// <param name="initialCapacity">The initial capacity of the store.</param>
         public SortedKvStore(int initialCapacity = 16)
@@ -50,39 +53,41 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Gets the number of active (occupied) key-value pairs stored.
+        ///     Gets the number of active (occupied) key-value pairs stored.
         /// </summary>
         public int Count { get; private set; }
 
         /// <summary>
-        /// Gets an enumerable collection of all keys currently in the store.
+        ///     Gets an enumerable collection of all keys currently in the store.
         /// </summary>
         /// <value>
-        /// The keys of the key-value pairs.
+        ///     The keys of the key-value pairs.
         /// </value>
         public IEnumerable<int> Keys
         {
             get
             {
-                for (int i = 0; i < Count; i++)
+                for (var i = 0; i < Count; i++)
                 {
                     if (_occupied[i] != 0)
+                    {
                         yield return _keys[i];
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Gets or sets the value associated with the specified key.
-        /// If the key does not exist on get, a <see cref="KeyNotFoundException" /> is thrown.
-        /// If the key exists on set, its value is updated; otherwise, the key-value pair is added.
+        ///     Gets or sets the value associated with the specified key.
+        ///     If the key does not exist on get, a <see cref="KeyNotFoundException" /> is thrown.
+        ///     If the key exists on set, its value is updated; otherwise, the key-value pair is added.
         /// </summary>
         /// <value>
-        /// The <see cref="System.Int32"/>.
+        ///     The <see cref="System.Int32" />.
         /// </value>
         /// <param name="key">The key to locate or add.</param>
         /// <returns>
-        /// The value associated with the specified key.
+        ///     The value associated with the specified key.
         /// </returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
         public int this[int key]
@@ -90,18 +95,28 @@ namespace ExtendedSystemObjects
             get
             {
                 if (TryGet(key, out var value))
+                {
                     return value;
+                }
 
                 throw new KeyNotFoundException($"Key {key} not found.");
             }
-            set
-            {
-                Add(key, value); // Add already handles update or insert
-            }
+            set => Add(key, value); // Add already handles update or insert
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _keys.Dispose();
+            _values.Dispose();
+            _occupied.Dispose();
         }
 
         /// <summary>
-        /// Adds a new key-value pair to the store, or updates the value if the key already exists.
+        ///     Adds a new key-value pair to the store, or updates the value if the key already exists.
         /// </summary>
         /// <param name="key">The key to add or update.</param>
         /// <param name="value">The value associated with the key.</param>
@@ -137,10 +152,13 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Tries to get the value associated with the specified key.
+        ///     Tries to get the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key to locate.</param>
-        /// <param name="value">When this method returns, contains the value associated with the key, if found; otherwise, the default value.</param>
+        /// <param name="value">
+        ///     When this method returns, contains the value associated with the key, if found; otherwise, the
+        ///     default value.
+        /// </param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGet(int key, out int value)
         {
@@ -179,7 +197,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Marks the specified key as removed. The item is not physically removed until <see cref="Compact" /> is called.
+        ///     Marks the specified key as removed. The item is not physically removed until <see cref="Compact" /> is called.
         /// </summary>
         /// <param name="key">The key to remove.</param>
         public void Remove(int key)
@@ -192,7 +210,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Tries to remove the specified key.
+        ///     Tries to remove the specified key.
         /// </summary>
         /// <param name="key">The key to remove.</param>
         /// <param name="index">When this method returns, contains the index of the removed key if successful; otherwise, -1.</param>
@@ -211,8 +229,8 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes multiple keys in one batch. Uses optimized path if the input span is sorted.
-        /// Keys are marked as unoccupied but not physically removed.
+        ///     Removes multiple keys in one batch. Uses optimized path if the input span is sorted.
+        ///     Keys are marked as unoccupied but not physically removed.
         /// </summary>
         /// <param name="keysToRemove">A span of keys to remove.</param>
         public void RemoveMany(ReadOnlySpan<int> keysToRemove)
@@ -279,8 +297,8 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Physically removes all unoccupied entries to compact the underlying arrays.
-        /// Reduces memory usage and improves lookup performance.
+        ///     Physically removes all unoccupied entries to compact the underlying arrays.
+        ///     Reduces memory usage and improves lookup performance.
         /// </summary>
         public void Compact()
         {
@@ -316,7 +334,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes all entries from the store.
+        ///     Removes all entries from the store.
         /// </summary>
         public void Clear()
         {
@@ -326,7 +344,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="SortedKvStore"/> class.
+        ///     Finalizes an instance of the <see cref="SortedKvStore" /> class.
         /// </summary>
         ~SortedKvStore()
         {
@@ -334,17 +352,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _keys.Dispose();
-            _values.Dispose();
-            _occupied.Dispose();
-        }
-
-        /// <summary>
-        /// Ensures the underlying arrays have sufficient capacity to hold at least one more entry.
+        ///     Ensures the underlying arrays have sufficient capacity to hold at least one more entry.
         /// </summary>
         private void EnsureCapacity()
         {
@@ -355,11 +363,11 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Performs a binary search for the specified key.
+        ///     Performs a binary search for the specified key.
         /// </summary>
         /// <param name="key">The key to locate.</param>
         /// <returns>
-        /// The index of the key if found; otherwise, the bitwise complement of the index at which the key should be inserted.
+        ///     The index of the key if found; otherwise, the bitwise complement of the index at which the key should be inserted.
         /// </returns>
         private int BinarySearch(int key)
         {

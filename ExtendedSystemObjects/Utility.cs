@@ -88,12 +88,12 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Performs binary search on a sorted span of integers.
+        ///     Performs binary search on a sorted span of integers.
         /// </summary>
         /// <param name="sortedKeys">The sorted span of integers.</param>
         /// <param name="target">The value to search for.</param>
         /// <returns>
-        /// Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        ///     Index of the element if found; otherwise, the bitwise complement of the insertion index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int BinarySearch(ReadOnlySpan<int> sortedKeys, int target)
@@ -102,13 +102,13 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Internal binary search method using a specified count of elements.
+        ///     Internal binary search method using a specified count of elements.
         /// </summary>
         /// <param name="sortedKeys">The sorted span of integers.</param>
         /// <param name="count">The number of elements to consider from the start of the span.</param>
         /// <param name="target">The value to search for.</param>
         /// <returns>
-        /// Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        ///     Index of the element if found; otherwise, the bitwise complement of the insertion index.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int BinarySearch(ReadOnlySpan<int> sortedKeys, int count, int target)
@@ -117,16 +117,22 @@ namespace ExtendedSystemObjects
 
             while (left <= right)
             {
-                int mid = left + ((right - left) >> 1);
-                int midKey = sortedKeys[mid];
+                var mid = left + ((right - left) >> 1);
+                var midKey = sortedKeys[mid];
 
                 if (midKey == target)
+                {
                     return mid;
+                }
 
                 if (midKey < target)
+                {
                     left = mid + 1;
+                }
                 else
+                {
                     right = mid - 1;
+                }
             }
 
             return ~left;

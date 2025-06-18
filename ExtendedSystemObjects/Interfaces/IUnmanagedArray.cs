@@ -19,37 +19,37 @@ namespace ExtendedSystemObjects.Interfaces
     public interface IUnmanagedArray<T> : IDisposable
     {
         /// <summary>
-        /// Gets the length.
+        ///     Gets the length.
         /// </summary>
         /// <value>
-        /// The length.
+        ///     The length.
         /// </value>
         int Length { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="T"/> at the specified index.
+        ///     Gets or sets the <see cref="T" /> at the specified index.
         /// </summary>
         /// <value>
-        /// The <see cref="T"/>.
+        ///     The <see cref="T" />.
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns>Value at index</returns>
         T this[int index] { get; set; }
 
         /// <summary>
-        /// Removes at.
+        ///     Removes at.
         /// </summary>
         /// <param name="index">The index.</param>
         void RemoveAt(int index);
 
         /// <summary>
-        /// Resizes the specified new size.
+        ///     Resizes the specified new size.
         /// </summary>
         /// <param name="newSize">The new size.</param>
         void Resize(int newSize);
 
         /// <summary>
-        /// Clears this instance.
+        ///     Clears this instance.
         /// </summary>
         void Clear();
     }

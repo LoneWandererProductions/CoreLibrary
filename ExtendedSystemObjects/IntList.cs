@@ -24,7 +24,7 @@ namespace ExtendedSystemObjects
     ///     Designed for scenarios where manual memory management is needed.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed unsafe class IntList : IUnmanagedArray<int>, IDisposable
+    public sealed unsafe class IntList : IUnmanagedArray<int>
     {
         /// <summary>
         ///     The buffer
@@ -37,14 +37,14 @@ namespace ExtendedSystemObjects
         private int _capacity;
 
         /// <summary>
+        ///     The disposed
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
         ///     Pointer to the unmanaged buffer holding the integer elements.
         /// </summary>
         private int* _ptr;
-
-        /// <summary>
-        /// The disposed
-        /// </summary>
-        private bool _disposed;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IntList" /> class with the specified initial capacity.
@@ -90,6 +90,68 @@ namespace ExtendedSystemObjects
 #endif
                 _ptr[i] = value;
             }
+        }
+
+        /// <summary>
+        ///     Removes at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        public void RemoveAt(int index)
+        {
+#if DEBUG
+            if (index < 0 || index >= Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+#endif
+            if (index < Length - 1)
+            {
+                Buffer.MemoryCopy(_ptr + index + 1, _ptr + index, (Length - index - 1) * sizeof(int),
+                    (Length - index - 1) * sizeof(int));
+            }
+
+            Length--;
+        }
+
+        /// <summary>
+        ///     Resizes the specified new size.
+        /// </summary>
+        /// <param name="newSize">The new size.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
+        public void Resize(int newSize)
+        {
+            if (newSize < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newSize));
+            }
+
+            EnsureCapacity(newSize);
+            Length = newSize;
+        }
+
+        /// <summary>
+        ///     Removes all elements from the list. The capacity remains unchanged.
+        /// </summary>
+        public void Clear()
+        {
+            Length = 0;
+
+            for (var i = 0; i < Length; i++)
+            {
+                _ptr[i] = 0;
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
+        ///     After calling this method, the instance should not be used.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -142,7 +204,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Inserts at.
+        ///     Inserts at.
         /// </summary>
         /// <param name="index">The index.</param>
         /// <param name="value">The value.</param>
@@ -151,63 +213,29 @@ namespace ExtendedSystemObjects
         public void InsertAt(int index, int value, int count = 1)
         {
 #if DEBUG
-            if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+            if (index < 0 || index > Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
 #endif
-            if (count <= 0) return;
+            if (count <= 0)
+            {
+                return;
+            }
 
             EnsureCapacity(Length + count);
 
             // Shift elements to the right
-            Buffer.MemoryCopy(_ptr + index, _ptr + index + count, (_capacity - index - count) * sizeof(int), (Length - index) * sizeof(int));
+            Buffer.MemoryCopy(_ptr + index, _ptr + index + count, (_capacity - index - count) * sizeof(int),
+                (Length - index) * sizeof(int));
 
             // Fill with value
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
+            {
                 _ptr[index + i] = value;
+            }
 
             Length += count;
-        }
-
-        /// <summary>
-        /// Removes at.
-        /// </summary>
-        /// <param name="index">The index.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
-        public void RemoveAt(int index)
-        {
-#if DEBUG
-            if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
-#endif
-            if (index < Length - 1)
-            {
-                Buffer.MemoryCopy(_ptr + index + 1, _ptr + index, (Length - index - 1) * sizeof(int), (Length - index - 1) * sizeof(int));
-            }
-
-            Length--;
-        }
-
-        /// <summary>
-        /// Resizes the specified new size.
-        /// </summary>
-        /// <param name="newSize">The new size.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
-        public void Resize(int newSize)
-        {
-            if (newSize < 0) throw new ArgumentOutOfRangeException(nameof(newSize));
-            EnsureCapacity(newSize);
-            Length = newSize;
-        }
-
-        /// <summary>
-        ///     Removes all elements from the list. The capacity remains unchanged.
-        /// </summary>
-        public void Clear()
-        {
-            Length = 0;
-
-            for (var i = 0; i < Length; i++)
-            {
-                _ptr[i] = 0;
-            }
         }
 
         /// <summary>
@@ -220,17 +248,6 @@ namespace ExtendedSystemObjects
             return new Span<int>((void*)_buffer, Length);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
-        ///     After calling this method, the instance should not be used.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         /// <summary>
         ///     Finalizes an instance of the <see cref="IntList" /> class, releasing unmanaged resources.
         /// </summary>
@@ -240,13 +257,18 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
+        ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             // Free unmanaged resources
             if (_buffer != IntPtr.Zero)
@@ -261,7 +283,7 @@ namespace ExtendedSystemObjects
             // If you had managed disposable members and disposing is true,
             // dispose them here. None exist for now.
 
-            _disposed = true;  // Always set to true after dispose
+            _disposed = true; // Always set to true after dispose
 
             // Suppress unused parameter warning
             _ = disposing;

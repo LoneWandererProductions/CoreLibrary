@@ -25,32 +25,24 @@ namespace ExtendedSystemObjects
     public sealed unsafe class UnmanagedArray<T> : IUnmanagedArray<T> where T : unmanaged
     {
         /// <summary>
-        /// The buffer
+        ///     The buffer
         /// </summary>
         private IntPtr _buffer;
 
         /// <summary>
-        /// The pointer 
-        /// </summary>
-        private T* _ptr;
-
-        /// <summary>
-        /// The capacity
+        ///     The capacity
         /// </summary>
         private int _capacity;
 
         /// <summary>
-        /// The disposed
+        ///     The disposed
         /// </summary>
         private bool _disposed;
 
         /// <summary>
-        /// Gets the length.
+        ///     The pointer
         /// </summary>
-        /// <value>
-        /// The length.
-        /// </value>
-        public int Length { get; private set; }
+        private T* _ptr;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnmanagedArray{T}" /> class.
@@ -64,6 +56,14 @@ namespace ExtendedSystemObjects
             _ptr = (T*)_buffer;
             Clear();
         }
+
+        /// <summary>
+        ///     Gets the length.
+        /// </summary>
+        /// <value>
+        ///     The length.
+        /// </value>
+        public int Length { get; private set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -99,60 +99,20 @@ namespace ExtendedSystemObjects
             }
         }
 
-        /// <summary>
-        /// Inserts at.
-        /// </summary>
-        /// <param name="index">The index.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="count">The count.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// index
-        /// or
-        /// count
-        /// </exception>
-        public void InsertAt(int index, T value, int count = 1)
-        {
-            if (index < 0 || index > Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
-            if (count == 0)
-                return;
-
-            EnsureCapacity(Length + count);
-
-            int elementsToShift = Length - index;
-            if (elementsToShift > 0)
-            {
-                // Shift existing elements right by 'count'
-                Buffer.MemoryCopy(
-                    _ptr + index,
-                    _ptr + index + count,
-                    (_capacity - index - count) * sizeof(T),
-                    elementsToShift * sizeof(T));
-            }
-
-            // Fill inserted region with 'value'
-            for (int i = 0; i < count; i++)
-            {
-                _ptr[index + i] = value;
-            }
-
-            Length += count;
-        }
-
         /// <inheritdoc />
         /// <summary>
-        /// Removes at.
+        ///     Removes at.
         /// </summary>
         /// <param name="index">The index.</param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
         public void RemoveAt(int index)
         {
             if (index < 0 || index >= Length)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index));
+            }
 
-            int elementsToShift = Length - index - 1;
+            var elementsToShift = Length - index - 1;
             if (elementsToShift > 0)
             {
                 // Shift elements left by one to overwrite removed item
@@ -178,7 +138,9 @@ namespace ExtendedSystemObjects
             _ptr = (T*)_buffer;
             _capacity = newSize;
             if (Length > newSize)
+            {
                 Length = newSize;
+            }
         }
 
         /// <inheritdoc />
@@ -191,34 +153,9 @@ namespace ExtendedSystemObjects
             AsSpan().Clear();
         }
 
-        /// <summary>
-        /// Ensures the capacity.
-        /// </summary>
-        /// <param name="minCapacity">The minimum capacity.</param>
-        public void EnsureCapacity(int minCapacity)
-        {
-            if (minCapacity <= _capacity)
-                return;
-
-            int newCapacity = _capacity == 0 ? 4 : _capacity;
-            while (newCapacity < minCapacity)
-                newCapacity *= 2;
-
-            Resize(newCapacity);
-        }
-
-        /// <summary>
-        /// Access the span.
-        /// </summary>
-        /// <returns>Return all Values as Span</returns>
-        public Span<T> AsSpan()
-        {
-            return new(_ptr, Length);
-        }
-
         /// <inheritdoc />
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -227,7 +164,86 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="UnmanagedArray{T}"/> class.
+        ///     Inserts at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="count">The count.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     index
+        ///     or
+        ///     count
+        /// </exception>
+        public void InsertAt(int index, T value, int count = 1)
+        {
+            if (index < 0 || index > Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (count == 0)
+            {
+                return;
+            }
+
+            EnsureCapacity(Length + count);
+
+            var elementsToShift = Length - index;
+            if (elementsToShift > 0)
+            {
+                // Shift existing elements right by 'count'
+                Buffer.MemoryCopy(
+                    _ptr + index,
+                    _ptr + index + count,
+                    (_capacity - index - count) * sizeof(T),
+                    elementsToShift * sizeof(T));
+            }
+
+            // Fill inserted region with 'value'
+            for (var i = 0; i < count; i++)
+            {
+                _ptr[index + i] = value;
+            }
+
+            Length += count;
+        }
+
+        /// <summary>
+        ///     Ensures the capacity.
+        /// </summary>
+        /// <param name="minCapacity">The minimum capacity.</param>
+        public void EnsureCapacity(int minCapacity)
+        {
+            if (minCapacity <= _capacity)
+            {
+                return;
+            }
+
+            var newCapacity = _capacity == 0 ? 4 : _capacity;
+            while (newCapacity < minCapacity)
+            {
+                newCapacity *= 2;
+            }
+
+            Resize(newCapacity);
+        }
+
+        /// <summary>
+        ///     Access the span.
+        /// </summary>
+        /// <returns>Return all Values as Span</returns>
+        public Span<T> AsSpan()
+        {
+            return new Span<T>(_ptr, Length);
+        }
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="UnmanagedArray{T}" /> class.
         /// </summary>
         ~UnmanagedArray()
         {
@@ -235,13 +251,18 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
+        ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
+        /// </param>
         private void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             // Only unmanaged cleanup here.
             if (_buffer != IntPtr.Zero)

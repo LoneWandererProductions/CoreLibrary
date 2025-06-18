@@ -51,7 +51,7 @@ namespace ExtendedSystemObjects
         private int _changedFlag;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TransactionLogs"/> class.
+        ///     Initializes a new instance of the <see cref="TransactionLogs" /> class.
         /// </summary>
         public TransactionLogs()
         {
@@ -84,10 +84,7 @@ namespace ExtendedSystemObjects
             {
                 var log = new LogEntry
                 {
-                    State = LogState.Add,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier,
-                    StartData = startData
+                    State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
                 };
 
                 Changelog[GetNewKey()] = log;
@@ -104,15 +101,16 @@ namespace ExtendedSystemObjects
             lock (_lock)
             {
                 var id = GetItem(uniqueIdentifier, LogState.Add);
-                if (id == -1) return;
+                if (id == -1)
+                {
+                    return;
+                }
 
                 var item = Changelog[id].Data;
 
                 Changelog[GetNewKey()] = new LogEntry
                 {
-                    State = LogState.Remove,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
                 };
 
                 Changed = true;
@@ -135,9 +133,7 @@ namespace ExtendedSystemObjects
                 {
                     Changelog[entry] = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changed = true;
                 }
@@ -145,9 +141,7 @@ namespace ExtendedSystemObjects
                 {
                     Changelog[GetNewKey()] = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changed = true;
                 }
@@ -163,16 +157,24 @@ namespace ExtendedSystemObjects
         {
             lock (_lock)
             {
-                if (!Changelog.TryGetValue(id, out var reference)) return -1;
+                if (!Changelog.TryGetValue(id, out var reference))
+                {
+                    return -1;
+                }
 
                 var unique = reference.UniqueIdentifier;
 
                 foreach (var (key, logEntry) in Changelog.Reverse())
                 {
-                    if (key >= id) continue;
+                    if (key >= id)
+                    {
+                        continue;
+                    }
 
                     if (logEntry.UniqueIdentifier == unique && logEntry.State == LogState.Add)
+                    {
                         return key;
+                    }
                 }
 
                 return -1;
@@ -188,7 +190,9 @@ namespace ExtendedSystemObjects
             lock (_lock)
             {
                 if (Changelog.IsEmpty)
+                {
                     return null;
+                }
 
                 return Changelog
                     .Where(entry => !entry.Value.StartData)
@@ -207,12 +211,16 @@ namespace ExtendedSystemObjects
             lock (_lock)
             {
                 if (Changelog.IsEmpty)
+                {
                     return -1;
+                }
 
                 foreach (var (key, value) in Changelog.Reverse())
                 {
                     if (value.UniqueIdentifier == uniqueIdentifier && value.State == state)
+                    {
                         return key;
+                    }
                 }
 
                 return -1;
@@ -228,7 +236,9 @@ namespace ExtendedSystemObjects
             lock (_lock)
             {
                 if (Changelog.IsEmpty)
+                {
                     return 0;
+                }
 
                 var keys = Changelog.Keys.ToList();
                 return Utility.GetFirstAvailableIndex(keys);

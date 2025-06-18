@@ -126,7 +126,8 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                return _data.Keys.ToList(); ; ; // Create a copy for thread safety
+                return _data.Keys.ToList();
+                // Create a copy for thread safety
             }
             finally
             {
@@ -164,7 +165,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes the specified key.
+        ///     Removes the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>If item was removed</returns>
@@ -351,7 +352,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Clears this instance.
+        ///     Clears this instance.
         /// </summary>
         public void Clear()
         {
@@ -472,7 +473,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Adds the internal.
+        ///     Adds the internal.
         /// </summary>
         /// <param name="category">The category.</param>
         /// <param name="key">The key.</param>
@@ -487,6 +488,5 @@ namespace ExtendedSystemObjects
 
             _data[key] = (category, value);
         }
-
     }
 }

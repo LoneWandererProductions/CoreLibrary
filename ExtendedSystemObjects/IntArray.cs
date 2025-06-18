@@ -24,12 +24,12 @@ namespace ExtendedSystemObjects
     public sealed unsafe class IntArray : IUnmanagedArray<int>
     {
         /// <summary>
-        /// The buffer
+        ///     The buffer
         /// </summary>
         private IntPtr _buffer;
 
         /// <summary>
-        /// The pointer
+        ///     The pointer
         /// </summary>
         private int* _ptr;
 
@@ -66,10 +66,10 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets or sets the <see cref="!:T" /> at the specified index.
+        ///     Gets or sets the <see cref="!:T" /> at the specified index.
         /// </summary>
         /// <value>
-        /// The <see cref="!:T" />.
+        ///     The <see cref="!:T" />.
         /// </value>
         /// <param name="i">The i.</param>
         /// <returns>Value at index.</returns>
@@ -168,6 +168,27 @@ namespace ExtendedSystemObjects
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Removes the element at the specified index by shifting remaining elements left.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveAt(int index)
+        {
+#if DEBUG
+            if (index < 0 || index >= Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+#endif
+            for (var i = index; i < Length - 1; i++)
+            {
+                _ptr[i] = _ptr[i + 1];
+            }
+
+            Length--;
+        }
+
         /// <summary>
         ///     Inserts 'count' copies of 'value' at the given index.
         /// </summary>
@@ -201,27 +222,6 @@ namespace ExtendedSystemObjects
             }
 
             Length += count;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Removes the element at the specified index by shifting remaining elements left.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index)
-        {
-#if DEBUG
-            if (index < 0 || index >= Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-#endif
-            for (var i = index; i < Length - 1; i++)
-            {
-                _ptr[i] = _ptr[i + 1];
-            }
-
-            Length--;
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="IntArray"/> class.
+        ///     Finalizes an instance of the <see cref="IntArray" /> class.
         /// </summary>
         ~IntArray()
         {

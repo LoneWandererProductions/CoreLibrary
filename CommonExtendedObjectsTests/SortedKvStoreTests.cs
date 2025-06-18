@@ -13,18 +13,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonExtendedObjectsTests
 {
     /// <summary>
-    /// Test my Key Value class
+    ///     Test my Key Value class
     /// </summary>
     [TestClass]
     public class SortedKvStoreTests
     {
         /// <summary>
-        /// The item count
+        ///     The item count
         /// </summary>
         private const int ItemCount = 100_000;
 
         /// <summary>
-        /// Adds the and try get works.
+        ///     Adds the and try get works.
         /// </summary>
         [TestMethod]
         public void AddAndTryGetWorks()
@@ -47,7 +47,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tries the remove removes existing.
+        ///     Tries the remove removes existing.
         /// </summary>
         [TestMethod]
         public void TryRemoveRemovesExisting()
@@ -62,16 +62,18 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Removes the many works.
+        ///     Removes the many works.
         /// </summary>
         [TestMethod]
         public void RemoveManyWorks()
         {
             var store = new SortedKvStore();
             for (var i = 0; i < 10; i++)
+            {
                 store.Add(i, i * 10);
+            }
 
-            store.RemoveMany(new int[] { 2, 4, 6 });
+            store.RemoveMany(new[] { 2, 4, 6 });
 
             Assert.IsFalse(store.TryGet(2, out _));
             Assert.IsFalse(store.TryGet(4, out _));
@@ -81,14 +83,16 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Compacts the removes unoccupied.
+        ///     Compacts the removes unoccupied.
         /// </summary>
         [TestMethod]
         public void CompactRemovesUnoccupied()
         {
             var store = new SortedKvStore();
             for (var i = 0; i < 10; i++)
+            {
                 store.Add(i, i * 10);
+            }
 
             store.Remove(1);
             store.Remove(3);
@@ -99,7 +103,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Indexers the works.
+        ///     Indexers the works.
         /// </summary>
         [TestMethod]
         public void IndexerWorks()
@@ -113,17 +117,19 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Adds the and try get should return expected values.
+        ///     Adds the and try get should return expected values.
         /// </summary>
         [TestMethod]
         public void AddAndTryGetShouldReturnExpectedValues()
         {
             var store = new SortedKvStore();
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
+            {
                 store.Add(i, i * 10);
+            }
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 Assert.IsTrue(store.TryGet(i, out var value));
                 Assert.AreEqual(i * 10, value);
@@ -133,7 +139,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Performances the add and try get.
+        ///     Performances the add and try get.
         /// </summary>
         [TestMethod]
         public void PerformanceAddAndTryGet()
@@ -142,19 +148,23 @@ namespace CommonExtendedObjectsTests
 
             var sw = Stopwatch.StartNew();
 
-            for (int i = 0; i < ItemCount; i++)
+            for (var i = 0; i < ItemCount; i++)
+            {
                 store.Add(i, i * 2);
+            }
 
             sw.Stop();
             Trace.WriteLine($"Add {ItemCount} items: {sw.ElapsedMilliseconds} ms");
 
             sw.Restart();
 
-            int hits = 0;
-            for (int i = 0; i < ItemCount; i++)
+            var hits = 0;
+            for (var i = 0; i < ItemCount; i++)
             {
                 if (store.TryGet(i, out var value) && value == i * 2)
+                {
                     hits++;
+                }
             }
 
             sw.Stop();
@@ -164,19 +174,23 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Performances the remove compact.
+        ///     Performances the remove compact.
         /// </summary>
         [TestMethod]
         public void PerformanceRemoveCompact()
         {
             var store = new SortedKvStore(ItemCount);
 
-            for (int i = 0; i < ItemCount; i++)
+            for (var i = 0; i < ItemCount; i++)
+            {
                 store.Add(i, i);
+            }
 
             // Remove half of them
-            for (int i = 0; i < ItemCount; i += 2)
+            for (var i = 0; i < ItemCount; i += 2)
+            {
                 store.Remove(i);
+            }
 
             var sw = Stopwatch.StartNew();
             store.Compact();

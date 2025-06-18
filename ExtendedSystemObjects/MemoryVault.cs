@@ -135,7 +135,6 @@ namespace ExtendedSystemObjects
             return identifier;
         }
 
-
         /// <summary>
         ///     Gets the data by its identifier.
         /// </summary>
