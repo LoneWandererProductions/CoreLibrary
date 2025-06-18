@@ -2,8 +2,13 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/MultiArray.cs
- * PURPOSE:     Some Extensions for Arrays, all generic
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PURPOSE:     Utility extensions for 2D and jagged arrays, with focus on performance and unsafe access.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ *
+ * DESCRIPTION:
+ *     This file contains a set of static helper methods to simplify working with multi-dimensional arrays.
+ *     It includes operations like deep cloning, row/column swapping, equality checks, span conversion,
+ *     and conversions between jagged and rectangular arrays using unsafe code for maximum performance.
  */
 
 using System;
@@ -11,6 +16,16 @@ using System.Text;
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    /// Provides utility extensions for 2D arrays (`[,]`) and jagged arrays (`[][]`),
+    /// including efficient operations such as swapping rows/columns, deep copying, comparing,
+    /// and converting to spans or between formats. 
+    /// Designed for use with unmanaged types to leverage unsafe memory access for performance.
+    /// </summary>
+    /// <remarks>
+    /// All methods are `static` and operate on arrays passed as parameters.
+    /// Unsafe context is used in several methods to improve performance via pointer access.
+    /// </remarks>
     public static class MultiArray
     {
         /// <summary>

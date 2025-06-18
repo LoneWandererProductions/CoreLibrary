@@ -1,4 +1,12 @@
-﻿// ReSharper disable MemberCanBePrivate.Global
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        ExtendedSystemObjects/SortedKvStore.cs
+ * PURPOSE:     Represents a sorted key-value store with integer keys and integer values. Key must be unique. Occubied internally manages how to handle deletions.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedType.Global
 
 using System;
@@ -8,15 +16,32 @@ using System.Collections.Generic;
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    /// 
+    /// Represents a sorted key-value store with integer keys and integer values.
+    /// Keys are kept sorted internally to allow efficient binary search operations.
+    /// The class supports insertion, removal, and lookup operations with dynamic storage growth.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     public sealed class SortedKvStore : IDisposable
     {
+        /// <summary>
+        /// The keys
+        /// </summary>
         private readonly IntArray _keys;
-        private readonly IntArray _occupied; // 0/1 flags
+
+        /// <summary>
+        /// The occupied Array, 0/1 flags
+        /// </summary>
+        private readonly IntArray _occupied; 
+
+        /// <summary>
+        /// The values
+        /// </summary>
         private readonly IntArray _values;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SortedKvStore"/> class with a specified initial capacity.
+        /// </summary>
+        /// <param name="initialCapacity">The initial capacity of the store.</param>
         public SortedKvStore(int initialCapacity = 16)
         {
             _keys = new IntArray(initialCapacity);
@@ -24,13 +49,16 @@ namespace ExtendedSystemObjects
             _occupied = new IntArray(initialCapacity);
         }
 
+        /// <summary>
+        /// Gets the number of active (occupied) key-value pairs stored.
+        /// </summary>
         public int Count { get; private set; }
 
         /// <summary>
-        /// Gets the keys.
+        /// Gets an enumerable collection of all keys currently in the store.
         /// </summary>
         /// <value>
-        /// The keys.
+        /// The keys of the key-value pairs.
         /// </value>
         public IEnumerable<int> Keys
         {
@@ -44,6 +72,19 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// If the key does not exist on get, a <see cref="KeyNotFoundException" /> is thrown.
+        /// If the key exists on set, its value is updated; otherwise, the key-value pair is added.
+        /// </summary>
+        /// <value>
+        /// The <see cref="System.Int32"/>.
+        /// </value>
+        /// <param name="key">The key to locate or add.</param>
+        /// <returns>
+        /// The value associated with the specified key.
+        /// </returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
         public int this[int key]
         {
             get
@@ -59,6 +100,11 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Adds a new key-value pair to the store, or updates the value if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to add or update.</param>
+        /// <param name="value">The value associated with the key.</param>
         public void Add(int key, int value)
         {
             var idx = BinarySearch(key);
@@ -90,6 +136,12 @@ namespace ExtendedSystemObjects
             Count++;
         }
 
+        /// <summary>
+        /// Tries to get the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <param name="value">When this method returns, contains the value associated with the key, if found; otherwise, the default value.</param>
+        /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGet(int key, out int value)
         {
             int left = 0, right = Count - 1;
@@ -126,6 +178,10 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        /// <summary>
+        /// Marks the specified key as removed. The item is not physically removed until <see cref="Compact" /> is called.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
         public void Remove(int key)
         {
             var idx = BinarySearch(key);
@@ -135,6 +191,12 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Tries to remove the specified key.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
+        /// <param name="index">When this method returns, contains the index of the removed key if successful; otherwise, -1.</param>
+        /// <returns><c>true</c> if the key was removed; otherwise, <c>false</c>.</returns>
         public bool TryRemove(int key, out int index)
         {
             index = BinarySearch(key);
@@ -148,6 +210,11 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        /// <summary>
+        /// Removes multiple keys in one batch. Uses optimized path if the input span is sorted.
+        /// Keys are marked as unoccupied but not physically removed.
+        /// </summary>
+        /// <param name="keysToRemove">A span of keys to remove.</param>
         public void RemoveMany(ReadOnlySpan<int> keysToRemove)
         {
             if (keysToRemove.Length == 0)
@@ -211,6 +278,10 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Physically removes all unoccupied entries to compact the underlying arrays.
+        /// Reduces memory usage and improves lookup performance.
+        /// </summary>
         public void Compact()
         {
             var occSpan = _occupied.AsSpan()[..Count];
@@ -245,7 +316,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Clears this instance.
+        /// Removes all entries from the store.
         /// </summary>
         public void Clear()
         {
@@ -272,6 +343,9 @@ namespace ExtendedSystemObjects
             _occupied.Dispose();
         }
 
+        /// <summary>
+        /// Ensures the underlying arrays have sufficient capacity to hold at least one more entry.
+        /// </summary>
         private void EnsureCapacity()
         {
             // Delegate to IntArray.EnsureCapacity, using Count + 1 since we add one item
@@ -280,10 +354,16 @@ namespace ExtendedSystemObjects
             _occupied.EnsureCapacity(Count + 1);
         }
 
+        /// <summary>
+        /// Performs a binary search for the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns>
+        /// The index of the key if found; otherwise, the bitwise complement of the index at which the key should be inserted.
+        /// </returns>
         private int BinarySearch(int key)
         {
             return Utility.BinarySearch(_keys.AsSpan(), Count, key);
         }
-
     }
 }
