@@ -23,7 +23,7 @@ namespace ExtendedSystemObjects
     ///     Designed for scenarios where manual memory management is needed.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed unsafe class IntList : IDisposable
+    public sealed unsafe class IntList : IUnmanagedArray<int>, IDisposable
     {
         /// <summary>
         ///     The buffer
@@ -59,7 +59,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Gets the number of elements contained in the <see cref="IntList" />.
         /// </summary>
-        public int Count { get; private set; }
+        public int Length { get; private set; }
 
         /// <summary>
         ///     Gets or sets the element at the specified index.
@@ -72,7 +72,7 @@ namespace ExtendedSystemObjects
             get
             {
 #if DEBUG
-                if (i < 0 || i >= Count)
+                if (i < 0 || i >= Length)
                 {
                     throw new IndexOutOfRangeException();
                 }
@@ -82,7 +82,7 @@ namespace ExtendedSystemObjects
             set
             {
 #if DEBUG
-                if (i < 0 || i >= Count)
+                if (i < 0 || i >= Length)
                 {
                     throw new IndexOutOfRangeException();
                 }
@@ -106,8 +106,8 @@ namespace ExtendedSystemObjects
         /// <param name="value">The integer value to add.</param>
         public void Add(int value)
         {
-            EnsureCapacity(Count + 1);
-            _ptr[Count++] = value;
+            EnsureCapacity(Length + 1);
+            _ptr[Length++] = value;
         }
 
         /// <summary>
@@ -117,12 +117,12 @@ namespace ExtendedSystemObjects
         /// <exception cref="InvalidOperationException">Thrown when the list is empty.</exception>
         public int Pop()
         {
-            if (Count == 0)
+            if (Length == 0)
             {
                 throw new InvalidOperationException("Stack empty");
             }
 
-            return _ptr[--Count];
+            return _ptr[--Length];
         }
 
         /// <summary>
@@ -132,12 +132,68 @@ namespace ExtendedSystemObjects
         /// <exception cref="InvalidOperationException">Thrown when the list is empty.</exception>
         public int Peek()
         {
-            if (Count == 0)
+            if (Length == 0)
             {
                 throw new InvalidOperationException("Stack empty");
             }
 
-            return _ptr[Count - 1];
+            return _ptr[Length - 1];
+        }
+
+        /// <summary>
+        /// Inserts at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="count">The count.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        public void InsertAt(int index, int value, int count = 1)
+        {
+#if DEBUG
+            if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+#endif
+            if (count <= 0) return;
+
+            EnsureCapacity(Length + count);
+
+            // Shift elements to the right
+            Buffer.MemoryCopy(_ptr + index, _ptr + index + count, (_capacity - index - count) * sizeof(int), (Length - index) * sizeof(int));
+
+            // Fill with value
+            for (int i = 0; i < count; i++)
+                _ptr[index + i] = value;
+
+            Length += count;
+        }
+
+        /// <summary>
+        /// Removes at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        public void RemoveAt(int index)
+        {
+#if DEBUG
+            if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
+#endif
+            if (index < Length - 1)
+            {
+                Buffer.MemoryCopy(_ptr + index + 1, _ptr + index, (Length - index - 1) * sizeof(int), (Length - index - 1) * sizeof(int));
+            }
+
+            Length--;
+        }
+
+        /// <summary>
+        /// Resizes the specified new size.
+        /// </summary>
+        /// <param name="newSize">The new size.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
+        public void Resize(int newSize)
+        {
+            if (newSize < 0) throw new ArgumentOutOfRangeException(nameof(newSize));
+            EnsureCapacity(newSize);
+            Length = newSize;
         }
 
         /// <summary>
@@ -145,7 +201,12 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            Count = 0;
+            Length = 0;
+
+            for (var i = 0; i < Length; i++)
+            {
+                _ptr[i] = 0;
+            }
         }
 
         /// <summary>
@@ -155,7 +216,7 @@ namespace ExtendedSystemObjects
         /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
         public Span<int> AsSpan()
         {
-            return new Span<int>((void*)_buffer, Count);
+            return new Span<int>((void*)_buffer, Length);
         }
 
         /// <inheritdoc />
@@ -193,7 +254,7 @@ namespace ExtendedSystemObjects
                 _buffer = IntPtr.Zero;
                 _ptr = null;
                 _capacity = 0;
-                Count = 0;
+                Length = 0;
             }
 
             // If you had managed disposable members and disposing is true,

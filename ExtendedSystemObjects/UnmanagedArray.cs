@@ -36,7 +36,6 @@ namespace ExtendedSystemObjects
         /// </summary>
         private int _capacity;
 
-
         /// <summary>
         /// The disposed
         /// </summary>
@@ -94,6 +93,72 @@ namespace ExtendedSystemObjects
 #endif
                 _ptr[index] = value;
             }
+        }
+
+        /// <summary>
+        /// Inserts at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="count">The count.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// index
+        /// or
+        /// count
+        /// </exception>
+        public void InsertAt(int index, T value, int count = 1)
+        {
+            if (index < 0 || index > Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (count == 0)
+                return;
+
+            EnsureCapacity(Length + count);
+
+            int elementsToShift = Length - index;
+            if (elementsToShift > 0)
+            {
+                // Shift existing elements right by 'count'
+                Buffer.MemoryCopy(
+                    _ptr + index,
+                    _ptr + index + count,
+                    (_capacity - index - count) * sizeof(T),
+                    elementsToShift * sizeof(T));
+            }
+
+            // Fill inserted region with 'value'
+            for (int i = 0; i < count; i++)
+            {
+                _ptr[index + i] = value;
+            }
+
+            Length += count;
+        }
+
+        /// <summary>
+        /// Removes at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            int elementsToShift = Length - index - 1;
+            if (elementsToShift > 0)
+            {
+                // Shift elements left by one to overwrite removed item
+                Buffer.MemoryCopy(
+                    _ptr + index + 1,
+                    _ptr + index,
+                    (_capacity - index - 1) * sizeof(T),
+                    elementsToShift * sizeof(T));
+            }
+
+            Length--;
         }
 
         /// <summary>

@@ -33,8 +33,14 @@ namespace ExtendedSystemObjects
         /// The <see cref="T"/>.
         /// </value>
         /// <param name="index">The index.</param>
-        /// <returns></returns>
+        /// <returns>Value at intex</returns>
         T this[int index] { get; set; }
+
+        /// <summary>
+        /// Removes at.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        void RemoveAt(int index);
 
         /// <summary>
         /// Resizes the specified new size.

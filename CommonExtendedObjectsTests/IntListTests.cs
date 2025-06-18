@@ -29,19 +29,19 @@ namespace CommonExtendedObjectsTests
             list.Add(20);
             list.Add(30);
 
-            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual(3, list.Length);
             Assert.AreEqual(30, list.Peek());
 
             var popped = list.Pop();
             Assert.AreEqual(30, popped);
-            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual(2, list.Length);
             Assert.AreEqual(20, list.Peek());
 
             list[0] = 100;
             Assert.AreEqual(100, list[0]);
 
             list.Clear();
-            Assert.AreEqual(0, list.Count);
+            Assert.AreEqual(0, list.Length);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace CommonExtendedObjectsTests
                 list.Add(i);
             }
 
-            Assert.AreEqual(1000, list.Count);
+            Assert.AreEqual(1000, list.Length);
             Assert.AreEqual(999, list[999]);
         }
 

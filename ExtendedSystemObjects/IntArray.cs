@@ -62,15 +62,6 @@ namespace ExtendedSystemObjects
         /// </summary>
         public int Length { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the <see cref="T" /> at the specified index.
-        /// </summary>
-        /// <value>
-        /// The <see cref="T" />.
-        /// </value>
-        /// <param name="i">The i.</param>
-        /// <returns></returns>
-        /// <exception cref="System.IndexOutOfRangeException"></exception>
         public int this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
