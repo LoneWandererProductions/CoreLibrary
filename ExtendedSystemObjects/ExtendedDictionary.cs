@@ -22,7 +22,6 @@ namespace ExtendedSystemObjects
     ///     The dictionary extensions class.
     /// </summary>
     public static class DictionaryExtensions
-
     {
         /// <summary>
         ///     Adds the specified key to the Value, that is a list.
