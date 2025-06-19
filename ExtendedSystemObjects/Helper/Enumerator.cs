@@ -12,11 +12,12 @@ using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects.Helper
 {
+    /// <inheritdoc />
     /// <summary>
     /// Enumerator Helper
     /// </summary>
     /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
-    /// <seealso cref="System.Collections.Generic.IEnumerator&lt;T&gt;" />
+    /// <seealso cref="T:System.Collections.Generic.IEnumerator`1" />
     internal unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
     {
         /// <summary>
@@ -46,26 +47,29 @@ namespace ExtendedSystemObjects.Helper
             _index = -1;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the current.
         /// </summary>
         /// <value>
         /// The current.
         /// </value>
-        public T Current
+        public readonly T Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _data[_index];
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the current.
         /// </summary>
         /// <value>
         /// The current.
         /// </value>
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
+        /// <inheritdoc />
         /// <summary>
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
@@ -75,12 +79,14 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext() => ++_index < _length;
 
+        /// <inheritdoc />
         /// <summary>
         /// Sets the enumerator to its initial position, which is before the first element in the collection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset() => _index = -1;
 
+        /// <inheritdoc />
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

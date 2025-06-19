@@ -140,6 +140,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -151,6 +152,7 @@ namespace ExtendedSystemObjects
             return new Enumerator<int>(_ptr, Length);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -309,7 +311,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public Span<int> AsSpan()
         {
-            return new Span<int>(_ptr, Length);
+            return new(_ptr, Length);
         }
 
         /// <summary>

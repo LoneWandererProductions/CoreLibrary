@@ -20,7 +20,7 @@ using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IUnmanagedArray" />
     /// <summary>
     ///     A high-performance list of integers backed by unmanaged memory.
     ///     Supports fast adding, popping, and random access with minimal overhead.
@@ -60,11 +60,13 @@ namespace ExtendedSystemObjects
             _ptr = (int*)_buffer;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the number of elements contained in the <see cref="IntList" />.
         /// </summary>
         public int Length { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the element at the specified index.
         /// </summary>
@@ -95,6 +97,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Removes at.
         /// </summary>
@@ -117,6 +120,7 @@ namespace ExtendedSystemObjects
             Length--;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -128,6 +132,7 @@ namespace ExtendedSystemObjects
             return new Enumerator<int>(_ptr, Length);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -139,6 +144,7 @@ namespace ExtendedSystemObjects
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Resizes the specified new size.
         /// </summary>
@@ -155,6 +161,7 @@ namespace ExtendedSystemObjects
             Length = newSize;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Removes all elements from the list. The capacity remains unchanged.
         /// </summary>
@@ -270,7 +277,7 @@ namespace ExtendedSystemObjects
         /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
         public Span<int> AsSpan()
         {
-            return new Span<int>((void*)_buffer, Length);
+            return new((void*)_buffer, Length);
         }
 
         /// <summary>

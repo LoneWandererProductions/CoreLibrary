@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMemberInSuper.Global
+
 using System;
 
 namespace ExtendedSystemObjects.Interfaces

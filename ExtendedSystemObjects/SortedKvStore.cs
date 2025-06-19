@@ -18,7 +18,7 @@ using System.Collections;
 
 namespace ExtendedSystemObjects
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     ///     Represents a sorted key-value store with integer keys and integer values.
     ///     Keys are kept sorted internally to allow efficient binary search operations.
@@ -334,6 +334,7 @@ namespace ExtendedSystemObjects
             ArrayPool<int>.Shared.Return(rented);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
@@ -349,6 +350,7 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the enumerator.
         /// </summary>

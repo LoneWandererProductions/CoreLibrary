@@ -59,7 +59,8 @@ namespace ExtendedSystemObjects
             _ptr = (T*)_buffer;
             Clear();
         }
-
+        /// <inheritdoc />
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the length.
         /// </summary>
@@ -129,6 +130,7 @@ namespace ExtendedSystemObjects
             Length--;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -140,6 +142,7 @@ namespace ExtendedSystemObjects
             return new Enumerator<T>(_ptr, Length);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -264,7 +267,7 @@ namespace ExtendedSystemObjects
         /// <returns>Return all Values as Span</returns>
         public Span<T> AsSpan()
         {
-            return new Span<T>(_ptr, Length);
+            return new(_ptr, Length);
         }
 
         /// <summary>
