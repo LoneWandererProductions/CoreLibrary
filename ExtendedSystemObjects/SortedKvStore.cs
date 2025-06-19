@@ -14,6 +14,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace ExtendedSystemObjects
 {
@@ -24,7 +25,7 @@ namespace ExtendedSystemObjects
     ///     The class supports insertion, removal, and lookup operations with dynamic storage growth.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed class SortedKvStore : IDisposable
+    public sealed class SortedKvStore : IDisposable, IEnumerable<KeyValuePair<int, int>>
     {
         /// <summary>
         ///     The keys
@@ -94,7 +95,7 @@ namespace ExtendedSystemObjects
         {
             get
             {
-                if (TryGet(key, out var value))
+                if (TryTryGetValueGet(key, out var value))
                 {
                     return value;
                 }
@@ -160,7 +161,7 @@ namespace ExtendedSystemObjects
         ///     default value.
         /// </param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
-        public bool TryGet(int key, out int value)
+        public bool TryTryGetValueGet(int key, out int value)
         {
             int left = 0, right = Count - 1;
             var keysSpan = _keys.AsSpan()[..Count];
@@ -332,6 +333,27 @@ namespace ExtendedSystemObjects
 
             ArrayPool<int>.Shared.Return(rented);
         }
+
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns>All active elements as Key Value pair.</returns>
+        public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (_occupied[i] != 0)
+                {
+                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns>An enumerator to iterate though the collection.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         ///     Removes all entries from the store.
