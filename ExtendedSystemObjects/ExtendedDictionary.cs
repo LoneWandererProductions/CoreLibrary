@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects

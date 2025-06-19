@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/ValueNotFoundException.cs
+ * PROJECT:     ExtendedSystemObjects.Helper
+ * FILE:        ExtendedSystemObjects.Helper/ValueNotFoundException.cs
  * PURPOSE:     New Exceptions for ExtendedSystemObjects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace ExtendedSystemObjects
+namespace ExtendedSystemObjects.Helper
 {
     /// <inheritdoc />
     /// <summary>

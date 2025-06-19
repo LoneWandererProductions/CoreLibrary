@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ExtendedSystemObjects;
+using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

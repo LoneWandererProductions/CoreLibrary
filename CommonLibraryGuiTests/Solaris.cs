@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using ExtendedSystemObjects;
+using ExtendedSystemObjects.Helper;
 using ImageCompare;
 using NUnit.Framework;
 using Solaris;

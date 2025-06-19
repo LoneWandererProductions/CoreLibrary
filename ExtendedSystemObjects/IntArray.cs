@@ -9,6 +9,8 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Interfaces;
@@ -21,7 +23,7 @@ namespace ExtendedSystemObjects
     ///     backed by unmanaged memory. Designed for performance-critical
     ///     scenarios where garbage collection overhead must be avoided.
     /// </summary>
-    public sealed unsafe class IntArray : IUnmanagedArray<int>
+    public sealed unsafe class IntArray : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
         ///     The buffer
@@ -137,6 +139,27 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<int> GetEnumerator()
+        {
+            return new Enumerator<int>(_ptr, Length);
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         /// <inheritdoc />
         /// <summary>
