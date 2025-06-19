@@ -134,9 +134,9 @@ namespace ExtendedSystemObjects
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<int> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
-            return new Enumerator<int>(_ptr, Length);
+            return new Enumerator<T>(_ptr, Length);
         }
 
         /// <summary>
