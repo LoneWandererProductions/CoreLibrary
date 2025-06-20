@@ -59,7 +59,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Gets the current allocated capacity.
         /// </summary>
-        private int Capacity { get; set; }
+        public int Capacity { get; set; }
 
         /// <inheritdoc />
         /// <summary>

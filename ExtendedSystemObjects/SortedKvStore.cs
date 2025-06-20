@@ -59,6 +59,14 @@ namespace ExtendedSystemObjects
         public int Count { get; private set; }
 
         /// <summary>
+        /// Gets the free capacity.
+        /// </summary>
+        /// <value>
+        /// The free capacity.
+        /// </value>
+        public int FreeCapacity => _keys.Capacity - Count;
+
+        /// <summary>
         ///     Gets an enumerable collection of all keys currently in the store.
         /// </summary>
         /// <value>
