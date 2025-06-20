@@ -270,7 +270,7 @@ namespace CoreBuilder
             bool appendToExisting)
         {
             var resourceEntries = resourceMap.OrderBy(kvp => kvp.Value)
-                .Select(kvp => $"internal sconst string {kvp.Value} = \"{kvp.Key.Replace("\"", "\\\"")}\";")
+                .Select(kvp => $"internal const string {kvp.Value} = \"{kvp.Key.Replace("\"", "\\\"")}\";")
                 .ToList();
 
             if (appendToExisting && File.Exists(outputFilePath))

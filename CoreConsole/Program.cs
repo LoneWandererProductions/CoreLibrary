@@ -278,7 +278,11 @@ namespace CoreConsole
             }
 
             var ignoreList = new List<string>();
-            var ignorePatterns = new List<string>();
+            var ignorePatterns = new List<string>
+            {
+                "Resource"
+            };
+
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
             var changedFiles =
                 extractor.ProcessProject(projectPath, outputResourceFile, replace: true); // `null` is okay here
