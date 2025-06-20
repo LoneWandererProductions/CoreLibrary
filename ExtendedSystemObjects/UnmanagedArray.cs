@@ -41,7 +41,7 @@ namespace ExtendedSystemObjects
         public int Capacity { get; private set; }
 
         /// <summary>
-        ///     The disposed
+        ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
 

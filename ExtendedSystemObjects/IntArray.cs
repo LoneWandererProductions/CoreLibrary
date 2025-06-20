@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
@@ -35,6 +36,13 @@ namespace ExtendedSystemObjects
         ///     The pointer
         /// </summary>
         private int* _ptr;
+
+        /// <summary>
+        ///     Check if we disposed the object
+        /// </summary>
+        private bool _disposed;
+
+        private static bool UseSimd => Vector.IsHardwareAccelerated;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IntArray" /> class with the specified size.
@@ -103,6 +111,57 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Indexes the of.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Value at the index.</returns>
+        public int IndexOf(int value)
+        {
+            var span = AsSpan();
+            int vectorSize = Vector<int>.Count;
+
+            if (UseSimd && span.Length >= vectorSize)
+            {
+                var vTarget = new Vector<int>(value);
+                int i = 0;
+
+                for (; i <= span.Length - vectorSize; i += vectorSize)
+                {
+                    var vData = new Vector<int>(span.Slice(i, vectorSize));
+                    var vCmp = Vector.Equals(vData, vTarget);
+
+                    if (!Vector.EqualsAll(vCmp, Vector<int>.Zero))
+                    {
+                        for (int j = 0; j < vectorSize; j++)
+                        {
+                            if (vCmp[j] != 0)
+                                return i + j;
+                        }
+                    }
+                }
+
+                // Scalar fallback
+                for (; i < span.Length; i++)
+                {
+                    if (span[i] == value)
+                        return i;
+                }
+
+                return -1;
+            }
+            else
+            {
+                for (int i = 0; i < span.Length; i++)
+                {
+                    if (span[i] == value)
+                        return i;
+                }
+
+                return -1;
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Resizes the internal buffer to the new capacity.
@@ -166,32 +225,12 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        ///     Clears all elements to zero.
+        ///     Clears the array by setting all elements to zero.
         /// </summary>
         public void Clear()
         {
-            for (var i = 0; i < Length; i++)
-            {
-                _ptr[i] = 0;
-            }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Frees unmanaged memory.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_buffer != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
-                _ptr = null;
-                Length = 0;
-                Capacity = 0;
-            }
-
-            GC.SuppressFinalize(this);
+            // Use Span<T>.Clear for safety and type correctness
+            AsSpan().Clear();
         }
 
         /// <inheritdoc />
@@ -340,7 +379,45 @@ namespace ExtendedSystemObjects
         /// </summary>
         ~IntArray()
         {
-            Dispose();
+            Dispose(false);
         }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Frees unmanaged memory.
+        /// </summary>
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (_buffer != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(_buffer);
+                _buffer = IntPtr.Zero;
+                _ptr = null;
+                Length = 0;
+                Capacity = 0;
+            }
+
+            _disposed = true;
+
+            // 'disposing' parameter unused but required by pattern.
+            _ = disposing;
+        }
+
     }
 }

@@ -169,10 +169,8 @@ namespace ExtendedSystemObjects
         {
             Length = 0;
 
-            for (var i = 0; i < Length; i++)
-            {
-                _ptr[i] = 0;
-            }
+            // Use Span<T>.Clear for safety and type correctness
+            AsSpan().Clear();
         }
 
         /// <inheritdoc />
