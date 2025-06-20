@@ -190,7 +190,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-
         /// <inheritdoc />
         /// <summary>
         ///     Clears the array by setting all elements to zero.

@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -23,15 +24,6 @@ namespace ExtendedSystemObjects
     public sealed class ImmutableLookupMap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : struct, IEquatable<TKey>
     {
-        /// <summary>
-        ///     The small primes
-        /// </summary>
-        private static readonly int[] SmallPrimes =
-        {
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
-            103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
-        };
-
         /// <summary>
         ///     The key presence
         /// </summary>
@@ -219,7 +211,7 @@ namespace ExtendedSystemObjects
                 return false;
             }
 
-            foreach (var prime in SmallPrimes)
+            foreach (var prime in SharedResources.SmallPrimes)
             {
                 if (number == prime)
                 {
