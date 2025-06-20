@@ -33,9 +33,12 @@ namespace ExtendedSystemObjects
         private IntPtr _buffer;
 
         /// <summary>
-        ///     The capacity
+        /// The capacity of the current Array.
         /// </summary>
-        private int _capacity;
+        /// <value>
+        /// The capacity.
+        /// </value>
+        public int Capacity { get; private set; }
 
         /// <summary>
         ///     The disposed
@@ -53,7 +56,7 @@ namespace ExtendedSystemObjects
         /// <param name="size">The size.</param>
         public UnmanagedArray(int size)
         {
-            _capacity = size;
+            Capacity = size;
             Length = size;
             _buffer = Marshal.AllocHGlobal(size * sizeof(T));
             _ptr = (T*)_buffer;
@@ -123,7 +126,7 @@ namespace ExtendedSystemObjects
                 Buffer.MemoryCopy(
                     _ptr + index + 1,
                     _ptr + index,
-                    (_capacity - index - 1) * sizeof(T),
+                    (Capacity - index - 1) * sizeof(T),
                     elementsToShift * sizeof(T));
             }
 
@@ -162,14 +165,31 @@ namespace ExtendedSystemObjects
         /// <param name="newSize">The new size of the array.</param>
         public void Resize(int newSize)
         {
-            _buffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(T)));
-            _ptr = (T*)_buffer;
-            _capacity = newSize;
+            if (newSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(newSize));
+
+            if (newSize == Capacity)
+                return;
+
+            var newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(T)));
+            var newPtr = (T*)newBuffer;
+
+            if (newSize > Capacity)
+            {
+                var newRegion = new Span<T>(newPtr + Capacity, newSize - Capacity);
+                newRegion.Clear();
+            }
+
+            _buffer = newBuffer;
+            _ptr = newPtr;
+            Capacity = newSize;
+
             if (Length > newSize)
             {
                 Length = newSize;
             }
         }
+
 
         /// <inheritdoc />
         /// <summary>
@@ -228,7 +248,7 @@ namespace ExtendedSystemObjects
                 Buffer.MemoryCopy(
                     _ptr + index,
                     _ptr + index + count,
-                    (_capacity - index - count) * sizeof(T),
+                    (Capacity - index - count) * sizeof(T),
                     elementsToShift * sizeof(T));
             }
 
@@ -247,12 +267,12 @@ namespace ExtendedSystemObjects
         /// <param name="minCapacity">The minimum capacity.</param>
         public void EnsureCapacity(int minCapacity)
         {
-            if (minCapacity <= _capacity)
+            if (minCapacity <= Capacity)
             {
                 return;
             }
 
-            var newCapacity = _capacity == 0 ? 4 : _capacity;
+            var newCapacity = Capacity == 0 ? 4 : Capacity;
             while (newCapacity < minCapacity)
             {
                 newCapacity *= 2;
@@ -299,7 +319,7 @@ namespace ExtendedSystemObjects
                 _buffer = IntPtr.Zero;
                 _ptr = null;
                 Length = 0;
-                _capacity = 0;
+                Capacity = 0;
             }
 
             _disposed = true;

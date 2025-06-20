@@ -121,7 +121,7 @@ namespace ExtendedSystemObjects
         ///     Retrieves the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Requested Value from Key</returns>
         /// <exception cref="KeyNotFoundException">The key {key} was not found in the lookup map.</exception>
         public TValue Get(TKey key)
         {

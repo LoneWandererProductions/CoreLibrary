@@ -326,6 +326,7 @@ namespace ExtendedSystemObjects
             }
 
             var newCapacity = Capacity == 0 ? 4 : Capacity;
+
             while (newCapacity < minCapacity)
             {
                 newCapacity *= 2;
