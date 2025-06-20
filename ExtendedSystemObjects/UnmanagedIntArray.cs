@@ -42,6 +42,12 @@ namespace ExtendedSystemObjects
         /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// Gets a value indicating whether [use simd].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use simd]; otherwise, <c>false</c>.
+        /// </value>
         private static bool UseSimd => Vector.IsHardwareAccelerated;
 
         /// <summary>
@@ -58,10 +64,10 @@ namespace ExtendedSystemObjects
             Capacity = size;
             Length = size;
 
-            _buffer = Marshal.AllocHGlobal(size * sizeof(int));
+            _buffer = UnmanagedMemoryHelper.Allocate<int>(size);
             _ptr = (int*)_buffer;
 
-            Clear(); // Optional: zero out memory on allocation
+            UnmanagedMemoryHelper.Clear<int>(_buffer, size); // Zero out memory on allocation
         }
 
         /// <summary>
@@ -176,18 +182,15 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            var newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
-            var newPtr = (int*)newBuffer;
+            _buffer = UnmanagedMemoryHelper.Reallocate<int>(_buffer, newSize);
+            _ptr = (int*)_buffer;
 
-            // If growing, zero out the newly allocated portion
+            // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
-                var newRegion = new Span<int>(newPtr + Capacity, newSize - Capacity);
-                newRegion.Clear();
+                UnmanagedMemoryHelper.Clear<int>(_buffer + Capacity * sizeof(int), newSize - Capacity);
             }
 
-            _buffer = newBuffer;
-            _ptr = newPtr;
             Capacity = newSize;
 
             if (Length > newSize)
@@ -195,6 +198,7 @@ namespace ExtendedSystemObjects
                 Length = newSize;
             }
         }
+
 
         /// <inheritdoc />
         /// <summary>
@@ -226,16 +230,17 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            // Use Span<T>.Clear for safety and type correctness
-            AsSpan().Clear();
+            UnmanagedMemoryHelper.Clear<int>(_buffer, Length);
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Removes the element at the specified index by shifting remaining elements left.
         /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="count">The count we want to remove. Optional.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index)
+        public void RemoveAt(int index, int count = 1)
         {
 #if DEBUG
             if (index < 0 || index >= Length)
@@ -243,12 +248,13 @@ namespace ExtendedSystemObjects
                 throw new IndexOutOfRangeException();
             }
 #endif
-            for (var i = index; i < Length - 1; i++)
+            // Shift elements left by 'count' starting at 'index'
+            for (var i = index; i < Length - count; i++)
             {
-                _ptr[i] = _ptr[i + 1];
+                _ptr[i] = _ptr[i + count];
             }
 
-            Length--;
+            Length -= count;
         }
 
         /// <summary>
@@ -268,15 +274,8 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            var shiftCount = Length - index;
-            if (shiftCount > 0)
-            {
-                Buffer.MemoryCopy(
-                    _ptr + index,
-                    _ptr + index + count,
-                    (Capacity - index) * sizeof(int), // size of dest from index onward
-                    shiftCount * sizeof(int));
-            }
+            // Shift elements to the right
+            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length, Capacity);
 
             for (var i = 0; i < count; i++)
             {
@@ -390,7 +389,7 @@ namespace ExtendedSystemObjects
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IDisposable" />
         /// <summary>
         ///     Frees unmanaged memory.
         /// </summary>
@@ -415,6 +414,5 @@ namespace ExtendedSystemObjects
             // 'disposing' parameter unused but required by pattern.
             _ = disposing;
         }
-
     }
 }

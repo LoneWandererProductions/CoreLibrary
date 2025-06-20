@@ -40,10 +40,11 @@ namespace ExtendedSystemObjects.Interfaces
         T this[int index] { get; set; }
 
         /// <summary>
-        ///     Removes at.
+        /// Removes at.
         /// </summary>
         /// <param name="index">The index.</param>
-        void RemoveAt(int index);
+        /// <param name="count">The count we want to remove. Optional.</param>
+        void RemoveAt(int index, int count = 1);
 
         /// <summary>
         ///     Resizes the specified new size.
