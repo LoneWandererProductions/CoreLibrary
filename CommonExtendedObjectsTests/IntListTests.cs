@@ -23,7 +23,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void AddPopPeekBehavior()
         {
-            using var list = new UnmanagedIntList(4) {10, 20, 30};
+            using var list = new UnmanagedIntList(4) { 10, 20, 30 };
 
 
             Assert.AreEqual(3, list.Length);

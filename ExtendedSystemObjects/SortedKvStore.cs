@@ -13,8 +13,8 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
@@ -59,10 +59,10 @@ namespace ExtendedSystemObjects
         public int Count { get; private set; }
 
         /// <summary>
-        /// Gets the free capacity.
+        ///     Gets the free capacity.
         /// </summary>
         /// <value>
-        /// The free capacity.
+        ///     The free capacity.
         /// </value>
         public int FreeCapacity => _keys.Capacity - Count;
 
@@ -122,6 +122,32 @@ namespace ExtendedSystemObjects
             _keys.Dispose();
             _values.Dispose();
             _occupied.Dispose();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>All active elements as Key Value pair.</returns>
+        public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                if (_occupied[i] != 0)
+                {
+                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>An enumerator to iterate though the collection.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -341,29 +367,6 @@ namespace ExtendedSystemObjects
 
             ArrayPool<int>.Shared.Return(rented);
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Gets the enumerator.
-        /// </summary>
-        /// <returns>All active elements as Key Value pair.</returns>
-        public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
-        {
-            for (var i = 0; i < Count; i++)
-            {
-                if (_occupied[i] != 0)
-                {
-                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Gets the enumerator.
-        /// </summary>
-        /// <returns>An enumerator to iterate though the collection.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         ///     Removes all entries from the store.

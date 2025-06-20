@@ -14,29 +14,29 @@ namespace ExtendedSystemObjects.Helper
 {
     /// <inheritdoc />
     /// <summary>
-    /// Enumerator Helper
+    ///     Enumerator Helper
     /// </summary>
     /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
     /// <seealso cref="T:System.Collections.Generic.IEnumerator`1" />
     internal unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
     {
         /// <summary>
-        /// The data
+        ///     The data
         /// </summary>
         private readonly T* _data;
 
         /// <summary>
-        /// The length
+        ///     The length
         /// </summary>
         private readonly int _length;
 
         /// <summary>
-        /// The index
+        ///     The index
         /// </summary>
         private int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator{T}"/> struct.
+        ///     Initializes a new instance of the <see cref="Enumerator{T}" /> struct.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="length">The length.</param>
@@ -49,10 +49,10 @@ namespace ExtendedSystemObjects.Helper
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the current.
+        ///     Gets the current.
         /// </summary>
         /// <value>
-        /// The current.
+        ///     The current.
         /// </value>
         public readonly T Current
         {
@@ -62,34 +62,44 @@ namespace ExtendedSystemObjects.Helper
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the current.
+        ///     Gets the current.
         /// </summary>
         /// <value>
-        /// The current.
+        ///     The current.
         /// </value>
         readonly object IEnumerator.Current => Current;
 
         /// <inheritdoc />
         /// <summary>
-        /// Advances the enumerator to the next element of the collection.
+        ///     Advances the enumerator to the next element of the collection.
         /// </summary>
         /// <returns>
-        ///   <see langword="true" /> if the enumerator was successfully advanced to the next element; <see langword="false" /> if the enumerator has passed the end of the collection.
+        ///     <see langword="true" /> if the enumerator was successfully advanced to the next element; <see langword="false" />
+        ///     if the enumerator has passed the end of the collection.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => ++_index < _length;
+        public bool MoveNext()
+        {
+            return ++_index < _length;
+        }
 
         /// <inheritdoc />
         /// <summary>
-        /// Sets the enumerator to its initial position, which is before the first element in the collection.
+        ///     Sets the enumerator to its initial position, which is before the first element in the collection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reset() => _index = -1;
+        public void Reset()
+        {
+            _index = -1;
+        }
 
         /// <inheritdoc />
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public readonly void Dispose() { /* no resources to clean */ }
+        public readonly void Dispose()
+        {
+            /* no resources to clean */
+        }
     }
 }

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
- * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similiar to IntArray.
+ * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similar to IntArray.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -33,14 +33,6 @@ namespace ExtendedSystemObjects
         private IntPtr _buffer;
 
         /// <summary>
-        /// The capacity of the current Array.
-        /// </summary>
-        /// <value>
-        /// The capacity.
-        /// </value>
-        public int Capacity { get; private set; }
-
-        /// <summary>
         ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
@@ -62,6 +54,39 @@ namespace ExtendedSystemObjects
             _buffer = UnmanagedMemoryHelper.Allocate<T>(size);
             _ptr = (T*)_buffer;
             UnmanagedMemoryHelper.Clear<T>(_buffer, size);
+        }
+
+        /// <summary>
+        ///     The capacity of the current Array.
+        /// </summary>
+        /// <value>
+        ///     The capacity.
+        /// </value>
+        public int Capacity { get; private set; }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new Enumerator<T>(_ptr, Length);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -131,31 +156,6 @@ namespace ExtendedSystemObjects
             Length -= count;
         }
 
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
-        /// </returns>
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new Enumerator<T>(_ptr, Length);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Resizes the internal array to the specified new size.
@@ -165,10 +165,14 @@ namespace ExtendedSystemObjects
         public void Resize(int newSize)
         {
             if (newSize < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(newSize));
+            }
 
             if (newSize == Capacity)
+            {
                 return;
+            }
 
             var newBuffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, newSize);
             var newPtr = (T*)newBuffer;
@@ -276,7 +280,7 @@ namespace ExtendedSystemObjects
         /// <returns>Return all Values as Span</returns>
         public Span<T> AsSpan()
         {
-            return new(_ptr, Length);
+            return new Span<T>(_ptr, Length);
         }
 
         /// <summary>

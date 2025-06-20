@@ -311,7 +311,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Compares the custom vs array binary search performance.
+        ///     Compares the custom vs array binary search performance.
         /// </summary>
         [TestMethod]
         public void CompareCustomVsArrayBinarySearchPerformance()

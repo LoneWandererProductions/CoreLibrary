@@ -45,9 +45,7 @@ namespace CoreConsole
         ///     The resource1
         /// </summary>
         internal const string ResourceHeader = "header";
-
-        internal const string ResourceEventTriggered = "Event triggered. Processing...";
-
+        
         internal const string ResourceEventProcessing = "Event processing completed.";
 
         internal const string ResourceCsExtension = "*.cs";
@@ -77,10 +75,12 @@ namespace CoreConsole
         internal const string Resource13 = "Error: Command not found.";
         internal const string Resource14 = "Directory path is required.";
         internal const string Resource15 = "Error: Project path is required.";
-        internal const string Resource16 = "Resxtract operation completed: No string literals found to extract.";
+
+        internal const string ResxtractFinished = "Resxtract operation completed: No string literals found to extract.";
+
         internal const string Resource17 = "  - ";
 
-        internal const string Resource19 = "\"";
+        internal const string Quotes = "\"";
 
         internal const string Resource20 = "Loaded {0} files to ignore.";
         internal const string Resource21 = "Error loading regex pattern: {0}. Exception: {1}";
@@ -89,7 +89,9 @@ namespace CoreConsole
 
         internal const string Resource28 = "Changed files:{0}  - {1}";
         internal const string Resource3 = "Invalid arguments or operation.";
+
         internal const string Resource4 = "Press any key to exit...";
+
         internal const string Resource5 = "Core Console Application";
 
         /// <summary>

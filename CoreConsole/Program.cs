@@ -278,17 +278,14 @@ namespace CoreConsole
             }
 
             var ignoreList = new List<string>();
-            var ignorePatterns = new List<string>
-            {
-                "Resource"
-            };
+            var ignorePatterns = new List<string> { "Resource" };
 
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
             var changedFiles =
                 extractor.ProcessProject(projectPath, outputResourceFile, replace: true); // `null` is okay here
             if (changedFiles.Count == 0)
             {
-                return ConResources.Resource16;
+                return ConResources.ResxtractFinished;
             }
 
             var actualOutputFile = changedFiles.Last(); // Last item is outputResourceFile (by design)
@@ -340,7 +337,7 @@ namespace CoreConsole
             }
 
             path = path.Trim();
-            if (path.StartsWith(ConResources.Resource19) && path.EndsWith(ConResources.Resource19) && path.Length > 1)
+            if (path.StartsWith(ConResources.Quotes) && path.EndsWith(ConResources.Quotes) && path.Length > 1)
             {
                 path = path.Substring(1, path.Length - 2);
             }

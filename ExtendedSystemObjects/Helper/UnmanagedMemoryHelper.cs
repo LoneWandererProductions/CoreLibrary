@@ -13,13 +13,14 @@ using System.Runtime.InteropServices;
 namespace ExtendedSystemObjects.Helper
 {
     /// <summary>
-    /// Provides helper methods for allocating, reallocating, and clearing unmanaged memory blocks.
-    /// Designed for use with value types (unmanaged types) only.
+    ///     Provides helper methods for allocating, reallocating, and clearing unmanaged memory blocks.
+    ///     Designed for use with value types (unmanaged types) only.
     /// </summary>
     internal static class UnmanagedMemoryHelper
     {
         /// <summary>
-        /// Allocates a block of unmanaged memory large enough to hold the specified number of elements of type <typeparamref name="T"/>.
+        ///     Allocates a block of unmanaged memory large enough to hold the specified number of elements of type
+        ///     <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T">The unmanaged value type to allocate memory for.</typeparam>
         /// <param name="count">The number of elements to allocate.</param>
@@ -34,7 +35,8 @@ namespace ExtendedSystemObjects.Helper
         }
 
         /// <summary>
-        /// Reallocates an existing block of unmanaged memory to hold a new number of elements of type <typeparamref name="T"/>.
+        ///     Reallocates an existing block of unmanaged memory to hold a new number of elements of type
+        ///     <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T">The unmanaged value type used in the memory block.</typeparam>
         /// <param name="ptr">A pointer to the existing unmanaged memory block.</param>
@@ -50,7 +52,7 @@ namespace ExtendedSystemObjects.Helper
         }
 
         /// <summary>
-        /// Clears a block of unmanaged memory by setting its contents to zero.
+        ///     Clears a block of unmanaged memory by setting its contents to zero.
         /// </summary>
         /// <typeparam name="T">The unmanaged value type used in the memory block.</typeparam>
         /// <param name="buffer">A pointer to the unmanaged memory block.</param>
@@ -66,7 +68,7 @@ namespace ExtendedSystemObjects.Helper
         }
 
         /// <summary>
-        /// Shifts the right. Adding data at index.
+        ///     Shifts the right. Adding data at index.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="ptr">The PTR.</param>
@@ -75,20 +77,24 @@ namespace ExtendedSystemObjects.Helper
         /// <param name="length">The length.</param>
         /// <param name="capacity">The capacity.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static unsafe void ShiftRight<T>(T* ptr, int index, int count, int length, int capacity) where T : unmanaged
+        internal static unsafe void ShiftRight<T>(T* ptr, int index, int count, int length, int capacity)
+            where T : unmanaged
         {
-            int elementsToShift = length - index;
-            if (elementsToShift <= 0) return;
+            var elementsToShift = length - index;
+            if (elementsToShift <= 0)
+            {
+                return;
+            }
 
             Buffer.MemoryCopy(
-                source: ptr + index,
-                destination: ptr + index + count,
-                destinationSizeInBytes: (capacity - index - count) * sizeof(T),
-                sourceBytesToCopy: elementsToShift * sizeof(T));
+                ptr + index,
+                ptr + index + count,
+                (capacity - index - count) * sizeof(T),
+                elementsToShift * sizeof(T));
         }
 
         /// <summary>
-        /// Shifts the left. Delete Element at index
+        ///     Shifts the left. Delete Element at index
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="ptr">The PTR.</param>
@@ -98,14 +104,17 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void ShiftLeft<T>(T* ptr, int index, int count, int length) where T : unmanaged
         {
-            int elementsToShift = length - (index + count);
-            if (elementsToShift <= 0) return;
+            var elementsToShift = length - (index + count);
+            if (elementsToShift <= 0)
+            {
+                return;
+            }
 
             Buffer.MemoryCopy(
-                source: ptr + index + count,
-                destination: ptr + index,
-                destinationSizeInBytes: elementsToShift * sizeof(T),
-                sourceBytesToCopy: elementsToShift * sizeof(T));
+                ptr + index + count,
+                ptr + index,
+                elementsToShift * sizeof(T),
+                elementsToShift * sizeof(T));
         }
     }
 }

@@ -35,11 +35,6 @@ namespace ExtendedSystemObjects
         private IntPtr _buffer;
 
         /// <summary>
-        ///     The capacity
-        /// </summary>
-        public int Capacity { get; private set; }
-
-        /// <summary>
         ///     The disposed
         /// </summary>
         private bool _disposed;
@@ -59,6 +54,35 @@ namespace ExtendedSystemObjects
             _buffer = UnmanagedMemoryHelper.Allocate<int>(Capacity);
             _ptr = (int*)_buffer;
             Clear();
+        }
+
+        /// <summary>
+        ///     The capacity
+        /// </summary>
+        public int Capacity { get; private set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<int> GetEnumerator()
+        {
+            return new Enumerator<int>(_ptr, Length);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -123,50 +147,6 @@ namespace ExtendedSystemObjects
             Length--;
         }
 
-
-        /// <summary>
-        /// Binaries the search.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>Index of value in the list.</returns>
-        public int BinarySearch(int value)
-        {
-            var span = AsSpan();
-            return span.BinarySearch(value);
-        }
-
-        /// <summary>
-        /// Sorts this instance.
-        /// </summary>
-        public void Sort()
-        {
-            AsSpan().Sort(); // Uses Array.Sort internally
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
-        /// </returns>
-        public IEnumerator<int> GetEnumerator()
-        {
-            return new Enumerator<int>(_ptr, Length);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Resizes the specified new size.
@@ -205,6 +185,26 @@ namespace ExtendedSystemObjects
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+
+        /// <summary>
+        ///     Binaries the search.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Index of value in the list.</returns>
+        public int BinarySearch(int value)
+        {
+            var span = AsSpan();
+            return span.BinarySearch(value);
+        }
+
+        /// <summary>
+        ///     Sorts this instance.
+        /// </summary>
+        public void Sort()
+        {
+            AsSpan().Sort(); // Uses Array.Sort internally
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace ExtendedSystemObjects
         /// <returns>A <see cref="Span{Int32}" /> representing the list's contents.</returns>
         public Span<int> AsSpan()
         {
-            return new(_ptr, Capacity);
+            return new Span<int>(_ptr, Capacity);
         }
 
         /// <summary>

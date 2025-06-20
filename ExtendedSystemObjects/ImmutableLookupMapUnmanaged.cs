@@ -20,49 +20,46 @@ namespace ExtendedSystemObjects
 {
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
-    /// A high-performance, immutable lookup map using unmanaged arrays.
-    /// Suitable for value types only. Keys must be unique.
+    ///     A high-performance, immutable lookup map using unmanaged arrays.
+    ///     Suitable for value types only. Keys must be unique.
     /// </summary>
     public sealed class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : unmanaged, IEquatable<TKey>
         where TValue : unmanaged
     {
         /// <summary>
-        /// The keys
-        /// </summary>
-        private readonly UnmanagedArray<TKey> _keys;
-
-        /// <summary>
-        /// The values
-        /// </summary>
-        private readonly UnmanagedArray<TValue> _values;
-
-        /// <summary>
-        /// Indicates whether a key is present at the given hash slot.
-        /// </summary>
-        private readonly UnmanagedArray<byte> _keyPresence;
-
-        /// <summary>
-        /// The capacity
+        ///     The capacity
         /// </summary>
         private readonly int _capacity;
 
         /// <summary>
-        /// Gets the number of entries in the map.
+        ///     Indicates whether a key is present at the given hash slot.
         /// </summary>
-        public int Count { get; }
+        private readonly UnmanagedArray<byte> _keyPresence;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImmutableLookupMapUnmanaged{TKey, TValue}"/> class
-        /// with the specified key-value data.
+        ///     The keys
+        /// </summary>
+        private readonly UnmanagedArray<TKey> _keys;
+
+        /// <summary>
+        ///     The values
+        /// </summary>
+        private readonly UnmanagedArray<TValue> _values;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ImmutableLookupMapUnmanaged{TKey, TValue}" /> class
+        ///     with the specified key-value data.
         /// </summary>
         /// <param name="data">A dictionary containing the initial key-value pairs.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="data" /> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown when a duplicate key is found.</exception>
         public ImmutableLookupMapUnmanaged(IDictionary<TKey, TValue> data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             Count = data.Count;
             _capacity = FindNextPrime(Count * 2);
@@ -86,13 +83,58 @@ namespace ExtendedSystemObjects
                     }
 
                     if (_keys[hash].Equals(key))
+                    {
                         throw new InvalidOperationException(string.Format(SharedResources.ErrorDuplicateKey, key));
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Gets the value associated with the specified key.
+        ///     Gets the number of entries in the map.
+        /// </summary>
+        public int Count { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Releases the unmanaged memory used by the lookup map.
+        /// </summary>
+        public void Dispose()
+        {
+            _keys.Dispose();
+            _values.Dispose();
+            _keyPresence.Dispose();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator for iterating over the key-value pairs in the map.
+        /// </summary>
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            for (var i = 0; i < _capacity; i++)
+            {
+                if (_keyPresence[i] != 0)
+                {
+                    yield return new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Gets the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key to lookup.</param>
         /// <returns>The value associated with the key.</returns>
@@ -105,21 +147,28 @@ namespace ExtendedSystemObjects
             while (_keyPresence[hash] != 0)
             {
                 if (_keys[hash].Equals(key))
+                {
                     return _values[hash];
+                }
 
                 hash = (hash + 1) % _capacity;
                 if (hash == originalHash)
+                {
                     break;
+                }
             }
 
             throw new KeyNotFoundException(SharedResources.ErrorValueNotFound);
         }
 
         /// <summary>
-        /// Attempts to retrieve the value associated with the specified key.
+        ///     Attempts to retrieve the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key to lookup.</param>
-        /// <param name="value">When this method returns, contains the value associated with the key, if found; otherwise, the default value.</param>
+        /// <param name="value">
+        ///     When this method returns, contains the value associated with the key, if found; otherwise, the
+        ///     default value.
+        /// </param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
@@ -136,48 +185,17 @@ namespace ExtendedSystemObjects
 
                 hash = (hash + 1) % _capacity;
                 if (hash == originalHash)
+                {
                     break;
+                }
             }
 
             value = default;
             return false;
         }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Returns an enumerator for iterating over the key-value pairs in the map.
-        /// </summary>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            for (var i = 0; i < _capacity; i++)
-            {
-                if (_keyPresence[i] != 0)
-                    yield return new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
-            }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Releases the unmanaged memory used by the lookup map.
-        /// </summary>
-        public void Dispose()
-        {
-            _keys.Dispose();
-            _values.Dispose();
-            _keyPresence.Dispose();
-        }
-
-        /// <summary>
-        /// Computes the hash code of a key and reduces it to fit the map's capacity.
+        ///     Computes the hash code of a key and reduces it to fit the map's capacity.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="capacity">The internal array size.</param>
@@ -189,36 +207,53 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Finds the next prime number greater than or equal to the specified number.
+        ///     Finds the next prime number greater than or equal to the specified number.
         /// </summary>
         /// <param name="number">The minimum value.</param>
-        /// <returns>The next prime number ≥ <paramref name="number"/>.</returns>
+        /// <returns>The next prime number ≥ <paramref name="number" />.</returns>
         private static int FindNextPrime(int number)
         {
             while (!IsPrime(number))
+            {
                 number++;
+            }
+
             return number;
         }
 
         /// <summary>
-        /// Determines whether a number is prime.
-        /// Uses precomputed small primes for optimization.
+        ///     Determines whether a number is prime.
+        ///     Uses precomputed small primes for optimization.
         /// </summary>
         /// <param name="number">The number to check.</param>
         /// <returns><c>true</c> if prime; otherwise, <c>false</c>.</returns>
         private static bool IsPrime(int number)
         {
-            if (number < 2) return false;
+            if (number < 2)
+            {
+                return false;
+            }
 
             foreach (var prime in SharedResources.SmallPrimes)
             {
-                if (number == prime) return true;
-                if (number % prime == 0) return false;
+                if (number == prime)
+                {
+                    return true;
+                }
+
+                if (number % prime == 0)
+                {
+                    return false;
+                }
             }
 
             for (var i = 201; i * i <= number; i += 2)
+            {
                 if (number % i == 0)
+                {
                     return false;
+                }
+            }
 
             return true;
         }

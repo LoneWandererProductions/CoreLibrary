@@ -22,32 +22,32 @@ namespace CommonExtendedObjectsTests
     public class ImmutableLookupMapAllTests
     {
         /// <summary>
-        /// The string map data
-        /// </summary>
-        private Dictionary<int, string> _stringMapData;
-
-        /// <summary>
-        /// The float map data
+        ///     The float map data
         /// </summary>
         private Dictionary<int, float> _floatMapData;
 
         /// <summary>
-        /// The string map
-        /// </summary>
-        private ImmutableLookupMap<int, string> _stringMap;
-
-        /// <summary>
-        /// The read only map
+        ///     The read only map
         /// </summary>
         private ReadOnlyDictionary<int, string> _readOnlyMap;
 
         /// <summary>
-        /// The unmanaged map
+        ///     The string map
+        /// </summary>
+        private ImmutableLookupMap<int, string> _stringMap;
+
+        /// <summary>
+        ///     The string map data
+        /// </summary>
+        private Dictionary<int, string> _stringMapData;
+
+        /// <summary>
+        ///     The unmanaged map
         /// </summary>
         private ImmutableLookupMapUnmanaged<int, float> _unmanagedMap;
 
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -67,7 +67,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
@@ -78,7 +78,7 @@ namespace CommonExtendedObjectsTests
         // ------------ STRING MAP TESTS ----------------
 
         /// <summary>
-        /// Tests the string map initialization.
+        ///     Tests the string map initialization.
         /// </summary>
         [TestMethod]
         public void TestStringMapInitialization()
@@ -91,7 +91,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the read only dictionary initialization.
+        ///     Tests the read only dictionary initialization.
         /// </summary>
         [TestMethod]
         public void TestReadOnlyDictionaryInitialization()
@@ -104,7 +104,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the string map lookup.
+        ///     Tests the string map lookup.
         /// </summary>
         [TestMethod]
         public void TestStringMapLookup()
@@ -122,7 +122,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the read only dictionary lookup.
+        ///     Tests the read only dictionary lookup.
         /// </summary>
         [TestMethod]
         public void TestReadOnlyDictionaryLookup()
@@ -142,7 +142,7 @@ namespace CommonExtendedObjectsTests
         // ------------ UNMANAGED MAP TESTS ----------------
 
         /// <summary>
-        /// Tests the unmanaged map initialization.
+        ///     Tests the unmanaged map initialization.
         /// </summary>
         [TestMethod]
         public void TestUnmanagedMapInitialization()
@@ -155,7 +155,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the unmanaged map lookup.
+        ///     Tests the unmanaged map lookup.
         /// </summary>
         [TestMethod]
         public void TestUnmanagedMapLookup()
@@ -173,7 +173,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the unmanaged map try get value.
+        ///     Tests the unmanaged map try get value.
         /// </summary>
         [TestMethod]
         public void TestUnmanagedMapTryGetValue()
@@ -185,7 +185,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the unmanaged map enumeration.
+        ///     Tests the unmanaged map enumeration.
         /// </summary>
         [TestMethod]
         public void TestUnmanagedMapEnumeration()
@@ -202,7 +202,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tests the initialization and lookup performance comparison.
+        ///     Tests the initialization and lookup performance comparison.
         /// </summary>
         [TestMethod]
         public void TestInitializationAndLookupPerformanceComparison()
@@ -238,6 +238,7 @@ namespace CommonExtendedObjectsTests
             {
                 _ = stringMap.Get(i);
             }
+
             swLookup1.Stop();
 
             // --- Lookup: ReadOnlyDictionary<string>
@@ -246,6 +247,7 @@ namespace CommonExtendedObjectsTests
             {
                 _ = readOnlyMap[i];
             }
+
             swLookup2.Stop();
 
             // --- Lookup: ImmutableLookupMapUnmanaged<float>
@@ -254,6 +256,7 @@ namespace CommonExtendedObjectsTests
             {
                 _ = unmanagedMap.Get(i);
             }
+
             swLookup3.Stop();
 
             // Dispose unmanaged
@@ -274,6 +277,5 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(iterations, stringMap.ToList().Count);
             Assert.AreEqual(iterations, readOnlyMap.Count);
         }
-
     }
 }
