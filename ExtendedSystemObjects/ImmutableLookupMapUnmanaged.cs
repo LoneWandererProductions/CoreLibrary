@@ -18,11 +18,12 @@ using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     /// A high-performance, immutable lookup map using unmanaged arrays.
     /// Suitable for value types only. Keys must be unique.
     /// </summary>
-    public sealed unsafe class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey, TValue>>
+    public sealed class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : unmanaged, IEquatable<TKey>
         where TValue : unmanaged
     {
@@ -58,7 +59,6 @@ namespace ExtendedSystemObjects
         /// <param name="data">A dictionary containing the initial key-value pairs.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown when a duplicate key is found.</exception>
-
         public ImmutableLookupMapUnmanaged(IDictionary<TKey, TValue> data)
         {
             if (data == null)
@@ -165,6 +165,7 @@ namespace ExtendedSystemObjects
         /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        /// <inheritdoc />
         /// <summary>
         /// Releases the unmanaged memory used by the lookup map.
         /// </summary>

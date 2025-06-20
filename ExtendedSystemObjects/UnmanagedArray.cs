@@ -13,7 +13,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
@@ -50,14 +49,6 @@ namespace ExtendedSystemObjects
         ///     The pointer
         /// </summary>
         private T* _ptr;
-
-        /// <summary>
-        /// Gets a value indicating whether [use simd].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [use simd]; otherwise, <c>false</c>.
-        /// </value>
-        private static bool UseSimd => Vector.IsHardwareAccelerated;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnmanagedArray{T}" /> class.
