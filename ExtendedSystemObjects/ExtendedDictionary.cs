@@ -130,13 +130,13 @@ namespace ExtendedSystemObjects
         {
             if (dic.ContainsKey(key))
             {
-                throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorKeyExists,
+                throw new ArgumentException(string.Concat(SharedResources.ErrorKeyExists,
                     nameof(value)));
             }
 
             if (dic.ContainsValue(value))
             {
-                throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorValueExists,
+                throw new ArgumentException(string.Concat(SharedResources.ErrorValueExists,
                     nameof(value)));
             }
 
@@ -235,7 +235,7 @@ namespace ExtendedSystemObjects
                 return pair.Key;
             }
 
-            throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
+            throw new ValueNotFoundException(SharedResources.ErrorValueNotFound);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace ExtendedSystemObjects
 
             if (collection.Count == 0)
             {
-                throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
+                throw new ValueNotFoundException(SharedResources.ErrorValueNotFound);
             }
 
             return collection;
@@ -277,7 +277,7 @@ namespace ExtendedSystemObjects
 
             if (collection.Count == 0)
             {
-                throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorNoValueFound);
+                throw new ValueNotFoundException(SharedResources.ErrorNoValueFound);
             }
 
             return collection;

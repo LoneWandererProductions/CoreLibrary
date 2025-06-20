@@ -13,6 +13,7 @@
 
 using System;
 using System.Text;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -85,7 +86,7 @@ namespace ExtendedSystemObjects
                     }
                     else
                     {
-                        _ = str.Append(ExtendedSystemObjectsResources.Separator);
+                        _ = str.Append(SharedResources.Separator);
                     }
                 }
             }

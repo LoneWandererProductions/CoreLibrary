@@ -134,7 +134,7 @@ namespace ExtendedSystemObjects
                 }
             }
 
-            throw new KeyNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
+            throw new KeyNotFoundException(SharedResources.ErrorValueNotFound);
         }
 
         /// <summary>

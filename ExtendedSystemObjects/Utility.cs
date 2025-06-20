@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -187,7 +188,7 @@ namespace ExtendedSystemObjects
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(count),
-                    ExtendedSystemObjectsResources.ErrorValueNotAllowed);
+                    SharedResources.ErrorValueNotAllowed);
             }
 
             var keys = new List<int>();

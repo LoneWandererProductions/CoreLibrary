@@ -1,9 +1,19 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        ExtendedSystemObjects/ImmutableLookupMap.cs
+ * PURPOSE:     A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups. Tis one is for unmanaged only. It uses my UnmanagedArray.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
 
 namespace ExtendedSystemObjects
 {

@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -381,17 +382,17 @@ namespace ExtendedSystemObjects
         {
             if (expected == null || actual == null)
             {
-                message = ExtendedSystemObjectsResources.NullDictionaries;
+                message = SharedResources.NullDictionaries;
                 return false;
             }
 
             if (expected.Equals(actual))
             {
-                message = ExtendedSystemObjectsResources.DictionariesEqual;
+                message = SharedResources.DictionariesEqual;
                 return true;
             }
 
-            message = ExtendedSystemObjectsResources.DictionaryComparisonFailed;
+            message = SharedResources.DictionaryComparisonFailed;
             return false;
         }
 
@@ -406,7 +407,7 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key,
+                    string.Format(SharedResources.KeyCategoryValueFormat, entry.Key,
                         entry.Value.Category,
                         entry.Value.Value));
 
@@ -483,7 +484,7 @@ namespace ExtendedSystemObjects
         {
             if (_data.ContainsKey(key))
             {
-                throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
+                throw new ArgumentException($"{SharedResources.ErrorKeyExists}{key}");
             }
 
             _data[key] = (category, value);
