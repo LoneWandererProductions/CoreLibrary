@@ -30,17 +30,17 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The keys
         /// </summary>
-        private readonly IntArray _keys;
+        private readonly UnmanagedIntArray _keys;
 
         /// <summary>
         ///     The occupied Array, 0/1 flags
         /// </summary>
-        private readonly IntArray _occupied;
+        private readonly UnmanagedIntArray _occupied;
 
         /// <summary>
         ///     The values
         /// </summary>
-        private readonly IntArray _values;
+        private readonly UnmanagedIntArray _values;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SortedKvStore" /> class with a specified initial capacity.
@@ -48,9 +48,9 @@ namespace ExtendedSystemObjects
         /// <param name="initialCapacity">The initial capacity of the store.</param>
         public SortedKvStore(int initialCapacity = 16)
         {
-            _keys = new IntArray(initialCapacity);
-            _values = new IntArray(initialCapacity);
-            _occupied = new IntArray(initialCapacity);
+            _keys = new UnmanagedIntArray(initialCapacity);
+            _values = new UnmanagedIntArray(initialCapacity);
+            _occupied = new UnmanagedIntArray(initialCapacity);
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace ExtendedSystemObjects
         /// <returns>All active elements as Key Value pair.</returns>
         public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
         {
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
             {
                 if (_occupied[i] != 0)
                 {

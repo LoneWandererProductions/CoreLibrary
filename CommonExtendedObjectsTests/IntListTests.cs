@@ -23,11 +23,8 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void AddPopPeekBehavior()
         {
-            using var list = new IntList(4);
+            using var list = new UnmanagedIntList(4) {10, 20, 30};
 
-            list.Add(10);
-            list.Add(20);
-            list.Add(30);
 
             Assert.AreEqual(3, list.Length);
             Assert.AreEqual(30, list.Peek());
@@ -51,7 +48,7 @@ namespace CommonExtendedObjectsTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void PopEmptyThrows()
         {
-            using var list = new IntList();
+            using var list = new UnmanagedIntList();
             list.Pop();
         }
 
@@ -62,7 +59,7 @@ namespace CommonExtendedObjectsTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void PeekEmptyThrows()
         {
-            using var list = new IntList();
+            using var list = new UnmanagedIntList();
             list.Peek();
         }
 
@@ -72,7 +69,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void CapacityResizesCorrectly()
         {
-            using var list = new IntList(2);
+            using var list = new UnmanagedIntList(2);
             for (var i = 0; i < 1000; i++)
             {
                 list.Add(i);
@@ -91,7 +88,7 @@ namespace CommonExtendedObjectsTests
             const int n = 1_000_000;
 
             // IntList timing
-            using var intList = new IntList(n);
+            using var intList = new UnmanagedIntList(n);
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < n; i++)
             {
@@ -103,6 +100,7 @@ namespace CommonExtendedObjectsTests
 
             // List<int> timing
             var list = new List<int>(n);
+
             sw.Restart();
             for (var i = 0; i < n; i++)
             {
@@ -114,6 +112,7 @@ namespace CommonExtendedObjectsTests
 
             // Stack<int> timing
             var stack = new Stack<int>(n);
+
             sw.Restart();
             for (var i = 0; i < n; i++)
             {

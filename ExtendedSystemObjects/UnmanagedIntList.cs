@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IntList.cs
+ * FILE:        ExtendedSystemObjects/UnmanagedIntList.cs
  * PURPOSE:     A high-performance List implementation with reduced features. Limited to integer Values.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -27,7 +27,7 @@ namespace ExtendedSystemObjects
     ///     Designed for scenarios where manual memory management is needed.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed unsafe class IntList : IUnmanagedArray<int>, IEnumerable<int>
+    public sealed unsafe class UnmanagedIntList : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
         ///     The buffer
@@ -50,10 +50,10 @@ namespace ExtendedSystemObjects
         private int* _ptr;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IntList" /> class with the specified initial capacity.
+        ///     Initializes a new instance of the <see cref="UnmanagedIntList" /> class with the specified initial capacity.
         /// </summary>
         /// <param name="initialCapacity">The initial number of elements the list can hold without resizing. Default is 16.</param>
-        public IntList(int initialCapacity = 16)
+        public UnmanagedIntList(int initialCapacity = 16)
         {
             _capacity = initialCapacity > 0 ? initialCapacity : 16;
             _buffer = Marshal.AllocHGlobal(_capacity * sizeof(int));
@@ -62,7 +62,7 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the number of elements contained in the <see cref="IntList" />.
+        ///     Gets the number of elements contained in the <see cref="UnmanagedIntList" />.
         /// </summary>
         public int Length { get; private set; }
 
@@ -279,9 +279,9 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="IntList" /> class, releasing unmanaged resources.
+        ///     Finalizes an instance of the <see cref="UnmanagedIntList" /> class, releasing unmanaged resources.
         /// </summary>
-        ~IntList()
+        ~UnmanagedIntList()
         {
             Dispose(false);
         }

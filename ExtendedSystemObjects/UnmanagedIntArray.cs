@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IntArray.cs
+ * FILE:        ExtendedSystemObjects/UnmanagedIntArray.cs
  * PURPOSE:     A high-performance array implementation with reduced features. Limited to integer Values.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -25,7 +25,7 @@ namespace ExtendedSystemObjects
     ///     backed by unmanaged memory. Designed for performance-critical
     ///     scenarios where garbage collection overhead must be avoided.
     /// </summary>
-    public sealed unsafe class IntArray : IUnmanagedArray<int>, IEnumerable<int>
+    public sealed unsafe class UnmanagedIntArray : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
         ///     The buffer
@@ -45,10 +45,10 @@ namespace ExtendedSystemObjects
         private static bool UseSimd => Vector.IsHardwareAccelerated;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IntArray" /> class with the specified size.
+        ///     Initializes a new instance of the <see cref="UnmanagedIntArray" /> class with the specified size.
         /// </summary>
         /// <param name="size">The number of elements to allocate.</param>
-        public IntArray(int size)
+        public UnmanagedIntArray(int size)
         {
             if (size < 0)
             {
@@ -119,25 +119,24 @@ namespace ExtendedSystemObjects
         public int IndexOf(int value)
         {
             var span = AsSpan();
-            int vectorSize = Vector<int>.Count;
+            var vectorSize = Vector<int>.Count;
 
             if (UseSimd && span.Length >= vectorSize)
             {
                 var vTarget = new Vector<int>(value);
-                int i = 0;
+                var i = 0;
 
                 for (; i <= span.Length - vectorSize; i += vectorSize)
                 {
                     var vData = new Vector<int>(span.Slice(i, vectorSize));
                     var vCmp = Vector.Equals(vData, vTarget);
 
-                    if (!Vector.EqualsAll(vCmp, Vector<int>.Zero))
+                    if (Vector.EqualsAll(vCmp, Vector<int>.Zero)) continue;
+
+                    for (var j = 0; j < vectorSize; j++)
                     {
-                        for (int j = 0; j < vectorSize; j++)
-                        {
-                            if (vCmp[j] != 0)
-                                return i + j;
-                        }
+                        if (vCmp[j] != 0)
+                            return i + j;
                     }
                 }
 
@@ -150,16 +149,14 @@ namespace ExtendedSystemObjects
 
                 return -1;
             }
-            else
-            {
-                for (int i = 0; i < span.Length; i++)
-                {
-                    if (span[i] == value)
-                        return i;
-                }
 
-                return -1;
+            for (var i = 0; i < span.Length; i++)
+            {
+                if (span[i] == value)
+                    return i;
             }
+
+            return -1;
         }
 
         /// <inheritdoc />
@@ -375,9 +372,9 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="IntArray" /> class.
+        ///     Finalizes an instance of the <see cref="UnmanagedIntArray" /> class.
         /// </summary>
-        ~IntArray()
+        ~UnmanagedIntArray()
         {
             Dispose(false);
         }

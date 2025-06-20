@@ -28,7 +28,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void IndexingShouldGetAndSetValuesCorrectly()
         {
-            var arr = new IntArray(5);
+            var arr = new UnmanagedIntArray(5);
             for (var i = 0; i < arr.Length; i++)
             {
                 arr[i] = i * 10;
@@ -48,7 +48,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void RemoveAtShouldRemoveElementAndShiftLeft()
         {
-            var arr = new IntArray(5);
+            var arr = new UnmanagedIntArray(5);
             for (var i = 0; i < arr.Length; i++)
             {
                 arr[i] = i;
@@ -68,7 +68,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void ResizeShouldChangeLengthAndPreserveOldData()
         {
-            var arr = new IntArray(3);
+            var arr = new UnmanagedIntArray(3);
             arr[0] = 1;
             arr[1] = 2;
             arr[2] = 3;
@@ -89,7 +89,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void ClearShouldZeroOutAllElements()
         {
-            var arr = new IntArray(4);
+            var arr = new UnmanagedIntArray(4);
             for (var i = 0; i < arr.Length; i++)
             {
                 arr[i] = 42;
@@ -114,7 +114,7 @@ namespace CommonExtendedObjectsTests
             var stopwatch = new Stopwatch();
 
             // === IntArray Test ===
-            var intArray = new IntArray(Size);
+            var intArray = new UnmanagedIntArray(Size);
             stopwatch.Restart();
 
             for (var i = 0; i < Size; i++)
@@ -192,7 +192,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void IndexingShouldWorkForIntArray()
         {
-            RunIndexingTest(new IntArray(5));
+            RunIndexingTest(new UnmanagedIntArray(5));
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void RemoveMultipleShouldRemoveSequentialIndices()
         {
-            var arr = new IntArray(10);
+            var arr = new UnmanagedIntArray(10);
             for (var i = 0; i < arr.Length; i++)
             {
                 arr[i] = i + 1; // [1..10]
@@ -263,7 +263,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void RemoveMultipleShouldRemoveNonSequentialIndices()
         {
-            var arr = new IntArray(10);
+            var arr = new UnmanagedIntArray(10);
             for (var i = 0; i < arr.Length; i++)
             {
                 arr[i] = i + 1; // [1..10]
