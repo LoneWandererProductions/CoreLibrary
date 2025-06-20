@@ -39,6 +39,11 @@ namespace ExtendedSystemObjects.Helper
         internal const string ErrorValueExists = "Value already exists: ";
 
         /// <summary>
+        /// The error duplicate key (const). "Duplicate key detected: {key}".
+        /// </summary>
+        internal const string ErrorDuplicateKey = "Duplicate key detected: {key}";
+
+        /// <summary>
         ///     Separator(const). Value: " , ".
         /// </summary>
         internal const string Separator = " , ";
