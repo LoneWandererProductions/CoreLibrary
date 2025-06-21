@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -115,6 +117,69 @@ namespace ExtendedSystemObjects.Helper
                 ptr + index,
                 elementsToShift * sizeof(T),
                 elementsToShift * sizeof(T));
+        }
+
+        /// <summary>
+        ///     Copies a block of unmanaged memory from source to destination.
+        ///     Similar to memcpy.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void Copy<T>(T* source, T* destination, int count) where T : unmanaged
+        {
+            Buffer.MemoryCopy(source, destination, count * sizeof(T), count * sizeof(T));
+        }
+
+        /// <summary>
+        ///     Allocates and clones a block of unmanaged memory from a given source.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe IntPtr Clone<T>(T* source, int count) where T : unmanaged
+        {
+            var size = sizeof(T) * count;
+            var dest = Marshal.AllocHGlobal(size);
+            Buffer.MemoryCopy(source, dest.ToPointer(), size, size);
+            return dest;
+        }
+
+        /// <summary>
+        ///     Fills a block of unmanaged memory with a given value.
+        ///     Equivalent to memset with a pattern.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void Fill<T>(T* ptr, T value, int count) where T : unmanaged
+        {
+            for (int i = 0; i < count; i++)
+            {
+                ptr[i] = value;
+            }
+        }
+
+        /// <summary>
+        ///     Searches for the first occurrence of a value in unmanaged memory.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe int IndexOf<T>(T* ptr, T value, int length) where T : unmanaged, IEquatable<T>
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (ptr[i].Equals(value))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        ///     Swaps two elements in unmanaged memory.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void Swap<T>(T* ptr, int indexA, int indexB) where T : unmanaged
+        {
+            if (indexA == indexB) return;
+
+            T temp = ptr[indexA];
+            ptr[indexA] = ptr[indexB];
+            ptr[indexB] = temp;
         }
     }
 }
