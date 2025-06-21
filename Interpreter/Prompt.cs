@@ -204,7 +204,10 @@ namespace Interpreter
             SendLogs?.Invoke(nameof(Callback), message);
         }
 
-        // Event to handle feedback, using EventHandler for proper event pattern
+        /// <summary>
+        /// Event to handle feedback, using EventHandler for proper event pattern
+        /// Occurs when [handle feedback].
+        /// </summary>
         internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
         /// <summary>Switches the name spaces.</summary>

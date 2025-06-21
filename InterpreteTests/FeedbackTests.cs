@@ -114,10 +114,10 @@ namespace InterpreteTests
             // Arrange
             var dctCommandOne = new Dictionary<int, InCommand>
             {
-                { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
+                { 0, new InCommand { Command = "com1", ParameterCount = 1, Description = "Help com1" } },
                 {
                     1,
-                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                    new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" }
                 },
                 {
                     2,
@@ -147,7 +147,7 @@ namespace InterpreteTests
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
             prompt.Initiate(dctCommandOne, "UserSpace 1", extensionCommands, Feedback);
-            prompt.ConsoleInput("coM1(1,2).Dryrun()");
+            prompt.ConsoleInput("coM2(1,2).Dryrun()");
             prompt.ConsoleInput("");
 
 
