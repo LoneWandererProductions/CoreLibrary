@@ -7,6 +7,7 @@
  */
 
 using System.Diagnostics;
+using Interpreter.Resources;
 
 namespace Interpreter
 {

@@ -174,7 +174,6 @@ namespace InterpreteTests
             //Assert.IsTrue(areEqual, message);
         }
 
-
         /// <summary>
         ///     Parses if else clauses empty input returns empty dictionary.
         /// </summary>

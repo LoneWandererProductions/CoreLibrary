@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Interpreter.Resources;
 
 namespace Interpreter
 {
@@ -180,10 +181,12 @@ namespace Interpreter
         private void HandleExternalCommand(ExtensionCommands extension)
         {
             var com = _irtHandlePrompt.ProcessInput(extension.BaseCommand);
-            var command = _commands[com.Command];
-            _irtHandleInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
+            if (com != null)
+            {
+                var command = _commands[com.Command];
+                _irtHandleInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
+            }
 
-            //TODO completly wrong here
             var feedback = IrtConst.InternalFeedback[-1];
 
             var feedbackReceiver = new IrtFeedback

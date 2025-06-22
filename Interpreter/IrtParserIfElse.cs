@@ -35,8 +35,8 @@ namespace Interpreter
         ///     Generates the formatted output.
         /// </summary>
         /// <param name="categorizedClauses">The categorized clauses.</param>
-        /// <returns></returns>
-        internal static List<(string Category, string Value)> GenerateFormattedOutput(
+        /// <returns>Parsed if else blocks.</returns>
+        internal static IEnumerable<(string Category, string Value)> GenerateFormattedOutput(
             List<(string Category, string Clause, string ParentCategory)> categorizedClauses)
         {
             var output = new List<(string Category, string Value)>();
@@ -150,7 +150,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="code">The code string containing If-Else clauses.</param>
         /// <returns>A list of IfElseClause objects representing each If-Else clause found.</returns>
-        internal static List<IfElseClause> ParseIfElseClauses(string code)
+        private static List<IfElseClause> ParseIfElseClauses(string code)
         {
             var clauses = new List<IfElseClause>();
             ParseIfElseClausesRecursively(code, clauses, 0);

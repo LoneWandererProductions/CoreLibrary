@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        Interpreter/IPrompt.cs
+ * PROJECT:     Interpreter.Interface
+ * FILE:        Interpreter.Interface/IPrompt.cs
  * PURPOSE:     The Prompt Interface
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 using System.Collections.Generic;
 
-namespace Interpreter
+namespace Interpreter.Interface
 {
     /// <summary>
     ///     The IPrompt interface.

@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        Interpreter/AvailableFeedback.cs
+ * PROJECT:     Interpreter.Resources
+ * FILE:        Interpreter.Resources/AvailableFeedback.cs
  * PURPOSE:     All available User Feedback
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter
+namespace Interpreter.Resources
 {
     /// <summary>
     ///     Allowed user Feedback

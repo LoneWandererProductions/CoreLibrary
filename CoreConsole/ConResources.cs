@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using Interpreter;
+using Interpreter.Resources;
 
 namespace CoreConsole
 {

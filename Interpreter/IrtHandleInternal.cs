@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using Interpreter.Resources;
 
 namespace Interpreter
 {
@@ -101,6 +102,9 @@ namespace Interpreter
         /// <param name="parameter">optional parameters, can be empty or null.</param>
         private void HandleInternalCommands(int? command, IReadOnlyList<string> parameter)
         {
+            IrtFeedback irtFeedback;
+
+            IrtFeedback feedbackReceiver;
             switch (command)
             {
                 case 1:
@@ -150,6 +154,27 @@ namespace Interpreter
 
                 case 10:
                     CommandPrint(parameter[0]);
+                    break;
+
+                case 11:
+
+                    feedbackReceiver = new IrtFeedback
+                    {
+                        RequestId = "-1",
+                        BranchId = 12,
+                    };
+
+                    _prompt.RequestFeedback(feedbackReceiver);
+
+                    break;
+                case 12:
+                    feedbackReceiver = new IrtFeedback
+                    {
+                        RequestId = parameter[0],
+                        BranchId = 12,
+                    };
+
+                    _prompt.RequestFeedback(feedbackReceiver);
                     break;
 
                 default:

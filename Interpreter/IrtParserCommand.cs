@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using ExtendedSystemObjects;
+using Interpreter.Resources;
 
 namespace Interpreter
 {

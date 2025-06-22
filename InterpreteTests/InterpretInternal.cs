@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using ExtendedSystemObjects;
 using Interpreter;
+using Interpreter.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterpreteTests
