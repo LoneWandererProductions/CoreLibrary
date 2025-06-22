@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        IrtParserIfElse.cs
- * PURPOSE:     Your file purpose here
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Interpreter.ScriptEngine/IrtParserIfElse.cs
+ * PURPOSE:     Generate a Category for each command, here we parse if else for each nesting we create 
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -10,13 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Interpreter
+namespace Interpreter.ScriptEngine
 {
     /// <summary>
-    ///     Basic if else Parser
+    /// Basic if else Parser
     /// </summary>
     internal static class IrtParserIfElse
     {
+        /// <summary>
+        /// The identifier counter
+        /// </summary>
         private static int _idCounter;
 
         /// <summary>

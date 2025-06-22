@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        Interpreter/ConditionalExpressions.cs
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Interpreter.ScriptEngine/ConditionalExpressions.cs
  * PURPOSE:     Handle all logical Operations of the parser
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * 
@@ -28,7 +28,7 @@ using System.Runtime.CompilerServices;
 using ExtendedSystemObjects;
 using Interpreter.Resources;
 
-namespace Interpreter
+namespace Interpreter.ScriptEngine
 {
     /// <summary>
     ///     Create Category Dictionary and handle nested structures
@@ -71,7 +71,8 @@ namespace Interpreter
                 if (!containsIf)
                 {
                     //position indicates current block pretty useless for now
-                    obj.Commands.Add(category, key, position.ToString()); // Add the block if it doesn't contain 'if'
+                    //obj.Commands.Add(category, key, position.ToString()); // Add the block if it doesn't contain 'if'
+                    obj.Commands.Add(category, key, value);
                     continue;
                 }
 
