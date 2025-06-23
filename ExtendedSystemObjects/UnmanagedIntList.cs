@@ -14,6 +14,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
@@ -27,6 +28,7 @@ namespace ExtendedSystemObjects
     ///     Designed for scenarios where manual memory management is needed.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
+    [DebuggerDisplay("{ToString()}")]
     public sealed unsafe class UnmanagedIntList : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
@@ -299,6 +301,30 @@ namespace ExtendedSystemObjects
         {
             return new Span<int>(_ptr, Capacity);
         }
+
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+
+            for (int i = 0; i < Length; i++)
+            {
+                sb.Append(_ptr[i]);
+                if (i < Length - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
+
+            return sb.ToString();
+        }
+
 
         /// <summary>
         ///     Finalizes an instance of the <see cref="UnmanagedIntList" /> class, releasing unmanaged resources.
