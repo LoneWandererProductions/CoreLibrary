@@ -44,6 +44,9 @@ namespace ExtendedSystemObjects
         /// </summary>
         private readonly UnmanagedIntArray _values;
 
+        private UnmanagedIntList _activeIndicesCache;
+        private bool _activeIndicesDirty = true;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="SortedKvStore" /> class with a specified initial capacity.
         /// </summary>
@@ -53,12 +56,13 @@ namespace ExtendedSystemObjects
             _keys = new UnmanagedIntArray(initialCapacity);
             _values = new UnmanagedIntArray(initialCapacity);
             _occupied = new UnmanagedIntArray(initialCapacity);
+            _activeIndicesCache = new UnmanagedIntList(initialCapacity);
         }
 
         /// <summary>
         ///     Gets the number of active (occupied) key-value pairs stored.
         /// </summary>
-        public int Count { get; private set; }
+        public int OccupiedCount { get; private set; }
 
         /// <summary>
         ///     Gets the free capacity.
@@ -66,7 +70,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The free capacity.
         /// </value>
-        public int FreeCapacity => _keys.Capacity - Count;
+        public int FreeCapacity => _keys.Capacity - OccupiedCount;
 
         /// <summary>
         ///     Gets an enumerable collection of all keys currently in the store.
@@ -78,7 +82,7 @@ namespace ExtendedSystemObjects
         {
             get
             {
-                for (var i = 0; i < Count; i++)
+                for (var i = 0; i < OccupiedCount; i++)
                 {
                     if (_occupied[i] != 0)
                     {
@@ -124,6 +128,7 @@ namespace ExtendedSystemObjects
             _keys.Dispose();
             _values.Dispose();
             _occupied.Dispose();
+            _activeIndicesCache.Dispose();
         }
 
         /// <inheritdoc />
@@ -133,12 +138,9 @@ namespace ExtendedSystemObjects
         /// <returns>All active elements as Key Value pair.</returns>
         public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
         {
-            for (var i = 0; i < Count; i++)
+            foreach (var idx in GetActiveIndices())
             {
-                if (_occupied[i] != 0)
-                {
-                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
-                }
+                yield return new KeyValuePair<int, int>(_keys[idx], _values[idx]);
             }
         }
 
@@ -167,11 +169,11 @@ namespace ExtendedSystemObjects
                 {
                     _occupied[idx] = 1;
                     _values[idx] = value;
-                    Count++;
+                    OccupiedCount++;
                 }
                 else
                 {
-                    _values[idx] = value;
+                    _values[idx] = value; // update
                 }
 
                 return;
@@ -179,13 +181,16 @@ namespace ExtendedSystemObjects
 
             idx = ~idx;
 
+            // Insert at physical index, so check raw capacity not OccupiedCount
             EnsureCapacity();
 
             _keys.InsertAt(idx, key);
             _values.InsertAt(idx, value);
             _occupied.InsertAt(idx, 1);
 
-            Count++;
+            OccupiedCount++;
+
+            _activeIndicesDirty = true;
         }
 
         /// <summary>
@@ -212,10 +217,10 @@ namespace ExtendedSystemObjects
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(int key, out int value)
         {
-            int left = 0, right = Count - 1;
-            var keysSpan = _keys.AsSpan()[..Count];
-            var occupiedSpan = _occupied.AsSpan()[..Count];
-            var valuesSpan = _values.AsSpan()[..Count];
+            int left = 0, right = OccupiedCount - 1;
+            var keysSpan = _keys.AsSpan()[.._keys.Length];
+            var occupiedSpan = _occupied.AsSpan()[..OccupiedCount];
+            var valuesSpan = _values.AsSpan()[..OccupiedCount];
 
             while (left <= right)
             {
@@ -272,10 +277,12 @@ namespace ExtendedSystemObjects
             if (index >= 0 && _occupied[index] != 0)
             {
                 _occupied[index] = 0;
+                _activeIndicesDirty = true;
                 return true;
             }
 
             index = -1;
+
             return false;
         }
 
@@ -291,8 +298,8 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            var occSpan = _occupied.AsSpan()[..Count];
-            var keysSpan = _keys.AsSpan()[..Count];
+            var occSpan = _occupied.AsSpan()[..OccupiedCount];
+            var keysSpan = _keys.AsSpan()[..OccupiedCount];
 
             // Optional: if keysToRemove is sorted, do a linear merge
             // This path is faster than HashSet-based if input is sorted and large
@@ -312,7 +319,7 @@ namespace ExtendedSystemObjects
             if (isSorted)
             {
                 int i = 0, j = 0;
-                while (i < Count && j < keysToRemove.Length)
+                while (i < OccupiedCount && j < keysToRemove.Length)
                 {
                     var currentKey = keysSpan[i];
                     var removeKey = keysToRemove[j];
@@ -328,7 +335,7 @@ namespace ExtendedSystemObjects
                     else
                     {
                         occSpan[i] = 0;
-
+                        _activeIndicesDirty = true;
                         i++;
                         j++;
                     }
@@ -343,6 +350,7 @@ namespace ExtendedSystemObjects
                     if (idx >= 0 && occSpan[idx] != 0)
                     {
                         occSpan[idx] = 0;
+                        _activeIndicesDirty = true;
                     }
                 }
             }
@@ -354,13 +362,13 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Compact()
         {
-            var occSpan = _occupied.AsSpan()[..Count];
-            var maxRemoved = Count; // worst case: all are removed
+            var occSpan = _occupied.AsSpan()[..OccupiedCount];
+            var maxRemoved = OccupiedCount; // worst case: all are removed
 
             var rented = ArrayPool<int>.Shared.Rent(maxRemoved);
             var removedCount = 0;
 
-            for (var i = 0; i < Count; i++)
+            for (var i = 0; i < OccupiedCount; i++)
             {
                 if (occSpan[i] == 0)
                 {
@@ -380,9 +388,15 @@ namespace ExtendedSystemObjects
             _values.RemoveMultiple(indicesToRemove);
             _occupied.RemoveMultiple(indicesToRemove);
 
-            Count -= removedCount;
+            OccupiedCount -= removedCount;
 
             ArrayPool<int>.Shared.Return(rented);
+        }
+
+        public Span<int> AsSpan()
+        {
+            var list = GetActiveIndices();
+            return list.AsSpan();
         }
 
         /// <summary>
@@ -394,9 +408,13 @@ namespace ExtendedSystemObjects
         /// </returns>
         public int BinarySearch(int key)
         {
-            int left = 0, right = Count - 1;
-            var keysSpan = _keys.AsSpan()[..Count];
-            var occupiedSpan = _occupied.AsSpan()[..Count];
+            //var list = GetActiveIndices();
+            //return list.AsSpan().BinarySearch(key);
+
+
+            int left = 0, right = OccupiedCount - 1;
+            var keysSpan = _keys.AsSpan()[..OccupiedCount];
+            var occupiedSpan = _occupied.AsSpan()[..OccupiedCount];
 
             while (left <= right)
             {
@@ -440,7 +458,7 @@ namespace ExtendedSystemObjects
 
             // Key not found; try to move left forward to next occupied slot for insertion index
             int insertionIndex = left;
-            while (insertionIndex < Count && occupiedSpan[insertionIndex] == 0)
+            while (insertionIndex < OccupiedCount && occupiedSpan[insertionIndex] == 0)
                 insertionIndex++;
 
             return ~insertionIndex;
@@ -454,7 +472,9 @@ namespace ExtendedSystemObjects
             _keys.Clear();
             _values.Clear();
             _occupied.Clear();
-            Count = 0;
+            _activeIndicesCache.Clear();
+            _activeIndicesDirty = true;
+            OccupiedCount = 0;
         }
 
         /// <summary>
@@ -466,9 +486,9 @@ namespace ExtendedSystemObjects
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"Count: {Count}");
+            sb.AppendLine($"Count: {OccupiedCount}");
 
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < OccupiedCount; i++)
             {
                 sb.AppendLine($"Index {i}: Key={_keys[i]}, Value={_values[i]}, Occupied={_occupied[i]}");
             }
@@ -490,9 +510,37 @@ namespace ExtendedSystemObjects
         private void EnsureCapacity()
         {
             // Delegate to IntArray.EnsureCapacity, using Count + 1 since we add one item
-            _keys.EnsureCapacity(Count + 1);
-            _values.EnsureCapacity(Count + 1);
-            _occupied.EnsureCapacity(Count + 1);
+            _keys.EnsureCapacity(OccupiedCount + 1);
+            _values.EnsureCapacity(OccupiedCount + 1);
+            _occupied.EnsureCapacity(OccupiedCount + 1);
+        }
+
+        private UnmanagedIntList GetActiveIndices()
+        {
+            if (!_activeIndicesDirty && _activeIndicesCache != null)
+            {
+                return _activeIndicesCache!;
+            }
+
+            GenerateActiveIndices();
+            _activeIndicesDirty = false;
+
+            return _activeIndicesCache!;
+        }
+
+        private void GenerateActiveIndices()
+        {
+            _activeIndicesCache?.Dispose();
+            _activeIndicesCache = new UnmanagedIntList(OccupiedCount); // or Count if unsure
+
+            var occ = _occupied.AsSpan()[.._keys.Length];
+            for (int i = 0; i < occ.Length; i++)
+            {
+                if (occ[i] != 0)
+                {
+                    _activeIndicesCache.Add(i);
+                }
+            }
         }
     }
 }

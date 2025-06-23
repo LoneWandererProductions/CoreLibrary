@@ -100,7 +100,7 @@ namespace CommonExtendedObjectsTests
             store.Remove(3);
             store.Compact();
 
-            Assert.AreEqual(8, store.Count);
+            Assert.AreEqual(8, store.OccupiedCount);
             Assert.IsFalse(store.TryGetValue(1, out _));
         }
 
@@ -199,7 +199,7 @@ namespace CommonExtendedObjectsTests
             sw.Stop();
 
             Trace.WriteLine($"Compact after removing half: {sw.ElapsedMilliseconds} ms");
-            Assert.AreEqual(ItemCount / 2, store.Count);
+            Assert.AreEqual(ItemCount / 2, store.OccupiedCount);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace CommonExtendedObjectsTests
             store.Add(1, 42); // Insert a single key-value pair with key = 1
 
             // Assert
-            Assert.AreEqual(1, store.Count, "Store should have one occupied entry.");
+            Assert.AreEqual(1, store.OccupiedCount, "Store should have one occupied entry.");
 
             var keys = store.Keys.ToArray();
             Assert.AreEqual(1, keys.Length, "Keys enumerable should contain one item.");
@@ -252,7 +252,7 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine(store.ToString());
 
             // Assert
-            Assert.AreEqual(2, store.Count, "Store should have two occupied entries.");
+            Assert.AreEqual(2, store.OccupiedCount, "Store should have two occupied entries.");
 
             var keys = store.Keys.ToArray();
             CollectionAssert.AreEqual(new[] { 1, 2 }, keys, "Keys should be sorted and aligned.");
@@ -306,7 +306,7 @@ namespace CommonExtendedObjectsTests
             store.Add(2, 200); // Insert out of order to force shift
 
             // Validate count
-            Assert.AreEqual(3, store.Count, "Count should be 3 after inserts.");
+            Assert.AreEqual(3, store.OccupiedCount, "Count should be 3 after inserts.");
 
             // Validate keys are sorted
             var keys = store.Keys.ToArray();
@@ -324,7 +324,7 @@ namespace CommonExtendedObjectsTests
             // Compact to physically remove unoccupied entries
             store.Compact();
 
-            Assert.AreEqual(2, store.Count, "Count should be 2 after removal and compact.");
+            Assert.AreEqual(2, store.OccupiedCount, "Count should be 2 after removal and compact.");
 
             keys = store.Keys.ToArray();
             CollectionAssert.AreEqual(new[] { 1, 3 }, keys, "Keys after removal should be 1 and 3.");
@@ -358,7 +358,7 @@ namespace CommonExtendedObjectsTests
                 { 5, 500 }
             };
 
-            Assert.AreEqual(5, store.Count);
+            Assert.AreEqual(5, store.OccupiedCount);
 
             // Remove keys 2 and 4
             var keysToRemove = new int[] { 2, 4 };
@@ -377,7 +377,7 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(store.ContainsKey(5));
 
             // THIS WILL FAIL IF Count IS NOT UPDATED
-            Assert.AreEqual(5, store.Count, "Count should NOT be updated after RemoveMany");
+            Assert.AreEqual(5, store.OccupiedCount, "Count should NOT be updated after RemoveMany");
         }
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace CommonExtendedObjectsTests
             }
 
             // Confirm initial state
-            Assert.AreEqual(keys.Length, store.Count);
+            Assert.AreEqual(keys.Length, store.OccupiedCount);
             foreach (var key in keys)
             {
                 Assert.IsTrue(store.ContainsKey(key), $"Should contain key {key} initially.");
@@ -440,7 +440,7 @@ namespace CommonExtendedObjectsTests
             };
 
             Assert.IsTrue(store.ContainsKey(3));
-            Assert.AreEqual(5, store.Count);
+            Assert.AreEqual(5, store.OccupiedCount);
 
             // Remove key 3 logically
             store.Remove(3);
@@ -449,7 +449,7 @@ namespace CommonExtendedObjectsTests
             Assert.IsFalse(store.ContainsKey(3));
 
             // Count still includes all, including logically removed
-            Assert.AreEqual(5, store.Count);
+            Assert.AreEqual(5, store.OccupiedCount);
 
             // Compact physically removes unoccupied entries
             store.Compact();
@@ -458,7 +458,7 @@ namespace CommonExtendedObjectsTests
             Assert.IsFalse(store.ContainsKey(3));
 
             // Count updated to reflect physical removal
-            Assert.AreEqual(4, store.Count);
+            Assert.AreEqual(4, store.OccupiedCount);
 
             // Dump internal state for debug (optional)
             Trace.WriteLine(store.ToString());
