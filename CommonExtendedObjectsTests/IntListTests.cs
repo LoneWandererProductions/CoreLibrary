@@ -262,5 +262,19 @@ namespace CommonExtendedObjectsTests
 
             Assert.AreEqual(42, list.Peek());
         }
+
+        [TestMethod]
+        public void CloneSortedReturnsSortedList()
+        {
+            var list = new UnmanagedIntList {5, 2, 8, 3};
+
+            using var sorted = list.Sorted();
+
+            Assert.AreEqual(4, sorted.Length);
+            Assert.AreEqual(2, sorted[0]);
+            Assert.AreEqual(3, sorted[1]);
+            Assert.AreEqual(5, sorted[2]);
+            Assert.AreEqual(8, sorted[3]);
+        }
     }
 }

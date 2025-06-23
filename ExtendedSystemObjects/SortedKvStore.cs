@@ -44,7 +44,14 @@ namespace ExtendedSystemObjects
         /// </summary>
         private readonly UnmanagedIntArray _values;
 
+        /// <summary>
+        /// The active indices cache
+        /// </summary>
         private UnmanagedIntList _activeIndicesCache;
+
+        /// <summary>
+        /// The active indices dirty
+        /// </summary>
         private bool _activeIndicesDirty = true;
 
         /// <summary>
@@ -162,6 +169,7 @@ namespace ExtendedSystemObjects
         public void Add(int key, int value)
         {
             var idx = BinarySearch(key);
+            _activeIndicesDirty = true;
 
             if (idx >= 0)
             {
@@ -176,6 +184,7 @@ namespace ExtendedSystemObjects
                     _values[idx] = value; // update
                 }
 
+
                 return;
             }
 
@@ -189,8 +198,6 @@ namespace ExtendedSystemObjects
             _occupied.InsertAt(idx, 1);
 
             OccupiedCount++;
-
-            _activeIndicesDirty = true;
         }
 
         /// <summary>
@@ -259,10 +266,13 @@ namespace ExtendedSystemObjects
         public void Remove(int key)
         {
             var idx = BinarySearch(key);
-            if (idx >= 0 && _occupied[idx] != 0)
+            if (idx < 0 || _occupied[idx] == 0)
             {
-                _occupied[idx] = 0;
+                return;
             }
+
+            _occupied[idx] = 0;
+            _activeIndicesDirty = true;
         }
 
         /// <summary>
@@ -393,9 +403,13 @@ namespace ExtendedSystemObjects
             ArrayPool<int>.Shared.Return(rented);
         }
 
+        /// <summary>
+        /// Convert to span.
+        /// </summary>
+        /// <returns>Span of active Keys.</returns>
         public Span<int> AsSpan()
         {
-            var list = GetActiveIndices();
+            using var list = GetActiveKeys();
             return list.AsSpan();
         }
 
@@ -408,11 +422,8 @@ namespace ExtendedSystemObjects
         /// </returns>
         public int BinarySearch(int key)
         {
-            //var list = GetActiveIndices();
-            //return list.AsSpan().BinarySearch(key);
-
-
-            int left = 0, right = OccupiedCount - 1;
+            int left = 0;
+            int right = OccupiedCount - 1;
             var keysSpan = _keys.AsSpan()[..OccupiedCount];
             var occupiedSpan = _occupied.AsSpan()[..OccupiedCount];
 
@@ -424,25 +435,24 @@ namespace ExtendedSystemObjects
                 if (midKey == key)
                 {
                     if (occupiedSpan[mid] != 0)
-                        return mid; // found active key
+                        return mid; // Found active key
 
-                    // Found deleted slot, try to probe neighbors near mid for active key with same key
-                    // Usually deletions are rare, so probing few neighbors is cheap
-
-                    // probe left neighbors
+                    // If key found but not occupied, probe neighbors
+                    // probe left
                     for (int i = mid - 1; i >= left && keysSpan[i] == key; i--)
                     {
                         if (occupiedSpan[i] != 0)
                             return i;
                     }
-                    // probe right neighbors
+
+                    // probe right
                     for (int i = mid + 1; i <= right && keysSpan[i] == key; i++)
                     {
                         if (occupiedSpan[i] != 0)
                             return i;
                     }
 
-                    // no active key found
+                    // No active key found
                     return ~left;
                 }
 
@@ -456,13 +466,9 @@ namespace ExtendedSystemObjects
                 }
             }
 
-            // Key not found; try to move left forward to next occupied slot for insertion index
-            int insertionIndex = left;
-            while (insertionIndex < OccupiedCount && occupiedSpan[insertionIndex] == 0)
-                insertionIndex++;
-
-            return ~insertionIndex;
+            return ~left; // Not found, return bitwise complement of insertion point
         }
+
 
         /// <summary>
         ///     Removes all entries from the store.
@@ -515,6 +521,10 @@ namespace ExtendedSystemObjects
             _occupied.EnsureCapacity(OccupiedCount + 1);
         }
 
+        /// <summary>
+        /// Gets the active indices.
+        /// </summary>
+        /// <returns>UnmanagedIntArray of Active Keys</returns>
         private UnmanagedIntList GetActiveIndices()
         {
             if (!_activeIndicesDirty && _activeIndicesCache != null)
@@ -528,12 +538,31 @@ namespace ExtendedSystemObjects
             return _activeIndicesCache!;
         }
 
+        /// <summary>
+        /// Gets the active keys.
+        /// </summary>
+        /// <returns>UnmanagedIntArray of Active Keys</returns>
+        public UnmanagedIntArray GetActiveKeys()
+        {
+            var activeIndices = GetActiveIndices();
+            var keys = new UnmanagedIntArray(activeIndices.Length);
+            for (int i = 0; i < activeIndices.Length; i++)
+            {
+                keys[i] = _keys[activeIndices[i]];
+            }
+
+            return keys;
+        }
+
+        /// <summary>
+        /// Generates the active indices.
+        /// </summary>
         private void GenerateActiveIndices()
         {
             _activeIndicesCache?.Dispose();
-            _activeIndicesCache = new UnmanagedIntList(OccupiedCount); // or Count if unsure
+            _activeIndicesCache = new UnmanagedIntList(OccupiedCount);
 
-            var occ = _occupied.AsSpan()[.._keys.Length];
+            var occ = _occupied.AsSpan()[..OccupiedCount];
             for (int i = 0; i < occ.Length; i++)
             {
                 if (occ[i] != 0)

@@ -302,6 +302,21 @@ namespace ExtendedSystemObjects
             return new Span<int>(_ptr, Capacity);
         }
 
+        /// <summary>
+        /// Returns a new UnmanagedIntList that is a sorted copy of the current list.
+        /// </summary>
+        /// <returns>A new UnmanagedIntList instance with sorted values.</returns>
+        public UnmanagedIntList Sorted()
+        {
+            var copy = new UnmanagedIntList(Length);
+            for (int i = 0; i < Length; i++)
+            {
+                copy.Add(_ptr[i]);
+            }
+
+            copy.Sort(); // Uses internal AsSpan().Sort()
+            return copy;
+        }
 
         /// <summary>
         /// Converts to string.
