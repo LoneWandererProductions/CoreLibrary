@@ -7,6 +7,7 @@
  */
 
 using System.Diagnostics;
+using System.Linq;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -199,5 +200,90 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"Compact after removing half: {sw.ElapsedMilliseconds} ms");
             Assert.AreEqual(ItemCount / 2, store.Count);
         }
+
+        /// <summary>
+        /// Inserts the key1 into empty store should keep arrays in synchronize.
+        /// </summary>
+        [TestMethod]
+        public void InsertKey1IntoEmptyStoreShouldKeepArraysInSync()
+        {
+            // Arrange
+            var store = new SortedKvStore();
+
+            // Act
+            store.Add(1, 42); // Insert a single key-value pair with key = 1
+
+            // Assert
+            Assert.AreEqual(1, store.Count, "Store should have one occupied entry.");
+
+            var keys = store.Keys.ToArray();
+            Assert.AreEqual(1, keys.Length, "Keys enumerable should contain one item.");
+            Assert.AreEqual(1, keys[0], "Inserted key should be 1.");
+
+            Assert.IsTrue(store.ContainsKey(1), "ContainsKey(1) should return true.");
+            Assert.IsFalse(store.ContainsKey(0), "ContainsKey(0) should return false.");
+
+            Assert.AreEqual(42, store[1], "Value for key 1 should be 42.");
+
+            // Enumerate all key-value pairs and check alignment
+            var kvList = store.ToList();
+            Assert.AreEqual(1, kvList.Count, "Store should enumerate one key-value pair.");
+            Assert.AreEqual(1, kvList[0].Key, "Enumerated key should be 1.");
+            Assert.AreEqual(42, kvList[0].Value, "Enumerated value should be 42.");
+        }
+
+        /// <summary>
+        /// Inserts the keys that force shift should keep arrays in synchronize.
+        /// </summary>
+        [TestMethod]
+        public void InsertKeysThatForceShiftShouldKeepArraysInSync()
+        {
+            // Arrange
+            var store = new SortedKvStore();
+
+            // Insert a higher key first, which will go at index 0
+            store.Add(2, 100);
+
+            // Now insert a smaller key, which should shift existing elements
+            store.Add(1, 50); // Will be inserted at index 0, causes shift right
+
+            // Assert
+            Assert.AreEqual(2, store.Count, "Store should have two occupied entries.");
+
+            var keys = store.Keys.ToArray();
+            CollectionAssert.AreEqual(new[] { 1, 2 }, keys, "Keys should be sorted and aligned.");
+
+            var values = store.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            Assert.AreEqual(50, values[1], "Value for key 1 should be 50.");
+            Assert.AreEqual(100, values[2], "Value for key 2 should be 100.");
+
+            Assert.IsTrue(store.ContainsKey(1), "ContainsKey(1) should return true.");
+            Assert.IsTrue(store.ContainsKey(2), "ContainsKey(2) should return true.");
+        }
+
+        /// <summary>
+        /// Inserts the remove compact reinsert should keep consistency.
+        /// </summary>
+        [TestMethod]
+        public void InsertRemoveCompactReinsertShouldKeepConsistency()
+        {
+            var store = new SortedKvStore();
+
+            store.Add(1, 10);
+            store.Add(2, 20);
+
+            store.Remove(1);      // Mark key 1 as removed
+            store.Compact();      // Actually removes unoccupied entries
+
+            store.Add(1, 30);     // Reinsert key 1
+
+            var keys = store.Keys.ToArray();
+            CollectionAssert.AreEqual(new[] { 1, 2 }, keys);
+
+            Assert.AreEqual(30, store[1]);
+            Assert.AreEqual(20, store[2]);
+        }
+
+
     }
 }

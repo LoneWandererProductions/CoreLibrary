@@ -187,6 +187,19 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Determines whether the specified key is contained in the data structure.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified key contains key; otherwise, <c>false</c>.
+        /// </returns>
+        public bool ContainsKey(int key)
+        {
+            var idx = BinarySearch(key);
+            return idx >= 0 && _occupied[idx] != 0;
+        }
+
+        /// <summary>
         ///     Tries to get the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key to locate.</param>
@@ -206,6 +219,7 @@ namespace ExtendedSystemObjects
             {
                 var mid = left + ((right - left) >> 1);
                 var midKey = keysSpan[mid];
+
                 if (midKey == key)
                 {
                     if (occupiedSpan[mid] != 0)
