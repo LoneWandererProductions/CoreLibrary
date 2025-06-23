@@ -22,7 +22,7 @@ namespace Mathematics
     /// <summary>
     ///     Coordinate 2d Helper Class
     /// </summary>
-    [DebuggerDisplay("X = {X}, Y = {Y}, Id = {Id}")]
+    [DebuggerDisplay("{ToString()}")]
     public sealed class Coordinate2D : ICloneable
     {
         /// <summary>

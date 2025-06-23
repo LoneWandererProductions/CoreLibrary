@@ -15,6 +15,7 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ExtendedSystemObjects
 {
@@ -25,6 +26,7 @@ namespace ExtendedSystemObjects
     ///     The class supports insertion, removal, and lookup operations with dynamic storage growth.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
+    [DebuggerDisplay("{ToString()}")]
     public sealed class SortedKvStore : IDisposable, IEnumerable<KeyValuePair<int, int>>
     {
         /// <summary>
@@ -295,6 +297,7 @@ namespace ExtendedSystemObjects
             // Optional: if keysToRemove is sorted, do a linear merge
             // This path is faster than HashSet-based if input is sorted and large
             var isSorted = true;
+
             for (var i = 1; i < keysToRemove.Length; i++)
             {
                 if (keysToRemove[i] >= keysToRemove[i - 1])
@@ -390,6 +393,26 @@ namespace ExtendedSystemObjects
             _keys.Clear();
             _values.Clear();
             _occupied.Clear();
+            Count = 0;
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"Count: {Count}");
+
+            for (int i = 0; i < Count; i++)
+            {
+                sb.AppendLine($"Index {i}: Key={_keys[i]}, Value={_values[i]}, Occupied={_occupied[i]}");
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>

@@ -247,6 +247,9 @@ namespace CommonExtendedObjectsTests
             // Now insert a smaller key, which should shift existing elements
             store.Add(1, 50); // Will be inserted at index 0, causes shift right
 
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
             // Assert
             Assert.AreEqual(2, store.Count, "Store should have two occupied entries.");
 
@@ -278,12 +281,193 @@ namespace CommonExtendedObjectsTests
             store.Add(1, 30);     // Reinsert key 1
 
             var keys = store.Keys.ToArray();
+
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
             CollectionAssert.AreEqual(new[] { 1, 2 }, keys);
 
             Assert.AreEqual(30, store[1]);
             Assert.AreEqual(20, store[2]);
         }
 
+        /// <summary>
+        /// Inserts the keys starting at one should keep arrays aligned.
+        /// </summary>
+        [TestMethod]
+        public void InsertKeysStartingAtOne_ShouldKeepArraysAligned()
+        {
+            var store = new SortedKvStore();
+
+            // Insert keys starting from 1 (not 0)
+            store.Add(1, 100);
+            store.Add(3, 300);
+            store.Add(2, 200); // Insert out of order to force shift
+
+            // Validate count
+            Assert.AreEqual(3, store.Count, "Count should be 3 after inserts.");
+
+            // Validate keys are sorted
+            var keys = store.Keys.ToArray();
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, keys, "Keys should be sorted.");
+
+            // Validate values match keys
+            Assert.AreEqual(100, store[1], "Value for key 1 should be 100.");
+            Assert.AreEqual(200, store[2], "Value for key 2 should be 200.");
+            Assert.AreEqual(300, store[3], "Value for key 3 should be 300.");
+
+            // Remove key 2 and check
+            store.Remove(2);
+            Assert.IsFalse(store.ContainsKey(2), "Key 2 should be removed.");
+
+            // Compact to physically remove unoccupied entries
+            store.Compact();
+
+            Assert.AreEqual(2, store.Count, "Count should be 2 after removal and compact.");
+
+            keys = store.Keys.ToArray();
+            CollectionAssert.AreEqual(new[] { 1, 3 }, keys, "Keys after removal should be 1 and 3.");
+
+            // Reinsert key 2 to check insert after compact works
+            store.Add(2, 250);
+            Assert.IsTrue(store.ContainsKey(2), "Key 2 should exist after reinsertion.");
+            Assert.AreEqual(250, store[2], "Value for key 2 should be updated to 250.");
+
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
+            // Final keys check to confirm sorted order
+            keys = store.Keys.ToArray();
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, keys, "Final keys should be sorted 1, 2, 3.");
+        }
+
+        /// <summary>
+        /// Removes the many should update count correctly.
+        /// </summary>
+        [TestMethod]
+        public void RemoveManyShouldUpdateCountCorrectly()
+        {
+            var store = new SortedKvStore
+            {
+                // Insert 5 keys
+                { 1, 100 },
+                { 2, 200 },
+                { 3, 300 },
+                { 4, 400 },
+                { 5, 500 }
+            };
+
+            Assert.AreEqual(5, store.Count);
+
+            // Remove keys 2 and 4
+            var keysToRemove = new int[] { 2, 4 };
+            store.RemoveMany(keysToRemove);
+
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
+            // Check keys 2 and 4 are removed
+            Assert.IsFalse(store.ContainsKey(2));
+            Assert.IsFalse(store.ContainsKey(4));
+
+            // Check keys 1, 3, 5 are still present
+            Assert.IsTrue(store.ContainsKey(1));
+            Assert.IsTrue(store.ContainsKey(3));
+            Assert.IsTrue(store.ContainsKey(5));
+
+            // THIS WILL FAIL IF Count IS NOT UPDATED
+            Assert.AreEqual(5, store.Count, "Count should NOT be updated after RemoveMany");
+        }
+
+        /// <summary>
+        /// Removes the many with unsorted keys removes correctly.
+        /// </summary>
+        [TestMethod]
+        public void RemoveManyWithUnsortedKeysRemovesCorrectly()
+        {
+            var store = new SortedKvStore();
+
+            // Add keys in sorted order
+            int[] keys = { 1, 3, 5, 7, 9 };
+            foreach (var key in keys)
+            {
+                store.Add(key, key * 10);
+            }
+
+            // Confirm initial state
+            Assert.AreEqual(keys.Length, store.Count);
+            foreach (var key in keys)
+            {
+                Assert.IsTrue(store.ContainsKey(key), $"Should contain key {key} initially.");
+            }
+
+            // Remove keys (unsorted input)
+            int[] keysToRemove = { 7, 3 };
+            store.RemoveMany(keysToRemove);
+
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
+            // Check keys that should remain
+            int[] expectedRemaining = { 1, 5, 9 };
+            foreach (var key in expectedRemaining)
+            {
+                Assert.IsTrue(store.ContainsKey(key), $"Expected to contain key {key} after RemoveMany.");
+            }
+
+            // Check keys that should be removed
+            foreach (var key in keysToRemove)
+            {
+                Assert.IsFalse(store.ContainsKey(key), $"Expected NOT to contain key {key} after RemoveMany.");
+            }
+        }
+
+        /// <summary>
+        /// Removes the and compact test.
+        /// </summary>
+        [TestMethod]
+        public void RemoveAndCompactTest()
+        {
+            var store = new SortedKvStore
+            {
+                // Add some entries
+                { 1, 10 },
+                { 3, 30 },
+                { 5, 50 },
+                { 7, 70 },
+                { 9, 90 }
+            };
+
+            Assert.IsTrue(store.ContainsKey(3));
+            Assert.AreEqual(5, store.Count);
+
+            // Remove key 3 logically
+            store.Remove(3);
+
+            // Immediately after remove, key is logically gone
+            Assert.IsFalse(store.ContainsKey(3));
+
+            // Count still includes all, including logically removed
+            Assert.AreEqual(5, store.Count);
+
+            // Compact physically removes unoccupied entries
+            store.Compact();
+
+            // After compact, key is definitely gone
+            Assert.IsFalse(store.ContainsKey(3));
+
+            // Count updated to reflect physical removal
+            Assert.AreEqual(4, store.Count);
+
+            // Dump internal state for debug (optional)
+            Trace.WriteLine(store.ToString());
+
+            // Optional: check that other keys are still present
+            Assert.IsTrue(store.ContainsKey(1));
+            Assert.IsTrue(store.ContainsKey(5));
+            Assert.IsTrue(store.ContainsKey(7));
+            Assert.IsTrue(store.ContainsKey(9));
+        }
 
     }
 }
