@@ -6,12 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Documents;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -209,7 +206,7 @@ namespace CommonExtendedObjectsTests
         /// Inserts the key1 into empty store should keep arrays in synchronize.
         /// </summary>
         [TestMethod]
-        public void InsertKey1IntoEmptyStoreShouldKeepArraysInSync()
+        public void InsertKeyIntoEmptyStoreShouldKeepArraysInSync()
         {
             // Arrange
             var store = new SortedKvStore();
@@ -494,7 +491,32 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine(store.ToString());
             var position = store.BinarySearch(9);
 
-            Assert.AreEqual(9, position, "Wrong position.");
+            Assert.AreEqual(-10, position, "Wrong position.");
+        }
+
+        /// <summary>
+        /// Binaries the search fails due to unsorted placeholder values.
+        /// </summary>
+        [TestMethod]
+        public void BinarySearchFailsDueToUnsortedPlaceholderValues()
+        {
+            var store = new SortedKvStore(128);
+
+            // Add 10 sorted keys: 1 through 10
+            for (int i = 1; i <= 10; i++)
+            {
+                store.Add(i, i);
+            }
+
+            Trace.WriteLine(store.ToString());
+
+            // We now search for 10, which is present
+            var result = store.BinarySearch(10);
+
+            Trace.WriteLine($"BinarySearch(10) returned: {result}");
+
+            // Expected index is 9 (0-based index of key = 10)
+            Assert.AreEqual(9, result, "BinarySearch returned incorrect index due to unsorted placeholder values beyond the valid count.");
         }
     }
 }

@@ -361,5 +361,27 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(swCustom.ElapsedMilliseconds < swArray.ElapsedMilliseconds * 3,
                 $"Custom BinarySearch is too slow: {swCustom.ElapsedMilliseconds} ms vs {swArray.ElapsedMilliseconds} ms");
         }
+
+        /// <summary>
+        /// Binaries the search bug.
+        /// </summary>
+        [TestMethod]
+        public void BinarySearchBug()
+        {
+            var sortedKeys = new int[128];
+
+            for (var i = 0; i < 10; i++)
+            {
+                sortedKeys[i] = i+1;
+            }
+            for (var i = 10; i < 128; i++)
+            {
+                sortedKeys[i] = 0; ;
+            }
+
+            var idx = Utility.BinarySearch(sortedKeys, 14, 10);
+
+            Assert.AreEqual(-15, idx ,"Found the bug.");
+        }
     }
 }

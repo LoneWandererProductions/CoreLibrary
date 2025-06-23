@@ -394,7 +394,56 @@ namespace ExtendedSystemObjects
         /// </returns>
         public int BinarySearch(int key)
         {
-            return Utility.BinarySearch(_keys.AsSpan(), Count, key);
+            int left = 0, right = Count - 1;
+            var keysSpan = _keys.AsSpan()[..Count];
+            var occupiedSpan = _occupied.AsSpan()[..Count];
+
+            while (left <= right)
+            {
+                int mid = left + ((right - left) >> 1);
+                int midKey = keysSpan[mid];
+
+                if (midKey == key)
+                {
+                    if (occupiedSpan[mid] != 0)
+                        return mid; // found active key
+
+                    // Found deleted slot, try to probe neighbors near mid for active key with same key
+                    // Usually deletions are rare, so probing few neighbors is cheap
+
+                    // probe left neighbors
+                    for (int i = mid - 1; i >= left && keysSpan[i] == key; i--)
+                    {
+                        if (occupiedSpan[i] != 0)
+                            return i;
+                    }
+                    // probe right neighbors
+                    for (int i = mid + 1; i <= right && keysSpan[i] == key; i++)
+                    {
+                        if (occupiedSpan[i] != 0)
+                            return i;
+                    }
+
+                    // no active key found
+                    return ~left;
+                }
+
+                if (midKey < key)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            // Key not found; try to move left forward to next occupied slot for insertion index
+            int insertionIndex = left;
+            while (insertionIndex < Count && occupiedSpan[insertionIndex] == 0)
+                insertionIndex++;
+
+            return ~insertionIndex;
         }
 
         /// <summary>

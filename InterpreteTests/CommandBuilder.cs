@@ -9,7 +9,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
-using Interpreter;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
