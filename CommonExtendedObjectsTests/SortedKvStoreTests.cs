@@ -34,16 +34,16 @@ namespace CommonExtendedObjectsTests
             store.Add(5, 50);
             store.Add(15, 150);
 
-            Assert.IsTrue(store.TryTryGetValueGet(10, out var val10));
+            Assert.IsTrue(store.TryGetValue(10, out var val10));
             Assert.AreEqual(100, val10);
 
-            Assert.IsTrue(store.TryTryGetValueGet(5, out var val5));
+            Assert.IsTrue(store.TryGetValue(5, out var val5));
             Assert.AreEqual(50, val5);
 
-            Assert.IsTrue(store.TryTryGetValueGet(15, out var val15));
+            Assert.IsTrue(store.TryGetValue(15, out var val15));
             Assert.AreEqual(150, val15);
 
-            Assert.IsFalse(store.TryTryGetValueGet(99, out _));
+            Assert.IsFalse(store.TryGetValue(99, out _));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace CommonExtendedObjectsTests
             store.Add(2, 20);
 
             Assert.IsTrue(store.TryRemove(1, out var idx));
-            Assert.IsFalse(store.TryTryGetValueGet(1, out _));
+            Assert.IsFalse(store.TryGetValue(1, out _));
             Assert.IsTrue(idx >= 0);
         }
 
@@ -75,11 +75,11 @@ namespace CommonExtendedObjectsTests
 
             store.RemoveMany(new[] { 2, 4, 6 });
 
-            Assert.IsFalse(store.TryTryGetValueGet(2, out _));
-            Assert.IsFalse(store.TryTryGetValueGet(4, out _));
-            Assert.IsFalse(store.TryTryGetValueGet(6, out _));
+            Assert.IsFalse(store.TryGetValue(2, out _));
+            Assert.IsFalse(store.TryGetValue(4, out _));
+            Assert.IsFalse(store.TryGetValue(6, out _));
 
-            Assert.IsTrue(store.TryTryGetValueGet(3, out _));
+            Assert.IsTrue(store.TryGetValue(3, out _));
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace CommonExtendedObjectsTests
             store.Compact();
 
             Assert.AreEqual(8, store.Count);
-            Assert.IsFalse(store.TryTryGetValueGet(1, out _));
+            Assert.IsFalse(store.TryGetValue(1, out _));
         }
 
         /// <summary>
@@ -131,11 +131,11 @@ namespace CommonExtendedObjectsTests
 
             for (var i = 0; i < 1000; i++)
             {
-                Assert.IsTrue(store.TryTryGetValueGet(i, out var value));
+                Assert.IsTrue(store.TryGetValue(i, out var value));
                 Assert.AreEqual(i * 10, value);
             }
 
-            Assert.IsFalse(store.TryTryGetValueGet(1001, out _));
+            Assert.IsFalse(store.TryGetValue(1001, out _));
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace CommonExtendedObjectsTests
             var hits = 0;
             for (var i = 0; i < ItemCount; i++)
             {
-                if (store.TryTryGetValueGet(i, out var value) && value == i * 2)
+                if (store.TryGetValue(i, out var value) && value == i * 2)
                 {
                     hits++;
                 }

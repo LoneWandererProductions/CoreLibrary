@@ -103,7 +103,7 @@ namespace ExtendedSystemObjects
         {
             get
             {
-                if (TryTryGetValueGet(key, out var value))
+                if (TryGetValue(key, out var value))
                 {
                     return value;
                 }
@@ -169,7 +169,7 @@ namespace ExtendedSystemObjects
         ///     default value.
         /// </param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
-        public bool TryTryGetValueGet(int key, out int value)
+        public bool TryGetValue(int key, out int value)
         {
             int left = 0, right = Count - 1;
             var keysSpan = _keys.AsSpan()[..Count];
