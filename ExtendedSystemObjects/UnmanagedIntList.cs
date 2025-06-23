@@ -206,7 +206,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Sort()
         {
-            AsSpan().Sort(); // Uses Array.Sort internally
+            AsSpan()[..Length].Sort(); // Uses Array.Sort internally
         }
 
         /// <summary>
