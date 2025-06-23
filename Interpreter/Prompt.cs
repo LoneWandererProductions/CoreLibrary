@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ExtendedSystemObjects;
+using Interpreter.Interface;
+using Interpreter.Resources;
 
 namespace Interpreter
 {
@@ -39,19 +41,26 @@ namespace Interpreter
         private static int _count = -1;
 
         /// <summary>
-        ///     The feedback register
+        /// The feedback register
         /// </summary>
-        private IrtFeedback _feedbackRegister;
+        /// <value>
+        /// The feedback register.
+        /// </value>
+        internal IrtFeedback FeedbackRegister { get; set; }
+
+        /// <summary>
+        /// The lock input
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [lock input]; otherwise, <c>false</c>.
+        /// </value>
+        internal bool LockInput { get; set; }
 
         /// <summary>
         ///     The reference to the Container Handle
         /// </summary>
         private IrtHandleContainer _irtHandleContainer;
 
-        /// <summary>
-        ///     The lock input
-        /// </summary>
-        private bool _lockInput;
 
         /// <summary>
         ///     User Input Windows
@@ -119,10 +128,10 @@ namespace Interpreter
         /// <param name="userSpace">UserSpace of the register</param>
         /// <param name="extension">Optional Extension Methods</param>
         /// <param name="userFeedback">Optional user Feedback Methods</param>
-        public void Initiate(Dictionary<int, InCommand> com, string userSpace,
+        public void Initiate(Dictionary<int, InCommand> com = null, string userSpace = "",
             Dictionary<int, InCommand> extension = null, Dictionary<int, UserFeedback> userFeedback = null)
         {
-            _lockInput = false;
+            LockInput = false;
             ResetState();
             //Userspace handler
             var use = new UserSpace { UserSpaceName = userSpace, Commands = com, ExtensionCommands = extension };
@@ -174,7 +183,7 @@ namespace Interpreter
         /// <param name="input">Input string</param>
         public void ConsoleInput(string input)
         {
-            if (!_lockInput)
+            if (!LockInput)
             {
                 _interpret?.HandleInput(input);
             }
@@ -204,7 +213,10 @@ namespace Interpreter
             SendLogs?.Invoke(nameof(Callback), message);
         }
 
-        // Event to handle feedback, using EventHandler for proper event pattern
+        /// <summary>
+        /// Event to handle feedback, using EventHandler for proper event pattern
+        /// Occurs when [handle feedback].
+        /// </summary>
         internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
         /// <summary>Switches the name spaces.</summary>
@@ -327,11 +339,11 @@ namespace Interpreter
             }
 
             //add my feedback request
-            _feedbackRegister = feedbackRequest;
+            FeedbackRegister = feedbackRequest;
 
-            SendLogs?.Invoke(this, feedbackRequest.Feedback.ToString());
+            SendLogs?.Invoke(this, feedbackRequest.Feedback?.ToString());
 
-            _lockInput = true;
+            LockInput = true;
         }
 
         /// <summary>
@@ -340,7 +352,7 @@ namespace Interpreter
         /// <param name="input">The input.</param>
         internal void CheckFeedback(string input)
         {
-            var checkResult = IrtHelper.CheckInput(input, _feedbackRegister.Feedback.Options);
+            var checkResult = IrtHelper.CheckInput(input, FeedbackRegister.Feedback?.Options);
             SendLogs(this, $"{IrtConst.FeedbackMessage} {input}");
 
             switch (checkResult)
@@ -348,9 +360,9 @@ namespace Interpreter
                 case >= 0:
                     //add a check and switch for input
                     // Trigger the event
-                    OnHandleFeedback(_feedbackRegister.GenerateFeedbackAnswer((AvailableFeedback)checkResult));
+                    OnHandleFeedback(FeedbackRegister.GenerateFeedbackAnswer((AvailableFeedback)checkResult));
 
-                    _lockInput = false;
+                    LockInput = false;
                     return;
                 case IrtConst.Error:
                     SendLogs(this, IrtConst.ErrorFeedbackOptions);

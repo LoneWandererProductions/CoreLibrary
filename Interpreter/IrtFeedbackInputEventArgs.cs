@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using Interpreter.Resources;
+
 namespace Interpreter
 {
     /// <summary>

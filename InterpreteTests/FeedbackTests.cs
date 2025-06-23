@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Interpreter;
+using Interpreter.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterpreteTests
@@ -114,10 +115,10 @@ namespace InterpreteTests
             // Arrange
             var dctCommandOne = new Dictionary<int, InCommand>
             {
-                { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
+                { 0, new InCommand { Command = "com1", ParameterCount = 1, Description = "Help com1" } },
                 {
                     1,
-                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                    new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" }
                 },
                 {
                     2,
@@ -147,7 +148,7 @@ namespace InterpreteTests
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
             prompt.Initiate(dctCommandOne, "UserSpace 1", extensionCommands, Feedback);
-            prompt.ConsoleInput("coM1(1,2).Dryrun()");
+            prompt.ConsoleInput("coM2(1,2).Dryrun()");
             prompt.ConsoleInput("");
 
 
@@ -175,6 +176,48 @@ namespace InterpreteTests
             //Trace.WriteLine(_log);
             //Trace.WriteLine(_outCommand.ToString());
         }
+
+        /// <summary>
+        ///     Feedback and extension external test.
+        /// </summary>
+        [TestMethod]
+        public void ConfirmInternalTest()
+        {
+            // Arrange
+
+            // Act
+            var prompt = new Prompt();
+            prompt.SendLogs += SendLogs;
+            prompt.SendCommands += SendCommands;
+            prompt.Initiate(userFeedback: Feedback);
+            prompt.ConsoleInput("confirm()");
+            prompt.ConsoleInput("confirm(1)");
+
+            //Assert.IsFalse(_log.Contains("Help com1"), "No help provided.");
+            //// Assert
+            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
+
+            //prompt.ConsoleInput("mehh");
+
+            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
+
+            //prompt.ConsoleInput(" yeS   ");
+
+            //Trace.WriteLine(_outCommand.ToString());
+
+            //Assert.IsNotNull(_outCommand, "Out Command was not empty.");
+
+            //prompt.ConsoleInput("List().Help()");
+            //Assert.IsTrue(_log.Contains("You now have the following Options:"), "Wrong Options provided.");
+
+            //prompt.ConsoleInput("YeS   ");
+
+            //Assert.IsTrue(_log.Contains("Special case"), "Wrong Commands listed");
+
+            //Trace.WriteLine(_log);
+            //Trace.WriteLine(_outCommand.ToString());
+        }
+
 
 
         /// <summary>

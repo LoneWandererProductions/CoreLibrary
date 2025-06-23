@@ -23,11 +23,8 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void AddPopPeekBehavior()
         {
-            using var list = new IntList(4);
+            using var list = new UnmanagedIntList(4) { 10, 20, 30 };
 
-            list.Add(10);
-            list.Add(20);
-            list.Add(30);
 
             Assert.AreEqual(3, list.Length);
             Assert.AreEqual(30, list.Peek());
@@ -51,7 +48,7 @@ namespace CommonExtendedObjectsTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void PopEmptyThrows()
         {
-            using var list = new IntList();
+            using var list = new UnmanagedIntList();
             list.Pop();
         }
 
@@ -62,7 +59,7 @@ namespace CommonExtendedObjectsTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void PeekEmptyThrows()
         {
-            using var list = new IntList();
+            using var list = new UnmanagedIntList();
             list.Peek();
         }
 
@@ -72,7 +69,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void CapacityResizesCorrectly()
         {
-            using var list = new IntList(2);
+            using var list = new UnmanagedIntList(2);
             for (var i = 0; i < 1000; i++)
             {
                 list.Add(i);
@@ -80,6 +77,87 @@ namespace CommonExtendedObjectsTests
 
             Assert.AreEqual(1000, list.Length);
             Assert.AreEqual(999, list[999]);
+        }
+
+#if DEBUG
+        /// <summary>
+        /// Indexes the get out of bounds throws.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void IndexGetOutOfBoundsThrows()
+        {
+            using var list = new UnmanagedIntList(1);
+            var _ = list[5];
+        }
+
+        /// <summary>
+        /// Indexes the set out of bounds throws.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void IndexSetOutOfBoundsThrows()
+        {
+            using var list = new UnmanagedIntList(1) {[3] = 99};
+        }
+#endif
+
+        /// <summary>
+        /// Removes at invalid index throws.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void RemoveAtInvalidIndexThrows()
+        {
+            using var list = new UnmanagedIntList(1) {1};
+            list.RemoveAt(2);
+        }
+
+        /// <summary>
+        /// Inserts at adds elements correctly.
+        /// </summary>
+        [TestMethod]
+        public void InsertAtAddsElementsCorrectly()
+        {
+            using var list = new UnmanagedIntList(2) {1, 2};
+            list.InsertAt(1, 99); // Between 1 and 2
+
+            Assert.AreEqual(3, list.Length);
+            Assert.AreEqual(1, list[0]);
+            Assert.AreEqual(99, list[1]);
+            Assert.AreEqual(2, list[2]);
+        }
+
+        /// <summary>
+        /// Inserts at with count adds multiple.
+        /// </summary>
+        [TestMethod]
+        public void InsertAtWithCountAddsMultiple()
+        {
+            using var list = new UnmanagedIntList(2) {1, 2};
+            list.InsertAt(1, 99, 2); // Insert 99 twice at index 1
+
+            Assert.AreEqual(4, list.Length);
+            Assert.AreEqual(1, list[0]);
+            Assert.AreEqual(99, list[1]);
+            Assert.AreEqual(99, list[2]);
+            Assert.AreEqual(2, list[3]);
+        }
+
+        /// <summary>
+        /// Disposes the state of the frees memory and invalidates.
+        /// </summary>
+        [TestMethod]
+        public void DisposeFreesMemoryAndInvalidatesState()
+        {
+            var list = new UnmanagedIntList(2) { 1 };
+            list.Dispose();
+
+            // Post-condition: buffer is cleared, pointers null, Length and Capacity are zero.
+            // Behavior is undefined after Dispose. No exception is required.
+            // Test only verifies internal reset, not enforcement.
+            Assert.AreEqual(0, list.Length);
+            Assert.AreEqual(0, list.Capacity);
         }
 
         /// <summary>
@@ -91,7 +169,7 @@ namespace CommonExtendedObjectsTests
             const int n = 1_000_000;
 
             // IntList timing
-            using var intList = new IntList(n);
+            using var intList = new UnmanagedIntList(n);
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < n; i++)
             {
@@ -103,6 +181,7 @@ namespace CommonExtendedObjectsTests
 
             // List<int> timing
             var list = new List<int>(n);
+
             sw.Restart();
             for (var i = 0; i < n; i++)
             {
@@ -114,6 +193,7 @@ namespace CommonExtendedObjectsTests
 
             // Stack<int> timing
             var stack = new Stack<int>(n);
+
             sw.Restart();
             for (var i = 0; i < n; i++)
             {

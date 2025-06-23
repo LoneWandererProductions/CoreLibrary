@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
- * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similiar to IntArray.
+ * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similar to IntArray.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -33,14 +33,6 @@ namespace ExtendedSystemObjects
         private IntPtr _buffer;
 
         /// <summary>
-        /// The capacity of the current Array.
-        /// </summary>
-        /// <value>
-        /// The capacity.
-        /// </value>
-        public int Capacity { get; private set; }
-
-        /// <summary>
         ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
@@ -58,10 +50,45 @@ namespace ExtendedSystemObjects
         {
             Capacity = size;
             Length = size;
-            _buffer = Marshal.AllocHGlobal(size * sizeof(T));
+
+            _buffer = UnmanagedMemoryHelper.Allocate<T>(size);
             _ptr = (T*)_buffer;
-            Clear();
+            UnmanagedMemoryHelper.Clear<T>(_buffer, size);
         }
+
+        /// <summary>
+        ///     The capacity of the current Array.
+        /// </summary>
+        /// <value>
+        ///     The capacity.
+        /// </value>
+        public int Capacity { get; private set; }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new Enumerator<T>(_ptr, Length);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         /// <inheritdoc />
         /// <inheritdoc />
         /// <summary>
@@ -108,53 +135,25 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        ///     Removes at.
+        ///     Removes elements starting at the given index.
         /// </summary>
-        /// <param name="index">The index.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">index</exception>
-        public void RemoveAt(int index)
+        /// <param name="index">The start index.</param>
+        /// <param name="count">Number of elements to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException">index or count is invalid.</exception>
+        public void RemoveAt(int index, int count = 1)
         {
             if (index < 0 || index >= Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            var elementsToShift = Length - index - 1;
-            if (elementsToShift > 0)
+            if (count < 1 || index + count > Length)
             {
-                // Shift elements left by one to overwrite removed item
-                Buffer.MemoryCopy(
-                    _ptr + index + 1,
-                    _ptr + index,
-                    (Capacity - index - 1) * sizeof(T),
-                    elementsToShift * sizeof(T));
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
 
-            Length--;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
-        /// </returns>
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new Enumerator<T>(_ptr, Length);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            UnmanagedMemoryHelper.ShiftLeft(_ptr, index, count, Length);
+            Length -= count;
         }
 
         /// <inheritdoc />
@@ -166,18 +165,21 @@ namespace ExtendedSystemObjects
         public void Resize(int newSize)
         {
             if (newSize < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(newSize));
+            }
 
             if (newSize == Capacity)
+            {
                 return;
+            }
 
-            var newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(T)));
+            var newBuffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, newSize);
             var newPtr = (T*)newBuffer;
 
             if (newSize > Capacity)
             {
-                var newRegion = new Span<T>(newPtr + Capacity, newSize - Capacity);
-                newRegion.Clear();
+                UnmanagedMemoryHelper.Clear<T>(new IntPtr(newPtr + Capacity), newSize - Capacity);
             }
 
             _buffer = newBuffer;
@@ -197,7 +199,7 @@ namespace ExtendedSystemObjects
         public void Clear()
         {
             // Use Span<T>.Clear for safety and type correctness
-            AsSpan().Clear();
+            UnmanagedMemoryHelper.Clear<T>(_buffer, Length);
         }
 
         /// <inheritdoc />
@@ -240,16 +242,8 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            var elementsToShift = Length - index;
-            if (elementsToShift > 0)
-            {
-                // Shift existing elements right by 'count'
-                Buffer.MemoryCopy(
-                    _ptr + index,
-                    _ptr + index + count,
-                    (Capacity - index - count) * sizeof(T),
-                    elementsToShift * sizeof(T));
-            }
+            // Shift elements to the right
+            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length, Capacity);
 
             // Fill inserted region with 'value'
             for (var i = 0; i < count; i++)
@@ -286,7 +280,7 @@ namespace ExtendedSystemObjects
         /// <returns>Return all Values as Span</returns>
         public Span<T> AsSpan()
         {
-            return new(_ptr, Length);
+            return new Span<T>(_ptr, Length);
         }
 
         /// <summary>

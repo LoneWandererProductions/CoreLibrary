@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        IrtParserIfElse.cs
- * PURPOSE:     Your file purpose here
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Interpreter.ScriptEngine/IrtParserIfElse.cs
+ * PURPOSE:     Generate a Category for each command, here we parse if else for each nesting we create 
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -10,13 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Interpreter
+namespace Interpreter.ScriptEngine
 {
     /// <summary>
-    ///     Basic if else Parser
+    /// Basic if else Parser
     /// </summary>
     internal static class IrtParserIfElse
     {
+        /// <summary>
+        /// The identifier counter
+        /// </summary>
         private static int _idCounter;
 
         /// <summary>
@@ -35,8 +38,8 @@ namespace Interpreter
         ///     Generates the formatted output.
         /// </summary>
         /// <param name="categorizedClauses">The categorized clauses.</param>
-        /// <returns></returns>
-        internal static List<(string Category, string Value)> GenerateFormattedOutput(
+        /// <returns>Parsed if else blocks.</returns>
+        internal static IEnumerable<(string Category, string Value)> GenerateFormattedOutput(
             List<(string Category, string Clause, string ParentCategory)> categorizedClauses)
         {
             var output = new List<(string Category, string Value)>();
@@ -150,7 +153,7 @@ namespace Interpreter
         /// </summary>
         /// <param name="code">The code string containing If-Else clauses.</param>
         /// <returns>A list of IfElseClause objects representing each If-Else clause found.</returns>
-        internal static List<IfElseClause> ParseIfElseClauses(string code)
+        private static List<IfElseClause> ParseIfElseClauses(string code)
         {
             var clauses = new List<IfElseClause>();
             ParseIfElseClausesRecursively(code, clauses, 0);

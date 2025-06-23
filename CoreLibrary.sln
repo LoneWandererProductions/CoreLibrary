@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36109.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35931.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{9B2741D2-443A-4136-B9A4-1191686DA4AD}"
 EndProject
@@ -77,9 +77,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreConsole", "CoreConsole\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterpreteTests", "InterpreteTests\InterpreteTests.csproj", "{18981E7D-2AB9-48B2-8181-9E9DF3263B23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderEngineTests", "RenderEngineTests\RenderEngineTests.csproj", "{8CE955D6-DEE7-519A-ACEA-1D3BA519932A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderEngineTests", "RenderEngineTests\RenderEngineTests.csproj", "{8CE955D6-DEE7-519A-ACEA-1D3BA519932A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonExtendedObjectsTests", "CommonExtendedObjectsTests\CommonExtendedObjectsTests.csproj", "{477CFEA4-070A-499C-9465-699D98AEC3B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonExtendedObjectsTests", "CommonExtendedObjectsTests\CommonExtendedObjectsTests.csproj", "{477CFEA4-070A-499C-9465-699D98AEC3B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject

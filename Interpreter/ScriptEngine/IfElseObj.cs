@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        IfElseObj.cs
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Interpreter.ScriptEngine/IfElseObj.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;
 
-namespace Interpreter
+namespace Interpreter.ScriptEngine
 {
     internal sealed class IfElseObj
     {

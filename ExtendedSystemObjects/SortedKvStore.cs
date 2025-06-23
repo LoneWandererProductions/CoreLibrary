@@ -13,8 +13,8 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
@@ -30,17 +30,17 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The keys
         /// </summary>
-        private readonly IntArray _keys;
+        private readonly UnmanagedIntArray _keys;
 
         /// <summary>
         ///     The occupied Array, 0/1 flags
         /// </summary>
-        private readonly IntArray _occupied;
+        private readonly UnmanagedIntArray _occupied;
 
         /// <summary>
         ///     The values
         /// </summary>
-        private readonly IntArray _values;
+        private readonly UnmanagedIntArray _values;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SortedKvStore" /> class with a specified initial capacity.
@@ -48,9 +48,9 @@ namespace ExtendedSystemObjects
         /// <param name="initialCapacity">The initial capacity of the store.</param>
         public SortedKvStore(int initialCapacity = 16)
         {
-            _keys = new IntArray(initialCapacity);
-            _values = new IntArray(initialCapacity);
-            _occupied = new IntArray(initialCapacity);
+            _keys = new UnmanagedIntArray(initialCapacity);
+            _values = new UnmanagedIntArray(initialCapacity);
+            _occupied = new UnmanagedIntArray(initialCapacity);
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace ExtendedSystemObjects
         public int Count { get; private set; }
 
         /// <summary>
-        /// Gets the free capacity.
+        ///     Gets the free capacity.
         /// </summary>
         /// <value>
-        /// The free capacity.
+        ///     The free capacity.
         /// </value>
         public int FreeCapacity => _keys.Capacity - Count;
 
@@ -122,6 +122,32 @@ namespace ExtendedSystemObjects
             _keys.Dispose();
             _values.Dispose();
             _occupied.Dispose();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>All active elements as Key Value pair.</returns>
+        public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                if (_occupied[i] != 0)
+                {
+                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns>An enumerator to iterate though the collection.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -341,29 +367,6 @@ namespace ExtendedSystemObjects
 
             ArrayPool<int>.Shared.Return(rented);
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Gets the enumerator.
-        /// </summary>
-        /// <returns>All active elements as Key Value pair.</returns>
-        public IEnumerator<KeyValuePair<int, int>> GetEnumerator()
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                if (_occupied[i] != 0)
-                {
-                    yield return new KeyValuePair<int, int>(_keys[i], _values[i]);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Gets the enumerator.
-        /// </summary>
-        /// <returns>An enumerator to iterate though the collection.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         ///     Removes all entries from the store.

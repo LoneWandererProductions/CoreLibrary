@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        ConditionalResources.cs
+ * PROJECT:     Interpreter.Resources
+ * FILE:        Interpreter.Resources/ConditionalResources.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter
+namespace Interpreter.Resources
 {
     internal static class ConditionalResources
     {

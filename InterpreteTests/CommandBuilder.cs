@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
 using Interpreter;
+using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterpreteTests
@@ -45,10 +46,12 @@ namespace InterpreteTests
             // Act
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
-            // Assert
+            // Assert: only one IfElseObj should exist
+            Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
 
-            var ifElseObj = result[0];
+            // Grab the only object
+            Assert.IsTrue(result.TryGetValue(0, out var ifElseObj));
             Assert.AreEqual(0, ifElseObj.Id);
             Assert.AreEqual(-1, ifElseObj.ParentId);
             Assert.AreEqual(0, ifElseObj.Position);
@@ -57,33 +60,33 @@ namespace InterpreteTests
             Assert.IsFalse(ifElseObj.Nested);
             Assert.AreEqual("if (condition1) {com1; }", ifElseObj.Input);
 
-            foreach (var value in result)
-            {
-                Trace.WriteLine(value.ToString());
-            }
+            // Output debug info
+            Trace.WriteLine(ifElseObj.ToString());
 
-
-            var commands = IrtParserCommand.BuildCommand(input);
-
-            Trace.WriteLine(commands.ToString());
-
+            // Validate commands inside the IfElseObj
             var expectedResults = new List<(int Key, string Category, string Value)>
             {
-                (0, "IF", "condition1"), (1, "COMMAND", "com1")
+                (0, "If_Condition", "condition1"),
+                (1, "If", "com1;")
             };
 
-            //// Assert
-            foreach (var expected in expectedResults)
+            foreach (var (key, cat, val) in ifElseObj.Commands)
             {
-                var (key, category, value) = expected;
-                //Assert.IsTrue(result.TryGetCategory(key, out var actualCategory));
+                Trace.WriteLine($"Parsed Command -> Key: {key}, Category: {cat}, Value: {val}");
+            }
 
-                //Assert.AreEqual(category, actualCategory, $"Category mismatch for key {key}");
-                //Assert.IsTrue(result.TryGetValue(key, out var actualValue));
-                //TODO error here
-                //Assert.AreEqual(value, actualValue, $"Value mismatch for key {key}");
+            foreach (var (key, category, value) in expectedResults)
+            {
+                Assert.IsTrue(ifElseObj.Commands.TryGetCategory(key, out var actualCategory),
+                    $"Missing category for key {key}");
+                Assert.AreEqual(category, actualCategory, $"Category mismatch for key {key}");
+
+                Assert.IsTrue(ifElseObj.Commands.TryGetValue(key, out var actualValue),
+                    $"Missing value for key {key}");
+                Assert.AreEqual(value, actualValue, $"Value mismatch for key {key}");
             }
         }
+
 
         /// <summary>
         ///     Parses if else clauses single if clause returns correct object.
@@ -94,13 +97,13 @@ namespace InterpreteTests
             const string input = "if (condition) { doSomething(); }";
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
-            //Assert.AreEqual(3, result.Count, "There should be one IfElseObj in the result.");
-            //var obj = result[0];
-            //Assert.IsFalse(obj.Else, "The 'Else' flag should be false for an 'if' clause.");
-            //Assert.AreEqual(-1, obj.ParentId, "The ParentId should be -1 for a top-level 'if' clause.");
-            //Assert.AreEqual(0, obj.Layer, "The Layer should be 0 for a top-level 'if' clause.");
-            //Assert.AreEqual(0, obj.Position, "The Position should be 0 for a top-level 'if' clause.");
-            //Assert.AreEqual("if (condition) { doSomething(); }", obj.Input, "The Input string should match.");
+            Assert.AreEqual(1, result.Count, "There should be one IfElseObj in the result.");
+            var obj = result[0];
+            Assert.IsFalse(obj.Else, "The 'Else' flag should be false for an 'if' clause.");
+            Assert.AreEqual(-1, obj.ParentId, "The ParentId should be -1 for a top-level 'if' clause.");
+            Assert.AreEqual(0, obj.Layer, "The Layer should be 0 for a top-level 'if' clause.");
+            Assert.AreEqual(0, obj.Position, "The Position should be 0 for a top-level 'if' clause.");
+            Assert.AreEqual("if (condition) { doSomething(); }", obj.Input, "The Input string should match.");
         }
 
         /// <summary>
@@ -173,7 +176,6 @@ namespace InterpreteTests
             //    out message);
             //Assert.IsTrue(areEqual, message);
         }
-
 
         /// <summary>
         ///     Parses if else clauses empty input returns empty dictionary.

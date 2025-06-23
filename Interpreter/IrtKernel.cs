@@ -7,12 +7,14 @@
  */
 
 // ReSharper disable ArrangeBraces_foreach
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ExtendedSystemObjects;
+using Interpreter.Resources;
 
 namespace Interpreter
 {
@@ -502,7 +504,7 @@ namespace Interpreter
                     break;
                 }
                 else if (i + 4 <= input.Length &&
-                         input.Substring(i, 4).Equals("else", StringComparison.OrdinalIgnoreCase) && braceCount == 0)
+                         IsKeywordAt(input, i, "else") && braceCount == 0)
                 {
                     elseFound = true;
                     elsePosition = i;
@@ -553,6 +555,23 @@ namespace Interpreter
             }
 
             return (input.Substring(start, end - start + 1).Trim(), elsePosition);
+        }
+
+        /// <summary>
+        /// Determines whether [is keyword at] [the specified input].
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="keyword">The keyword.</param>
+        /// <returns>
+        ///   <c>true</c> if [is keyword at] [the specified input]; otherwise, <c>false</c>.
+        /// </returns>
+        internal static bool IsKeywordAt(string input, int index, string keyword)
+        {
+            if (index < 0 || index + keyword.Length > input.Length)
+                return false;
+
+            return string.Compare(input, index, keyword, 0, keyword.Length, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
         /// <summary>

@@ -1,12 +1,13 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IntArray.cs
+ * FILE:        ExtendedSystemObjects/UnmanagedIntArray.cs
  * PURPOSE:     A high-performance array implementation with reduced features. Limited to integer Values.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections;
@@ -25,7 +26,7 @@ namespace ExtendedSystemObjects
     ///     backed by unmanaged memory. Designed for performance-critical
     ///     scenarios where garbage collection overhead must be avoided.
     /// </summary>
-    public sealed unsafe class IntArray : IUnmanagedArray<int>, IEnumerable<int>
+    public sealed unsafe class UnmanagedIntArray : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
         ///     The buffer
@@ -33,22 +34,20 @@ namespace ExtendedSystemObjects
         private IntPtr _buffer;
 
         /// <summary>
+        ///     Check if we disposed the object
+        /// </summary>
+        private bool _disposed;
+
+        /// <summary>
         ///     The pointer
         /// </summary>
         private int* _ptr;
 
         /// <summary>
-        ///     Check if we disposed the object
-        /// </summary>
-        private bool _disposed;
-
-        private static bool UseSimd => Vector.IsHardwareAccelerated;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="IntArray" /> class with the specified size.
+        ///     Initializes a new instance of the <see cref="UnmanagedIntArray" /> class with the specified size.
         /// </summary>
         /// <param name="size">The number of elements to allocate.</param>
-        public IntArray(int size)
+        public UnmanagedIntArray(int size)
         {
             if (size < 0)
             {
@@ -58,16 +57,49 @@ namespace ExtendedSystemObjects
             Capacity = size;
             Length = size;
 
-            _buffer = Marshal.AllocHGlobal(size * sizeof(int));
+            _buffer = UnmanagedMemoryHelper.Allocate<int>(size);
             _ptr = (int*)_buffer;
 
-            Clear(); // Optional: zero out memory on allocation
+            UnmanagedMemoryHelper.Clear<int>(_buffer, size); // Zero out memory on allocation
         }
+
+        /// <summary>
+        ///     Gets a value indicating whether [use simd].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [use simd]; otherwise, <c>false</c>.
+        /// </value>
+        private static bool UseSimd => Vector.IsHardwareAccelerated;
 
         /// <summary>
         ///     Gets the current allocated capacity.
         /// </summary>
         public int Capacity { get; set; }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<int> GetEnumerator()
+        {
+            return new Enumerator<int>(_ptr, Length);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -111,57 +143,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-        /// <summary>
-        /// Indexes the of.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>Value at the index.</returns>
-        public int IndexOf(int value)
-        {
-            var span = AsSpan();
-            int vectorSize = Vector<int>.Count;
-
-            if (UseSimd && span.Length >= vectorSize)
-            {
-                var vTarget = new Vector<int>(value);
-                int i = 0;
-
-                for (; i <= span.Length - vectorSize; i += vectorSize)
-                {
-                    var vData = new Vector<int>(span.Slice(i, vectorSize));
-                    var vCmp = Vector.Equals(vData, vTarget);
-
-                    if (!Vector.EqualsAll(vCmp, Vector<int>.Zero))
-                    {
-                        for (int j = 0; j < vectorSize; j++)
-                        {
-                            if (vCmp[j] != 0)
-                                return i + j;
-                        }
-                    }
-                }
-
-                // Scalar fallback
-                for (; i < span.Length; i++)
-                {
-                    if (span[i] == value)
-                        return i;
-                }
-
-                return -1;
-            }
-            else
-            {
-                for (int i = 0; i < span.Length; i++)
-                {
-                    if (span[i] == value)
-                        return i;
-                }
-
-                return -1;
-            }
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Resizes the internal buffer to the new capacity.
@@ -179,18 +160,15 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            var newBuffer = Marshal.ReAllocHGlobal(_buffer, (IntPtr)(newSize * sizeof(int)));
-            var newPtr = (int*)newBuffer;
+            _buffer = UnmanagedMemoryHelper.Reallocate<int>(_buffer, newSize);
+            _ptr = (int*)_buffer;
 
-            // If growing, zero out the newly allocated portion
+            // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
-                var newRegion = new Span<int>(newPtr + Capacity, newSize - Capacity);
-                newRegion.Clear();
+                UnmanagedMemoryHelper.Clear<int>(_buffer + (Capacity * sizeof(int)), newSize - Capacity);
             }
 
-            _buffer = newBuffer;
-            _ptr = newPtr;
             Capacity = newSize;
 
             if (Length > newSize)
@@ -201,44 +179,21 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
-        /// </returns>
-        public IEnumerator<int> GetEnumerator()
-        {
-            return new Enumerator<int>(_ptr, Length);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        /// <summary>
         ///     Clears the array by setting all elements to zero.
         /// </summary>
         public void Clear()
         {
-            // Use Span<T>.Clear for safety and type correctness
-            AsSpan().Clear();
+            UnmanagedMemoryHelper.Clear<int>(_buffer, Length);
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Removes the element at the specified index by shifting remaining elements left.
         /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="count">The count we want to remove. Optional.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index)
+        public void RemoveAt(int index, int count = 1)
         {
 #if DEBUG
             if (index < 0 || index >= Length)
@@ -246,12 +201,81 @@ namespace ExtendedSystemObjects
                 throw new IndexOutOfRangeException();
             }
 #endif
-            for (var i = index; i < Length - 1; i++)
+            // Shift elements left by 'count' starting at 'index'
+            for (var i = index; i < Length - count; i++)
             {
-                _ptr[i] = _ptr[i + 1];
+                _ptr[i] = _ptr[i + count];
             }
 
-            Length--;
+            Length -= count;
+        }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Indexes the of.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Value at the index.</returns>
+        public int IndexOf(int value)
+        {
+            var span = AsSpan();
+            var vectorSize = Vector<int>.Count;
+
+            if (UseSimd && span.Length >= vectorSize)
+            {
+                var vTarget = new Vector<int>(value);
+                var i = 0;
+
+                for (; i <= span.Length - vectorSize; i += vectorSize)
+                {
+                    var vData = new Vector<int>(span.Slice(i, vectorSize));
+                    var vCmp = Vector.Equals(vData, vTarget);
+
+                    if (Vector.EqualsAll(vCmp, Vector<int>.Zero))
+                    {
+                        continue;
+                    }
+
+                    for (var j = 0; j < vectorSize; j++)
+                    {
+                        if (vCmp[j] != 0)
+                        {
+                            return i + j;
+                        }
+                    }
+                }
+
+                // Scalar fallback
+                for (; i < span.Length; i++)
+                {
+                    if (span[i] == value)
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+
+            for (var i = 0; i < span.Length; i++)
+            {
+                if (span[i] == value)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -271,15 +295,8 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            var shiftCount = Length - index;
-            if (shiftCount > 0)
-            {
-                Buffer.MemoryCopy(
-                    _ptr + index,
-                    _ptr + index + count,
-                    (Capacity - index) * sizeof(int), // size of dest from index onward
-                    shiftCount * sizeof(int));
-            }
+            // Shift elements to the right
+            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length, Capacity);
 
             for (var i = 0; i < count; i++)
             {
@@ -350,7 +367,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public Span<int> AsSpan()
         {
-            return new(_ptr, Length);
+            return new Span<int>(_ptr, Length);
         }
 
         /// <summary>
@@ -375,25 +392,14 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="IntArray" /> class.
+        ///     Finalizes an instance of the <see cref="UnmanagedIntArray" /> class.
         /// </summary>
-        ~IntArray()
+        ~UnmanagedIntArray()
         {
             Dispose(false);
         }
 
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
+        /// <inheritdoc cref="IDisposable" />
         /// <summary>
         ///     Frees unmanaged memory.
         /// </summary>
@@ -418,6 +424,5 @@ namespace ExtendedSystemObjects
             // 'disposing' parameter unused but required by pattern.
             _ = disposing;
         }
-
     }
 }

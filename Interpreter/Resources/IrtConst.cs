@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     Interpreter
-* FILE:        Interpreter/IrtConst.cs
+* PROJECT:     Interpreter.Resources
+* FILE:        Interpreter.Resources/IrtConst.cs
 * PURPOSE:     The Command Constants that are delivered with the dll
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Interpreter
+namespace Interpreter.Resources
 {
     /// <summary>
     ///     IrtConst contains all strings class.
@@ -60,6 +60,11 @@ namespace Interpreter
         ///     The internal command print (const). Value: "PRINT".
         /// </summary>
         private const string InternalPrint = "PRINT";
+
+        /// <summary>
+        ///     The internal command confirm (const). Value: "CONFIRM".
+        /// </summary>
+        private const string InternalConfirm = "CONFIRM";
 
         /// <summary>
         ///     The internal command help (const). Value: "HELP".
@@ -526,6 +531,24 @@ namespace Interpreter
                     Description = "Print : Just print the content within in the parenthesis.",
                     ParameterCount = 1
                 }
+            },
+            {
+                11,
+                new InCommand
+                {
+                    Command = InternalConfirm,
+                    Description = "Confirm : Prompt user yes / no / cancel  as default. Else provide the Id for the options in the Feedback Dictionary.",
+                    ParameterCount = 0
+                }
+            },
+            {
+                12,
+                new InCommand
+                {
+                    Command = InternalConfirm,
+                    Description = "Confirm : Prompt user yes / no / cancel as default. Else provide the Id for the options in the Feedback Dictionary.",
+                    ParameterCount = 1
+                }
             }
         };
 
@@ -602,16 +625,29 @@ namespace Interpreter
                 "Basic Syntax: Verb(Parameter, ...)",
                 "System Commands:",
                 $"{InternCommands[0].Command} : {InternCommands[0].Description}",
+                "Parameter count: ", $"{InternCommands[0].ParameterCount}",
                 $"{InternCommands[1].Command} : {InternCommands[1].Description}",
+                "Parameter count: ", $"{InternCommands[1].ParameterCount}",
                 $"{InternCommands[2].Command} : {InternCommands[2].Description}",
+                "Parameter count: ", $"{InternCommands[2].ParameterCount}",
                 $"{InternCommands[3].Command} : {InternCommands[3].Description}",
+                "Parameter count: ", $"{InternCommands[3].ParameterCount}",
                 $"{InternCommands[4].Command} : {InternCommands[4].Description}",
+                "Parameter count: ", $"{InternCommands[4].ParameterCount}",
                 $"{InternCommands[5].Command} : {InternCommands[5].Description}",
+                "Parameter count: ", $"{InternCommands[5].ParameterCount}",
                 $"{InternCommands[6].Command} : {InternCommands[6].Description}",
+                "Parameter count: ", $"{InternCommands[6].ParameterCount}",
                 $"{InternCommands[7].Command} : {InternCommands[7].Description}",
+                "Parameter count: ", $"{InternCommands[7].ParameterCount}",
                 $"{InternCommands[InternalContainerId].Command} : {InternCommands[InternalContainerId].Description}",
                 $"{InternCommands[InternalBatchId].Command} : {InternCommands[InternalBatchId].Description}",
                 $"{InternCommands[10].Command} : {InternCommands[10].Description}",
+                "Parameter count: ", $"{InternCommands[10].ParameterCount}",
+                $"{InternCommands[11].Command} : {InternCommands[11].Description}",
+                "Parameter count: ", $"{InternCommands[0].ParameterCount}",
+                $"{InternCommands[12].Command} : {InternCommands[12].Description}",
+                "Parameter count: ", $"{InternCommands[12].ParameterCount}",
                 "As a word of warning, do not try to overwrite internal Commands, they will be always executed first. Duplicate commands in different Namespaces are allowed otherwise.",
                 "Furthermore, there are Extension Commands that alter the behavior of all Commands. They are added with a '.' to an existing command.",
                 "The Internal Extensions are:",
