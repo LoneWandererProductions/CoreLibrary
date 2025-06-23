@@ -28,10 +28,6 @@ namespace CommonExtendedObjectsTests
         /// </summary>
         private const int ItemCount = 100_000;
 
-        private SortedKvStore _store;
-
-        private int _entryCount;
-
         /// <summary>
         ///     Adds the and try get works.
         /// </summary>
@@ -477,32 +473,28 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(store.ContainsKey(9));
         }
 
-        public void TestCase()
+        /// <summary>
+        /// Removes the and compact test.
+        /// </summary>
+        [TestMethod]
+        public void BinarySearch()
         {
-            const int size = 1024;
-            var count = 10;
+            var store = new SortedKvStore(128);
 
-
-            _store = new SortedKvStore(128);
-
-            for (var cycle = 0; cycle < 5; cycle++)
+            for (int i = 0; i < 10; i++)
             {
-                var handles = new List<int>(count);
-                for (var i = 0; i < count; i++)
-                    handles[i] = Allocate(size);
-                for (var i = 0; i < count; i++)
-                    Free(handles[i]);
+                store.Add(i, i);
             }
-        }
 
-        private void Free(int memoryHandle)
-        {
-            //_store[id] = _entryCount; 
-        }
+            for (int i = 5; i < 10; i++)
+            {
+                store.Remove(i);
+            }
 
-        private int Allocate(int size)
-        {
-            return 1;
+            Trace.WriteLine(store.ToString());
+            var position = store.BinarySearch(9);
+
+            Assert.AreEqual(9, position, "Wrong position.");
         }
     }
 }

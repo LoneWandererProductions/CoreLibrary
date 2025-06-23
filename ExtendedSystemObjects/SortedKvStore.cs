@@ -386,6 +386,18 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Performs a binary search for the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns>
+        ///     The index of the key if found; otherwise, the bitwise complement of the index at which the key should be inserted.
+        /// </returns>
+        public int BinarySearch(int key)
+        {
+            return Utility.BinarySearch(_keys.AsSpan(), Count, key);
+        }
+
+        /// <summary>
         ///     Removes all entries from the store.
         /// </summary>
         public void Clear()
@@ -432,18 +444,6 @@ namespace ExtendedSystemObjects
             _keys.EnsureCapacity(Count + 1);
             _values.EnsureCapacity(Count + 1);
             _occupied.EnsureCapacity(Count + 1);
-        }
-
-        /// <summary>
-        ///     Performs a binary search for the specified key.
-        /// </summary>
-        /// <param name="key">The key to locate.</param>
-        /// <returns>
-        ///     The index of the key if found; otherwise, the bitwise complement of the index at which the key should be inserted.
-        /// </returns>
-        private int BinarySearch(int key)
-        {
-            return Utility.BinarySearch(_keys.AsSpan(), Count, key);
         }
     }
 }
