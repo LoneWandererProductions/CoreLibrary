@@ -210,5 +210,57 @@ namespace CommonExtendedObjectsTests
 
             // Assert nothing here — just print results
         }
+
+        /// <summary>
+        /// Pushes the pop should work with positive and negative values.
+        /// </summary>
+        [TestMethod]
+        public void PushPopShouldWorkWithPositiveAndNegativeValues()
+        {
+            using var list = new UnmanagedIntList();
+
+            // Push positive values
+            list.Push(10);
+            list.Push(20);
+            list.Push(30);
+
+            // Push negative values
+            list.Push(-1);
+            list.Push(-50);
+
+            Assert.AreEqual(5, list.Length);
+
+            // Pop values and verify LIFO order
+            Assert.AreEqual(-50, list.Pop());
+            Assert.AreEqual(-1, list.Pop());
+            Assert.AreEqual(30, list.Pop());
+            Assert.AreEqual(20, list.Pop());
+            Assert.AreEqual(10, list.Pop());
+
+            Assert.AreEqual(0, list.Length);
+
+            // Pop from empty list should throw
+            Assert.ThrowsException<InvalidOperationException>(() => list.Pop());
+        }
+
+        /// <summary>
+        /// Peeks the should return last element without removing.
+        /// </summary>
+        [TestMethod]
+        public void PeekShouldReturnLastElementWithoutRemoving()
+        {
+            using var list = new UnmanagedIntList();
+            list.Push(42);
+            list.Push(-42);
+
+            Assert.AreEqual(-42, list.Peek());
+            Assert.AreEqual(2, list.Length);
+
+            var popped = list.Pop();
+            Assert.AreEqual(-42, popped);
+            Assert.AreEqual(1, list.Length);
+
+            Assert.AreEqual(42, list.Peek());
+        }
     }
 }

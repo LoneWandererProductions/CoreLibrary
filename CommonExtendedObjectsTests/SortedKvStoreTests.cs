@@ -6,8 +6,12 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Documents;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -23,6 +27,10 @@ namespace CommonExtendedObjectsTests
         ///     The item count
         /// </summary>
         private const int ItemCount = 100_000;
+
+        private SortedKvStore _store;
+
+        private int _entryCount;
 
         /// <summary>
         ///     Adds the and try get works.
@@ -469,5 +477,32 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(store.ContainsKey(9));
         }
 
+        public void TestCase()
+        {
+            const int size = 1024;
+            var count = 10;
+
+
+            _store = new SortedKvStore(128);
+
+            for (var cycle = 0; cycle < 5; cycle++)
+            {
+                var handles = new List<int>(count);
+                for (var i = 0; i < count; i++)
+                    handles[i] = Allocate(size);
+                for (var i = 0; i < count; i++)
+                    Free(handles[i]);
+            }
+        }
+
+        private void Free(int memoryHandle)
+        {
+            //_store[id] = _entryCount; 
+        }
+
+        private int Allocate(int size)
+        {
+            return 1;
+        }
     }
 }
