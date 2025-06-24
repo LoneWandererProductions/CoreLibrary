@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
 
-    public unsafe partial struct UnmanagedIntMap
+    public sealed unsafe class UnmanagedIntMap
     {
         private const int INVALID = -1;
 
@@ -15,7 +16,7 @@ namespace ExtendedSystemObjects
 
         public int Count => _count;
 
-        public void Init(int capacityPowerOf2 = 8)
+        public UnmanagedIntMap(int capacityPowerOf2 = 8)
         {
             _capacity = 1 << capacityPowerOf2; // must be power of 2
             int size = sizeof(Entry) * _capacity;
@@ -130,9 +131,7 @@ namespace ExtendedSystemObjects
         public void Resize()
         {
             int newCapacity = _capacity * 2;
-            var newMap = new UnmanagedIntMap();
-
-            newMap.Init((int)Math.Log2(newCapacity)); // power-of-2
+            var newMap = new UnmanagedIntMap((int)Math.Log2(newCapacity)); // power-of-2
 
             for (int i = 0; i < _capacity; i++)
             {

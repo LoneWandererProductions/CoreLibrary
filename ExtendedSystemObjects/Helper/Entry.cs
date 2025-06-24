@@ -1,15 +1,12 @@
-﻿namespace ExtendedSystemObjects
-{
-    using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-    public unsafe partial struct UnmanagedIntMap
+namespace ExtendedSystemObjects.Helper
+{
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct Entry
     {
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct Entry
-        {
-            public int Key;
-            public int Value;
-            public byte Used;
-        }
+        public int Key;
+        public int Value;
+        public byte Used;
     }
 }
