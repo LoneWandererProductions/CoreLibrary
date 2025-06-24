@@ -83,22 +83,21 @@ namespace ExtendedSystemObjects.Helper
             where T : unmanaged
         {
             var elementsToShift = length - index;
-            if (elementsToShift <= 0)
-            {
+            if (elementsToShift <= 0 || count <= 0)
                 return;
-            }
 
+            // Start copying from the end to avoid overwriting
             Buffer.MemoryCopy(
                 ptr + index,
                 ptr + index + count,
-                (capacity - index - count) * sizeof(T),
+                (capacity - index - count) * sizeof(T), // should be fine if debug check passes
                 elementsToShift * sizeof(T));
         }
 
         /// <summary>
         ///     Shifts the left. Delete Element at index
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>
         /// <param name="index">The index.</param>
         /// <param name="count">The count.</param>
@@ -112,10 +111,12 @@ namespace ExtendedSystemObjects.Helper
                 return;
             }
 
+            var dstSize = (length - index) * sizeof(T); // full space after index
+
             Buffer.MemoryCopy(
                 ptr + index + count,
                 ptr + index,
-                elementsToShift * sizeof(T),
+                dstSize,
                 elementsToShift * sizeof(T));
         }
 

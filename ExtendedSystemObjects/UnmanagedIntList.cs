@@ -177,29 +177,21 @@ namespace ExtendedSystemObjects
             Length = newSize;
         }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Removes all elements from the list. The capacity remains unchanged.
+        /// Creates a deep copy of the current <see cref="UnmanagedIntList"/> instance,
+        /// including its unmanaged buffer contents.
         /// </summary>
-        public void Clear()
+        /// <returns>A new <see cref="UnmanagedIntList"/> instance with the same values.</returns>
+        public UnmanagedIntList Clone()
         {
-            Length = 0;
-
-            // Clear the entire allocated capacity, not just Length items
-            UnmanagedMemoryHelper.Clear<int>(_buffer, Capacity);
+            var clone = new UnmanagedIntList(Length);
+            for (int i = 0; i < Length; i++)
+            {
+                clone._ptr[i] = _ptr[i];
+            }
+            clone.Length = Length;
+            return clone;
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
-        ///     After calling this method, the instance should not be used.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
 
         /// <summary>
         ///     Binaries the search.
@@ -423,11 +415,33 @@ namespace ExtendedSystemObjects
             AsSpan().Slice(0, Length).CopyTo(target);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Releases the unmanaged resources used by the list.
-        ///     After disposal, the instance should not be used.
+        ///     Removes all elements from the list. The capacity remains unchanged.
         /// </summary>
+        public void Clear()
+        {
+            Length = 0;
 
+            // Clear the entire allocated capacity, not just Length items
+            UnmanagedMemoryHelper.Clear<int>(_buffer, Capacity);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
+        ///     After calling this method, the instance should not be used.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the list.
+        /// After disposal, the instance should not be used.
+        /// </summary>
         ~UnmanagedIntList()
         {
             Dispose(false);
