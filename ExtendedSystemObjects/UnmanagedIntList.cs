@@ -2,7 +2,9 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/UnmanagedIntList.cs
- * PURPOSE:     A high-performance List implementation with reduced features. Limited to integer Values.
+ * PURPOSE:     Provides a high-performance list implementation for integer values using unmanaged memory.
+ *              Designed for scenarios requiring manual memory control.
+ *              Not inherently thread-safe.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -23,10 +25,17 @@ namespace ExtendedSystemObjects
 {
     /// <inheritdoc cref="IUnmanagedArray" />
     /// <summary>
-    ///     A high-performance list of integers backed by unmanaged memory.
-    ///     Supports fast adding, popping, and random access with minimal overhead.
-    ///     Designed for scenarios where manual memory management is needed.
+    ///     Represents a high-performance list of integers backed by unmanaged memory.
+    ///     Offers fast insertion, removal, and random access with minimal overhead.
+    ///     Useful for scenarios requiring fine-grained memory control, such as high-throughput data pipelines,
+    ///     interop with native code, or avoiding garbage collection in performance-critical paths.
+    ///
+    ///     This class is not thread-safe. Consumers must implement external synchronization if needed.
     /// </summary>
+    /// <remarks>
+    ///     Manual disposal is required via <see cref="Dispose"/> to avoid memory leaks. 
+    ///     The internal buffer is allocated using <see cref="Marshal.AllocHGlobal"/> and must be explicitly freed.
+    /// </remarks>
     /// <seealso cref="T:System.IDisposable" />
     [DebuggerDisplay("{ToString()}")]
     public sealed unsafe class UnmanagedIntList : IUnmanagedArray<int>, IEnumerable<int>
@@ -89,17 +98,19 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the number of elements contained in the <see cref="UnmanagedIntList" />.
+        ///     Gets the number of elements currently stored in the list <see cref="UnmanagedIntList" />.
         /// </summary>
         public int Length { get; private set; }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the element at the specified index.
+        ///     Provides direct access to an element at the specified index.
         /// </summary>
-        /// <param name="i">The zero-based index of the element to get or set.</param>
-        /// <returns>The element at the specified index.</returns>
-        /// <exception cref="IndexOutOfRangeException">Thrown in debug builds if the index is out of bounds.</exception>
+        /// <param name="i">Zero-based index of the element.</param>
+        /// <returns>The value at the specified index.</returns>
+        /// <exception cref="IndexOutOfRangeException">
+        ///     Thrown in debug builds if the index is out of bounds.
+        /// </exception>
         public int this[int i]
         {
             get
@@ -126,11 +137,11 @@ namespace ExtendedSystemObjects
 
         /// <inheritdoc />
         /// <summary>
-        ///     Removes at.
+        ///     Removes one or more elements starting at the specified index.
         /// </summary>
-        /// <param name="index">The index.</param>
-        /// <param name="count">The count we want to remove. Optional.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <param name="index">The starting index of the element(s) to remove.</param>
+        /// <param name="count">The number of elements to remove. Default is 1.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if index is invalid in debug mode.</exception>
         public void RemoveAt(int index, int count = 1)
         {
 #if DEBUG
@@ -303,6 +314,18 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Returns a span representing a range of elements from the list.
+        /// </summary>
+        /// <value>
+        /// The <see cref="Span{System.Int32}"/>.
+        /// </value>
+        /// <param name="range">The range of elements to include in the span.</param>
+        /// <returns>
+        /// A <see cref="Span{Int32}" /> over the specified range.
+        /// </returns>
+        public Span<int> this[Range range] => AsSpan()[range];
+
+        /// <summary>
         /// Returns a new UnmanagedIntList that is a sorted copy of the current list.
         /// </summary>
         /// <returns>A new UnmanagedIntList instance with sorted values.</returns>
@@ -317,6 +340,52 @@ namespace ExtendedSystemObjects
             copy.Sort(); // Uses internal AsSpan().Sort()
             return copy;
         }
+
+        /// <summary>
+        ///     Reduces the internal capacity to match the current number of elements,
+        ///     releasing any unused memory.
+        /// </summary>
+        public void TrimExcess()
+        {
+            if (Length == Capacity) return;
+
+            _buffer = UnmanagedMemoryHelper.Reallocate<int>(_buffer, Length);
+            _ptr = (int*)_buffer;
+            Capacity = Length;
+        }
+
+        /// <summary>
+        ///     Copies the list contents into a new managed array.
+        /// </summary>
+        /// <returns>A managed <see cref="int[]"/> containing the current elements.</returns>
+        public int[] ToArray()
+        {
+            var result = new int[Length];
+            CopyTo(result);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Copies to Array.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="arrayIndex">Index of the array.</param>
+        /// <exception cref="System.ArgumentNullException">array</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">arrayIndex</exception>
+        public void CopyTo(int[] array, int arrayIndex = 0)
+        {
+#if DEBUG
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (arrayIndex < 0 || arrayIndex + Length > array.Length)
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+#endif
+            for (int i = 0; i < Length; i++)
+            {
+                array[arrayIndex + i] = _ptr[i];
+            }
+        }
+
 
         /// <summary>
         /// Converts to string.
@@ -340,10 +409,25 @@ namespace ExtendedSystemObjects
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Copies to.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <exception cref="System.ArgumentException">Target span too small</exception>
+        public void CopyTo(Span<int> target)
+        {
+#if DEBUG
+            if (target.Length < Length)
+                throw new ArgumentException("Target span too small");
+#endif
+            AsSpan().Slice(0, Length).CopyTo(target);
+        }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="UnmanagedIntList" /> class, releasing unmanaged resources.
+        ///     Releases the unmanaged resources used by the list.
+        ///     After disposal, the instance should not be used.
         /// </summary>
+
         ~UnmanagedIntList()
         {
             Dispose(false);
