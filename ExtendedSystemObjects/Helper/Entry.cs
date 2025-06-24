@@ -3,7 +3,7 @@
 namespace ExtendedSystemObjects.Helper
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Entry
+    public struct Entry
     {
         public int Key;
         public int Value;
