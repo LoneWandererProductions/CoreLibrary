@@ -31,10 +31,12 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void AddAndTryGetWorks()
         {
-            var store = new SortedKvStore();
-            store.Add(10, 100);
-            store.Add(5, 50);
-            store.Add(15, 150);
+            var store = new SortedKvStore
+            {
+                { 10, 100 },
+                { 5, 50 },
+                { 15, 150 }
+            };
 
             Assert.IsTrue(store.TryGetValue(10, out var val10));
             Assert.AreEqual(100, val10);
@@ -54,9 +56,11 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void TryRemoveRemovesExisting()
         {
-            var store = new SortedKvStore();
-            store.Add(1, 10);
-            store.Add(2, 20);
+            var store = new SortedKvStore
+            {
+                { 1, 10 },
+                { 2, 20 }
+            };
 
             Assert.IsTrue(store.TryRemove(1, out var idx));
             Assert.IsFalse(store.TryGetValue(1, out _));
