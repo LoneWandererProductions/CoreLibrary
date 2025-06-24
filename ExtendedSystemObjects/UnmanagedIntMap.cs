@@ -35,18 +35,27 @@ namespace ExtendedSystemObjects
             for (int i = 0; i < _capacity; i++)
             {
                 ref Entry slot = ref _entries[(index + i) & mask];
-                if (slot.Used == 0 || slot.Key == key)
+
+                if (slot.Used == 0)
                 {
+                    // Insert new entry
                     slot.Key = key;
                     slot.Value = value;
                     slot.Used = 1;
                     _count++;
                     return;
                 }
+                else if (slot.Key == key)
+                {
+                    // Update existing entry
+                    slot.Value = value;
+                    return;
+                }
             }
 
             throw new InvalidOperationException("UnmanagedIntMap full");
         }
+
 
         public bool ContainsKey(int key)
         {
