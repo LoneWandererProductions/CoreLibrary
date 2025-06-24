@@ -537,7 +537,8 @@ namespace Interpreter.Resources
                 new InCommand
                 {
                     Command = InternalConfirm,
-                    Description = "Confirm : Prompt user yes / no / cancel  as default. Else provide the Id for the options in the Feedback Dictionary.",
+                    Description =
+                        "Confirm : Prompt user yes / no / cancel  as default. Else provide the Id for the options in the Feedback Dictionary.",
                     ParameterCount = 0
                 }
             },
@@ -546,7 +547,8 @@ namespace Interpreter.Resources
                 new InCommand
                 {
                     Command = InternalConfirm,
-                    Description = "Confirm : Prompt user yes / no / cancel as default. Else provide the Id for the options in the Feedback Dictionary.",
+                    Description =
+                        "Confirm : Prompt user yes / no / cancel as default. Else provide the Id for the options in the Feedback Dictionary.",
                     ParameterCount = 1
                 }
             }

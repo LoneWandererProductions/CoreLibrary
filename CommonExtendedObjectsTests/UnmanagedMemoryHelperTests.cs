@@ -1,7 +1,7 @@
-﻿using ExtendedSystemObjects.Helper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using ExtendedSystemObjects.Helper;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonExtendedObjectsTests
 {
@@ -21,7 +21,9 @@ namespace CommonExtendedObjectsTests
                 // Write values to allocated memory
                 var intPtr = (int*)ptr.ToPointer();
                 for (var i = 0; i < count; i++)
+                {
                     intPtr[i] = i;
+                }
 
                 // Reallocate to bigger size
                 var newCount = 20;
@@ -33,15 +35,21 @@ namespace CommonExtendedObjectsTests
 
                 // Check old values still there
                 for (var i = 0; i < count; i++)
+                {
                     Assert.AreEqual(i, intPtr[i]);
+                }
 
                 // Write new values
                 for (var i = count; i < newCount; i++)
+                {
                     intPtr[i] = i * 2;
+                }
 
                 // Check new values
                 for (var i = count; i < newCount; i++)
+                {
                     Assert.AreEqual(i * 2, intPtr[i]);
+                }
             }
             finally
             {
@@ -58,12 +66,16 @@ namespace CommonExtendedObjectsTests
             {
                 var intPtr = (int*)ptr.ToPointer();
                 for (var i = 0; i < count; i++)
+                {
                     intPtr[i] = 123;
+                }
 
                 UnmanagedMemoryHelper.Clear<int>(ptr, count);
 
                 for (var i = 0; i < count; i++)
+                {
                     Assert.AreEqual(0, intPtr[i]);
+                }
             }
             finally
             {
@@ -81,7 +93,9 @@ namespace CommonExtendedObjectsTests
             {
                 var intPtr = (int*)ptr.ToPointer();
                 for (var i = 0; i < count; i++)
+                {
                     intPtr[i] = i + 1; // 1,2,3,4,5
+                }
 
                 // Shift right at index 2 by 2 positions
                 UnmanagedMemoryHelper.ShiftRight(intPtr, 2, 2, count, capacity);
@@ -110,7 +124,9 @@ namespace CommonExtendedObjectsTests
             {
                 var intPtr = (int*)ptr.ToPointer();
                 for (var i = 0; i < count; i++)
+                {
                     intPtr[i] = i + 1; // 1,2,3,4,5
+                }
 
                 // Shift left at index 1 by 2 positions (delete 2 elements at index 1 and 2)
                 UnmanagedMemoryHelper.ShiftLeft(intPtr, 1, 2, count);
@@ -138,7 +154,9 @@ namespace CommonExtendedObjectsTests
                 UnmanagedMemoryHelper.Fill(intPtr, 42, count);
 
                 for (var i = 0; i < count; i++)
+                {
                     Assert.AreEqual(42, intPtr[i]);
+                }
             }
             finally
             {

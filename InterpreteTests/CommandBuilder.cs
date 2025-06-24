@@ -65,8 +65,7 @@ namespace InterpreteTests
             // Validate commands inside the IfElseObj
             var expectedResults = new List<(int Key, string Category, string Value)>
             {
-                (0, "If_Condition", "condition1"),
-                (1, "If", "com1;")
+                (0, "If_Condition", "condition1"), (1, "If", "com1;")
             };
 
             foreach (var (key, cat, val) in ifElseObj.Commands)

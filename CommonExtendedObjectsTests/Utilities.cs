@@ -363,7 +363,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Binaries the search bug.
+        ///     Binaries the search bug.
         /// </summary>
         [TestMethod]
         public void BinarySearchBug()
@@ -372,16 +372,18 @@ namespace CommonExtendedObjectsTests
 
             for (var i = 0; i < 10; i++)
             {
-                sortedKeys[i] = i+1;
+                sortedKeys[i] = i + 1;
             }
+
             for (var i = 10; i < 128; i++)
             {
-                sortedKeys[i] = 0; ;
+                sortedKeys[i] = 0;
+                ;
             }
 
             var idx = Utility.BinarySearch(sortedKeys, 14, 10);
 
-            Assert.AreEqual(-15, idx ,"Found the bug.");
+            Assert.AreEqual(-15, idx, "Found the bug.");
         }
     }
 }

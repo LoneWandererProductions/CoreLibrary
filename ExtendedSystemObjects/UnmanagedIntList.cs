@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 
@@ -29,12 +30,11 @@ namespace ExtendedSystemObjects
     ///     Offers fast insertion, removal, and random access with minimal overhead.
     ///     Useful for scenarios requiring fine-grained memory control, such as high-throughput data pipelines,
     ///     interop with native code, or avoiding garbage collection in performance-critical paths.
-    ///
     ///     This class is not thread-safe. Consumers must implement external synchronization if needed.
     /// </summary>
     /// <remarks>
-    ///     Manual disposal is required via <see cref="Dispose"/> to avoid memory leaks. 
-    ///     The internal buffer is allocated using <see cref="Marshal.AllocHGlobal"/> and must be explicitly freed.
+    ///     Manual disposal is required via <see cref="Dispose" /> to avoid memory leaks.
+    ///     The internal buffer is allocated using <see cref="Marshal.AllocHGlobal" /> and must be explicitly freed.
     /// </remarks>
     /// <seealso cref="T:System.IDisposable" />
     [DebuggerDisplay("{ToString()}")]
@@ -71,6 +71,18 @@ namespace ExtendedSystemObjects
         ///     The capacity
         /// </summary>
         public int Capacity { get; private set; }
+
+        /// <summary>
+        ///     Returns a span representing a range of elements from the list.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="Span{System.Int32}" />.
+        /// </value>
+        /// <param name="range">The range of elements to include in the span.</param>
+        /// <returns>
+        ///     A <see cref="Span{Int32}" /> over the specified range.
+        /// </returns>
+        public Span<int> this[Range range] => AsSpan()[range];
 
         /// <inheritdoc />
         /// <summary>
@@ -177,18 +189,42 @@ namespace ExtendedSystemObjects
             Length = newSize;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Creates a deep copy of the current <see cref="UnmanagedIntList"/> instance,
-        /// including its unmanaged buffer contents.
+        ///     Removes all elements from the list. The capacity remains unchanged.
         /// </summary>
-        /// <returns>A new <see cref="UnmanagedIntList"/> instance with the same values.</returns>
+        public void Clear()
+        {
+            Length = 0;
+
+            // Clear the entire allocated capacity, not just Length items
+            UnmanagedMemoryHelper.Clear<int>(_buffer, Capacity);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
+        ///     After calling this method, the instance should not be used.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Creates a deep copy of the current <see cref="UnmanagedIntList" /> instance,
+        ///     including its unmanaged buffer contents.
+        /// </summary>
+        /// <returns>A new <see cref="UnmanagedIntList" /> instance with the same values.</returns>
         public UnmanagedIntList Clone()
         {
             var clone = new UnmanagedIntList(Length);
-            for (int i = 0; i < Length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 clone._ptr[i] = _ptr[i];
             }
+
             clone.Length = Length;
             return clone;
         }
@@ -306,25 +342,13 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Returns a span representing a range of elements from the list.
-        /// </summary>
-        /// <value>
-        /// The <see cref="Span{System.Int32}"/>.
-        /// </value>
-        /// <param name="range">The range of elements to include in the span.</param>
-        /// <returns>
-        /// A <see cref="Span{Int32}" /> over the specified range.
-        /// </returns>
-        public Span<int> this[Range range] => AsSpan()[range];
-
-        /// <summary>
-        /// Returns a new UnmanagedIntList that is a sorted copy of the current list.
+        ///     Returns a new UnmanagedIntList that is a sorted copy of the current list.
         /// </summary>
         /// <returns>A new UnmanagedIntList instance with sorted values.</returns>
         public UnmanagedIntList Sorted()
         {
             var copy = new UnmanagedIntList(Length);
-            for (int i = 0; i < Length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 copy.Add(_ptr[i]);
             }
@@ -339,7 +363,10 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void TrimExcess()
         {
-            if (Length == Capacity) return;
+            if (Length == Capacity)
+            {
+                return;
+            }
 
             _buffer = UnmanagedMemoryHelper.Reallocate<int>(_buffer, Length);
             _ptr = (int*)_buffer;
@@ -349,7 +376,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Copies the list contents into a new managed array.
         /// </summary>
-        /// <returns>A managed <see cref="int[]"/> containing the current elements.</returns>
+        /// <returns>A managed <see cref="int[]" /> containing the current elements.</returns>
         public int[] ToArray()
         {
             var result = new int[Length];
@@ -359,7 +386,7 @@ namespace ExtendedSystemObjects
 
 
         /// <summary>
-        /// Copies to Array.
+        ///     Copies to Array.
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="arrayIndex">Index of the array.</param>
@@ -368,11 +395,17 @@ namespace ExtendedSystemObjects
         public void CopyTo(int[] array, int arrayIndex = 0)
         {
 #if DEBUG
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
             if (arrayIndex < 0 || arrayIndex + Length > array.Length)
+            {
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
 #endif
-            for (int i = 0; i < Length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 array[arrayIndex + i] = _ptr[i];
             }
@@ -380,16 +413,16 @@ namespace ExtendedSystemObjects
 
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
-            var sb = new System.Text.StringBuilder();
+            var sb = new StringBuilder();
 
-            for (int i = 0; i < Length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 sb.Append(_ptr[i]);
                 if (i < Length - 1)
@@ -402,7 +435,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Copies to.
+        ///     Copies to.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <exception cref="System.ArgumentException">Target span too small</exception>
@@ -410,37 +443,16 @@ namespace ExtendedSystemObjects
         {
 #if DEBUG
             if (target.Length < Length)
+            {
                 throw new ArgumentException("Target span too small");
+            }
 #endif
             AsSpan().Slice(0, Length).CopyTo(target);
         }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Removes all elements from the list. The capacity remains unchanged.
-        /// </summary>
-        public void Clear()
-        {
-            Length = 0;
-
-            // Clear the entire allocated capacity, not just Length items
-            UnmanagedMemoryHelper.Clear<int>(_buffer, Capacity);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Frees unmanaged resources used by the <see cref="T:ExtendedSystemObjects.IntList" />.
-        ///     After calling this method, the instance should not be used.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases the unmanaged resources used by the list.
-        /// After disposal, the instance should not be used.
+        ///     Releases the unmanaged resources used by the list.
+        ///     After disposal, the instance should not be used.
         /// </summary>
         ~UnmanagedIntList()
         {

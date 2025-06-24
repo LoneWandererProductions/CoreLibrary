@@ -68,6 +68,11 @@ namespace ExtendedSystemObjects.Helper
         /// </summary>
         internal const string KeyCategoryValueFormat = "Key: {0}, Category: {1}, Value: {2}";
 
+
+        internal const byte Empty = 0;
+        internal const byte Occupied = 1;
+        internal const byte Tombstone = 2;
+
         /// <summary>
         ///     The small primes
         /// </summary>
@@ -76,10 +81,5 @@ namespace ExtendedSystemObjects.Helper
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
             103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
         };
-
-
-        internal const byte Empty = 0;
-        internal const byte Occupied = 1;
-        internal const byte Tombstone = 2;
     }
 }

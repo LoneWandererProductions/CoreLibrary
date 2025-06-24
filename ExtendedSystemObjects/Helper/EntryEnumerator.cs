@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExtendedSystemObjects.Helper
+﻿namespace ExtendedSystemObjects.Helper
 {
     public unsafe struct EntryEnumerator
     {
@@ -24,7 +18,9 @@ namespace ExtendedSystemObjects.Helper
             while (++_index < _capacity)
             {
                 if (_entries[_index].Used == SharedResources.Occupied)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -32,5 +28,4 @@ namespace ExtendedSystemObjects.Helper
 
         public (int Key, int Value) Current => (_entries[_index].Key, _entries[_index].Value);
     }
-
 }

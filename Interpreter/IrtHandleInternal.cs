@@ -158,21 +158,13 @@ namespace Interpreter
 
                 case 11:
 
-                    feedbackReceiver = new IrtFeedback
-                    {
-                        RequestId = "-1",
-                        BranchId = 12,
-                    };
+                    feedbackReceiver = new IrtFeedback { RequestId = "-1", BranchId = 12 };
 
                     _prompt.RequestFeedback(feedbackReceiver);
 
                     break;
                 case 12:
-                    feedbackReceiver = new IrtFeedback
-                    {
-                        RequestId = parameter[0],
-                        BranchId = 12,
-                    };
+                    feedbackReceiver = new IrtFeedback { RequestId = parameter[0], BranchId = 12 };
 
                     _prompt.RequestFeedback(feedbackReceiver);
                     break;

@@ -46,7 +46,7 @@ namespace CoreConsole
         ///     The resource1
         /// </summary>
         internal const string ResourceHeader = "header";
-        
+
         internal const string ResourceEventProcessing = "Event processing completed.";
 
         internal const string ResourceCsExtension = "*.cs";

@@ -13,12 +13,12 @@ using System.Linq;
 namespace Interpreter.ScriptEngine
 {
     /// <summary>
-    /// Basic if else Parser
+    ///     Basic if else Parser
     /// </summary>
     internal static class IrtParserIfElse
     {
         /// <summary>
-        /// The identifier counter
+        ///     The identifier counter
         /// </summary>
         private static int _idCounter;
 

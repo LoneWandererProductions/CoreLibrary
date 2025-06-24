@@ -79,47 +79,24 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(999, list[999]);
         }
 
-#if DEBUG
         /// <summary>
-        /// Indexes the get out of bounds throws.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void IndexGetOutOfBoundsThrows()
-        {
-            using var list = new UnmanagedIntList(1);
-            var _ = list[5];
-        }
-
-        /// <summary>
-        /// Indexes the set out of bounds throws.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void IndexSetOutOfBoundsThrows()
-        {
-            using var list = new UnmanagedIntList(1) {[3] = 99};
-        }
-#endif
-
-        /// <summary>
-        /// Removes at invalid index throws.
+        ///     Removes at invalid index throws.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RemoveAtInvalidIndexThrows()
         {
-            using var list = new UnmanagedIntList(1) {1};
+            using var list = new UnmanagedIntList(1) { 1 };
             list.RemoveAt(2);
         }
 
         /// <summary>
-        /// Inserts at adds elements correctly.
+        ///     Inserts at adds elements correctly.
         /// </summary>
         [TestMethod]
         public void InsertAtAddsElementsCorrectly()
         {
-            using var list = new UnmanagedIntList(2) {1, 2};
+            using var list = new UnmanagedIntList(2) { 1, 2 };
             list.InsertAt(1, 99); // Between 1 and 2
 
             Assert.AreEqual(3, list.Length);
@@ -129,12 +106,12 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Inserts at with count adds multiple.
+        ///     Inserts at with count adds multiple.
         /// </summary>
         [TestMethod]
         public void InsertAtWithCountAddsMultiple()
         {
-            using var list = new UnmanagedIntList(2) {1, 2};
+            using var list = new UnmanagedIntList(2) { 1, 2 };
             list.InsertAt(1, 99, 2); // Insert 99 twice at index 1
 
             Assert.AreEqual(4, list.Length);
@@ -145,7 +122,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Disposes the state of the frees memory and invalidates.
+        ///     Disposes the state of the frees memory and invalidates.
         /// </summary>
         [TestMethod]
         public void DisposeFreesMemoryAndInvalidatesState()
@@ -212,7 +189,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Pushes the pop should work with positive and negative values.
+        ///     Pushes the pop should work with positive and negative values.
         /// </summary>
         [TestMethod]
         public void PushPopShouldWorkWithPositiveAndNegativeValues()
@@ -244,7 +221,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Peeks the should return last element without removing.
+        ///     Peeks the should return last element without removing.
         /// </summary>
         [TestMethod]
         public void PeekShouldReturnLastElementWithoutRemoving()
@@ -266,7 +243,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void CloneSortedReturnsSortedList()
         {
-            var list = new UnmanagedIntList {5, 2, 8, 3};
+            var list = new UnmanagedIntList { 5, 2, 8, 3 };
 
             using var sorted = list.Sorted();
 
@@ -276,5 +253,28 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(5, sorted[2]);
             Assert.AreEqual(8, sorted[3]);
         }
+
+#if DEBUG
+        /// <summary>
+        ///     Indexes the get out of bounds throws.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void IndexGetOutOfBoundsThrows()
+        {
+            using var list = new UnmanagedIntList(1);
+            var _ = list[5];
+        }
+
+        /// <summary>
+        ///     Indexes the set out of bounds throws.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void IndexSetOutOfBoundsThrows()
+        {
+            using var list = new UnmanagedIntList(1) { [3] = 99 };
+        }
+#endif
     }
 }

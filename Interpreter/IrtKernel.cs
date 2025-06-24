@@ -558,18 +558,20 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Determines whether [is keyword at] [the specified input].
+        ///     Determines whether [is keyword at] [the specified input].
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="index">The index.</param>
         /// <param name="keyword">The keyword.</param>
         /// <returns>
-        ///   <c>true</c> if [is keyword at] [the specified input]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is keyword at] [the specified input]; otherwise, <c>false</c>.
         /// </returns>
         internal static bool IsKeywordAt(string input, int index, string keyword)
         {
             if (index < 0 || index + keyword.Length > input.Length)
+            {
                 return false;
+            }
 
             return string.Compare(input, index, keyword, 0, keyword.Length, StringComparison.OrdinalIgnoreCase) == 0;
         }

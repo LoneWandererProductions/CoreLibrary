@@ -41,22 +41,6 @@ namespace Interpreter
         private static int _count = -1;
 
         /// <summary>
-        /// The feedback register
-        /// </summary>
-        /// <value>
-        /// The feedback register.
-        /// </value>
-        internal IrtFeedback FeedbackRegister { get; set; }
-
-        /// <summary>
-        /// The lock input
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [lock input]; otherwise, <c>false</c>.
-        /// </value>
-        internal bool LockInput { get; set; }
-
-        /// <summary>
         ///     The reference to the Container Handle
         /// </summary>
         private IrtHandleContainer _irtHandleContainer;
@@ -71,6 +55,22 @@ namespace Interpreter
         ///     The user feedback
         /// </summary>
         private Dictionary<int, UserFeedback> _userFeedback;
+
+        /// <summary>
+        ///     The feedback register
+        /// </summary>
+        /// <value>
+        ///     The feedback register.
+        /// </value>
+        internal IrtFeedback FeedbackRegister { get; set; }
+
+        /// <summary>
+        ///     The lock input
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [lock input]; otherwise, <c>false</c>.
+        /// </value>
+        internal bool LockInput { get; set; }
 
         /// <summary>
         ///     The collected Namespaces
@@ -214,8 +214,8 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Event to handle feedback, using EventHandler for proper event pattern
-        /// Occurs when [handle feedback].
+        ///     Event to handle feedback, using EventHandler for proper event pattern
+        ///     Occurs when [handle feedback].
         /// </summary>
         internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
