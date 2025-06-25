@@ -31,6 +31,7 @@ namespace ExtendedSystemObjects
 
         public int Count { get; private set; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(int key)
         {
             var mask = _capacity - 1;
@@ -79,6 +80,7 @@ namespace ExtendedSystemObjects
             throw new KeyNotFoundException($"Key {key} not found.");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(int key, int value)
         {
             bool compactTried = false;
@@ -140,7 +142,7 @@ namespace ExtendedSystemObjects
             }
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(int key, out int value)
         {
             var mask = _capacity - 1;
@@ -166,6 +168,7 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryRemove(int key)
         {
             var mask = _capacity - 1;
