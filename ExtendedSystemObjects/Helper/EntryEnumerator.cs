@@ -1,6 +1,9 @@
-﻿namespace ExtendedSystemObjects.Helper
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace ExtendedSystemObjects.Helper
 {
-    public unsafe struct EntryEnumerator
+    public unsafe struct EntryEnumerator : IEnumerable<Entry>, IEnumerator<Entry>
     {
         private readonly Entry* _entries;
         private readonly int _capacity;
@@ -18,14 +21,24 @@
             while (++_index < _capacity)
             {
                 if (_entries[_index].Used == SharedResources.Occupied)
-                {
                     return true;
-                }
             }
 
             return false;
         }
 
-        public (int Key, int Value) Current => (_entries[_index].Key, _entries[_index].Value);
+        public Entry Current => _entries[_index];
+
+        object IEnumerator.Current => Current;
+
+        public void Reset() => _index = -1;
+
+        public void Dispose() { }
+
+        public EntryEnumerator GetEnumerator() => this;
+
+        IEnumerator<Entry> IEnumerable<Entry>.GetEnumerator() => this;
+        IEnumerator IEnumerable.GetEnumerator() => this;
     }
+
 }

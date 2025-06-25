@@ -7,7 +7,7 @@ using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
-    public sealed unsafe class UnmanagedIntMap : IEnumerator<Entry>
+    public sealed unsafe class UnmanagedIntMap : IEnumerable<Entry>
     {
         private const int Invalid = -1;
         private int _capacity;
@@ -31,98 +31,6 @@ namespace ExtendedSystemObjects
 
         public int Count { get; private set; }
 
-        public Entry Current
-        {
-            get
-            {
-                if (_index < 0 || _index >= _capacity)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                return _entries[_index];
-            }
-        }
-
-        object IEnumerator.Current => Current;
-
-
-        public bool MoveNext()
-        {
-            while (++_index < _capacity)
-            {
-                if (_entries[_index].Used == SharedResources.Occupied)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void Reset()
-        {
-            _index = -1;
-        }
-
-        public void Dispose()
-        {
-            Free();
-            GC.SuppressFinalize(this);
-        }
-
-        public void Set(int key, int value)
-        {
-            if (Count >= _capacity * 0.7f)
-            {
-                Resize();
-            }
-
-            var mask = _capacity - 1;
-            var index = key & mask;
-            var firstTombstone = -1;
-
-            for (var i = 0; i < _capacity; i++)
-            {
-                ref var slot = ref _entries[(index + i) & mask];
-
-                if (slot.Used == SharedResources.Empty)
-                {
-                    if (firstTombstone != -1)
-                    {
-                        ref var tomb = ref _entries[firstTombstone];
-                        tomb.Key = key;
-                        tomb.Value = value;
-                        tomb.Used = SharedResources.Occupied;
-                    }
-                    else
-                    {
-                        slot.Key = key;
-                        slot.Value = value;
-                        slot.Used = SharedResources.Occupied;
-                    }
-
-                    Count++;
-                    return;
-                }
-
-                if (slot.Used == SharedResources.Tombstone)
-                {
-                    if (firstTombstone == -1)
-                    {
-                        firstTombstone = (index + i) & mask;
-                    }
-                }
-                else if (slot.Key == key)
-                {
-                    slot.Value = value;
-                    return;
-                }
-            }
-
-            throw new InvalidOperationException("UnmanagedIntMap full");
-        }
-
         public bool ContainsKey(int key)
         {
             var mask = _capacity - 1;
@@ -145,6 +53,93 @@ namespace ExtendedSystemObjects
 
             return false;
         }
+
+        public int this[int key]
+        {
+            get => Get(key);
+            set => Set(key, value);
+        }
+
+        public int Get(int key)
+        {
+            var mask = _capacity - 1;
+            var index = key & mask;
+
+            for (var i = 0; i < _capacity; i++)
+            {
+                ref var slot = ref _entries[(index + i) & mask];
+
+                if (slot.Used == SharedResources.Empty)
+                    break;
+
+                if (slot.Used == SharedResources.Occupied && slot.Key == key)
+                    return slot.Value;
+            }
+
+            throw new KeyNotFoundException($"Key {key} not found.");
+        }
+
+        public void Set(int key, int value)
+        {
+            bool compactTried = false;
+
+            while (true)
+            {
+                if (Count >= _capacity * 0.7f)
+                {
+                    if (!compactTried)
+                    {
+                        Compact();
+                        compactTried = true;
+                        continue; // Retry after compacting
+                    }
+
+                    Resize();
+                }
+
+                var mask = _capacity - 1;
+                var index = key & mask;
+                var firstTombstone = -1;
+
+                for (var i = 0; i < _capacity; i++)
+                {
+                    ref var slot = ref _entries[(index + i) & mask];
+
+                    if (slot.Used == SharedResources.Empty)
+                    {
+                        if (firstTombstone != -1)
+                        {
+                            ref var tomb = ref _entries[firstTombstone];
+                            tomb.Key = key;
+                            tomb.Value = value;
+                            tomb.Used = SharedResources.Occupied;
+                        }
+                        else
+                        {
+                            slot.Key = key;
+                            slot.Value = value;
+                            slot.Used = SharedResources.Occupied;
+                        }
+
+                        Count++;
+                        return;
+                    }
+
+                    if (slot.Used == SharedResources.Tombstone && firstTombstone == -1)
+                        firstTombstone = (index + i) & mask;
+
+                    else if (slot.Key == key)
+                    {
+                        slot.Value = value;
+                        return;
+                    }
+                }
+
+                // Should never get here since Resize doubles capacity
+                throw new InvalidOperationException("UnmanagedIntMap full");
+            }
+        }
+
 
         public bool TryGetValue(int key, out int value)
         {
@@ -198,6 +193,54 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        public bool TryRemove(int key, out int index)
+        {
+            var mask = _capacity - 1;
+            var startIndex = key & mask;
+
+            for (var i = 0; i < _capacity; i++)
+            {
+                var probeIndex = (startIndex + i) & mask;
+                ref var slot = ref _entries[probeIndex];
+
+                if (slot.Used == SharedResources.Empty)
+                {
+                    break; // key not found, stop probing
+                }
+
+                if (slot.Used == SharedResources.Occupied && slot.Key == key)
+                {
+                    slot.Used = SharedResources.Tombstone;
+                    Count--;
+                    index = probeIndex;
+                    return true;
+                }
+            }
+
+            index = -1;
+            return false;
+        }
+
+        public void Resize()
+        {
+            var newCapacity = _capacity * 2;
+            var newMap = new UnmanagedIntMap((int)Math.Log2(newCapacity));
+
+            for (var i = 0; i < _capacity; i++)
+            {
+                ref var entry = ref _entries[i];
+                if (entry.Used == SharedResources.Occupied)
+                {
+                    newMap.Set(entry.Key, entry.Value);
+                }
+            }
+
+            Free(); // old buffer
+            _entries = newMap._entries;
+            _capacity = newMap._capacity;
+            Count = newMap.Count;
+        }
+
         public void Compact()
         {
             var targetCapacity = _capacity;
@@ -226,12 +269,6 @@ namespace ExtendedSystemObjects
             Count = newMap.Count;
         }
 
-
-        public EntryEnumerator GetEnumerator()
-        {
-            return new(_entries, _capacity);
-        }
-
         public void Free()
         {
             if (_entries != null)
@@ -244,26 +281,6 @@ namespace ExtendedSystemObjects
             Count = 0;
         }
 
-        public void Resize()
-        {
-            var newCapacity = _capacity * 2;
-            var newMap = new UnmanagedIntMap((int)Math.Log2(newCapacity));
-
-            for (var i = 0; i < _capacity; i++)
-            {
-                ref var entry = ref _entries[i];
-                if (entry.Used == SharedResources.Occupied)
-                {
-                    newMap.Set(entry.Key, entry.Value);
-                }
-            }
-
-            Free(); // old buffer
-            _entries = newMap._entries;
-            _capacity = newMap._capacity;
-            Count = newMap.Count;
-        }
-
         public void Clear()
         {
             if (_entries != null)
@@ -273,6 +290,20 @@ namespace ExtendedSystemObjects
             }
 
             Count = 0;
+        }
+
+
+        public IEnumerator<Entry> GetEnumerator()
+        {
+            return new EntryEnumerator(_entries, _capacity);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public void Dispose()
+        {
+            Free();
+            GC.SuppressFinalize(this);
         }
 
         ~UnmanagedIntMap()
