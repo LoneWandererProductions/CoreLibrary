@@ -527,7 +527,7 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            var newCapacity = Capacity * 2;
+            var newCapacity = Capacity == 0 ? 4 : Capacity * 2;
             if (newCapacity < min)
             {
                 newCapacity = min;
