@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ExtendedSystemObjects.Helper;
@@ -147,6 +148,25 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Removes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Removes the called Value.</returns>
+        public bool Remove(int value)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                if (_ptr[i] == value)
+                {
+                    RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Removes one or more elements starting at the specified index.
@@ -157,20 +177,21 @@ namespace ExtendedSystemObjects
         public void RemoveAt(int index, int count = 1)
         {
 #if DEBUG
-            if (index < 0 || index >= Length)
+            if (index < 0 || index + count > Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 #endif
 
-            if (index < Length - 1)
+            if (index + count < Length)
             {
-                // Shift elements left by 1 to fill the gap
-                UnmanagedMemoryHelper.ShiftLeft(_ptr, index, 1, Length);
+                // Shift elements left by 'count' to fill the gap
+                UnmanagedMemoryHelper.ShiftLeft(_ptr, index, count, Length);
             }
 
-            Length--;
+            Length -= count;
         }
+
 
         /// <inheritdoc />
         /// <summary>
@@ -261,6 +282,7 @@ namespace ExtendedSystemObjects
         ///     Adds an integer value to the end of the list, resizing if necessary.
         /// </summary>
         /// <param name="value">The integer value to add.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(int value)
         {
             EnsureCapacity(Length + 1);
@@ -497,6 +519,7 @@ namespace ExtendedSystemObjects
         ///     Resizes the buffer if necessary by doubling its capacity or setting it to the minimum required size.
         /// </summary>
         /// <param name="min">The minimum capacity required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureCapacity(int min)
         {
             if (min <= Capacity)
