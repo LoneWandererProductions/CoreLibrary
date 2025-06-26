@@ -533,8 +533,7 @@ namespace Interpreter.Resources
                 }
             },
             {
-                11,
-                new InCommand
+                11, new InCommand
                 {
                     Command = InternalConfirm,
                     Description =
@@ -543,8 +542,7 @@ namespace Interpreter.Resources
                 }
             },
             {
-                12,
-                new InCommand
+                12, new InCommand
                 {
                     Command = InternalConfirm,
                     Description =

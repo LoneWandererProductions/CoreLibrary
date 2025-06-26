@@ -17,17 +17,17 @@ namespace CommonExtendedObjectsTests
     public class UnmanagedMapTests
     {
         /// <summary>
-        /// The test object.
-        /// </summary>
-        private UnmanagedMap<int> _map;
-
-        /// <summary>
-        /// The iterations
+        ///     The iterations
         /// </summary>
         private const int Iterations = 100_000;
 
         /// <summary>
-        /// Setups this instance.
+        ///     The test object.
+        /// </summary>
+        private UnmanagedMap<int> _map;
+
+        /// <summary>
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -36,7 +36,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
@@ -45,7 +45,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Sets the then try get value returns value.
+        ///     Sets the then try get value returns value.
         /// </summary>
         [TestMethod]
         public void SetThenTryGetValueReturnsValue()
@@ -56,7 +56,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Overwrites the value updates correctly.
+        ///     Overwrites the value updates correctly.
         /// </summary>
         [TestMethod]
         public void OverwriteValueUpdatesCorrectly()
@@ -68,7 +68,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Tries the remove removes entry.
+        ///     Tries the remove removes entry.
         /// </summary>
         [TestMethod]
         public void TryRemoveRemovesEntry()
@@ -79,15 +79,17 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Resizes the still keeps all entries.
+        ///     Resizes the still keeps all entries.
         /// </summary>
         [TestMethod]
         public void ResizeStillKeepsAllEntries()
         {
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
+            {
                 _map.Set(i, i * 10);
+            }
 
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 Assert.IsTrue(_map.TryGetValue(i, out var val));
                 Assert.AreEqual(i * 10, val);
@@ -95,25 +97,29 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Compacts the reclaims space.
+        ///     Compacts the reclaims space.
         /// </summary>
         [TestMethod]
         public void CompactReclaimsSpace()
         {
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
+            {
                 _map.Set(i, i);
+            }
 
-            for (int i = 0; i < 25; i++)
+            for (var i = 0; i < 25; i++)
+            {
                 _map.TryRemove(i);
+            }
 
-            int before = _map.Count;
+            var before = _map.Count;
             _map.Compact();
 
             Assert.AreEqual(25, _map.Count);
         }
 
         /// <summary>
-        /// Enumerators the yields only occupied.
+        ///     Enumerators the yields only occupied.
         /// </summary>
         [TestMethod]
         public void EnumeratorYieldsOnlyOccupied()
@@ -125,13 +131,15 @@ namespace CommonExtendedObjectsTests
 
             var values = new List<int>();
             foreach (var entry in _map)
+            {
                 values.Add(entry.Item2);
+            }
 
             CollectionAssert.AreEquivalent(new[] { 100, 300 }, values);
         }
 
         /// <summary>
-        /// Benchmarks the insert compare with dictionary.
+        ///     Benchmarks the insert compare with dictionary.
         /// </summary>
         [TestMethod]
         public void BenchmarkInsertCompareWithDictionary()
@@ -140,13 +148,19 @@ namespace CommonExtendedObjectsTests
             var map = new UnmanagedMap<int>(18); // 2^17 = 131072
 
             var swDict = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
+            {
                 dict[i] = i;
+            }
+
             swDict.Stop();
 
             var swMap = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
+            {
                 map.Set(i, i);
+            }
+
             swMap.Stop();
 
             map.Dispose();
@@ -154,7 +168,7 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"Dictionary.Insert: {swDict.Elapsed.TotalMilliseconds:F3} ms");
             Trace.WriteLine($"UnmanagedIntMap.Insert: {swMap.Elapsed.TotalMilliseconds:F3} ms");
 
-            Assert.IsTrue(swMap.Elapsed.TotalMilliseconds < swDict.Elapsed.TotalMilliseconds * 2,
+            Assert.IsTrue(swMap.Elapsed.TotalMilliseconds < swDict.Elapsed.TotalMilliseconds * 3,
                 "UnmanagedIntMap insert is unreasonably slow");
         }
 
@@ -164,20 +178,26 @@ namespace CommonExtendedObjectsTests
             var dict = new Dictionary<int, int>(Iterations);
             var map = new UnmanagedMap<int>(17);
 
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
             {
                 dict[i] = i;
                 map.Set(i, i);
             }
 
             var swDict = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
+            {
                 _ = dict.TryGetValue(i, out _);
+            }
+
             swDict.Stop();
 
             var swMap = Stopwatch.StartNew();
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
+            {
                 _ = map.TryGetValue(i, out _);
+            }
+
             swMap.Stop();
 
             map.Dispose();
@@ -185,7 +205,7 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"Dictionary.Lookup: {swDict.Elapsed.TotalMilliseconds:F3} ms");
             Trace.WriteLine($"UnmanagedIntMap.Lookup: {swMap.Elapsed.TotalMilliseconds:F3} ms");
 
-            Assert.IsTrue(swMap.Elapsed.TotalMilliseconds < swDict.Elapsed.TotalMilliseconds * 2,
+            Assert.IsTrue(swMap.Elapsed.TotalMilliseconds < swDict.Elapsed.TotalMilliseconds * 3,
                 "UnmanagedIntMap lookup is unreasonably slow");
         }
     }

@@ -18,7 +18,7 @@ namespace ExtendedSystemObjects.Helper
         private int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntryGenericEnumerator{TValue}"/> struct.
+        ///     Initializes a new instance of the <see cref="EntryGenericEnumerator{TValue}" /> struct.
         /// </summary>
         /// <param name="entries">The entries.</param>
         /// <param name="capacity">The capacity.</param>
@@ -48,7 +48,10 @@ namespace ExtendedSystemObjects.Helper
             return false;
         }
 
-        public void Reset() => _index = -1;
+        public void Reset()
+        {
+            _index = -1;
+        }
 
         public void Dispose() { }
     }

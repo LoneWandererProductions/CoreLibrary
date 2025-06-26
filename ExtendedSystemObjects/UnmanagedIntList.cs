@@ -148,25 +148,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-        /// <summary>
-        /// Removes the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>Removes the called Value.</returns>
-        public bool Remove(int value)
-        {
-            for (int i = 0; i < Length; i++)
-            {
-                if (_ptr[i] == value)
-                {
-                    RemoveAt(i);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Removes one or more elements starting at the specified index.
@@ -231,6 +212,25 @@ namespace ExtendedSystemObjects
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Removes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Removes the called Value.</returns>
+        public bool Remove(int value)
+        {
+            for (var i = 0; i < Length; i++)
+            {
+                if (_ptr[i] == value)
+                {
+                    RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

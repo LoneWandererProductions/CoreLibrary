@@ -15,13 +15,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonExtendedObjectsTests
 {
     /// <summary>
-    /// Some basic sanity tests for my list
+    ///     Some basic sanity tests for my list
     /// </summary>
     [TestClass]
     public class IntListTests
     {
         /// <summary>
-        /// The item count
+        ///     The item count
         /// </summary>
         private const int ItemCount = 1_000_000;
 
@@ -249,7 +249,7 @@ namespace CommonExtendedObjectsTests
         }
 
         /// <summary>
-        /// Clones the sorted returns sorted list.
+        ///     Clones the sorted returns sorted list.
         /// </summary>
         [TestMethod]
         public void CloneSortedReturnsSortedList()
@@ -263,6 +263,139 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(3, sorted[1]);
             Assert.AreEqual(5, sorted[2]);
             Assert.AreEqual(8, sorted[3]);
+        }
+
+        /// <summary>
+        ///     Removes at multiple elements works correctly.
+        /// </summary>
+        [TestMethod]
+        public void RemoveAtMultipleElementsWorksCorrectly()
+        {
+            var list = new UnmanagedIntList(10);
+            for (var i = 0; i < 10; i++)
+            {
+                list.Add(i); // [0, 1, 2, ..., 9]
+            }
+
+            list.RemoveAt(3, 4); // Should remove 3,4,5,6 → Result: [0,1,2,7,8,9]
+
+            Assert.AreEqual(6, list.Length);
+            Assert.AreEqual(0, list[0]);
+            Assert.AreEqual(1, list[1]);
+            Assert.AreEqual(2, list[2]);
+            Assert.AreEqual(7, list[3]);
+            Assert.AreEqual(8, list[4]);
+            Assert.AreEqual(9, list[5]);
+        }
+
+
+        /// <summary>
+        ///     Benchmarks the add performance.
+        /// </summary>
+        [TestMethod]
+        public void BenchmarkAddPerformance()
+        {
+            var list = new List<int>();
+            var unmanaged = new UnmanagedIntList();
+
+            var swList = Stopwatch.StartNew();
+            for (var i = 0; i < ItemCount; i++)
+            {
+                list.Add(i);
+            }
+
+            swList.Stop();
+
+            var swUnmanaged = Stopwatch.StartNew();
+            for (var i = 0; i < ItemCount; i++)
+            {
+                unmanaged.Add(i);
+            }
+
+            swUnmanaged.Stop();
+
+            Console.WriteLine($"List<int>.Add: {swList.ElapsedMilliseconds} ms");
+            Console.WriteLine($"UnmanagedIntList.Add: {swUnmanaged.ElapsedMilliseconds} ms");
+
+            unmanaged.Dispose();
+
+            // Relax assertion, e.g. allow unmanaged to be up to 5x slower
+            Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= swList.ElapsedMilliseconds * 5,
+                "UnmanagedIntList.Add is too slow.");
+        }
+
+
+        /// <summary>
+        ///     Benchmarks the remove performance.
+        /// </summary>
+        [TestMethod]
+        public void BenchmarkRemovePerformance()
+        {
+            var list = new List<int>();
+            var unmanaged = new UnmanagedIntList();
+
+            for (var i = 0; i < ItemCount; i++)
+            {
+                list.Add(i);
+                unmanaged.Add(i);
+            }
+
+            var removeCount = 1000;
+            var removeIndex = list.Count / 2; // fixed middle index
+
+            var swList = Stopwatch.StartNew();
+            for (var i = 0; i < removeCount; i++)
+            {
+                list.RemoveAt(removeIndex);
+            }
+
+            swList.Stop();
+
+            var swUnmanaged = Stopwatch.StartNew();
+            for (var i = 0; i < removeCount; i++)
+            {
+                unmanaged.RemoveAt(removeIndex);
+            }
+
+            swUnmanaged.Stop();
+
+            Console.WriteLine($"List<int>.RemoveAt: {swList.ElapsedMilliseconds} ms");
+            Console.WriteLine($"UnmanagedIntList.RemoveAt: {swUnmanaged.ElapsedMilliseconds} ms");
+
+            unmanaged.Dispose();
+
+            //TODO fix this!
+#if DEBUG
+            //Assert.AreEqual(list.Count, unmanaged.Length);
+#endif
+        }
+
+        /// <summary>
+        ///     Benchmarks the peek and pop.
+        /// </summary>
+        [TestMethod]
+        public void BenchmarkPeekAndPop()
+        {
+            var unmanaged = new UnmanagedIntList();
+            for (var i = 0; i < 100_000; i++)
+            {
+                unmanaged.Add(i);
+            }
+
+            var sw = Stopwatch.StartNew();
+            for (var i = 0; i < 100_000; i++)
+            {
+                var v = unmanaged.Peek();
+                var p = unmanaged.Pop();
+                Assert.AreEqual(v, p);
+            }
+
+            sw.Stop();
+
+            Console.WriteLine($"UnmanagedIntList.Peek + Pop: {sw.ElapsedMilliseconds} ms");
+
+            Assert.AreEqual(0, unmanaged.Length);
+            unmanaged.Dispose();
         }
 
 #if DEBUG
@@ -287,121 +420,5 @@ namespace CommonExtendedObjectsTests
             using var list = new UnmanagedIntList(1) { [3] = 99 };
         }
 #endif
-
-        /// <summary>
-        /// Removes at multiple elements works correctly.
-        /// </summary>
-        [TestMethod]
-        public void RemoveAtMultipleElementsWorksCorrectly()
-        {
-            var list = new UnmanagedIntList(10);
-            for (int i = 0; i < 10; i++)
-                list.Add(i); // [0, 1, 2, ..., 9]
-
-            list.RemoveAt(3, 4); // Should remove 3,4,5,6 → Result: [0,1,2,7,8,9]
-
-            Assert.AreEqual(6, list.Length);
-            Assert.AreEqual(0, list[0]);
-            Assert.AreEqual(1, list[1]);
-            Assert.AreEqual(2, list[2]);
-            Assert.AreEqual(7, list[3]);
-            Assert.AreEqual(8, list[4]);
-            Assert.AreEqual(9, list[5]);
-        }
-
-
-        /// <summary>
-        /// Benchmarks the add performance.
-        /// </summary>
-        [TestMethod]
-        public void BenchmarkAddPerformance()
-        {
-            var list = new List<int>();
-            var unmanaged = new UnmanagedIntList();
-
-            var swList = Stopwatch.StartNew();
-            for (int i = 0; i < ItemCount; i++)
-                list.Add(i);
-            swList.Stop();
-
-            var swUnmanaged = Stopwatch.StartNew();
-            for (int i = 0; i < ItemCount; i++)
-                unmanaged.Add(i);
-            swUnmanaged.Stop();
-
-            Console.WriteLine($"List<int>.Add: {swList.ElapsedMilliseconds} ms");
-            Console.WriteLine($"UnmanagedIntList.Add: {swUnmanaged.ElapsedMilliseconds} ms");
-
-            unmanaged.Dispose();
-
-            // Relax assertion, e.g. allow unmanaged to be up to 5x slower
-            Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= swList.ElapsedMilliseconds * 5,
-                "UnmanagedIntList.Add is too slow.");
-        }
-
-
-        /// <summary>
-        /// Benchmarks the remove performance.
-        /// </summary>
-        [TestMethod]
-        public void BenchmarkRemovePerformance()
-        {
-            var list = new List<int>();
-            var unmanaged = new UnmanagedIntList();
-
-            for (int i = 0; i < ItemCount; i++)
-            {
-                list.Add(i);
-                unmanaged.Add(i);
-            }
-
-            int removeCount = 1000;
-            int removeIndex = list.Count / 2; // fixed middle index
-
-            var swList = Stopwatch.StartNew();
-            for (int i = 0; i < removeCount; i++)
-                list.RemoveAt(removeIndex);
-            swList.Stop();
-
-            var swUnmanaged = Stopwatch.StartNew();
-            for (int i = 0; i < removeCount; i++)
-                unmanaged.RemoveAt(removeIndex);
-            swUnmanaged.Stop();
-
-            Console.WriteLine($"List<int>.RemoveAt: {swList.ElapsedMilliseconds} ms");
-            Console.WriteLine($"UnmanagedIntList.RemoveAt: {swUnmanaged.ElapsedMilliseconds} ms");
-
-            unmanaged.Dispose();
-
-            //TODO fix this!
-#if DEBUG
-            //Assert.AreEqual(list.Count, unmanaged.Length);
-#endif
-        }
-
-        /// <summary>
-        /// Benchmarks the peek and pop.
-        /// </summary>
-        [TestMethod]
-        public void BenchmarkPeekAndPop()
-        {
-            var unmanaged = new UnmanagedIntList();
-            for (int i = 0; i < 100_000; i++)
-                unmanaged.Add(i);
-
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < 100_000; i++)
-            {
-                var v = unmanaged.Peek();
-                var p = unmanaged.Pop();
-                Assert.AreEqual(v, p);
-            }
-            sw.Stop();
-
-            Console.WriteLine($"UnmanagedIntList.Peek + Pop: {sw.ElapsedMilliseconds} ms");
-
-            Assert.AreEqual(0, unmanaged.Length);
-            unmanaged.Dispose();
-        }
     }
 }
