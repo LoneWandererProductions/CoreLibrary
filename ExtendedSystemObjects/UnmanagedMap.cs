@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +16,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 
+
 namespace ExtendedSystemObjects
 {
-    public unsafe class UnmanagedMap<TValue> : IEnumerable<(int, TValue)>, IDisposable where TValue : unmanaged
+    public sealed unsafe class UnmanagedMap<TValue> : IEnumerable<(int, TValue)>, IDisposable where TValue : unmanaged
     {
         /// <summary>
         ///     The minimum power of 2
@@ -36,11 +39,6 @@ namespace ExtendedSystemObjects
         private int _capacityPowerOf2;
 
         private EntryGeneric<TValue>* _entries;
-
-        /// <summary>
-        ///     The power
-        /// </summary>
-        private int _power;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnmanagedMap{TValue}" /> class.
@@ -87,10 +85,7 @@ namespace ExtendedSystemObjects
         {
             get
             {
-                foreach (var key in GetKeysSnapshot())
-                {
-                    yield return key;
-                }
+                return GetKeysSnapshot();
             }
         }
 

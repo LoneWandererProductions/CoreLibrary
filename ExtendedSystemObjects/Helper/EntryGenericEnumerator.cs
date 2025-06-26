@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace ExtendedSystemObjects.Helper
 {
-    public unsafe struct EntryGenericEnumerator<TValue> : IEnumerator<(int, TValue)>
+    public unsafe struct EntryGenericEnumerator<TValue> : IEnumerator<(int, TValue)> where TValue : unmanaged
     {
         private readonly EntryGeneric<TValue>* _entries;
         private readonly int _capacity;
