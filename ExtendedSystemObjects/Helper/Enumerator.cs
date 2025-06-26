@@ -18,7 +18,7 @@ namespace ExtendedSystemObjects.Helper
     /// </summary>
     /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
     /// <seealso cref="T:System.Collections.Generic.IEnumerator`1" />
-    internal unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
+    public unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
     {
         /// <summary>
         ///     The data

@@ -7,15 +7,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonExtendedObjectsTests
 {
     [TestClass]
-    public class UnmanagedIntMapTests
+    public class UnmanagedMapTests
     {
-        private UnmanagedIntMap _map;
+        private UnmanagedMap<int> _map;
         private const int Iterations = 100_000;
 
         [TestInitialize]
         public void Setup()
         {
-            _map = new UnmanagedIntMap();
+            _map = new UnmanagedMap<int>();
         }
 
         [TestCleanup]
@@ -87,7 +87,7 @@ namespace CommonExtendedObjectsTests
 
             var values = new List<int>();
             foreach (var entry in _map)
-                values.Add(entry.Value);
+                values.Add(entry.Item2);
 
             CollectionAssert.AreEquivalent(new[] { 100, 300 }, values);
         }
@@ -96,7 +96,7 @@ namespace CommonExtendedObjectsTests
         public void Benchmark_Insert_CompareWithDictionary()
         {
             var dict = new Dictionary<int, int>(Iterations);
-            var map = new UnmanagedIntMap(18); // 2^17 = 131072
+            var map = new UnmanagedMap<int>(18); // 2^17 = 131072
 
             var swDict = Stopwatch.StartNew();
             for (int i = 0; i < Iterations; i++)
@@ -121,7 +121,7 @@ namespace CommonExtendedObjectsTests
         public void Benchmark_Lookup_CompareWithDictionary()
         {
             var dict = new Dictionary<int, int>(Iterations);
-            var map = new UnmanagedIntMap(17);
+            var map = new UnmanagedMap<int>(17);
 
             for (int i = 0; i < Iterations; i++)
             {

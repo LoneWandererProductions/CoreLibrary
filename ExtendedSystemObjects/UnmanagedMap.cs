@@ -1,26 +1,35 @@
-﻿using System;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        UnmanagedMap.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using ExtendedSystemObjects.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
-    public sealed unsafe class UnmanagedIntMap : IEnumerable<Entry>, IDisposable
+    public unsafe class UnmanagedMap<TValue> : IEnumerable<(int, TValue)>, IDisposable where TValue : unmanaged
     {
-        private const int Invalid = -1;
+        private EntryGeneric<TValue>* _entries;
         private int _capacity;
-        private Entry* _entries;
-        private int _index;
+        public int Count { get; private set; }
+        private int _power;
 
         private int _capacityPowerOf2;
 
         private const int MinPowerOf2 = 4;  // 16 entries minimum
         private const int MaxPowerOf2 = 20; // ~1 million entries max
 
-        public UnmanagedIntMap(int? capacityPowerOf2 = null)
+
+        public UnmanagedMap(int? capacityPowerOf2 = null)
         {
             var power = capacityPowerOf2 ?? 8;
             if (power < MinPowerOf2)
@@ -29,42 +38,11 @@ namespace ExtendedSystemObjects
             _capacity = 1 << power;
             _capacityPowerOf2 = power;
 
-            var size = sizeof(Entry) * _capacity;
-            _entries = (Entry*)Marshal.AllocHGlobal(size);
-            Unsafe.InitBlock(_entries, 0, (uint)size);
-            Count = 0;
-            _index = -1;
+            _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * _capacity);
+            Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * _capacity));
         }
 
-        public int Count { get; private set; }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsKey(int key)
-        {
-            var mask = _capacity - 1;
-            var index = key & mask;
-
-            for (var i = 0; i < _capacity; i++)
-            {
-                ref var slot = ref _entries[(index + i) & mask];
-
-                switch (slot.Used)
-                {
-                    case SharedResources.Empty:
-                        return false;
-                    case SharedResources.Occupied when slot.Key == key:
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
-        public int this[int key]
-        {
-            get => Get(key);
-            set => Set(key, value);
-        }
+        public int Capacity => _capacity;
 
         public IEnumerable<int> Keys
         {
@@ -75,27 +53,14 @@ namespace ExtendedSystemObjects
             }
         }
 
-        public int Get(int key)
+        public TValue this[int key]
         {
-            var mask = _capacity - 1;
-            var index = key & mask;
-
-            for (var i = 0; i < _capacity; i++)
-            {
-                ref var slot = ref _entries[(index + i) & mask];
-
-                if (slot.Used == SharedResources.Empty)
-                    break;
-
-                if (slot.Used == SharedResources.Occupied && slot.Key == key)
-                    return slot.Value;
-            }
-
-            throw new KeyNotFoundException($"Key {key} not found.");
+            get => Get(key);
+            set => Set(key, value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(int key, int value)
+        public void Set(int key, TValue value)
         {
             var compactTried = false;
             var resizeTried = false;
@@ -167,8 +132,7 @@ namespace ExtendedSystemObjects
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(int key, out int value)
+        public TValue Get(int key)
         {
             var mask = _capacity - 1;
             var index = key & mask;
@@ -181,41 +145,27 @@ namespace ExtendedSystemObjects
                     break;
 
                 if (slot.Used == SharedResources.Occupied && slot.Key == key)
-                {
-                    value = slot.Value;
-                    return true;
-                }
+                    return slot.Value;
             }
 
-            value = Invalid;
-            return false;
+            throw new KeyNotFoundException($"Key {key} not found.");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryRemove(int key)
+        public bool ContainsKey(int key) => FindIndex(key) >= 0;
+
+        public bool TryGetValue(int key, out TValue value)
         {
-            var mask = _capacity - 1;
-            var index = key & mask;
-
-            for (var i = 0; i < _capacity; i++)
+            int idx = FindIndex(key);
+            if (idx >= 0)
             {
-                ref var slot = ref _entries[(index + i) & mask];
-
-                if (slot.Used == SharedResources.Empty)
-                    break;
-
-                if (slot.Used != SharedResources.Occupied || slot.Key != key)
-                    continue;
-
-                slot.Used = SharedResources.Tombstone;
-                Count--;
+                value = _entries[idx].Value;
                 return true;
             }
-
+            value = default;
             return false;
         }
 
-        public bool TryRemove(int key, out int value)
+        public bool TryRemove(int key, out TValue value)
         {
             var mask = _capacity - 1;
             var startIndex = key & mask;
@@ -241,13 +191,42 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+
+        public bool TryRemove(int key)
+        {
+            var mask = _capacity - 1;
+            for (int i = 0; i < _capacity; i++)
+            {
+                int idx = (key + i) & mask;
+                ref var slot = ref _entries[idx];
+
+                if (slot.Used == SharedResources.Empty)
+                    break;
+
+                if (slot.Used == SharedResources.Occupied && slot.Key == key)
+                {
+                    slot.Used = SharedResources.Tombstone;
+                    Count--;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public EntryGenericEnumerator<TValue> GetEnumerator() => new EntryGenericEnumerator<TValue>(_entries, _capacity);
+        
+        IEnumerator<(int, TValue)> IEnumerable<(int, TValue)>.GetEnumerator() => GetEnumerator();
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         public void Resize()
         {
             if (_capacityPowerOf2 >= MaxPowerOf2)
                 return;
 
             _capacityPowerOf2++;
-            var newMap = new UnmanagedIntMap(_capacityPowerOf2);
+            var newMap = new UnmanagedMap<TValue>(_capacityPowerOf2);
 
             for (var i = 0; i < _capacity; i++)
             {
@@ -267,6 +246,13 @@ namespace ExtendedSystemObjects
             newMap._entries = null;
         }
 
+        public void EnsureCapacity(int expectedCount)
+        {
+            while (expectedCount > _capacity * 0.7f && _capacityPowerOf2 < MaxPowerOf2)
+                Resize();
+        }
+
+
         public void Compact()
         {
             var loadFactor = Count / (float)_capacity;
@@ -275,7 +261,7 @@ namespace ExtendedSystemObjects
                 return;
 
             int targetPowerOf2 = Math.Max(MinPowerOf2, _capacityPowerOf2 - 1);
-            var newMap = new UnmanagedIntMap(targetPowerOf2);
+            var newMap = new UnmanagedMap<TValue>(targetPowerOf2);
 
             for (var i = 0; i < _capacity; i++)
             {
@@ -293,10 +279,13 @@ namespace ExtendedSystemObjects
             newMap._entries = null; // prevent double free
         }
 
-        public void EnsureCapacity(int expectedCount)
+        public void Clear()
         {
-            while (expectedCount > _capacity * 0.7f && _capacityPowerOf2 < MaxPowerOf2)
-                Resize();
+            if (_entries != null)
+            {
+                Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * _capacity));
+                Count = 0;
+            }
         }
 
         public void Free()
@@ -309,30 +298,6 @@ namespace ExtendedSystemObjects
 
             _capacity = 0;
             Count = 0;
-        }
-
-        public void Clear()
-        {
-            if (_entries != null)
-            {
-                var size = sizeof(Entry) * _capacity;
-                Unsafe.InitBlock(_entries, 0, (uint)size);
-            }
-
-            Count = 0;
-        }
-
-        public IEnumerator<Entry> GetEnumerator()
-        {
-            return new EntryEnumerator(_entries, _capacity);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public void Dispose()
-        {
-            Free();
-            GC.SuppressFinalize(this);
         }
 
         [Conditional("DEBUG")]
@@ -349,6 +314,38 @@ namespace ExtendedSystemObjects
             }
         }
 
+        public void Dispose()
+        {
+            Free();
+            GC.SuppressFinalize(this);
+        }
+
+        ~UnmanagedMap()
+        {
+            if (_entries != null)
+                Free();
+        }
+
+        private int FindIndex(int key)
+        {
+            var mask = _capacity - 1;
+            var index = key & mask;
+
+            for (var i = 0; i < _capacity; i++)
+            {
+                var idx = (index + i) & mask;
+                ref var slot = ref _entries[idx];
+
+                if (slot.Used == SharedResources.Empty)
+                    break;
+                if (slot.Used == SharedResources.Occupied && slot.Key == key)
+                    return idx;
+            }
+
+            return -1;
+        }
+
+
         private List<int> GetKeysSnapshot()
         {
             var keys = new List<int>(Count);
@@ -360,12 +357,6 @@ namespace ExtendedSystemObjects
             }
 
             return keys;
-        }
-
-        ~UnmanagedIntMap()
-        {
-            if (_entries != null)
-                Free();
         }
     }
 }
