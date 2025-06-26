@@ -1,4 +1,12 @@
-﻿using System;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        UnmanagedMemoryHelperTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

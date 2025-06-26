@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        UnmanagedMap.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     A faster unmanaged Key Value structure much like a Dicitionary. The difference is that we only mark entries as deleted and only on compress we actual delete it.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -20,15 +20,41 @@ namespace ExtendedSystemObjects
     {
         private EntryGeneric<TValue>* _entries;
         private int _capacity;
+
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <value>
+        /// The count.
+        /// </value>
         public int Count { get; private set; }
+
+        /// <summary>
+        /// The power
+        /// </summary>
         private int _power;
 
+        /// <summary>
+        /// The capacity power of2
+        /// </summary>
         private int _capacityPowerOf2;
 
-        private const int MinPowerOf2 = 4;  // 16 entries minimum
-        private const int MaxPowerOf2 = 20; // ~1 million entries max
+        /// <summary>
+        /// The minimum power of 2
+        /// 16 entries minimum
+        /// </summary>
+        private const int MinPowerOf2 = 4;
 
+        /// <summary>
+        /// The maximum power of 2
+        /// ~1 million entries max
+        /// </summary>
+        private const int MaxPowerOf2 = 20;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnmanagedMap{TValue}"/> class.
+        /// </summary>
+        /// <param name="capacityPowerOf2">The capacity power of 2. So be carefull. Optional but max is at 20.</param>
         public UnmanagedMap(int? capacityPowerOf2 = null)
         {
             var power = capacityPowerOf2 ?? 8;
@@ -42,8 +68,20 @@ namespace ExtendedSystemObjects
             Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * _capacity));
         }
 
+        /// <summary>
+        /// Gets the capacity.
+        /// </summary>
+        /// <value>
+        /// The capacity.
+        /// </value>
         public int Capacity => _capacity;
 
+        /// <summary>
+        /// Gets the keys.
+        /// </summary>
+        /// <value>
+        /// The keys.
+        /// </value>
         public IEnumerable<int> Keys
         {
             get
@@ -53,12 +91,26 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="TValue"/> with the specified key.
+        /// </summary>
+        /// <value>
+        /// The <see cref="TValue"/>.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public TValue this[int key]
         {
             get => Get(key);
             set => Set(key, value);
         }
 
+        /// <summary>
+        /// Sets the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <exception cref="System.InvalidOperationException">UnmanagedIntMap full after compact and resize</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(int key, TValue value)
         {
@@ -132,6 +184,12 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Gets the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
         public TValue Get(int key)
         {
             var mask = _capacity - 1;
@@ -214,10 +272,26 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns>Enumerator for the key value pair.</returns>
         public EntryGenericEnumerator<TValue> GetEnumerator() => new EntryGenericEnumerator<TValue>(_entries, _capacity);
-        
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator<(int, TValue)> IEnumerable<(int, TValue)>.GetEnumerator() => GetEnumerator();
-        
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void Resize()
@@ -320,6 +394,9 @@ namespace ExtendedSystemObjects
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="UnmanagedMap{TValue}"/> class.
+        /// </summary>
         ~UnmanagedMap()
         {
             if (_entries != null)

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/Enumerator.cs
- * PURPOSE:     Since I use an older .etn Version I need to use this helper
+ * PURPOSE:     Since I use an older .net Version I need to use this helper for my arrays and lists. All unmanaged.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 

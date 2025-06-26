@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        EntryGenericEnumerator.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Custom enumerator for my unsage ManagedMap
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

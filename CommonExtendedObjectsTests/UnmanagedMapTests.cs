@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        UnmanagedMapTests.cs
+ * PURPOSE:     Some basic function tests for UnmanagedMap
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
@@ -9,31 +16,50 @@ namespace CommonExtendedObjectsTests
     [TestClass]
     public class UnmanagedMapTests
     {
+        /// <summary>
+        /// The test object.
+        /// </summary>
         private UnmanagedMap<int> _map;
+
+        /// <summary>
+        /// The iterations
+        /// </summary>
         private const int Iterations = 100_000;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _map = new UnmanagedMap<int>();
         }
 
+        /// <summary>
+        /// Cleanups this instance.
+        /// </summary>
         [TestCleanup]
         public void Cleanup()
         {
             _map.Dispose();
         }
 
+        /// <summary>
+        /// Sets the then try get value returns value.
+        /// </summary>
         [TestMethod]
-        public void Set_ThenTryGetValue_ReturnsValue()
+        public void SetThenTryGetValueReturnsValue()
         {
             _map.Set(42, 99);
             Assert.IsTrue(_map.TryGetValue(42, out var value));
             Assert.AreEqual(99, value);
         }
 
+        /// <summary>
+        /// Overwrites the value updates correctly.
+        /// </summary>
         [TestMethod]
-        public void OverwriteValue_UpdatesCorrectly()
+        public void OverwriteValueUpdatesCorrectly()
         {
             _map.Set(1, 10);
             _map.Set(1, 20);
@@ -41,16 +67,22 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(20, value);
         }
 
+        /// <summary>
+        /// Tries the remove removes entry.
+        /// </summary>
         [TestMethod]
-        public void TryRemove_RemovesEntry()
+        public void TryRemoveRemovesEntry()
         {
             _map.Set(123, 456);
             Assert.IsTrue(_map.TryRemove(123));
             Assert.IsFalse(_map.ContainsKey(123));
         }
 
+        /// <summary>
+        /// Resizes the still keeps all entries.
+        /// </summary>
         [TestMethod]
-        public void Resize_StillKeepsAllEntries()
+        public void ResizeStillKeepsAllEntries()
         {
             for (int i = 0; i < 200; i++)
                 _map.Set(i, i * 10);
@@ -62,8 +94,11 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Compacts the reclaims space.
+        /// </summary>
         [TestMethod]
-        public void Compact_ReclaimsSpace()
+        public void CompactReclaimsSpace()
         {
             for (int i = 0; i < 50; i++)
                 _map.Set(i, i);
@@ -77,8 +112,11 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(25, _map.Count);
         }
 
+        /// <summary>
+        /// Enumerators the yields only occupied.
+        /// </summary>
         [TestMethod]
-        public void Enumerator_YieldsOnlyOccupied()
+        public void EnumeratorYieldsOnlyOccupied()
         {
             _map.Set(1, 100);
             _map.Set(2, 200);
@@ -92,8 +130,11 @@ namespace CommonExtendedObjectsTests
             CollectionAssert.AreEquivalent(new[] { 100, 300 }, values);
         }
 
+        /// <summary>
+        /// Benchmarks the insert compare with dictionary.
+        /// </summary>
         [TestMethod]
-        public void Benchmark_Insert_CompareWithDictionary()
+        public void BenchmarkInsertCompareWithDictionary()
         {
             var dict = new Dictionary<int, int>(Iterations);
             var map = new UnmanagedMap<int>(18); // 2^17 = 131072

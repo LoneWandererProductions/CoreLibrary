@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreBuilder
+ * FILE:        StringLiteralRewrite.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
