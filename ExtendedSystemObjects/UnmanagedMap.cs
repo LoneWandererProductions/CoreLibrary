@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        UnmanagedMap.cs
- * PURPOSE:     A faster unmanaged Key Value structure much like a Dicitionary. The difference is that we only mark entries as deleted and only on compress we actual delete it.
+ * PURPOSE:     A faster unmanaged Key Value structure much like a Dictionary. The difference is that we only mark entries as deleted and only on compress we actual delete it.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

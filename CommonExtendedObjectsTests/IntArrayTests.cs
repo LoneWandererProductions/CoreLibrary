@@ -97,9 +97,9 @@ namespace CommonExtendedObjectsTests
 
             arr.Clear();
 
-            for (var i = 0; i < arr.Length; i++)
+            foreach (var t in arr)
             {
-                Assert.AreEqual(0, arr[i]);
+                Assert.AreEqual(0, t);
             }
 
             arr.Dispose();
