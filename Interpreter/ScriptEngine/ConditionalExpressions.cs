@@ -95,7 +95,6 @@ namespace Interpreter.ScriptEngine
                 Trace.WriteLine("Adding command block without recursion");
                 obj.Commands.Add(category, key, value);
             }
-
         }
 
         /// <summary>

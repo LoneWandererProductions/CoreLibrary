@@ -121,6 +121,54 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="TV"/> with the specified key.
+        /// </summary>
+        /// <value>
+        /// The <see cref="TV"/>.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">The given key '{key}' was not present in the dictionary.</exception>
+        public TV this[TK key]
+        {
+            get
+            {
+                _lock.EnterReadLock();
+                try
+                {
+                    if (_data.TryGetValue(key, out var entry))
+                        return entry.Value;
+                    throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
+            }
+            set
+            {
+                _lock.EnterWriteLock();
+                try
+                {
+                    if (_data.ContainsKey(key))
+                    {
+                        var (Category, Value) = _data[key];
+                        _data[key] = (Category, value);
+                    }
+                    else
+                    {
+                        _data[key] = (string.Empty, value);
+                    }
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+        }
+
+
+        /// <summary>
         ///     Gets the keys.
         /// </summary>
         /// <returns>List of Keys</returns>
@@ -182,6 +230,24 @@ namespace ExtendedSystemObjects
             finally
             {
                 _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        ///     Determines whether the dictionary contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the dictionary.</param>
+        /// <returns>true if the dictionary contains an element with the specified key; otherwise, false.</returns>
+        public bool ContainsKey(TK key)
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.ContainsKey(key);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
             }
         }
 
@@ -409,9 +475,7 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(SharedResources.KeyCategoryValueFormat, entry.Key,
-                        entry.Value.Category,
-                        entry.Value.Value));
+                    $"[{entry.Key}] ({entry.Value.Category}):\n  {entry.Value.Value}");
 
                 return string.Join(Environment.NewLine, entries);
             }
@@ -420,6 +484,7 @@ namespace ExtendedSystemObjects
                 _lock.ExitReadLock();
             }
         }
+
 
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.

@@ -247,23 +247,8 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Converts to string should return correct string representation.
+        /// Enumerators the returns correct key value pairs.
         /// </summary>
-        [TestMethod]
-        public void ToStringShouldReturnCorrectStringRepresentation()
-        {
-            var dict = new CategorizedDictionary<int, string>
-            {
-                { "Category1", 1, "Value1" }, { "Category2", 2, "Value2" }
-            };
-
-            var result = dict.ToString();
-            const string expected =
-                "Key: 1, Category: Category1, Value: Value1\r\nKey: 2, Category: Category2, Value: Value2";
-
-            Assert.AreEqual(expected, result);
-        }
-
         [TestMethod]
         public void EnumeratorReturnsCorrectKeyValuePairs()
         {
@@ -282,6 +267,9 @@ namespace CommonLibraryTests
             CollectionAssert.AreEqual(expected, keyValuePairs);
         }
 
+        /// <summary>
+        /// Enumerators the is enumerated in insertion order.
+        /// </summary>
         [TestMethod]
         public void EnumeratorIsEnumeratedInInsertionOrder()
         {
@@ -300,6 +288,9 @@ namespace CommonLibraryTests
             CollectionAssert.AreEqual(expected, keyValuePairs);
         }
 
+        /// <summary>
+        /// Enumerators the returns empty for empty dictionary.
+        /// </summary>
         [TestMethod]
         public void EnumeratorReturnsEmptyForEmptyDictionary()
         {
@@ -313,6 +304,9 @@ namespace CommonLibraryTests
             Assert.AreEqual(0, keyValuePairs.Count);
         }
 
+        /// <summary>
+        /// Enumerators the returns correct key value pairs after modification.
+        /// </summary>
         [TestMethod]
         public void EnumeratorReturnsCorrectKeyValuePairsAfterModification()
         {

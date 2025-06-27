@@ -153,9 +153,11 @@ namespace Interpreter
                 irtInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
             }
 
+            UserFeedback feedback = null;
+
             //if none is available use the standard one from Internal
             //if not we use the provided one
-            if (_userFeedback?.TryGetValue(extension.FeedBackId, out var feedback) != true)
+            if (_userFeedback?.TryGetValue(extension.FeedBackId, out feedback) != true)
             {
                 feedback = IrtConst.InternalFeedback[-1];
             }

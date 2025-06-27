@@ -25,53 +25,32 @@ namespace Interpreter
     /// <seealso cref="IDisposable" />
     public sealed class IrtHandleContainer : IDisposable
     {
-        /// <summary>
-        ///     The disposed
-        /// </summary>
         private bool _disposed;
-
-        /// <summary>
-        ///     The irt handle internal
-        /// </summary>
         private IrtHandleInternal _irtHandleInternal;
-
-        /// <summary>
-        ///     The prompt
-        /// </summary>
         private Prompt _prompt;
 
-        /// <summary>
-        ///     Prevents a default instance of the <see cref="IrtHandleContainer" /> class from being created.
-        /// </summary>
+        // Persistent storage for parsed and categorized commands
+        private CategorizedDictionary<int, string> _parsedCommands = new();
+
+        // Track nesting level of if blocks
+        private int _ifDepth = 0;
+
         private IrtHandleContainer()
         {
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="IrtHandleContainer" /> class.
-        /// </summary>
-        /// <param name="irtHandleInternal">The irt handle internal.</param>
-        /// <param name="prompt">Call back to the main entry</param>
         internal IrtHandleContainer(IrtHandleInternal irtHandleInternal, Prompt prompt)
         {
             _irtHandleInternal = irtHandleInternal;
             _prompt = prompt;
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Releases all resources used by the <see cref="T:Interpreter.IrtHandleContainer" /> object.
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        ///     Processes the container.
-        /// </summary>
-        /// <param name="parameterPart">Parameter Part.</param>
         internal void CommandContainer(string parameterPart)
         {
             parameterPart = IrtKernel.CutLastOccurrence(parameterPart, IrtConst.AdvancedClose);
@@ -80,10 +59,6 @@ namespace Interpreter
             GenerateCommands(parameterPart);
         }
 
-        /// <summary>
-        ///     Commands the batch execute.
-        /// </summary>
-        /// <param name="parameterPart">The parameter part.</param>
         internal void CommandBatchExecute(string parameterPart)
         {
             parameterPart = IrtKernel.RemoveParenthesis(parameterPart, IrtConst.BaseOpen, IrtConst.BaseClose);
@@ -98,11 +73,6 @@ namespace Interpreter
             GenerateCommands(parameterPart);
         }
 
-        /// <summary>
-        ///     Generates the commands.
-        ///     Here we generate our list
-        /// </summary>
-        /// <param name="parameterPart">The parameter part.</param>
         private void GenerateCommands(string parameterPart)
         {
             var commands = IrtKernel.SplitParameter(parameterPart, IrtConst.NewCommand).ToList();
@@ -111,43 +81,40 @@ namespace Interpreter
             while (currentPosition < commands.Count)
             {
                 var com = commands[currentPosition];
-
-                // Check if it contains a Keyword
                 var key = IrtKernel.CheckForKeyWord(com, IrtConst.InternContainerCommands);
 
                 if (key == IrtConst.Error)
                 {
-                    // Just because we run a container or a batch, we still have to log it
+                    // Unknown command, treat as normal command
                     _prompt.AddToLog(com);
-                    // Mostly use the prompt to add a layer of security
                     _prompt.ConsoleInput(com);
+                    _parsedCommands.Add("COMMAND", currentPosition, com);
                 }
                 else
                 {
                     switch (key)
                     {
-                        // if
-                        case 0:
-                            //currentPosition = HandleIfElseBlock(commands, currentPosition);
+                        case 0: // if
+                            _ifDepth++;
+                            _parsedCommands.Add($"IF_{_ifDepth}", currentPosition, com);
+                            // TODO: Implement actual if block processing if needed
+                            // e.g. await HandleIfElseBlock(commands, currentPosition);
                             break;
-                        // else (ignored, handled by if)
-                        case 1:
+                        case 1: // else
+                            _parsedCommands.Add($"ELSE_{_ifDepth}", currentPosition, com);
                             break;
-                        // goto
-                        case 2:
-                            // If it is a jump command, change the current position
+                        case 2: // goto
+                            _parsedCommands.Add("GOTO", currentPosition, com);
                             currentPosition = IsJumpCommand(com, key, out var jumpPosition, commands)
                                 ? Math.Clamp(jumpPosition, 0, commands.Count - 1)
                                 : IrtConst.Error;
                             break;
-                        // label
-                        case 3:
-                            Trace.WriteLine(com);
+                        case 3: // label
+                            _parsedCommands.Add("LABEL", currentPosition, com);
                             break;
                     }
                 }
 
-                // Check for error condition to break the loop
                 if (currentPosition == IrtConst.Error)
                 {
                     var message = Logging.SetLastError($"{IrtConst.JumpLabelNotFoundError}{com}", 0);
@@ -155,41 +122,27 @@ namespace Interpreter
                     break;
                 }
 
-                currentPosition++; // Move to the next command
+                currentPosition++;
             }
+
+            // At this point, _parsedCommands holds the full categorized command list
+            // You can expose it or process further as needed
+            Trace.WriteLine($"Parsed {_parsedCommands.Count} commands.");
         }
 
-        /// <summary>
-        ///     Handles if else block.
-        /// </summary>
-        /// <param name="commands">The commands.</param>
-        /// <param name="currentPosition">The current position.</param>
-        /// <returns></returns>
+        // Placeholder for actual if/else block handling (expand as needed)
         private async Task<int> HandleIfElseBlock(List<string> commands, int currentPosition)
         {
-            // Request feedback
+            // TODO: Implement evaluation of the if condition and command execution
+            // You may want to parse nested blocks, execute or skip based on condition
 
-            // Evaluate the if condition
-            //if (feedback)
-            {
-                //ExecuteCommands(ifBlockCommands);
-            }
-            //else if (block.ElseBlockCommands.Count > 0)
-            //{
-            //    //ExecuteCommands(elseBlockCommands);
-            //}
+            // Example placeholder:
+            // bool conditionMet = EvaluateCondition(commands[currentPosition]);
+            // if (conditionMet) { ExecuteIfBlock(); } else { ExecuteElseBlock(); }
 
             return currentPosition;
         }
 
-        /// <summary>
-        ///     Checks if the input is a jump command and extracts the jump position.
-        /// </summary>
-        /// <param name="input">The input command.</param>
-        /// <param name="key">The key indicating the command type.</param>
-        /// <param name="position">The extracted jump position.</param>
-        /// <param name="commands">List of Commands</param>
-        /// <returns><c>true</c> if it is a jump command; otherwise, <c>false</c>.</returns>
         private static bool IsJumpCommand(string input, int key, out int position, IReadOnlyList<string> commands)
         {
             position = 0;
@@ -201,88 +154,61 @@ namespace Interpreter
                 return false;
             }
 
-            // Example logic to determine the jump position from the label
             position = FindLabelPosition(label, commands);
 
             return position >= 0;
         }
 
-        /// <summary>
-        ///     Finds the position of the label in the list of commands.
-        /// </summary>
-        /// <param name="label">The label to find.</param>
-        /// <param name="commands">The commands.</param>
-        /// <returns>
-        ///     The position of the label, or -1 if not found.
-        /// </returns>
         private static int FindLabelPosition(string label, IReadOnlyList<string> commands)
         {
             for (var i = 0; i < commands.Count; i++)
             {
                 var input = commands[i];
                 var check = IrtKernel.CheckFormat(input, IrtConst.InternalLabel, label);
-                if (check) // Customize this condition to match your label logic
+                if (check)
                 {
                     return i;
                 }
             }
 
-            return -1; // Label not found
+            return -1;
         }
 
         /// <summary>
-        ///     Parses the line.
-        ///     I want to make a CategorizedDictionary out of a huge batch file. the id is just the line count, line separator is ;
-        ///     the category is the actual key labels will get the Category LABEL goto GOTO and the value is just the code.
-        ///     the more interesting part will be the nested if else the outer if and else will get the Category IF_1 and ELSE_1
-        ///     this category will start at the if and end at the end of the else branch,
-        ///     the nested ifs will be Called IF_n and ELSE_n +1 etc the idea is to generate a linked list with commands
+        /// Optional helper to parse a single line into categories if needed externally.
         /// </summary>
-        /// <param name="line">The line.</param>
-        /// <param name="lineCount">The line count.</param>
-        /// <param name="ifDepth">If depth.</param>
+        /// <param name="line">The command line</param>
+        /// <param name="lineCount">Line index</param>
+        /// <param name="ifDepth">Current if depth</param>
         private void ParseLine(string line, int lineCount, int ifDepth)
         {
-            var dictionary = new CategorizedDictionary<int, string>();
             if (line.StartsWith(":")) // Label
             {
-                dictionary.Add("LABEL", lineCount, line);
+                _parsedCommands.Add("LABEL", lineCount, line);
             }
             else if (line.Trim().StartsWith("goto")) // Goto
             {
-                dictionary.Add("GOTO", lineCount, line);
+                _parsedCommands.Add("GOTO", lineCount, line);
             }
             else if (line.Trim().StartsWith("if")) // If
             {
-                ifDepth++;
-                dictionary.Add($"IF_{ifDepth}", lineCount, line);
+                _parsedCommands.Add($"IF_{ifDepth + 1}", lineCount, line);
             }
             else if (line.Trim().StartsWith("else")) // Else
             {
-                dictionary.Add($"ELSE_{ifDepth}", lineCount, line);
+                _parsedCommands.Add($"ELSE_{ifDepth}", lineCount, line);
             }
             else // Default
             {
-                dictionary.Add("COMMAND", lineCount, line);
+                _parsedCommands.Add("COMMAND", lineCount, line);
             }
         }
 
-        /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
-        ///     unmanaged resources.
-        /// </param>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return;
-            }
+            if (_disposed) return;
 
             if (disposing)
-                // Dispose managed resources
             {
                 _irtHandleInternal = null;
             }
@@ -292,12 +218,10 @@ namespace Interpreter
             _disposed = true;
         }
 
-        /// <summary>
-        ///     Finalizes an instance of the <see cref="IrtHandleContainer" /> class.
-        /// </summary>
         ~IrtHandleContainer()
         {
             Dispose(false);
         }
     }
 }
+
