@@ -76,31 +76,26 @@ namespace Interpreter.ScriptEngine
             {
                 Trace.WriteLine($"Processing block: Key={key}, Category={category}, Value=\"{value}\"");
 
-                if (category.Equals("If", StringComparison.OrdinalIgnoreCase) &&
+                if ((category.Equals("If", StringComparison.OrdinalIgnoreCase) ||
+                     category.Equals("Else", StringComparison.OrdinalIgnoreCase)) &&
                     IrtKernel.ContainsKeywordWithOpenParenthesis(value, IrtConst.InternalIf))
                 {
-                    // Find exact nested if block substring, excluding any leading commands before 'if'
                     int nestedIfIndex = IrtKernel.FindFirstKeywordIndex(value, IrtConst.InternalIf);
 
                     if (nestedIfIndex != IrtConst.Error)
                     {
                         var nestedIfBlock = value.Substring(nestedIfIndex).Trim();
-                        Trace.WriteLine($"Detected nested if-block, recursing into it at layer {obj.Layer + 1}");
+                        Trace.WriteLine($"Detected nested if-block inside {category} block, recursing into it at layer {obj.Layer + 1}");
                         obj.Nested = true;
-                        ProcessInput(nestedIfBlock, false, obj.Id, obj.Layer + 1, key, ifElseClauses);
-                    }
-                    else
-                    {
-                        Trace.WriteLine("Adding command block without recursion (no nested 'if' found)");
-                        obj.Commands.Add(category, key, value);
+                        ProcessInput(nestedIfBlock, category.Equals("Else", StringComparison.OrdinalIgnoreCase), obj.Id, obj.Layer + 1, key, ifElseClauses);
+                        continue; // skip adding the raw command, because we parsed it as nested IfElseObj
                     }
                 }
-                else
-                {
-                    Trace.WriteLine("Adding command block without recursion");
-                    obj.Commands.Add(category, key, value);
-                }
+
+                Trace.WriteLine("Adding command block without recursion");
+                obj.Commands.Add(category, key, value);
             }
+
         }
 
         /// <summary>
