@@ -253,7 +253,7 @@ namespace InterpreteTests
                         Commands = new CategorizedDictionary<int, string>
                         {
                             { "If_Condition", 0, "cond1" },
-                            { "If", 1, "if (cond2) { Cmd2; } else { Cmd3; }" },
+                            // No "If" command here because nested handled in layer 1
                             { "Else", 2, "Cmd4;" }
                         }
                     }
@@ -276,6 +276,8 @@ namespace InterpreteTests
                     }
                 }
             };
+
+
 
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
@@ -306,6 +308,7 @@ namespace InterpreteTests
             //    Assert.IsTrue(commandsEqual, $"Commands mismatch at key {kvp.Key}: {msg}");
             //}
         }
+        
         [TestMethod]
         public void ParseIfElseIfElseChainReturnsCorrectStructure()
         {
