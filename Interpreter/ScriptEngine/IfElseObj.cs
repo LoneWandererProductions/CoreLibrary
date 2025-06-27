@@ -33,12 +33,34 @@ namespace Interpreter.ScriptEngine
 
         internal string Input { get; init; }
 
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
-            var commandsString = Commands != null ? string.Join(", ", Commands) : "No commands";
+            var indent = new string(' ', Layer * 2);
+            var sb = new System.Text.StringBuilder();
 
-            return $"IfElseObj: Id = {Id}, ParentId = {ParentId}, Position = {Position}, Layer = {Layer}, " +
-                   $"Else = {Else}, Nested = {Nested}, Commands = [{commandsString}], Input = \"{Input}\"";
+            sb.AppendLine($"{indent}IfElseObj: Id = {Id}, ParentId = {ParentId}, Position = {Position}, Layer = {Layer}, Else = {Else}, Nested = {Nested}");
+            sb.AppendLine($"{indent}Input = \"{Input}\"");
+
+            if (Commands != null && Commands.Count > 0)
+            {
+                sb.AppendLine($"{indent}Commands:");
+                foreach (var (key, category, value) in Commands)
+                {
+                    sb.AppendLine($"{indent}  [Key: {key}, Category: {category}, Value: {value}]");
+                }
+            }
+            else
+            {
+                sb.AppendLine($"{indent}Commands: <none>");
+            }
+
+            return sb.ToString();
         }
     }
 }

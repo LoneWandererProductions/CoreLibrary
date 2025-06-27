@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects;
 using Interpreter.Resources;
@@ -58,29 +59,47 @@ namespace Interpreter.ScriptEngine
         private static void ProcessInput(string input, bool isElse, int parentId, int layer, int position,
             IDictionary<int, IfElseObj> ifElseClauses)
         {
+            Trace.WriteLine($"ProcessInput called: layer={layer}, parentId={parentId}, position={position}");
+            Trace.WriteLine($"Input: \"{input}\"");
+
             var obj = CreateIfElseObj(input, isElse, parentId, layer, position, ifElseClauses);
+            Trace.WriteLine($"Created IfElseObj: Id={obj.Id}, Layer={obj.Layer}, ParentId={obj.ParentId}");
+
             ifElseClauses.Add(obj.Id, obj);
 
             var commands = IrtKernel.GetBlocks(input);
+            Trace.WriteLine($"GetBlocks returned {commands.Count} block(s) for input at layer {layer}");
+
             obj.Commands ??= new CategorizedDictionary<int, string>();
 
-            // Process each block of commands
             foreach (var (key, category, value) in commands)
             {
-                var containsIf = IrtKernel.ContainsKeywordWithOpenParenthesis(value, IrtConst.InternalIf);
-                if (!containsIf)
-                {
-                    //position indicates current block pretty useless for now
-                    //obj.Commands.Add(category, key, position.ToString()); // Add the block if it doesn't contain 'if'
-                    obj.Commands.Add(category, key, value);
-                    continue;
-                }
+                Trace.WriteLine($"Processing block: Key={key}, Category={category}, Value=\"{value}\"");
 
-                // Add a reference to the current block as a nested "if" block
-                obj.Commands.Add(ConditionalResources.InternalCategoryNested, obj.Commands.Count, value);
-                obj.Nested = true;
-                var isElseBlock = category.Equals(IrtConst.InternalElse, StringComparison.OrdinalIgnoreCase);
-                ProcessInput(value, isElseBlock, obj.Id, obj.Layer, key, ifElseClauses);
+                if (category.Equals("If", StringComparison.OrdinalIgnoreCase) &&
+                    IrtKernel.ContainsKeywordWithOpenParenthesis(value, IrtConst.InternalIf))
+                {
+                    // Find exact nested if block substring, excluding any leading commands before 'if'
+                    int nestedIfIndex = IrtKernel.FindFirstKeywordIndex(value, IrtConst.InternalIf);
+
+                    if (nestedIfIndex != IrtConst.Error)
+                    {
+                        var nestedIfBlock = value.Substring(nestedIfIndex).Trim();
+                        Trace.WriteLine($"Detected nested if-block, recursing into it at layer {obj.Layer + 1}");
+                        obj.Nested = true;
+                        ProcessInput(nestedIfBlock, false, obj.Id, obj.Layer + 1, key, ifElseClauses);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Adding command block without recursion (no nested 'if' found)");
+                        obj.Commands.Add(category, key, value);
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Adding command block without recursion");
+                    obj.Commands.Add(category, key, value);
+                }
             }
         }
 

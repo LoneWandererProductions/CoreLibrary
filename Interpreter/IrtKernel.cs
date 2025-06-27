@@ -698,6 +698,12 @@ namespace Interpreter
             }
         }
 
+        /// <summary>
+        /// Removes the condition.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="keyword">The keyword.</param>
+        /// <returns></returns>
         private static string RemoveCondition(string input, string keyword)
         {
             // Step 1: Remove the keyword (e.g., "if" or "do")

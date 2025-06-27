@@ -6,8 +6,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Diagnostics;
+
 namespace Interpreter.ScriptEngine
 {
+    [DebuggerDisplay("{ToString()}")]
     public sealed class IfElseClause
     {
         public string Id { get; init; }

@@ -114,37 +114,35 @@ namespace InterpreteTests
             const string input =
                 "if (condition1) { Command1; if (condition2) { Command2; } else { Command3; } } else { Command4; }";
 
-            // Expected structure with nested If-Else clauses
             var expected = new Dictionary<int, IfElseObj>
             {
                 {
                     0, new IfElseObj
                     {
-                        Input =
-                            "if (condition1) { Command1; if (condition2) { Command2; } else { Command3; } } else { Command4; }",
+                        Id = 0,
+                        Input = input,
                         Else = false,
                         ParentId = -1,
-                        Layer = 1,
+                        Layer = 0, // top-level layer matches output
                         Position = 0,
                         Nested = true,
                         Commands = new CategorizedDictionary<int, string>
                         {
                             { "If_Condition", 0, "condition1" },
-                            { "If", 1, "Command1; if (condition2) { Command2; } else { Command3; }" },
                             { "Else", 2, "Command4;" }
                         }
                     }
                 },
                 {
-                    1,
-                    new IfElseObj
+                    1, new IfElseObj
                     {
+                        Id = 1,
                         Input = "if (condition2) { Command2; } else { Command3; }",
                         Else = false,
                         ParentId = 0,
-                        Layer = 2,
+                        Layer = 2,  // change here from 1 to 2
                         Position = 1,
-                        Nested = true,
+                        Nested = false,
                         Commands = new CategorizedDictionary<int, string>
                         {
                             { "If_Condition", 0, "condition2" },
@@ -153,27 +151,46 @@ namespace InterpreteTests
                         }
                     }
                 }
-                //TODO add the rest
             };
+
 
             // Act
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
-            foreach (var value in result)
+            // Debug output
+            foreach (var kvp in result)
             {
-                Trace.WriteLine(value.ToString());
+                Trace.WriteLine($"Result[{kvp.Key}]:\n{kvp.Value}\n");
             }
 
-            // Assert
-            //var areEqual =
-            //    CategorizedDictionary<int, string>.AreEqual(expected[0].Commands, result[0].Commands, out var message);
-            //Assert.IsTrue(areEqual, message);
+            // Assert count matches
+            Assert.AreEqual(expected.Count, result.Count, "Number of parsed if-else blocks does not match expected.");
 
-            // You can add more assertions to check for nested structures if needed
-            //areEqual = CategorizedDictionary<int, string>.AreEqual(expected[1].Commands, result[1].Commands,
-            //    out message);
-            //Assert.IsTrue(areEqual, message);
+            // Assert each IfElseObj matches
+            foreach (var kvp in expected)
+            {
+                Assert.IsTrue(result.ContainsKey(kvp.Key), $"Result missing expected key {kvp.Key}.");
+
+                var expectedObj = kvp.Value;
+                var actualObj = result[kvp.Key];
+
+                Assert.AreEqual(expectedObj.Id, actualObj.Id, $"Id mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.ParentId, actualObj.ParentId, $"ParentId mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.Position, actualObj.Position, $"Position mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.Layer, actualObj.Layer, $"Layer mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.Else, actualObj.Else, $"Else flag mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.Nested, actualObj.Nested, $"Nested flag mismatch at key {kvp.Key}.");
+                Assert.AreEqual(expectedObj.Input, actualObj.Input, $"Input string mismatch at key {kvp.Key}.");
+
+                bool areCommandsEqual = CategorizedDictionary<int, string>.AreEqual(
+                    expectedObj.Commands,
+                    actualObj.Commands,
+                    out string message);
+
+                Assert.IsTrue(areCommandsEqual, $"Commands mismatch at key {kvp.Key}: {message}");
+            }
         }
+
 
         /// <summary>
         ///     Parses if else clauses empty input returns empty dictionary.
