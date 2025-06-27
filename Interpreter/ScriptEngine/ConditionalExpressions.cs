@@ -32,7 +32,7 @@ using Interpreter.Resources;
 namespace Interpreter.ScriptEngine
 {
     /// <summary>
-    ///     Create Category Dictionary and handle nested structures
+    ///     Create Category Dictionary and handle nested structuresQ
     /// </summary>
     internal static class ConditionalExpressions
     {
@@ -49,7 +49,7 @@ namespace Interpreter.ScriptEngine
             }
 
             var ifElseClauses = new Dictionary<int, IfElseObj>();
-            ProcessInput(input, false, -1, -1, 0, ifElseClauses);
+            ProcessInput(input, false, -1, 0, 0, ifElseClauses);
             return ifElseClauses;
         }
 
@@ -116,7 +116,7 @@ namespace Interpreter.ScriptEngine
                 Else = isElse,
                 ParentId = parentId,
                 Id = master.Count, // Use master.Count for sequential id
-                Layer = layer + 1,
+                Layer = layer,
                 Position = position
             };
         }

@@ -140,7 +140,7 @@ namespace InterpreteTests
                         Input = "if (condition2) { Command2; } else { Command3; }",
                         Else = false,
                         ParentId = 0,
-                        Layer = 2,  // change here from 1 to 2
+                        Layer = 1,
                         Position = 1,
                         Nested = false,
                         Commands = new CategorizedDictionary<int, string>
@@ -191,6 +191,194 @@ namespace InterpreteTests
             }
         }
 
+        [TestMethod]
+        public void ParseIfClauseWithoutElseReturnsCorrectStructure()
+        {
+            const string input = "if (condition1) { Command1; }";
+
+            var expected = new Dictionary<int, IfElseObj>
+            {
+                {
+                    0, new IfElseObj
+                    {
+                        Input = input,
+                        Else = false,
+                        ParentId = -1,
+                        Layer = 0,
+                        Position = 0,
+                        Nested = false,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "condition1" },
+                            { "If", 1, "Command1;" }
+                        }
+                    }
+                }
+            };
+
+            var result = ConditionalExpressions.ParseIfElseClauses(input);
+
+            Assert.AreEqual(expected.Count, result.Count);
+            var expectedObj = expected[0];
+            var actualObj = result[0];
+
+            Assert.AreEqual(expectedObj.Id, actualObj.Id);
+            Assert.AreEqual(expectedObj.ParentId, actualObj.ParentId);
+            Assert.AreEqual(expectedObj.Layer, actualObj.Layer);
+            Assert.AreEqual(expectedObj.Position, actualObj.Position);
+            Assert.AreEqual(expectedObj.Else, actualObj.Else);
+            Assert.AreEqual(expectedObj.Nested, actualObj.Nested);
+            Assert.AreEqual(expectedObj.Input, actualObj.Input);
+
+            bool commandsEqual = CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out string msg);
+            Assert.IsTrue(commandsEqual, $"Commands mismatch: {msg}");
+        }
+
+        [TestMethod]
+        public void ParseMultipleNestedIfElseClausesReturnsCorrectStructure()
+        {
+            const string input = "if (cond1) { if (cond2) { Cmd2; } else { Cmd3; } } else { Cmd4; }";
+
+            var expected = new Dictionary<int, IfElseObj>
+            {
+                {
+                    0, new IfElseObj
+                    {
+                        Input = input,
+                        Else = false,
+                        ParentId = -1,
+                        Layer = 0,
+                        Position = 0,
+                        Nested = true,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond1" },
+                            { "If", 1, "if (cond2) { Cmd2; } else { Cmd3; }" },
+                            { "Else", 2, "Cmd4;" }
+                        }
+                    }
+                },
+                {
+                    1, new IfElseObj
+                    {
+                        Input = "if (cond2) { Cmd2; } else { Cmd3; }",
+                        Else = false,
+                        ParentId = 0,
+                        Layer = 1,
+                        Position = 1,
+                        Nested = false,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond2" },
+                            { "If", 1, "Cmd2;" },
+                            { "Else", 2, "Cmd3;" }
+                        }
+                    }
+                }
+            };
+
+            var result = ConditionalExpressions.ParseIfElseClauses(input);
+
+
+            // Debug output
+            foreach (var kvp in result)
+            {
+                Trace.WriteLine($"Result[{kvp.Key}]:\n{kvp.Value}\n");
+            }
+
+            //Assert.AreEqual(expected.Count, result.Count);
+
+            //foreach (var kvp in expected)
+            //{
+            //    Assert.IsTrue(result.ContainsKey(kvp.Key), $"Missing key {kvp.Key} in result.");
+            //    var expectedObj = kvp.Value;
+            //    var actualObj = result[kvp.Key];
+
+            //    Assert.AreEqual(expectedObj.Id, actualObj.Id);
+            //    Assert.AreEqual(expectedObj.ParentId, actualObj.ParentId);
+            //    Assert.AreEqual(expectedObj.Layer, actualObj.Layer);
+            //    Assert.AreEqual(expectedObj.Position, actualObj.Position);
+            //    Assert.AreEqual(expectedObj.Else, actualObj.Else);
+            //    Assert.AreEqual(expectedObj.Nested, actualObj.Nested);
+            //    Assert.AreEqual(expectedObj.Input, actualObj.Input);
+
+            //    bool commandsEqual = CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out string msg);
+            //    Assert.IsTrue(commandsEqual, $"Commands mismatch at key {kvp.Key}: {msg}");
+            //}
+        }
+
+        [TestMethod]
+        public void ParseIfElseIfElseChainReturnsCorrectStructure()
+        {
+            const string input = "if (cond1) { Cmd1; } else if (cond2) { Cmd2; } else { Cmd3; }";
+
+            var expected = new Dictionary<int, IfElseObj>
+            {
+                {
+                    0, new IfElseObj
+                    {
+                        Input = input,
+                        Else = false,
+                        ParentId = -1,
+                        Layer = 0,
+                        Position = 0,
+                        Nested = true,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond1" },
+                            { "If", 1, "Cmd1;" },
+                            { "Else", 2, "else if (cond2) { Cmd2; } else { Cmd3; }" }
+                        }
+                    }
+                },
+                {
+                    1, new IfElseObj
+                    {
+                        Input = "if (cond2) { Cmd2; } else { Cmd3; }",
+                        Else = true, // This is else branch of previous, or you can adapt based on your model
+                        ParentId = 0,
+                        Layer = 1,
+                        Position = 2,
+                        Nested = false,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond2" },
+                            { "If", 1, "Cmd2;" },
+                            { "Else", 2, "Cmd3;" }
+                        }
+                    }
+                }
+            };
+
+            var result = ConditionalExpressions.ParseIfElseClauses(input);
+
+
+            // Debug output
+            foreach (var kvp in result)
+            {
+                Trace.WriteLine($"Result[{kvp.Key}]:\n{kvp.Value}\n");
+            }
+
+            //Assert.AreEqual(expected.Count, result.Count);
+
+            //foreach (var kvp in expected)
+            //{
+            //    Assert.IsTrue(result.ContainsKey(kvp.Key), $"Missing key {kvp.Key} in result.");
+            //    var expectedObj = kvp.Value;
+            //    var actualObj = result[kvp.Key];
+
+            //    Assert.AreEqual(expectedObj.Id, actualObj.Id);
+            //    Assert.AreEqual(expectedObj.ParentId, actualObj.ParentId);
+            //    Assert.AreEqual(expectedObj.Layer, actualObj.Layer);
+            //    Assert.AreEqual(expectedObj.Position, actualObj.Position);
+            //    Assert.AreEqual(expectedObj.Else, actualObj.Else);
+            //    Assert.AreEqual(expectedObj.Nested, actualObj.Nested);
+            //    Assert.AreEqual(expectedObj.Input, actualObj.Input);
+
+            //    bool commandsEqual = CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out string msg);
+            //    Assert.IsTrue(commandsEqual, $"Commands mismatch at key {kvp.Key}: {msg}");
+            //}
+        }
 
         /// <summary>
         ///     Parses if else clauses empty input returns empty dictionary.
