@@ -14,6 +14,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using ExtendedSystemObjects.Helper;
@@ -26,6 +27,7 @@ namespace ExtendedSystemObjects
     /// </summary>
     /// <typeparam name="TK">Key Type</typeparam>
     /// <typeparam name="TV">Value Type</typeparam>
+    [DebuggerDisplay("{ToString()}")]
     public sealed class CategorizedDictionary<TK, TV> : IEnumerable, IEquatable<CategorizedDictionary<TK, TV>>
     {
         /// <summary>
