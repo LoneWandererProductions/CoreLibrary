@@ -2,10 +2,12 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        UnmanagedMap.cs
- * PURPOSE:     A faster unmanaged Key Value structure much like a Dictionary. The difference is that we only mark entries as deleted and only on compress we actual delete it.
+ * PURPOSE:     A high-performance unmanaged key-value store similar to a Dictionary.
+ *              Unlike typical dictionaries, entries are marked as deleted (tombstoned)
+ *              and only physically removed during explicit compaction, improving
+ *              insertion and deletion performance by avoiding frequent reallocations.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
-
 // ReSharper disable MemberCanBeInternal
 
 using System;
@@ -19,37 +21,69 @@ using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    /// Represents a high-performance, unmanaged hash map with integer keys and unmanaged values.
+    /// Uses open addressing with linear probing for collision resolution and
+    /// supports lazy deletion (tombstoning) to improve performance on removals.
+    /// </summary>
+    /// <typeparam name="TValue">The type of values stored, must be unmanaged.</typeparam>
+    /// <seealso cref="System.Collections.Generic.IEnumerable&lt;(System.Int32, TValue)&gt;" />
+    /// <seealso cref="System.IDisposable" />
+    [DebuggerDisplay("{ToString()}")]
     public sealed unsafe class UnmanagedMap<TValue> : IEnumerable<(int, TValue)>, IDisposable where TValue : unmanaged
     {
         /// <summary>
-        ///     The minimum power of 2
-        ///     16 entries minimum
+        /// The minimum exponent for capacity (2^MinPowerOf2 entries minimum).
         /// </summary>
         private const int MinPowerOf2 = 4;
 
         /// <summary>
-        ///     The maximum power of 2
-        ///     ~1 million entries max
+        /// The maximum exponent for capacity (~2^MaxPowerOf2 entries maximum).
         /// </summary>
         private const int MaxPowerOf2 = 20;
 
         /// <summary>
-        ///     The capacity power of2
+        /// Current capacity expressed as a power of two exponent.
         /// </summary>
         private int _capacityPowerOf2;
 
+        /// <summary>
+        /// Pointer to the unmanaged array of entries.
+        /// </summary>
         private EntryGeneric<TValue>* _entries;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UnmanagedMap{TValue}" /> class.
+        /// Gets the number of occupied entries in the map.
         /// </summary>
-        /// <param name="capacityPowerOf2">The capacity power of 2. So be carefull. Optional but max is at 20.</param>
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Gets the total capacity of the map (number of slots available).
+        /// This is always a power of two.
+        /// </summary>
+        public int Capacity { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnmanagedMap{TValue}"/> class.
+        /// </summary>
+        /// <param name="capacityPowerOf2">
+        /// Optional initial capacity as a power of two exponent.
+        /// For example, 8 means initial capacity is 256 entries (2^8).
+        /// Values less than 4 are clamped to 4, and max allowed is 20.
+        /// </param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if capacityPowerOf2 is less than MinPowerOf2 or greater than MaxPowerOf2.
+        /// </exception>
         public UnmanagedMap(int? capacityPowerOf2 = null)
         {
             var power = capacityPowerOf2 ?? 8;
             if (power < MinPowerOf2)
             {
                 power = MinPowerOf2;
+            }
+            else if (power > MaxPowerOf2)
+            {
+                power = MaxPowerOf2;
             }
 
             Capacity = 1 << power;
@@ -60,61 +94,9 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Gets the count.
+        /// Returns an enumerator that iterates over the occupied key-value pairs in the map.
         /// </summary>
-        /// <value>
-        ///     The count.
-        /// </value>
-        public int Count { get; private set; }
-
-        /// <summary>
-        ///     Gets the capacity.
-        /// </summary>
-        /// <value>
-        ///     The capacity.
-        /// </value>
-        public int Capacity { get; private set; }
-
-        /// <summary>
-        ///     Gets the keys.
-        /// </summary>
-        /// <value>
-        ///     The keys.
-        /// </value>
-        public IEnumerable<int> Keys
-        {
-            get
-            {
-                return GetKeysSnapshot();
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="TValue" /> with the specified key.
-        /// </summary>
-        /// <value>
-        ///     The <see cref="TValue" />.
-        /// </value>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        public TValue this[int key]
-        {
-            get => Get(key);
-            set => Set(key, value);
-        }
-
-        public void Dispose()
-        {
-            Free();
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        ///     An enumerator that can be used to iterate through the collection.
-        /// </returns>
+        /// <returns>An enumerator of (key, value) tuples.</returns>
         IEnumerator<(int, TValue)> IEnumerable<(int, TValue)>.GetEnumerator()
         {
             return GetEnumerator();
@@ -132,11 +114,49 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Sets the specified key.
+        /// Gets a snapshot of all keys currently stored in the map.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value.</param>
-        /// <exception cref="System.InvalidOperationException">UnmanagedIntMap full after compact and resize</exception>
+        public IEnumerable<int> Keys
+        {
+            get
+            {
+                return GetKeysSnapshot();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// Setting a value adds or updates the key-value pair.
+        /// Getting a value throws <see cref="KeyNotFoundException"/> if the key does not exist.
+        /// </summary>
+        /// <param name="key">The integer key.</param>
+        /// <returns>The value associated with the key.</returns>
+        /// <exception cref="KeyNotFoundException">If the key is not found when getting.</exception>
+        public TValue this[int key]
+        {
+            get => Get(key);
+            set => Set(key, value);
+        }
+
+        /// <summary>
+        /// Determines whether the map contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns><c>true</c> if the map contains an element with the specified key; otherwise, <c>false</c>.</returns>
+        public bool ContainsKey(int key)
+        {
+            return FindIndex(key) >= 0;
+        }
+
+        /// <summary>
+        /// Adds or updates the value for the specified key.
+        /// If the load factor exceeds 70%, compaction and/or resizing are triggered automatically.
+        /// </summary>
+        /// <param name="key">The key to add or update.</param>
+        /// <param name="value">The value to associate with the key.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the map is full after compaction and resizing attempts.
+        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(int key, TValue value)
         {
@@ -214,11 +234,11 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Gets the specified key.
+        /// Retrieves the value associated with the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
+        /// <param name="key">The key to locate.</param>
+        /// <returns>The value associated with the specified key.</returns>
+        /// <exception cref="KeyNotFoundException">If the key is not found.</exception>
         public TValue Get(int key)
         {
             var mask = Capacity - 1;
@@ -242,11 +262,12 @@ namespace ExtendedSystemObjects
             throw new KeyNotFoundException($"Key {key} not found.");
         }
 
-        public bool ContainsKey(int key)
-        {
-            return FindIndex(key) >= 0;
-        }
-
+        /// <summary>
+        /// Attempts to get the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <param name="value">When this method returns, contains the value associated with the key, if found; otherwise, the default value of <typeparamref name="TValue"/>.</param>
+        /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(int key, out TValue value)
         {
             var idx = FindIndex(key);
@@ -260,6 +281,13 @@ namespace ExtendedSystemObjects
             return false;
         }
 
+        /// <summary>
+        /// Attempts to remove the key and its associated value from the map.
+        /// Marks the entry as deleted (tombstone) but does not physically remove it until compaction.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
+        /// <param name="value">When this method returns, contains the value removed if found; otherwise, the default value of <typeparamref name="TValue"/>.</param>
+        /// <returns><c>true</c> if the key was found and removed; otherwise, <c>false</c>.</returns>
         public bool TryRemove(int key, out TValue value)
         {
             var mask = Capacity - 1;
@@ -288,7 +316,12 @@ namespace ExtendedSystemObjects
             return false;
         }
 
-
+        /// <summary>
+        /// Attempts to remove the key and its associated value from the map.
+        /// Marks the entry as deleted (tombstone) but does not physically remove it until compaction.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
+        /// <returns><c>true</c> if the key was found and removed; otherwise, <c>false</c>.</returns>
         public bool TryRemove(int key)
         {
             var mask = Capacity - 1;
@@ -322,6 +355,10 @@ namespace ExtendedSystemObjects
             return new(_entries, Capacity);
         }
 
+        /// <summary>
+        /// Resizes the map to the next larger capacity (doubling size),
+        /// rehashing all occupied entries. No operation if max capacity reached.
+        /// </summary>
         public void Resize()
         {
             if (_capacityPowerOf2 >= MaxPowerOf2)
@@ -352,6 +389,11 @@ namespace ExtendedSystemObjects
             newMap._entries = null;
         }
 
+        /// <summary>
+        /// Ensures the map capacity is sufficient for the expected number of entries,
+        /// resizing as needed to maintain a load factor below 70%.
+        /// </summary>
+        /// <param name="expectedCount">The expected number of entries to accommodate.</param>
         public void EnsureCapacity(int expectedCount)
         {
             while (expectedCount > Capacity * 0.7f && _capacityPowerOf2 < MaxPowerOf2)
@@ -360,7 +402,10 @@ namespace ExtendedSystemObjects
             }
         }
 
-
+        /// <summary>
+        /// Compacts the map by creating a smaller map if the load factor falls below 25%,
+        /// physically removing tombstoned entries and freeing memory.
+        /// </summary>
         public void Compact()
         {
             var loadFactor = Count / (float)Capacity;
@@ -391,6 +436,10 @@ namespace ExtendedSystemObjects
             newMap._entries = null; // prevent double free
         }
 
+        /// <summary>
+        /// Clears all entries from the map, resetting all slots to empty.
+        /// Does not release allocated memory.
+        /// </summary>
         public void Clear()
         {
             if (_entries != null)
@@ -400,6 +449,10 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Frees unmanaged memory allocated for the map entries.
+        /// After calling this, the map is unusable until reinitialized.
+        /// </summary>
         public void Free()
         {
             if (_entries != null)
@@ -412,6 +465,22 @@ namespace ExtendedSystemObjects
             Count = 0;
         }
 
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return $"Count = {Count}, Capacity = {Capacity}, LoadFactor = {(Count / (float)Capacity):P1}";
+        }
+
+        /// <summary>
+        /// Validates internal state for debugging purposes.
+        /// Checks for duplicate keys in the map and asserts failure if any are found.
+        /// This method is only compiled in Debug builds.
+        /// </summary>
         [Conditional("DEBUG")]
         public void DebugValidate()
         {
@@ -427,7 +496,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Finalizes an instance of the <see cref="UnmanagedMap{TValue}" /> class.
+        /// Finalizes the instance and frees unmanaged resources if not already disposed.
         /// </summary>
         ~UnmanagedMap()
         {
@@ -437,6 +506,20 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        /// Releases all resources used by the <see cref="UnmanagedMap{TValue}"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Free();
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Determines whether the map contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns><c>true</c> if the map contains an element with the specified key; otherwise, <c>false</c>.</returns>
         private int FindIndex(int key)
         {
             var mask = Capacity - 1;
@@ -461,7 +544,10 @@ namespace ExtendedSystemObjects
             return -1;
         }
 
-
+        /// <summary>
+        /// Returns a snapshot list of all keys currently occupied in the map.
+        /// </summary>
+        /// <returns>A list of keys.</returns>
         private List<int> GetKeysSnapshot()
         {
             var keys = new List<int>(Count);
