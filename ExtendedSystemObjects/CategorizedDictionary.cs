@@ -167,6 +167,17 @@ namespace ExtendedSystemObjects
             }
         }
 
+        public string GetCategory(TK key)
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                if (_data.TryGetValue(key, out var entry)) return entry.Category;
+
+                throw new KeyNotFoundException();
+            }
+            finally { _lock.ExitReadLock(); }
+        }
 
         /// <summary>
         ///     Gets the keys.
@@ -305,6 +316,11 @@ namespace ExtendedSystemObjects
             {
                 _lock.ExitReadLock();
             }
+        }
+
+        public bool ContainsCategory(string category)
+        {
+            return category != null && _data.Values.Any(entry => string.Equals(entry.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
