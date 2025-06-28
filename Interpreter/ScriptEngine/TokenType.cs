@@ -18,5 +18,6 @@
         Label,           // Label(...)
         Command,        //Command
         Unknown,
+        String
     }
 }

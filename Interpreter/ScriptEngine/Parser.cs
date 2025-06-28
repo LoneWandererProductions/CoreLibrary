@@ -66,15 +66,35 @@ namespace Interpreter.ScriptEngine
         private string ReadStatementAsString()
         {
             var sb = new System.Text.StringBuilder();
+            bool insideParens = false;
+
             while (!IsAtEnd() && Peek().Type != TokenType.Semicolon)
             {
-                sb.Append(Advance().Lexeme);
+                var token = Advance();
+
+                // Insert space between identifiers inside parentheses
+                if (insideParens &&
+                    token.Type == TokenType.Identifier &&
+                    sb.Length > 0 &&
+                    char.IsLetterOrDigit(sb[^1]))
+                {
+                    sb.Append(' ');
+                }
+
+                sb.Append(token.Lexeme);
+
+                if (token.Type == TokenType.OpenParen)
+                    insideParens = true;
+                else if (token.Type == TokenType.CloseParen)
+                    insideParens = false;
             }
 
             if (Match(TokenType.Semicolon))
                 sb.Append(';');
+
             return sb.ToString();
         }
+
 
         private string ReadBlockAsString()
         {

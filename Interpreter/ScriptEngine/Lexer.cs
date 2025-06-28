@@ -41,7 +41,13 @@ namespace Interpreter.ScriptEngine
                     }
                     else if (Keywords.Contains(ident))
                     {
-                        tokens.Add(new Token { Type = ident.Equals("if", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordIf : TokenType.KeywordElse, Lexeme = ident, Line = line, Column = col });
+                        tokens.Add(new Token
+                        {
+                            Type = ident.Equals("if", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordIf : TokenType.KeywordElse,
+                            Lexeme = ident,
+                            Line = line,
+                            Column = col
+                        });
                     }
                     else
                     {
@@ -52,6 +58,39 @@ namespace Interpreter.ScriptEngine
                 {
                     var number = ReadWhile(char.IsDigit);
                     tokens.Add(new Token { Type = TokenType.Number, Lexeme = number, Line = line, Column = col });
+                }
+                else if (c == '"')
+                {
+                    Advance(); // Skip opening quote
+
+                    var stringBuilder = new System.Text.StringBuilder();
+                    while (!IsAtEnd() && Peek() != '"')
+                    {
+                        stringBuilder.Append(Peek()); // Append current character
+                        Advance(); // Move to next
+                    }
+
+                    if (!IsAtEnd() && Peek() == '"')
+                    {
+                        Advance(); // Skip closing quote
+                        tokens.Add(new Token
+                        {
+                            Type = TokenType.String,
+                            Lexeme = stringBuilder.ToString(),
+                            Line = line,
+                            Column = col
+                        });
+                    }
+                    else
+                    {
+                        tokens.Add(new Token
+                        {
+                            Type = TokenType.Unknown,
+                            Lexeme = "\"" + stringBuilder.ToString(), // Include unmatched opening quote
+                            Line = line,
+                            Column = col
+                        });
+                    }
                 }
                 else
                 {
@@ -83,7 +122,6 @@ namespace Interpreter.ScriptEngine
                                 Advance();
                                 tokens.Add(Token(TokenType.Unknown, "-", line, col));
                             }
-
                             break;
                         default:
                             Advance();
@@ -96,14 +134,14 @@ namespace Interpreter.ScriptEngine
             return tokens;
         }
 
-        private Token Token(TokenType type, string lexeme, int line, int col) => new() { Type = type, Lexeme = lexeme, Line = line, Column = col };
+        private Token Token(TokenType type, string lexeme, int line, int col)
+            => new() { Type = type, Lexeme = lexeme, Line = line, Column = col };
 
         private void SkipWhitespace()
         {
             while (!IsAtEnd() && char.IsWhiteSpace(Peek()))
             {
                 if (Peek() == '\n') { _line++; _col = 0; }
-
                 Advance();
             }
         }
@@ -119,5 +157,4 @@ namespace Interpreter.ScriptEngine
         private void Advance(int amount = 1) { _pos += amount; _col += amount; }
         private bool IsAtEnd() => _pos >= _input.Length;
     }
-
 }

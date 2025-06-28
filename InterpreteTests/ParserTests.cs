@@ -1,4 +1,5 @@
-﻿using Interpreter.ScriptEngine;
+﻿using System.Diagnostics;
+using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InterpreteTests
@@ -24,6 +25,11 @@ namespace InterpreteTests
             var parser = new Parser(tokens); // replace with your actual parser class
             var result = parser.ParseIntoCategorizedBlocks();
 
+            foreach (var part in result)
+            {
+                Trace.WriteLine(part);
+            }
+
             // Assert: verify key, category, value correctness
             Assert.IsTrue(result.TryGetCategory(0, out var cat0));
             Assert.AreEqual("LABEL", cat0, ignoreCase: true);
@@ -33,7 +39,7 @@ namespace InterpreteTests
             Assert.IsTrue(result.TryGetCategory(1, out var cat1));
             Assert.AreEqual("COMMAND", cat1, ignoreCase: true);
             Assert.IsTrue(result.TryGetValue(1, out var val1));
-           //Assert.AreEqual("Print(hello world);", val1.Trim());
+            //Assert.AreEqual("Print(hello world);", val1.Trim());
 
             Assert.IsTrue(result.TryGetCategory(2, out var cat2));
             //Assert.AreEqual("GOTO", cat2, ignoreCase: true);
