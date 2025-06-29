@@ -36,6 +36,13 @@ namespace Interpreter.ScriptEngine
 
                 var c = Peek();
 
+                if (c == '\0')
+                {
+                    Advance(); // skip null chars
+                    continue;
+                }
+
+
                 if (char.IsLetter(c) || CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.LetterNumber)
                 {
                     var ident = ReadWhile(ch =>
