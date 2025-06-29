@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace Interpreter.ScriptEngine
 {
     internal sealed class Lexer
     {
-        private readonly string _input;
-        private int _pos;
-        private int _line = 1;
-        private int _col = 1;
-
         private static readonly HashSet<string> Keywords = new(StringComparer.OrdinalIgnoreCase)
         {
-            "if",
-            "else",
-            "label",
-            "goto"
+            "if", "else", "label", "goto"
         };
 
-        public Lexer(string input) => _input = input;
+        private readonly string _input;
+        private int _col = 1;
+        private int _line = 1;
+        private int _pos;
+
+        public Lexer(string input)
+        {
+            _input = input;
+        }
 
         public List<Token> Tokenize()
         {
@@ -33,30 +34,35 @@ namespace Interpreter.ScriptEngine
                 var line = _line;
                 var col = _col;
 
-                char c = Peek();
+                var c = Peek();
 
                 if (char.IsLetter(c) || CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.LetterNumber)
                 {
-                    var ident = ReadWhile(ch => char.IsLetterOrDigit(ch) || ch == '_' || CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.LetterNumber);
+                    var ident = ReadWhile(ch =>
+                        char.IsLetterOrDigit(ch) || ch == '_' ||
+                        CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.LetterNumber);
                     if (Keywords.Contains(ident))
                     {
-                        TokenType type = ident.Equals("if", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordIf :
-                            ident.Equals("else", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordElse :
-                            ident.Equals("label", StringComparison.OrdinalIgnoreCase) ? TokenType.Label :  // or TokenType.KeywordLabel
-                            ident.Equals("goto", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordGoto :  // add this token type
-                            TokenType.Keyword; // fallback
+                        var type = ident.Equals("if", StringComparison.OrdinalIgnoreCase)
+                            ? TokenType.KeywordIf
+                            : ident.Equals("else", StringComparison.OrdinalIgnoreCase)
+                                ? TokenType.KeywordElse
+                                : ident.Equals("label", StringComparison.OrdinalIgnoreCase)
+                                    ? TokenType.Label
+                                    : // or TokenType.KeywordLabel
+                                    ident.Equals("goto", StringComparison.OrdinalIgnoreCase)
+                                        ? TokenType.KeywordGoto
+                                        : // add this token type
+                                        TokenType.Keyword; // fallback
 
-                        tokens.Add(new Token
-                        {
-                            Type = type,
-                            Lexeme = ident,
-                            Line = line,
-                            Column = col
-                        });
+                        tokens.Add(new Token { Type = type, Lexeme = ident, Line = line, Column = col });
                     }
                     else
                     {
-                        tokens.Add(new Token { Type = TokenType.Identifier, Lexeme = ident, Line = line, Column = col });
+                        tokens.Add(new Token
+                        {
+                            Type = TokenType.Identifier, Lexeme = ident, Line = line, Column = col
+                        });
                     }
                 }
                 else if (char.IsDigit(c))
@@ -68,7 +74,7 @@ namespace Interpreter.ScriptEngine
                 {
                     Advance(); // Skip opening quote
 
-                    var stringBuilder = new System.Text.StringBuilder();
+                    var stringBuilder = new StringBuilder();
                     while (!IsAtEnd() && Peek() != '"')
                     {
                         stringBuilder.Append(Peek());
@@ -80,20 +86,14 @@ namespace Interpreter.ScriptEngine
                         Advance(); // Skip closing quote
                         tokens.Add(new Token
                         {
-                            Type = TokenType.String,
-                            Lexeme = stringBuilder.ToString(),
-                            Line = line,
-                            Column = col
+                            Type = TokenType.String, Lexeme = stringBuilder.ToString(), Line = line, Column = col
                         });
                     }
                     else
                     {
                         tokens.Add(new Token
                         {
-                            Type = TokenType.Unknown,
-                            Lexeme = "\"" + stringBuilder.ToString(),
-                            Line = line,
-                            Column = col
+                            Type = TokenType.Unknown, Lexeme = "\"" + stringBuilder, Line = line, Column = col
                         });
                     }
                 }
@@ -101,29 +101,63 @@ namespace Interpreter.ScriptEngine
                 {
                     switch (c)
                     {
-                        case ';': Advance(); tokens.Add(Token(TokenType.Semicolon, ";", line, col)); break;
-                        case '.': Advance(); tokens.Add(Token(TokenType.Dot, ".", line, col)); break;
-                        case ',': Advance(); tokens.Add(Token(TokenType.Comma, ",", line, col)); break;
-                        case '(': Advance(); tokens.Add(Token(TokenType.OpenParen, "(", line, col)); break;
-                        case ')': Advance(); tokens.Add(Token(TokenType.CloseParen, ")", line, col)); break;
-                        case '{': Advance(); tokens.Add(Token(TokenType.OpenBrace, "{", line, col)); break;
-                        case '}': Advance(); tokens.Add(Token(TokenType.CloseBrace, "}", line, col)); break;
+                        case ';':
+                            Advance();
+                            tokens.Add(Token(TokenType.Semicolon, ";", line, col));
+                            break;
+                        case '.':
+                            Advance();
+                            tokens.Add(Token(TokenType.Dot, ".", line, col));
+                            break;
+                        case ',':
+                            Advance();
+                            tokens.Add(Token(TokenType.Comma, ",", line, col));
+                            break;
+                        case '(':
+                            Advance();
+                            tokens.Add(Token(TokenType.OpenParen, "(", line, col));
+                            break;
+                        case ')':
+                            Advance();
+                            tokens.Add(Token(TokenType.CloseParen, ")", line, col));
+                            break;
+                        case '{':
+                            Advance();
+                            tokens.Add(Token(TokenType.OpenBrace, "{", line, col));
+                            break;
+                        case '}':
+                            Advance();
+                            tokens.Add(Token(TokenType.CloseBrace, "}", line, col));
+                            break;
                         case '-':
                             if (Peek(1) == '-')
                             {
                                 Advance(2);
                                 var comment = ReadWhile(ch => ch != '\n' && ch != '\r');
-                                tokens.Add(new Token { Type = TokenType.Comment, Lexeme = comment.Trim(), Line = line, Column = col });
+                                tokens.Add(new Token
+                                {
+                                    Type = TokenType.Comment, Lexeme = comment.Trim(), Line = line, Column = col
+                                });
                             }
                             else
                             {
                                 Advance();
                                 tokens.Add(Token(TokenType.Minus, "-", line, col));
                             }
+
                             break;
-                        case '+': Advance(); tokens.Add(Token(TokenType.Plus, "+", line, col)); break;
-                        case '*': Advance(); tokens.Add(Token(TokenType.Star, "*", line, col)); break;
-                        case '/': Advance(); tokens.Add(Token(TokenType.Slash, "/", line, col)); break;
+                        case '+':
+                            Advance();
+                            tokens.Add(Token(TokenType.Plus, "+", line, col));
+                            break;
+                        case '*':
+                            Advance();
+                            tokens.Add(Token(TokenType.Star, "*", line, col));
+                            break;
+                        case '/':
+                            Advance();
+                            tokens.Add(Token(TokenType.Slash, "/", line, col));
+                            break;
                         case '=':
                             if (Peek(1) == '=')
                             {
@@ -135,6 +169,7 @@ namespace Interpreter.ScriptEngine
                                 Advance();
                                 tokens.Add(Token(TokenType.Equal, "=", line, col));
                             }
+
                             break;
                         case '!':
                             if (Peek(1) == '=')
@@ -147,6 +182,7 @@ namespace Interpreter.ScriptEngine
                                 Advance();
                                 tokens.Add(Token(TokenType.Bang, "!", line, col));
                             }
+
                             break;
                         case '>':
                             if (Peek(1) == '=')
@@ -159,6 +195,7 @@ namespace Interpreter.ScriptEngine
                                 Advance();
                                 tokens.Add(Token(TokenType.Greater, ">", line, col));
                             }
+
                             break;
                         case '<':
                             if (Peek(1) == '=')
@@ -174,9 +211,10 @@ namespace Interpreter.ScriptEngine
 
                             break;
                         default:
-                            char unknownChar = c;
+                            var unknownChar = c;
                             Advance();
-                            Console.WriteLine($"Unknown char: {(int)unknownChar} '{unknownChar}' at Line {line}, Col {col}");
+                            Console.WriteLine(
+                                $"Unknown char: {(int)unknownChar} '{unknownChar}' at Line {line}, Col {col}");
                             tokens.Add(Token(TokenType.Unknown, unknownChar.ToString(), line, col));
                             break;
                     }
@@ -187,7 +225,9 @@ namespace Interpreter.ScriptEngine
         }
 
         private Token Token(TokenType type, string lexeme, int line, int col)
-            => new() { Type = type, Lexeme = lexeme, Line = line, Column = col };
+        {
+            return new() { Type = type, Lexeme = lexeme, Line = line, Column = col };
+        }
 
         private void SkipWhitespace()
         {
@@ -213,12 +253,28 @@ namespace Interpreter.ScriptEngine
         private string ReadWhile(Func<char, bool> predicate)
         {
             var start = _pos;
-            while (!IsAtEnd() && predicate(Peek())) Advance();
+            while (!IsAtEnd() && predicate(Peek()))
+            {
+                Advance();
+            }
+
             return _input.Substring(start, _pos - start);
         }
 
-        private char Peek(int offset = 0) => _pos + offset < _input.Length ? _input[_pos + offset] : '\0';
-        private void Advance(int amount = 1) { _pos += amount; _col += amount; }
-        private bool IsAtEnd() => _pos >= _input.Length;
+        private char Peek(int offset = 0)
+        {
+            return _pos + offset < _input.Length ? _input[_pos + offset] : '\0';
+        }
+
+        private void Advance(int amount = 1)
+        {
+            _pos += amount;
+            _col += amount;
+        }
+
+        private bool IsAtEnd()
+        {
+            return _pos >= _input.Length;
+        }
     }
 }

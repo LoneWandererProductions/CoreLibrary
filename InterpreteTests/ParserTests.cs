@@ -11,7 +11,7 @@ namespace InterpreteTests
         public void ParseSimpleCommands_ReturnsCorrectCategoriesAndValues()
         {
             // Arrange: simple input with labels, commands, goto
-            string input = @"
+            var input = @"
                 Label(one);
                 Print(""hello world"");
                 goto(one);
@@ -39,12 +39,12 @@ namespace InterpreteTests
 
             // Assert: verify key, category, value correctness
             Assert.IsTrue(result.TryGetCategory(0, out var cat0));
-            Assert.AreEqual("LABEL", cat0, ignoreCase: true);
+            Assert.AreEqual("LABEL", cat0, true);
             Assert.IsTrue(result.TryGetValue(0, out var val0));
             Assert.AreEqual("Label(one);", val0.Trim());
 
             Assert.IsTrue(result.TryGetCategory(1, out var cat1));
-            Assert.AreEqual("COMMAND", cat1, ignoreCase: true);
+            Assert.AreEqual("COMMAND", cat1, true);
             Assert.IsTrue(result.TryGetValue(1, out var val1));
             //Assert.AreEqual("Print(hello world);", val1.Trim());
 
@@ -63,6 +63,5 @@ namespace InterpreteTests
             Assert.IsTrue(result.TryGetValue(4, out var val4));
             StringAssert.Contains(val4, "else");
         }
-
     }
 }

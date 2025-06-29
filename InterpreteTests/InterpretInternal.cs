@@ -910,33 +910,33 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Finds the first keyword index finds keyword with open parenthesis.
+        ///     Finds the first keyword index finds keyword with open parenthesis.
         /// </summary>
         [TestMethod]
         public void FindFirstKeywordIndexFindsKeywordWithOpenParenthesis()
         {
             // Arrange
-            string keyword = "if";
+            var keyword = "if";
 
             // Cases where 'if' is followed by '(' or '{' (possibly with spaces)
             var inputsWithMatch = new[]
             {
-            "if(condition)",             // no space
-            "  if (condition)",          // space before '('
-            "if{ block }",               // '{' immediately after
-            "some code if  (test)",      // some code before
-            "if    { more code }",       // multiple spaces before '{'
-        };
+                "if(condition)", // no space
+                "  if (condition)", // space before '('
+                "if{ block }", // '{' immediately after
+                "some code if  (test)", // some code before
+                "if    { more code }" // multiple spaces before '{'
+            };
 
             // Cases where 'if' is present but not followed by '(' or '{'
             var inputsWithoutMatch = new[]
             {
-            "if condition",              // no parenthesis
-            "ifx(condition)",            // 'ifx' not 'if'
-            "if 1 == 2",                 // just space and other char
-            "different ifnot(",          // 'ifnot' not 'if'
-            "iffy(condition)",           // 'iffy' not 'if'
-        };
+                "if condition", // no parenthesis
+                "ifx(condition)", // 'ifx' not 'if'
+                "if 1 == 2", // just space and other char
+                "different ifnot(", // 'ifnot' not 'if'
+                "iffy(condition)" // 'iffy' not 'if'
+            };
 
             // Act & Assert
             foreach (var input in inputsWithMatch)
@@ -948,7 +948,8 @@ namespace InterpreteTests
             foreach (var input in inputsWithoutMatch)
             {
                 var index = IrtKernel.FindFirstKeywordIndex(input, keyword);
-                Assert.AreEqual(IrtConst.Error, index, $"Expected NOT to find '{keyword}' with open paren in: \"{input}\"");
+                Assert.AreEqual(IrtConst.Error, index,
+                    $"Expected NOT to find '{keyword}' with open paren in: \"{input}\"");
             }
         }
 

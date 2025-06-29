@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Interpreter.ScriptEngine;
-using Microsoft.VisualStudio.TestTools.UnitTesting; // Adjust this if you keep Lexer in another namespace
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+// Adjust this if you keep Lexer in another namespace
 
 namespace InterpreteTests
 {
@@ -11,7 +12,7 @@ namespace InterpreteTests
     public class LexerTests
     {
         /// <summary>
-        /// Tokenizes the valid code returns expected tokens.
+        ///     Tokenizes the valid code returns expected tokens.
         /// </summary>
         [TestMethod]
         public void TokenizeValidCodeReturnsExpectedTokens()
@@ -31,7 +32,7 @@ namespace InterpreteTests
             var lexer = new Lexer(code);
 
             // Act
-            List<Token> tokens = lexer.Tokenize();
+            var tokens = lexer.Tokenize();
 
             foreach (var token in tokens)
             {
@@ -42,21 +43,27 @@ namespace InterpreteTests
             Assert.IsTrue(tokens.Count > 0, "Lexer returned no tokens");
 
             Assert.AreEqual(TokenType.Label, tokens[0].Type);
-            Assert.AreEqual("Label", tokens[0].Lexeme, ignoreCase: true);
+            Assert.AreEqual("Label", tokens[0].Lexeme, true);
 
             Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.KeywordIf), "Missing 'if' keyword");
             Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.OpenBrace), "Missing '{'");
-            Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.Identifier && t.Lexeme.Equals("com", System.StringComparison.OrdinalIgnoreCase)), "Missing 'com' identifier");
+            Assert.IsTrue(
+                tokens.Exists(t =>
+                    t.Type == TokenType.Identifier && t.Lexeme.Equals("com", StringComparison.OrdinalIgnoreCase)),
+                "Missing 'com' identifier");
             Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.Dot), "Missing '.' for method chain");
-            Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.Comment && t.Lexeme.Contains("fallback")), "Missing comment");
+            Assert.IsTrue(tokens.Exists(t => t.Type == TokenType.Comment && t.Lexeme.Contains("fallback")),
+                "Missing comment");
 
             // 🔹 Assert: Print statement is correctly recognized
-            var printToken = tokens.Find(t => t.Type == TokenType.Identifier && t.Lexeme.Equals("Print", StringComparison.OrdinalIgnoreCase));
+            var printToken = tokens.Find(t =>
+                t.Type == TokenType.Identifier && t.Lexeme.Equals("Print", StringComparison.OrdinalIgnoreCase));
             Assert.IsNotNull(printToken, "Missing 'Print' identifier");
 
             var helloIndex = tokens.FindIndex(t => t.Lexeme.Equals("hello", StringComparison.OrdinalIgnoreCase));
             var worldIndex = tokens.FindIndex(t => t.Lexeme.Equals("world", StringComparison.OrdinalIgnoreCase));
-            Assert.IsTrue(helloIndex > 0 && worldIndex > helloIndex, "Expected 'hello' and 'world' tokens inside Print() call");
+            Assert.IsTrue(helloIndex > 0 && worldIndex > helloIndex,
+                "Expected 'hello' and 'world' tokens inside Print() call");
 
             // 🔸 Optional: Ensure open/close parens exist around the arguments
             Assert.AreEqual(TokenType.OpenParen, tokens[helloIndex - 1].Type, "Expected '(' before 'hello'");
@@ -65,7 +72,7 @@ namespace InterpreteTests
 
 
         /// <summary>
-        /// Lexers the recognizes keywords and identifiers and others.
+        ///     Lexers the recognizes keywords and identifiers and others.
         /// </summary>
         [TestMethod]
         public void LexerRecognizesKeywordsAndIdentifiersAndOthers()
@@ -91,10 +98,15 @@ namespace InterpreteTests
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.KeywordIf), "Missing KeywordIf");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.KeywordElse), "Missing KeywordElse");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Label), "Missing generic Keyword (label)");
-            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Identifier && t.Lexeme.Equals("Print", StringComparison.OrdinalIgnoreCase)), "Missing 'Print' identifier");
+            Assert.IsTrue(
+                tokens.Any(t =>
+                    t.Type == TokenType.Identifier && t.Lexeme.Equals("Print", StringComparison.OrdinalIgnoreCase)),
+                "Missing 'Print' identifier");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Number && t.Lexeme == "12345"), "Missing number 12345");
-            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.String && t.Lexeme == "hello world"), "Missing string \"hello world\"");
-            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Comment && t.Lexeme.Contains("this is a comment")), "Missing comment");
+            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.String && t.Lexeme == "hello world"),
+                "Missing string \"hello world\"");
+            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Comment && t.Lexeme.Contains("this is a comment")),
+                "Missing comment");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Equal), "Missing '=' token");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.GreaterEqual), "Missing '>=' token");
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.BangEqual), "Missing '!=' token");
@@ -105,10 +117,12 @@ namespace InterpreteTests
             Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Unknown && t.Lexeme == "@"), "Missing unknown '@' token");
 
             // Check that unicode identifiers parsed correctly
-            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Identifier && t.Lexeme == "Привет123"), "Missing unicode identifier");
+            Assert.IsTrue(tokens.Any(t => t.Type == TokenType.Identifier && t.Lexeme == "Привет123"),
+                "Missing unicode identifier");
 
             // Spot check a few tokens for expected lexemes and types
-            var labelToken = tokens.FirstOrDefault(t => t.Type == TokenType.Label && t.Lexeme.Equals("Label", StringComparison.OrdinalIgnoreCase));
+            var labelToken = tokens.FirstOrDefault(t =>
+                t.Type == TokenType.Label && t.Lexeme.Equals("Label", StringComparison.OrdinalIgnoreCase));
             Assert.IsNotNull(labelToken, "Missing Label keyword token");
 
             var ifToken = tokens.FirstOrDefault(t => t.Type == TokenType.KeywordIf);

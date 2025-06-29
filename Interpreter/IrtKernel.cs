@@ -699,7 +699,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Removes the condition.
+        ///     Removes the condition.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="keyword">The keyword.</param>

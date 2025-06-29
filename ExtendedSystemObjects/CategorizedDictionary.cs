@@ -78,6 +78,59 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the <see cref="TV" /> with the specified key.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="TV" />.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+        ///     The given key '{key}' was not present in the
+        ///     dictionary.
+        /// </exception>
+        public TV this[TK key]
+        {
+            get
+            {
+                _lock.EnterReadLock();
+                try
+                {
+                    if (_data.TryGetValue(key, out var entry))
+                    {
+                        return entry.Value;
+                    }
+
+                    throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
+            }
+            set
+            {
+                _lock.EnterWriteLock();
+                try
+                {
+                    if (_data.ContainsKey(key))
+                    {
+                        var (Category, Value) = _data[key];
+                        _data[key] = (Category, value);
+                    }
+                    else
+                    {
+                        _data[key] = (string.Empty, value);
+                    }
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
@@ -120,59 +173,15 @@ namespace ExtendedSystemObjects
             return true;
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="TV"/> with the specified key.
-        /// </summary>
-        /// <value>
-        /// The <see cref="TV"/>.
-        /// </value>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">The given key '{key}' was not present in the dictionary.</exception>
-        public TV this[TK key]
-        {
-            get
-            {
-                _lock.EnterReadLock();
-                try
-                {
-                    if (_data.TryGetValue(key, out var entry))
-                        return entry.Value;
-                    throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
-                }
-                finally
-                {
-                    _lock.ExitReadLock();
-                }
-            }
-            set
-            {
-                _lock.EnterWriteLock();
-                try
-                {
-                    if (_data.ContainsKey(key))
-                    {
-                        var (Category, Value) = _data[key];
-                        _data[key] = (Category, value);
-                    }
-                    else
-                    {
-                        _data[key] = (string.Empty, value);
-                    }
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
-            }
-        }
-
         public string GetCategory(TK key)
         {
             _lock.EnterReadLock();
             try
             {
-                if (_data.TryGetValue(key, out var entry)) return entry.Category;
+                if (_data.TryGetValue(key, out var entry))
+                {
+                    return entry.Category;
+                }
 
                 throw new KeyNotFoundException();
             }
@@ -320,7 +329,8 @@ namespace ExtendedSystemObjects
 
         public bool ContainsCategory(string category)
         {
-            return category != null && _data.Values.Any(entry => string.Equals(entry.Category, category, StringComparison.OrdinalIgnoreCase));
+            return category != null && _data.Values.Any(entry =>
+                string.Equals(entry.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>

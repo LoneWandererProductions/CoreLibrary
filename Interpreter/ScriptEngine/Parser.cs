@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
+using System.Text;
 using ExtendedSystemObjects;
 
 namespace Interpreter.ScriptEngine
@@ -16,12 +18,12 @@ namespace Interpreter.ScriptEngine
         public CategorizedDictionary<int, string> ParseIntoCategorizedBlocks()
         {
             var result = new CategorizedDictionary<int, string>();
-            int commandIndex = 0;
-            var builder = new System.Text.StringBuilder();
+            var commandIndex = 0;
+            var builder = new StringBuilder();
 
             while (!IsAtEnd())
             {
-                Token current = Peek();
+                var current = Peek();
 
                 string currentCategory;
 
@@ -65,8 +67,8 @@ namespace Interpreter.ScriptEngine
 
         private string ReadStatementAsString()
         {
-            var sb = new System.Text.StringBuilder();
-            bool insideParens = false;
+            var sb = new StringBuilder();
+            var insideParens = false;
             Token? previous = null;
 
             while (!IsAtEnd() && Peek().Type != TokenType.Semicolon)
@@ -84,15 +86,21 @@ namespace Interpreter.ScriptEngine
                 sb.Append(current.Lexeme);
 
                 if (current.Type == TokenType.OpenParen)
+                {
                     insideParens = true;
+                }
                 else if (current.Type == TokenType.CloseParen)
+                {
                     insideParens = false;
+                }
 
                 previous = current;
             }
 
             if (Match(TokenType.Semicolon))
+            {
                 sb.Append(';');
+            }
 
             return sb.ToString();
         }
@@ -105,12 +113,10 @@ namespace Interpreter.ScriptEngine
                    type == TokenType.Number; // add any others you want spaced
         }
 
-
-
         private string ReadBlockAsString()
         {
-            var sb = new System.Text.StringBuilder();
-            int braceCount = 0;
+            var sb = new StringBuilder();
+            var braceCount = 0;
 
             while (!IsAtEnd())
             {
@@ -118,26 +124,43 @@ namespace Interpreter.ScriptEngine
                 sb.Append(token.Lexeme);
 
                 if (token.Type == TokenType.OpenBrace)
+                {
                     braceCount++;
+                }
                 else if (token.Type == TokenType.CloseBrace)
                 {
                     braceCount--;
                     if (braceCount == 0)
+                    {
                         break;
+                    }
                 }
             }
 
             return sb.ToString();
         }
 
-        private bool IsAtEnd() => _position >= _tokens.Count;
-        private Token Advance() => _tokens[_position++];
-        private Token Peek() => _tokens[_position];
+        private bool IsAtEnd()
+        {
+            return _position >= _tokens.Count;
+        }
+
+        private Token Advance()
+        {
+            return _tokens[_position++];
+        }
+
+        private Token Peek()
+        {
+            return _tokens[_position];
+        }
 
         private bool Match(TokenType type)
         {
             if (IsAtEnd() || _tokens[_position].Type != type)
+            {
                 return false;
+            }
 
             _position++;
             return true;

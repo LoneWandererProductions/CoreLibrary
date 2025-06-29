@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Text;
 using ExtendedSystemObjects;
 
 namespace Interpreter.ScriptEngine
@@ -34,17 +35,18 @@ namespace Interpreter.ScriptEngine
         internal string Input { get; init; }
 
         /// <summary>
-        /// Converts to string.
+        ///     Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
             var indent = new string(' ', Layer * 2);
-            var sb = new System.Text.StringBuilder();
+            var sb = new StringBuilder();
 
-            sb.AppendLine($"{indent}IfElseObj: Id = {Id}, ParentId = {ParentId}, Position = {Position}, Layer = {Layer}, Else = {Else}, Nested = {Nested}");
+            sb.AppendLine(
+                $"{indent}IfElseObj: Id = {Id}, ParentId = {ParentId}, Position = {Position}, Layer = {Layer}, Else = {Else}, Nested = {Nested}");
             sb.AppendLine($"{indent}Input = \"{Input}\"");
 
             if (Commands != null && Commands.Count > 0)

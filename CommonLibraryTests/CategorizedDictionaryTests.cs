@@ -247,7 +247,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Enumerators the returns correct key value pairs.
+        ///     Enumerators the returns correct key value pairs.
         /// </summary>
         [TestMethod]
         public void EnumeratorReturnsCorrectKeyValuePairs()
@@ -268,7 +268,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Enumerators the is enumerated in insertion order.
+        ///     Enumerators the is enumerated in insertion order.
         /// </summary>
         [TestMethod]
         public void EnumeratorIsEnumeratedInInsertionOrder()
@@ -289,7 +289,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Enumerators the returns empty for empty dictionary.
+        ///     Enumerators the returns empty for empty dictionary.
         /// </summary>
         [TestMethod]
         public void EnumeratorReturnsEmptyForEmptyDictionary()
@@ -305,7 +305,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        /// Enumerators the returns correct key value pairs after modification.
+        ///     Enumerators the returns correct key value pairs after modification.
         /// </summary>
         [TestMethod]
         public void EnumeratorReturnsCorrectKeyValuePairsAfterModification()

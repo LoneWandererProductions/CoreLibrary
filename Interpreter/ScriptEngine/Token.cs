@@ -7,7 +7,9 @@
         public int Line { get; set; }
         public int Column { get; set; }
 
-        public override string ToString() => $"{Type}: '{Lexeme}' (Line {Line}, Col {Column})";
+        public override string ToString()
+        {
+            return $"{Type}: '{Lexeme}' (Line {Line}, Col {Column})";
+        }
     }
-
 }

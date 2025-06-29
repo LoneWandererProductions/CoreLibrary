@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
@@ -129,13 +128,13 @@ namespace InterpreteTests
                         Nested = true,
                         Commands = new CategorizedDictionary<int, string>
                         {
-                            { "If_Condition", 0, "condition1" },
-                            { "Else", 2, "Command4;" }
+                            { "If_Condition", 0, "condition1" }, { "Else", 2, "Command4;" }
                         }
                     }
                 },
                 {
-                    1, new IfElseObj
+                    1,
+                    new IfElseObj
                     {
                         Id = 1,
                         Input = "if (condition2) { Command2; } else { Command3; }",
@@ -183,10 +182,10 @@ namespace InterpreteTests
                 Assert.AreEqual(expectedObj.Nested, actualObj.Nested, $"Nested flag mismatch at key {kvp.Key}.");
                 Assert.AreEqual(expectedObj.Input, actualObj.Input, $"Input string mismatch at key {kvp.Key}.");
 
-                bool areCommandsEqual = CategorizedDictionary<int, string>.AreEqual(
+                var areCommandsEqual = CategorizedDictionary<int, string>.AreEqual(
                     expectedObj.Commands,
                     actualObj.Commands,
-                    out string message);
+                    out var message);
 
                 Assert.IsTrue(areCommandsEqual, $"Commands mismatch at key {kvp.Key}: {message}");
             }
@@ -210,8 +209,7 @@ namespace InterpreteTests
                         Nested = false,
                         Commands = new CategorizedDictionary<int, string>
                         {
-                            { "If_Condition", 0, "condition1" },
-                            { "If", 1, "Command1;" }
+                            { "If_Condition", 0, "condition1" }, { "If", 1, "Command1;" }
                         }
                     }
                 }
@@ -231,7 +229,8 @@ namespace InterpreteTests
             Assert.AreEqual(expectedObj.Nested, actualObj.Nested);
             Assert.AreEqual(expectedObj.Input, actualObj.Input);
 
-            bool commandsEqual = CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out string msg);
+            var commandsEqual =
+                CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out var msg);
             Assert.IsTrue(commandsEqual, $"Commands mismatch: {msg}");
         }
 
@@ -241,41 +240,39 @@ namespace InterpreteTests
             const string input = "if (cond1) { if (cond2) { Cmd2; } else { Cmd3; } } else { Cmd4; }";
 
             var expected = new Dictionary<int, IfElseObj>
-    {
-        {
-            0, new IfElseObj
             {
-                Input = input,
-                Else = false,
-                ParentId = -1,
-                Layer = 0,
-                Position = 0,
-                Nested = true,
-                Commands = new CategorizedDictionary<int, string>
                 {
-                    { "If_Condition", 0, "cond1" },
-                    { "Else", 2, "Cmd4;" }
-                }
-            }
-        },
-        {
-            1, new IfElseObj
-            {
-                Input = "if (cond2) { Cmd2; } else { Cmd3; }",
-                Else = false,
-                ParentId = 0,
-                Layer = 1,
-                Position = 1,
-                Nested = false,
-                Commands = new CategorizedDictionary<int, string>
+                    0, new IfElseObj
+                    {
+                        Input = input,
+                        Else = false,
+                        ParentId = -1,
+                        Layer = 0,
+                        Position = 0,
+                        Nested = true,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond1" }, { "Else", 2, "Cmd4;" }
+                        }
+                    }
+                },
                 {
-                    { "If_Condition", 0, "cond2" },
-                    { "If", 1, "Cmd2;" },
-                    { "Else", 2, "Cmd3;" }
+                    1,
+                    new IfElseObj
+                    {
+                        Input = "if (cond2) { Cmd2; } else { Cmd3; }",
+                        Else = false,
+                        ParentId = 0,
+                        Layer = 1,
+                        Position = 1,
+                        Nested = false,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond2" }, { "If", 1, "Cmd2;" }, { "Else", 2, "Cmd3;" }
+                        }
+                    }
                 }
-            }
-        }
-    };
+            };
 
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
@@ -293,7 +290,8 @@ namespace InterpreteTests
                 Assert.AreEqual(expectedObj.Nested, actualObj.Nested, $"Nested flag mismatch at key {kvp.Key}");
                 Assert.AreEqual(expectedObj.Input, actualObj.Input, $"Input mismatch at key {kvp.Key}");
 
-                bool commandsEqual = CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out string msg);
+                var commandsEqual =
+                    CategorizedDictionary<int, string>.AreEqual(expectedObj.Commands, actualObj.Commands, out var msg);
                 Assert.IsTrue(commandsEqual, $"Commands mismatch at key {kvp.Key}: {msg}");
             }
         }
@@ -305,41 +303,39 @@ namespace InterpreteTests
             const string input = "if (cond1) { Cmd1; } else { if (cond2) { Cmd2; } else { Cmd3; } }";
 
             var expected = new Dictionary<int, IfElseObj>
-    {
-        {
-            0, new IfElseObj
             {
-                Input = input,
-                Else = false,
-                ParentId = -1,
-                Layer = 0,
-                Position = 0,
-                Nested = true,
-                Commands = new CategorizedDictionary<int, string>
                 {
-                    { "If_Condition", 0, "cond1" },
-                    { "If", 1, "Cmd1;" },
-                }
-            }
-        },
-        {
-            1, new IfElseObj
-            {
-                Input = "if (cond2) { Cmd2; } else { Cmd3; }",
-                Else = true,
-                ParentId = 0,
-                Layer = 1,
-                Position = 2,
-                Nested = false,
-                Commands = new CategorizedDictionary<int, string>
+                    0, new IfElseObj
+                    {
+                        Input = input,
+                        Else = false,
+                        ParentId = -1,
+                        Layer = 0,
+                        Position = 0,
+                        Nested = true,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond1" }, { "If", 1, "Cmd1;" }
+                        }
+                    }
+                },
                 {
-                    { "If_Condition", 0, "cond2" },
-                    { "If", 1, "Cmd2;" },
-                    { "Else", 2, "Cmd3;" }
+                    1,
+                    new IfElseObj
+                    {
+                        Input = "if (cond2) { Cmd2; } else { Cmd3; }",
+                        Else = true,
+                        ParentId = 0,
+                        Layer = 1,
+                        Position = 2,
+                        Nested = false,
+                        Commands = new CategorizedDictionary<int, string>
+                        {
+                            { "If_Condition", 0, "cond2" }, { "If", 1, "Cmd2;" }, { "Else", 2, "Cmd3;" }
+                        }
+                    }
                 }
-            }
-        }
-    };
+            };
 
             var result = ConditionalExpressions.ParseIfElseClauses(input);
 
@@ -360,22 +356,26 @@ namespace InterpreteTests
                 Assert.AreEqual(expectedObj.Nested, actualObj.Nested, $"Nested flag mismatch at key {key}.");
 
                 // Check commands count
-                Assert.AreEqual(expectedObj.Commands.Count, actualObj.Commands.Count, $"Commands count mismatch at key {key}.");
+                Assert.AreEqual(expectedObj.Commands.Count, actualObj.Commands.Count,
+                    $"Commands count mismatch at key {key}.");
 
                 // For each expected command key, try to find it in actual commands by key and category
                 foreach (var (category, expectedCmdKey, expectedValue) in expectedObj.Commands)
                 {
-                    bool found = false;
+                    var found = false;
                     foreach (var (actCategory, actKey, actValue) in actualObj.Commands)
                     {
                         if (actCategory == category && actKey == expectedCmdKey)
                         {
-                            Assert.AreEqual(expectedValue, actValue, $"Command value mismatch for category '{category}' and key '{expectedCmdKey}' at IfElseObj {key}.");
+                            Assert.AreEqual(expectedValue, actValue,
+                                $"Command value mismatch for category '{category}' and key '{expectedCmdKey}' at IfElseObj {key}.");
                             found = true;
                             break;
                         }
                     }
-                    Assert.IsTrue(found, $"Command with category '{category}' and key '{expectedCmdKey}' not found at IfElseObj {key}.");
+
+                    Assert.IsTrue(found,
+                        $"Command with category '{category}' and key '{expectedCmdKey}' not found at IfElseObj {key}.");
                 }
             }
         }

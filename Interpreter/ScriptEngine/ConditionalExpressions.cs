@@ -80,14 +80,16 @@ namespace Interpreter.ScriptEngine
                      category.Equals("Else", StringComparison.OrdinalIgnoreCase)) &&
                     IrtKernel.ContainsKeywordWithOpenParenthesis(value, IrtConst.InternalIf))
                 {
-                    int nestedIfIndex = IrtKernel.FindFirstKeywordIndex(value, IrtConst.InternalIf);
+                    var nestedIfIndex = IrtKernel.FindFirstKeywordIndex(value, IrtConst.InternalIf);
 
                     if (nestedIfIndex != IrtConst.Error)
                     {
                         var nestedIfBlock = value.Substring(nestedIfIndex).Trim();
-                        Trace.WriteLine($"Detected nested if-block inside {category} block, recursing into it at layer {obj.Layer + 1}");
+                        Trace.WriteLine(
+                            $"Detected nested if-block inside {category} block, recursing into it at layer {obj.Layer + 1}");
                         obj.Nested = true;
-                        ProcessInput(nestedIfBlock, category.Equals("Else", StringComparison.OrdinalIgnoreCase), obj.Id, obj.Layer + 1, key, ifElseClauses);
+                        ProcessInput(nestedIfBlock, category.Equals("Else", StringComparison.OrdinalIgnoreCase), obj.Id,
+                            obj.Layer + 1, key, ifElseClauses);
                         continue; // skip adding the raw command, because we parsed it as nested IfElseObj
                     }
                 }

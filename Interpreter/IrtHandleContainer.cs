@@ -26,14 +26,14 @@ namespace Interpreter
     public sealed class IrtHandleContainer : IDisposable
     {
         private bool _disposed;
-        private IrtHandleInternal _irtHandleInternal;
-        private Prompt _prompt;
-
-        // Persistent storage for parsed and categorized commands
-        private CategorizedDictionary<int, string> _parsedCommands = new();
 
         // Track nesting level of if blocks
-        private int _ifDepth = 0;
+        private int _ifDepth;
+        private IrtHandleInternal _irtHandleInternal;
+
+        // Persistent storage for parsed and categorized commands
+        private readonly CategorizedDictionary<int, string> _parsedCommands = new();
+        private Prompt _prompt;
 
         private IrtHandleContainer()
         {
@@ -175,7 +175,7 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Optional helper to parse a single line into categories if needed externally.
+        ///     Optional helper to parse a single line into categories if needed externally.
         /// </summary>
         /// <param name="line">The command line</param>
         /// <param name="lineCount">Line index</param>
@@ -206,7 +206,10 @@ namespace Interpreter
 
         private void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
@@ -224,4 +227,3 @@ namespace Interpreter
         }
     }
 }
-
