@@ -12,14 +12,20 @@ namespace InterpreteTests
         {
             // Arrange: simple input with labels, commands, goto
             string input = @"
-        Label(one);
-        Print(hello world);
-        goto(one);
-        if(condition) { Print(if true); } else { Print(if false); }
-    ";
+                Label(one);
+                Print(""hello world"");
+                goto(one);
+                if(condition) { Print(""if true""); } else { Print(""if false""); }
+            ";
 
             var lex = new Lexer(input);
             var tokens = lex.Tokenize();
+
+            foreach (var token in tokens)
+            {
+                Trace.WriteLine("Token:");
+                Trace.WriteLine(token);
+            }
 
             // Act: parse input - assuming you have a Parse method that returns CategorizedDictionary<int, string>
             var parser = new Parser(tokens); // replace with your actual parser class
@@ -27,6 +33,7 @@ namespace InterpreteTests
 
             foreach (var part in result)
             {
+                Trace.WriteLine("Parsed:");
                 Trace.WriteLine(part);
             }
 
@@ -58,6 +65,4 @@ namespace InterpreteTests
         }
 
     }
-
-
 }

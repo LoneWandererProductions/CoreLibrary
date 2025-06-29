@@ -18,6 +18,20 @@
         Label,           // Label(...)
         Command,        //Command
         Unknown,
-        String
+        Keyword,
+        KeywordGoto,
+        String,
+        Plus,
+        Minus, 
+        Star, 
+        Slash,
+        Greater, 
+        GreaterEqual,
+        Less, 
+        LessEqual,
+        Equal, 
+        EqualEqual,
+        Bang, 
+        BangEqual,
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Interpreter.ScriptEngine
 {
@@ -13,7 +14,9 @@ namespace Interpreter.ScriptEngine
         private static readonly HashSet<string> Keywords = new(StringComparer.OrdinalIgnoreCase)
         {
             "if",
-            "else"
+            "else",
+            "label",
+            "goto"
         };
 
         public Lexer(string input) => _input = input;
@@ -32,18 +35,20 @@ namespace Interpreter.ScriptEngine
 
                 char c = Peek();
 
-                if (char.IsLetter(c))
+                if (char.IsLetter(c) || CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.LetterNumber)
                 {
-                    var ident = ReadWhile(ch => char.IsLetterOrDigit(ch) || ch == '_');
-                    if (ident.Equals("Label", StringComparison.OrdinalIgnoreCase) && Peek() == '(')
+                    var ident = ReadWhile(ch => char.IsLetterOrDigit(ch) || ch == '_' || CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.LetterNumber);
+                    if (Keywords.Contains(ident))
                     {
-                        tokens.Add(new Token { Type = TokenType.Label, Lexeme = ident, Line = line, Column = col });
-                    }
-                    else if (Keywords.Contains(ident))
-                    {
+                        TokenType type = ident.Equals("if", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordIf :
+                            ident.Equals("else", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordElse :
+                            ident.Equals("label", StringComparison.OrdinalIgnoreCase) ? TokenType.Label :  // or TokenType.KeywordLabel
+                            ident.Equals("goto", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordGoto :  // add this token type
+                            TokenType.Keyword; // fallback
+
                         tokens.Add(new Token
                         {
-                            Type = ident.Equals("if", StringComparison.OrdinalIgnoreCase) ? TokenType.KeywordIf : TokenType.KeywordElse,
+                            Type = type,
                             Lexeme = ident,
                             Line = line,
                             Column = col
@@ -66,8 +71,8 @@ namespace Interpreter.ScriptEngine
                     var stringBuilder = new System.Text.StringBuilder();
                     while (!IsAtEnd() && Peek() != '"')
                     {
-                        stringBuilder.Append(Peek()); // Append current character
-                        Advance(); // Move to next
+                        stringBuilder.Append(Peek());
+                        Advance();
                     }
 
                     if (!IsAtEnd() && Peek() == '"')
@@ -86,7 +91,7 @@ namespace Interpreter.ScriptEngine
                         tokens.Add(new Token
                         {
                             Type = TokenType.Unknown,
-                            Lexeme = "\"" + stringBuilder.ToString(), // Include unmatched opening quote
+                            Lexeme = "\"" + stringBuilder.ToString(),
                             Line = line,
                             Column = col
                         });
@@ -96,20 +101,13 @@ namespace Interpreter.ScriptEngine
                 {
                     switch (c)
                     {
-                        case ';':
-                            Advance(); tokens.Add(Token(TokenType.Semicolon, ";", line, col)); break;
-                        case '.':
-                            Advance(); tokens.Add(Token(TokenType.Dot, ".", line, col)); break;
-                        case ',':
-                            Advance(); tokens.Add(Token(TokenType.Comma, ",", line, col)); break;
-                        case '(':
-                            Advance(); tokens.Add(Token(TokenType.OpenParen, "(", line, col)); break;
-                        case ')':
-                            Advance(); tokens.Add(Token(TokenType.CloseParen, ")", line, col)); break;
-                        case '{':
-                            Advance(); tokens.Add(Token(TokenType.OpenBrace, "{", line, col)); break;
-                        case '}':
-                            Advance(); tokens.Add(Token(TokenType.CloseBrace, "}", line, col)); break;
+                        case ';': Advance(); tokens.Add(Token(TokenType.Semicolon, ";", line, col)); break;
+                        case '.': Advance(); tokens.Add(Token(TokenType.Dot, ".", line, col)); break;
+                        case ',': Advance(); tokens.Add(Token(TokenType.Comma, ",", line, col)); break;
+                        case '(': Advance(); tokens.Add(Token(TokenType.OpenParen, "(", line, col)); break;
+                        case ')': Advance(); tokens.Add(Token(TokenType.CloseParen, ")", line, col)); break;
+                        case '{': Advance(); tokens.Add(Token(TokenType.OpenBrace, "{", line, col)); break;
+                        case '}': Advance(); tokens.Add(Token(TokenType.CloseBrace, "}", line, col)); break;
                         case '-':
                             if (Peek(1) == '-')
                             {
@@ -120,12 +118,66 @@ namespace Interpreter.ScriptEngine
                             else
                             {
                                 Advance();
-                                tokens.Add(Token(TokenType.Unknown, "-", line, col));
+                                tokens.Add(Token(TokenType.Minus, "-", line, col));
                             }
                             break;
+                        case '+': Advance(); tokens.Add(Token(TokenType.Plus, "+", line, col)); break;
+                        case '*': Advance(); tokens.Add(Token(TokenType.Star, "*", line, col)); break;
+                        case '/': Advance(); tokens.Add(Token(TokenType.Slash, "/", line, col)); break;
+                        case '=':
+                            if (Peek(1) == '=')
+                            {
+                                Advance(2);
+                                tokens.Add(Token(TokenType.EqualEqual, "==", line, col));
+                            }
+                            else
+                            {
+                                Advance();
+                                tokens.Add(Token(TokenType.Equal, "=", line, col));
+                            }
+                            break;
+                        case '!':
+                            if (Peek(1) == '=')
+                            {
+                                Advance(2);
+                                tokens.Add(Token(TokenType.BangEqual, "!=", line, col));
+                            }
+                            else
+                            {
+                                Advance();
+                                tokens.Add(Token(TokenType.Bang, "!", line, col));
+                            }
+                            break;
+                        case '>':
+                            if (Peek(1) == '=')
+                            {
+                                Advance(2);
+                                tokens.Add(Token(TokenType.GreaterEqual, ">=", line, col));
+                            }
+                            else
+                            {
+                                Advance();
+                                tokens.Add(Token(TokenType.Greater, ">", line, col));
+                            }
+                            break;
+                        case '<':
+                            if (Peek(1) == '=')
+                            {
+                                Advance(2);
+                                tokens.Add(Token(TokenType.LessEqual, "<=", line, col));
+                            }
+                            else
+                            {
+                                Advance();
+                                tokens.Add(Token(TokenType.Less, "<", line, col));
+                            }
+
+                            break;
                         default:
+                            char unknownChar = c;
                             Advance();
-                            tokens.Add(Token(TokenType.Unknown, c.ToString(), line, col));
+                            Console.WriteLine($"Unknown char: {(int)unknownChar} '{unknownChar}' at Line {line}, Col {col}");
+                            tokens.Add(Token(TokenType.Unknown, unknownChar.ToString(), line, col));
                             break;
                     }
                 }
@@ -141,8 +193,20 @@ namespace Interpreter.ScriptEngine
         {
             while (!IsAtEnd() && char.IsWhiteSpace(Peek()))
             {
-                if (Peek() == '\n') { _line++; _col = 0; }
-                Advance();
+                if (Peek() == '\n')
+                {
+                    _line++;
+                    _col = 0;
+                    Advance();
+                }
+                else if (Peek() == '\r')
+                {
+                    Advance();
+                }
+                else
+                {
+                    Advance();
+                }
             }
         }
 

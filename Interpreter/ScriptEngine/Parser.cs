@@ -67,26 +67,28 @@ namespace Interpreter.ScriptEngine
         {
             var sb = new System.Text.StringBuilder();
             bool insideParens = false;
+            Token? previous = null;
 
             while (!IsAtEnd() && Peek().Type != TokenType.Semicolon)
             {
-                var token = Advance();
+                var current = Advance();
 
-                // Insert space between identifiers inside parentheses
                 if (insideParens &&
-                    token.Type == TokenType.Identifier &&
-                    sb.Length > 0 &&
-                    char.IsLetterOrDigit(sb[^1]))
+                    previous != null &&
+                    IsAlphanumeric(previous.Type) &&
+                    IsAlphanumeric(current.Type))
                 {
                     sb.Append(' ');
                 }
 
-                sb.Append(token.Lexeme);
+                sb.Append(current.Lexeme);
 
-                if (token.Type == TokenType.OpenParen)
+                if (current.Type == TokenType.OpenParen)
                     insideParens = true;
-                else if (token.Type == TokenType.CloseParen)
+                else if (current.Type == TokenType.CloseParen)
                     insideParens = false;
+
+                previous = current;
             }
 
             if (Match(TokenType.Semicolon))
@@ -94,6 +96,15 @@ namespace Interpreter.ScriptEngine
 
             return sb.ToString();
         }
+
+        private bool IsAlphanumeric(TokenType type)
+        {
+            return type == TokenType.Identifier ||
+                   type == TokenType.KeywordIf ||
+                   type == TokenType.KeywordElse ||
+                   type == TokenType.Number; // add any others you want spaced
+        }
+
 
 
         private string ReadBlockAsString()
