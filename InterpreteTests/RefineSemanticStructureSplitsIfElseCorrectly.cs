@@ -35,7 +35,13 @@ namespace InterpreteTests
 
             var rawBlocks = parser.ParseIntoCategorizedBlocks();
 
+            // FIRST: refine the structure (splits If into If_Condition + branches)
             var refined = rawBlocks.RefineSemanticStructure();
+
+            // SECOND: add structural blocks like If_Open, If_End
+            refined = refined.AddControlStructureBraces();
+
+            // THIRD: normalize further (optional)
             refined = refined.RemoveControlStatements();
             refined = refined.NormalizeJumpTargets();
 

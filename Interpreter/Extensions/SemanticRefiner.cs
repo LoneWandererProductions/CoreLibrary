@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Text.RegularExpressions;
 using ExtendedSystemObjects;
 
@@ -33,39 +34,92 @@ namespace Interpreter.Extensions
                     continue;
                 }
 
-                var (cat, val) = entry.Value;
+                var (category, value) = entry.Value;
 
-                if (cat == "If_Condition")
+                if (category == "If_Condition")
                 {
-                    // Add the condition
-                    output.Add("If_Condition", nextKey++, val);
-
-                    // Add open
+                    output.Add("If_Condition", nextKey++, value);
                     output.Add("If_Open", nextKey++, null);
 
-                    i++; // Move to next item
+                    i++; // go to next
 
-                    // Copy all following commands until an 'Else_' or 'If_End' or another control token
-                    while (i < input.Count &&
-                           input.TryGetCategory(i, out var nextCat) &&
-                           nextCat != "Else_Condition" &&
-                           nextCat != "Else_Open" &&
-                           nextCat != "If_End" &&
-                           nextCat != "Else_End" &&
-                           nextCat != "If_Condition")
+                    while (i < input.Count)
                     {
-                        var subEntry = input.GetCategoryAndValue(i);
-                        output.Add(subEntry?.Category ?? "Command", nextKey++, subEntry?.Value);
+                        var inner = input.GetCategoryAndValue(i);
+                        if (inner == null) { i++; continue; }
+
+                        var (innerCategory, innerValue) = inner.Value;
+
+                        // If we hit an Else_Condition or another control block, stop.
+                        if (innerCategory.StartsWith("If_", StringComparison.OrdinalIgnoreCase) ||
+                            innerCategory.StartsWith("Else_", StringComparison.OrdinalIgnoreCase))
+                        {
+                            break;
+                        }
+
+                        output.Add(innerCategory, nextKey++, innerValue);
                         i++;
                     }
 
-                    // Add end
                     output.Add("If_End", nextKey++, null);
                 }
                 else
                 {
-                    // Everything else just gets forwarded
-                    output.Add(cat, nextKey++, val);
+                    output.Add(category, nextKey++, value);
+                    i++;
+                }
+            }
+
+            return output;
+        }
+
+        public static CategorizedDictionary<int, string> AddControlStructureBraces(this CategorizedDictionary<int, string> input)
+        {
+            var output = new CategorizedDictionary<int, string>();
+            var nextKey = 0;
+
+            int i = 0;
+            while (i < input.Count)
+            {
+                var entry = input.GetCategoryAndValue(i);
+                if (entry == null)
+                {
+                    i++;
+                    continue;
+                }
+
+                var (category, value) = entry.Value;
+
+                if (category == "If_Condition")
+                {
+                    output.Add("If_Condition", nextKey++, value);
+                    output.Add("If_Open", nextKey++, null);
+                    i++;
+
+                    while (i < input.Count)
+                    {
+                        var next = input.GetCategoryAndValue(i);
+                        if (next == null) { i++; continue; }
+
+                        if (next.Value.Category == "Else_Branch" || next.Value.Category == "If_Condition")
+                            break;
+
+                        output.Add(next.Value.Category, nextKey++, next.Value.Value);
+                        i++;
+                    }
+
+                    output.Add("If_End", nextKey++, null);
+                }
+                else if (category == "Else_Branch")
+                {
+                    output.Add("Else_Open", nextKey++, null);
+                    output.Add("Command", nextKey++, value);
+                    output.Add("Else_End", nextKey++, null);
+                    i++;
+                }
+                else
+                {
+                    output.Add(category, nextKey++, value);
                     i++;
                 }
             }
