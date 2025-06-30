@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,8 +7,11 @@ namespace InterpreteTests
     [TestClass]
     public class ParserTests
     {
+        /// <summary>
+        /// Parses the simple commands returns correct categories and values.
+        /// </summary>
         [TestMethod]
-        public void ParseSimpleCommands_ReturnsCorrectCategoriesAndValues()
+        public void ParseSimpleCommandsReturnsCorrectCategoriesAndValues()
         {
             var input = @"
                 Label(one);
@@ -22,6 +24,12 @@ namespace InterpreteTests
             var tokens = lexer.Tokenize();
             var parser = new Parser(tokens);
             var result = parser.ParseIntoCategorizedBlocks();
+
+
+            foreach (var (Key, Category, Value) in result)
+            {
+                Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            }
 
             Assert.AreEqual(5, result.Count, "Expected 5 categorized blocks.");
 
@@ -54,8 +62,11 @@ namespace InterpreteTests
             StringAssert.Contains(val4, "Print");
         }
 
+        /// <summary>
+        /// Parses the handles empty input returns empty result.
+        /// </summary>
         [TestMethod]
-        public void ParseHandlesEmptyInput_ReturnsEmptyResult()
+        public void ParseHandlesEmptyInputReturnsEmptyResult()
         {
             var lexer = new Lexer("");
             var parser = new Parser(lexer.Tokenize());
@@ -65,8 +76,11 @@ namespace InterpreteTests
             Assert.AreEqual(0, result.Count);
         }
 
+        /// <summary>
+        /// Parses the handles only comments skips them.
+        /// </summary>
         [TestMethod]
-        public void ParseHandlesOnlyComments_SkipsThem()
+        public void ParseHandlesOnlyCommentsSkipsThem()
         {
             var input = @"
                         -- comment line one
@@ -80,15 +94,18 @@ namespace InterpreteTests
             var result = parser.ParseIntoCategorizedBlocks();
 
             // 🔽 Fix: Clean up possible artifacts
-            foreach (var entry in result)
+            foreach (var (Key, Category, Value) in result)
             {
-                Trace.WriteLine($"[{entry.Key}] {entry.Category}: {entry.Value}");
+                Trace.WriteLine($"[{Key}] {Category}: {Value}");
             }
 
             // 🔧 Defensive assertion: ignore empty statements
             Assert.AreEqual(0, result.Count, "Expected no actual parsed statements (only comments)");
         }
 
+        /// <summary>
+        /// Parses the handles chained method calls as single command.
+        /// </summary>
         [TestMethod]
         public void ParseHandlesChainedMethodCallsAsSingleCommand()
         {
@@ -96,17 +113,31 @@ namespace InterpreteTests
             var parser = new Parser(new Lexer(input).Tokenize());
             var result = parser.ParseIntoCategorizedBlocks();
 
+            foreach (var (Key, Category, Value) in result)
+            {
+                Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            }
+
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Command", result.GetCategory(0), true);
             Assert.AreEqual("some().thing().do();", result[0].Trim());
         }
 
+        /// <summary>
+        /// Parses the handles spacing inside parentheses.
+        /// </summary>
         [TestMethod]
         public void ParseHandlesSpacingInsideParentheses()
         {
             var input = @"Print(hello   world);";
             var parser = new Parser(new Lexer(input).Tokenize());
             var result = parser.ParseIntoCategorizedBlocks();
+
+
+            foreach (var (Key, Category, Value) in result)
+            {
+                Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            }
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Command", result.GetCategory(0), true);

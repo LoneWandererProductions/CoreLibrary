@@ -85,7 +85,6 @@ namespace InterpreteTests
             }
         }
 
-
         /// <summary>
         ///     Parses if else clauses single if clause returns correct object.
         /// </summary>

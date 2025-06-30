@@ -173,6 +173,12 @@ namespace ExtendedSystemObjects
             return true;
         }
 
+        /// <summary>
+        /// Gets the category.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
         public string GetCategory(TK key)
         {
             _lock.EnterReadLock();
