@@ -46,29 +46,29 @@ namespace Interpreter.ScriptEngine
                         break;
 
                     case TokenType.Label:
-                        {
-                            var stmt = ReadStatementAsString();
-                            result.Add("Label", commandIndex++, stmt);
-                            break;
-                        }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Label", commandIndex++, stmt);
+                        break;
+                    }
 
                     case TokenType.KeywordGoto:
-                        {
-                            var stmt = ReadStatementAsString();
-                            result.Add("Goto", commandIndex++, stmt);
-                            break;
-                        }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Goto", commandIndex++, stmt);
+                        break;
+                    }
 
                     case TokenType.Comment:
                         Advance(); // skip comments
                         break;
 
                     default:
-                        {
-                            var stmt = ReadStatementAsString();
-                            result.Add("Command", commandIndex++, stmt);
-                            break;
-                        }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Command", commandIndex++, stmt);
+                        break;
+                    }
                 }
             }
 
@@ -131,19 +131,25 @@ namespace Interpreter.ScriptEngine
             Expect(TokenType.OpenParen);
 
             var sb = new StringBuilder();
-            int parenDepth = 1;
+            var parenDepth = 1;
 
             while (!IsAtEnd() && parenDepth > 0)
             {
                 var token = Advance();
 
                 if (token.Type == TokenType.OpenParen)
+                {
                     parenDepth++;
+                }
                 else if (token.Type == TokenType.CloseParen)
+                {
                     parenDepth--;
+                }
 
                 if (parenDepth > 0)
+                {
                     sb.Append(token.Lexeme);
+                }
             }
 
             return sb.ToString().Trim();
@@ -210,7 +216,8 @@ namespace Interpreter.ScriptEngine
         {
             if (IsAtEnd() || Peek().Type != expected)
             {
-                throw new ArgumentException($"Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'.");
+                throw new ArgumentException(
+                    $"Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'.");
             }
 
             Advance();

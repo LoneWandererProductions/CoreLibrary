@@ -38,7 +38,6 @@ namespace Interpreter.ScriptEngine
             {
                 SkipWhitespace();
 
-                var start = _pos;
                 var line = _line;
                 var col = _col;
 
@@ -241,7 +240,7 @@ namespace Interpreter.ScriptEngine
 
         private Token Token(TokenType type, string lexeme, int line, int col)
         {
-            return new() { Type = type, Lexeme = lexeme, Line = line, Column = col };
+            return new Token { Type = type, Lexeme = lexeme, Line = line, Column = col };
         }
 
         private void SkipWhitespace()

@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Text.RegularExpressions;
 using ExtendedSystemObjects;
 
@@ -15,11 +14,12 @@ namespace Interpreter.Extensions
     internal static class SemanticRefiner
     {
         /// <summary>
-        /// Refines the semantic structure.
+        ///     Refines the semantic structure.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>CategorizedDictionary with improved if, else branches</returns>
-        public static CategorizedDictionary<int, string> RefineSemanticStructure(this CategorizedDictionary<int, string> input)
+        public static CategorizedDictionary<int, string> RefineSemanticStructure(
+            this CategorizedDictionary<int, string> input)
         {
             var output = new CategorizedDictionary<int, string>();
             var nextKey = 0;
@@ -49,12 +49,13 @@ namespace Interpreter.Extensions
             return output;
         }
 
-        public static CategorizedDictionary<int, string> AddControlStructureBraces(this CategorizedDictionary<int, string> input)
+        public static CategorizedDictionary<int, string> AddControlStructureBraces(
+            this CategorizedDictionary<int, string> input)
         {
             var output = new CategorizedDictionary<int, string>();
             var nextKey = 0;
 
-            int i = 0;
+            var i = 0;
             while (i < input.Count)
             {
                 var entry = input.GetCategoryAndValue(i);
@@ -75,10 +76,16 @@ namespace Interpreter.Extensions
                     while (i < input.Count)
                     {
                         var next = input.GetCategoryAndValue(i);
-                        if (next == null) { i++; continue; }
+                        if (next == null)
+                        {
+                            i++;
+                            continue;
+                        }
 
                         if (next.Value.Category == "Else_Branch" || next.Value.Category == "If_Condition")
+                        {
                             break;
+                        }
 
                         output.Add(next.Value.Category, nextKey++, next.Value.Value);
                         i++;
@@ -105,14 +112,15 @@ namespace Interpreter.Extensions
 
 
         /// <summary>
-        /// Removes the control statements.
+        ///     Removes the control statements.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>CategorizedDictionary with removed control statements.</returns>
-        public static CategorizedDictionary<int, string> RemoveControlStatements(this CategorizedDictionary<int, string> input)
+        public static CategorizedDictionary<int, string> RemoveControlStatements(
+            this CategorizedDictionary<int, string> input)
         {
             var output = new CategorizedDictionary<int, string>();
-            int nextKey = 0;
+            var nextKey = 0;
 
             foreach (var (key, category, value) in input)
             {
@@ -137,14 +145,15 @@ namespace Interpreter.Extensions
         }
 
         /// <summary>
-        /// Normalizes the jump targets.
+        ///     Normalizes the jump targets.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>CategorizedDictionary with improved jump targets.</returns>
-        public static CategorizedDictionary<int, string> NormalizeJumpTargets(this CategorizedDictionary<int, string> input)
+        public static CategorizedDictionary<int, string> NormalizeJumpTargets(
+            this CategorizedDictionary<int, string> input)
         {
             var output = new CategorizedDictionary<int, string>();
-            int nextKey = 0;
+            var nextKey = 0;
 
             foreach (var (key, category, value) in input)
             {
@@ -155,7 +164,7 @@ namespace Interpreter.Extensions
                     continue;
                 }
 
-                string normalized = value.Trim();
+                var normalized = value.Trim();
 
 
                 switch (category.ToLowerInvariant())

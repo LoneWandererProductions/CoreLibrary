@@ -64,20 +64,20 @@ namespace Interpreter
         public ExtensionCommands ExtensionCommand { get; internal init; }
 
         /// <summary>
-        /// The actual result returned by the command at runtime.
+        ///     The actual result returned by the command at runtime.
         /// </summary>
         public object Result { get; internal init; }
 
         /// <summary>
-        /// Convenience access to the runtime type of the result (can be null).
+        ///     Convenience access to the runtime type of the result (can be null).
         /// </summary>
         public Type ActualReturnType => Result?.GetType();
 
         /// <summary>
-        ///  Gets a value indicating whether this instance executed successfully.
+        ///     Gets a value indicating whether this instance executed successfully.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is success; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is success; otherwise, <c>false</c>.
         /// </value>
         public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
 

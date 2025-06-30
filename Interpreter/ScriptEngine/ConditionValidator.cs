@@ -50,5 +50,4 @@ namespace Interpreter.ScriptEngine
             return true; // for now, assume always true
         }
     }
-
 }

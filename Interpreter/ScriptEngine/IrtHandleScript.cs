@@ -25,14 +25,13 @@ namespace Interpreter.ScriptEngine
     /// <seealso cref="IDisposable" />
     public sealed class IrtHandleScript : IDisposable
     {
+        // Persistent storage for parsed and categorized commands
+        private readonly CategorizedDictionary<int, string> _parsedCommands = new();
         private bool _disposed;
 
         // Track nesting level of if blocks
         private int _ifDepth;
         private IrtHandleInternal _irtHandleInternal;
-
-        // Persistent storage for parsed and categorized commands
-        private readonly CategorizedDictionary<int, string> _parsedCommands = new();
         private Prompt _prompt;
 
         private IrtHandleScript()

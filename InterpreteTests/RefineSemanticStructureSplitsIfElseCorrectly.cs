@@ -7,12 +7,10 @@
  */
 
 using System.Diagnostics;
-using System.Windows.Input;
 using ExtendedSystemObjects;
 using Interpreter.Extensions;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace InterpreteTests
 {
@@ -20,7 +18,7 @@ namespace InterpreteTests
     public class RefineSemanticStructureSplitsIfElseCorrectly
     {
         /// <summary>
-        /// Refines the semantic structure splits if else correctly.
+        ///     Refines the semantic structure splits if else correctly.
         /// </summary>
         [TestMethod]
         public void RefineSemanticStructureSplitsIfElse()
@@ -66,13 +64,14 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Verifies that a categorized entry matches expected values.
+        ///     Verifies that a categorized entry matches expected values.
         /// </summary>
-        private static void AssertEntry(CategorizedDictionary<int, string> dict, int key, string expectedCategory, string expectedValue)
+        private static void AssertEntry(CategorizedDictionary<int, string> dict, int key, string expectedCategory,
+            string expectedValue)
         {
             var entry = dict.GetCategoryAndValue(key);
             Assert.IsNotNull(entry, $"Expected key {key} to exist.");
-            Assert.AreEqual(expectedCategory, entry.Value.Category, ignoreCase: true);
+            Assert.AreEqual(expectedCategory, entry.Value.Category, true);
 
             if (expectedValue != null)
             {

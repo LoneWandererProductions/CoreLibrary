@@ -16,11 +16,11 @@ namespace InterpreteTests
     public class ParserTests
     {
         /// <summary>
-        /// Parses the simple commands returns correct categories and values.
+        ///     Parses the simple commands returns correct categories and values.
         /// </summary>
         /// <summary>
-        /// Parses the simple commands and returns correct categories and values,
-        /// including explicit If/Else block markers.
+        ///     Parses the simple commands and returns correct categories and values,
+        ///     including explicit If/Else block markers.
         /// </summary>
         [TestMethod]
         public void ParseSimpleCommandsReturnsCorrectCategoriesAndValues()
@@ -45,61 +45,61 @@ namespace InterpreteTests
             Assert.AreEqual(10, result.Count, "Expected 10 categorized blocks.");
 
             Assert.IsTrue(result.TryGetCategory(0, out var cat0));
-            Assert.AreEqual("Label", cat0, ignoreCase: true);
+            Assert.AreEqual("Label", cat0, true);
             Assert.IsTrue(result.TryGetValue(0, out var val0));
             Assert.AreEqual("Label(one);", val0.Trim());
 
             Assert.IsTrue(result.TryGetCategory(1, out var cat1));
-            Assert.AreEqual("Command", cat1, ignoreCase: true);
+            Assert.AreEqual("Command", cat1, true);
             Assert.IsTrue(result.TryGetValue(1, out var val1));
             StringAssert.Contains(val1, "Print");
             StringAssert.Contains(val1, "hello world");
 
             Assert.IsTrue(result.TryGetCategory(2, out var cat2));
-            Assert.AreEqual("Goto", cat2, ignoreCase: true);
+            Assert.AreEqual("Goto", cat2, true);
             Assert.IsTrue(result.TryGetValue(2, out var val2));
             Assert.AreEqual("goto(one);", val2.Trim());
 
             Assert.IsTrue(result.TryGetCategory(3, out var cat3));
-            Assert.AreEqual("If_Condition", cat3, ignoreCase: true);
+            Assert.AreEqual("If_Condition", cat3, true);
             Assert.IsTrue(result.TryGetValue(3, out var val3));
             Assert.AreEqual("condition", val3.Trim());
 
             Assert.IsTrue(result.TryGetCategory(4, out var cat4));
-            Assert.AreEqual("If_Open", cat4, ignoreCase: true);
+            Assert.AreEqual("If_Open", cat4, true);
             Assert.IsTrue(result.TryGetValue(4, out var val4));
             Assert.IsTrue(string.IsNullOrEmpty(val4));
 
             Assert.IsTrue(result.TryGetCategory(5, out var cat5));
-            Assert.AreEqual("Command", cat5, ignoreCase: true);
+            Assert.AreEqual("Command", cat5, true);
             Assert.IsTrue(result.TryGetValue(5, out var val5));
             StringAssert.Contains(val5, "Print");
             StringAssert.Contains(val5, "if true");
 
             Assert.IsTrue(result.TryGetCategory(6, out var cat6));
-            Assert.AreEqual("If_End", cat6, ignoreCase: true);
+            Assert.AreEqual("If_End", cat6, true);
             Assert.IsTrue(result.TryGetValue(6, out var val6));
             Assert.IsTrue(string.IsNullOrEmpty(val6));
 
             Assert.IsTrue(result.TryGetCategory(7, out var cat7));
-            Assert.AreEqual("Else_Open", cat7, ignoreCase: true);
+            Assert.AreEqual("Else_Open", cat7, true);
             Assert.IsTrue(result.TryGetValue(7, out var val7));
             Assert.IsTrue(string.IsNullOrEmpty(val7));
 
             Assert.IsTrue(result.TryGetCategory(8, out var cat8));
-            Assert.AreEqual("Command", cat8, ignoreCase: true);
+            Assert.AreEqual("Command", cat8, true);
             Assert.IsTrue(result.TryGetValue(8, out var val8));
             StringAssert.Contains(val8, "Print");
             StringAssert.Contains(val8, "if false");
 
             Assert.IsTrue(result.TryGetCategory(9, out var cat9));
-            Assert.AreEqual("Else_End", cat9, ignoreCase: true);
+            Assert.AreEqual("Else_End", cat9, true);
             Assert.IsTrue(result.TryGetValue(9, out var val9));
             Assert.IsTrue(string.IsNullOrEmpty(val9));
         }
 
         /// <summary>
-        /// Parses the handles empty input returns empty result.
+        ///     Parses the handles empty input returns empty result.
         /// </summary>
         [TestMethod]
         public void ParseHandlesEmptyInputReturnsEmptyResult()
@@ -113,7 +113,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Parses the handles only comments skips them.
+        ///     Parses the handles only comments skips them.
         /// </summary>
         [TestMethod]
         public void ParseHandlesOnlyCommentsSkipsThem()
@@ -140,7 +140,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Parses the handles chained method calls as single command.
+        ///     Parses the handles chained method calls as single command.
         /// </summary>
         [TestMethod]
         public void ParseHandlesChainedMethodCallsAsSingleCommand()
@@ -160,7 +160,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Parses the handles spacing inside parentheses.
+        ///     Parses the handles spacing inside parentheses.
         /// </summary>
         [TestMethod]
         public void ParseHandlesSpacingInsideParentheses()

@@ -64,7 +64,8 @@ namespace Interpreter
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(Command, IrtConst.Separator, Description, IrtConst.Separator, ExpectedReturnType.ToString());
+            return string.Concat(Command, IrtConst.Separator, Description, IrtConst.Separator,
+                ExpectedReturnType.ToString());
         }
 
         /// <summary>

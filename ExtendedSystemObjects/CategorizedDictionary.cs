@@ -174,7 +174,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Gets the category.
+        ///     Gets the category.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>

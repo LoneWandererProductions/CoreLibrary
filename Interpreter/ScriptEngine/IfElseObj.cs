@@ -49,7 +49,7 @@ namespace Interpreter.ScriptEngine
                 $"{indent}IfElseObj: Id = {Id}, ParentId = {ParentId}, Position = {Position}, Layer = {Layer}, Else = {Else}, Nested = {Nested}");
             sb.AppendLine($"{indent}Input = \"{Input}\"");
 
-            if (Commands != null && Commands.Count > 0)
+            if (Commands is { Count: > 0 })
             {
                 sb.AppendLine($"{indent}Commands:");
                 foreach (var (key, category, value) in Commands)
