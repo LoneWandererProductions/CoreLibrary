@@ -7,9 +7,12 @@
  */
 
 using System.Diagnostics;
+using System.Windows.Input;
+using ExtendedSystemObjects;
 using Interpreter.Extensions;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace InterpreteTests
 {
@@ -35,50 +38,50 @@ namespace InterpreteTests
 
             var rawBlocks = parser.ParseIntoCategorizedBlocks();
 
-            // FIRST: refine the structure (splits If into If_Condition + branches)
-            var refined = rawBlocks.RefineSemanticStructure();
-
-            // SECOND: add structural blocks like If_Open, If_End
-            refined = refined.AddControlStructureBraces();
-
-            // THIRD: normalize further (optional)
-            refined = refined.RemoveControlStatements();
-            refined = refined.NormalizeJumpTargets();
+            // Semantic refinement pipeline
+            var refined = rawBlocks
+                .RefineSemanticStructure()
+                .RemoveControlStatements()
+                .NormalizeJumpTargets();
 
             foreach (var (Key, Category, Value) in refined)
             {
                 Trace.WriteLine($"[{Key}] {Category}: {Value}");
             }
 
-            //Assert.AreEqual(6, refined.Count);
+            Assert.AreEqual(10, refined.Count);
 
-            //var entry0 = refined.GetCategoryAndValue(0);
-            //Assert.AreEqual("Label", entry0?.Category);
-            //Assert.AreEqual("one", entry0?.Value.Trim());
+            AssertEntry(refined, 0, "Label", "one");
+            AssertEntry(refined, 1, "Command", "Print(hello world)");
+            AssertEntry(refined, 2, "Goto", "one");
 
-            //var entry1 = refined.GetCategoryAndValue(1);
-            //Assert.AreEqual("Command", entry1?.Category);
-            //StringAssert.Contains(entry1?.Value, "Print");
-            //StringAssert.Contains(entry1?.Value, "hello world");
+            AssertEntry(refined, 3, "If_Condition", "condition");
+            AssertEntry(refined, 4, "If_Open", null);
+            AssertEntry(refined, 5, "Command", "Print(if true)");
+            AssertEntry(refined, 6, "If_End", null);
 
-            //var entry2 = refined.GetCategoryAndValue(2);
-            //Assert.AreEqual("Goto", entry2?.Category);
-            //StringAssert.Contains(entry2?.Value, "one");
-
-            //var entry3 = refined.GetCategoryAndValue(3);
-            //Assert.AreEqual("If_Condition", entry3?.Category);
-            //Assert.AreEqual("condition", entry3?.Value.Trim());
-
-            //var entry4 = refined.GetCategoryAndValue(4);
-            //Assert.AreEqual("If_Branch", entry4?.Category);
-            //StringAssert.Contains(entry4?.Value, "Print");
-            //StringAssert.Contains(entry4?.Value, "if true");
-
-            //var entry5 = refined.GetCategoryAndValue(5);
-            //Assert.AreEqual("Else_Branch", entry5?.Category);
-            //StringAssert.Contains(entry5?.Value, "Print");
-            //StringAssert.Contains(entry5?.Value, "if false");
+            AssertEntry(refined, 7, "Else_Open", null);
+            AssertEntry(refined, 8, "Command", "Print(if false)");
+            AssertEntry(refined, 9, "Else_End", null);
         }
 
+        /// <summary>
+        /// Verifies that a categorized entry matches expected values.
+        /// </summary>
+        private static void AssertEntry(CategorizedDictionary<int, string> dict, int key, string expectedCategory, string expectedValue)
+        {
+            var entry = dict.GetCategoryAndValue(key);
+            Assert.IsNotNull(entry, $"Expected key {key} to exist.");
+            Assert.AreEqual(expectedCategory, entry.Value.Category, ignoreCase: true);
+
+            if (expectedValue != null)
+            {
+                Assert.AreEqual(expectedValue, entry.Value.Value.Trim(), $"Key {key} value mismatch.");
+            }
+            else
+            {
+                Assert.IsTrue(string.IsNullOrEmpty(entry.Value.Value), $"Expected null or empty value at key {key}.");
+            }
+        }
     }
 }

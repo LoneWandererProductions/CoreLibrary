@@ -116,7 +116,12 @@ namespace Interpreter.Extensions
 
             foreach (var (key, category, value) in input)
             {
-                if (string.IsNullOrEmpty(value)) continue;
+                // Preserve control structure entries like If_Open: null
+                if (value == null)
+                {
+                    output.Add(category, nextKey++, null);
+                    continue;
+                }
 
                 var trimmed = value.Trim();
 
@@ -143,7 +148,15 @@ namespace Interpreter.Extensions
 
             foreach (var (key, category, value) in input)
             {
+                // Preserve control structure entries like If_Open: null
+                if (value == null)
+                {
+                    output.Add(category, nextKey++, null);
+                    continue;
+                }
+
                 string normalized = value.Trim();
+
 
                 switch (category.ToLowerInvariant())
                 {
