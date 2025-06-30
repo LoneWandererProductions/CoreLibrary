@@ -23,30 +23,56 @@ namespace Interpreter.Extensions
             var output = new CategorizedDictionary<int, string>();
             var nextKey = 0;
 
-            foreach (var (key, category, value) in input)
+            int i = 0;
+            while (i < input.Count)
             {
-                switch (category.ToLowerInvariant())
+                var entry = input.GetCategoryAndValue(i);
+                if (entry == null)
                 {
-                    case "if":
-                        var condition = ExtractCondition(value);
-                        var ifBranch = ExtractBody(value);
-                        output.Add("If_Condition", nextKey++,  condition);
-                        output.Add("If_Branch", nextKey++,ifBranch);
-                        break;
+                    i++;
+                    continue;
+                }
 
-                    case "else":
-                        var elseBranch = ExtractBody(value);
-                        output.Add("Else_Branch", nextKey++,elseBranch);
-                        break;
+                var (cat, val) = entry.Value;
 
-                    default:
-                        output.Add(category, nextKey++,  value);
-                        break;
+                if (cat == "If_Condition")
+                {
+                    // Add the condition
+                    output.Add("If_Condition", nextKey++, val);
+
+                    // Add open
+                    output.Add("If_Open", nextKey++, null);
+
+                    i++; // Move to next item
+
+                    // Copy all following commands until an 'Else_' or 'If_End' or another control token
+                    while (i < input.Count &&
+                           input.TryGetCategory(i, out var nextCat) &&
+                           nextCat != "Else_Condition" &&
+                           nextCat != "Else_Open" &&
+                           nextCat != "If_End" &&
+                           nextCat != "Else_End" &&
+                           nextCat != "If_Condition")
+                    {
+                        var subEntry = input.GetCategoryAndValue(i);
+                        output.Add(subEntry?.Category ?? "Command", nextKey++, subEntry?.Value);
+                        i++;
+                    }
+
+                    // Add end
+                    output.Add("If_End", nextKey++, null);
+                }
+                else
+                {
+                    // Everything else just gets forwarded
+                    output.Add(cat, nextKey++, val);
+                    i++;
                 }
             }
 
             return output;
         }
+
 
         /// <summary>
         /// Removes the control statements.
@@ -60,6 +86,8 @@ namespace Interpreter.Extensions
 
             foreach (var (key, category, value) in input)
             {
+                if (string.IsNullOrEmpty(value)) continue;
+
                 var trimmed = value.Trim();
 
                 if (trimmed.EndsWith(";"))

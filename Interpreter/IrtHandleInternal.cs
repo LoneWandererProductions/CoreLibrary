@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using Interpreter.Resources;
+using Interpreter.ScriptEngine;
 
 namespace Interpreter
 {

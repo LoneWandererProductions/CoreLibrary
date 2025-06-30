@@ -7,6 +7,7 @@
  */
 
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ExtendedSystemObjects;
@@ -27,57 +28,194 @@ namespace Interpreter.ScriptEngine
         {
             var result = new CategorizedDictionary<int, string>();
             var commandIndex = 0;
-            var builder = new StringBuilder();
 
             while (!IsAtEnd())
             {
                 var current = Peek();
 
-                string currentCategory;
-
                 switch (current.Type)
                 {
                     case TokenType.KeywordIf:
-                        currentCategory = "If";
-                        builder.Clear();
-                        builder.Append(ReadBlockAsString());
-                        result.Add(currentCategory, commandIndex++, builder.ToString());
+                        // Parse if statement with condition and block
+                        ParseIfStatement(result, ref commandIndex);
                         break;
 
                     case TokenType.KeywordElse:
-                        currentCategory = "Else";
-                        builder.Clear();
-                        builder.Append(ReadBlockAsString());
-                        result.Add(currentCategory, commandIndex++, builder.ToString());
+                        // Parse else block
+                        ParseElseBlock(result, ref commandIndex);
                         break;
 
                     case TokenType.Label:
-                        currentCategory = "Label";
-                        builder.Clear();
-                        builder.Append(ReadStatementAsString());
-                        result.Add(currentCategory, commandIndex++, builder.ToString());
-                        break;
+                        {
+                            var stmt = ReadStatementAsString();
+                            result.Add("Label", commandIndex++, stmt);
+                            break;
+                        }
+
                     case TokenType.KeywordGoto:
-                        currentCategory = "Goto";
-                        builder.Clear();
-                        builder.Append(ReadStatementAsString());
-                        result.Add(currentCategory, commandIndex++, builder.ToString());
-                        break;
+                        {
+                            var stmt = ReadStatementAsString();
+                            result.Add("Goto", commandIndex++, stmt);
+                            break;
+                        }
 
                     case TokenType.Comment:
                         Advance(); // skip comments
                         break;
 
                     default:
-                        builder.Clear();
-                        builder.Append(ReadStatementAsString());
-                        result.Add("Command", commandIndex++, builder.ToString());
-                        break;
+                        {
+                            var stmt = ReadStatementAsString();
+                            result.Add("Command", commandIndex++, stmt);
+                            break;
+                        }
                 }
             }
 
             return result;
         }
+
+        private void ParseIfStatement(CategorizedDictionary<int, string> output, ref int commandIndex)
+        {
+            // Consume 'if' keyword
+            Advance();
+
+            // Extract condition between '(' and ')'
+            var condition = ReadCondition();
+            output.Add("If_Condition", commandIndex++, condition);
+
+            // Expect '{' opening brace of block
+            Expect(TokenType.OpenBrace);
+
+            output.Add("If_Open", commandIndex++, null);
+
+            // Parse block statements inside '{ }'
+            var statements = ParseBlockStatements();
+            foreach (var (cat, stmt) in statements)
+            {
+                output.Add(cat, commandIndex++, stmt);
+            }
+
+            output.Add("If_End", commandIndex++, null);
+
+            // Check if next token is 'else' for else block
+            if (!IsAtEnd() && Peek().Type == TokenType.KeywordElse)
+            {
+                ParseElseBlock(output, ref commandIndex);
+            }
+        }
+
+        private void ParseElseBlock(CategorizedDictionary<int, string> output, ref int commandIndex)
+        {
+            // Consume 'else' keyword
+            Advance();
+
+            // Expect '{' opening brace of block
+            Expect(TokenType.OpenBrace);
+
+            output.Add("Else_Open", commandIndex++, null);
+
+            // Parse block statements inside '{ }'
+            var statements = ParseBlockStatements();
+            foreach (var (cat, stmt) in statements)
+            {
+                output.Add(cat, commandIndex++, stmt);
+            }
+
+            output.Add("Else_End", commandIndex++, null);
+        }
+
+        private string ReadCondition()
+        {
+            // Expect '('
+            Expect(TokenType.OpenParen);
+
+            var sb = new StringBuilder();
+            int parenDepth = 1;
+
+            while (!IsAtEnd() && parenDepth > 0)
+            {
+                var token = Advance();
+
+                if (token.Type == TokenType.OpenParen)
+                    parenDepth++;
+                else if (token.Type == TokenType.CloseParen)
+                    parenDepth--;
+
+                if (parenDepth > 0)
+                    sb.Append(token.Lexeme);
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        private List<(string Category, string? Statement)> ParseBlockStatements()
+        {
+            var statements = new List<(string, string?)>();
+
+            while (!IsAtEnd() && Peek().Type != TokenType.CloseBrace)
+            {
+                var token = Peek();
+
+                switch (token.Type)
+                {
+                    case TokenType.KeywordIf:
+                        // Handle nested if
+                        Advance(); // consume 'if'
+                        var condition = ReadCondition();
+                        statements.Add(("If_Condition", condition));
+                        Expect(TokenType.OpenBrace);
+                        statements.Add(("If_Open", null));
+                        var ifBody = ParseBlockStatements();
+                        statements.AddRange(ifBody);
+                        statements.Add(("If_End", null));
+
+                        // Optional else
+                        if (!IsAtEnd() && Peek().Type == TokenType.KeywordElse)
+                        {
+                            Advance(); // consume 'else'
+                            Expect(TokenType.OpenBrace);
+                            statements.Add(("Else_Open", null));
+                            var elseBody = ParseBlockStatements();
+                            statements.AddRange(elseBody);
+                            statements.Add(("Else_End", null));
+                        }
+
+                        break;
+
+                    case TokenType.Label:
+                        statements.Add(("Label", ReadStatementAsString()));
+                        break;
+
+                    case TokenType.KeywordGoto:
+                        statements.Add(("Goto", ReadStatementAsString()));
+                        break;
+
+                    case TokenType.Comment:
+                        Advance(); // skip
+                        break;
+
+                    default:
+                        statements.Add(("Command", ReadStatementAsString()));
+                        break;
+                }
+            }
+
+            Expect(TokenType.CloseBrace); // consume '}'
+            return statements;
+        }
+
+
+        private void Expect(TokenType expected)
+        {
+            if (IsAtEnd() || Peek().Type != expected)
+            {
+                throw new ArgumentException($"Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'.");
+            }
+
+            Advance();
+        }
+
 
         private string ReadStatementAsString()
         {

@@ -18,28 +18,31 @@ namespace InterpreteTests
         /// <summary>
         /// Parses the simple commands returns correct categories and values.
         /// </summary>
+        /// <summary>
+        /// Parses the simple commands and returns correct categories and values,
+        /// including explicit If/Else block markers.
+        /// </summary>
         [TestMethod]
         public void ParseSimpleCommandsReturnsCorrectCategoriesAndValues()
         {
             var input = @"
-                Label(one);
-                Print(""hello world"");
-                goto(one);
-                if(condition) { Print(""if true""); } else { Print(""if false""); }
-            ";
+        Label(one);
+        Print(""hello world"");
+        goto(one);
+        if(condition) { Print(""if true""); } else { Print(""if false""); }
+    ";
 
             var lexer = new Lexer(input);
             var tokens = lexer.Tokenize();
             var parser = new Parser(tokens);
             var result = parser.ParseIntoCategorizedBlocks();
 
-
             foreach (var (Key, Category, Value) in result)
             {
-                Trace.WriteLine($"[{Key}] {Category}: {Value}");
+                Trace.WriteLine($"[{Key}] {Category}: {Value ?? "(null)"}");
             }
 
-            Assert.AreEqual(5, result.Count, "Expected 5 categorized blocks.");
+            Assert.AreEqual(10, result.Count, "Expected 10 categorized blocks.");
 
             Assert.IsTrue(result.TryGetCategory(0, out var cat0));
             Assert.AreEqual("Label", cat0, ignoreCase: true);
@@ -53,21 +56,46 @@ namespace InterpreteTests
             StringAssert.Contains(val1, "hello world");
 
             Assert.IsTrue(result.TryGetCategory(2, out var cat2));
-            Assert.AreEqual("Goto", cat2, ignoreCase: true); // Goto is not treated specially
+            Assert.AreEqual("Goto", cat2, ignoreCase: true);
             Assert.IsTrue(result.TryGetValue(2, out var val2));
             Assert.AreEqual("goto(one);", val2.Trim());
 
             Assert.IsTrue(result.TryGetCategory(3, out var cat3));
-            Assert.AreEqual("If", cat3, ignoreCase: true);
+            Assert.AreEqual("If_Condition", cat3, ignoreCase: true);
             Assert.IsTrue(result.TryGetValue(3, out var val3));
-            StringAssert.Contains(val3, "if(condition)");
-            StringAssert.Contains(val3, "Print");
+            Assert.AreEqual("condition", val3.Trim());
 
             Assert.IsTrue(result.TryGetCategory(4, out var cat4));
-            Assert.AreEqual("Else", cat4, ignoreCase: true);
+            Assert.AreEqual("If_Open", cat4, ignoreCase: true);
             Assert.IsTrue(result.TryGetValue(4, out var val4));
-            StringAssert.Contains(val4, "else");
-            StringAssert.Contains(val4, "Print");
+            Assert.IsTrue(string.IsNullOrEmpty(val4));
+
+            Assert.IsTrue(result.TryGetCategory(5, out var cat5));
+            Assert.AreEqual("Command", cat5, ignoreCase: true);
+            Assert.IsTrue(result.TryGetValue(5, out var val5));
+            StringAssert.Contains(val5, "Print");
+            StringAssert.Contains(val5, "if true");
+
+            Assert.IsTrue(result.TryGetCategory(6, out var cat6));
+            Assert.AreEqual("If_End", cat6, ignoreCase: true);
+            Assert.IsTrue(result.TryGetValue(6, out var val6));
+            Assert.IsTrue(string.IsNullOrEmpty(val6));
+
+            Assert.IsTrue(result.TryGetCategory(7, out var cat7));
+            Assert.AreEqual("Else_Open", cat7, ignoreCase: true);
+            Assert.IsTrue(result.TryGetValue(7, out var val7));
+            Assert.IsTrue(string.IsNullOrEmpty(val7));
+
+            Assert.IsTrue(result.TryGetCategory(8, out var cat8));
+            Assert.AreEqual("Command", cat8, ignoreCase: true);
+            Assert.IsTrue(result.TryGetValue(8, out var val8));
+            StringAssert.Contains(val8, "Print");
+            StringAssert.Contains(val8, "if false");
+
+            Assert.IsTrue(result.TryGetCategory(9, out var cat9));
+            Assert.AreEqual("Else_End", cat9, ignoreCase: true);
+            Assert.IsTrue(result.TryGetValue(9, out var val9));
+            Assert.IsTrue(string.IsNullOrEmpty(val9));
         }
 
         /// <summary>
