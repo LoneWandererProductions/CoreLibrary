@@ -265,33 +265,6 @@ namespace Interpreter.ScriptEngine
                    type == TokenType.Number; // add any others you want spaced
         }
 
-        private string ReadBlockAsString()
-        {
-            var sb = new StringBuilder();
-            var braceCount = 0;
-
-            while (!IsAtEnd())
-            {
-                var token = Advance();
-                sb.Append(token.Lexeme);
-
-                if (token.Type == TokenType.OpenBrace)
-                {
-                    braceCount++;
-                }
-                else if (token.Type == TokenType.CloseBrace)
-                {
-                    braceCount--;
-                    if (braceCount == 0)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
         private bool IsAtEnd()
         {
             return _position >= _tokens.Count;

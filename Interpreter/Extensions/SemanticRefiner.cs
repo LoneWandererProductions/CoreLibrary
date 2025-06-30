@@ -24,49 +24,25 @@ namespace Interpreter.Extensions
             var output = new CategorizedDictionary<int, string>();
             var nextKey = 0;
 
-            int i = 0;
-            while (i < input.Count)
+            foreach (var (key, category, value) in input)
             {
-                var entry = input.GetCategoryAndValue(i);
-                if (entry == null)
+                switch (category.ToLowerInvariant())
                 {
-                    i++;
-                    continue;
-                }
+                    case "if":
+                        var condition = ExtractCondition(value);
+                        var ifBranch = ExtractBody(value);
+                        output.Add("If_Condition", nextKey++, condition);
+                        output.Add("If_Branch", nextKey++, ifBranch);
+                        break;
 
-                var (category, value) = entry.Value;
+                    case "else":
+                        var elseBranch = ExtractBody(value);
+                        output.Add("Else_Branch", nextKey++, elseBranch);
+                        break;
 
-                if (category == "If_Condition")
-                {
-                    output.Add("If_Condition", nextKey++, value);
-                    output.Add("If_Open", nextKey++, null);
-
-                    i++; // go to next
-
-                    while (i < input.Count)
-                    {
-                        var inner = input.GetCategoryAndValue(i);
-                        if (inner == null) { i++; continue; }
-
-                        var (innerCategory, innerValue) = inner.Value;
-
-                        // If we hit an Else_Condition or another control block, stop.
-                        if (innerCategory.StartsWith("If_", StringComparison.OrdinalIgnoreCase) ||
-                            innerCategory.StartsWith("Else_", StringComparison.OrdinalIgnoreCase))
-                        {
-                            break;
-                        }
-
-                        output.Add(innerCategory, nextKey++, innerValue);
-                        i++;
-                    }
-
-                    output.Add("If_End", nextKey++, null);
-                }
-                else
-                {
-                    output.Add(category, nextKey++, value);
-                    i++;
+                    default:
+                        output.Add(category, nextKey++, value);
+                        break;
                 }
             }
 
