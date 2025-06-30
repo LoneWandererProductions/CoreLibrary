@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
- * FILE:        Interpreter/IrtHandleContainer.cs
- * PURPOSE:     Handles all the stuff with container
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Interpreter.ScriptEngine/IrtHandleScript.cs
+ * PURPOSE:     Handles all the stuff with container and batch files.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Interpreter.Resources;
 
-namespace Interpreter
+namespace Interpreter.ScriptEngine
 {
     /// <inheritdoc />
     /// <summary>
     ///     Handle our Container
     /// </summary>
     /// <seealso cref="IDisposable" />
-    public sealed class IrtHandleContainer : IDisposable
+    public sealed class IrtHandleScript : IDisposable
     {
         private bool _disposed;
 
@@ -35,11 +35,11 @@ namespace Interpreter
         private readonly CategorizedDictionary<int, string> _parsedCommands = new();
         private Prompt _prompt;
 
-        private IrtHandleContainer()
+        private IrtHandleScript()
         {
         }
 
-        internal IrtHandleContainer(IrtHandleInternal irtHandleInternal, Prompt prompt)
+        internal IrtHandleScript(IrtHandleInternal irtHandleInternal, Prompt prompt)
         {
             _irtHandleInternal = irtHandleInternal;
             _prompt = prompt;
@@ -221,7 +221,7 @@ namespace Interpreter
             _disposed = true;
         }
 
-        ~IrtHandleContainer()
+        ~IrtHandleScript()
         {
             Dispose(false);
         }

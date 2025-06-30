@@ -1,4 +1,12 @@
-﻿#nullable enable
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Parser.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+#nullable enable
 using System.Collections.Generic;
 using System.Text;
 using ExtendedSystemObjects;
@@ -45,6 +53,12 @@ namespace Interpreter.ScriptEngine
 
                     case TokenType.Label:
                         currentCategory = "Label";
+                        builder.Clear();
+                        builder.Append(ReadStatementAsString());
+                        result.Add(currentCategory, commandIndex++, builder.ToString());
+                        break;
+                    case TokenType.KeywordGoto:
+                        currentCategory = "Goto";
                         builder.Clear();
                         builder.Append(ReadStatementAsString());
                         result.Add(currentCategory, commandIndex++, builder.ToString());

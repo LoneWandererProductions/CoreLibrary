@@ -41,12 +41,6 @@ namespace Interpreter
         private static int _count = -1;
 
         /// <summary>
-        ///     The reference to the Container Handle
-        /// </summary>
-        private IrtHandleContainer _irtHandleContainer;
-
-
-        /// <summary>
         ///     User Input Windows
         /// </summary>
         private WindowPrompt _prompt;
@@ -268,7 +262,6 @@ namespace Interpreter
             if (disposing)
             {
                 _interpret = null;
-                _irtHandleContainer = null;
                 CollectedSpaces = null;
                 Log = null;
                 _prompt?.Close();

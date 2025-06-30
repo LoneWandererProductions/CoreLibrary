@@ -1,6 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     InterpreteTests
+ * FILE:        RefineSemanticStructureSplitsIfElseCorrectly.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
 using System.Diagnostics;
-using System.Linq;
 using Interpreter.Extensions;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,6 +36,8 @@ namespace InterpreteTests
             var rawBlocks = parser.ParseIntoCategorizedBlocks();
 
             var refined = rawBlocks.RefineSemanticStructure();
+            refined = refined.RemoveControlStatements();
+            refined = refined.NormalizeJumpTargets();
 
             foreach (var (Key, Category, Value) in refined)
             {
@@ -40,7 +48,7 @@ namespace InterpreteTests
 
             var entry0 = refined.GetCategoryAndValue(0);
             Assert.AreEqual("Label", entry0?.Category);
-            Assert.AreEqual("Label(one);", entry0?.Value.Trim());
+            Assert.AreEqual("one", entry0?.Value.Trim());
 
             var entry1 = refined.GetCategoryAndValue(1);
             Assert.AreEqual("Command", entry1?.Category);
@@ -48,8 +56,8 @@ namespace InterpreteTests
             StringAssert.Contains(entry1?.Value, "hello world");
 
             var entry2 = refined.GetCategoryAndValue(2);
-            Assert.AreEqual("Command", entry2?.Category);
-            StringAssert.Contains(entry2?.Value, "goto(one)");
+            Assert.AreEqual("Goto", entry2?.Category);
+            StringAssert.Contains(entry2?.Value, "one");
 
             var entry3 = refined.GetCategoryAndValue(3);
             Assert.AreEqual("If_Condition", entry3?.Category);

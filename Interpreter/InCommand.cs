@@ -46,6 +46,17 @@ namespace Interpreter
         public int ParameterCount { internal get; init; }
 
         /// <summary>
+        ///     If this command returns a result, define the expected type (optional).
+        ///     Null means no return value (void).
+        /// </summary>
+        public Type ExpectedReturnType { get; set; }
+
+        /// <summary>
+        ///     Convenience helper for readability.
+        /// </summary>
+        public bool HasReturn => ExpectedReturnType != null;
+
+        /// <summary>
         ///     Converts to string.
         /// </summary>
         /// <returns>
@@ -53,7 +64,7 @@ namespace Interpreter
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(Command, IrtConst.Separator, Description);
+            return string.Concat(Command, IrtConst.Separator, Description, IrtConst.Separator, ExpectedReturnType.ToString());
         }
 
         /// <summary>

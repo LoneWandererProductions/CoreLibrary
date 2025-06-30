@@ -1,4 +1,12 @@
-﻿namespace Interpreter.ScriptEngine
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Token.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+namespace Interpreter.ScriptEngine
 {
     internal sealed class Token
     {

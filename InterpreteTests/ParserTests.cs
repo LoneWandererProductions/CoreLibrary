@@ -1,4 +1,12 @@
-﻿using System.Diagnostics;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     InterpreteTests
+ * FILE:        ParserTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Diagnostics;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -45,7 +53,7 @@ namespace InterpreteTests
             StringAssert.Contains(val1, "hello world");
 
             Assert.IsTrue(result.TryGetCategory(2, out var cat2));
-            Assert.AreEqual("Command", cat2, ignoreCase: true); // Goto is not treated specially
+            Assert.AreEqual("Goto", cat2, ignoreCase: true); // Goto is not treated specially
             Assert.IsTrue(result.TryGetValue(2, out var val2));
             Assert.AreEqual("goto(one);", val2.Trim());
 

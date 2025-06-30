@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -63,6 +64,24 @@ namespace Interpreter
         public ExtensionCommands ExtensionCommand { get; internal init; }
 
         /// <summary>
+        /// The actual result returned by the command at runtime.
+        /// </summary>
+        public object Result { get; internal init; }
+
+        /// <summary>
+        /// Convenience access to the runtime type of the result (can be null).
+        /// </summary>
+        public Type ActualReturnType => Result?.GetType();
+
+        /// <summary>
+        ///  Gets a value indicating whether this instance executed successfully.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is success; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
+
+        /// <summary>
         ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>
@@ -89,6 +108,12 @@ namespace Interpreter
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 sb.AppendLine($"{nameof(ErrorMessage)}: {ErrorMessage}");
+            }
+
+            if (Result != null)
+            {
+                sb.AppendLine($"{nameof(Result)}: {Result}");
+                sb.AppendLine($"{nameof(ActualReturnType)}: {ActualReturnType}");
             }
 
             return sb.ToString();

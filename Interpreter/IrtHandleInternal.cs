@@ -137,7 +137,7 @@ namespace Interpreter
                     break;
 
                 case 8:
-                    using (var irtContainer = new IrtHandleContainer(this, _prompt))
+                    using (var irtContainer = new IrtHandleScript(this, _prompt))
                     {
                         irtContainer.CommandContainer(parameter[0]);
                     }
@@ -145,7 +145,7 @@ namespace Interpreter
                     break;
 
                 case 9:
-                    using (var irtContainer = new IrtHandleContainer(this, _prompt))
+                    using (var irtContainer = new IrtHandleScript(this, _prompt))
                     {
                         irtContainer.CommandBatchExecute(parameter[0]);
                     }

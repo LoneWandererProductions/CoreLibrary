@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Interpreter.ScriptEngine
+ * FILE:        Lexer.cs
+ * PURPOSE:     Split our script into their smallest parts
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
