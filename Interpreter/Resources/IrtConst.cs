@@ -403,6 +403,20 @@ namespace Interpreter.Resources
         };
 
         /// <summary>
+        /// The generic feedback Object, used for the internal confirm command.
+        /// </summary>
+        internal static readonly UserFeedback GenericFeedback = new()
+        {
+            Before = true,
+            Message = "You now have the following Options:",
+            Options = new Dictionary<AvailableFeedback, string>
+            {
+                { AvailableFeedback.Yes, "If you want to execute the Command type yes" },
+                { AvailableFeedback.No, " If you want to stop executing the Command type no." }
+            }
+        };
+
+        /// <summary>
         ///     The internal feedback
         /// </summary>
         internal static readonly Dictionary<int, UserFeedback> InternalFeedback = new() { { -1, HelpFeedback } };

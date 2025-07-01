@@ -157,7 +157,7 @@ namespace CoreConsole
             }
         };
 
-        private static readonly UserFeedback ReplaceFeedback = new()
+        internal static readonly UserFeedback ReplaceFeedback = new()
         {
             Before = true,
             Message = "Do you want to commit the following changes?",

@@ -191,30 +191,11 @@ namespace InterpreteTests
             prompt.SendCommands += SendCommands;
             prompt.Initiate(userFeedback: Feedback);
             prompt.ConsoleInput("confirm()");
+            prompt.ConsoleInput("mehh");
+            prompt.ConsoleInput("yes");
             prompt.ConsoleInput("confirm(1)");
+            //prompt.ConsoleInput("yes");
 
-            //Assert.IsFalse(_log.Contains("Help com1"), "No help provided.");
-            //// Assert
-            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
-
-            //prompt.ConsoleInput("mehh");
-
-            //Assert.AreEqual("Input was not valid.", _log, "Error was not catched.");
-
-            //prompt.ConsoleInput(" yeS   ");
-
-            //Trace.WriteLine(_outCommand.ToString());
-
-            //Assert.IsNotNull(_outCommand, "Out Command was not empty.");
-
-            //prompt.ConsoleInput("List().Help()");
-            //Assert.IsTrue(_log.Contains("You now have the following Options:"), "Wrong Options provided.");
-
-            //prompt.ConsoleInput("YeS   ");
-
-            //Assert.IsTrue(_log.Contains("Special case"), "Wrong Commands listed");
-
-            //Trace.WriteLine(_log);
             //Trace.WriteLine(_outCommand.ToString());
         }
 

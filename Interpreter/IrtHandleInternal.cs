@@ -35,6 +35,11 @@ namespace Interpreter
         private Dictionary<int, InCommand> _commands;
 
         /// <summary>
+        /// The user feedback
+        /// </summary>
+        private readonly Dictionary<int, UserFeedback>? _userFeedback;
+
+        /// <summary>
         ///     Indicates whether the object has been disposed.
         /// </summary>
         private bool _disposed;
@@ -45,11 +50,12 @@ namespace Interpreter
         /// <param name="commands">The commands.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="prompt">The prompt</param>
-        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt)
+        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt, Dictionary<int, UserFeedback>? userFeedback )
         {
             _commands = commands;
             _nameSpace = nameSpace;
             _prompt = prompt;
+            _userFeedback = userFeedback;
         }
 
         /// <inheritdoc />
@@ -159,13 +165,17 @@ namespace Interpreter
 
                 case 11:
 
-                    feedbackReceiver = new IrtFeedback { RequestId = "-1", BranchId = 12 };
+                    feedbackReceiver = new IrtFeedback { RequestId = "-1", BranchId = 12, Feedback = IrtConst.GenericFeedback };
 
                     _prompt.RequestFeedback(feedbackReceiver);
 
                     break;
                 case 12:
-                    feedbackReceiver = new IrtFeedback { RequestId = parameter[0], BranchId = 12 };
+
+                    var key = int.Parse(parameter[0]);
+                    var feedback = _userFeedback[key];
+
+                    feedbackReceiver = new IrtFeedback { RequestId = parameter[0], BranchId = 12, Feedback = feedback };
 
                     _prompt.RequestFeedback(feedbackReceiver);
                     break;

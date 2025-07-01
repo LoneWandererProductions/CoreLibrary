@@ -124,7 +124,7 @@ namespace Interpreter
             _extension = use.ExtensionCommands;
             _nameSpace = use.UserSpaceName;
             _irtExtension = new IrtExtension();
-            _irtHandleInternal = new IrtHandleInternal(use.Commands, use.UserSpaceName, _prompt);
+            _irtHandleInternal = new IrtHandleInternal(use.Commands, use.UserSpaceName, _prompt, _userFeedback);
             _irtHandleExtensionInternal =
                 new IrtHandleExtensionInternal(this, use.Commands, _prompt, _irtHandleInternal, _userFeedback);
 
