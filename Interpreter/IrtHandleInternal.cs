@@ -109,9 +109,9 @@ namespace Interpreter
         /// <param name="parameter">optional parameters, can be empty or null.</param>
         private void HandleInternalCommands(int? command, IReadOnlyList<string> parameter)
         {
-            IrtFeedback irtFeedback;
-
             IrtFeedback feedbackReceiver;
+            string guid = String.Empty;
+
             switch (command)
             {
                 case 1:
@@ -164,8 +164,8 @@ namespace Interpreter
                     break;
 
                 case 11:
-
-                    feedbackReceiver = new IrtFeedback { RequestId = "-1", BranchId = 12, Feedback = IrtConst.GenericFeedback };
+                    guid = Guid.NewGuid().ToString();
+                    feedbackReceiver = new IrtFeedback { RequestId = guid, BranchId = 12, Feedback = IrtConst.GenericFeedback };
 
                     _prompt.RequestFeedback(feedbackReceiver);
 
@@ -174,8 +174,9 @@ namespace Interpreter
 
                     var key = int.Parse(parameter[0]);
                     var feedback = _userFeedback[key];
+                    guid = Guid.NewGuid().ToString();
 
-                    feedbackReceiver = new IrtFeedback { RequestId = parameter[0], BranchId = 12, Feedback = feedback };
+                    feedbackReceiver = new IrtFeedback { RequestId = guid, BranchId = 12, Feedback = feedback };
 
                     _prompt.RequestFeedback(feedbackReceiver);
                     break;

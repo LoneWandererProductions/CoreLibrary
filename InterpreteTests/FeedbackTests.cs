@@ -192,7 +192,6 @@ namespace InterpreteTests
             prompt.ConsoleInput("confirm(1)");
             Assert.IsTrue(_log.Contains("Do you want to commit the following changes? Yes If you want to execute the Command type yes, No  If you want to stop executing the Command type no"), "Feedback options not provided on confirm(1).");
             Assert.IsNotNull(_feedback, "Feedback event not raised on confirm(1).");
-            Assert.AreEqual("-1", _feedback.RequestId, "RequestId mismatch for confirm(1).");
 
             // Invalid input again
             prompt.ConsoleInput("mehh");
