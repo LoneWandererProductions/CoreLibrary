@@ -2,7 +2,8 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter
  * FILE:        Interpreter/Prompt.cs
- * PURPOSE:     Handle the Input, Entry point for all Commands
+ * PURPOSE:     Handles user input and serves as the entry point for all commands.
+ *              Currently designed as a single-instance class.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -21,7 +22,6 @@ namespace Interpreter
 {
     /// <summary>
     ///     Bucket List:
-    ///     - Overloads
     ///     - nested Commands
     /// </summary>
     /// <seealso cref="IPrompt" />
@@ -31,7 +31,8 @@ namespace Interpreter
     public sealed class Prompt : IPrompt, IDisposable
     {
         /// <summary>
-        ///     Used to interpret Commands
+        /// Used to interpret commands.
+        /// Shared across all instances as static for single-instance design.
         /// </summary>
         private static  IrtParserInput _interpret;
 
@@ -114,14 +115,14 @@ namespace Interpreter
 
         /// <inheritdoc />
         /// <summary>
-        ///     Start the Sender and Interpreter
-        ///     UserSpace will never overwrite the System Commands.
-        ///     Parenthesis are not defined by the UserSpace but by the definition of the User, so both ( or [ can be valid
+        /// Starts the sender and interpreter with the given command set and optional extensions.
+        /// UserSpace commands do not overwrite system commands.
+        /// Parentheses can be either '(' or '[', as defined by the user.
         /// </summary>
-        /// <param name="com">Command Register</param>
-        /// <param name="userSpace">UserSpace of the register</param>
-        /// <param name="extension">Optional Extension Methods</param>
-        /// <param name="userFeedback">Optional user Feedback Methods</param>
+        /// <param name="com">The dictionary of commands to register.</param>
+        /// <param name="userSpace">The user space namespace for the commands.</param>
+        /// <param name="extension">Optional dictionary of extension commands.</param>
+        /// <param name="userFeedback">Optional dictionary of user feedback handlers.</param>
         public void Initiate(Dictionary<int, InCommand> com = null, string userSpace = "",
             Dictionary<int, InCommand> extension = null, Dictionary<int, UserFeedback> userFeedback = null)
         {
@@ -134,6 +135,7 @@ namespace Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
 
             //feedback stuff
+            _feedbackManager.FeedbackResolved += (s, e) => OnHandleFeedback(e);
             _interpret = new IrtParserInput(this, userFeedback);
             _interpret.Initiate(use);
             _interpret.SendInternalLog += SendLog;
@@ -207,8 +209,8 @@ namespace Interpreter
         }
 
         /// <summary>
-        ///     Event to handle feedback, using EventHandler for proper event pattern
-        ///     Occurs when [handle feedback].
+        /// Occurs when feedback input has been processed and needs handling.
+        /// Subscribers should process the <see cref="IrtFeedbackInputEventArgs"/> accordingly.
         /// </summary>
         internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
@@ -319,23 +321,17 @@ namespace Interpreter
             Dispose(false);
         }
 
+
         /// <summary>
         ///     Requests the feedback.
         /// </summary>
         /// <param name="feedbackRequest">The feedback request.</param>
         internal void RequestFeedback(IrtFeedback feedbackRequest)
         {
-            if (string.IsNullOrEmpty(feedbackRequest.RequestId))
-            {
-                return;
-            }
-
-            //add my feedback request
-            FeedbackRegister = feedbackRequest;
+            _feedbackManager.Request(feedbackRequest);
+            _state = PromptState.WaitingForFeedback;
 
             SendLogs?.Invoke(this, feedbackRequest.Feedback?.ToString());
-
-            _state = PromptState.WaitingForFeedback;
         }
 
         /// <summary>
@@ -344,26 +340,9 @@ namespace Interpreter
         /// <param name="input">The input.</param>
         internal void CheckFeedback(string input)
         {
-            var checkResult = IrtHelper.CheckInput(input, FeedbackRegister.Feedback?.Options);
-            SendLogs(this, $"{IrtConst.FeedbackMessage} {input}");
-
-            switch (checkResult)
-            {
-                case >= 0:
-                    //add a check and switch for input
-                    // Trigger the event
-                    OnHandleFeedback(FeedbackRegister.GenerateFeedbackAnswer((AvailableFeedback)checkResult));
-
-                    FeedbackRegister = null;
-                    _state = PromptState.Normal;
-                    return;
-                case IrtConst.Error:
-                    SendLogs(this, IrtConst.ErrorFeedbackOptions);
-                    break;
-                case IrtConst.ErrorOptionNotAvailable:
-                    SendLogs(this, IrtConst.ErrorFeedbackOptionNotAllowed);
-                    break;
-            }
+            _feedbackManager.ProcessInput(input, msg => SendLogs(this, msg));
+            if (!_feedbackManager.IsWaiting)
+                _state = PromptState.Normal;
         }
 
         /// <summary>

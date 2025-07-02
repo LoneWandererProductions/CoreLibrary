@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using Interpreter.Resources;
 
 namespace Interpreter
@@ -16,6 +17,7 @@ namespace Interpreter
     /// This strange construct is needed for batch commands
     /// </summary>
     /// <seealso cref="System.EventArgs" />
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     internal sealed class IrtFeedbackInputEventArgs : EventArgs
     {
         /// <summary>
@@ -73,5 +75,26 @@ namespace Interpreter
         ///     The answer.
         /// </value>
         internal AvailableFeedback Answer { get; init; }
+
+        /// <summary>
+        /// Returns a string that represents the current feedback input event.
+        /// </summary>
+        /// <returns>A string representation with key properties for quick inspection.</returns>
+        public override string ToString()
+        {
+            return
+                $"RequestId: {RequestId ?? "null"}, " +
+                $"BranchId: {BranchId}, " +
+                $"Key: {Key}, " +
+                $"Command: {Command ?? "null"}, " +
+                $"Answer: {Answer}, " +
+                $"AwaitedOutput: {AwaitedOutput?.ToString() ?? "null"}, " +
+                $"Input: \"{(string.IsNullOrEmpty(Input) ? "<empty>" : Input)}\"";
+        }
+
+        /// <summary>
+        /// Provides a debugger-friendly display string.
+        /// </summary>
+        private string DebuggerDisplay => ToString();
     }
 }

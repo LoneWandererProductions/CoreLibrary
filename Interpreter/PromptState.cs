@@ -11,9 +11,19 @@
 
 namespace Interpreter
 {
+    /// <summary>
+    /// internal State of the Prompt
+    /// </summary>
     public enum PromptState
     {
+        /// <summary>
+        /// The normal
+        /// </summary>
         Normal,
+
+        /// <summary>
+        /// The waiting for feedback
+        /// </summary>
         WaitingForFeedback
     }
 }
