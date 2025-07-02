@@ -15,6 +15,9 @@ namespace Interpreter.ScriptEngine
 {
     internal sealed class Lexer
     {
+        /// <summary>
+        /// The keywords that are used right now
+        /// </summary>
         private static readonly HashSet<string> Keywords = new(StringComparer.OrdinalIgnoreCase)
         {
             "if", "else", "label", "goto"
@@ -25,6 +28,10 @@ namespace Interpreter.ScriptEngine
         private int _line = 1;
         private int _pos;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Lexer"/> class.
+        /// </summary>
+        /// <param name="input">The input.</param>
         public Lexer(string input)
         {
             _input = input;
