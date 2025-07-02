@@ -50,7 +50,7 @@ namespace Interpreter
         /// <param name="commands">The commands.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="prompt">The prompt</param>
-        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt, Dictionary<int, UserFeedback>? userFeedback )
+        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt, Dictionary<int, UserFeedback> userFeedback )
         {
             _commands = commands;
             _nameSpace = nameSpace;

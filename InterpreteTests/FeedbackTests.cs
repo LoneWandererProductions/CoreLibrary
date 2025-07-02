@@ -30,13 +30,10 @@ namespace InterpreteTests
         /// </summary>
         private static OutCommand _outCommand;
 
-        /// <summary>
-        ///     For commands that need your feedback
-        /// </summary>
-        internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
         ///     The replace feedback
+        ///     ORder does matter.
         /// </summary>
         private static readonly UserFeedback ReplaceFeedback = new()
         {
@@ -48,6 +45,11 @@ namespace InterpreteTests
                 { AvailableFeedback.No, " If you want to stop executing the Command type no." }
             }
         };
+
+        /// <summary>
+        ///     For commands that need your feedback
+        /// </summary>
+        internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
         ///     Feedback and extension test.
@@ -194,9 +196,8 @@ namespace InterpreteTests
             prompt.ConsoleInput("mehh");
             prompt.ConsoleInput("yes");
             prompt.ConsoleInput("confirm(1)");
-            //prompt.ConsoleInput("yes");
-
-            //Trace.WriteLine(_outCommand.ToString());
+            prompt.ConsoleInput("mehh");
+            prompt.ConsoleInput("yes");
         }
 
 

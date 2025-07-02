@@ -6,15 +6,17 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using Interpreter.Resources;
 
 namespace Interpreter
 {
     /// <summary>
-    ///     EventArgs that gets delievered to all Listener, the right listener gets identified by: RequestId
-    ///     This strange construct is needed for batch commands
+    /// EventArgs that gets delievered to all Listener, the right listener gets identified by: RequestId
+    /// This strange construct is needed for batch commands
     /// </summary>
-    internal sealed class IrtFeedbackInputEventArgs
+    /// <seealso cref="System.EventArgs" />
+    internal sealed class IrtFeedbackInputEventArgs : EventArgs
     {
         /// <summary>
         ///     Gets or sets the input.

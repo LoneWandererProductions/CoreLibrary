@@ -33,7 +33,7 @@ namespace Interpreter
         /// <summary>
         ///     Used to interpret Commands
         /// </summary>
-        private static IrtParserInput _interpret;
+        private static  IrtParserInput _interpret;
 
         /// <summary>
         ///     The count
@@ -46,11 +46,6 @@ namespace Interpreter
         private WindowPrompt _prompt;
 
         /// <summary>
-        ///     The user feedback
-        /// </summary>
-        private Dictionary<int, UserFeedback> _userFeedback;
-
-        /// <summary>
         ///     The feedback register
         /// </summary>
         /// <value>
@@ -59,12 +54,17 @@ namespace Interpreter
         internal IrtFeedback FeedbackRegister { get; set; }
 
         /// <summary>
-        ///     The lock input
+        /// The feedback manager
+        /// </summary>
+        private readonly FeedbackManager _feedbackManager = new();
+
+        /// <summary>
+        /// Gets or sets the state.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [lock input]; otherwise, <c>false</c>.
+        /// The state.
         /// </value>
-        internal bool LockInput { get; set; }
+        private PromptState _state;
 
         /// <summary>
         ///     The collected Namespaces
@@ -125,7 +125,7 @@ namespace Interpreter
         public void Initiate(Dictionary<int, InCommand> com = null, string userSpace = "",
             Dictionary<int, InCommand> extension = null, Dictionary<int, UserFeedback> userFeedback = null)
         {
-            LockInput = false;
+            _state = PromptState.Normal;
             ResetState();
             //Userspace handler
             var use = new UserSpace { UserSpaceName = userSpace, Commands = com, ExtensionCommands = extension };
@@ -134,9 +134,7 @@ namespace Interpreter
             CollectedSpaces.AddDistinct(userSpace.ToUpper(), use);
 
             //feedback stuff
-            _userFeedback = userFeedback;
-
-            _interpret = new IrtParserInput(this, _userFeedback);
+            _interpret = new IrtParserInput(this, userFeedback);
             _interpret.Initiate(use);
             _interpret.SendInternalLog += SendLog;
         }
@@ -177,13 +175,14 @@ namespace Interpreter
         /// <param name="input">Input string</param>
         public void ConsoleInput(string input)
         {
-            if (!LockInput)
+            switch (_state)
             {
-                _interpret?.HandleInput(input);
-            }
-            else
-            {
-                CheckFeedback(input);
+                case PromptState.Normal:
+                    _interpret?.HandleInput(input);
+                    break;
+                case PromptState.WaitingForFeedback:
+                    CheckFeedback(input);
+                    break;
             }
         }
 
@@ -336,7 +335,7 @@ namespace Interpreter
 
             SendLogs?.Invoke(this, feedbackRequest.Feedback?.ToString());
 
-            LockInput = true;
+            _state = PromptState.WaitingForFeedback;
         }
 
         /// <summary>
@@ -355,7 +354,8 @@ namespace Interpreter
                     // Trigger the event
                     OnHandleFeedback(FeedbackRegister.GenerateFeedbackAnswer((AvailableFeedback)checkResult));
 
-                    LockInput = false;
+                    FeedbackRegister = null;
+                    _state = PromptState.Normal;
                     return;
                 case IrtConst.Error:
                     SendLogs(this, IrtConst.ErrorFeedbackOptions);

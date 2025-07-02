@@ -171,8 +171,11 @@ namespace Interpreter.Resources
         /// </summary>
         internal const string ErrorFeedbackOptions = "Input was not valid.";
 
+
+        internal const string ErrorFeedbackMissing = "Error, Feedback data is missing.";
+
         /// <summary>
-        ///     The error no feedback options (const). Value: "No Feedback Options were provided."
+        /// The error no feedback options (const). Value: "No Feedback Options were provided."
         /// </summary>
         internal const string ErrorNoFeedbackOptions = "No Feedback Options were provided.";
 
