@@ -72,28 +72,33 @@ namespace CoreConsole
 
         internal const string ErrorAccessFile = "Error accessing output resource file: {0}";
 
-        internal const string Resource12 = "The application will close after a short delay.";
-        internal const string Resource13 = "Error: Command not found.";
-        internal const string Resource14 = "Directory path is required.";
-        internal const string Resource15 = "Error: Project path is required.";
+        internal const string MessageClose = "The application will close after a short delay.";
+
+        internal const string ErrorCommandNotFound = "Error: Command not found.";
+
+        internal const string InformationDirectoryMissing = "Directory path is required.";
+
+        internal const string ErrorProjectPathMissing = "Error: Project path is required.";
 
         internal const string ResxtractFinished = "Resxtract operation completed: No string literals found to extract.";
 
-        internal const string Resource17 = "  - ";
+        internal const string MessageSeparator = "  - ";
 
         internal const string Quotes = "\"";
 
-        internal const string Resource20 = "Loaded {0} files to ignore.";
-        internal const string Resource21 = "Error loading regex pattern: {0}. Exception: {1}";
-        internal const string Resource22 = "Loaded {0} ignore patterns.";
+        internal const string MessageFilesIgnored = "Loaded {0} files to ignore.";
 
+        internal const string ErrorRegexpattern = "Error loading regex pattern: {0}. Exception: {1}";
 
-        internal const string Resource28 = "Changed files:{0}  - {1}";
-        internal const string Resource3 = "Invalid arguments or operation.";
+        internal const string MessageOutputIgnore = "Loaded {0} ignore patterns.";
 
-        internal const string Resource4 = "Press any key to exit...";
+        internal const string MessageChangedFiles = "Changed files:{0}  - {1}";
 
-        internal const string Resource5 = "Core Console Application";
+        internal const string InformationInvalidArgument = "Invalid arguments or operation.";
+
+        internal const string MessageKeyPress = "Press any key to exit...";
+
+        internal const string MessageInfo = "Core Console Application";
 
         /// <summary>
         ///     The available commands
@@ -143,6 +148,9 @@ namespace CoreConsole
         /// </summary>
         internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
+        /// <summary>
+        /// The extension commands
+        /// </summary>
         internal static readonly Dictionary<int, InCommand> ExtensionCommands = new()
         {
             {
@@ -157,6 +165,9 @@ namespace CoreConsole
             }
         };
 
+        /// <summary>
+        /// The replace feedback
+        /// </summary>
         internal static readonly UserFeedback ReplaceFeedback = new()
         {
             Before = true,

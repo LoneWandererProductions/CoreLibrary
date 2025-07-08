@@ -74,7 +74,7 @@ namespace CoreConsole
                     if (args.Length > 3 && File.Exists(args[3]))
                     {
                         ignoreList = new List<string>(File.ReadAllLines(args[3]));
-                        Console.WriteLine(ConResources.Resource20, ignoreList.Count);
+                        Console.WriteLine(ConResources.MessageFilesIgnored, ignoreList.Count);
                     }
 
                     if (args.Length > 4 && File.Exists(args[4]))
@@ -87,11 +87,11 @@ namespace CoreConsole
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(ConResources.Resource21, pattern, ex.Message);
+                                Console.WriteLine(ConResources.ErrorRegexpattern, pattern, ex.Message);
                             }
                         }
 
-                        Console.WriteLine(ConResources.Resource22, ignorePatterns.Count);
+                        Console.WriteLine(ConResources.MessageOutputIgnore, ignorePatterns.Count);
                     }
 
                     IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
@@ -99,11 +99,11 @@ namespace CoreConsole
                 }
                 else
                 {
-                    Console.WriteLine(ConResources.Resource3);
+                    Console.WriteLine(ConResources.InformationInvalidArgument);
                 }
             }
 
-            Console.WriteLine(ConResources.Resource4);
+            Console.WriteLine(ConResources.ResourceInput);
             Console.ReadKey();
         }
 
@@ -115,7 +115,7 @@ namespace CoreConsole
             _prompt = new Prompt();
             _prompt.SendLogs += SendLogs;
             _prompt.SendCommands += SendCommands;
-            _prompt.Callback(ConResources.Resource5);
+            _prompt.Callback(ConResources.MessageInfo);
             _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode);
             _prompt.AddCommands(ConResources.DctCommandOne, ConResources.UserSpaceCode);
             _prompt.ConsoleInput(ConResources.ResourceUsingCmd);
@@ -174,7 +174,7 @@ namespace CoreConsole
             if (outCommand.Command == 99)
             {
                 // Simulate some work
-                _prompt.Callback(ConResources.Resource12);
+                _prompt.Callback(ConResources.MessageClose);
                 _prompt?.Dispose();
                 // Introduce a small delay before closing
                 Thread.Sleep(3000); // Delay for 3000 milliseconds (3 seconds)
@@ -203,7 +203,7 @@ namespace CoreConsole
                     _prompt.Callback(result);
                     break;
                 default:
-                    _prompt.Callback(ConResources.Resource13);
+                    _prompt.Callback(ConResources.ErrorCommandNotFound);
                     break;
             }
         }
@@ -218,7 +218,7 @@ namespace CoreConsole
             var directoryPath = CleanPath(package.Parameter[0]);
             if (string.IsNullOrWhiteSpace(directoryPath))
             {
-                return ConResources.Resource14;
+                return ConResources.InformationDirectoryMissing;
             }
 
             if (!Directory.Exists(directoryPath))
@@ -239,14 +239,14 @@ namespace CoreConsole
         {
             if (package.Parameter.Count == 0)
             {
-                return ConResources.Resource15;
+                return ConResources.ErrorProjectPathMissing;
             }
 
             var projectPath = CleanPath(package.Parameter[0]);
             var outputResourceFile = package.Parameter.Count >= 2 ? CleanPath(package.Parameter[1]) : null;
             if (string.IsNullOrWhiteSpace(projectPath))
             {
-                return ConResources.Resource15;
+                return ConResources.ErrorProjectPathMissing;
             }
 
             if (!Directory.Exists(projectPath))
@@ -278,7 +278,7 @@ namespace CoreConsole
             }
 
             var ignoreList = new List<string>();
-            var ignorePatterns = new List<string> { "Resource" };
+            var ignorePatterns = new List<string> {};
 
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
             var changedFiles =
@@ -289,10 +289,10 @@ namespace CoreConsole
             }
 
             var actualOutputFile = changedFiles.Last(); // Last item is outputResourceFile (by design)
-            var changedFilesList = string.Join(Environment.NewLine + ConResources.Resource17,
+            var changedFilesList = string.Join(Environment.NewLine + ConResources.MessageSeparator,
                 changedFiles.Take(changedFiles.Count - 1));
             return string.Format(ConResources.ResourceResxtractOutput, actualOutputFile, Environment.NewLine) +
-                   string.Format(ConResources.Resource28, Environment.NewLine, changedFilesList);
+                   string.Format(ConResources.MessageChangedFiles, Environment.NewLine, changedFilesList);
         }
 
         /// <summary>
