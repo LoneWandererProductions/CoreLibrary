@@ -156,7 +156,7 @@ namespace CoreConsole
             {
                 Header, new InCommand
                 {
-                    Command = "dryrun",
+                    Command = "tryrun",
                     ParameterCount = 0,
                     FeedbackId = 1,
                     Description =

@@ -141,7 +141,7 @@ namespace InterpreteTests
                 {
                     0, new InCommand
                     {
-                        Command = "dryrun",
+                        Command = "tryrun",
                         ParameterCount = 0,
                         FeedbackId = 1,
                         Description =
@@ -155,7 +155,7 @@ namespace InterpreteTests
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
             prompt.Initiate(dctCommandOne, "UserSpace 1", extensionCommands, Feedback);
-            prompt.ConsoleInput("coM2(1,2).Dryrun()");
+            prompt.ConsoleInput("coM2(1,2).tryrun()");
             prompt.ConsoleInput("");
         }
 
