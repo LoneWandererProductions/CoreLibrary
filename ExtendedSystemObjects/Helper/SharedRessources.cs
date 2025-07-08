@@ -68,13 +68,23 @@ namespace ExtendedSystemObjects.Helper
         /// </summary>
         internal const string KeyCategoryValueFormat = "Key: {0}, Category: {1}, Value: {2}";
 
-
+        /// <summary>
+        /// The empty flag.
+        /// </summary>
         internal const byte Empty = 0;
+
+        /// <summary>
+        /// The occupied flag.
+        /// </summary>
         internal const byte Occupied = 1;
+
+        /// <summary>
+        /// The tombstone flag.
+        /// </summary>
         internal const byte Tombstone = 2;
 
         /// <summary>
-        ///     The small primes
+        ///     The small primes collection, is used in fast ImmutableLookupMap and ImmutableLookupMapUnmanaged.
         /// </summary>
         internal static readonly int[] SmallPrimes =
         {
