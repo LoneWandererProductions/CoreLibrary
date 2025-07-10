@@ -36,6 +36,11 @@ namespace CoreBuilder
         /// </returns>
         public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
+            // Skip ignored files
+            if (CoreHelper.ShouldIgnoreFile(filePath))
+                yield break;
+
+            // Check if the file starts with the license header
             if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))
             {
                 yield return new Diagnostic(filePath, 1, "Missing license header.");
