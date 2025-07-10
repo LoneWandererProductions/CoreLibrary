@@ -37,7 +37,9 @@ namespace CoreBuilder
         {
             // Skip ignored files
             if (CoreHelper.ShouldIgnoreFile(filePath))
+            {
                 yield break;
+            }
 
             var lines = fileContent.Split('\n');
             for (var i = 1; i < lines.Length - 1; i++)

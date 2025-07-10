@@ -30,14 +30,14 @@ namespace Interpreter
         private readonly Prompt _prompt;
 
         /// <summary>
+        ///     The user feedback
+        /// </summary>
+        private readonly Dictionary<int, UserFeedback>? _userFeedback;
+
+        /// <summary>
         ///     The commands
         /// </summary>
         private Dictionary<int, InCommand> _commands;
-
-        /// <summary>
-        /// The user feedback
-        /// </summary>
-        private readonly Dictionary<int, UserFeedback>? _userFeedback;
 
         /// <summary>
         ///     Indicates whether the object has been disposed.
@@ -50,7 +50,8 @@ namespace Interpreter
         /// <param name="commands">The commands.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="prompt">The prompt</param>
-        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt, Dictionary<int, UserFeedback> userFeedback )
+        internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt,
+            Dictionary<int, UserFeedback> userFeedback)
         {
             _commands = commands;
             _nameSpace = nameSpace;
@@ -110,7 +111,7 @@ namespace Interpreter
         private void HandleInternalCommands(int? command, IReadOnlyList<string> parameter)
         {
             IrtFeedback feedbackReceiver;
-            string guid = String.Empty;
+            var guid = String.Empty;
 
             switch (command)
             {
@@ -165,7 +166,10 @@ namespace Interpreter
 
                 case 11:
                     guid = Guid.NewGuid().ToString();
-                    feedbackReceiver = new IrtFeedback { RequestId = guid, BranchId = 12, Feedback = IrtConst.GenericFeedback };
+                    feedbackReceiver = new IrtFeedback
+                    {
+                        RequestId = guid, BranchId = 12, Feedback = IrtConst.GenericFeedback
+                    };
 
                     _prompt.RequestFeedback(feedbackReceiver);
 

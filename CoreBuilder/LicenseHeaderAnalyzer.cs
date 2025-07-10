@@ -38,7 +38,9 @@ namespace CoreBuilder
         {
             // Skip ignored files
             if (CoreHelper.ShouldIgnoreFile(filePath))
+            {
                 yield break;
+            }
 
             // Check if the file starts with the license header
             if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))

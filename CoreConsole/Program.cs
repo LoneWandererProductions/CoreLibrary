@@ -278,7 +278,7 @@ namespace CoreConsole
             }
 
             var ignoreList = new List<string>();
-            var ignorePatterns = new List<string> {};
+            var ignorePatterns = new List<string>();
 
             IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
             var changedFiles =

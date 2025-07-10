@@ -175,7 +175,7 @@ namespace Interpreter.Resources
         internal const string ErrorFeedbackMissing = "Error, Feedback data is missing.";
 
         /// <summary>
-        /// The error no feedback options (const). Value: "No Feedback Options were provided."
+        ///     The error no feedback options (const). Value: "No Feedback Options were provided."
         /// </summary>
         internal const string ErrorNoFeedbackOptions = "No Feedback Options were provided.";
 
@@ -406,7 +406,7 @@ namespace Interpreter.Resources
         };
 
         /// <summary>
-        /// The generic feedback Object, used for the internal confirm command.
+        ///     The generic feedback Object, used for the internal confirm command.
         /// </summary>
         internal static readonly UserFeedback GenericFeedback = new()
         {

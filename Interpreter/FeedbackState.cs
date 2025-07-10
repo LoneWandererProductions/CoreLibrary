@@ -9,17 +9,17 @@
 namespace Interpreter
 {
     /// <summary>
-    /// State of the Feedbackmanager
+    ///     State of the Feedbackmanager
     /// </summary>
     public enum FeedbackState
     {
         /// <summary>
-        /// The idle
+        ///     The idle
         /// </summary>
         Idle,
 
         /// <summary>
-        /// The waiting
+        ///     The waiting
         /// </summary>
         Waiting
     }

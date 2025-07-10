@@ -30,11 +30,6 @@ namespace InterpreteTests
         /// </summary>
         private static OutCommand _outCommand;
 
-        /// <summary>
-        /// The feedback
-        /// </summary>
-        private IrtFeedbackInputEventArgs _feedback;
-
 
         /// <summary>
         ///     The replace feedback
@@ -55,6 +50,11 @@ namespace InterpreteTests
         ///     For commands that need your feedback
         /// </summary>
         internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
+
+        /// <summary>
+        ///     The feedback
+        /// </summary>
+        private IrtFeedbackInputEventArgs _feedback;
 
         /// <summary>
         ///     Feedback and extension test.
@@ -176,7 +176,8 @@ namespace InterpreteTests
 
             // First confirm() triggers feedback request
             prompt.ConsoleInput("confirm()");
-            Assert.IsTrue(_log.Contains("You now have the following Options"), "Feedback options not provided on first confirm.");
+            Assert.IsTrue(_log.Contains("You now have the following Options"),
+                "Feedback options not provided on first confirm.");
 
             // Invalid input: "mehh" -> log input invalid
             prompt.ConsoleInput("mehh");
@@ -190,7 +191,10 @@ namespace InterpreteTests
 
             // Confirm with argument: confirm(1)
             prompt.ConsoleInput("confirm(1)");
-            Assert.IsTrue(_log.Contains("Do you want to commit the following changes? Yes If you want to execute the Command type yes, No  If you want to stop executing the Command type no"), "Feedback options not provided on confirm(1).");
+            Assert.IsTrue(
+                _log.Contains(
+                    "Do you want to commit the following changes? Yes If you want to execute the Command type yes, No  If you want to stop executing the Command type no"),
+                "Feedback options not provided on confirm(1).");
             Assert.IsNotNull(_feedback, "Feedback event not raised on confirm(1).");
 
             // Invalid input again
@@ -199,16 +203,18 @@ namespace InterpreteTests
 
             // Valid input again
             prompt.ConsoleInput("yes");
-            Assert.IsTrue(_log.Contains("You selected:  yes"), "Confirmation message missing after 'yes' on confirm(1).");
+            Assert.IsTrue(_log.Contains("You selected:  yes"),
+                "Confirmation message missing after 'yes' on confirm(1).");
             Assert.IsNotNull(_feedback, "Feedback event not raised after 'yes' on confirm(1).");
-            Assert.AreEqual(AvailableFeedback.Yes, _feedback.Answer, "Expected 'Yes' answer after valid input on confirm(1).");
+            Assert.AreEqual(AvailableFeedback.Yes, _feedback.Answer,
+                "Expected 'Yes' answer after valid input on confirm(1).");
         }
 
         /// <summary>
-        /// Handles the HandleFeedback event of the Prompt control.
+        ///     Handles the HandleFeedback event of the Prompt control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
         private void PromptHandleFeedback(object sender, IrtFeedbackInputEventArgs e)
         {
             Trace.WriteLine(e);

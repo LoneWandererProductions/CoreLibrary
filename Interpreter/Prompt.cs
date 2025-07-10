@@ -31,10 +31,10 @@ namespace Interpreter
     public sealed class Prompt : IPrompt, IDisposable
     {
         /// <summary>
-        /// Used to interpret commands.
-        /// Shared across all instances as static for single-instance design.
+        ///     Used to interpret commands.
+        ///     Shared across all instances as static for single-instance design.
         /// </summary>
-        private static  IrtParserInput _interpret;
+        private static IrtParserInput _interpret;
 
         /// <summary>
         ///     The count
@@ -42,9 +42,22 @@ namespace Interpreter
         private static int _count = -1;
 
         /// <summary>
+        ///     The feedback manager
+        /// </summary>
+        private readonly FeedbackManager _feedbackManager = new();
+
+        /// <summary>
         ///     User Input Windows
         /// </summary>
         private WindowPrompt _prompt;
+
+        /// <summary>
+        ///     Gets or sets the state.
+        /// </summary>
+        /// <value>
+        ///     The state.
+        /// </value>
+        private PromptState _state;
 
         /// <summary>
         ///     The feedback register
@@ -53,19 +66,6 @@ namespace Interpreter
         ///     The feedback register.
         /// </value>
         internal IrtFeedback FeedbackRegister { get; set; }
-
-        /// <summary>
-        /// The feedback manager
-        /// </summary>
-        private readonly FeedbackManager _feedbackManager = new();
-
-        /// <summary>
-        /// Gets or sets the state.
-        /// </summary>
-        /// <value>
-        /// The state.
-        /// </value>
-        private PromptState _state;
 
         /// <summary>
         ///     The collected Namespaces
@@ -115,9 +115,9 @@ namespace Interpreter
 
         /// <inheritdoc />
         /// <summary>
-        /// Starts the sender and interpreter with the given command set and optional extensions.
-        /// UserSpace commands do not overwrite system commands.
-        /// Parentheses can be either '(' or '[', as defined by the user.
+        ///     Starts the sender and interpreter with the given command set and optional extensions.
+        ///     UserSpace commands do not overwrite system commands.
+        ///     Parentheses can be either '(' or '[', as defined by the user.
         /// </summary>
         /// <param name="com">The dictionary of commands to register.</param>
         /// <param name="userSpace">The user space namespace for the commands.</param>
@@ -209,8 +209,8 @@ namespace Interpreter
         }
 
         /// <summary>
-        /// Occurs when feedback input has been processed and needs handling.
-        /// Subscribers should process the <see cref="IrtFeedbackInputEventArgs"/> accordingly.
+        ///     Occurs when feedback input has been processed and needs handling.
+        ///     Subscribers should process the <see cref="IrtFeedbackInputEventArgs" /> accordingly.
         /// </summary>
         internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
@@ -342,7 +342,9 @@ namespace Interpreter
         {
             _feedbackManager.ProcessInput(input, msg => SendLogs(this, msg));
             if (!_feedbackManager.IsWaiting)
+            {
                 _state = PromptState.Normal;
+            }
         }
 
         /// <summary>

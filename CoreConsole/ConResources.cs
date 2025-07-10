@@ -149,7 +149,7 @@ namespace CoreConsole
         internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
-        /// The extension commands
+        ///     The extension commands
         /// </summary>
         internal static readonly Dictionary<int, InCommand> ExtensionCommands = new()
         {
@@ -166,7 +166,7 @@ namespace CoreConsole
         };
 
         /// <summary>
-        /// The replace feedback
+        ///     The replace feedback
         /// </summary>
         internal static readonly UserFeedback ReplaceFeedback = new()
         {
