@@ -18,41 +18,41 @@ namespace Imaging
         /// <summary>
         ///     The noise
         /// </summary>
-        Noise,
+        Noise = 0,
 
         /// <summary>
         ///     The clouds
         /// </summary>
-        Clouds,
+        Clouds = 1,
 
         /// <summary>
         ///     The marble
         /// </summary>
-        Marble,
+        Marble = 2,
 
         /// <summary>
         ///     The wood
         /// </summary>
-        Wood,
+        Wood = 3,
 
         /// <summary>
         ///     The wave
         /// </summary>
-        Wave,
+        Wave = 4,
 
         /// <summary>
         ///     The crosshatch
         /// </summary>
-        Crosshatch,
+        Crosshatch = 5,
 
         /// <summary>
         ///     The concrete
         /// </summary>
-        Concrete,
+        Concrete = 6,
 
         /// <summary>
         ///     The canvas
         /// </summary>
-        Canvas
+        Canvas = 7
     }
 }

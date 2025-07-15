@@ -16,11 +16,11 @@ namespace Interpreter
         /// <summary>
         ///     The idle
         /// </summary>
-        Idle,
+        Idle = 0,
 
         /// <summary>
         ///     The waiting
         /// </summary>
-        Waiting
+        Waiting = 1
     }
 }

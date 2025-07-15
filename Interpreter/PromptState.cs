@@ -19,11 +19,11 @@ namespace Interpreter
         /// <summary>
         ///     The normal
         /// </summary>
-        Normal,
+        Normal = 0,
 
         /// <summary>
         ///     The waiting for feedback
         /// </summary>
-        WaitingForFeedback
+        WaitingForFeedback = 1
     }
 }

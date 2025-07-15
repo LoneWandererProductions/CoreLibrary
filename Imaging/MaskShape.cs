@@ -18,16 +18,16 @@ namespace Imaging
         /// <summary>
         ///     The rectangle
         /// </summary>
-        Rectangle,
+        Rectangle = 0,
 
         /// <summary>
         ///     The circle
         /// </summary>
-        Circle,
+        Circle = 1,
 
         /// <summary>
         ///     The polygon
         /// </summary>
-        Polygon
+        Polygon = 2
     }
 }
