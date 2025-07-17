@@ -134,6 +134,40 @@ namespace RenderEngine
             SetPixel(x, y, color.A, color.R, color.G, color.B);
         }
 
+        /// <summary>
+        /// Sets the pixel with alpha blend.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="a">a.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        public void SetPixelAlphaBlend(int x, int y, byte a, byte r, byte g, byte b)
+        {
+            var offset = GetPixelOffset(x, y);
+            var buffer = BufferSpan;
+
+            // Old pixel BGRA
+            byte oldB = buffer[offset];
+            byte oldG = buffer[offset + 1];
+            byte oldR = buffer[offset + 2];
+            byte oldA = buffer[offset + 3];
+
+            float alpha = a / 255f;
+
+            byte newR = (byte)(r * alpha + oldR * (1 - alpha));
+            byte newG = (byte)(g * alpha + oldG * (1 - alpha));
+            byte newB = (byte)(b * alpha + oldB * (1 - alpha));
+            byte newA = (byte)(a + oldA * (1 - alpha)); // Approximate new alpha
+
+            buffer[offset] = newB;
+            buffer[offset + 1] = newG;
+            buffer[offset + 2] = newR;
+            buffer[offset + 3] = newA;
+        }
+
+
 
         /// <summary>
         ///     Calculates the byte offset in the buffer for the pixel at coordinates (x, y).
