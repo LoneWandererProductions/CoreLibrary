@@ -107,6 +107,35 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Gets the color of the pixel at the specified coordinates.
+        /// </summary>
+        /// <param name="x">X coordinate (0-based)</param>
+        /// <param name="y">Y coordinate (0-based)</param>
+        /// <returns>The pixel color as a System.Drawing.Color</returns>
+        public Color GetPixel(int x, int y)
+        {
+            var offset = GetPixelOffset(x, y);
+            var buffer = BufferSpan;
+            byte b = buffer[offset];
+            byte g = buffer[offset + 1];
+            byte r = buffer[offset + 2];
+            byte a = buffer[offset + 3];
+            return Color.FromArgb(a, r, g, b);
+        }
+
+        /// <summary>
+        /// Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// </summary>
+        /// <param name="x">X coordinate (0-based)</param>
+        /// <param name="y">Y coordinate (0-based)</param>
+        /// <param name="color">The color to set</param>
+        public void SetPixel(int x, int y, Color color)
+        {
+            SetPixel(x, y, color.A, color.R, color.G, color.B);
+        }
+
+
+        /// <summary>
         ///     Calculates the byte offset in the buffer for the pixel at coordinates (x, y).
         /// </summary>
         /// <param name="x">The horizontal pixel coordinate (0-based).</param>
