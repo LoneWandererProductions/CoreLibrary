@@ -20,7 +20,7 @@ namespace RenderEngine
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Provides utilities for converting raw image data to and from UnmanagedImageBuffer,
+        ///     Provides utilities for converting raw image data to and from ImageBufferManager,
         ///     and managing multi-layered compositions.
         /// </summary>
         public sealed class ImageToolkit : IDisposable
@@ -67,15 +67,15 @@ namespace RenderEngine
             }
 
             /// <summary>
-            ///     Converts a raw int[] BGRA bitmap to an UnmanagedImageBuffer.
+            ///     Converts a raw int[] BGRA bitmap to an ImageBufferManager.
             /// </summary>
             /// <param name="width">The width.</param>
             /// <param name="height">The height.</param>
             /// <param name="bits">The bits.</param>
-            /// <returns>Our UnmanagedImageBuffer Image Format</returns>
-            public static UnmanagedImageBuffer FromBits(int width, int height, int[] bits)
+            /// <returns>Our ImageBufferManager Image Format</returns>
+            public static ImageBufferManager FromBits(int width, int height, int[] bits)
             {
-                var buffer = new UnmanagedImageBuffer(width, height);
+                var buffer = new ImageBufferManager(width, height);
                 var span = buffer.BufferSpan;
 
                 for (var i = 0; i < bits.Length; i++)
@@ -93,11 +93,11 @@ namespace RenderEngine
             }
 
             /// <summary>
-            ///     Converts an UnmanagedImageBuffer to a raw int[] BGRA bitmap.
+            ///     Converts an ImageBufferManager to a raw int[] BGRA bitmap.
             /// </summary>
             /// <param name="buffer">The buffer.</param>
             /// <returns>Image in Bits Format</returns>
-            public static int[] ToBits(UnmanagedImageBuffer buffer)
+            public static int[] ToBits(ImageBufferManager buffer)
             {
                 var span = buffer.BufferSpan;
                 var result = new int[buffer.Width * buffer.Height];
@@ -121,7 +121,7 @@ namespace RenderEngine
             ///     Adds an existing image layer.
             /// </summary>
             /// <param name="image">The image.</param>
-            public void AddLayer(UnmanagedImageBuffer image)
+            public void AddLayer(ImageBufferManager image)
             {
                 _container.AddLayer(image);
             }
@@ -162,17 +162,17 @@ namespace RenderEngine
             /// <summary>
             ///     Adds an empty transparent layer.
             /// </summary>
-            /// <returns>Our UnmanagedImageBuffer Image Format</returns>
-            public UnmanagedImageBuffer AddEmptyLayer()
+            /// <returns>Our ImageBufferManager Image Format</returns>
+            public ImageBufferManager AddEmptyLayer()
             {
                 return _container.AddEmptyLayer();
             }
 
             /// <summary>
-            ///     Composites all layers and returns the result as an UnmanagedImageBuffer.
+            ///     Composites all layers and returns the result as an ImageBufferManager.
             /// </summary>
-            /// <returns>Our UnmanagedImageBuffer Image Format</returns>
-            public UnmanagedImageBuffer Composite()
+            /// <returns>Our ImageBufferManager Image Format</returns>
+            public ImageBufferManager Composite()
             {
                 return _container.Composite();
             }

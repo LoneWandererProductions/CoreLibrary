@@ -24,14 +24,14 @@ namespace RenderEngine
         /// <param name="height">The height.</param>
         /// <param name="bits">The bits.</param>
         /// <returns></returns>
-        UnmanagedImageBuffer FromIntArray(int width, int height, int[] bits);
+        ImageBufferManager FromIntArray(int width, int height, int[] bits);
 
         /// <summary>
         ///     Converts to int array.
         /// </summary>
         /// <param name="buffer">The buffer.</param>
         /// <returns></returns>
-        int[] ToIntArray(UnmanagedImageBuffer buffer);
+        int[] ToIntArray(ImageBufferManager buffer);
 
         /// <summary>
         ///     Creates the layered container.
@@ -46,14 +46,14 @@ namespace RenderEngine
         /// </summary>
         /// <param name="layers">The layers.</param>
         /// <returns></returns>
-        LayeredImageContainer CreateFromLayers(params UnmanagedImageBuffer[] layers);
+        LayeredImageContainer CreateFromLayers(params ImageBufferManager[] layers);
 
         /// <summary>
         ///     Composites the specified container.
         /// </summary>
         /// <param name="container">The container.</param>
         /// <returns></returns>
-        UnmanagedImageBuffer Composite(LayeredImageContainer container);
+        ImageBufferManager Composite(LayeredImageContainer container);
 
         /// <summary>
         ///     Merges the layers.

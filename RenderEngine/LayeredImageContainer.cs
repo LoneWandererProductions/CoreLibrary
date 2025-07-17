@@ -26,7 +26,7 @@ namespace RenderEngine
         /// <summary>
         ///     The layers
         /// </summary>
-        private readonly List<UnmanagedImageBuffer> _layers = new();
+        private readonly List<ImageBufferManager> _layers = new();
 
         /// <summary>
         ///     The width
@@ -56,7 +56,7 @@ namespace RenderEngine
         /// <inheritdoc />
         /// <summary>
         ///     Releases all resources used by the <see cref="T:RenderEngine.LayeredImageContainer" />,
-        ///     including all contained <see cref="T:RenderEngine.UnmanagedImageBuffer" /> layers.
+        ///     including all contained <see cref="T:RenderEngine.ImageBufferManager" /> layers.
         /// </summary>
         public void Dispose()
         {
@@ -71,11 +71,11 @@ namespace RenderEngine
         /// <summary>
         ///     Adds an existing unmanaged image buffer as a layer.
         /// </summary>
-        /// <param name="layer">The <see cref="UnmanagedImageBuffer" /> to add as a layer.</param>
+        /// <param name="layer">The <see cref="ImageBufferManager" /> to add as a layer.</param>
         /// <exception cref="ArgumentException">
         ///     Thrown if the layer's dimensions do not match the container's size.
         /// </exception>
-        public void AddLayer(UnmanagedImageBuffer layer)
+        public void AddLayer(ImageBufferManager layer)
         {
             if (layer.Width != _width || layer.Height != _height)
             {
@@ -89,11 +89,11 @@ namespace RenderEngine
         ///     Adds a new empty (fully transparent) layer to the container.
         /// </summary>
         /// <returns>
-        ///     The newly created <see cref="UnmanagedImageBuffer" /> representing the blank layer.
+        ///     The newly created <see cref="ImageBufferManager" /> representing the blank layer.
         /// </returns>
-        public UnmanagedImageBuffer AddEmptyLayer()
+        public ImageBufferManager AddEmptyLayer()
         {
-            var newLayer = new UnmanagedImageBuffer(_width, _height);
+            var newLayer = new ImageBufferManager(_width, _height);
             newLayer.Clear(0, 0, 0, 0); // transparent clear
             _layers.Add(newLayer);
             return newLayer;
@@ -101,20 +101,20 @@ namespace RenderEngine
 
         /// <summary>
         ///     Composites all layers in the container using alpha blending,
-        ///     producing a single combined <see cref="UnmanagedImageBuffer" />.
+        ///     producing a single combined <see cref="ImageBufferManager" />.
         /// </summary>
         /// <returns>
-        ///     A new <see cref="UnmanagedImageBuffer" /> representing the composited image.
+        ///     A new <see cref="ImageBufferManager" /> representing the composited image.
         /// </returns>
         /// <exception cref="InvalidOperationException">Thrown if no layers exist to composite.</exception>
-        public UnmanagedImageBuffer Composite()
+        public ImageBufferManager Composite()
         {
             if (_layers.Count == 0)
             {
                 throw new InvalidOperationException(RenderResource.ErrorNoLayers);
             }
 
-            var result = new UnmanagedImageBuffer(_width, _height);
+            var result = new ImageBufferManager(_width, _height);
             result.Clear(0, 0, 0, 0); // start transparent
 
             var targetSpan = result.BufferSpan;
@@ -133,9 +133,9 @@ namespace RenderEngine
         /// <param name="layerIndices">The layer indices.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentOutOfRangeException">layerIndices</exception>
-        public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
+        public ImageBufferManager CompositeLayers(IEnumerable<int> layerIndices)
         {
-            var result = new UnmanagedImageBuffer(_width, _height);
+            var result = new ImageBufferManager(_width, _height);
             result.Clear(0, 0, 0, 0);
 
             var targetSpan = result.BufferSpan;
@@ -160,7 +160,7 @@ namespace RenderEngine
         /// <param name="index">The index.</param>
         /// <param name="layer">The layer.</param>
         /// <exception cref="System.ArgumentException"></exception>
-        public void InsertLayer(int index, UnmanagedImageBuffer layer)
+        public void InsertLayer(int index, ImageBufferManager layer)
         {
             if (layer.Width != _width || layer.Height != _height)
             {

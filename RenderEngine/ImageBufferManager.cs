@@ -7,6 +7,8 @@
  */
 
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
@@ -24,7 +26,7 @@ namespace RenderEngine
     ///     It supports setting individual pixels, clearing the buffer to a uniform color,
     ///     applying multiple pixel changes at once, and replacing the entire buffer efficiently.
     /// </remarks>
-    public sealed unsafe class UnmanagedImageBuffer : IDisposable
+    public sealed unsafe class ImageBufferManager : IDisposable
     {
         /// <summary>
         ///     The buffer PTR
@@ -42,7 +44,7 @@ namespace RenderEngine
         private readonly int _bytesPerPixel;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UnmanagedImageBuffer" /> class with specified dimensions and bytes per
+        ///     Initializes a new instance of the <see cref="ImageBufferManager" /> class with specified dimensions and bytes per
         ///     pixel.
         ///     The buffer is allocated in unmanaged memory and initially cleared to transparent black.
         /// </summary>
@@ -50,7 +52,7 @@ namespace RenderEngine
         /// <param name="height">The height of the image in pixels. Must be positive.</param>
         /// <param name="bytesPerPixel">The number of bytes per pixel (default is 4 for BGRA).</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if width or height is less than or equal to zero.</exception>
-        public UnmanagedImageBuffer(int width, int height, int bytesPerPixel = 4)
+        public ImageBufferManager(int width, int height, int bytesPerPixel = 4)
         {
             if (width <= 0)
             {
@@ -110,9 +112,9 @@ namespace RenderEngine
         /// <param name="x">The horizontal pixel coordinate (0-based).</param>
         /// <param name="y">The vertical pixel coordinate (0-based).</param>
         /// <returns>The byte offset of the pixel in the buffer.</returns>
-        private int GetPixelOffset(int x, int y)
+        public int GetPixelOffset(int x, int y)
         {
-            return ((y * Width) + x) * _bytesPerPixel;
+            return (y * Width + x) * _bytesPerPixel;
         }
 
         /// <summary>
@@ -209,9 +211,9 @@ namespace RenderEngine
 
                 // Decompose packed uint BGRA color into bytes:
                 buffer[offset] = (byte)(bgra & 0xFF); // Blue
-                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF); // Green
-                buffer[offset + 2] = (byte)((bgra >> 16) & 0xFF); // Red
-                buffer[offset + 3] = (byte)((bgra >> 24) & 0xFF); // Alpha
+                buffer[offset + 1] = (byte)(bgra >> 8 & 0xFF); // Green
+                buffer[offset + 2] = (byte)(bgra >> 16 & 0xFF); // Red
+                buffer[offset + 3] = (byte)(bgra >> 24 & 0xFF); // Alpha
             }
         }
 
@@ -244,8 +246,8 @@ namespace RenderEngine
 
                     for (var i = 0; i < simdCount; i++)
                     {
-                        var vec = Avx.LoadVector256(srcPtr + (i * vectorSize));
-                        Avx.Store(dstPtr + (i * vectorSize), vec);
+                        var vec = Avx.LoadVector256(srcPtr + i * vectorSize);
+                        Avx.Store(dstPtr + i * vectorSize, vec);
                     }
 
                     // Copy any remaining bytes one by one
@@ -283,6 +285,106 @@ namespace RenderEngine
             var offset = GetPixelOffset(x, y);
             var length = count * _bytesPerPixel;
             return BufferSpan.Slice(offset, length);
+        }
+
+        /// <summary>
+        /// Converts to bitmap.
+        /// </summary>
+        /// <returns>ImageBufferManager to BitmapBuffer</returns>
+        public Bitmap ToBitmap()
+        {
+            var bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+            var bmpData = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+            try
+            {
+                Buffer.MemoryCopy(
+                    source: (void*)_bufferPtr,
+                    destination: bmpData.Scan0.ToPointer(),
+                    destinationSizeInBytes: _bufferSize,
+                    sourceBytesToCopy: _bufferSize);
+            }
+            finally
+            {
+                bmp.UnlockBits(bmpData);
+            }
+
+            return bmp;
+        }
+
+        /// <summary>
+        /// Froms the bitmap.
+        /// </summary>
+        /// <param name="bmp">The BMP.</param>
+        /// <returns>Bitmap converted to ImageBufferManager</returns>
+        public static ImageBufferManager FromBitmap(Bitmap bmp)
+        {
+            // Assumes Format32bppArgb
+            var buffer = new ImageBufferManager(bmp.Width, bmp.Height);
+            var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            try
+            {
+                var src = new Span<byte>((void*)data.Scan0, data.Stride * bmp.Height);
+                buffer.ReplaceBuffer(src.Slice(0, buffer.BufferSpan.Length));
+            }
+            finally
+            {
+                bmp.UnlockBits(data);
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Blits the specified source.
+        /// </summary>
+        /// <param name="src">The source.</param>
+        /// <param name="destX">The dest x.</param>
+        /// <param name="destY">The dest y.</param>
+        public void Blit(ImageBufferManager src, int destX, int destY)
+        {
+            for (var y = 0; y < src.Height; y++)
+            {
+                if (y + destY >= Height) break;
+                var srcRow = src.GetPixelSpan(0, y, src.Width);
+                var dstRow = GetPixelSpan(destX, destY + y, src.Width);
+                srcRow.CopyTo(dstRow);
+            }
+        }
+
+        /// <summary>
+        /// Blits a rectangular region from the source buffer to this buffer.
+        /// </summary>
+        /// <param name="src">The source.</param>
+        /// <param name="srcX">X-coordinate of the top-left corner in the source.</param>
+        /// <param name="srcY">Y-coordinate of the top-left corner in the source.</param>
+        /// <param name="width">Width of the region to copy.</param>
+        /// <param name="height">Height of the region to copy.</param>
+        /// <param name="destX">The dest x.</param>
+        /// <param name="destY">The dest y.</param>
+
+        public void BlitRegion(ImageBufferManager src, int srcX, int srcY, int width, int height, int destX, int destY)
+        {
+            for (var y = 0; y < height; y++)
+            {
+                var srcRow = src.GetPixelSpan(srcX, srcY + y, width);
+                var dstRow = GetPixelSpan(destX, destY + y, width);
+                srcRow.CopyTo(dstRow);
+            }
+        }
+
+        /// <summary>
+        /// Packs the bgra.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>Converts color to an unsigned Int</returns>
+        public static uint PackBGRA(byte a, byte r, byte g, byte b)
+        {
+            return (uint)a << 24 | (uint)r << 16 | (uint)g << 8 | b;
         }
     }
 }

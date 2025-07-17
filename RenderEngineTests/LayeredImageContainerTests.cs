@@ -23,11 +23,11 @@ namespace RenderEngineTests
 
             var container = new LayeredImageContainer(width, height);
 
-            var bottom = new UnmanagedImageBuffer(width, height);
+            var bottom = new ImageBufferManager(width, height);
             bottom.SetPixel(0, 0, 255, 0, 0, 255); // fully opaque blue
             container.AddLayer(bottom);
 
-            var top = new UnmanagedImageBuffer(width, height);
+            var top = new ImageBufferManager(width, height);
             top.SetPixel(0, 0, 128, 255, 0, 0); // 50% transparent red
             container.AddLayer(top);
 
@@ -48,7 +48,7 @@ namespace RenderEngineTests
         public void AddLayer_ThrowsIfSizeMismatch()
         {
             using var container = new LayeredImageContainer(2, 2);
-            using var badLayer = new UnmanagedImageBuffer(1, 1);
+            using var badLayer = new ImageBufferManager(1, 1);
 
             Assert.ThrowsException<ArgumentException>(() => { container.AddLayer(badLayer); });
         }

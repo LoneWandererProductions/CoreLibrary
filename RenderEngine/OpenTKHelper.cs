@@ -8,14 +8,13 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
-using Imaging;
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
-
-// For Marshal.Copy and memory management
-// For GL methods, ShaderType, TextureTarget, etc.
 
 namespace RenderEngine
 {
@@ -60,7 +59,6 @@ namespace RenderEngine
 
             return isCompatible;
         }
-
 
         internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight,
             Func<T, float[]> getVertexAttributes)
@@ -164,14 +162,51 @@ namespace RenderEngine
             return shaderProgram;
         }
 
-        internal static byte[] LoadTexture(string filePath, out int width, out int height)
+        private static byte[] LoadTexturePixels(string filePath, out int width, out int height)
         {
-            using var directBitmap = new DirectBitmap(filePath);
+            using var bitmap = new Bitmap(filePath);
+            width = bitmap.Width;
+            height = bitmap.Height;
 
-            width = directBitmap.Width;
-            height = directBitmap.Height;
+            var rect = new Rectangle(0, 0, width, height);
+            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            return directBitmap.Bytes(); // Assuming `Bits` is byte[] in the updated DirectBitmap class
+            var length = bitmapData.Stride * height;
+            var pixels = new byte[length];
+            Marshal.Copy(bitmapData.Scan0, pixels, 0, length);
+
+            bitmap.UnlockBits(bitmapData);
+
+            return pixels;
+        }
+
+        internal static int LoadTexture(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Trace.WriteLine($"File not found: {filePath}");
+                return -1;
+            }
+
+            var textureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+            int width, height;
+            var pixels = LoadTexturePixels(filePath, out width, out height);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0,
+                          OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                            (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                            (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+                            (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+                            (int)TextureWrapMode.Repeat);
+
+            return textureId;
         }
 
         internal static int LoadCubeMap(string[] filePaths)
@@ -192,10 +227,11 @@ namespace RenderEngine
                     continue;
                 }
 
-                using var directBitmap = new DirectBitmap(filePaths[i]);
-                var pixels = directBitmap.Bytes();
+                int width, height;
+                var pixels = LoadTexturePixels(filePaths[i], out width, out height);
+
                 GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
-                    directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                    width, height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,
@@ -208,36 +244,6 @@ namespace RenderEngine
                 (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR,
                 (int)TextureWrapMode.ClampToEdge);
-
-            return textureId;
-        }
-
-
-        internal static int LoadTexture(string filePath)
-        {
-            // Check if the file exists
-            if (!File.Exists(filePath))
-            {
-                Trace.WriteLine($"File not found: {filePath}");
-                return -1;
-            }
-
-            var textureId = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
-
-            using (var directBitmap = new DirectBitmap(filePath))
-            {
-                var pixels = directBitmap.Bytes(); // Assuming `Bits` is a byte array in the updated DirectBitmap class
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, directBitmap.Width,
-                    directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-            }
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
             return textureId;
         }

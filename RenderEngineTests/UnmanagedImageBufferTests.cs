@@ -17,7 +17,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void CreateBuffer_InitializesCorrectSize()
         {
-            using var buffer = new UnmanagedImageBuffer(10, 10);
+            using var buffer = new ImageBufferManager(10, 10);
 
             Assert.AreEqual(10, buffer.Width);
             Assert.AreEqual(10, buffer.Height);
@@ -27,7 +27,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void SetPixel_SetsCorrectValues()
         {
-            using var buffer = new UnmanagedImageBuffer(2, 2);
+            using var buffer = new ImageBufferManager(2, 2);
             buffer.SetPixel(1, 1, 255, 100, 150, 200); // A,R,G,B
 
             var offset = (1 + (1 * 2)) * 4;
@@ -42,7 +42,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void Clear_FillsBufferWithColor()
         {
-            using var buffer = new UnmanagedImageBuffer(2, 2);
+            using var buffer = new ImageBufferManager(2, 2);
             buffer.Clear(128, 10, 20, 30); // A,R,G,B
 
             var span = buffer.BufferSpan;
@@ -58,7 +58,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void ApplyChanges_UpdatesOnlyTargetedPixels()
         {
-            using var buffer = new UnmanagedImageBuffer(2, 2);
+            using var buffer = new ImageBufferManager(2, 2);
             buffer.Clear(0, 0, 0, 0);
 
             var changes = new (int x, int y, uint bgra)[]
@@ -88,7 +88,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void ReplaceBuffer_ReplacesAllPixels()
         {
-            using var buffer = new UnmanagedImageBuffer(2, 2);
+            using var buffer = new ImageBufferManager(2, 2);
 
             var newData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
@@ -105,7 +105,7 @@ namespace RenderEngineTests
         [TestMethod]
         public void GetPixelSpan_ReturnsCorrectSpan()
         {
-            using var buffer = new UnmanagedImageBuffer(4, 1);
+            using var buffer = new ImageBufferManager(4, 1);
             buffer.Clear(255, 1, 2, 3);
 
             var span = buffer.GetPixelSpan(1, 0, 2);
