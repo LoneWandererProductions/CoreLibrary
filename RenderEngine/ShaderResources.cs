@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ShaderResources.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Some basic shaders for rendering.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

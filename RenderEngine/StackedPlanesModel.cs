@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        StackedPlanesModel.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Stacked planes model for rendering a grid of stacked planes with texture mapping.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ColumnData.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Column Data Structure for Rendering
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,6 +13,7 @@ namespace RenderEngine
     public struct ColumnData
     {
         public float Height; // Height of the slice
+
         public Vector3 Color; // RGB color of the slice
     }
 }

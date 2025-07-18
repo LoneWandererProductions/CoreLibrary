@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        OpenTkWpfControl.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     WPF Control for OpenTK rendering with OpenGL 4.5
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
