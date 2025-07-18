@@ -29,8 +29,8 @@ namespace RenderEngine
     {
         private readonly WriteableBitmap _bitmap;
         private GCHandle _bitsHandle;
-        private bool _disposed;
         private BitmapImage? _cachedImage;
+        private bool _disposed;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmapImage" /> class.
@@ -69,10 +69,12 @@ namespace RenderEngine
         {
             get
             {
-                if (_cachedImage == null)
+                if (_cachedImage != null)
                 {
-                    _cachedImage = ConvertImage();
+                    return _cachedImage;
                 }
+
+                _cachedImage = ConvertImage();
 
                 return _cachedImage;
             }
@@ -88,7 +90,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        ///     Sets pixels from a collection of <see cref="PixelData"/>.
+        ///     Sets pixels from a collection of <see cref="PixelData" />.
         ///     Uses unsafe pointer arithmetic for speed.
         /// </summary>
         /// <param name="pixels">The pixels to set.</param>
@@ -97,19 +99,23 @@ namespace RenderEngine
             _bitmap.Lock();
             unsafe
             {
-                byte* buffer = (byte*)_bitmap.BackBuffer.ToPointer();
+                var buffer = (byte*)_bitmap.BackBuffer.ToPointer();
 
                 foreach (var pixel in pixels)
                 {
-                    if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height) continue;
+                    if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
+                    {
+                        continue;
+                    }
 
-                    var offset = (pixel.Y * Width + pixel.X) * 4;
+                    var offset = ((pixel.Y * Width) + pixel.X) * 4;
                     buffer[offset + 0] = pixel.B;
                     buffer[offset + 1] = pixel.G;
                     buffer[offset + 2] = pixel.R;
                     buffer[offset + 3] = pixel.A;
 
-                    Bits[pixel.Y * Width + pixel.X] = (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
+                    Bits[(pixel.Y * Width) + pixel.X] =
+                        (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
                 }
             }
 
@@ -123,13 +129,14 @@ namespace RenderEngine
         /// <param name="color">The color to fill with.</param>
         public void FillSimd(Color color)
         {
-            var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
+            var packed = (uint)((color.A << 24) | (color.R << 16) | (color.G << 8) | color.B);
             var vector = new Vector<uint>(packed);
-            int i = 0;
+            var i = 0;
             for (; i <= Bits.Length - Vector<uint>.Count; i += Vector<uint>.Count)
             {
                 vector.CopyTo(Bits, i);
             }
+
             for (; i < Bits.Length; i++)
             {
                 Bits[i] = packed;
@@ -146,21 +153,21 @@ namespace RenderEngine
         {
             var transformed = new (int x, int y, Color color)[Bits.Length];
 
-            for (int i = 0; i < Bits.Length; i++)
+            for (var i = 0; i < Bits.Length; i++)
             {
                 var argb = Bits[i];
                 var a = (byte)(argb >> 24);
                 var r = (byte)(argb >> 16);
                 var g = (byte)(argb >> 8);
-                var b = (byte)(argb);
+                var b = (byte)argb;
 
                 var input = new float[] { r, g, b, a };
                 var result = new float[4];
 
-                for (int j = 0; j < 4; j++)
+                for (var j = 0; j < 4; j++)
                 {
                     result[j] = 0;
-                    for (int k = 0; k < 4; k++)
+                    for (var k = 0; k < 4; k++)
                     {
                         result[j] += matrix[j][k] * input[k];
                     }
@@ -180,26 +187,28 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Sets individual pixels in the image using a collection of <see cref="PixelData"/>.
-        /// Each entry defines the X/Y position and RGBA components.
+        ///     Sets individual pixels in the image using a collection of <see cref="PixelData" />.
+        ///     Each entry defines the X/Y position and RGBA components.
         /// </summary>
-        /// <param name="pixels">A collection of <see cref="PixelData"/> describing the pixels to set.</param>
+        /// <param name="pixels">A collection of <see cref="PixelData" /> describing the pixels to set.</param>
         public void SetPixels(IEnumerable<PixelData> pixels)
         {
             foreach (var pixel in pixels)
             {
                 if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
+                {
                     continue;
+                }
 
-                int index = pixel.Y * Width + pixel.X;
-                Bits[index] = (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
+                var index = (pixel.Y * Width) + pixel.X;
+                Bits[index] = (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
             }
 
             UpdateBitmapFromBits();
         }
 
         /// <summary>
-        /// SIMD-based batch pixel update from (x,y,color) triplets.
+        ///     SIMD-based batch pixel update from (x,y,color) triplets.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
@@ -207,20 +216,20 @@ namespace RenderEngine
             var pixelArray = pixels.ToArray();
             var vectorCount = Vector<int>.Count;
 
-            for (int i = 0; i < pixelArray.Length; i += vectorCount)
+            for (var i = 0; i < pixelArray.Length; i += vectorCount)
             {
                 var indices = new int[vectorCount];
                 var colors = new int[vectorCount];
 
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {
                         var (x, y, c) = pixelArray[i + j];
                         if (x >= 0 && x < Width && y >= 0 && y < Height)
                         {
-                            indices[j] = x + y * Width;
-                            colors[j] = c.A << 24 | c.R << 16 | c.G << 8 | c.B;
+                            indices[j] = x + (y * Width);
+                            colors[j] = (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
                         }
                         else
                         {
@@ -230,7 +239,7 @@ namespace RenderEngine
                     }
                 }
 
-                for (int j = 0; j < vectorCount; j++)
+                for (var j = 0; j < vectorCount; j++)
                 {
                     if (i + j < pixelArray.Length)
                     {
@@ -243,7 +252,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        ///     Converts the internal bitmap to a <see cref="BitmapImage"/>.
+        ///     Converts the internal bitmap to a <see cref="BitmapImage" />.
         /// </summary>
         private BitmapImage ConvertImage()
         {
@@ -291,10 +300,15 @@ namespace RenderEngine
         /// </summary>
         private void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing && _bitsHandle.IsAllocated)
+            {
                 _bitsHandle.Free();
+            }
 
             _disposed = true;
         }
@@ -308,4 +322,3 @@ namespace RenderEngine
         }
     }
 }
-

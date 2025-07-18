@@ -107,7 +107,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Gets the color of the pixel at the specified coordinates.
+        ///     Gets the color of the pixel at the specified coordinates.
         /// </summary>
         /// <param name="x">X coordinate (0-based)</param>
         /// <param name="y">Y coordinate (0-based)</param>
@@ -116,15 +116,15 @@ namespace RenderEngine
         {
             var offset = GetPixelOffset(x, y);
             var buffer = BufferSpan;
-            byte b = buffer[offset];
-            byte g = buffer[offset + 1];
-            byte r = buffer[offset + 2];
-            byte a = buffer[offset + 3];
+            var b = buffer[offset];
+            var g = buffer[offset + 1];
+            var r = buffer[offset + 2];
+            var a = buffer[offset + 3];
             return Color.FromArgb(a, r, g, b);
         }
 
         /// <summary>
-        /// Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
         /// </summary>
         /// <param name="x">X coordinate (0-based)</param>
         /// <param name="y">Y coordinate (0-based)</param>
@@ -135,7 +135,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Sets the pixel with alpha blend.
+        ///     Sets the pixel with alpha blend.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -149,24 +149,23 @@ namespace RenderEngine
             var buffer = BufferSpan;
 
             // Old pixel BGRA
-            byte oldB = buffer[offset];
-            byte oldG = buffer[offset + 1];
-            byte oldR = buffer[offset + 2];
-            byte oldA = buffer[offset + 3];
+            var oldB = buffer[offset];
+            var oldG = buffer[offset + 1];
+            var oldR = buffer[offset + 2];
+            var oldA = buffer[offset + 3];
 
-            float alpha = a / 255f;
+            var alpha = a / 255f;
 
-            byte newR = (byte)(r * alpha + oldR * (1 - alpha));
-            byte newG = (byte)(g * alpha + oldG * (1 - alpha));
-            byte newB = (byte)(b * alpha + oldB * (1 - alpha));
-            byte newA = (byte)(a + oldA * (1 - alpha)); // Approximate new alpha
+            var newR = (byte)((r * alpha) + (oldR * (1 - alpha)));
+            var newG = (byte)((g * alpha) + (oldG * (1 - alpha)));
+            var newB = (byte)((b * alpha) + (oldB * (1 - alpha)));
+            var newA = (byte)(a + (oldA * (1 - alpha))); // Approximate new alpha
 
             buffer[offset] = newB;
             buffer[offset + 1] = newG;
             buffer[offset + 2] = newR;
             buffer[offset + 3] = newA;
         }
-
 
 
         /// <summary>
@@ -177,7 +176,7 @@ namespace RenderEngine
         /// <returns>The byte offset of the pixel in the buffer.</returns>
         public int GetPixelOffset(int x, int y)
         {
-            return (y * Width + x) * _bytesPerPixel;
+            return ((y * Width) + x) * _bytesPerPixel;
         }
 
         /// <summary>
@@ -274,9 +273,9 @@ namespace RenderEngine
 
                 // Decompose packed uint BGRA color into bytes:
                 buffer[offset] = (byte)(bgra & 0xFF); // Blue
-                buffer[offset + 1] = (byte)(bgra >> 8 & 0xFF); // Green
-                buffer[offset + 2] = (byte)(bgra >> 16 & 0xFF); // Red
-                buffer[offset + 3] = (byte)(bgra >> 24 & 0xFF); // Alpha
+                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF); // Green
+                buffer[offset + 2] = (byte)((bgra >> 16) & 0xFF); // Red
+                buffer[offset + 3] = (byte)((bgra >> 24) & 0xFF); // Alpha
             }
         }
 
@@ -309,8 +308,8 @@ namespace RenderEngine
 
                     for (var i = 0; i < simdCount; i++)
                     {
-                        var vec = Avx.LoadVector256(srcPtr + i * vectorSize);
-                        Avx.Store(dstPtr + i * vectorSize, vec);
+                        var vec = Avx.LoadVector256(srcPtr + (i * vectorSize));
+                        Avx.Store(dstPtr + (i * vectorSize), vec);
                     }
 
                     // Copy any remaining bytes one by one
@@ -351,7 +350,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Converts to bitmap.
+        ///     Converts to bitmap.
         /// </summary>
         /// <returns>ImageBufferManager to BitmapBuffer</returns>
         public Bitmap ToBitmap()
@@ -361,10 +360,10 @@ namespace RenderEngine
             try
             {
                 Buffer.MemoryCopy(
-                    source: (void*)_bufferPtr,
-                    destination: bmpData.Scan0.ToPointer(),
-                    destinationSizeInBytes: _bufferSize,
-                    sourceBytesToCopy: _bufferSize);
+                    (void*)_bufferPtr,
+                    bmpData.Scan0.ToPointer(),
+                    _bufferSize,
+                    _bufferSize);
             }
             finally
             {
@@ -375,7 +374,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Froms the bitmap.
+        ///     Froms the bitmap.
         /// </summary>
         /// <param name="bmp">The BMP.</param>
         /// <returns>Bitmap converted to ImageBufferManager</returns>
@@ -400,7 +399,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Blits the specified source.
+        ///     Blits the specified source.
         /// </summary>
         /// <param name="src">The source.</param>
         /// <param name="destX">The dest x.</param>
@@ -409,7 +408,11 @@ namespace RenderEngine
         {
             for (var y = 0; y < src.Height; y++)
             {
-                if (y + destY >= Height) break;
+                if (y + destY >= Height)
+                {
+                    break;
+                }
+
                 var srcRow = src.GetPixelSpan(0, y, src.Width);
                 var dstRow = GetPixelSpan(destX, destY + y, src.Width);
                 srcRow.CopyTo(dstRow);
@@ -417,7 +420,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Blits a rectangular region from the source buffer to this buffer.
+        ///     Blits a rectangular region from the source buffer to this buffer.
         /// </summary>
         /// <param name="src">The source.</param>
         /// <param name="srcX">X-coordinate of the top-left corner in the source.</param>
@@ -426,7 +429,6 @@ namespace RenderEngine
         /// <param name="height">Height of the region to copy.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-
         public void BlitRegion(ImageBufferManager src, int srcX, int srcY, int width, int height, int destX, int destY)
         {
             for (var y = 0; y < height; y++)
@@ -438,16 +440,16 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Packs the bgra.
+        ///     Packs the bgra.
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
         /// <returns>Converts color to an unsigned Int</returns>
-        public static uint PackBGRA(byte a, byte r, byte g, byte b)
+        public static uint PackBgra(byte a, byte r, byte g, byte b)
         {
-            return (uint)a << 24 | (uint)r << 16 | (uint)g << 8 | b;
+            return ((uint)a << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
         }
     }
 }

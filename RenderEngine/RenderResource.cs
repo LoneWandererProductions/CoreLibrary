@@ -9,7 +9,7 @@
 namespace RenderEngine
 {
     /// <summary>
-    /// Mostly static string constants.
+    ///     Mostly static string constants.
     /// </summary>
     internal static class RenderResource
     {
@@ -28,7 +28,5 @@ namespace RenderEngine
         internal const string ShaderSkyboxFragment = "skybox_fragment.glsl";
 
         internal const string ErrorLayerSizeMismatch = "Layer size mismatch.";
-
-        internal const string ErrorInvalidOperation = "Error: Invalid Operation.";
     }
 }

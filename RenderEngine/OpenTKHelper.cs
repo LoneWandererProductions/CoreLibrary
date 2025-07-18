@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace RenderEngine
 {
@@ -169,7 +170,7 @@ namespace RenderEngine
             height = bitmap.Height;
 
             var rect = new Rectangle(0, 0, width, height);
-            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             var length = bitmapData.Stride * height;
             var pixels = new byte[length];
@@ -191,20 +192,19 @@ namespace RenderEngine
             var textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            int width, height;
-            var pixels = LoadTexturePixels(filePath, out width, out height);
+            var pixels = LoadTexturePixels(filePath, out var width, out var height);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0,
-                          OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-                            (int)TextureMinFilter.Linear);
+                (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                            (int)TextureMagFilter.Linear);
+                (int)TextureMagFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
-                            (int)TextureWrapMode.Repeat);
+                (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
-                            (int)TextureWrapMode.Repeat);
+                (int)TextureWrapMode.Repeat);
 
             return textureId;
         }
@@ -227,8 +227,7 @@ namespace RenderEngine
                     continue;
                 }
 
-                int width, height;
-                var pixels = LoadTexturePixels(filePaths[i], out width, out height);
+                var pixels = LoadTexturePixels(filePaths[i], out var width, out var height);
 
                 GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
                     width, height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
