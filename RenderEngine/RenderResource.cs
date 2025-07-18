@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        RenderResource.cs
@@ -26,6 +26,8 @@ namespace RenderEngine
         internal const string ShaderSkyboxFragment = "skybox_fragment.glsl";
 
         internal const string ErrorLayerSizeMismatch = "Layer size mismatch.";
+
+        internal const string ErrorInvalidOperation = "Error: Invalid Operation.";
 
         internal static readonly string Resource10 = "right.jpg";
         internal static readonly string Resource11 = "left.jpg";

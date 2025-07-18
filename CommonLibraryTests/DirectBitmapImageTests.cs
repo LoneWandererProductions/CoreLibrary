@@ -10,9 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media;
-using Imaging;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RenderEngine;
 
 namespace CommonLibraryTests
 {
@@ -276,6 +276,42 @@ namespace CommonLibraryTests
 
             // Assert that colors were transformed correctly to grayscale
             Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
+        }
+
+        /// <summary>
+        /// Applies the color matrix grayscale all pixels should be gray.
+        /// </summary>
+        [TestMethod]
+        public void ApplyColorMatrixGrayscaleShouldMakeRGBEqual()
+        {
+            var bmp = new DirectBitmapImage(2, 2);
+            bmp.SetPixels(new[]
+            {
+                new PixelData(0, 0, 255, 0, 0),    // red
+                new PixelData(1, 0, 0, 255, 0),    // green
+                new PixelData(0, 1, 0, 0, 255),    // blue
+                new PixelData(1, 1, 255, 255, 0),  // yellow
+            });
+
+            float[][] grayscaleMatrix =
+            {
+                new float[] {0.299f, 0.587f, 0.114f, 0},
+                new float[] {0.299f, 0.587f, 0.114f, 0},
+                new float[] {0.299f, 0.587f, 0.114f, 0},
+                new float[] {0,      0,      0,      1}
+            };
+
+            bmp.ApplyColorMatrix(grayscaleMatrix);
+
+            foreach (var pixel in bmp.Bits)
+            {
+                int r = (int)((pixel >> 16) & 0xFF);
+                int g = (int)((pixel >> 8) & 0xFF);
+                int b = (int)(pixel & 0xFF);
+
+                Assert.IsTrue(Math.Abs(r - g) <= 1 && Math.Abs(g - b) <= 1,
+                    $"Pixel RGB mismatch: R={r}, G={g}, B={b}");
+            }
         }
 
         /// <summary>
