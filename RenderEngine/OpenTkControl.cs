@@ -42,10 +42,7 @@ namespace RenderEngine
 
             public OpenTkControl()
             {
-                if (!OpenTkHelper.IsOpenGlCompatible())
-                {
-                    throw new NotSupportedException(RenderResource.ErrorOpenGl);
-                }
+                if (!OpenTkHelper.IsOpenGlCompatible()) throw new NotSupportedException(RenderResource.ErrorOpenGl);
 
                 InitializeGlControl();
                 InitializeShaders();
@@ -154,42 +151,24 @@ namespace RenderEngine
 
             private void GlControl_Paint(object? sender, PaintEventArgs e)
             {
-                if (_glControl == null)
-                {
-                    return;
-                }
+                if (_glControl == null) return;
 
-                if (_glControl.Context is { IsCurrent: false })
-                {
-                    _glControl.MakeCurrent();
-                }
+                if (_glControl.Context is { IsCurrent: false }) _glControl.MakeCurrent();
 
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                if (_backgroundTexture != -1)
-                {
-                    RenderBackground(_backgroundTexture);
-                }
+                if (_backgroundTexture != -1) RenderBackground(_backgroundTexture);
 
-                if (_skyboxTexture != -1)
-                {
-                    RenderSkybox();
-                }
+                if (_skyboxTexture != -1) RenderSkybox();
 
                 _glControl.SwapBuffers();
             }
 
             private void GlControl_Resize(object? sender, EventArgs e)
             {
-                if (_glControl == null)
-                {
-                    return;
-                }
+                if (_glControl == null) return;
 
-                if (!_glControl.Context.IsCurrent)
-                {
-                    _glControl.MakeCurrent();
-                }
+                if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
 
                 GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
             }
@@ -236,9 +215,9 @@ namespace RenderEngine
 
                     return new[]
                     {
-                        -1 + (pixel.X * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
-                        -1 + ((pixel.X + 1) * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
-                        -1 + (pixel.X * pixelWidth), -1 + ((pixel.Y + 1) * pixelHeight), 0.0f, pixel.Color.X,
+                        -1 + pixel.X * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f,
+                        -1 + (pixel.X + 1) * pixelWidth, -1 + pixel.Y * pixelHeight, 0.0f,
+                        -1 + pixel.X * pixelWidth, -1 + (pixel.Y + 1) * pixelHeight, 0.0f, pixel.Color.X,
                         pixel.Color.Y, pixel.Color.Z
                     };
                 });
@@ -254,10 +233,7 @@ namespace RenderEngine
 
             public void CaptureScreenshot(string filePath)
             {
-                if (_glControl == null)
-                {
-                    return;
-                }
+                if (_glControl == null) return;
 
                 var width = _glControl.Width;
                 var height = _glControl.Height;

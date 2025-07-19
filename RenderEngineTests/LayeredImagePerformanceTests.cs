@@ -58,7 +58,7 @@ namespace RenderEngineTests
 
             for (var i = 0; i < layers; i++)
             {
-                var layer = new ImageBufferManager(width, height);
+                var layer = new UnmanagedImageBuffer(width, height);
                 layer.ReplaceBuffer(tempBuffer); // reuse the filled buffer
                 container.AddLayer(layer);
             }

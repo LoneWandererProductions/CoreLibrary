@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
- * FILE:        ImageBufferManager.cs
+ * FILE:        UnmanagedImageBuffer.cs
  * PURPOSE:     A way to store images in a fast way.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -26,7 +26,7 @@ namespace RenderEngine
     ///     It supports setting individual pixels, clearing the buffer to a uniform color,
     ///     applying multiple pixel changes at once, and replacing the entire buffer efficiently.
     /// </remarks>
-    public sealed unsafe class ImageBufferManager : IDisposable
+    public sealed unsafe class UnmanagedImageBuffer : IDisposable
     {
         /// <summary>
         ///     The buffer PTR
@@ -44,7 +44,7 @@ namespace RenderEngine
         private readonly int _bytesPerPixel;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ImageBufferManager" /> class with specified dimensions and bytes per
+        ///     Initializes a new instance of the <see cref="UnmanagedImageBuffer" /> class with specified dimensions and bytes per
         ///     pixel.
         ///     The buffer is allocated in unmanaged memory and initially cleared to transparent black.
         /// </summary>
@@ -52,7 +52,7 @@ namespace RenderEngine
         /// <param name="height">The height of the image in pixels. Must be positive.</param>
         /// <param name="bytesPerPixel">The number of bytes per pixel (default is 4 for BGRA).</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if width or height is less than or equal to zero.</exception>
-        public ImageBufferManager(int width, int height, int bytesPerPixel = 4)
+        public UnmanagedImageBuffer(int width, int height, int bytesPerPixel = 4)
         {
             if (width <= 0)
             {
@@ -352,7 +352,7 @@ namespace RenderEngine
         /// <summary>
         ///     Converts to bitmap.
         /// </summary>
-        /// <returns>ImageBufferManager to BitmapBuffer</returns>
+        /// <returns>UnmanagedImageBuffer to BitmapBuffer</returns>
         public Bitmap ToBitmap()
         {
             var bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
@@ -377,11 +377,11 @@ namespace RenderEngine
         ///     Froms the bitmap.
         /// </summary>
         /// <param name="bmp">The BMP.</param>
-        /// <returns>Bitmap converted to ImageBufferManager</returns>
-        public static ImageBufferManager FromBitmap(Bitmap bmp)
+        /// <returns>Bitmap converted to UnmanagedImageBuffer</returns>
+        public static UnmanagedImageBuffer FromBitmap(Bitmap bmp)
         {
             // Assumes Format32bppArgb
-            var buffer = new ImageBufferManager(bmp.Width, bmp.Height);
+            var buffer = new UnmanagedImageBuffer(bmp.Width, bmp.Height);
             var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
@@ -404,7 +404,7 @@ namespace RenderEngine
         /// <param name="src">The source.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-        public void Blit(ImageBufferManager src, int destX, int destY)
+        public void Blit(UnmanagedImageBuffer src, int destX, int destY)
         {
             for (var y = 0; y < src.Height; y++)
             {
@@ -429,7 +429,7 @@ namespace RenderEngine
         /// <param name="height">Height of the region to copy.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-        public void BlitRegion(ImageBufferManager src, int srcX, int srcY, int width, int height, int destX, int destY)
+        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX, int destY)
         {
             for (var y = 0; y < height; y++)
             {
