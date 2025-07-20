@@ -24,9 +24,9 @@ namespace Interpreter.ScriptEngine
             _tokens = tokens;
         }
 
-        public CategorizedDictionary<int, string> ParseIntoCategorizedBlocks()
+        public CategorizedDictionary<int, string?> ParseIntoCategorizedBlocks()
         {
-            var result = new CategorizedDictionary<int, string>();
+            var result = new CategorizedDictionary<int, string?>();
             var commandIndex = 0;
 
             while (!IsAtEnd())
@@ -75,7 +75,7 @@ namespace Interpreter.ScriptEngine
             return result;
         }
 
-        private void ParseIfStatement(CategorizedDictionary<int, string> output, ref int commandIndex)
+        private void ParseIfStatement(CategorizedDictionary<int, string?> output, ref int commandIndex)
         {
             // Consume 'if' keyword
             Advance();
@@ -105,7 +105,7 @@ namespace Interpreter.ScriptEngine
             }
         }
 
-        private void ParseElseBlock(CategorizedDictionary<int, string> output, ref int commandIndex)
+        private void ParseElseBlock(CategorizedDictionary<int, string?> output, ref int commandIndex)
         {
             // Consume 'else' keyword
             Advance();
@@ -125,7 +125,7 @@ namespace Interpreter.ScriptEngine
             output.Add("Else_End", commandIndex++, null);
         }
 
-        private string ReadCondition()
+        private string? ReadCondition()
         {
             // Expect '('
             Expect(TokenType.OpenParen);
@@ -224,7 +224,7 @@ namespace Interpreter.ScriptEngine
         }
 
 
-        private string ReadStatementAsString()
+        private string? ReadStatementAsString()
         {
             var sb = new StringBuilder();
             var insideParens = false;

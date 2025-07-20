@@ -7,6 +7,7 @@
  */
 
 using System.Diagnostics;
+using ExtendedSystemObjects;
 using Interpreter.ScriptEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

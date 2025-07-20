@@ -21,12 +21,13 @@ namespace Interpreter
     public sealed class InCommand
     {
         /// <summary>
-        /// Gets the debug display.
+        ///     Gets the debug display.
         /// </summary>
         /// <value>
-        /// The debug display.
+        ///     The debug display.
         /// </value>
-        private string DebugDisplay => $"{Command ?? "<null>"} | {Description ?? "<null>"} | {ExpectedReturnType?.Name ?? "void"}";
+        private string DebugDisplay =>
+            $"{Command ?? "<null>"} | {Description ?? "<null>"} | {ExpectedReturnType?.Name ?? "void"}";
 
         /// <summary>
         ///     Sets the optional feedback identifier to User Feedback.

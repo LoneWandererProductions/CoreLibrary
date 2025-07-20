@@ -38,12 +38,12 @@ namespace CoreConsole
         private static bool _isEventTriggered;
 
         /// <summary>
-        /// The current command
+        ///     The current command
         /// </summary>
         private static OutCommand _currentCommand;
 
         /// <summary>
-        /// The extension
+        ///     The extension
         /// </summary>
         private static ExtensionCommands _Ext;
 
@@ -189,7 +189,10 @@ namespace CoreConsole
                     break;
             }
 
-            if (outCommand.ExtensionUsed) CheckExtension(outCommand);
+            if (outCommand.ExtensionUsed)
+            {
+                CheckExtension(outCommand);
+            }
 
             string result;
 
@@ -219,7 +222,7 @@ namespace CoreConsole
         }
 
         /// <summary>
-        /// Checks the extension.
+        ///     Checks the extension.
         /// </summary>
         /// <param name="outCommand">The out command.</param>
         private static async Task CheckExtension(OutCommand outCommand)
@@ -227,7 +230,8 @@ namespace CoreConsole
             string result;
 
             //check if the Command is contained.
-            if (!ConResources.DctCommandOne.ContainsKey(outCommand.Command) && outCommand.Command != ConResources.Analyzer)
+            if (!ConResources.DctCommandOne.ContainsKey(outCommand.Command) &&
+                outCommand.Command != ConResources.Analyzer)
             {
                 _prompt.Callback("Error: Extension, for this command not supported.");
             }
@@ -260,10 +264,10 @@ namespace CoreConsole
 
 
         /// <summary>
-        /// Prompts the handle feedback.
+        ///     Prompts the handle feedback.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
         private static void PromptHandleFeedback(object? sender, IrtFeedbackInputEventArgs e)
         {
             switch (e.Answer)

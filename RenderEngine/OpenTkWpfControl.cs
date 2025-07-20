@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        OpenTkWpfControl.cs
@@ -37,16 +37,33 @@ namespace RenderEngine
 
         public void Dispose()
         {
-            if (_vao != 0) GL.DeleteVertexArray(_vao);
-            if (_vbo != 0) GL.DeleteBuffer(_vbo);
-            if (_shaderProgram != 0) GL.DeleteProgram(_shaderProgram);
-            if (_backgroundTexture != 0) GL.DeleteTexture(_backgroundTexture);
+            if (_vao != 0)
+            {
+                GL.DeleteVertexArray(_vao);
+            }
+
+            if (_vbo != 0)
+            {
+                GL.DeleteBuffer(_vbo);
+            }
+
+            if (_shaderProgram != 0)
+            {
+                GL.DeleteProgram(_shaderProgram);
+            }
+
+            if (_backgroundTexture != 0)
+            {
+                GL.DeleteTexture(_backgroundTexture);
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             if (!OpenTkHelper.IsOpenGlCompatible())
+            {
                 throw new NotSupportedException(RenderResource.ErrorOpenGl);
+            }
 
             InitializeShaders();
             InitializeBuffers();
@@ -97,13 +114,8 @@ namespace RenderEngine
             float[] vertices =
             {
                 // Position     // TexCoords
-                -1.0f, -1.0f, 0.0f, 0.0f,
-                1.0f, -1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 1.0f,
-
-                1.0f, 1.0f, 1.0f, 1.0f,
-                -1.0f, 1.0f, 0.0f, 1.0f,
-                -1.0f, -1.0f, 0.0f, 0.0f
+                -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+                -1.0f, 1.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f
             };
 
             _vao = GL.GenVertexArray();
@@ -132,7 +144,10 @@ namespace RenderEngine
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            if (_backgroundTexture != -1) RenderBackground(_backgroundTexture);
+            if (_backgroundTexture != -1)
+            {
+                RenderBackground(_backgroundTexture);
+            }
 
             // Add additional rendering here
         }

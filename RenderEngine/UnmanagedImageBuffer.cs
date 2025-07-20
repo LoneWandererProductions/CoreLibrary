@@ -429,7 +429,8 @@ namespace RenderEngine
         /// <param name="height">Height of the region to copy.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX, int destY)
+        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX,
+            int destY)
         {
             for (var y = 0; y < height; y++)
             {

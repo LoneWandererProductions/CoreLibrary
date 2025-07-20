@@ -22,22 +22,7 @@ namespace InterpreteTests
     public sealed class FeedbackTests
     {
         /// <summary>
-        /// The log builder
-        /// </summary>
-        private StringBuilder _logBuilder = null!;
-
-        /// <summary>
-        /// The out command
-        /// </summary>
-        private OutCommand? _outCommand;
-
-        /// <summary>
-        /// The feedback
-        /// </summary>
-        private IrtFeedbackInputEventArgs? _feedback;
-
-        /// <summary>
-        /// Predefined feedback message with options
+        ///     Predefined feedback message with options
         /// </summary>
         private static readonly UserFeedback ReplaceFeedback = new()
         {
@@ -51,12 +36,36 @@ namespace InterpreteTests
         };
 
         /// <summary>
-        /// Feedback dictionary for commands needing user input
+        ///     Feedback dictionary for commands needing user input
         /// </summary>
         private static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
-        /// Runs before each test to reset state
+        ///     The feedback
+        /// </summary>
+        private IrtFeedbackInputEventArgs? _feedback;
+
+        /// <summary>
+        ///     The log builder
+        /// </summary>
+        private StringBuilder _logBuilder = null!;
+
+        /// <summary>
+        ///     The out command
+        /// </summary>
+        private OutCommand? _outCommand;
+
+
+        /// <summary>
+        ///     Helper to get accumulated log as string
+        /// </summary>
+        /// <value>
+        ///     The log.
+        /// </value>
+        private string Log => _logBuilder.ToString();
+
+        /// <summary>
+        ///     Runs before each test to reset state
         /// </summary>
         [TestInitialize]
         public void TestInitialize()
@@ -68,7 +77,7 @@ namespace InterpreteTests
 
 
         /// <summary>
-        /// Log listener accumulates all log messages
+        ///     Log listener accumulates all log messages
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="message">The message.</param>
@@ -79,7 +88,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Command listener saves the last OutCommand and error logs
+        ///     Command listener saves the last OutCommand and error logs
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="cmd">The command.</param>
@@ -101,10 +110,10 @@ namespace InterpreteTests
 
 
         /// <summary>
-        /// Feedback event listener saves the event and logs user selection
+        ///     Feedback event listener saves the event and logs user selection
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs" /> instance containing the event data.</param>
         private void PromptHandleFeedback(object sender, IrtFeedbackInputEventArgs e)
         {
             Trace.WriteLine(e);
@@ -112,17 +121,8 @@ namespace InterpreteTests
             _logBuilder.AppendLine($"You selected:  {e.Answer.ToString().ToLower()}");
         }
 
-
         /// <summary>
-        /// Helper to get accumulated log as string
-        /// </summary>
-        /// <value>
-        /// The log.
-        /// </value>
-        private string Log => _logBuilder.ToString();
-
-        /// <summary>
-        /// Feedback of the extension.
+        ///     Feedback of the extension.
         /// </summary>
         [TestMethod]
         public void FeedbackExtension()
@@ -130,8 +130,17 @@ namespace InterpreteTests
             var baseCommands = new Dictionary<int, InCommand>
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 2, Description = "Help com1" } },
-                { 1, new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" } },
-                { 2, new InCommand { Command = "com3", ParameterCount = 0, Description = "Special case no Parameter" } }
+                {
+                    1,
+                    new InCommand { Command = "com2", ParameterCount = 0, Description = "com2 Command Namespace 1" }
+                },
+                {
+                    2,
+                    new InCommand
+                    {
+                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
+                }
             };
 
             var prompt = new Prompt();
@@ -159,7 +168,7 @@ namespace InterpreteTests
         }
 
         /// <summary>
-        /// Tries the run extension with invalid base command should fail.
+        ///     Tries the run extension with invalid base command should fail.
         /// </summary>
         [TestMethod]
         public void TryRunExtensionWithInvalidBaseCommandShouldFail()
@@ -167,13 +176,24 @@ namespace InterpreteTests
             var baseCommands = new Dictionary<int, InCommand>
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 1, Description = "Help com1" } },
-                { 1, new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" } },
-                { 2, new InCommand { Command = "com3", ParameterCount = 0, Description = "Special case no Parameter" } }
+                {
+                    1,
+                    new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" }
+                },
+                {
+                    2,
+                    new InCommand
+                    {
+                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
+                    }
+                }
             };
 
             var extensionCommands = new Dictionary<int, InCommand>
             {
-                { 0, new InCommand
+                {
+                    0,
+                    new InCommand
                     {
                         Command = "tryrun",
                         ParameterCount = 0,
@@ -195,11 +215,12 @@ namespace InterpreteTests
 
             prompt.ConsoleInput("com1(1).dryrun()");
 
-            Assert.IsTrue(Log.Contains("Extension provided produced Errors:"), "Expected invalid input for bad extension command.");
+            Assert.IsTrue(Log.Contains("Extension provided produced Errors:"),
+                "Expected invalid input for bad extension command.");
         }
 
         /// <summary>
-        /// Confirms the internal test.
+        ///     Confirms the internal test.
         /// </summary>
         [TestMethod]
         public void ConfirmInternalTest()
@@ -211,7 +232,8 @@ namespace InterpreteTests
             prompt.Initiate(userFeedback: Feedback);
 
             prompt.ConsoleInput("confirm()");
-            Assert.IsTrue(Log.Contains("You now have the following Options"), "Feedback options not provided on first confirm.");
+            Assert.IsTrue(Log.Contains("You now have the following Options"),
+                "Feedback options not provided on first confirm.");
 
             prompt.ConsoleInput("mehh");
             Assert.IsTrue(Log.Contains("Input was not valid."), "Invalid input not logged correctly.");
@@ -222,17 +244,19 @@ namespace InterpreteTests
             Assert.AreEqual(AvailableFeedback.Yes, _feedback.Answer, "Expected 'Yes' answer after valid input.");
 
             prompt.ConsoleInput("confirm(1)");
-            Assert.IsTrue(Log.Contains("Do you want to commit the following changes?"), "Feedback options not provided on confirm(1).");
+            Assert.IsTrue(Log.Contains("Do you want to commit the following changes?"),
+                "Feedback options not provided on confirm(1).");
             Assert.IsNotNull(_feedback, "Feedback event not raised on confirm(1).");
 
             prompt.ConsoleInput("mehh");
             Assert.IsTrue(Log.Contains("Input was not valid."), "Invalid input not logged correctly on confirm(1).");
 
             prompt.ConsoleInput("yes");
-            Assert.IsTrue(Log.Contains("You selected:  yes"), "Confirmation message missing after 'yes' on confirm(1).");
+            Assert.IsTrue(Log.Contains("You selected:  yes"),
+                "Confirmation message missing after 'yes' on confirm(1).");
             Assert.IsNotNull(_feedback, "Feedback event not raised after 'yes' on confirm(1).");
-            Assert.AreEqual(AvailableFeedback.Yes, _feedback.Answer, "Expected 'Yes' answer after valid input on confirm(1).");
+            Assert.AreEqual(AvailableFeedback.Yes, _feedback.Answer,
+                "Expected 'Yes' answer after valid input on confirm(1).");
         }
     }
 }
-

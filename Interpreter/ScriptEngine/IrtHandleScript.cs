@@ -130,7 +130,7 @@ namespace Interpreter.ScriptEngine
         }
 
         // Placeholder for actual if/else block handling (expand as needed)
-        private async Task<int> HandleIfElseBlock(List<string> commands, int currentPosition)
+        private Task<int> HandleIfElseBlock(List<string> commands, int currentPosition)
         {
             // TODO: Implement evaluation of the if condition and command execution
             // You may want to parse nested blocks, execute or skip based on condition
@@ -139,7 +139,7 @@ namespace Interpreter.ScriptEngine
             // bool conditionMet = EvaluateCondition(commands[currentPosition]);
             // if (conditionMet) { ExecuteIfBlock(); } else { ExecuteElseBlock(); }
 
-            return currentPosition;
+            return Task.FromResult(currentPosition);
         }
 
         private static bool IsJumpCommand(string input, int key, out int position, IReadOnlyList<string> commands)

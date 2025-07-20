@@ -339,7 +339,10 @@ namespace Interpreter
         private void SetResult(OutCommand? command)
         {
             //so the command was not found, we should catch that
-            if (command == null || _com == null) return;
+            if (command == null || _com == null)
+            {
+                return;
+            }
 
             //else let's do this.
             if (_com[command.Command].FeedbackId == 0)

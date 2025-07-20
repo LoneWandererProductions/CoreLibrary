@@ -33,7 +33,7 @@ namespace CoreBuilder
             bool appendToExisting = false, bool replace = false);
 
         /// <summary>
-        /// Detects the affected files.
+        ///     Detects the affected files.
         /// </summary>
         /// <param name="projectPath">The project path.</param>
         /// <returns>Affected Files</returns>

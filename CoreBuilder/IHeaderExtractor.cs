@@ -22,7 +22,7 @@ namespace CoreBuilder
         string ProcessFiles(string directoryPath, bool includeSubdirectories);
 
         /// <summary>
-        /// Detects the files needing headers.
+        ///     Detects the files needing headers.
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>

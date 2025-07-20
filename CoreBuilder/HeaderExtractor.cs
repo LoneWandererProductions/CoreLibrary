@@ -86,11 +86,18 @@ namespace CoreBuilder
         public string DetectFilesNeedingHeaders(string directoryPath, bool includeSubdirectories)
         {
             if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
+            {
                 return string.Empty;
+            }
 
             var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var csFiles = Directory.GetFiles(directoryPath, "*.cs", searchOption);
-            var needingHeaders = (from file in csFiles where !CoreHelper.ShouldIgnoreFile(file) let content = File.ReadAllText(file) where !ContainsHeader(content) select Path.GetFullPath(file)).ToList();
+            var needingHeaders =
+                (from file in csFiles
+                    where !CoreHelper.ShouldIgnoreFile(file)
+                    let content = File.ReadAllText(file)
+                    where !ContainsHeader(content)
+                    select Path.GetFullPath(file)).ToList();
 
             return needingHeaders.Count > 0
                 ? string.Join(Environment.NewLine, needingHeaders)
@@ -119,7 +126,11 @@ namespace CoreBuilder
         /// <returns>Extracted Namespace</returns>
         private static string ExtractNamespace(string content)
         {
-            foreach (var parts in from line in content.Split('\n') select line.Trim() into trimmed where trimmed.StartsWith("namespace ", StringComparison.InvariantCultureIgnoreCase) select trimmed.Split(new[] { ' ', '{' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var parts in from line in content.Split('\n')
+                     select line.Trim()
+                     into trimmed
+                     where trimmed.StartsWith("namespace ", StringComparison.InvariantCultureIgnoreCase)
+                     select trimmed.Split(new[] { ' ', '{' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 return parts.Length > 1 ? parts[1] : "UnknownNamespace";
             }

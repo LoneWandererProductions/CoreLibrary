@@ -21,6 +21,11 @@ namespace CoreConsole
     internal static class ConsoleHelper
     {
         /// <summary>
+        ///     List of code analyzers to apply.
+        /// </summary>
+        private static readonly List<ICodeAnalyzer> Analyzers = new();
+
+        /// <summary>
         ///     Static constructor to initialize analyzers.
         /// </summary>
         static ConsoleHelper()
@@ -28,11 +33,6 @@ namespace CoreConsole
             Analyzers.Add(new DoubleNewlineAnalyzer());
             Analyzers.Add(new LicenseHeaderAnalyzer());
         }
-
-        /// <summary>
-        ///     List of code analyzers to apply.
-        /// </summary>
-        private static readonly List<ICodeAnalyzer> Analyzers = new();
 
         /// <summary>
         ///     Applies license headers to files in a given directory.
@@ -163,7 +163,7 @@ namespace CoreConsole
                 return outputError;
             }
 
-            IResourceExtractor extractor = CreateDefaultResourceExtractor();
+            var extractor = CreateDefaultResourceExtractor();
             var changedFiles = extractor.ProcessProject(projectPath, outputResourceFile, replace: true);
 
             if (changedFiles.Count == 0)
@@ -199,8 +199,8 @@ namespace CoreConsole
             {
                 var content = File.ReadAllText(file);
                 result = Analyzers.SelectMany(analyzer => analyzer.Analyze(file, content))
-                                  .Aggregate(result, (current, diagnostic) =>
-                                      current + string.Concat(diagnostic.ToString(), Environment.NewLine));
+                    .Aggregate(result, (current, diagnostic) =>
+                        current + string.Concat(diagnostic.ToString(), Environment.NewLine));
             }
 
             return result;
@@ -244,7 +244,7 @@ namespace CoreConsole
                 return error;
             }
 
-            IResourceExtractor extractor = CreateDefaultResourceExtractor();
+            var extractor = CreateDefaultResourceExtractor();
             var simulatedChanges = extractor.DetectAffectedFiles(projectPath);
 
             return string.IsNullOrEmpty(simulatedChanges)

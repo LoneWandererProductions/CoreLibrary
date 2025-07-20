@@ -124,7 +124,13 @@ namespace CoreBuilder
         {
             var files = GetFiles(projectPath);
 
-            var affectedFiles = (from file in files where !ShouldIgnoreFile(file) let code = File.ReadAllText(file) let strings = ExtractStrings(code) where strings.Any() select Path.GetFullPath(file)).ToList();
+            var affectedFiles =
+                (from file in files
+                    where !ShouldIgnoreFile(file)
+                    let code = File.ReadAllText(file)
+                    let strings = ExtractStrings(code)
+                    where strings.Any()
+                    select Path.GetFullPath(file)).ToList();
 
             return affectedFiles.Count == 0
                 ? null
@@ -309,7 +315,7 @@ namespace CoreBuilder
 
 
         /// <summary>
-        /// Gets the files.
+        ///     Gets the files.
         /// </summary>
         /// <param name="projectPath">The project path.</param>
         /// <returns>List of allowed files</returns>
