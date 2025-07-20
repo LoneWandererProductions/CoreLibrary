@@ -113,30 +113,22 @@ namespace InterpreteTests
             Trace.WriteLine(_outCommand.ToString());
         }
 
+
         /// <summary>
-        ///     Feedback and extension external test.
+        /// Tries the run extension with invalid base command should fail t.
         /// </summary>
         [TestMethod]
-        public void FeedbackExtensionExternal()
+        public void TryRunExtensionWithInvalidBaseCommandShouldFailT()
         {
             // Arrange
-            var dctCommandOne = new Dictionary<int, InCommand>
+            var baseCommands = new Dictionary<int, InCommand>
             {
                 { 0, new InCommand { Command = "com1", ParameterCount = 1, Description = "Help com1" } },
-                {
-                    1,
-                    new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" }
-                },
-                {
-                    2,
-                    new InCommand
-                    {
-                        Command = "com3", ParameterCount = 0, Description = "Special case no Parameter"
-                    }
-                }
+                { 1, new InCommand { Command = "com2", ParameterCount = 2, Description = "com2 Command Namespace 1" } },
+                { 2, new InCommand { Command = "com3", ParameterCount = 0, Description = "Special case no Parameter" } }
             };
 
-            Dictionary<int, InCommand> extensionCommands = new()
+            var extensionCommands = new Dictionary<int, InCommand>
             {
                 {
                     0, new InCommand
@@ -144,20 +136,25 @@ namespace InterpreteTests
                         Command = "tryrun",
                         ParameterCount = 0,
                         FeedbackId = 1,
-                        Description =
-                            "Show results and optional run commands"
+                        Description = "Show results and optionally run commands"
                     }
                 }
             };
 
-            // Act
             var prompt = new Prompt();
             prompt.SendLogs += SendLogs;
             prompt.SendCommands += SendCommands;
-            prompt.Initiate(dctCommandOne, "UserSpace 1", extensionCommands, Feedback);
-            prompt.ConsoleInput("coM2(1,2).tryrun()");
-            prompt.ConsoleInput("");
+            prompt.HandleFeedback += PromptHandleFeedback;
+
+            prompt.Initiate(baseCommands, "UserSpace 1", extensionCommands, Feedback);
+
+            // Act – use wrong base command
+            prompt.ConsoleInput("nope(1).tryrun()");
+
+            // Assert – should trigger invalid input
+            Assert.IsTrue(_log.Contains("error KeyWord not Found:"), "Expected invalid input for bad base command.");
         }
+
 
         /// <summary>
         ///     Feedback and extension external test.

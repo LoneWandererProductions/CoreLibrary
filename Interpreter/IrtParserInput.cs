@@ -336,9 +336,13 @@ namespace Interpreter
         ///     Sets the result of a command.
         /// </summary>
         /// <param name="command">The command.</param>
-        private void SetResult(OutCommand command)
+        private void SetResult(OutCommand? command)
         {
-            if (_com[command.Command]?.FeedbackId == 0)
+            //so the command was not found, we should catch that
+            if (command == null || _com == null) return;
+
+            //else let's do this.
+            if (_com[command.Command].FeedbackId == 0)
             {
                 _prompt.SendCommand(this, command);
             }
@@ -350,17 +354,19 @@ namespace Interpreter
                     return;
                 }
 
-                var id = _com[command.Command].FeedbackId;
-
-
-                //Todo add access to the Internal Feedback as well
-                var feedback = _userFeedback[id];
-                var feedbackReceiver = new IrtFeedback
                 {
-                    RequestId = _myRequestId, Feedback = feedback, AwaitedOutput = command
-                };
+                    var id = _com[command.Command].FeedbackId;
 
-                _prompt.RequestFeedback(feedbackReceiver);
+
+                    //Todo add access to the Internal Feedback as well
+                    var feedback = _userFeedback[id];
+                    var feedbackReceiver = new IrtFeedback
+                    {
+                        RequestId = _myRequestId, Feedback = feedback, AwaitedOutput = command
+                    };
+
+                    _prompt.RequestFeedback(feedbackReceiver);
+                }
             }
         }
 
