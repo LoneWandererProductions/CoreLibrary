@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -22,8 +21,19 @@ namespace InterpreteTests
     [TestClass]
     public sealed class FeedbackTests
     {
+        /// <summary>
+        /// The log builder
+        /// </summary>
         private StringBuilder _logBuilder = null!;
+
+        /// <summary>
+        /// The out command
+        /// </summary>
         private OutCommand? _outCommand;
+
+        /// <summary>
+        /// The feedback
+        /// </summary>
         private IrtFeedbackInputEventArgs? _feedback;
 
         /// <summary>
@@ -43,8 +53,7 @@ namespace InterpreteTests
         /// <summary>
         /// Feedback dictionary for commands needing user input
         /// </summary>
-        internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
-
+        private static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
 
         /// <summary>
         /// Runs before each test to reset state
@@ -183,6 +192,10 @@ namespace InterpreteTests
             prompt.ConsoleInput("nope(1).tryrun()");
 
             Assert.IsTrue(Log.Contains("error KeyWord not Found:"), "Expected invalid input for bad base command.");
+
+            prompt.ConsoleInput("com1(1).dryrun()");
+
+            Assert.IsTrue(Log.Contains("Extension provided produced Errors:"), "Expected invalid input for bad extension command.");
         }
 
         /// <summary>

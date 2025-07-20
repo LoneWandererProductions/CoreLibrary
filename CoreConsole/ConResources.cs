@@ -96,9 +96,15 @@ namespace CoreConsole
 
         internal const string InformationInvalidArgument = "Invalid arguments or operation.";
 
-        internal const string MessageKeyPress = "Press any key to exit...";
-
         internal const string MessageInfo = "Core Console Application";
+
+        internal const string HeaderTryrunNoChanges = "Header try run, no results.";
+
+        internal const string HeaderTryrunWouldAffect = "Header try run would affect: ";
+
+        internal const string ResxtractTryrunNoChanges = "Resxtract try run, no results.";
+
+        internal const string ResxtractTryrunWouldAffect = "Resxtract try run, would affect: ";
 
         /// <summary>
         ///     The available commands

@@ -15,6 +15,7 @@
 
   <PropertyGroup>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

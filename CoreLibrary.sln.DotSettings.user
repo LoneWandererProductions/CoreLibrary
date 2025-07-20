@@ -17,6 +17,7 @@
       &lt;TestId&gt;MSTest::18981E7D-2AB9-48B2-8181-9E9DF3263B23::net5.0-windows7.0::InterpreteTests.CommandBuilder.ParseIfWithoutBracesShouldFailOrSkip&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;MSTest::18981E7D-2AB9-48B2-8181-9E9DF3263B23::net5.0-windows7.0::InterpreteTests.FeedbackTests.FeedbackExtension&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;MSTest::18981E7D-2AB9-48B2-8181-9E9DF3263B23::net5.0-windows7.0::InterpreteTests.FeedbackTests.FeedbackExtension_TryRunHandledByReinjectingCommand&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;MSTest::18981E7D-2AB9-48B2-8181-9E9DF3263B23::net5.0-windows7.0::InterpreteTests.FeedbackTests.TryRunExtensionWithInvalidBaseCommandShouldFail&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
     &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryGuiTests" Presentation="&amp;lt;CommonLibraryGuiTests&amp;gt;" /&gt;&#xD;
     &lt;Project Location="C:\Users\Wayfarer\Documents\Projects\CoreLibrary\CommonLibraryTests" Presentation="&amp;lt;CommonLibraryTests&amp;gt;" /&gt;&#xD;

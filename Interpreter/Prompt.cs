@@ -60,14 +60,6 @@ namespace Interpreter
         private PromptState _state;
 
         /// <summary>
-        ///     The feedback register
-        /// </summary>
-        /// <value>
-        ///     The feedback register.
-        /// </value>
-        internal IrtFeedback FeedbackRegister { get; set; }
-
-        /// <summary>
         ///     The collected Namespaces
         /// </summary>
         public Dictionary<string, UserSpace> CollectedSpaces { get; private set; }
@@ -212,7 +204,7 @@ namespace Interpreter
         ///     Occurs when feedback input has been processed and needs handling.
         ///     Subscribers should process the <see cref="IrtFeedbackInputEventArgs" /> accordingly.
         /// </summary>
-        internal event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
+        public event EventHandler<IrtFeedbackInputEventArgs> HandleFeedback;
 
         /// <summary>Switches the name spaces.</summary>
         /// <param name="space">The Namespace we would like to use.</param>

@@ -51,6 +51,6 @@ namespace Interpreter
         /// <value>
         ///     The base command.
         /// </value>
-        internal string BaseCommand { get; set; }
+        public string BaseCommand { get; set; }
     }
 }

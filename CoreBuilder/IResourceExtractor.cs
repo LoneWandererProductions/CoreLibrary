@@ -31,5 +31,12 @@ namespace CoreBuilder
         /// </returns>
         List<string> ProcessProject(string projectPath, string outputResourceFile = null,
             bool appendToExisting = false, bool replace = false);
+
+        /// <summary>
+        /// Detects the affected files.
+        /// </summary>
+        /// <param name="projectPath">The project path.</param>
+        /// <returns>Affected Files</returns>
+        string? DetectAffectedFiles(string projectPath);
     }
 }

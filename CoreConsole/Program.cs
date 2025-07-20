@@ -9,11 +9,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using CoreBuilder;
 using Interpreter;
-using Microsoft.CodeAnalysis.CSharp;
+using Interpreter.Resources;
 
 namespace CoreConsole
 {
@@ -38,9 +38,14 @@ namespace CoreConsole
         private static bool _isEventTriggered;
 
         /// <summary>
-        ///     The analyzers
+        /// The current command
         /// </summary>
-        private static readonly List<ICodeAnalyzer> Analyzers = new();
+        private static OutCommand _currentCommand;
+
+        /// <summary>
+        /// The extension
+        /// </summary>
+        private static ExtensionCommands _Ext;
 
         /// <summary>
         ///     Defines the entry point of the application.
@@ -48,9 +53,6 @@ namespace CoreConsole
         /// <param name="args">The arguments.</param>
         private static void Main(string[] args)
         {
-            //add our analyzers
-            Analyzers.Add(new DoubleNewlineAnalyzer());
-            Analyzers.Add(new LicenseHeaderAnalyzer());
             if (args.Length < 2)
             {
                 Initiate();
@@ -58,48 +60,52 @@ namespace CoreConsole
             else
             {
                 var operation = args[0];
-                if (operation == ConResources.ResourceHeader && args.Length == 2)
+                switch (operation)
                 {
-                    var directoryPath = args[1];
-                    IHeaderExtractor headerExtractor = new HeaderExtractor();
-                    var message = headerExtractor.ProcessFiles(directoryPath, true);
-                    Console.WriteLine(message);
-                }
-                else if (operation == ConResources.ResourceResxtract && args.Length >= 3)
-                {
-                    var projectPath = args[1];
-                    var outputResourceFile = args[2];
-                    var ignoreList = new List<string>();
-                    var ignorePatterns = new List<string>();
-                    if (args.Length > 3 && File.Exists(args[3]))
+                    case ConResources.ResourceHeader when args.Length == 2:
                     {
-                        ignoreList = new List<string>(File.ReadAllLines(args[3]));
-                        Console.WriteLine(ConResources.MessageFilesIgnored, ignoreList.Count);
+                        var directoryPath = args[1];
+                        IHeaderExtractor headerExtractor = new HeaderExtractor();
+                        var message = headerExtractor.ProcessFiles(directoryPath, true);
+                        Console.WriteLine(message);
+                        break;
                     }
-
-                    if (args.Length > 4 && File.Exists(args[4]))
+                    case ConResources.ResourceResxtract when args.Length >= 3:
                     {
-                        foreach (var pattern in File.ReadAllLines(args[4]))
+                        var projectPath = args[1];
+                        var outputResourceFile = args[2];
+                        var ignoreList = new List<string>();
+                        var ignorePatterns = new List<string>();
+                        if (args.Length > 3 && File.Exists(args[3]))
                         {
-                            try
-                            {
-                                ignorePatterns.Add(pattern);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ConResources.ErrorRegexpattern, pattern, ex.Message);
-                            }
+                            ignoreList = new List<string>(File.ReadAllLines(args[3]));
+                            Console.WriteLine(ConResources.MessageFilesIgnored, ignoreList.Count);
                         }
 
-                        Console.WriteLine(ConResources.MessageOutputIgnore, ignorePatterns.Count);
-                    }
+                        if (args.Length > 4 && File.Exists(args[4]))
+                        {
+                            foreach (var pattern in File.ReadAllLines(args[4]))
+                            {
+                                try
+                                {
+                                    ignorePatterns.Add(pattern);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ConResources.ErrorRegexpattern, pattern, ex.Message);
+                                }
+                            }
 
-                    IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
-                    resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
-                }
-                else
-                {
-                    Console.WriteLine(ConResources.InformationInvalidArgument);
+                            Console.WriteLine(ConResources.MessageOutputIgnore, ignorePatterns.Count);
+                        }
+
+                        IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
+                        resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
+                        break;
+                    }
+                    default:
+                        Console.WriteLine(ConResources.InformationInvalidArgument);
+                        break;
                 }
             }
 
@@ -115,8 +121,9 @@ namespace CoreConsole
             _prompt = new Prompt();
             _prompt.SendLogs += SendLogs;
             _prompt.SendCommands += SendCommands;
+            _prompt.HandleFeedback += PromptHandleFeedback;
             _prompt.Callback(ConResources.MessageInfo);
-            _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode);
+            _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode, ConResources.ExtensionCommands);
             _prompt.AddCommands(ConResources.DctCommandOne, ConResources.UserSpaceCode);
             _prompt.ConsoleInput(ConResources.ResourceUsingCmd);
             _prompt.Callback(Environment.NewLine);
@@ -166,40 +173,43 @@ namespace CoreConsole
         /// <param name="outCommand">The out command.</param>
         private static void HandleCommands(OutCommand outCommand)
         {
-            if (outCommand.Command == -1)
+            switch (outCommand.Command)
             {
-                _prompt.Callback(outCommand.ErrorMessage);
+                case -1:
+                    _prompt.Callback(outCommand.ErrorMessage);
+                    break;
+                case 99:
+                    // Simulate some work
+                    _prompt.Callback(ConResources.MessageClose);
+                    _prompt?.Dispose();
+                    // Introduce a small delay before closing
+                    Thread.Sleep(3000); // Delay for 3000 milliseconds (3 seconds)
+                    // Close the console application
+                    Environment.Exit(0);
+                    break;
             }
 
-            if (outCommand.Command == 99)
-            {
-                // Simulate some work
-                _prompt.Callback(ConResources.MessageClose);
-                _prompt?.Dispose();
-                // Introduce a small delay before closing
-                Thread.Sleep(3000); // Delay for 3000 milliseconds (3 seconds)
-                // Close the console application
-                Environment.Exit(0);
-            }
+            if (outCommand.ExtensionUsed) CheckExtension(outCommand);
 
             string result;
+
             switch (outCommand.Command)
             {
                 //Just show some stuff
                 case ConResources.Header:
-                    result = HandleHeader(outCommand);
+                    result = ConsoleHelper.HandleHeader(outCommand);
                     _prompt.Callback(result);
                     break;
                 case ConResources.Resxtract:
-                    result = HandleResxtract(outCommand);
+                    result = ConsoleHelper.HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
                 case ConResources.ResXtractOverload:
-                    result = HandleResxtract(outCommand);
+                    result = ConsoleHelper.HandleResxtract(outCommand);
                     _prompt.Callback(result);
                     break;
                 case ConResources.Analyzer:
-                    result = RunAnalyzers(outCommand);
+                    result = ConsoleHelper.RunAnalyzers(outCommand);
                     _prompt.Callback(result);
                     break;
                 default:
@@ -209,140 +219,68 @@ namespace CoreConsole
         }
 
         /// <summary>
-        ///     Handles the header.
+        /// Checks the extension.
         /// </summary>
-        /// <param name="package">The package.</param>
-        /// <returns>Added headers.</returns>
-        private static string HandleHeader(OutCommand package)
+        /// <param name="outCommand">The out command.</param>
+        private static async Task CheckExtension(OutCommand outCommand)
         {
-            var directoryPath = CleanPath(package.Parameter[0]);
-            if (string.IsNullOrWhiteSpace(directoryPath))
+            string result;
+
+            //check if the Command is contained.
+            if (!ConResources.DctCommandOne.ContainsKey(outCommand.Command) && outCommand.Command != ConResources.Analyzer)
             {
-                return ConResources.InformationDirectoryMissing;
+                _prompt.Callback("Error: Extension, for this command not supported.");
             }
 
-            if (!Directory.Exists(directoryPath))
+            _currentCommand = outCommand;
+            _Ext = outCommand.ExtensionCommand;
+
+            switch (outCommand.Command)
             {
-                return string.Format(ConResources.ErrorDirectory, directoryPath);
+                //Just show some stuff
+                case ConResources.Header:
+                    result = ConsoleHelper.HandleHeaderTryrun(outCommand);
+                    _prompt.Callback(result);
+                    break;
+                case ConResources.Resxtract:
+                    result = ConsoleHelper.HandleResxtractTryrun(outCommand);
+                    _prompt.Callback(result);
+                    break;
+                case ConResources.ResXtractOverload:
+                    result = ConsoleHelper.HandleResxtractTryrun(outCommand);
+                    _prompt.Callback(result);
+                    break;
             }
 
-            IHeaderExtractor headerExtractor = new HeaderExtractor();
-            return headerExtractor.ProcessFiles(directoryPath, true);
+            // Wait a bit to let async logs finish before prompt
+            await Task.Delay(200);
+
+            _prompt.ConsoleInput("confirm()");
         }
 
-        /// <summary>
-        ///     Handles the resource xtract.
-        /// </summary>
-        /// <param name="package">The package.</param>
-        /// <returns>Result of the extraction.</returns>
-        private static string HandleResxtract(OutCommand package)
-        {
-            if (package.Parameter.Count == 0)
-            {
-                return ConResources.ErrorProjectPathMissing;
-            }
-
-            var projectPath = CleanPath(package.Parameter[0]);
-            var outputResourceFile = package.Parameter.Count >= 2 ? CleanPath(package.Parameter[1]) : null;
-            if (string.IsNullOrWhiteSpace(projectPath))
-            {
-                return ConResources.ErrorProjectPathMissing;
-            }
-
-            if (!Directory.Exists(projectPath))
-            {
-                return string.Format(ConResources.ErrorProjectPath, projectPath);
-            }
-
-            // Only validate output file path if provided
-            if (!string.IsNullOrWhiteSpace(outputResourceFile))
-            {
-                try
-                {
-                    var outputDir = Path.GetDirectoryName(outputResourceFile);
-                    if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
-                    {
-                        return string.Format(ConResources.ErrorDirectoryOutput, outputDir);
-                    }
-
-                    // Optional: warn if file exists
-                    if (File.Exists(outputResourceFile))
-                    {
-                        // Could add a warning here
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return string.Format(ConResources.ErrorAccessFile, ex.Message);
-                }
-            }
-
-            var ignoreList = new List<string>();
-            var ignorePatterns = new List<string>();
-
-            IResourceExtractor extractor = new ResXtract(ignoreList, ignorePatterns);
-            var changedFiles =
-                extractor.ProcessProject(projectPath, outputResourceFile, replace: true); // `null` is okay here
-            if (changedFiles.Count == 0)
-            {
-                return ConResources.ResxtractFinished;
-            }
-
-            var actualOutputFile = changedFiles.Last(); // Last item is outputResourceFile (by design)
-            var changedFilesList = string.Join(Environment.NewLine + ConResources.MessageSeparator,
-                changedFiles.Take(changedFiles.Count - 1));
-            return string.Format(ConResources.ResourceResxtractOutput, actualOutputFile, Environment.NewLine) +
-                   string.Format(ConResources.MessageChangedFiles, Environment.NewLine, changedFilesList);
-        }
 
         /// <summary>
-        ///     Runs the analyzers.
+        /// Prompts the handle feedback.
         /// </summary>
-        /// <param name="package">The package.</param>
-        /// <returns>Result of code analysis.</returns>
-        private static string RunAnalyzers(OutCommand package)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="IrtFeedbackInputEventArgs"/> instance containing the event data.</param>
+        private static void PromptHandleFeedback(object? sender, IrtFeedbackInputEventArgs e)
         {
-            var path = CleanPath(package.Parameter[0]);
-            if (!Directory.Exists(path))
+            switch (e.Answer)
             {
-                return string.Format(ConResources.ErrorDirectory, path);
-            }
-
-            var files = Directory.GetFiles(path, ConResources.ResourceCsExtension, SearchOption.AllDirectories);
-            var result = string.Empty;
-            foreach (var file in files)
-            {
-                var content = File.ReadAllText(file);
-                var syntaxTree = CSharpSyntaxTree.ParseText(content);
-                foreach (var analyzer in Analyzers)
+                case AvailableFeedback.Yes:
                 {
-                    foreach (var diagnostic in analyzer.Analyze(file, content))
-                    {
-                        result += string.Concat(diagnostic.ToString(), Environment.NewLine);
-                    }
+                    var reconstructed = _Ext.ExtensionParameter?.Count > 0
+                        ? $"{_Ext.BaseCommand}({string.Join(",", _Ext.ExtensionParameter)})"
+                        : $"{_Ext.BaseCommand}";
+
+                    _prompt.ConsoleInput(reconstructed);
+                    break;
                 }
+                case AvailableFeedback.No:
+                    _prompt.Callback("Operation canceled");
+                    break;
             }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Removes enclosing double quotes from a path if present.
-        /// </summary>
-        private static string CleanPath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return path;
-            }
-
-            path = path.Trim();
-            if (path.StartsWith(ConResources.Quotes) && path.EndsWith(ConResources.Quotes) && path.Length > 1)
-            {
-                path = path.Substring(1, path.Length - 2);
-            }
-
-            return path;
         }
 
         /// <summary>

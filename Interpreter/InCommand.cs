@@ -17,9 +17,17 @@ namespace Interpreter
     /// <summary>
     ///     Simple Element of the Register
     /// </summary>
-    [DebuggerDisplay("{ToString()}")]
+    [DebuggerDisplay("{DebugDisplay,nq}")]
     public sealed class InCommand
     {
+        /// <summary>
+        /// Gets the debug display.
+        /// </summary>
+        /// <value>
+        /// The debug display.
+        /// </value>
+        private string DebugDisplay => $"{Command ?? "<null>"} | {Description ?? "<null>"} | {ExpectedReturnType?.Name ?? "void"}";
+
         /// <summary>
         ///     Sets the optional feedback identifier to User Feedback.
         /// </summary>
@@ -64,8 +72,13 @@ namespace Interpreter
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(Command, IrtConst.Separator, Description, IrtConst.Separator,
-                ExpectedReturnType.ToString());
+            return string.Concat(
+                Command ?? "<null>",
+                IrtConst.Separator,
+                Description ?? "<null>",
+                IrtConst.Separator,
+                ExpectedReturnType?.ToString() ?? "void"
+            );
         }
 
         /// <summary>

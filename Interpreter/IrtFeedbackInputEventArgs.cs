@@ -12,13 +12,14 @@ using Interpreter.Resources;
 
 namespace Interpreter
 {
+    /// <inheritdoc />
     /// <summary>
     ///     EventArgs that gets delievered to all Listener, the right listener gets identified by: RequestId
     ///     This strange construct is needed for batch commands
     /// </summary>
-    /// <seealso cref="System.EventArgs" />
+    /// <seealso cref="T:System.EventArgs" />
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    internal sealed class IrtFeedbackInputEventArgs : EventArgs
+    public sealed class IrtFeedbackInputEventArgs : EventArgs
     {
         /// <summary>
         ///     Gets or sets the input.
@@ -74,7 +75,7 @@ namespace Interpreter
         /// <value>
         ///     The answer.
         /// </value>
-        internal AvailableFeedback Answer { get; init; }
+        public AvailableFeedback Answer { get; init; }
 
         /// <summary>
         ///     Provides a debugger-friendly display string.

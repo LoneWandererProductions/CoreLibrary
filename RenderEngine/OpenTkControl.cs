@@ -203,6 +203,12 @@ namespace RenderEngine
                 GL.DrawArrays(PrimitiveType.Triangles, 0, columns.Length * 6);
             }
 
+            /// <summary>
+            /// Renders the pixels.
+            /// </summary>
+            /// <param name="pixels">The pixels.</param>
+            /// <param name="screenWidth">Width of the screen.</param>
+            /// <param name="screenHeight">Height of the screen.</param>
             public void RenderPixels(CoordinateData[] pixels, int screenWidth, int screenHeight)
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit);

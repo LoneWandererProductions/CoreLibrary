@@ -57,15 +57,7 @@ namespace CoreBuilder
         public List<string> ProcessProject(string projectPath, string outputResourceFile = null,
             bool appendToExisting = false, bool replace = false)
         {
-            outputResourceFile ??= Path.Combine(projectPath, "ResourceFile.cs");
-
-            var files = Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
-                .Where(f => !f.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) &&
-                            !f.Contains("resource", StringComparison.OrdinalIgnoreCase) &&
-                            !f.Contains("const", StringComparison.OrdinalIgnoreCase) &&
-                            !f.Contains(@"\obj\", StringComparison.OrdinalIgnoreCase) &&
-                            !f.Contains(@"\bin\", StringComparison.OrdinalIgnoreCase) &&
-                            !f.Contains(@"\.vs\", StringComparison.OrdinalIgnoreCase));
+            var files = GetFiles(projectPath);
 
             var allExtractedStrings = new HashSet<string>();
             var changedFiles = new List<string>();
@@ -122,6 +114,23 @@ namespace CoreBuilder
             return changedFiles;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Simulates a dry-run of the resource extraction process, showing which files would be affected.
+        /// </summary>
+        /// <param name="projectPath">The root directory of the C# project.</param>
+        /// <returns>A formatted string of files that would be changed.</returns>
+        public string? DetectAffectedFiles(string projectPath)
+        {
+            var files = GetFiles(projectPath);
+
+            var affectedFiles = (from file in files where !ShouldIgnoreFile(file) let code = File.ReadAllText(file) let strings = ExtractStrings(code) where strings.Any() select Path.GetFullPath(file)).ToList();
+
+            return affectedFiles.Count == 0
+                ? null
+                : string.Join(Environment.NewLine, affectedFiles);
+        }
+
         /// <summary>
         ///     Determines whether the specified file should be ignored.
         /// </summary>
@@ -163,10 +172,7 @@ namespace CoreBuilder
                 .Select(l => l.Token.ValueText));
 
             // Add interpolated string literals (only the extracted format string)
-            foreach (var (_, extracted, _) in interpolatedStrings) // Discarding the `original` and `placeholders`
-            {
-                stringLiterals.Add(extracted); // Only adding the `extracted` part of the tuple
-            }
+            stringLiterals.AddRange(interpolatedStrings.Cast<string?>());
 
             return stringLiterals;
         }
@@ -299,6 +305,23 @@ namespace CoreBuilder
                                string.Join("\n", resourceEntries) + "\n}";
                 File.WriteAllText(outputFilePath, classDef);
             }
+        }
+
+
+        /// <summary>
+        /// Gets the files.
+        /// </summary>
+        /// <param name="projectPath">The project path.</param>
+        /// <returns>List of allowed files</returns>
+        private static IEnumerable<string> GetFiles(string projectPath)
+        {
+            return Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
+                .Where(f => !f.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) &&
+                            !f.Contains("resource", StringComparison.OrdinalIgnoreCase) &&
+                            !f.Contains("const", StringComparison.OrdinalIgnoreCase) &&
+                            !f.Contains(@"\obj\", StringComparison.OrdinalIgnoreCase) &&
+                            !f.Contains(@"\bin\", StringComparison.OrdinalIgnoreCase) &&
+                            !f.Contains(@"\.vs\", StringComparison.OrdinalIgnoreCase));
         }
     }
 }

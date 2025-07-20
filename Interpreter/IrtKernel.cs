@@ -206,6 +206,9 @@ namespace Interpreter
         /// <returns>Id of Register used, if nothing was found, return -1.</returns>
         internal static int CheckForKeyWord(string input, Dictionary<int, InCommand> com)
         {
+            if(com == null)
+                return IrtConst.Error;
+
             //just for the compare, make it to upper do not change the input string
             input = input.ToUpperInvariant();
 
