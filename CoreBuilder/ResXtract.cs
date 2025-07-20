@@ -161,28 +161,45 @@ namespace CoreBuilder
         /// <returns>Extracted strings.</returns>
         public static IEnumerable<string> ExtractStrings(string code)
         {
-            // Parse the code to a syntax tree
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var root = syntaxTree.GetRoot();
 
-            // List to hold the strings we find
             var stringLiterals = new List<string>();
 
-            // Extract interpolated strings first, ensuring we extract the correct parts
-            var interpolatedStrings = ExtractInterpolatedStrings(code);
-
-            // Add regular string literals from the syntax tree
+            // Extract regular string literals
             stringLiterals.AddRange(root.DescendantNodes()
                 .OfType<LiteralExpressionSyntax>()
                 .Where(l => l.IsKind(SyntaxKind.StringLiteralExpression))
                 .Select(l => l.Token.ValueText));
 
-            // Add interpolated string literals (only the extracted format string)
-            stringLiterals.AddRange(interpolatedStrings.Cast<string?>());
+            // Extract interpolated strings and convert them to format strings
+            var interpolatedStrings = root.DescendantNodes()
+                .OfType<InterpolatedStringExpressionSyntax>();
+
+            foreach (var interpolated in interpolatedStrings)
+            {
+                int placeholderIndex = 0;
+                string formatString = "";
+
+                foreach (var content in interpolated.Contents)
+                {
+                    switch (content)
+                    {
+                        case InterpolatedStringTextSyntax textPart:
+                            formatString += textPart.TextToken.ValueText;
+                            break;
+                        case InterpolationSyntax interpolationPart:
+                            formatString += "{" + placeholderIndex + "}";
+                            placeholderIndex++;
+                            break;
+                    }
+                }
+
+                stringLiterals.Add(formatString);
+            }
 
             return stringLiterals;
         }
-
 
         /// <summary>
         ///     Extracts the interpolated strings.

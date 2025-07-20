@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CoreBuilder;
@@ -67,6 +68,11 @@ namespace CoreBuilderTests
 
             // Act: Extract strings
             var extractedStrings = ResXtract.ExtractStrings(code);
+
+            foreach (var str in extractedStrings)
+            {
+                Trace.WriteLine($"Extracted: {str}");
+            }
 
             // Assert: Check if the interpolated string was extracted correctly
             Assert.IsTrue(extractedStrings.Contains("Error: {0} at {1}"));
