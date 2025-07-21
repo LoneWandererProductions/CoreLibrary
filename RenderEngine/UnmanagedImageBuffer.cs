@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
@@ -199,6 +200,25 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Sets the pixels simd.
+        /// </summary>
+        /// <param name="pixels">The pixels.</param>
+        public void SetPixelsSimd(List<(int x, int y, Color color)> pixels)
+        {
+            var changes = new (int x, int y, uint bgra)[pixels.Count];
+
+            for (int i = 0; i < pixels.Count; i++)
+            {
+                var (x, y, color) = pixels[i];
+                // Pack color into BGRA uint
+                uint packed = PackBgra(color.A, color.R, color.G, color.B);
+                changes[i] = (x, y, packed);
+            }
+
+            ApplyChanges(changes);
+        }
+
+        /// <summary>
         ///     Clears the entire buffer by setting every pixel to the specified color in BGRA order.
         ///     Uses SIMD vectorized operations for performance when available.
         /// </summary>
@@ -372,6 +392,7 @@ namespace RenderEngine
 
             return bmp;
         }
+
 
         /// <summary>
         ///     Froms the bitmap.

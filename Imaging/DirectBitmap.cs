@@ -352,39 +352,22 @@ namespace Imaging
             lock (_syncLock)
             {
                 var colorArgb = color.ToArgb();
-                var indices = idList.ToArray();
-                var vectorCount = Vector<int>.Count;
+                var indices = idList as int[] ?? idList.ToArray();
 
-                // Process the indices in chunks that fit within a Vector<int>
-                for (var i = 0; i < indices.Length; i += vectorCount)
+                // Process indices in chunks to improve CPU caching, scalar only
+                const int chunkSize = 1024;
+
+                for (int start = 0; start < indices.Length; start += chunkSize)
                 {
-                    var chunkSize = Math.Min(vectorCount, indices.Length - i);
+                    int length = Math.Min(chunkSize, indices.Length - start);
 
-                    // If the chunk size is equal to vectorCount, we can process the entire chunk in parallel using SIMD
-                    if (chunkSize == vectorCount)
+                    // Write pixels scalar but in tight loop for speed
+                    for (int i = start; i < start + length; i++)
                     {
-                        var indexVector = new Vector<int>(indices, i);
-
-                        // Use SIMD to write the color to multiple positions in the Bits array at once
-                        for (var j = 0; j < vectorCount; j++)
+                        int idx = indices[i];
+                        if (idx >= 0 && idx < Bits.Length)
                         {
-                            var index = indexVector[j];
-                            if (index < Bits.Length)
-                            {
-                                Bits[index] = colorArgb;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // For the remainder of the indices, process them individually
-                        for (var j = i; j < i + chunkSize; j++)
-                        {
-                            var index = indices[j];
-                            if (index < Bits.Length)
-                            {
-                                Bits[index] = colorArgb;
-                            }
+                            Bits[idx] = colorArgb;
                         }
                     }
                 }
@@ -422,54 +405,58 @@ namespace Imaging
         {
             lock (_syncLock)
             {
-                // Convert pixels to array for efficient indexing
-                var pixelArray = pixels.ToArray();
+                if (Bits == null || Bits.Length < Width * Height)
+                    throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
+
                 var vectorCount = Vector<int>.Count;
 
-                // Ensure Bits array is properly initialized
-                if (Bits == null || Bits.Length < Width * Height)
+                // Group pixels by row and color for SIMD-friendly horizontal runs
+                var grouped = pixels
+                    .GroupBy(p => (p.y, p.color))
+                    .ToList();
+
+                foreach (var group in grouped)
                 {
-                    throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
-                }
+                    int y = group.Key.y;
+                    var color = group.Key.color;
+                    int colorArgb = color.ToArgb();
+                    var colorVector = new Vector<int>(colorArgb);
 
-                // Convert the Bits array to a Span for more efficient access
-                var bitsSpan = new Span<int>(Bits);
+                    var xs = group.Select(p => p.x).OrderBy(x => x).ToArray();
 
-                // Process pixels in blocks using Span
-                for (var i = 0; i < pixelArray.Length; i += vectorCount)
-                {
-                    // Create slices for indices and colors
-                    var indices = new int[vectorCount];
-                    var colors = new int[vectorCount];
-
-                    // Load data into vectors (use Span slicing)
-                    for (var j = 0; j < vectorCount; j++)
+                    int i = 0;
+                    while (i < xs.Length)
                     {
-                        if (i + j < pixelArray.Length)
-                        {
-                            var (x, y, color) = pixelArray[i + j];
-                            indices[j] = x + (y * Width);
-                            colors[j] = color.ToArgb();
-                        }
-                        else
-                        {
-                            // Handle cases where the remaining elements are less than vectorCount
-                            indices[j] = 0;
-                            colors[j] = Color.Transparent.ToArgb(); // Default color
-                        }
-                    }
+                        int runStart = xs[i];
+                        int runLength = 1;
 
-                    // Write data to Bits array via Span slice
-                    for (var j = 0; j < vectorCount; j++)
-                    {
-                        if (i + j < pixelArray.Length)
+                        // Detect contiguous run of Xs
+                        while (i + runLength < xs.Length && xs[i + runLength] == runStart + runLength)
                         {
-                            Bits[indices[j]] = colors[j];
+                            runLength++;
                         }
+
+                        int startIndex = runStart + y * Width;
+                        int simdLength = runLength - (runLength % vectorCount);
+
+                        // SIMD write for full vector chunks
+                        for (int offset = 0; offset < simdLength; offset += vectorCount)
+                        {
+                            colorVector.CopyTo(Bits, startIndex + offset);
+                        }
+
+                        // Scalar write for remaining tail pixels
+                        for (int offset = simdLength; offset < runLength; offset++)
+                        {
+                            Bits[startIndex + offset] = colorArgb;
+                        }
+
+                        i += runLength;
                     }
                 }
             }
         }
+
 
         /// <summary>
         ///     Draws the vertical lines.

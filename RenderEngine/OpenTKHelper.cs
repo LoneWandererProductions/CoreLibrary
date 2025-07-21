@@ -8,11 +8,14 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
-using Imaging;
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 // For Marshal.Copy and memory management
 // For GL methods, ShaderType, TextureTarget, etc.
@@ -166,12 +169,12 @@ namespace RenderEngine
 
         internal static byte[] LoadTexture(string filePath, out int width, out int height)
         {
-            using var directBitmap = new DirectBitmap(filePath);
+            using var bitmap = new Bitmap(filePath);
 
-            width = directBitmap.Width;
-            height = directBitmap.Height;
+            width = bitmap.Width;
+            height = bitmap.Height;
 
-            return directBitmap.Bytes(); // Assuming `Bits` is byte[] in the updated DirectBitmap class
+            return GetBitmapBytes(bitmap);
         }
 
         internal static int LoadCubeMap(string[] filePaths)
@@ -192,10 +195,10 @@ namespace RenderEngine
                     continue;
                 }
 
-                using var directBitmap = new DirectBitmap(filePaths[i]);
-                var pixels = directBitmap.Bytes();
+                using var bitmap = new Bitmap(filePaths[i]);
+                var pixels = GetBitmapBytes(bitmap);
                 GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
-                    directBitmap.Width, directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                    bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,
@@ -213,6 +216,11 @@ namespace RenderEngine
         }
 
 
+        /// <summary>
+        /// Loads the texture.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>Id of texture.</returns>
         internal static int LoadTexture(string filePath)
         {
             // Check if the file exists
@@ -225,11 +233,11 @@ namespace RenderEngine
             var textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            using (var directBitmap = new DirectBitmap(filePath))
+            using (var bitmap = new Bitmap(filePath))
             {
-                var pixels = directBitmap.Bytes(); // Assuming `Bits` is a byte array in the updated DirectBitmap class
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, directBitmap.Width,
-                    directBitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
+                var pixels = GetBitmapBytes(bitmap);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width,
+                    bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
             }
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
@@ -241,5 +249,57 @@ namespace RenderEngine
 
             return textureId;
         }
+
+        /// <summary>
+        /// Gets the bitmap bytes.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Image data in byte format.</returns>
+        private static byte[] GetBitmapBytes(Bitmap bitmap)
+        {
+            int width = bitmap.Width;
+            int height = bitmap.Height;
+            var rect = new Rectangle(0, 0, width, height);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                int stride = bmpData.Stride;
+                int bytesPerPixel = 4;
+                var rawData = new byte[stride * height];
+                Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
+
+                // Create tightly packed buffer
+                var pixels = new byte[width * height * bytesPerPixel];
+
+                for (int y = 0; y < height; y++)
+                {
+                    int srcRow = y * stride;
+                    int dstRow = y * width * bytesPerPixel;
+
+                    for (int x = 0; x < width; x++)
+                    {
+                        int srcIndex = srcRow + x * bytesPerPixel;
+                        int dstIndex = dstRow + x * bytesPerPixel;
+
+                        // GDI+ Bitmap memory order for Format32bppArgb is actually BGRA, which matches OpenGL PixelFormat.Bgra,
+                        // so we copy bytes directly without channel swapping.
+
+                        // Copy BGRA directly:
+                        pixels[dstIndex + 0] = rawData[srcIndex + 0]; // Blue
+                        pixels[dstIndex + 1] = rawData[srcIndex + 1]; // Green
+                        pixels[dstIndex + 2] = rawData[srcIndex + 2]; // Red
+                        pixels[dstIndex + 3] = rawData[srcIndex + 3]; // Alpha
+                    }
+                }
+
+                return pixels;
+            }
+            finally
+            {
+                bitmap.UnlockBits(bmpData);
+            }
+        }
+
     }
 }

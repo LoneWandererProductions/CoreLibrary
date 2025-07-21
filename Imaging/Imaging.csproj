@@ -23,6 +23,7 @@
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
+    <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

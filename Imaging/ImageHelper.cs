@@ -282,11 +282,27 @@ namespace Imaging
         /// <param name="value">The value.</param>
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
-        /// <returns></returns>
+        /// <returns>Rounded value as int, here 0 to 255</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int Clamp(double value, double min = 0, double max = 255)
         {
             return (int)Math.Max(min, Math.Min(max, value));
+        }
+
+        /// <summary>
+        /// Clamps to byte.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <returns>Rounded value as byte.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static byte ClampToByte(double value, double min = 0, double max = 255)
+        {
+            if (value < min) return (byte)min;
+            if (value > max) return (byte)max;
+
+            return (byte)value;
         }
 
         /// <summary>

@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using RenderEngine;
 
 namespace Imaging
 {
@@ -199,66 +200,51 @@ namespace Imaging
         /// <param name="factor">The factor.</param>
         /// <param name="bias">The bias.</param>
         /// <returns>Image with applied filter</returns>
-        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
-            double bias = 0.0)
+        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
         {
-            // Initialize DirectBitmap instances
-            var source = new DirectBitmap(sourceBitmap);
-            var result = new DirectBitmap(source.Width, source.Height);
+            using var source = UnmanagedImageBuffer.FromBitmap(new Bitmap(sourceBitmap));
+            using var result = new UnmanagedImageBuffer(source.Width, source.Height);
 
-            var filterWidth = filterMatrix.GetLength(1);
-            var filterHeight = filterMatrix.GetLength(0);
-            var filterOffset = filterWidth / 2;
+            int filterWidth = filterMatrix.GetLength(1);
+            int filterHeight = filterMatrix.GetLength(0);
+            int filterOffset = filterWidth / 2;
 
-            // Prepare a list to store the pixels to set in bulk using SIMD
-            var pixelsToSet = new List<(int x, int y, Color color)>();
+            // Buffer changes as (x, y, packed BGRA uint)
+            var pixelsToSet = new List<(int x, int y, uint bgra)>();
 
-            for (var y = filterOffset; y < source.Height - filterOffset; y++)
-            for (var x = filterOffset; x < source.Width - filterOffset; x++)
+            for (int y = filterOffset; y < source.Height - filterOffset; y++)
             {
-                double blue = 0.0, green = 0.0, red = 0.0;
-
-                for (var filterY = 0; filterY < filterHeight; filterY++)
-                for (var filterX = 0; filterX < filterWidth; filterX++)
+                for (int x = filterOffset; x < source.Width - filterOffset; x++)
                 {
-                    var imageX = x + (filterX - filterOffset);
-                    var imageY = y + (filterY - filterOffset);
+                    double blue = 0, green = 0, red = 0;
 
-                    // Check bounds to prevent out-of-bounds access
-                    if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
+                    for (int filterY = 0; filterY < filterHeight; filterY++)
                     {
-                        continue;
+                        for (int filterX = 0; filterX < filterWidth; filterX++)
+                        {
+                            int imageX = x + (filterX - filterOffset);
+                            int imageY = y + (filterY - filterOffset);
+
+                            Color pixelColor = source.GetPixel(imageX, imageY);
+
+                            blue += pixelColor.B * filterMatrix[filterY, filterX];
+                            green += pixelColor.G * filterMatrix[filterY, filterX];
+                            red += pixelColor.R * filterMatrix[filterY, filterX];
+                        }
                     }
 
-                    var pixelColor = source.GetPixel(imageX, imageY);
+                    byte newBlue = ImageHelper.ClampToByte((factor * blue) + bias);
+                    byte newGreen = ImageHelper.ClampToByte((factor * green) + bias);
+                    byte newRed = ImageHelper.ClampToByte((factor * red) + bias);
 
-                    blue += pixelColor.B * filterMatrix[filterY, filterX];
-                    green += pixelColor.G * filterMatrix[filterY, filterX];
-                    red += pixelColor.R * filterMatrix[filterY, filterX];
+                    uint packedColor = UnmanagedImageBuffer.PackBgra(255, newRed, newGreen, newBlue);
+                    pixelsToSet.Add((x, y, packedColor));
                 }
-
-                var newBlue = ImageHelper.Clamp((factor * blue) + bias);
-                var newGreen = ImageHelper.Clamp((factor * green) + bias);
-                var newRed = ImageHelper.Clamp((factor * red) + bias);
-
-                // Instead of setting the pixel immediately, add it to the list
-                pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
             }
 
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
+            result.ApplyChanges(pixelsToSet.ToArray());
 
-                return result.Bitmap;
-            }
-            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
-            {
-                _imageSettings?.SetError(ex);
-                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
-            }
-
-            return null;
+            return result.ToBitmap();
         }
 
         /// <summary>
@@ -310,61 +296,43 @@ namespace Imaging
         /// <returns>Contour of an Image</returns>
         private static Bitmap ApplySobel(Bitmap originalImage)
         {
-            // Convert the original image to greyscale
             var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
-            // Create a new bitmap to store the result of Sobel operator
-            var resultImage = new Bitmap(greyscaleImage.Width, greyscaleImage.Height);
+            using var sourceBuffer = UnmanagedImageBuffer.FromBitmap(greyscaleImage);
+            using var resultBuffer = new UnmanagedImageBuffer(sourceBuffer.Width, sourceBuffer.Height);
 
-            // Prepare a list to store the pixels to set in bulk using SIMD
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            var dbmBase = new DirectBitmap(greyscaleImage);
-            var dbmResult = new DirectBitmap(resultImage);
-
-            // Apply Sobel operator to each pixel in the image
-            for (var x = 1; x < greyscaleImage.Width - 1; x++)
-            for (var y = 1; y < greyscaleImage.Height - 1; y++)
+            for (int y = 1; y < sourceBuffer.Height - 1; y++)
             {
-                var gx = 0;
-                var gy = 0;
-
-                // Convolve the image with the Sobel masks
-                for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+                for (int x = 1; x < sourceBuffer.Width - 1; x++)
                 {
-                    var pixel = dbmBase.GetPixel(x + i, y + j);
-                    int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
-                    // Sobel masks for gradient calculation
-                    gx += _imageSettings.SobelX[i + 1, j + 1] * grayValue;
-                    gy += _imageSettings.SobelY[i + 1, j + 1] * grayValue;
+                    int gx = 0;
+                    int gy = 0;
+
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        for (int i = -1; i <= 1; i++)
+                        {
+                            Color pixel = sourceBuffer.GetPixel(x + i, y + j);
+                            int grayValue = pixel.R; // grayscale, so R=G=B
+
+                            gx += _imageSettings.SobelX[j + 1, i + 1] * grayValue;
+                            gy += _imageSettings.SobelY[j + 1, i + 1] * grayValue;
+                        }
+                    }
+
+                    int magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
+                    magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2));
+
+                    var color = Color.FromArgb(magnitude, magnitude, magnitude);
+                    pixelsToSet.Add((x, y, color));
                 }
-
-                // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
-
-                // Normalize the magnitude to fit within the range of 0-255
-                magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
-
-                // Instead of setting the pixel immediately, add it to the list
-                pixelsToSet.Add((x, y, Color.FromArgb(magnitude, magnitude, magnitude)));
             }
 
-            // Use SIMD to set all the pixels in bulk
-            try
-            {
-                dbmResult.SetPixelsSimd(pixelsToSet);
-                dbmBase.Dispose();
+            resultBuffer.SetPixelsSimd(pixelsToSet);
 
-                return dbmResult.Bitmap;
-            }
-            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
-            {
-                _imageSettings?.SetError(ex);
-                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
-            }
-
-            return null;
+            return resultBuffer.ToBitmap();
         }
 
         /// <summary>
@@ -498,43 +466,62 @@ namespace Imaging
         /// <returns>Filtered Image</returns>
         private static Bitmap ApplySupersamplingAntialiasing(Bitmap image, int scale = 1)
         {
-            // Create a higher-resolution bitmap for supersampling
-            var scaledBitmap = new Bitmap(image.Width * scale, image.Height * scale);
+            if (scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale));
+
+            int scaledWidth = image.Width * scale;
+            int scaledHeight = image.Height * scale;
+
+            using var scaledBitmap = new Bitmap(scaledWidth, scaledHeight);
             using (var g = Graphics.FromImage(scaledBitmap))
             {
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(image, 0, 0, scaledBitmap.Width, scaledBitmap.Height);
+                g.DrawImage(image, 0, 0, scaledWidth, scaledHeight);
             }
 
-            // Downsample the high-resolution bitmap to the original size
-            var resultBitmap = new DirectBitmap(image.Width, image.Height);
-            var scaledDbm = new DirectBitmap(scaledBitmap);
+            using var scaledBuffer = UnmanagedImageBuffer.FromBitmap(scaledBitmap);
+            using var resultBuffer = new UnmanagedImageBuffer(image.Width, image.Height);
 
-            for (var y = 0; y < resultBitmap.Height; y++)
-            for (var x = 0; x < resultBitmap.Width; x++)
+            int bytesPerPixel = 4;
+            var scaledSpan = scaledBuffer.BufferSpan;
+            var resultSpan = resultBuffer.BufferSpan;
+
+            int scaleSquared = scale * scale;
+
+            for (int y = 0; y < image.Height; y++)
             {
-                var startX = x * scale;
-                var startY = y * scale;
-
-                // Average the color values of the sample region
-                int sumR = 0, sumG = 0, sumB = 0;
-                for (var dy = 0; dy < scale; dy++)
-                for (var dx = 0; dx < scale; dx++)
+                for (int x = 0; x < image.Width; x++)
                 {
-                    var pixelColor = scaledDbm.GetPixel(startX + dx, startY + dy);
-                    sumR += pixelColor.R;
-                    sumG += pixelColor.G;
-                    sumB += pixelColor.B;
+                    int sumR = 0, sumG = 0, sumB = 0;
+
+                    for (int dy = 0; dy < scale; dy++)
+                    {
+                        int scaledY = y * scale + dy;
+                        int rowStart = scaledY * scaledWidth * bytesPerPixel;
+
+                        for (int dx = 0; dx < scale; dx++)
+                        {
+                            int scaledX = x * scale + dx;
+                            int offset = rowStart + scaledX * bytesPerPixel;
+
+                            sumB += scaledSpan[offset];
+                            sumG += scaledSpan[offset + 1];
+                            sumR += scaledSpan[offset + 2];
+                        }
+                    }
+
+                    byte avgR = (byte)(sumR / scaleSquared);
+                    byte avgG = (byte)(sumG / scaleSquared);
+                    byte avgB = (byte)(sumB / scaleSquared);
+
+                    int resultOffset = (y * image.Width + x) * bytesPerPixel;
+                    resultSpan[resultOffset] = avgB;
+                    resultSpan[resultOffset + 1] = avgG;
+                    resultSpan[resultOffset + 2] = avgR;
+                    resultSpan[resultOffset + 3] = 255; // full alpha
                 }
-
-                var avgR = sumR / (scale * scale);
-                var avgG = sumG / (scale * scale);
-                var avgB = sumB / (scale * scale);
-
-                resultBitmap.SetPixel(x, y, Color.FromArgb(avgR, avgG, avgB));
             }
 
-            return resultBitmap.Bitmap;
+            return resultBuffer.ToBitmap();
         }
 
         /// <summary>
@@ -687,9 +674,7 @@ namespace Imaging
             }
 
             var mean = sum / count;
-            var variance = (sumSquared / count) - (mean * mean);
-
-            return variance;
+            return (double)((sumSquared / count) - (mean * mean));
         }
 
         /// <summary>
