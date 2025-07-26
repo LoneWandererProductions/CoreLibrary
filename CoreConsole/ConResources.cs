@@ -102,8 +102,6 @@ namespace CoreConsole
 
         internal const string HeaderTryrunWouldAffect = "Header try run would affect: ";
 
-        internal const string ResxtractTryrunNoChanges = "Resxtract try run, no results.";
-
         internal const string ResxtractTryrunWouldAffect = "Resxtract try run, would affect: ";
 
         /// <summary>
@@ -174,7 +172,7 @@ namespace CoreConsole
         /// <summary>
         ///     The replace feedback
         /// </summary>
-        internal static readonly UserFeedback ReplaceFeedback = new()
+        private static readonly UserFeedback ReplaceFeedback = new()
         {
             Before = true,
             Message = "Do you want to commit the following changes?",

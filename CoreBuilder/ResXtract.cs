@@ -178,8 +178,8 @@ namespace CoreBuilder
 
             foreach (var interpolated in interpolatedStrings)
             {
-                int placeholderIndex = 0;
-                string formatString = "";
+                var placeholderIndex = 0;
+                var formatString = "";
 
                 foreach (var content in interpolated.Contents)
                 {

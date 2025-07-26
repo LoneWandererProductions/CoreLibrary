@@ -290,7 +290,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Clamps to byte.
+        ///     Clamps to byte.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="min">The minimum.</param>
@@ -299,8 +299,15 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static byte ClampToByte(double value, double min = 0, double max = 255)
         {
-            if (value < min) return (byte)min;
-            if (value > max) return (byte)max;
+            if (value < min)
+            {
+                return (byte)min;
+            }
+
+            if (value > max)
+            {
+                return (byte)max;
+            }
 
             return (byte)value;
         }

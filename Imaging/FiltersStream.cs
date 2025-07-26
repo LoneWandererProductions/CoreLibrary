@@ -200,32 +200,33 @@ namespace Imaging
         /// <param name="factor">The factor.</param>
         /// <param name="bias">The bias.</param>
         /// <returns>Image with applied filter</returns>
-        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
+        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+            double bias = 0.0)
         {
             using var source = UnmanagedImageBuffer.FromBitmap(new Bitmap(sourceBitmap));
             using var result = new UnmanagedImageBuffer(source.Width, source.Height);
 
-            int filterWidth = filterMatrix.GetLength(1);
-            int filterHeight = filterMatrix.GetLength(0);
-            int filterOffset = filterWidth / 2;
+            var filterWidth = filterMatrix.GetLength(1);
+            var filterHeight = filterMatrix.GetLength(0);
+            var filterOffset = filterWidth / 2;
 
             // Buffer changes as (x, y, packed BGRA uint)
             var pixelsToSet = new List<(int x, int y, uint bgra)>();
 
-            for (int y = filterOffset; y < source.Height - filterOffset; y++)
+            for (var y = filterOffset; y < source.Height - filterOffset; y++)
             {
-                for (int x = filterOffset; x < source.Width - filterOffset; x++)
+                for (var x = filterOffset; x < source.Width - filterOffset; x++)
                 {
                     double blue = 0, green = 0, red = 0;
 
-                    for (int filterY = 0; filterY < filterHeight; filterY++)
+                    for (var filterY = 0; filterY < filterHeight; filterY++)
                     {
-                        for (int filterX = 0; filterX < filterWidth; filterX++)
+                        for (var filterX = 0; filterX < filterWidth; filterX++)
                         {
-                            int imageX = x + (filterX - filterOffset);
-                            int imageY = y + (filterY - filterOffset);
+                            var imageX = x + (filterX - filterOffset);
+                            var imageY = y + (filterY - filterOffset);
 
-                            Color pixelColor = source.GetPixel(imageX, imageY);
+                            var pixelColor = source.GetPixel(imageX, imageY);
 
                             blue += pixelColor.B * filterMatrix[filterY, filterX];
                             green += pixelColor.G * filterMatrix[filterY, filterX];
@@ -233,11 +234,11 @@ namespace Imaging
                         }
                     }
 
-                    byte newBlue = ImageHelper.ClampToByte((factor * blue) + bias);
-                    byte newGreen = ImageHelper.ClampToByte((factor * green) + bias);
-                    byte newRed = ImageHelper.ClampToByte((factor * red) + bias);
+                    var newBlue = ImageHelper.ClampToByte((factor * blue) + bias);
+                    var newGreen = ImageHelper.ClampToByte((factor * green) + bias);
+                    var newRed = ImageHelper.ClampToByte((factor * red) + bias);
 
-                    uint packedColor = UnmanagedImageBuffer.PackBgra(255, newRed, newGreen, newBlue);
+                    var packedColor = UnmanagedImageBuffer.PackBgra(255, newRed, newGreen, newBlue);
                     pixelsToSet.Add((x, y, packedColor));
                 }
             }
@@ -303,18 +304,18 @@ namespace Imaging
 
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            for (int y = 1; y < sourceBuffer.Height - 1; y++)
+            for (var y = 1; y < sourceBuffer.Height - 1; y++)
             {
-                for (int x = 1; x < sourceBuffer.Width - 1; x++)
+                for (var x = 1; x < sourceBuffer.Width - 1; x++)
                 {
-                    int gx = 0;
-                    int gy = 0;
+                    var gx = 0;
+                    var gy = 0;
 
-                    for (int j = -1; j <= 1; j++)
+                    for (var j = -1; j <= 1; j++)
                     {
-                        for (int i = -1; i <= 1; i++)
+                        for (var i = -1; i <= 1; i++)
                         {
-                            Color pixel = sourceBuffer.GetPixel(x + i, y + j);
+                            var pixel = sourceBuffer.GetPixel(x + i, y + j);
                             int grayValue = pixel.R; // grayscale, so R=G=B
 
                             gx += _imageSettings.SobelX[j + 1, i + 1] * grayValue;
@@ -322,7 +323,7 @@ namespace Imaging
                         }
                     }
 
-                    int magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
+                    var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
                     magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2));
 
                     var color = Color.FromArgb(magnitude, magnitude, magnitude);
@@ -466,10 +467,13 @@ namespace Imaging
         /// <returns>Filtered Image</returns>
         private static Bitmap ApplySupersamplingAntialiasing(Bitmap image, int scale = 1)
         {
-            if (scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale));
+            if (scale <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scale));
+            }
 
-            int scaledWidth = image.Width * scale;
-            int scaledHeight = image.Height * scale;
+            var scaledWidth = image.Width * scale;
+            var scaledHeight = image.Height * scale;
 
             using var scaledBitmap = new Bitmap(scaledWidth, scaledHeight);
             using (var g = Graphics.FromImage(scaledBitmap))
@@ -481,27 +485,27 @@ namespace Imaging
             using var scaledBuffer = UnmanagedImageBuffer.FromBitmap(scaledBitmap);
             using var resultBuffer = new UnmanagedImageBuffer(image.Width, image.Height);
 
-            int bytesPerPixel = 4;
+            var bytesPerPixel = 4;
             var scaledSpan = scaledBuffer.BufferSpan;
             var resultSpan = resultBuffer.BufferSpan;
 
-            int scaleSquared = scale * scale;
+            var scaleSquared = scale * scale;
 
-            for (int y = 0; y < image.Height; y++)
+            for (var y = 0; y < image.Height; y++)
             {
-                for (int x = 0; x < image.Width; x++)
+                for (var x = 0; x < image.Width; x++)
                 {
                     int sumR = 0, sumG = 0, sumB = 0;
 
-                    for (int dy = 0; dy < scale; dy++)
+                    for (var dy = 0; dy < scale; dy++)
                     {
-                        int scaledY = y * scale + dy;
-                        int rowStart = scaledY * scaledWidth * bytesPerPixel;
+                        var scaledY = (y * scale) + dy;
+                        var rowStart = scaledY * scaledWidth * bytesPerPixel;
 
-                        for (int dx = 0; dx < scale; dx++)
+                        for (var dx = 0; dx < scale; dx++)
                         {
-                            int scaledX = x * scale + dx;
-                            int offset = rowStart + scaledX * bytesPerPixel;
+                            var scaledX = (x * scale) + dx;
+                            var offset = rowStart + (scaledX * bytesPerPixel);
 
                             sumB += scaledSpan[offset];
                             sumG += scaledSpan[offset + 1];
@@ -509,11 +513,11 @@ namespace Imaging
                         }
                     }
 
-                    byte avgR = (byte)(sumR / scaleSquared);
-                    byte avgG = (byte)(sumG / scaleSquared);
-                    byte avgB = (byte)(sumB / scaleSquared);
+                    var avgR = (byte)(sumR / scaleSquared);
+                    var avgG = (byte)(sumG / scaleSquared);
+                    var avgB = (byte)(sumB / scaleSquared);
 
-                    int resultOffset = (y * image.Width + x) * bytesPerPixel;
+                    var resultOffset = ((y * image.Width) + x) * bytesPerPixel;
                     resultSpan[resultOffset] = avgB;
                     resultSpan[resultOffset + 1] = avgG;
                     resultSpan[resultOffset + 2] = avgR;
@@ -674,7 +678,7 @@ namespace Imaging
             }
 
             var mean = sum / count;
-            return (double)((sumSquared / count) - (mean * mean));
+            return (sumSquared / count) - (mean * mean);
         }
 
         /// <summary>

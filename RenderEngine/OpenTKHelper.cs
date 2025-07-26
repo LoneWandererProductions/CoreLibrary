@@ -217,7 +217,7 @@ namespace RenderEngine
 
 
         /// <summary>
-        /// Loads the texture.
+        ///     Loads the texture.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Id of texture.</returns>
@@ -251,36 +251,37 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Gets the bitmap bytes.
+        ///     Gets the bitmap bytes.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Image data in byte format.</returns>
         private static byte[] GetBitmapBytes(Bitmap bitmap)
         {
-            int width = bitmap.Width;
-            int height = bitmap.Height;
+            var width = bitmap.Width;
+            var height = bitmap.Height;
             var rect = new Rectangle(0, 0, width, height);
-            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             try
             {
-                int stride = bmpData.Stride;
-                int bytesPerPixel = 4;
+                var stride = bmpData.Stride;
+                var bytesPerPixel = 4;
                 var rawData = new byte[stride * height];
                 Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
 
                 // Create tightly packed buffer
                 var pixels = new byte[width * height * bytesPerPixel];
 
-                for (int y = 0; y < height; y++)
+                for (var y = 0; y < height; y++)
                 {
-                    int srcRow = y * stride;
-                    int dstRow = y * width * bytesPerPixel;
+                    var srcRow = y * stride;
+                    var dstRow = y * width * bytesPerPixel;
 
-                    for (int x = 0; x < width; x++)
+                    for (var x = 0; x < width; x++)
                     {
-                        int srcIndex = srcRow + x * bytesPerPixel;
-                        int dstIndex = dstRow + x * bytesPerPixel;
+                        var srcIndex = srcRow + (x * bytesPerPixel);
+                        var dstIndex = dstRow + (x * bytesPerPixel);
 
                         // GDI+ Bitmap memory order for Format32bppArgb is actually BGRA, which matches OpenGL PixelFormat.Bgra,
                         // so we copy bytes directly without channel swapping.
@@ -300,6 +301,5 @@ namespace RenderEngine
                 bitmap.UnlockBits(bmpData);
             }
         }
-
     }
 }

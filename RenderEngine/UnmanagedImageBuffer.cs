@@ -200,18 +200,18 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Sets the pixels simd.
+        ///     Sets the pixels simd.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         public void SetPixelsSimd(List<(int x, int y, Color color)> pixels)
         {
             var changes = new (int x, int y, uint bgra)[pixels.Count];
 
-            for (int i = 0; i < pixels.Count; i++)
+            for (var i = 0; i < pixels.Count; i++)
             {
                 var (x, y, color) = pixels[i];
                 // Pack color into BGRA uint
-                uint packed = PackBgra(color.A, color.R, color.G, color.B);
+                var packed = PackBgra(color.A, color.R, color.G, color.B);
                 changes[i] = (x, y, packed);
             }
 

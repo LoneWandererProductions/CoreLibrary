@@ -6,6 +6,7 @@
     <Authors>Wayfarer</Authors>
     <Company>Lone Wanderer Productions</Company>
     <Copyright>Lone Wanderer Productions</Copyright>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

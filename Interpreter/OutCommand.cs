@@ -61,7 +61,7 @@ namespace Interpreter
         /// <value>
         ///     The extension command.
         /// </value>
-        public ExtensionCommands ExtensionCommand { get; internal init; }
+        public ExtensionCommands? ExtensionCommand { get; internal init; }
 
         /// <summary>
         ///     The actual result returned by the command at runtime.

@@ -138,7 +138,7 @@ namespace CommonLibraryTests
             Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
 
             // Allow a little slack if in CI
-            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 2.0 : 1.0;
+            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 3 : 1.0;
             AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
         }
 

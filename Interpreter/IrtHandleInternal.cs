@@ -111,7 +111,7 @@ namespace Interpreter
         private void HandleInternalCommands(int? command, IReadOnlyList<string> parameter)
         {
             IrtFeedback feedbackReceiver;
-            var guid = String.Empty;
+            string guid;
 
             switch (command)
             {

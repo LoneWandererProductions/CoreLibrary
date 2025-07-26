@@ -357,14 +357,14 @@ namespace Imaging
                 // Process indices in chunks to improve CPU caching, scalar only
                 const int chunkSize = 1024;
 
-                for (int start = 0; start < indices.Length; start += chunkSize)
+                for (var start = 0; start < indices.Length; start += chunkSize)
                 {
-                    int length = Math.Min(chunkSize, indices.Length - start);
+                    var length = Math.Min(chunkSize, indices.Length - start);
 
                     // Write pixels scalar but in tight loop for speed
-                    for (int i = start; i < start + length; i++)
+                    for (var i = start; i < start + length; i++)
                     {
-                        int idx = indices[i];
+                        var idx = indices[i];
                         if (idx >= 0 && idx < Bits.Length)
                         {
                             Bits[idx] = colorArgb;
@@ -406,7 +406,9 @@ namespace Imaging
             lock (_syncLock)
             {
                 if (Bits == null || Bits.Length < Width * Height)
+                {
                     throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
+                }
 
                 var vectorCount = Vector<int>.Count;
 
@@ -417,18 +419,18 @@ namespace Imaging
 
                 foreach (var group in grouped)
                 {
-                    int y = group.Key.y;
+                    var y = group.Key.y;
                     var color = group.Key.color;
-                    int colorArgb = color.ToArgb();
+                    var colorArgb = color.ToArgb();
                     var colorVector = new Vector<int>(colorArgb);
 
                     var xs = group.Select(p => p.x).OrderBy(x => x).ToArray();
 
-                    int i = 0;
+                    var i = 0;
                     while (i < xs.Length)
                     {
-                        int runStart = xs[i];
-                        int runLength = 1;
+                        var runStart = xs[i];
+                        var runLength = 1;
 
                         // Detect contiguous run of Xs
                         while (i + runLength < xs.Length && xs[i + runLength] == runStart + runLength)
@@ -436,17 +438,17 @@ namespace Imaging
                             runLength++;
                         }
 
-                        int startIndex = runStart + y * Width;
-                        int simdLength = runLength - (runLength % vectorCount);
+                        var startIndex = runStart + (y * Width);
+                        var simdLength = runLength - (runLength % vectorCount);
 
                         // SIMD write for full vector chunks
-                        for (int offset = 0; offset < simdLength; offset += vectorCount)
+                        for (var offset = 0; offset < simdLength; offset += vectorCount)
                         {
                             colorVector.CopyTo(Bits, startIndex + offset);
                         }
 
                         // Scalar write for remaining tail pixels
-                        for (int offset = simdLength; offset < runLength; offset++)
+                        for (var offset = simdLength; offset < runLength; offset++)
                         {
                             Bits[startIndex + offset] = colorArgb;
                         }

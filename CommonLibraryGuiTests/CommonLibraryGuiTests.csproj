@@ -10,6 +10,8 @@
     <Copyright>Lone Wanderer Productions</Copyright>
 
     <Authors>Wayfarer</Authors>
+
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

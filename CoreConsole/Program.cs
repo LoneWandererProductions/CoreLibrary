@@ -25,7 +25,7 @@ namespace CoreConsole
         /// <summary>
         ///     The prompt
         /// </summary>
-        private static Prompt _prompt;
+        private static Prompt? _prompt;
 
         /// <summary>
         ///     The console lock
@@ -45,7 +45,7 @@ namespace CoreConsole
         /// <summary>
         ///     The extension
         /// </summary>
-        private static ExtensionCommands _Ext;
+        private static ExtensionCommands? _ext;
 
         /// <summary>
         ///     Defines the entry point of the application.
@@ -119,8 +119,8 @@ namespace CoreConsole
         private static void Initiate()
         {
             _prompt = new Prompt();
-            _prompt.SendLogs += SendLogs;
-            _prompt.SendCommands += SendCommands;
+            _prompt.SendLogs += SendLogs!;
+            _prompt.SendCommands += SendCommands!;
             _prompt.HandleFeedback += PromptHandleFeedback;
             _prompt.Callback(ConResources.MessageInfo);
             _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode, ConResources.ExtensionCommands);
@@ -137,7 +137,7 @@ namespace CoreConsole
                     {
                         _prompt.Callback(ConResources.ResourceInput);
                         var input = Console.ReadLine();
-                        _prompt.ConsoleInput(input);
+                        _prompt.ConsoleInput(input!);
                     }
                     else
                     {
@@ -161,7 +161,7 @@ namespace CoreConsole
                 _isEventTriggered = true;
                 // Simulate event processing
                 _prompt.Callback(ConResources.ResourceEventWait);
-                HandleCommands(e);
+                _ = HandleCommandsAsync(e);
                 _prompt.Callback(ConResources.ResourceEventProcessing);
                 _isEventTriggered = false;
             }
@@ -171,7 +171,7 @@ namespace CoreConsole
         ///     Handles the commands.
         /// </summary>
         /// <param name="outCommand">The out command.</param>
-        private static void HandleCommands(OutCommand outCommand)
+        private static async Task HandleCommandsAsync(OutCommand outCommand)
         {
             switch (outCommand.Command)
             {
@@ -191,7 +191,7 @@ namespace CoreConsole
 
             if (outCommand.ExtensionUsed)
             {
-                CheckExtension(outCommand);
+                await CheckExtension(outCommand);
             }
 
             string result;
@@ -237,7 +237,7 @@ namespace CoreConsole
             }
 
             _currentCommand = outCommand;
-            _Ext = outCommand.ExtensionCommand;
+            _ext = outCommand.ExtensionCommand;
 
             switch (outCommand.Command)
             {
@@ -274,15 +274,21 @@ namespace CoreConsole
             {
                 case AvailableFeedback.Yes:
                 {
-                    var reconstructed = _Ext.ExtensionParameter?.Count > 0
-                        ? $"{_Ext.BaseCommand}({string.Join(",", _Ext.ExtensionParameter)})"
-                        : $"{_Ext.BaseCommand}";
+                    var reconstructed = _ext.ExtensionParameter?.Count > 0
+                        ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
+                        : $"{_ext.BaseCommand}";
 
                     _prompt.ConsoleInput(reconstructed);
                     break;
                 }
                 case AvailableFeedback.No:
                     _prompt.Callback("Operation canceled");
+                    break;
+                case AvailableFeedback.Cancel:
+                    _prompt.Callback("Operation canceled");
+                    break;
+                default:
+                    _prompt.Callback(ConResources.InformationInvalidArgument);
                     break;
             }
         }
