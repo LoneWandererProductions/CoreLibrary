@@ -144,8 +144,8 @@ namespace CommonLibraryTests
         public void GetFilesByExtensionFullPathInvalidPathReturnsNull()
         {
             // Arrange
-            var invalidPath = "invalid_path";
-            var extension = ".dll";
+            const string invalidPath = "invalid_path";
+            const string extension = ".dll";
 
             // Act
             var result = InvokePrivateStaticMethod<IEnumerable<string>>(typeof(PluginLoad),

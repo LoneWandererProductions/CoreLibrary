@@ -268,9 +268,9 @@ namespace Imaging
             var cache = CifImage[oldColor];
             CifImage.Remove(oldColor);
 
-            if (CifImage.ContainsKey(newColor))
+            if (CifImage.TryGetValue(newColor, out var value))
             {
-                CifImage[newColor].UnionWith(cache);
+                value.UnionWith(cache);
             }
             else
             {

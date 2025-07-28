@@ -916,7 +916,7 @@ namespace InterpreteTests
         public void FindFirstKeywordIndexFindsKeywordWithOpenParenthesis()
         {
             // Arrange
-            var keyword = "if";
+            const string keyword = "if";
 
             // Cases where 'if' is followed by '(' or '{' (possibly with spaces)
             var inputsWithMatch = new[]

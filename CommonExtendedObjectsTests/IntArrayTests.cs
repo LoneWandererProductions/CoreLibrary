@@ -155,7 +155,7 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"int[] (managed) time: {nativeTime} ms");
 
             // === Sanity Check ===
-            var expected = (long)(Size - 1) * Size / 2;
+            const long expected = (long)(Size - 1) * Size / 2;
             Assert.AreEqual(expected, intArraySum, "IntArray sum mismatch");
             Assert.AreEqual(expected, nativeSum, "int[] sum mismatch");
 

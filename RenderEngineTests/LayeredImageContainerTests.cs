@@ -18,8 +18,8 @@ namespace RenderEngineTests
         [TestMethod]
         public void Composite_MergesLayersWithAlpha()
         {
-            var width = 1;
-            var height = 1;
+            const int width = 1;
+            const int height = 1;
 
             var container = new LayeredImageContainer(width, height);
 

@@ -23,7 +23,7 @@ namespace InterpreteTests
         [TestMethod]
         public void RefineSemanticStructureSplitsIfElse()
         {
-            var input = @"
+            const string input = @"
         Label(one);
         Print(""hello world"");
         goto(one);

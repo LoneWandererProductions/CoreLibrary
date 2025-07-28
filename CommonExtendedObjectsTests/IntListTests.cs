@@ -340,7 +340,7 @@ namespace CommonExtendedObjectsTests
                 unmanaged.Add(i);
             }
 
-            var removeCount = 1000;
+            const int removeCount = 1000;
             var removeIndex = list.Count / 2; // fixed middle index
 
             var swList = Stopwatch.StartNew();

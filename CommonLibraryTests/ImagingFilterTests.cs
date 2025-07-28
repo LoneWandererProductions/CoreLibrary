@@ -37,7 +37,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var input = CreateTestBitmap(10, 10, Color.Red); // A simple color, the output should still be red
-            var stepWidth = 2;
+            const int stepWidth = 2;
 
             // Act
             var result = _render.Pixelate(input, stepWidth);
@@ -54,7 +54,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var input = CreateTestBitmap(10, 10, Color.Red);
-            var stepWidth = 5;
+            const int stepWidth = 5;
 
             // Act
             var result = _render.Pixelate(input, stepWidth);
@@ -81,7 +81,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var input = CreateTestBitmap(3, 3, Color.Green);
-            var stepWidth = 10; // Step width larger than the image dimensions
+            const int stepWidth = 10; // Step width larger than the image dimensions
 
             // Act
             var result = _render.Pixelate(input, stepWidth);

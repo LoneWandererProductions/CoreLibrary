@@ -196,7 +196,7 @@ namespace CommonLibraryTests
         {
             _bitmapImage = new DirectBitmapImage(1, 1);
             // Define the expected packed color
-            var expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
+            const uint expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
 
             // Define the color transformation matrix for grayscale
             double[,] colorMatrix =

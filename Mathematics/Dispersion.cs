@@ -177,7 +177,7 @@ namespace Mathematics
         /// </summary>
         private void CalculateMedian()
         {
-            var sortedList = Row.OrderBy(x => x).ToList();
+            var sortedList = Row.Order().ToList();
             var n = sortedList.Count;
             Median = n % 2 == 0 ? (sortedList[(n / 2) - 1] + sortedList[n / 2]) / 2.0 : sortedList[n / 2];
         }

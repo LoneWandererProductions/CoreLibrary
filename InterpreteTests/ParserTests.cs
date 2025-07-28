@@ -25,7 +25,7 @@ namespace InterpreteTests
         [TestMethod]
         public void ParseSimpleCommandsReturnsCorrectCategoriesAndValues()
         {
-            var input = @"
+            const string input = @"
         Label(one);
         Print(""hello world"");
         goto(one);
@@ -118,7 +118,7 @@ namespace InterpreteTests
         [TestMethod]
         public void ParseHandlesOnlyCommentsSkipsThem()
         {
-            var input = @"
+            const string input = @"
                         -- comment line one
                         -- another comment
                         -- a third one
@@ -145,7 +145,7 @@ namespace InterpreteTests
         [TestMethod]
         public void ParseHandlesChainedMethodCallsAsSingleCommand()
         {
-            var input = @"some().thing().do();";
+            const string input = @"some().thing().do();";
             var parser = new Parser(new Lexer(input).Tokenize());
             var result = parser.ParseIntoCategorizedBlocks();
 
@@ -165,7 +165,7 @@ namespace InterpreteTests
         [TestMethod]
         public void ParseHandlesSpacingInsideParentheses()
         {
-            var input = @"Print(hello   world);";
+            const string input = @"Print(hello   world);";
             var parser = new Parser(new Lexer(input).Tokenize());
             var result = parser.ParseIntoCategorizedBlocks();
 

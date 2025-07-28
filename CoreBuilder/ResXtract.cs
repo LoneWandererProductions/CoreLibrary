@@ -202,48 +202,6 @@ namespace CoreBuilder
         }
 
         /// <summary>
-        ///     Extracts the interpolated strings.
-        /// </summary>
-        /// <param name="code">The code.</param>
-        /// <returns>List of string that needs replacing</returns>
-        private static IEnumerable<(string original, string extracted, List<string> placeholders)>
-            ExtractInterpolatedStrings(string code)
-        {
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var root = syntaxTree.GetRoot();
-
-            var interpolatedStrings = new List<(string, string, List<string>)>();
-
-            foreach (var node in root.DescendantNodes().OfType<InterpolatedStringExpressionSyntax>())
-            {
-                var staticParts = new List<string>();
-                var placeholders = new List<string>();
-
-                var index = 0;
-                foreach (var content in node.Contents)
-                {
-                    switch (content)
-                    {
-                        case InterpolatedStringTextSyntax textPart:
-                            staticParts.Add(textPart.TextToken.ValueText);
-                            break;
-                        case InterpolationSyntax exprPart:
-                            staticParts.Add($"{{{index}}}");
-                            placeholders.Add(exprPart.Expression.ToString());
-                            index++;
-                            break;
-                    }
-                }
-
-                var extractedString = string.Concat(staticParts);
-                interpolatedStrings.Add((node.ToString(), extractedString, placeholders));
-            }
-
-            return interpolatedStrings;
-        }
-
-
-        /// <summary>
         ///     Generates the resource map.
         ///     Generates a mapping of string to Resource key
         /// </summary>
@@ -329,7 +287,6 @@ namespace CoreBuilder
                 File.WriteAllText(outputFilePath, classDef);
             }
         }
-
 
         /// <summary>
         ///     Gets the files.

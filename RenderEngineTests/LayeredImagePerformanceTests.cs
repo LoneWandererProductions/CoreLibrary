@@ -24,7 +24,7 @@ namespace RenderEngineTests
             const int layers = 10;
             const int iterations = 50;
 
-            var bufferSize = width * height * 4;
+            const int bufferSize = width * height * 4;
             var tempBuffer = new byte[bufferSize];
 
             // Warm-up

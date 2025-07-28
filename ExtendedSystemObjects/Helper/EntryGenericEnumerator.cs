@@ -60,7 +60,7 @@ namespace ExtendedSystemObjects.Helper
         /// <value>
         /// The current.
         /// </value>
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
         /// <summary>
         /// Advances the enumerator to the next element of the collection.

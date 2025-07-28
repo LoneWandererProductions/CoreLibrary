@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
  * FILE:        UnmanagedMemoryHelperTests.cs
@@ -19,7 +19,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void Allocate_Reallocate_Free_Memory()
         {
-            var count = 10;
+            const int count = 10;
 
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             Assert.AreNotEqual(IntPtr.Zero, ptr);
@@ -34,7 +34,7 @@ namespace CommonExtendedObjectsTests
                 }
 
                 // Reallocate to bigger size
-                var newCount = 20;
+                const int newCount = 20;
                 var newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
                 Assert.AreNotEqual(IntPtr.Zero, newPtr);
                 ptr = newPtr;
@@ -68,7 +68,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void Clear_SetsMemoryToZero()
         {
-            var count = 5;
+            const int count = 5;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             try
             {
@@ -94,8 +94,8 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void ShiftRight_MovesElementsCorrectly()
         {
-            var count = 5;
-            var capacity = 10;
+            const int count = 5;
+            const int capacity = 10;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(capacity);
             try
             {
@@ -126,7 +126,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void ShiftLeft_MovesElementsCorrectly()
         {
-            var count = 5;
+            const int count = 5;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             try
             {
@@ -154,7 +154,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void Fill_FillsMemoryWithValue()
         {
-            var count = 4;
+            const int count = 4;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             try
             {
@@ -175,7 +175,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void IndexOf_FindsValueCorrectly()
         {
-            var count = 5;
+            const int count = 5;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             try
             {
@@ -201,7 +201,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void Swap_SwapsElementsCorrectly()
         {
-            var count = 3;
+            const int count = 3;
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
             try
             {

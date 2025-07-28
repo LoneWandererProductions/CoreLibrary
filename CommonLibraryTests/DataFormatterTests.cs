@@ -189,7 +189,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(3, layers.Count, "There should be three layers.");
 
             // Check the content of the first layer
-            var expectedFirstLayer = "Name,Age,Location\nAlice,30,Wonderland\nBob,25,Builderland";
+            const string expectedFirstLayer = "Name,Age,Location\nAlice,30,Wonderland\nBob,25,Builderland";
             var actualFirstLayer = string.Join("\n", layers[0]);
             Assert.AreEqual(
                 NormalizeLineEndings(expectedFirstLayer).TrimEnd(),
@@ -198,7 +198,7 @@ namespace CommonLibraryTests
             );
 
             // Check the content of the second layer
-            var expectedSecondLayer = "Name,Occupation\nCharlie,Engineer\nDana,Artist";
+            const string expectedSecondLayer = "Name,Occupation\nCharlie,Engineer\nDana,Artist";
             var actualSecondLayer = string.Join("\n", layers[1]);
             Assert.AreEqual(
                 NormalizeLineEndings(expectedSecondLayer).TrimEnd(),
@@ -207,7 +207,7 @@ namespace CommonLibraryTests
             );
 
             // Check the content of the third layer
-            var expectedThirdLayer = "Name,Score\nEve,95\nFrank,88";
+            const string expectedThirdLayer = "Name,Score\nEve,95\nFrank,88";
             var actualThirdLayer = string.Join("\n", layers[2]);
             Assert.AreEqual(
                 NormalizeLineEndings(expectedThirdLayer).TrimEnd(),

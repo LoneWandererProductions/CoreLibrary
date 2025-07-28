@@ -244,7 +244,7 @@ namespace FileHandler
             }
 
             // Asynchronously delete files
-            var deletionTasks = myFiles.Select(DeleteFile).ToList();
+            var deletionTasks = myFiles.ConvertAll(DeleteFile);
 
             // Await all deletion tasks to complete
             var results = await Task.WhenAll(deletionTasks);

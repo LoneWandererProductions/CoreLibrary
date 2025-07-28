@@ -187,7 +187,7 @@ namespace CommonControls
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <returns>Clicked results</returns>
-        private static PickResult Pick(double x, double y)
+        private static PickResults Pick(double x, double y)
         {
             var distanceFromCenter = Math.Sqrt(((x - Center) * (x - Center)) + ((y - Center) * (y - Center)));
             var sqrt3 = Math.Sqrt(3);
@@ -195,7 +195,7 @@ namespace CommonControls
             if (distanceFromCenter > OuterRadius)
                 // Outside
             {
-                return new PickResult { Area = Area.Outside };
+                return new PickResults { Area = Area.Outside };
             }
 
             if (distanceFromCenter > InnerRadius)
@@ -209,7 +209,7 @@ namespace CommonControls
 
                 var hue = angle;
 
-                return new PickResult { Area = Area.Wheel, Hue = hue };
+                return new PickResults { Area = Area.Wheel, Hue = hue };
             }
 
             // Inside
@@ -217,34 +217,36 @@ namespace CommonControls
             var y1 = (y - Center) * 1.0 / InnerRadius;
             if ((0 * x1) + (2 * y1) > 1)
             {
-                return new PickResult { Area = Area.Outside };
+                return new PickResults { Area = Area.Outside };
             }
 
             if ((sqrt3 * x1) + (-1 * y1) > 1)
             {
-                return new PickResult { Area = Area.Outside };
+                return new PickResults { Area = Area.Outside };
             }
 
             if ((-sqrt3 * x1) + (-1 * y1) > 1)
             {
-                return new PickResult { Area = Area.Outside };
+                return new PickResults { Area = Area.Outside };
             }
 
             // Triangle
             var sat = (1 - (2 * y1)) / ((sqrt3 * x1) - y1 + 2);
             var val = ((sqrt3 * x1) - y1 + 2) / 3;
 
-            return new PickResult { Area = Area.Triangle, Sat = sat, Val = val };
+            return new PickResults { Area = Area.Triangle, Sat = sat, Val = val };
         }
 
         /// <summary>
-        ///     Do not Change to global Hsv Values here!
+        /// Do not Change to global Hsv Values here!
         /// </summary>
-        /// <param name="hue"></param>
-        /// <param name="sat"></param>
-        /// <param name="val"></param>
-        /// <param name="alpha"></param>
-        /// <returns>New Hsv Values</returns>
+        /// <param name="hue">The hue.</param>
+        /// <param name="sat">The sat.</param>
+        /// <param name="val">The value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>
+        /// New Hsv Values
+        /// </returns>
         private static Color Hsv(double hue, double sat, double val, double alpha)
         {
             var chroma = val * sat;
@@ -325,43 +327,5 @@ namespace CommonControls
                 Math.Min(255, (int)(green * 256)),
                 Math.Min(255, (int)(blue * 256)));
         }
-    }
-
-    /// <summary>
-    ///     The Result for the Click in the Color Wheel
-    /// </summary>
-    internal struct PickResult
-    {
-        /// <summary>
-        ///     Gets or sets the area.
-        /// </summary>
-        /// <value>
-        ///     The area.
-        /// </value>
-        internal ColorPick.Area Area { get; init; }
-
-        /// <summary>
-        ///     Gets or sets the hue.
-        /// </summary>
-        /// <value>
-        ///     The hue.
-        /// </value>
-        internal double Hue { get; init; }
-
-        /// <summary>
-        ///     Gets or sets the sat.
-        /// </summary>
-        /// <value>
-        ///     The sat.
-        /// </value>
-        internal double Sat { get; init; }
-
-        /// <summary>
-        ///     Gets or sets the value.
-        /// </summary>
-        /// <value>
-        ///     The value.
-        /// </value>
-        internal double Val { get; init; }
     }
 }

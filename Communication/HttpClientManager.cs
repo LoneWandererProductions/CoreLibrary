@@ -24,12 +24,16 @@ namespace Communication
         /// </summary>
         private static readonly HttpClient HttpClient = new();
 
-        public static async Task<string> CallSoapServiceAsync()
+        /// <summary>
+        /// Calls the SOAP service asynchronous.
+        /// </summary>
+        /// <returns>Message as string</returns>
+        public static async Task<string?> CallSoapServiceAsync()
         {
             //target url
             var requestUri = new Uri("");
             //define commmand in xml body, see CreateSoapRequest
-            var soapAction = "";
+            const string soapAction = "";
 
             var soapRequest = CreateSoapRequest();
 
@@ -57,6 +61,10 @@ namespace Communication
             }
         }
 
+        /// <summary>
+        /// Creates the SOAP request.
+        /// </summary>
+        /// <returns>Soap xml body</returns>
         private static string CreateSoapRequest()
         {
             // You can structure the SOAP request body using string interpolation for readability
@@ -77,7 +85,7 @@ namespace Communication
         /// <param name="body">The request body (optional).</param>
         /// <param name="contentType">The content type (default: application/json).</param>
         /// <returns>A <see cref="HttpResponseMessage" /> containing the response body.</returns>
-        internal static async Task<string> SendMessageAsync(string url, string method, string body = null,
+        internal static async Task<string> SendMessageAsync(string url, string method, string? body = null,
             string contentType = "application/json")
         {
             if (string.IsNullOrEmpty(url))

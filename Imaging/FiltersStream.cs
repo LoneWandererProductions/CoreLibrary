@@ -485,7 +485,7 @@ namespace Imaging
             using var scaledBuffer = UnmanagedImageBuffer.FromBitmap(scaledBitmap);
             using var resultBuffer = new UnmanagedImageBuffer(image.Width, image.Height);
 
-            var bytesPerPixel = 4;
+            const int bytesPerPixel = 4;
             var scaledSpan = scaledBuffer.BufferSpan;
             var resultSpan = resultBuffer.BufferSpan;
 
@@ -692,7 +692,7 @@ namespace Imaging
         {
             var localIntensity = GetPixelIntensity(dbmBase, x, y);
 
-            var halfWindowSize = DefaultHalfWindowSize;
+            const int halfWindowSize = DefaultHalfWindowSize;
             var sum = 0.0;
             var count = 0;
 

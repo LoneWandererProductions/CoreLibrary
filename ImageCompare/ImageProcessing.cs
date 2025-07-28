@@ -84,7 +84,7 @@ namespace ImageCompare
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             // Get total pixels
-            var totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
+            const int totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)

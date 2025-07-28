@@ -42,7 +42,7 @@ namespace CoreBuilderTests
         public void ExtractStringsFromFilesShouldExtractLiteralStrings()
         {
             // Arrange: Example source code (as a string) containing regular strings
-            var code = @"
+            const string code = @"
                 var message = ""Hello, World!"";
                 var errorMessage = ""Error: "" + ex.Message;
             ";
@@ -62,7 +62,7 @@ namespace CoreBuilderTests
         public void ExtractStringsFromFilesShouldExtractInterpolatedStrings()
         {
             // Arrange: Example source code containing interpolated strings
-            var code = @"
+            const string code = @"
                 var message = $""Error: {ex.Message} at {DateTime.Now}"";
             ";
 
@@ -85,8 +85,8 @@ namespace CoreBuilderTests
         public void ProcessProjectShouldExtractStringsAndGenerateResourceFile()
         {
             // Arrange: Set up a test project path and output file
-            var testProjectPath = @"C:\Temp\TestProject"; // Adjust with the correct test path
-            var outputResourceFile = @"C:\Temp\outputResourceNamespace.cs";
+            const string testProjectPath = @"C:\Temp\TestProject"; // Adjust with the correct test path
+            const string outputResourceFile = @"C:\Temp\outputResourceNamespace.cs";
 
             // Prepare some test files in the project directory
             Directory.CreateDirectory(testProjectPath);

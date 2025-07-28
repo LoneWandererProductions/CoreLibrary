@@ -34,7 +34,7 @@ namespace CommonExtendedObjectsTests
         public void AddDataShouldReturnIdentifier()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
 
             // Act
             var identifier = _vault.Add(data);
@@ -50,7 +50,7 @@ namespace CommonExtendedObjectsTests
         public void GetDataShouldReturnCorrectData()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
@@ -67,7 +67,7 @@ namespace CommonExtendedObjectsTests
         public void RemoveDataShouldRemoveCorrectItem()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
@@ -86,7 +86,7 @@ namespace CommonExtendedObjectsTests
         public void AddMetadataShouldStoreMetadataCorrectly()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
             var identifier = _vault.Add(data);
             var metadata = new VaultMetadata
             {
@@ -110,11 +110,11 @@ namespace CommonExtendedObjectsTests
         public void SaveShouldPersistData()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
-            var filePath = "vault_test_data.json";
+            const string filePath = "vault_test_data.json";
             _vault.SaveToDisk(identifier, filePath);
 
             // Simulate creating a new vault instance and loading the saved data
@@ -135,11 +135,11 @@ namespace CommonExtendedObjectsTests
         public void SaveShouldPersistExpiredDataCorrectly()
         {
             // Arrange
-            var data = "TestData";
+            const string data = "TestData";
             var identifier = _vault.Add(data, TimeSpan.FromMilliseconds(100)); // Expiry after 100ms
 
             // Act
-            var filePath = "vault_test_expired_data.json";
+            const string filePath = "vault_test_expired_data.json";
             _vault.SaveToDisk(identifier, filePath);
 
             // Simulate creating a new vault instance and loading the saved data

@@ -69,7 +69,7 @@ namespace CommonLibraryTests
         public void TestSerializeDictionaryNullDictionaryThrowsException()
         {
             // Arrange
-            var path = "test.xml";
+            const string path = "test.xml";
 
             // Act
             Serialize.SaveDctObjectToXml((Dictionary<string, string>)null, path);
@@ -128,7 +128,7 @@ namespace CommonLibraryTests
         public void TestLoadDictionaryFromXmlInvalidPathThrowsException()
         {
             // Arrange
-            var path = "nonexistent.xml";
+            const string path = "nonexistent.xml";
 
             // Act
             var result = DeSerialize.LoadDictionaryFromXml<string, string>(path);

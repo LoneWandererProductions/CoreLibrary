@@ -266,7 +266,7 @@ namespace RenderEngine
             try
             {
                 var stride = bmpData.Stride;
-                var bytesPerPixel = 4;
+                const int bytesPerPixel = 4;
                 var rawData = new byte[stride * height];
                 Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
 

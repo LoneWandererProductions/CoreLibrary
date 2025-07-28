@@ -118,9 +118,9 @@ namespace Imaging
                 // Adjust turbulence value like in the C code (divide by 4)
                 var l = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
 
-                // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
-                var h = 190; // Adjusted Hue value closer to light blue
-                var s = 200; // Reduced Saturation for a more muted, light blue
+                    // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
+                    const int h = 190; // Adjusted Hue value closer to light blue
+                    const int s = 200; // Reduced Saturation for a more muted, light blue
 
                 // Convert HSL to RGB
                 var color = HsLtoRgb(h, s, l);

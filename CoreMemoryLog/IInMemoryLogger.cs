@@ -21,8 +21,8 @@ namespace CoreMemoryLog
         /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The message.</param>
-        /// <param name="exception">The exception (optional).</param>
         /// <param name="libraryName">The name of the library (to categorize the log).</param>
+        /// <param name="exception">The exception (optional).</param>
         /// <param name="callerMethod">The method calling the logger (optional, uses CallerMemberName).</param>
         void Log(LogLevel logLevel, string message, string libraryName, Exception exception = null,
             [CallerMemberName] string callerMethod = "");
@@ -57,16 +57,16 @@ namespace CoreMemoryLog
         /// <summary>
         ///     Determines whether there are logs with the specified log level for a specific library.
         /// </summary>
-        /// <param name="logLevel">The log level.</param>
         /// <param name="libraryName">The name of the library.</param>
+        /// <param name="logLevel">The log level.</param>
         /// <returns><c>true</c> if there are logs with the specified log level for the library; otherwise, <c>false</c>.</returns>
         bool HasLogsWithLevel(string libraryName, LogLevel logLevel);
 
         /// <summary>
         ///     Gets logs by log level for a specific library.
         /// </summary>
-        /// <param name="logLevel">The log level.</param>
         /// <param name="libraryName">The name of the library.</param>
+        /// <param name="logLevel">The log level.</param>
         /// <returns>Logs matching the specified log level for the specified library.</returns>
         IEnumerable<LogEntry> GetLogsByLevel(string libraryName, LogLevel logLevel);
 

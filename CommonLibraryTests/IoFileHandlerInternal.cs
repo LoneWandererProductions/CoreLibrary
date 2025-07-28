@@ -57,9 +57,9 @@ namespace CommonLibraryTests
         public void GetSubFolderInvalidElementPathThrowsArgumentException()
         {
             // Arrange
-            string element = null;
-            var root = @"C:\root\folder";
-            var target = @"D:\target";
+            const string element = null;
+            const string root = @"C:\root\folder";
+            const string target = @"D:\target";
 
             // Act
             _ = FileHandlerProcessing.GetSubFolder(element, root, target);
@@ -73,9 +73,9 @@ namespace CommonLibraryTests
         public void GetSubFolderInvalidRootPathThrowsArgumentException()
         {
             // Arrange
-            var element = @"C:\root\folder\subfolder\file.txt";
-            string root = null;
-            var target = @"D:\target";
+            const string element = @"C:\root\folder\subfolder\file.txt";
+            const string root = null;
+            const string target = @"D:\target";
 
             // Act
             _ = FileHandlerProcessing.GetSubFolder(element, root, target);
@@ -88,11 +88,11 @@ namespace CommonLibraryTests
         public void GetSubFolderValidPathsReturnsRelativePath()
         {
             // Arrange
-            var element = @"C:\root\folder\subfolder\";
-            var root = @"C:\root\folder";
-            var target = @"D:\target";
+            const string element = @"C:\root\folder\subfolder\";
+            const string root = @"C:\root\folder";
+            const string target = @"D:\target";
 
-            var expected = @"D:\target\subfolder\";
+            const string expected = @"D:\target\subfolder\";
 
             // Act
             var result = FileHandlerProcessing.GetSubFolder(element, root, target);
@@ -137,7 +137,7 @@ namespace CommonLibraryTests
             File.Create(Path.Combine(path, "file1.txt")).Dispose();
             File.Create(Path.Combine(path, "file2.txt")).Dispose();
 
-            var appendix = ".txt";
+            const string appendix = ".txt";
             const bool subdirectories = false;
 
             try

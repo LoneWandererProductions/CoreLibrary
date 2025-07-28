@@ -424,7 +424,7 @@ namespace Imaging
                     var colorArgb = color.ToArgb();
                     var colorVector = new Vector<int>(colorArgb);
 
-                    var xs = group.Select(p => p.x).OrderBy(x => x).ToArray();
+                    var xs = group.Select(p => p.x).Order().ToArray();
 
                     var i = 0;
                     while (i < xs.Length)

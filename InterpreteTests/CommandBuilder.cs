@@ -24,7 +24,7 @@ namespace InterpreteTests
         public void ParseIfElseClausesNoIfElseClausesReturnsEmptyDictionary()
         {
             // Arrange
-            var input = "com1;";
+            const string input = "com1;";
 
             // Act
             var result = ConditionalExpressions.ParseIfElseClauses(input);

@@ -129,7 +129,7 @@ namespace ExtendedSystemObjects
             {
                 var entry = GetItem(uniqueIdentifier, LogState.Change);
 
-                if (entry != -1 && Changelog[entry].Data.Equals(item) == false)
+                if (entry != -1 && !Changelog[entry].Data.Equals(item))
                 {
                     Changelog[entry] = new LogEntry
                     {

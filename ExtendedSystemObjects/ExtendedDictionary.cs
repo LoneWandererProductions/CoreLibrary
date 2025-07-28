@@ -335,8 +335,8 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Converts to list.
         /// </summary>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <typeparam name="TId">The type of the identifier.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="dic">The dic.</param>
         /// <returns>
         ///     A list with the Key as id

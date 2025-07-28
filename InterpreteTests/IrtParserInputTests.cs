@@ -79,7 +79,7 @@ namespace InterpreteTests
 
             IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
-            var input = "com1(1,2)";
+            const string input = "com1(1,2)";
 
             // Act
             var result = _parserInput.ProcessInput(input);
@@ -105,7 +105,7 @@ namespace InterpreteTests
 
             IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
-            var input = "unknown(1,2)";
+            const string input = "unknown(1,2)";
 
             // Act
             var result = _parserInput.ProcessInput(input);
@@ -128,7 +128,7 @@ namespace InterpreteTests
 
             IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "DefaultSpace" });
 
-            var input = "com1(1)"; // only 1 parameter, should be 2
+            const string input = "com1(1)"; // only 1 parameter, should be 2
 
             // Act
             var result = _parserInput.ProcessInput(input);
@@ -151,7 +151,7 @@ namespace InterpreteTests
 
             IrtParserInput.SwitchUserSpace(new UserSpace { Commands = commandDict, UserSpaceName = "Space2" });
 
-            var input = "com2(123)";
+            const string input = "com2(123)";
 
             // Act
             var result = _parserInput.ProcessInput(input);

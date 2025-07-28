@@ -60,7 +60,7 @@ namespace CommonLibraryTests
             curve.ApplyTransformation(rotateTransform);
 
             // Define a small tolerance for floating-point comparison
-            var tolerance = 1e-6f;
+            const float tolerance = 1e-6f;
 
             // Assert
             Assert.IsTrue(Math.Abs(curve.Vectors[0].X - 0) < tolerance, "X component not as expected");
