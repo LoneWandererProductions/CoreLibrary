@@ -72,7 +72,7 @@ namespace ExtendedSystemObjects.Helper
         /// <summary>
         ///     Shifts the right. Adding data at index.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>
         /// <param name="index">The index.</param>
         /// <param name="count">The count.</param>
