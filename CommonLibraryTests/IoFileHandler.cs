@@ -111,7 +111,7 @@ namespace CommonLibraryTests
             // Assert that the file name ends with the expected pattern
             Assert.IsTrue(
                 info.EndsWith(
-                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
+                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net9.0-windows\\IoFileHandler\\GetNewFileName\\IO(0).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
             // Get another new file name
@@ -125,7 +125,7 @@ namespace CommonLibraryTests
             // Assert that the second file name ends with the expected pattern
             Assert.IsTrue(
                 info.EndsWith(
-                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net5.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
+                    "\\CoreLibrary\\CommonLibraryTests\\bin\\Debug\\net9.0-windows\\IoFileHandler\\GetNewFileName\\IO(1).txt",
                     StringComparison.Ordinal), "Expected File Name");
 
             // Delete the first file asynchronously and await it
