@@ -15,83 +15,82 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Debugger
+namespace Debugger;
+
+/// <summary>
+///     The convert object to XML string class.
+/// </summary>
+internal static class ConvertObjectXml
 {
     /// <summary>
-    ///     The convert object to XML string class.
+    ///     Converts Enumeration into a XML String
     /// </summary>
-    internal static class ConvertObjectXml
+    /// <typeparam name="T">Value Object</typeparam>
+    /// <param name="serializeObject">Target Enumeration</param>
+    /// <returns>Serialized Object</returns>
+    internal static string ConvertListXml<T>(IEnumerable<T> serializeObject)
     {
-        /// <summary>
-        ///     Converts Enumeration into a XML String
-        /// </summary>
-        /// <typeparam name="T">Value Object</typeparam>
-        /// <param name="serializeObject">Target Enumeration</param>
-        /// <returns>Serialized Object</returns>
-        internal static string ConvertListXml<T>(IEnumerable<T> serializeObject)
+        var convert = string.Empty;
+        var bld = new StringBuilder(convert);
+
+        foreach (var vector in serializeObject.Select(ConvertObjectToXml))
         {
-            var convert = string.Empty;
-            var bld = new StringBuilder(convert);
-
-            foreach (var vector in serializeObject.Select(ConvertObjectToXml))
-            {
-                _ = bld.AppendLine(vector);
-            }
-
-            return bld.ToString();
+            _ = bld.AppendLine(vector);
         }
 
-        /// <summary>
-        ///     Converts Dictionary into a XML String
-        /// </summary>
-        /// <typeparam name="T">Value Object</typeparam>
-        /// <typeparam name="TU">Key Object</typeparam>
-        /// <param name="serializeObject">Target Dictionary</param>
-        /// <returns>Serialized Object</returns>
-        internal static string ConvertDictionaryXml<T, TU>(Dictionary<T, TU> serializeObject)
+        return bld.ToString();
+    }
+
+    /// <summary>
+    ///     Converts Dictionary into a XML String
+    /// </summary>
+    /// <typeparam name="T">Value Object</typeparam>
+    /// <typeparam name="TU">Key Object</typeparam>
+    /// <param name="serializeObject">Target Dictionary</param>
+    /// <returns>Serialized Object</returns>
+    internal static string ConvertDictionaryXml<T, TU>(Dictionary<T, TU> serializeObject)
+    {
+        var convert = string.Empty;
+        var bld = new StringBuilder(convert);
+
+        foreach (var element in serializeObject)
         {
-            var convert = string.Empty;
-            var bld = new StringBuilder(convert);
-
-            foreach (var element in serializeObject)
-            {
-                var vector = ConvertObjectToXml(element.Value);
-                bld.Append(element.Key).Append(DebuggerResources.Formatting).AppendLine(vector);
-            }
-
-            return bld.ToString();
+            var vector = ConvertObjectToXml(element.Value);
+            bld.Append(element.Key).Append(DebuggerResources.Formatting).AppendLine(vector);
         }
 
-        /// <summary>
-        ///     Serialize an Object for debugging purposes
-        /// </summary>
-        /// <param name="element">The Object element.</param>
-        /// <returns>The <see cref="string" />.</returns>
-        /// <typeparam name="T">Generic Type</typeparam>
-        internal static string ConvertObjectToXml<T>(T element)
+        return bld.ToString();
+    }
+
+    /// <summary>
+    ///     Serialize an Object for debugging purposes
+    /// </summary>
+    /// <param name="element">The Object element.</param>
+    /// <returns>The <see cref="string" />.</returns>
+    /// <typeparam name="T">Generic Type</typeparam>
+    internal static string ConvertObjectToXml<T>(T element)
+    {
+        string str;
+
+        var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
+
+        var xns = new XmlSerializerNamespaces();
+        xns.Add(string.Empty, string.Empty);
+
+        //not elegant, but still we can catch the exception and conclude something with the object was wrong
+        try
         {
-            string str;
-
-            var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
-
-            var xns = new XmlSerializerNamespaces();
-            xns.Add(string.Empty, string.Empty);
-
-            //not elegant, but still we can catch the exception and conclude something with the object was wrong
-            try
-            {
-                using var stream = new StringWriter();
-                using var writer = XmlWriter.Create(stream, settings);
-                new XmlSerializer(element.GetType()).Serialize(writer, element, xns);
-                return stream.ToString();
-            }
-            catch (ArgumentNullException ex)
-            {
-                str = ex.Message;
-                Trace.WriteLine(str);
-            }
-
-            return string.Concat(DebuggerResources.ErrorSerializing, str);
+            using var stream = new StringWriter();
+            using var writer = XmlWriter.Create(stream, settings);
+            new XmlSerializer(element.GetType()).Serialize(writer, element, xns);
+            return stream.ToString();
         }
+        catch (ArgumentNullException ex)
+        {
+            str = ex.Message;
+            Trace.WriteLine(str);
+        }
+
+        return string.Concat(DebuggerResources.ErrorSerializing, str);
     }
 }

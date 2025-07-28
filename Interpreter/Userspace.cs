@@ -8,35 +8,34 @@
 
 using System.Collections.Generic;
 
-namespace Interpreter
+namespace Interpreter;
+
+/// <summary>
+///     Command Handler Object
+/// </summary>
+public sealed class UserSpace
 {
     /// <summary>
-    ///     Command Handler Object
+    ///     Gets or sets the name of the userSpace.
     /// </summary>
-    public sealed class UserSpace
-    {
-        /// <summary>
-        ///     Gets or sets the name of the userSpace.
-        /// </summary>
-        /// <value>
-        ///     The name of the userSpace.
-        /// </value>
-        internal string UserSpaceName { get; init; }
+    /// <value>
+    ///     The name of the userSpace.
+    /// </value>
+    internal string UserSpaceName { get; init; }
 
-        /// <summary>
-        ///     Gets or sets the commands.
-        /// </summary>
-        /// <value>
-        ///     The commands.
-        /// </value>
-        internal Dictionary<int, InCommand> Commands { get; init; }
+    /// <summary>
+    ///     Gets or sets the commands.
+    /// </summary>
+    /// <value>
+    ///     The commands.
+    /// </value>
+    internal Dictionary<int, InCommand> Commands { get; init; }
 
-        /// <summary>
-        ///     Gets or sets the extension commands.
-        /// </summary>
-        /// <value>
-        ///     The extension commands.
-        /// </value>
-        internal Dictionary<int, InCommand> ExtensionCommands { get; init; }
-    }
+    /// <summary>
+    ///     Gets or sets the extension commands.
+    /// </summary>
+    /// <value>
+    ///     The extension commands.
+    /// </value>
+    internal Dictionary<int, InCommand> ExtensionCommands { get; init; }
 }

@@ -6,48 +6,47 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter.ScriptEngine
+namespace Interpreter.ScriptEngine;
+
+public class ConditionValidator
 {
-    public class ConditionValidator
+    public bool? LastConditionResult { get; private set; }
+    public string LastError { get; private set; }
+
+    public void Attach(Prompt engine)
     {
-        public bool? LastConditionResult { get; private set; }
-        public string LastError { get; private set; }
+        engine.SendCommands += OnCommandExecuted;
+    }
 
-        public void Attach(Prompt engine)
+    private void OnCommandExecuted(object sender, OutCommand outCmd)
+    {
+        // Only validate if this is part of a condition context
+        if (IsConditionContext(outCmd))
         {
-            engine.SendCommands += OnCommandExecuted;
-        }
-
-        private void OnCommandExecuted(object sender, OutCommand outCmd)
-        {
-            // Only validate if this is part of a condition context
-            if (IsConditionContext(outCmd))
+            if (!outCmd.IsSuccess)
             {
-                if (!outCmd.IsSuccess)
-                {
-                    LastError = outCmd.ErrorMessage;
-                    LastConditionResult = null;
-                    return;
-                }
+                LastError = outCmd.ErrorMessage;
+                LastConditionResult = null;
+                return;
+            }
 
-                if (outCmd.Result is bool b)
-                {
-                    LastConditionResult = b;
-                    LastError = null;
-                }
-                else
-                {
-                    LastError = $"Expected boolean result in condition, got: {outCmd.ActualReturnType?.Name ?? "null"}";
-                    LastConditionResult = null;
-                }
+            if (outCmd.Result is bool b)
+            {
+                LastConditionResult = b;
+                LastError = null;
+            }
+            else
+            {
+                LastError = $"Expected boolean result in condition, got: {outCmd.ActualReturnType?.Name ?? "null"}";
+                LastConditionResult = null;
             }
         }
+    }
 
-        private bool IsConditionContext(OutCommand cmd)
-        {
-            // You define this logic:
-            // Could be a naming convention like cmd.Command == Commands.CheckCondition
-            return true; // for now, assume always true
-        }
+    private bool IsConditionContext(OutCommand cmd)
+    {
+        // You define this logic:
+        // Could be a naming convention like cmd.Command == Commands.CheckCondition
+        return true; // for now, assume always true
     }
 }

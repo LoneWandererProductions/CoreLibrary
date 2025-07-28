@@ -6,28 +6,27 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Solaris
+namespace Solaris;
+
+internal static class Resources
 {
-    internal static class Resources
-    {
-        /// <summary>
-        ///     The string X (const). Value: "X: ".
-        /// </summary>
-        internal const string StrX = "X: ";
+    /// <summary>
+    ///     The string X (const). Value: "X: ".
+    /// </summary>
+    internal const string StrX = "X: ";
 
-        /// <summary>
-        ///     The string Y (const). Value: " Y: ".
-        /// </summary>
-        internal const string StrY = " Y: ";
+    /// <summary>
+    ///     The string Y (const). Value: " Y: ".
+    /// </summary>
+    internal const string StrY = " Y: ";
 
-        /// <summary>
-        ///     The string Layer (const). Value: " Layer: ".
-        /// </summary>
-        internal const string StrLayer = " Layer: ";
+    /// <summary>
+    ///     The string Layer (const). Value: " Layer: ".
+    /// </summary>
+    internal const string StrLayer = " Layer: ";
 
-        /// <summary>
-        ///     The string Font (const). Value: "Tahoma".
-        /// </summary>
-        internal const string Font = "Tahoma";
-    }
+    /// <summary>
+    ///     The string Font (const). Value: "Tahoma".
+    /// </summary>
+    internal const string Font = "Tahoma";
 }

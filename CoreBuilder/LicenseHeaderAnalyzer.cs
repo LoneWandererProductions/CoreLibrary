@@ -9,44 +9,43 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoreBuilder
+namespace CoreBuilder;
+
+/// <inheritdoc />
+/// <summary>
+///     Find missing License Header.
+/// </summary>
+/// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
+public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     Find missing License Header.
+    ///     Gets the name.
     /// </summary>
-    /// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
-    public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
+    /// <value>
+    ///     The name.
+    /// </value>
+    public string Name => "LicenseHeader";
+
+    /// <summary>
+    ///     Analyzes the specified file path.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="fileContent">Content of the file.</param>
+    /// <returns>
+    ///     Code Analyzer results.
+    /// </returns>
+    public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
-        /// <summary>
-        ///     Gets the name.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        public string Name => "LicenseHeader";
-
-        /// <summary>
-        ///     Analyzes the specified file path.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="fileContent">Content of the file.</param>
-        /// <returns>
-        ///     Code Analyzer results.
-        /// </returns>
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        // Skip ignored files
+        if (CoreHelper.ShouldIgnoreFile(filePath))
         {
-            // Skip ignored files
-            if (CoreHelper.ShouldIgnoreFile(filePath))
-            {
-                yield break;
-            }
+            yield break;
+        }
 
-            // Check if the file starts with the license header
-            if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))
-            {
-                yield return new Diagnostic(filePath, 1, "Missing license header.");
-            }
+        // Check if the file starts with the license header
+        if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return new Diagnostic(filePath, 1, "Missing license header.");
         }
     }
 }

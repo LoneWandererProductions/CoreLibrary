@@ -8,22 +8,21 @@
 
 using System.Windows;
 
-namespace SQLiteGui
+namespace SQLiteGui;
+
+/// <inheritdoc cref="Window" />
+/// <summary>
+///     Starter Window, here we forward all interactions.
+/// </summary>
+public sealed partial class SqLiteGuiWindow
 {
-    /// <inheritdoc cref="Window" />
+    /// <inheritdoc />
     /// <summary>
-    ///     Starter Window, here we forward all interactions.
+    ///     Initializes a new instance of the <see cref="T:SQLiteGui.SQLiteGuiWindow" /> class.
     /// </summary>
-    public sealed partial class SqLiteGuiWindow
+    public SqLiteGuiWindow()
     {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SQLiteGui.SQLiteGuiWindow" /> class.
-        /// </summary>
-        public SqLiteGuiWindow()
-        {
-            InitializeComponent();
-            // No need for event subscriptions here
-        }
+        InitializeComponent();
+        // No need for event subscriptions here
     }
 }

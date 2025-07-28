@@ -9,74 +9,73 @@
 using System;
 using System.Numerics;
 
-namespace LightVector
+namespace LightVector;
+
+/// <inheritdoc />
+/// <summary>
+///     Represents a circle object.
+/// </summary>
+[System.Serializable]
+public sealed class CircleObject : GraphicObject
 {
+    /// <summary>
+    ///     The center of the circle.
+    /// </summary>
+    public Vector2 Center { get; set; }
+
+    /// <summary>
+    ///     The radius of the circle.
+    /// </summary>
+    public float Radius { get; set; }
+
     /// <inheritdoc />
     /// <summary>
-    ///     Represents a circle object.
+    ///     Checks if this object supports the given transformation.
     /// </summary>
-    [System.Serializable]
-    public sealed class CircleObject : GraphicObject
+    /// <param name="transformation"></param>
+    /// <returns>If specific transformation is supported</returns>
+    public override bool SupportsTransformation(Transform transformation)
     {
-        /// <summary>
-        ///     The center of the circle.
-        /// </summary>
-        public Vector2 Center { get; set; }
+        return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+    }
 
-        /// <summary>
-        ///     The radius of the circle.
-        /// </summary>
-        public float Radius { get; set; }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Checks if this object supports the given transformation.
-        /// </summary>
-        /// <param name="transformation"></param>
-        /// <returns>If specific transformation is supported</returns>
-        public override bool SupportsTransformation(Transform transformation)
+    /// <inheritdoc />
+    /// <summary>
+    ///     Apply transformation (scaling, rotation, translation) to the circle.
+    /// </summary>
+    /// <param name="transformation">The transformation.</param>
+    public override void ApplyTransformation(Transform transformation)
+    {
+        switch (transformation)
         {
-            return transformation is ScaleTransform or RotateTransform or TranslateTransform;
+            case ScaleTransform scale:
+                // Scale the radius (the center is unchanged)
+                Radius *= scale.ScaleX; // Assuming uniform scale
+                break;
+            case RotateTransform rotate:
+                // Rotate the center of the circle
+                Center = RotateVector(Center, rotate.Angle);
+                break;
+            case TranslateTransform translate:
+                // Translate the center of the circle
+                Center = new Vector2(Center.X + (float)translate.X, Center.Y + (float)translate.Y);
+                break;
         }
+    }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Apply transformation (scaling, rotation, translation) to the circle.
-        /// </summary>
-        /// <param name="transformation">The transformation.</param>
-        public override void ApplyTransformation(Transform transformation)
-        {
-            switch (transformation)
-            {
-                case ScaleTransform scale:
-                    // Scale the radius (the center is unchanged)
-                    Radius *= scale.ScaleX; // Assuming uniform scale
-                    break;
-                case RotateTransform rotate:
-                    // Rotate the center of the circle
-                    Center = RotateVector(Center, rotate.Angle);
-                    break;
-                case TranslateTransform translate:
-                    // Translate the center of the circle
-                    Center = new Vector2(Center.X + (float)translate.X, Center.Y + (float)translate.Y);
-                    break;
-            }
-        }
+    private static Vector2 RotateVector(Vector2 vector, double angle)
+    {
+        // Convert angle to radians
+        var angleRad = angle * (Math.PI / 180);
 
-        private static Vector2 RotateVector(Vector2 vector, double angle)
-        {
-            // Convert angle to radians
-            var angleRad = angle * (Math.PI / 180);
+        // Apply rotation matrix
+        var cosTheta = (float)Math.Cos(angleRad);
+        var sinTheta = (float)Math.Sin(angleRad);
 
-            // Apply rotation matrix
-            var cosTheta = (float)Math.Cos(angleRad);
-            var sinTheta = (float)Math.Sin(angleRad);
+        // Rotate the vector
+        var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
+        var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
 
-            // Rotate the vector
-            var xNew = (vector.X * cosTheta) - (vector.Y * sinTheta);
-            var yNew = (vector.X * sinTheta) + (vector.Y * cosTheta);
-
-            return new Vector2(xNew, yNew);
-        }
+        return new Vector2(xNew, yNew);
     }
 }

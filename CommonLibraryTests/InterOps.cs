@@ -9,25 +9,24 @@
 using InterOp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonLibraryTests;
+
+/// <summary>
+///     InterOps testing
+/// </summary>
+[TestClass]
+public class InterOps
 {
     /// <summary>
-    ///     InterOps testing
+    ///     Registry test.
     /// </summary>
-    [TestClass]
-    public class InterOps
+    [TestMethod]
+    public void Registry()
     {
-        /// <summary>
-        ///     Registry test.
-        /// </summary>
-        [TestMethod]
-        public void Registry()
-        {
-            var registry = new RegistryHandler();
+        var registry = new RegistryHandler();
 
-            var results = registry.GetRegistryObjects(@"SOFTWARE\Classes\CLSID");
+        var results = registry.GetRegistryObjects(@"SOFTWARE\Classes\CLSID");
 
-            Assert.AreNotEqual(0, results.Count, "Nothing was found");
-        }
+        Assert.AreNotEqual(0, results.Count, "Nothing was found");
     }
 }

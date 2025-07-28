@@ -11,50 +11,49 @@
 
 using System;
 
-namespace ExtendedSystemObjects.Interfaces
+namespace ExtendedSystemObjects.Interfaces;
+
+/// <inheritdoc />
+/// <summary>
+///     Interface to make unmanaged arrays interchangeable.
+/// </summary>
+/// <typeparam name="T">Generic Type</typeparam>
+/// <seealso cref="T:System.IDisposable" />
+public interface IUnmanagedArray<T> : IDisposable
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     Interface to make unmanaged arrays interchangeable.
+    ///     Gets the length.
     /// </summary>
-    /// <typeparam name="T">Generic Type</typeparam>
-    /// <seealso cref="T:System.IDisposable" />
-    public interface IUnmanagedArray<T> : IDisposable
-    {
-        /// <summary>
-        ///     Gets the length.
-        /// </summary>
-        /// <value>
-        ///     The length.
-        /// </value>
-        int Length { get; }
+    /// <value>
+    ///     The length.
+    /// </value>
+    int Length { get; }
 
-        /// <summary>
-        ///     Gets or sets the <see cref="T" /> at the specified index.
-        /// </summary>
-        /// <value>
-        ///     The <see cref="T" />.
-        /// </value>
-        /// <param name="index">The index.</param>
-        /// <returns>Value at index</returns>
-        T this[int index] { get; set; }
+    /// <summary>
+    ///     Gets or sets the <see cref="T" /> at the specified index.
+    /// </summary>
+    /// <value>
+    ///     The <see cref="T" />.
+    /// </value>
+    /// <param name="index">The index.</param>
+    /// <returns>Value at index</returns>
+    T this[int index] { get; set; }
 
-        /// <summary>
-        ///     Removes at.
-        /// </summary>
-        /// <param name="index">The index.</param>
-        /// <param name="count">The count we want to remove. Optional.</param>
-        void RemoveAt(int index, int count = 1);
+    /// <summary>
+    ///     Removes at.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    /// <param name="count">The count we want to remove. Optional.</param>
+    void RemoveAt(int index, int count = 1);
 
-        /// <summary>
-        ///     Resizes the specified new size.
-        /// </summary>
-        /// <param name="newSize">The new size.</param>
-        void Resize(int newSize);
+    /// <summary>
+    ///     Resizes the specified new size.
+    /// </summary>
+    /// <param name="newSize">The new size.</param>
+    void Resize(int newSize);
 
-        /// <summary>
-        ///     Clears this instance.
-        /// </summary>
-        void Clear();
-    }
+    /// <summary>
+    ///     Clears this instance.
+    /// </summary>
+    void Clear();
 }

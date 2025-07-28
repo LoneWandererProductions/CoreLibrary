@@ -17,138 +17,137 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
-namespace PluginLoader
+namespace PluginLoader;
+
+/// <inheritdoc cref="INotifyPropertyChanged" />
+/// <summary>
+///     Plugin Manager
+/// </summary>
+public sealed partial class PluginController : INotifyPropertyChanged
 {
-    /// <inheritdoc cref="INotifyPropertyChanged" />
     /// <summary>
-    ///     Plugin Manager
+    ///     The plugin path
     /// </summary>
-    public sealed partial class PluginController : INotifyPropertyChanged
+    public static readonly DependencyProperty TargetPathProperty = DependencyProperty.Register(nameof(TargetPath),
+        typeof(string),
+        typeof(PluginController), new PropertyMetadata(default(string)));
+
+    public static readonly DependencyProperty ExtensionProperty = DependencyProperty.Register(nameof(Extension),
+        typeof(string),
+        typeof(PluginController), new PropertyMetadata(default(string)));
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:PluginLoader.PluginController" /> class.
+    /// </summary>
+    public PluginController()
     {
-        /// <summary>
-        ///     The plugin path
-        /// </summary>
-        public static readonly DependencyProperty TargetPathProperty = DependencyProperty.Register(nameof(TargetPath),
-            typeof(string),
-            typeof(PluginController), new PropertyMetadata(default(string)));
+        InitializeComponent();
+    }
 
-        public static readonly DependencyProperty ExtensionProperty = DependencyProperty.Register(nameof(Extension),
-            typeof(string),
-            typeof(PluginController), new PropertyMetadata(default(string)));
+    /// <summary>
+    ///     Gets or sets the plugin path.
+    ///     The path must be equal to the Current Directory or a sub Directory.
+    /// </summary>
+    /// <value>
+    ///     The plugin path.
+    /// </value>
+    public string TargetPath
+    {
+        get => (string)GetValue(TargetPathProperty);
+        set => SetValue(TargetPathProperty, value);
+    }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:PluginLoader.PluginController" /> class.
-        /// </summary>
-        public PluginController()
+    /// <summary>
+    ///     Gets or sets the extension.
+    /// </summary>
+    /// <value>
+    ///     The extension.
+    /// </value>
+    public string Extension
+    {
+        get => (string)GetValue(ExtensionProperty);
+        set => SetValue(ExtensionProperty, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the observable plugin.
+    /// </summary>
+    /// <value>
+    ///     The observable plugin.
+    /// </value>
+    public ObservableCollection<PluginItem> ObservablePlugin { get; set; } = new();
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Tells the Components something was changed
+    ///     Needed since we have to trigger it user defined
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <summary>
+    ///     The notify property changed.
+    /// </summary>
+    private void NotifyPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    ///     Handles the MouseDoubleClick event of the DataGrid control.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+    private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (DataGrid.SelectedItem is PluginItem item)
         {
-            InitializeComponent();
+            var exe = item.Command.Execute();
+            Trace.WriteLine(exe);
+        }
+    }
+
+    /// <summary>
+    ///     Handles the Loaded event of the PluginController control.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+    private void PluginController_Loaded(object sender, RoutedEventArgs e)
+    {
+        var directory = Directory.GetCurrentDirectory();
+        var path = Path.Combine(directory, TargetPath);
+
+        if (!Directory.Exists(path))
+        {
+            Trace.WriteLine(PluginLoaderResources.ErrorPath);
+            return;
         }
 
-        /// <summary>
-        ///     Gets or sets the plugin path.
-        ///     The path must be equal to the Current Directory or a sub Directory.
-        /// </summary>
-        /// <value>
-        ///     The plugin path.
-        /// </value>
-        public string TargetPath
+        var check = !string.IsNullOrEmpty(Extension)
+            ? PluginLoad.LoadAll(path, Extension)
+            : PluginLoad.LoadAll(path);
+
+        if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
         {
-            get => (string)GetValue(TargetPathProperty);
-            set => SetValue(TargetPathProperty, value);
+            Trace.WriteLine(PluginLoaderResources.InformationPlugin);
+            return;
         }
 
-        /// <summary>
-        ///     Gets or sets the extension.
-        /// </summary>
-        /// <value>
-        ///     The extension.
-        /// </value>
-        public string Extension
+        var lst = new ObservableCollection<PluginItem>();
+
+        foreach (var plugin in PluginLoad.PluginContainer)
         {
-            get => (string)GetValue(ExtensionProperty);
-            set => SetValue(ExtensionProperty, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the observable plugin.
-        /// </summary>
-        /// <value>
-        ///     The observable plugin.
-        /// </value>
-        public ObservableCollection<PluginItem> ObservablePlugin { get; set; } = new();
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Tells the Components something was changed
-        ///     Needed since we have to trigger it user defined
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     The notify property changed.
-        /// </summary>
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        ///     Handles the MouseDoubleClick event of the DataGrid control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (DataGrid.SelectedItem is PluginItem item)
+            lst.Add(new PluginItem
             {
-                var exe = item.Command.Execute();
-                Trace.WriteLine(exe);
-            }
+                Command = plugin,
+                Name = plugin.Name,
+                Version = plugin.Version,
+                Type = plugin.Type,
+                Description = plugin.Description
+            });
         }
 
-        /// <summary>
-        ///     Handles the Loaded event of the PluginController control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void PluginController_Loaded(object sender, RoutedEventArgs e)
-        {
-            var directory = Directory.GetCurrentDirectory();
-            var path = Path.Combine(directory, TargetPath);
-
-            if (!Directory.Exists(path))
-            {
-                Trace.WriteLine(PluginLoaderResources.ErrorPath);
-                return;
-            }
-
-            var check = !string.IsNullOrEmpty(Extension)
-                ? PluginLoad.LoadAll(path, Extension)
-                : PluginLoad.LoadAll(path);
-
-            if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
-            {
-                Trace.WriteLine(PluginLoaderResources.InformationPlugin);
-                return;
-            }
-
-            var lst = new ObservableCollection<PluginItem>();
-
-            foreach (var plugin in PluginLoad.PluginContainer)
-            {
-                lst.Add(new PluginItem
-                {
-                    Command = plugin,
-                    Name = plugin.Name,
-                    Version = plugin.Version,
-                    Type = plugin.Type,
-                    Description = plugin.Description
-                });
-            }
-
-            ObservablePlugin = lst;
-            NotifyPropertyChanged(nameof(ObservablePlugin));
-        }
+        ObservablePlugin = lst;
+        NotifyPropertyChanged(nameof(ObservablePlugin));
     }
 }

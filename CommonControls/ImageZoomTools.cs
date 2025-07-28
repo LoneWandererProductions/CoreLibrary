@@ -10,44 +10,43 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
-namespace CommonControls
+namespace CommonControls;
+
+/// <summary>
+///     The possible Selection Tools
+/// </summary>
+/// <summary>
+///     The possible Selection Tools
+/// </summary>
+public enum ImageZoomTools
 {
     /// <summary>
-    ///     The possible Selection Tools
+    ///     The move tool
     /// </summary>
+    Move = 0,
+
     /// <summary>
-    ///     The possible Selection Tools
+    ///     The select rectangle tool
     /// </summary>
-    public enum ImageZoomTools
-    {
-        /// <summary>
-        ///     The move tool
-        /// </summary>
-        Move = 0,
+    Rectangle = 1,
 
-        /// <summary>
-        ///     The select rectangle tool
-        /// </summary>
-        Rectangle = 1,
+    /// <summary>
+    ///     The select trace tool
+    /// </summary>
+    Trace = 2,
 
-        /// <summary>
-        ///     The select trace tool
-        /// </summary>
-        Trace = 2,
+    /// <summary>
+    ///     The select Dot tool
+    /// </summary>
+    Dot = 3,
 
-        /// <summary>
-        ///     The select Dot tool
-        /// </summary>
-        Dot = 3,
+    /// <summary>
+    ///     The select ellipse tool
+    /// </summary>
+    Ellipse = 4,
 
-        /// <summary>
-        ///     The select ellipse tool
-        /// </summary>
-        Ellipse = 4,
-
-        /// <summary>
-        ///     The free form selection tool
-        /// </summary>
-        FreeForm = 5
-    }
+    /// <summary>
+    ///     The free form selection tool
+    /// </summary>
+    FreeForm = 5
 }

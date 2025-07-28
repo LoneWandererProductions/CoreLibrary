@@ -6,26 +6,25 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter.Resources
+namespace Interpreter.Resources;
+
+/// <summary>
+///     Allowed user Feedback
+/// </summary>
+public enum AvailableFeedback
 {
     /// <summary>
-    ///     Allowed user Feedback
+    ///     The yes
     /// </summary>
-    public enum AvailableFeedback
-    {
-        /// <summary>
-        ///     The yes
-        /// </summary>
-        Yes = 0,
+    Yes = 0,
 
-        /// <summary>
-        ///     The no
-        /// </summary>
-        No = 1,
+    /// <summary>
+    ///     The no
+    /// </summary>
+    No = 1,
 
-        /// <summary>
-        ///     The cancel
-        /// </summary>
-        Cancel = 2
-    }
+    /// <summary>
+    ///     The cancel
+    /// </summary>
+    Cancel = 2
 }

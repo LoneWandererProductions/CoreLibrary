@@ -8,19 +8,18 @@
 
 using System.Collections.Generic;
 
-namespace CommonFilter
+namespace CommonFilter;
+
+/// <summary>
+///     Interface for complex evaluations
+/// </summary>
+public interface ILogicEvaluations
 {
     /// <summary>
-    ///     Interface for complex evaluations
+    ///     Evaluates the specified input string.
     /// </summary>
-    public interface ILogicEvaluations
-    {
-        /// <summary>
-        ///     Evaluates the specified input string.
-        /// </summary>
-        /// <param name="inputString">The input string.</param>
-        /// <param name="conditions">The conditions.</param>
-        /// <returns>If conditions are met</returns>
-        bool Evaluate(string inputString, List<FilterOption> conditions);
-    }
+    /// <param name="inputString">The input string.</param>
+    /// <param name="conditions">The conditions.</param>
+    /// <returns>If conditions are met</returns>
+    bool Evaluate(string inputString, List<FilterOption> conditions);
 }

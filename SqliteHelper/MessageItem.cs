@@ -6,21 +6,20 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace SqliteHelper
+namespace SqliteHelper;
+
+/// <summary>
+///     Simple Container that holds System Messages
+/// </summary>
+internal sealed class MessageItem
 {
     /// <summary>
-    ///     Simple Container that holds System Messages
+    ///     Gets or sets the Error level.
     /// </summary>
-    internal sealed class MessageItem
-    {
-        /// <summary>
-        ///     Gets or sets the Error level.
-        /// </summary>
-        internal int Level { init; get; }
+    internal int Level { init; get; }
 
-        /// <summary>
-        ///     Gets or sets the message.
-        /// </summary>
-        internal string Message { init; get; }
-    }
+    /// <summary>
+    ///     Gets or sets the message.
+    /// </summary>
+    internal string Message { init; get; }
 }

@@ -11,23 +11,22 @@
 
 using System.Runtime.InteropServices;
 
-namespace InterOp
+namespace InterOp;
+
+/// <summary>
+///     Coordinate Struct
+///     Window Format
+/// </summary>
+[StructLayout(LayoutKind.Sequential)]
+internal readonly struct Win32Points
 {
     /// <summary>
-    ///     Coordinate Struct
-    ///     Window Format
+    ///     The x Point (readonly).
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    internal readonly struct Win32Points
-    {
-        /// <summary>
-        ///     The x Point (readonly).
-        /// </summary>
-        public readonly int X;
+    public readonly int X;
 
-        /// <summary>
-        ///     The y Point(readonly).
-        /// </summary>
-        public readonly int Y;
-    }
+    /// <summary>
+    ///     The y Point(readonly).
+    /// </summary>
+    public readonly int Y;
 }

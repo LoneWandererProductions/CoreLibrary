@@ -6,21 +6,20 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter
+namespace Interpreter;
+
+/// <summary>
+///     State of the Feedbackmanager
+/// </summary>
+public enum FeedbackState
 {
     /// <summary>
-    ///     State of the Feedbackmanager
+    ///     The idle
     /// </summary>
-    public enum FeedbackState
-    {
-        /// <summary>
-        ///     The idle
-        /// </summary>
-        Idle = 0,
+    Idle = 0,
 
-        /// <summary>
-        ///     The waiting
-        /// </summary>
-        Waiting = 1
-    }
+    /// <summary>
+    ///     The waiting
+    /// </summary>
+    Waiting = 1
 }

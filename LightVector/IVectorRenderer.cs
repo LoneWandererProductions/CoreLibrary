@@ -12,23 +12,22 @@
 
 using System.Windows.Media;
 
-namespace LightVector
+namespace LightVector;
+
+/// <summary>
+///     Interface for Vector Render
+/// </summary>
+public interface IVectorRenderer
 {
     /// <summary>
-    ///     Interface for Vector Render
+    ///     Renders to container.
     /// </summary>
-    public interface IVectorRenderer
-    {
-        /// <summary>
-        ///     Renders to container.
-        /// </summary>
-        /// <returns>Returns a framework-specific container</returns>
-        object RenderToContainer();
+    /// <returns>Returns a framework-specific container</returns>
+    object RenderToContainer();
 
-        /// <summary>
-        ///     Renders to image.
-        /// </summary>
-        /// <returns>Converts to a WPF Image</returns>
-        ImageSource RenderToImage();
-    }
+    /// <summary>
+    ///     Renders to image.
+    /// </summary>
+    /// <returns>Converts to a WPF Image</returns>
+    ImageSource RenderToImage();
 }

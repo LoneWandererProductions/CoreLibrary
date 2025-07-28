@@ -12,98 +12,97 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Communication
+namespace Communication;
+
+/// <summary>
+///     Simple Port Listener
+/// </summary>
+public sealed class Listener
 {
     /// <summary>
-    ///     Simple Port Listener
+    ///     The port
     /// </summary>
-    public sealed class Listener
+    private readonly int _port;
+
+    /// <summary>
+    ///     The TCP listener
+    /// </summary>
+    private readonly TcpListener _tcpListener;
+
+    /// <summary>
+    ///     The is running
+    /// </summary>
+    private bool _isRunning;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Listener" /> class.
+    /// </summary>
+    /// <param name="port">The port.</param>
+    public Listener(int port)
     {
-        /// <summary>
-        ///     The port
-        /// </summary>
-        private readonly int _port;
+        _port = port;
+        _tcpListener = new TcpListener(IPAddress.Any, port);
+    }
 
-        /// <summary>
-        ///     The TCP listener
-        /// </summary>
-        private readonly TcpListener _tcpListener;
+    /// <summary>
+    ///     Starts the listening.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public void StartListening(CancellationToken cancellationToken)
+    {
+        _isRunning = true;
+        _tcpListener.Start();
+        Console.WriteLine($"Listening on port {_port}...");
 
-        /// <summary>
-        ///     The is running
-        /// </summary>
-        private bool _isRunning;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Listener" /> class.
-        /// </summary>
-        /// <param name="port">The port.</param>
-        public Listener(int port)
+        while (_isRunning)
         {
-            _port = port;
-            _tcpListener = new TcpListener(IPAddress.Any, port);
-        }
-
-        /// <summary>
-        ///     Starts the listening.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        public void StartListening(CancellationToken cancellationToken)
-        {
-            _isRunning = true;
-            _tcpListener.Start();
-            Console.WriteLine($"Listening on port {_port}...");
-
-            while (_isRunning)
+            if (cancellationToken.IsCancellationRequested)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    StopListening();
-                    return;
-                }
+                StopListening();
+                return;
+            }
 
-                try
+            try
+            {
+                if (_tcpListener.Pending()) // Non-blocking accept
                 {
-                    if (_tcpListener.Pending()) // Non-blocking accept
-                    {
-                        var client = _tcpListener.AcceptTcpClient();
-                        ThreadPool.QueueUserWorkItem(HandleClient, client);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error accepting connection: {ex.Message}");
+                    var client = _tcpListener.AcceptTcpClient();
+                    ThreadPool.QueueUserWorkItem(HandleClient, client);
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error accepting connection: {ex.Message}");
+            }
         }
+    }
 
-        /// <summary>
-        ///     Stops the listening.
-        /// </summary>
-        public void StopListening()
-        {
-            _isRunning = false;
-            _tcpListener.Stop();
-            Console.WriteLine("Server stopped.");
-        }
+    /// <summary>
+    ///     Stops the listening.
+    /// </summary>
+    public void StopListening()
+    {
+        _isRunning = false;
+        _tcpListener.Stop();
+        Console.WriteLine("Server stopped.");
+    }
 
-        /// <summary>
-        ///     Handles the client.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private static void HandleClient(object obj)
-        {
-            var client = (TcpClient)obj;
-            var stream = client.GetStream();
+    /// <summary>
+    ///     Handles the client.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    private static void HandleClient(object obj)
+    {
+        var client = (TcpClient)obj;
+        var stream = client.GetStream();
 
-            // Respond with a simple message (acting as the "ping response")
-            const string response = "PONG";
-            var buffer = Encoding.ASCII.GetBytes(response);
-            stream.Write(buffer, 0, buffer.Length);
+        // Respond with a simple message (acting as the "ping response")
+        const string response = "PONG";
+        var buffer = Encoding.ASCII.GetBytes(response);
+        stream.Write(buffer, 0, buffer.Length);
 
-            // Close the connection
-            client.Close();
-            Console.WriteLine("Responded to a ping.");
-        }
+        // Close the connection
+        client.Close();
+        Console.WriteLine("Responded to a ping.");
     }
 }

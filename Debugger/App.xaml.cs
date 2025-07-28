@@ -6,14 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Debugger
+namespace Debugger;
+
+/// <inheritdoc />
+/// <summary>
+///     The app class.
+///     Entry Point for the Executable
+/// </summary>
+internal sealed partial class App
 {
-    /// <inheritdoc />
-    /// <summary>
-    ///     The app class.
-    ///     Entry Point for the Executable
-    /// </summary>
-    internal sealed partial class App
-    {
-    }
 }

@@ -11,32 +11,31 @@ using System.Threading;
 using Debugger;
 using NUnit.Framework;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGuiTests;
+
+public sealed class Debugger
 {
-    public sealed class Debugger
+    /// <summary>
+    ///     Test the Config saving and loading in the Debugger
+    /// </summary>
+    [Test]
+    [Apartment(ApartmentState.STA)]
+    public void LoadConfig()
     {
-        /// <summary>
-        ///     Test the Config saving and loading in the Debugger
-        /// </summary>
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void LoadConfig()
-        {
-            var log = new DebugLog();
-            log.Start();
-            Assert.IsTrue(DebugRegister.IsRunning, "Status not correct");
-            Assert.IsFalse(DebugRegister.IsDumpActive, "Dump failed");
+        var log = new DebugLog();
+        log.Start();
+        Assert.IsTrue(DebugRegister.IsRunning, "Status not correct");
+        Assert.IsFalse(DebugRegister.IsDumpActive, "Dump failed");
 
-            DebugRegister.IsDumpActive = true;
-            log.StopDebugging();
-            Assert.IsFalse(DebugRegister.IsRunning, "Status not correct");
-            Assert.IsTrue(DebugRegister.IsDumpActive, "Dump set");
+        DebugRegister.IsDumpActive = true;
+        log.StopDebugging();
+        Assert.IsFalse(DebugRegister.IsRunning, "Status not correct");
+        Assert.IsTrue(DebugRegister.IsDumpActive, "Dump set");
 
-            var path = DebugRegister.DebugPath;
+        var path = DebugRegister.DebugPath;
 
-            Trace.WriteLine(path);
+        Trace.WriteLine(path);
 
-            Assert.IsTrue(DebugRegister.IsDumpActive, "Dump loaded");
-        }
+        Assert.IsTrue(DebugRegister.IsDumpActive, "Dump loaded");
     }
 }

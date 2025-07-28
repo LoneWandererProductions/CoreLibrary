@@ -11,26 +11,25 @@
 
 using System.Collections.Generic;
 
-namespace InterOp
+namespace InterOp;
+
+/// <summary>
+///     The Registry Reader Interface
+/// </summary>
+internal interface IRegistryHandler
 {
     /// <summary>
-    ///     The Registry Reader Interface
+    ///     Gets the registry objects.
     /// </summary>
-    internal interface IRegistryHandler
-    {
-        /// <summary>
-        ///     Gets the registry objects.
-        /// </summary>
-        /// <param name="registryPath">The registry path.</param>
-        /// <returns>All Registry Objects in a certain Path</returns>
-        Dictionary<string, object> GetRegistryObjects(string registryPath);
+    /// <param name="registryPath">The registry path.</param>
+    /// <returns>All Registry Objects in a certain Path</returns>
+    Dictionary<string, object> GetRegistryObjects(string registryPath);
 
-        /// <summary>
-        ///     Writes the registry.
-        /// </summary>
-        /// <param name="registryPath">The registry path.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>Success Status</returns>
-        bool WriteRegistry(string registryPath, KeyValuePair<string, string> value);
-    }
+    /// <summary>
+    ///     Writes the registry.
+    /// </summary>
+    /// <param name="registryPath">The registry path.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>Success Status</returns>
+    bool WriteRegistry(string registryPath, KeyValuePair<string, string> value);
 }

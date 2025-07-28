@@ -11,60 +11,59 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoreInject
+namespace CoreInject;
+
+/// <inheritdoc />
+/// <summary>
+///     Manages a scope for resolving and tracking instances of services.
+///     Ensures that services registered within the same scope return the same instance.
+/// </summary>
+public sealed class SimpleScope : IDisposable
 {
+    /// <summary>
+    ///     Stores instances of services that should persist within the current scope.
+    /// </summary>
+    private readonly Dictionary<Type, object> _scopedInstances = new();
+
     /// <inheritdoc />
     /// <summary>
-    ///     Manages a scope for resolving and tracking instances of services.
-    ///     Ensures that services registered within the same scope return the same instance.
+    ///     Disposes all disposable objects registered in the scope and clears stored instances.
     /// </summary>
-    public sealed class SimpleScope : IDisposable
+    public void Dispose()
     {
-        /// <summary>
-        ///     Stores instances of services that should persist within the current scope.
-        /// </summary>
-        private readonly Dictionary<Type, object> _scopedInstances = new();
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Disposes all disposable objects registered in the scope and clears stored instances.
-        /// </summary>
-        public void Dispose()
+        foreach (var instance in _scopedInstances.Values)
         {
-            foreach (var instance in _scopedInstances.Values)
+            if (instance is IDisposable disposable)
             {
-                if (instance is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                disposable.Dispose();
             }
-
-            _scopedInstances.Clear();
         }
 
-        /// <summary>
-        ///     Resolves a service within the scope, ensuring that the same instance is returned
-        ///     for subsequent resolutions within the same scope.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="factory">A factory function to create a new instance if none exists.</param>
-        /// <returns>The resolved service instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the provided factory is null.</exception>
-        public TService Resolve<TService>(Func<object> factory)
+        _scopedInstances.Clear();
+    }
+
+    /// <summary>
+    ///     Resolves a service within the scope, ensuring that the same instance is returned
+    ///     for subsequent resolutions within the same scope.
+    /// </summary>
+    /// <typeparam name="TService">The type of the service.</typeparam>
+    /// <param name="factory">A factory function to create a new instance if none exists.</param>
+    /// <returns>The resolved service instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the provided factory is null.</exception>
+    public TService Resolve<TService>(Func<object> factory)
+    {
+        if (factory == null)
         {
-            if (factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory), CoreInjectResource.ErrorFactoryNull);
-            }
+            throw new ArgumentNullException(nameof(factory), CoreInjectResource.ErrorFactoryNull);
+        }
 
-            if (_scopedInstances.TryGetValue(typeof(TService), out var instance))
-            {
-                return (TService)instance;
-            }
-
-            instance = factory();
-            _scopedInstances[typeof(TService)] = instance;
+        if (_scopedInstances.TryGetValue(typeof(TService), out var instance))
+        {
             return (TService)instance;
         }
+
+        instance = factory();
+        _scopedInstances[typeof(TService)] = instance;
+        return (TService)instance;
     }
 }

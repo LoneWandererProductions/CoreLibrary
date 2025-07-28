@@ -8,28 +8,27 @@
 
 using System.Runtime.InteropServices;
 
-namespace ExtendedSystemObjects.Helper
+namespace ExtendedSystemObjects.Helper;
+
+/// <summary>
+///     Generic entry structure for a key-value pair.
+/// </summary>
+/// <typeparam name="TValue">The type of the value.</typeparam>
+[StructLayout(LayoutKind.Sequential)]
+public struct EntryGeneric<TValue> where TValue : unmanaged
 {
     /// <summary>
-    /// Generic entry structure for a key-value pair.
+    ///     The key
     /// </summary>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct EntryGeneric<TValue> where TValue : unmanaged
-    {
-        /// <summary>
-        /// The key
-        /// </summary>
-        public int Key;
+    public int Key;
 
-        /// <summary>
-        /// The value
-        /// </summary>
-        public TValue Value;
+    /// <summary>
+    ///     The value
+    /// </summary>
+    public TValue Value;
 
-        /// <summary>
-        /// The used
-        /// </summary>
-        public byte Used;
-    }
+    /// <summary>
+    ///     The used
+    /// </summary>
+    public byte Used;
 }

@@ -9,49 +9,48 @@
 using ExtendedSystemObjects;
 using Mathematics;
 
-namespace CommonExtendedObjectsTests
+namespace CommonExtendedObjectsTests;
+
+/// <summary>
+///     The helper methods class.
+/// </summary>
+internal static class HelperMethods
 {
     /// <summary>
-    ///     The helper methods class.
+    ///     Tests one. Matrix Multiplication
     /// </summary>
-    internal static class HelperMethods
+    /// <param name="mOne">The m one.</param>
+    /// <param name="mTwo">The m two.</param>
+    /// <returns>Matrix Multiplications</returns>
+    internal static BaseMatrix MatrixTestOne(BaseMatrix mOne, BaseMatrix mTwo)
     {
-        /// <summary>
-        ///     Tests one. Matrix Multiplication
-        /// </summary>
-        /// <param name="mOne">The m one.</param>
-        /// <param name="mTwo">The m two.</param>
-        /// <returns>Matrix Multiplications</returns>
-        internal static BaseMatrix MatrixTestOne(BaseMatrix mOne, BaseMatrix mTwo)
+        var h = mOne.Height;
+        var w = mTwo.Width;
+        var l = mOne.Width;
+        var result = new BaseMatrix(h, w);
+        var spanOne = mOne.Matrix.ToSpan();
+        var spanTwo = mTwo.Matrix.ToSpan();
+        var spanResult = result.Matrix.ToSpan();
+
+        for (var i = 0; i < h; i++)
         {
-            var h = mOne.Height;
-            var w = mTwo.Width;
-            var l = mOne.Width;
-            var result = new BaseMatrix(h, w);
-            var spanOne = mOne.Matrix.ToSpan();
-            var spanTwo = mTwo.Matrix.ToSpan();
-            var spanResult = result.Matrix.ToSpan();
+            var iOne = i * l;
 
-            for (var i = 0; i < h; i++)
+            for (var j = 0; j < w; j++)
             {
-                var iOne = i * l;
+                var iTwo = j;
 
-                for (var j = 0; j < w; j++)
+                double res = 0;
+
+                for (var k = 0; k < l; k++, iTwo += w)
                 {
-                    var iTwo = j;
-
-                    double res = 0;
-
-                    for (var k = 0; k < l; k++, iTwo += w)
-                    {
-                        res += spanOne[iOne + k] * spanTwo[iTwo];
-                    }
-
-                    spanResult[(i * w) + j] = res;
+                    res += spanOne[iOne + k] * spanTwo[iTwo];
                 }
-            }
 
-            return result;
+                spanResult[(i * w) + j] = res;
+            }
         }
+
+        return result;
     }
 }

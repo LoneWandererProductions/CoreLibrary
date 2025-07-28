@@ -10,44 +10,43 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests
+namespace CommonLibrarySqlLiteTests;
+
+/// <summary>
+///     The sql lite helper db pragma table info unit test class.
+/// </summary>
+[TestClass]
+public sealed class SqlLiteHelperDbPragmaTableInfo
 {
     /// <summary>
-    ///     The sql lite helper db pragma table info unit test class.
+    ///     The target (readonly). Value: new SqlLiteDatabase().
     /// </summary>
-    [TestClass]
-    public sealed class SqlLiteHelperDbPragmaTableInfo
+    private readonly SqliteDatabase _target = new();
+
+    /// <summary>
+    ///     Test if we can Select a Database
+    /// </summary>
+    [TestMethod]
+    public void TestDatabasePragmaTableInfo()
     {
-        /// <summary>
-        ///     The target (readonly). Value: new SqlLiteDatabase().
-        /// </summary>
-        private readonly SqliteDatabase _target = new();
+        _target.SendMessage += SharedHelperClass.DebugPrints;
 
-        /// <summary>
-        ///     Test if we can Select a Database
-        /// </summary>
-        [TestMethod]
-        public void TestDatabasePragmaTableInfo()
-        {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+        //cleanup
+        SharedHelperClass.CleanUp(ResourcesSqlLite.PathPragmaTableInfo);
 
-            //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.PathPragmaTableInfo);
+        //Check if file was created
+        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbPragmaIndexList, true);
+        Assert.IsTrue(File.Exists(ResourcesSqlLite.PathPragmaTableInfo),
+            "Test passed Create " + _target.LastErrors);
 
-            //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbPragmaIndexList, true);
-            Assert.IsTrue(File.Exists(ResourcesSqlLite.PathPragmaTableInfo),
-                "Test passed Create " + _target.LastErrors);
+        var header = SharedHelperClass.CreateTableHeadersMultiple();
+        //create the Table
+        var check = _target.CreateTable("newOne", header);
+        Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
 
-            var header = SharedHelperClass.CreateTableHeadersMultiple();
-            //create the Table
-            var check = _target.CreateTable("newOne", header);
-            Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
+        var cache = _target.Pragma_TableInfo("newOne");
 
-            var cache = _target.Pragma_TableInfo("newOne");
-
-            check = SharedHelperClass.CheckPragmaTableInfo(cache, header);
-            Assert.IsTrue(check, "Test failed Compare Results" + _target.LastErrors);
-        }
+        check = SharedHelperClass.CheckPragmaTableInfo(cache, header);
+        Assert.IsTrue(check, "Test failed Compare Results" + _target.LastErrors);
     }
 }

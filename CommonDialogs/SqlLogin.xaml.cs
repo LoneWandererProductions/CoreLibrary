@@ -10,22 +10,21 @@
 
 using System.Windows;
 
-namespace CommonDialogs
+namespace CommonDialogs;
+
+/// <inheritdoc cref="Window" />
+/// <summary>
+///     Login Window for Sql Server
+/// </summary>
+/// <seealso cref="Window" />
+public sealed partial class SqlLogin
 {
-    /// <inheritdoc cref="Window" />
+    /// <inheritdoc />
     /// <summary>
-    ///     Login Window for Sql Server
+    ///     Initializes a new instance of the <see cref="SqlLogin" /> class.
     /// </summary>
-    /// <seealso cref="Window" />
-    public sealed partial class SqlLogin
+    public SqlLogin()
     {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SqlLogin" /> class.
-        /// </summary>
-        public SqlLogin()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

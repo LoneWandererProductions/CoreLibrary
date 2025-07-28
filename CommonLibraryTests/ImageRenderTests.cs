@@ -11,46 +11,45 @@ using System.Drawing;
 using Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonLibraryTests;
+
+/// <summary>
+///     Some Basic Image Render tets
+/// </summary>
+[TestClass]
+public class ImageRenderTests
 {
+    private IImageRender _imageRender;
+
     /// <summary>
-    ///     Some Basic Image Render tets
+    ///     Setups this instance.
     /// </summary>
-    [TestClass]
-    public class ImageRenderTests
+    [TestInitialize]
+    public void Setup()
     {
-        private IImageRender _imageRender;
+        _imageRender = new ImageRender(); // Assuming ImageRender implements IImageRender
+    }
 
-        /// <summary>
-        ///     Setups this instance.
-        /// </summary>
-        [TestInitialize]
-        public void Setup()
-        {
-            _imageRender = new ImageRender(); // Assuming ImageRender implements IImageRender
-        }
+    /// <summary>
+    ///     Fills the area with color start point not null remains not null.
+    /// </summary>
+    [TestMethod]
+    public void FillAreaWithColorStartPointNotNullRemainsNotNull()
+    {
+        // Arrange
+        var image = new Bitmap(10, 10);
+        int? width = 5;
+        int? height = 5;
+        var color = Color.Red;
+        const MaskShape shape = MaskShape.Circle;
+        object shapeParams = null;
+        Point? startPoint = new Point(3, 3); // Non-null start point
 
-        /// <summary>
-        ///     Fills the area with color start point not null remains not null.
-        /// </summary>
-        [TestMethod]
-        public void FillAreaWithColorStartPointNotNullRemainsNotNull()
-        {
-            // Arrange
-            var image = new Bitmap(10, 10);
-            int? width = 5;
-            int? height = 5;
-            var color = Color.Red;
-            const MaskShape shape = MaskShape.Circle;
-            object shapeParams = null;
-            Point? startPoint = new Point(3, 3); // Non-null start point
+        // Act
+        _imageRender.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);
 
-            // Act
-            _imageRender.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);
-
-            // Assert
-            Assert.IsNotNull(startPoint, "startPoint should not be null after method call");
-            Assert.AreEqual(new Point(3, 3), startPoint.Value, "startPoint value should remain unchanged");
-        }
+        // Assert
+        Assert.IsNotNull(startPoint, "startPoint should not be null after method call");
+        Assert.AreEqual(new Point(3, 3), startPoint.Value, "startPoint value should remain unchanged");
     }
 }

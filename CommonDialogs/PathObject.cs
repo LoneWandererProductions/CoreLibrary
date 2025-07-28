@@ -11,75 +11,74 @@
 
 using System.IO;
 
-namespace CommonDialogs
+namespace CommonDialogs;
+
+/// <summary>
+///     Save some Time and return basic Values
+/// </summary>
+public sealed class PathObject
 {
     /// <summary>
-    ///     Save some Time and return basic Values
+    ///     Gets or sets the file path. Full Path.
     /// </summary>
-    public sealed class PathObject
+    public string? FilePath { get; internal init; }
+
+    /// <summary>
+    ///     Gets the folder.
+    /// </summary>
+    public string? Folder => GetFolder();
+
+    /// <summary>
+    ///     Gets the file name.
+    /// </summary>
+    public string? FileName => GetGetFileName();
+
+    /// <summary>
+    ///     Gets the file name without ext.
+    /// </summary>
+    public string? FileNameWithoutExt => GetGetFileNameWithoutExtension();
+
+    /// <summary>
+    ///     Gets the File extension.
+    /// </summary>
+    /// <value>
+    ///     The extension.
+    /// </value>
+    public string? Extension => GetFileExtension();
+
+    /// <summary>
+    ///     Get the folder.
+    /// </summary>
+    /// <returns>The Folder as <see cref="string" />.</returns>
+    private string? GetFolder()
     {
-        /// <summary>
-        ///     Gets or sets the file path. Full Path.
-        /// </summary>
-        public string? FilePath { get; internal init; }
+        return Path.GetDirectoryName(FilePath);
+    }
 
-        /// <summary>
-        ///     Gets the folder.
-        /// </summary>
-        public string? Folder => GetFolder();
+    /// <summary>
+    ///     Get the get file name.
+    /// </summary>
+    /// <returns>The File Name as<see cref="string" />.</returns>
+    private string? GetGetFileName()
+    {
+        return Path.GetFileName(FilePath);
+    }
 
-        /// <summary>
-        ///     Gets the file name.
-        /// </summary>
-        public string? FileName => GetGetFileName();
+    /// <summary>
+    ///     Get the get file name without extension.
+    /// </summary>
+    /// <returns>The  File Name without extension as<see cref="string" />.</returns>
+    private string? GetGetFileNameWithoutExtension()
+    {
+        return Path.GetFileNameWithoutExtension(FileName);
+    }
 
-        /// <summary>
-        ///     Gets the file name without ext.
-        /// </summary>
-        public string? FileNameWithoutExt => GetGetFileNameWithoutExtension();
-
-        /// <summary>
-        ///     Gets the File extension.
-        /// </summary>
-        /// <value>
-        ///     The extension.
-        /// </value>
-        public string? Extension => GetFileExtension();
-
-        /// <summary>
-        ///     Get the folder.
-        /// </summary>
-        /// <returns>The Folder as <see cref="string" />.</returns>
-        private string? GetFolder()
-        {
-            return Path.GetDirectoryName(FilePath);
-        }
-
-        /// <summary>
-        ///     Get the get file name.
-        /// </summary>
-        /// <returns>The File Name as<see cref="string" />.</returns>
-        private string? GetGetFileName()
-        {
-            return Path.GetFileName(FilePath);
-        }
-
-        /// <summary>
-        ///     Get the get file name without extension.
-        /// </summary>
-        /// <returns>The  File Name without extension as<see cref="string" />.</returns>
-        private string? GetGetFileNameWithoutExtension()
-        {
-            return Path.GetFileNameWithoutExtension(FileName);
-        }
-
-        /// <summary>
-        ///     Gets the file extension.
-        /// </summary>
-        /// <returns>the file Extension</returns>
-        private string? GetFileExtension()
-        {
-            return Path.GetExtension(FileName);
-        }
+    /// <summary>
+    ///     Gets the file extension.
+    /// </summary>
+    /// <returns>the file Extension</returns>
+    private string? GetFileExtension()
+    {
+        return Path.GetExtension(FileName);
     }
 }

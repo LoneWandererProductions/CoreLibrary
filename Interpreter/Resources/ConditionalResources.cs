@@ -6,13 +6,12 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter.Resources
+namespace Interpreter.Resources;
+
+internal static class ConditionalResources
 {
-    internal static class ConditionalResources
-    {
-        /// <summary>
-        ///     The category nested. Value: "Nested".
-        /// </summary>
-        internal const string InternalCategoryNested = "Nested";
-    }
+    /// <summary>
+    ///     The category nested. Value: "Nested".
+    /// </summary>
+    internal const string InternalCategoryNested = "Nested";
 }

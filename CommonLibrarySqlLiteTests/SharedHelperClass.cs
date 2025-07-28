@@ -12,272 +12,265 @@ using System.IO;
 using System.Linq;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests
+namespace CommonLibrarySqlLiteTests;
+
+/// <summary>
+///     The shared helper class.
+/// </summary>
+internal static class SharedHelperClass
 {
     /// <summary>
-    ///     The shared helper class.
+    ///     Delete Database
     /// </summary>
-    internal static class SharedHelperClass
+    /// <param name="fullPath">Full Path</param>
+    internal static void CleanUp(string fullPath)
     {
-        /// <summary>
-        ///     Delete Database
-        /// </summary>
-        /// <param name="fullPath">Full Path</param>
-        internal static void CleanUp(string fullPath)
+        if (File.Exists(fullPath))
         {
-            if (File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
+            File.Delete(fullPath);
         }
+    }
 
-        /// <summary>
-        ///     Generate all table Headers
-        /// </summary>
-        /// <returns>Dictionary with Table Headers</returns>
-        public static DictionaryTableColumns CreateTableHeadersSimple()
+    /// <summary>
+    ///     Generate all table Headers
+    /// </summary>
+    /// <returns>Dictionary with Table Headers</returns>
+    public static DictionaryTableColumns CreateTableHeadersSimple()
+    {
+        var elementOne = new TableColumns
         {
-            var elementOne = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
-            };
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+        };
 
-            var elementTwo = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
-            };
-
-            var elementThree = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
-            };
-
-            var columns = new DictionaryTableColumns();
-
-            columns.DColumns.Add("First", elementOne);
-            columns.DColumns.Add("Second", elementTwo);
-            columns.DColumns.Add("Third", elementThree);
-            columns.DColumns.Add("Fourth", elementThree);
-
-            return columns;
-        }
-
-        /// <summary>
-        ///     Generate all table Headers
-        /// </summary>
-        /// <returns>Dictionary with Table Headers</returns>
-        public static DictionaryTableColumns CreateTableHeadersMultiple()
+        var elementTwo = new TableColumns
         {
-            var elementOne = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
-            };
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+        };
 
-            var elementTwo = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = false
-            };
+        var elementThree = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
+        };
 
-            var elementThree = new TableColumns
+        var columns = new DictionaryTableColumns();
+
+        columns.DColumns.Add("First", elementOne);
+        columns.DColumns.Add("Second", elementTwo);
+        columns.DColumns.Add("Third", elementThree);
+        columns.DColumns.Add("Fourth", elementThree);
+
+        return columns;
+    }
+
+    /// <summary>
+    ///     Generate all table Headers
+    /// </summary>
+    /// <returns>Dictionary with Table Headers</returns>
+    public static DictionaryTableColumns CreateTableHeadersMultiple()
+    {
+        var elementOne = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+        };
+
+        var elementTwo = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = false
+        };
+
+        var elementThree = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
+        };
+
+        var elementFour = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
+        };
+
+        var elementFive = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
+        };
+
+        var columns = new DictionaryTableColumns();
+
+        columns.DColumns.Add("First", elementOne);
+        columns.DColumns.Add("Second", elementTwo);
+        columns.DColumns.Add("Third", elementThree);
+        columns.DColumns.Add("Fourth", elementFour);
+        columns.DColumns.Add("Five", elementFive);
+
+        return columns;
+    }
+
+    /// <summary>
+    ///     Like CreateTableHeadersMultiple but with Unique Column
+    /// </summary>
+    /// <returns>Dictionary with Table Headers</returns>
+    internal static DictionaryTableColumns CreateTableHeadersUniqueMultiple()
+    {
+        var elementFour = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
+        };
+
+        var columns = new DictionaryTableColumns();
+
+        columns.DColumns.Add("First",
+            new TableColumns { DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false });
+        columns.DColumns.Add("Second",
+            new TableColumns { DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false });
+        columns.DColumns.Add("Third",
+            new TableColumns
             {
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-            };
-
-            var elementFour = new TableColumns
+            });
+        columns.DColumns.Add("Fourth", elementFour);
+        columns.DColumns.Add("Five",
+            new TableColumns
             {
                 DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-            };
+            });
 
-            var elementFive = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-            };
+        return columns;
+    }
 
-            var columns = new DictionaryTableColumns();
-
-            columns.DColumns.Add("First", elementOne);
-            columns.DColumns.Add("Second", elementTwo);
-            columns.DColumns.Add("Third", elementThree);
-            columns.DColumns.Add("Fourth", elementFour);
-            columns.DColumns.Add("Five", elementFive);
-
-            return columns;
-        }
-
-        /// <summary>
-        ///     Like CreateTableHeadersMultiple but with Unique Column
-        /// </summary>
-        /// <returns>Dictionary with Table Headers</returns>
-        internal static DictionaryTableColumns CreateTableHeadersUniqueMultiple()
+    /// <summary>
+    ///     Generate Content for Table
+    /// </summary>
+    /// <returns>Dictionary with Table Headers</returns>
+    public static List<TableSet> CreateContent()
+    {
+        var columns = new List<TableSet>();
+        for (var j = 0; j < 8; j++)
         {
-            var elementFour = new TableColumns
+            var tableSet = new TableSet();
+
+            for (var i = 0; i < 5; i++)
             {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
-            };
-
-            var columns = new DictionaryTableColumns();
-
-            columns.DColumns.Add("First",
-                new TableColumns
-                {
-                    DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false
-                });
-            columns.DColumns.Add("Second",
-                new TableColumns
-                {
-                    DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
-                });
-            columns.DColumns.Add("Third",
-                new TableColumns
-                {
-                    DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-                });
-            columns.DColumns.Add("Fourth", elementFour);
-            columns.DColumns.Add("Five",
-                new TableColumns
-                {
-                    DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
-                });
-
-            return columns;
-        }
-
-        /// <summary>
-        ///     Generate Content for Table
-        /// </summary>
-        /// <returns>Dictionary with Table Headers</returns>
-        public static List<TableSet> CreateContent()
-        {
-            var columns = new List<TableSet>();
-            for (var j = 0; j < 8; j++)
-            {
-                var tableSet = new TableSet();
-
-                for (var i = 0; i < 5; i++)
-                {
-                    tableSet.Row.Add(i.ToString());
-                }
-
-                columns.Add(tableSet);
+                tableSet.Row.Add(i.ToString());
             }
 
-            return columns;
+            columns.Add(tableSet);
         }
 
-        /// <summary>
-        ///     Generate Content for Table, numbered this time
-        /// </summary>
-        /// <returns>Dictionary with Table Headers</returns>
-        internal static List<TableSet> CreateAdvancedContent()
+        return columns;
+    }
+
+    /// <summary>
+    ///     Generate Content for Table, numbered this time
+    /// </summary>
+    /// <returns>Dictionary with Table Headers</returns>
+    internal static List<TableSet> CreateAdvancedContent()
+    {
+        var columns = new List<TableSet>();
+        var count = -1;
+
+        for (var j = 0; j < 8; j++)
         {
-            var columns = new List<TableSet>();
-            var count = -1;
+            var tableSet = new TableSet();
 
-            for (var j = 0; j < 8; j++)
+            for (var i = 0; i < 5; i++)
             {
-                var tableSet = new TableSet();
-
-                for (var i = 0; i < 5; i++)
-                {
-                    count++;
-                    tableSet.Row.Add(count.ToString());
-                }
-
-                columns.Add(tableSet);
+                count++;
+                tableSet.Row.Add(count.ToString());
             }
 
-            return columns;
+            columns.Add(tableSet);
         }
 
-        /// <summary>
-        ///     Compares to Table Result Set
-        /// </summary>
-        /// <param name="tableOne">Table One</param>
-        /// <param name="tableTwo">Table Two</param>
-        /// <returns>If Tables are equal or not</returns>
-        internal static bool CompareTableMultipleSet(List<TableSet> tableOne, List<TableSet> tableTwo)
+        return columns;
+    }
+
+    /// <summary>
+    ///     Compares to Table Result Set
+    /// </summary>
+    /// <param name="tableOne">Table One</param>
+    /// <param name="tableTwo">Table Two</param>
+    /// <returns>If Tables are equal or not</returns>
+    internal static bool CompareTableMultipleSet(List<TableSet> tableOne, List<TableSet> tableTwo)
+    {
+        if (tableOne.Count != tableTwo.Count)
         {
-            if (tableOne.Count != tableTwo.Count)
-            {
-                return false; // Different number of items
-            }
-
-            for (var i = 0; i < tableOne.Count; i++)
-            {
-                var one = tableOne[i];
-                var two = tableTwo[i];
-                if (!one.Row.SequenceEqual(two.Row))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return false; // Different number of items
         }
 
-        /// <summary>
-        ///     Compares output and Input Data
-        /// </summary>
-        /// <param name="pragma">Data we get from the Pragma</param>
-        /// <param name="headers">Data we sent</param>
-        /// <returns>If Tables are equal or not</returns>
-        internal static bool CheckPragmaTableInfo(DictionaryTableColumns pragma, DictionaryTableColumns headers)
+        for (var i = 0; i < tableOne.Count; i++)
         {
-            if (pragma.DColumns.Count != headers.DColumns.Count)
-            {
-                return false; // Different number of items
-            }
-
-            foreach (var res in pragma.DColumns)
-            {
-                if (!headers.DColumns.TryGetValue(res.Key, out var head))
-                {
-                    return false; // key missing in b
-                }
-
-                if (!CompareValue(res.Value, head))
-                {
-                    return false; // value is different
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Just Compare two Values
-        /// </summary>
-        /// <param name="res">Table one</param>
-        /// <param name="head">Table two</param>
-        /// <returns>If Tables are equal or not</returns>
-        private static bool CompareValue(TableColumns res, TableColumns head)
-        {
-            if (res.DataType != head.DataType)
+            var one = tableOne[i];
+            var two = tableTwo[i];
+            if (!one.Row.SequenceEqual(two.Row))
             {
                 return false;
             }
-
-            if (res.NotNull != head.NotNull)
-            {
-                return false;
-            }
-
-            if (res.PrimaryKey != head.PrimaryKey)
-            {
-                return false;
-            }
-
-            return res.Unique == head.Unique;
         }
 
-        /// <summary>
-        ///     Print out Debug Messages
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The error Message.</param>
-        internal static void DebugPrints(object sender, string e)
+        return true;
+    }
+
+    /// <summary>
+    ///     Compares output and Input Data
+    /// </summary>
+    /// <param name="pragma">Data we get from the Pragma</param>
+    /// <param name="headers">Data we sent</param>
+    /// <returns>If Tables are equal or not</returns>
+    internal static bool CheckPragmaTableInfo(DictionaryTableColumns pragma, DictionaryTableColumns headers)
+    {
+        if (pragma.DColumns.Count != headers.DColumns.Count)
         {
-            Trace.WriteLine(e);
+            return false; // Different number of items
         }
+
+        foreach (var res in pragma.DColumns)
+        {
+            if (!headers.DColumns.TryGetValue(res.Key, out var head))
+            {
+                return false; // key missing in b
+            }
+
+            if (!CompareValue(res.Value, head))
+            {
+                return false; // value is different
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    ///     Just Compare two Values
+    /// </summary>
+    /// <param name="res">Table one</param>
+    /// <param name="head">Table two</param>
+    /// <returns>If Tables are equal or not</returns>
+    private static bool CompareValue(TableColumns res, TableColumns head)
+    {
+        if (res.DataType != head.DataType)
+        {
+            return false;
+        }
+
+        if (res.NotNull != head.NotNull)
+        {
+            return false;
+        }
+
+        if (res.PrimaryKey != head.PrimaryKey)
+        {
+            return false;
+        }
+
+        return res.Unique == head.Unique;
+    }
+
+    /// <summary>
+    ///     Print out Debug Messages
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The error Message.</param>
+    internal static void DebugPrints(object sender, string e)
+    {
+        Trace.WriteLine(e);
     }
 }

@@ -8,29 +8,28 @@
 
 using System.Collections.Generic;
 
-namespace Pathfinder
+namespace Pathfinder;
+
+/// <summary>
+///     Represents the result of a pathfinder operation.
+/// </summary>
+public sealed class PathfinderResults
 {
     /// <summary>
-    ///     Represents the result of a pathfinder operation.
+    ///     Initializes a new instance of the <see cref="PathfinderResults" /> class.
     /// </summary>
-    public sealed class PathfinderResults
+    public PathfinderResults()
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="PathfinderResults" /> class.
-        /// </summary>
-        public PathfinderResults()
-        {
-            LimitedRangePath = new List<Node>();
-        }
-
-        /// <summary>
-        ///     Gets or sets the full path from the start to the goal.
-        /// </summary>
-        public List<Node> FullPath { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the path considering the range limit.
-        /// </summary>
-        public List<Node> LimitedRangePath { get; set; }
+        LimitedRangePath = new List<Node>();
     }
+
+    /// <summary>
+    ///     Gets or sets the full path from the start to the goal.
+    /// </summary>
+    public List<Node> FullPath { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the path considering the range limit.
+    /// </summary>
+    public List<Node> LimitedRangePath { get; set; }
 }

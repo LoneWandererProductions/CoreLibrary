@@ -8,17 +8,16 @@
 
 using System;
 
-namespace CommonControls
+namespace CommonControls;
+
+/// <inheritdoc />
+/// <summary>
+///     We need the Id of the clicked Image
+/// </summary>
+public sealed class ImageEventArgs : EventArgs
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     We need the Id of the clicked Image
+    ///     The tile id.
     /// </summary>
-    public sealed class ImageEventArgs : EventArgs
-    {
-        /// <summary>
-        ///     The tile id.
-        /// </summary>
-        public int Id { get; internal init; }
-    }
+    public int Id { get; internal init; }
 }

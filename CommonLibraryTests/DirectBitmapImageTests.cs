@@ -14,397 +14,396 @@ using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RenderEngine;
 
-namespace CommonLibraryTests
+namespace CommonLibraryTests;
+
+/// <summary>
+///     DirectBitmapImage test cases
+/// </summary>
+[TestClass]
+public class DirectBitmapImageTests
 {
+    private const int Width = 10;
+    private const int Height = 10;
+    private DirectBitmapImage _bitmapImage;
+
     /// <summary>
-    ///     DirectBitmapImage test cases
+    ///     Setups this instance.
     /// </summary>
-    [TestClass]
-    public class DirectBitmapImageTests
+    [TestInitialize]
+    public void Setup()
     {
-        private const int Width = 10;
-        private const int Height = 10;
-        private DirectBitmapImage _bitmapImage;
+        _bitmapImage = new DirectBitmapImage(Width, Height);
+    }
 
-        /// <summary>
-        ///     Setups this instance.
-        /// </summary>
-        [TestInitialize]
-        public void Setup()
+    /// <summary>
+    ///     Cleanups this instance.
+    /// </summary>
+    [TestCleanup]
+    public void Cleanup()
+    {
+        _bitmapImage.Dispose();
+    }
+
+    /// <summary>
+    ///     Sets the pixels valid pixels updates bitmap.
+    /// </summary>
+    [TestMethod]
+    public void SetPixelsValidPixelsUpdatesBitmap()
+    {
+        var pixels = new List<PixelData>
         {
-            _bitmapImage = new DirectBitmapImage(Width, Height);
-        }
+            new()
+            {
+                X = 0,
+                Y = 0,
+                R = 255,
+                G = 0,
+                B = 0,
+                A = 255
+            }, // Red
+            new()
+            {
+                X = 1,
+                Y = 1,
+                R = 0,
+                G = 255,
+                B = 0,
+                A = 255
+            }, // Green
+            new()
+            {
+                X = 2,
+                Y = 2,
+                R = 0,
+                G = 0,
+                B = 255,
+                A = 255
+            } // Blue
+        };
 
-        /// <summary>
-        ///     Cleanups this instance.
-        /// </summary>
-        [TestCleanup]
-        public void Cleanup()
+        _bitmapImage.SetPixels(pixels);
+
+        // Check that the colors were set correctly in the Bits array
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)), _bitmapImage.Bits[0]); // Red
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
+            _bitmapImage.Bits[Width + 1]); // Green
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
+            _bitmapImage.Bits[(Width * 2) + 2]); // Blue
+    }
+
+    /// <summary>
+    ///     Constructors the initializes bits array.
+    /// </summary>
+    [TestMethod]
+    public void ConstructorInitializesBitsArray()
+    {
+        // Assert that the Bits array is initialized correctly
+        Assert.IsNotNull(_bitmapImage.Bits);
+        Assert.AreEqual(Width * Height, _bitmapImage.Bits.Length);
+    }
+
+    /// <summary>
+    ///     Sets the pixels simd two inputs should set correct pixels.
+    /// </summary>
+    [TestMethod]
+    public void SetPixelsSimdTwoInputsShouldSetCorrectPixels()
+    {
+        // Arrange
+        var pixels = new List<(int x, int y, Color color)>
         {
-            _bitmapImage.Dispose();
-        }
+            (0, 0, new Color { A = 255, R = 255, G = 0, B = 0 }), // Red pixel
+            (1, 0, new Color { A = 255, R = 0, G = 255, B = 0 }) // Green pixel
+        };
 
-        /// <summary>
-        ///     Sets the pixels valid pixels updates bitmap.
-        /// </summary>
-        [TestMethod]
-        public void SetPixelsValidPixelsUpdatesBitmap()
+        // Act
+        _bitmapImage.SetPixelsSimd(pixels);
+
+        // Assert
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)),
+            _bitmapImage.Bits[0]); // Red pixel ARGB
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
+            _bitmapImage.Bits[1]); // Green pixel ARGB
+    }
+
+    /// <summary>
+    ///     Applies the color matrix valid matrix transforms colors.
+    /// </summary>
+    [TestMethod]
+    public void ApplyColorMatrixValidMatrixTransformsColors()
+    {
+        _bitmapImage = new DirectBitmapImage(1, 2);
+        // Set initial pixel colors
+        var initialPixels = new List<PixelData>
         {
-            var pixels = new List<PixelData>
+            new()
             {
-                new()
-                {
-                    X = 0,
-                    Y = 0,
-                    R = 255,
-                    G = 0,
-                    B = 0,
-                    A = 255
-                }, // Red
-                new()
-                {
-                    X = 1,
-                    Y = 1,
-                    R = 0,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                }, // Green
-                new()
-                {
-                    X = 2,
-                    Y = 2,
-                    R = 0,
-                    G = 0,
-                    B = 255,
-                    A = 255
-                } // Blue
-            };
-
-            _bitmapImage.SetPixels(pixels);
-
-            // Check that the colors were set correctly in the Bits array
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)), _bitmapImage.Bits[0]); // Red
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
-                _bitmapImage.Bits[Width + 1]); // Green
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
-                _bitmapImage.Bits[(Width * 2) + 2]); // Blue
-        }
-
-        /// <summary>
-        ///     Constructors the initializes bits array.
-        /// </summary>
-        [TestMethod]
-        public void ConstructorInitializesBitsArray()
+                X = 0,
+                Y = 0,
+                R = 255,
+                G = 0,
+                B = 0,
+                A = 255
+            }, // Red
+            new()
+            {
+                X = 1,
+                Y = 0,
+                R = 0,
+                G = 255,
+                B = 0,
+                A = 255
+            } // Green
+        };
+        _bitmapImage.SetPixels(initialPixels);
+        // Define a color matrix to convert colors to grayscale
+        var matrix = new[]
         {
-            // Assert that the Bits array is initialized correctly
-            Assert.IsNotNull(_bitmapImage.Bits);
-            Assert.AreEqual(Width * Height, _bitmapImage.Bits.Length);
-        }
+            new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+            new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
+        };
+        _bitmapImage.ApplyColorMatrix(matrix);
 
-        /// <summary>
-        ///     Sets the pixels simd two inputs should set correct pixels.
-        /// </summary>
-        [TestMethod]
-        public void SetPixelsSimdTwoInputsShouldSetCorrectPixels()
+        var colorValue = _bitmapImage.Bits[0];
+
+        var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+        var r = (byte)((colorValue >> 16) & 0xFF); // Red
+        var g = (byte)((colorValue >> 8) & 0xFF); // Green
+        var b = (byte)(colorValue & 0xFF); // Blue
+
+
+        Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+
+        colorValue = _bitmapImage.Bits[1];
+
+        a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+        r = (byte)((colorValue >> 16) & 0xFF); // Red
+        g = (byte)((colorValue >> 8) & 0xFF); // Green
+        b = (byte)(colorValue & 0xFF); // Blue
+
+
+        Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+
+        // Assert that colors were transformed correctly to grayscale
+        Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
+        Assert.AreEqual((UInt32)0, _bitmapImage.Bits[1]); // Grayscale for Green
+    }
+
+    /// <summary>
+    ///     Matrix multiplications.
+    /// </summary>
+    [TestMethod]
+    public void MatrixMultiplicationColor()
+    {
+        _bitmapImage = new DirectBitmapImage(1, 1);
+        // Define the expected packed color
+        const uint expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
+
+        // Define the color transformation matrix for grayscale
+        double[,] colorMatrix =
         {
-            // Arrange
-            var pixels = new List<(int x, int y, Color color)>
-            {
-                (0, 0, new Color { A = 255, R = 255, G = 0, B = 0 }), // Red pixel
-                (1, 0, new Color { A = 255, R = 0, G = 255, B = 0 }) // Green pixel
-            };
+            { 0.3, 0.3, 0.3, 0, 0 }, { 0.59, 0.59, 0.59, 0, 0 }, { 0.11, 0.11, 0.11, 0, 0 }, { 0, 0, 0, 1, 0 },
+            { 0, 0, 0, 0, 0 }
+        };
 
-            // Act
-            _bitmapImage.SetPixelsSimd(pixels);
-
-            // Assert
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)),
-                _bitmapImage.Bits[0]); // Red pixel ARGB
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
-                _bitmapImage.Bits[1]); // Green pixel ARGB
-        }
-
-        /// <summary>
-        ///     Applies the color matrix valid matrix transforms colors.
-        /// </summary>
-        [TestMethod]
-        public void ApplyColorMatrixValidMatrixTransformsColors()
+        // Define the initial pixel color (Green) as a column vector (5x1)
+        double[,] initialPixel =
         {
-            _bitmapImage = new DirectBitmapImage(1, 2);
-            // Set initial pixel colors
-            var initialPixels = new List<PixelData>
-            {
-                new()
-                {
-                    X = 0,
-                    Y = 0,
-                    R = 255,
-                    G = 0,
-                    B = 0,
-                    A = 255
-                }, // Red
-                new()
-                {
-                    X = 1,
-                    Y = 0,
-                    R = 0,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                } // Green
-            };
-            _bitmapImage.SetPixels(initialPixels);
-            // Define a color matrix to convert colors to grayscale
-            var matrix = new[]
-            {
-                new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
-                new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
-            };
-            _bitmapImage.ApplyColorMatrix(matrix);
+            { 0 }, // R
+            { 255 }, // G
+            { 0 }, // B
+            { 255 }, // A
+            { 1 } // Additional value if needed
+        };
 
-            var colorValue = _bitmapImage.Bits[0];
+        // Perform matrix multiplication
+        var result = MatrixUtility.UnsafeMultiplication(colorMatrix, initialPixel);
 
-            var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
-            var r = (byte)((colorValue >> 16) & 0xFF); // Red
-            var g = (byte)((colorValue >> 8) & 0xFF); // Green
-            var b = (byte)(colorValue & 0xFF); // Blue
+        // Extract the results
+        var alpha = (int)result[3, 0];
+        var red = (int)Math.Round(result[0, 0]);
+        var green = (int)Math.Round(result[1, 0]);
+        var blue = (int)Math.Round(result[2, 0]);
 
+        // Assert the results
+        Assert.AreEqual(255, alpha, "Alpha value should be 255.");
+        Assert.AreEqual(76, red, "Red value should be 76.");
+        Assert.AreEqual(150, green, "Green value should be 150.");
+        Assert.AreEqual(28, blue, "Blue value should be 28.");
 
-            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+        // Convert individual components to packed uint
+        var packedColor = unchecked((uint)((alpha << 24) | (red << 16) | (green << 8) | blue));
 
-            colorValue = _bitmapImage.Bits[1];
+        Assert.AreEqual(packedColor, expectedPackedColor);
+    }
 
-            a = (byte)((colorValue >> 24) & 0xFF); // Alpha
-            r = (byte)((colorValue >> 16) & 0xFF); // Red
-            g = (byte)((colorValue >> 8) & 0xFF); // Green
-            b = (byte)(colorValue & 0xFF); // Blue
-
-
-            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
-
-            // Assert that colors were transformed correctly to grayscale
-            Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
-            Assert.AreEqual((UInt32)0, _bitmapImage.Bits[1]); // Grayscale for Green
-        }
-
-        /// <summary>
-        ///     Matrix multiplications.
-        /// </summary>
-        [TestMethod]
-        public void MatrixMultiplicationColor()
+    /// <summary>
+    ///     Applies the color of the color matrix valid matrix transforms.
+    /// </summary>
+    [TestMethod]
+    public void ApplyColorMatrixValidMatrixTransformsColor()
+    {
+        _bitmapImage = new DirectBitmapImage(1, 1);
+        // Set initial pixel colors
+        var initialPixels = new List<PixelData>
         {
-            _bitmapImage = new DirectBitmapImage(1, 1);
-            // Define the expected packed color
-            const uint expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
-
-            // Define the color transformation matrix for grayscale
-            double[,] colorMatrix =
+            new()
             {
-                { 0.3, 0.3, 0.3, 0, 0 }, { 0.59, 0.59, 0.59, 0, 0 }, { 0.11, 0.11, 0.11, 0, 0 }, { 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0 }
-            };
-
-            // Define the initial pixel color (Green) as a column vector (5x1)
-            double[,] initialPixel =
-            {
-                { 0 }, // R
-                { 255 }, // G
-                { 0 }, // B
-                { 255 }, // A
-                { 1 } // Additional value if needed
-            };
-
-            // Perform matrix multiplication
-            var result = MatrixUtility.UnsafeMultiplication(colorMatrix, initialPixel);
-
-            // Extract the results
-            var alpha = (int)result[3, 0];
-            var red = (int)Math.Round(result[0, 0]);
-            var green = (int)Math.Round(result[1, 0]);
-            var blue = (int)Math.Round(result[2, 0]);
-
-            // Assert the results
-            Assert.AreEqual(255, alpha, "Alpha value should be 255.");
-            Assert.AreEqual(76, red, "Red value should be 76.");
-            Assert.AreEqual(150, green, "Green value should be 150.");
-            Assert.AreEqual(28, blue, "Blue value should be 28.");
-
-            // Convert individual components to packed uint
-            var packedColor = unchecked((uint)((alpha << 24) | (red << 16) | (green << 8) | blue));
-
-            Assert.AreEqual(packedColor, expectedPackedColor);
-        }
-
-        /// <summary>
-        ///     Applies the color of the color matrix valid matrix transforms.
-        /// </summary>
-        [TestMethod]
-        public void ApplyColorMatrixValidMatrixTransformsColor()
+                X = 0,
+                Y = 0,
+                R = 0,
+                G = 255,
+                B = 0,
+                A = 255
+            } // Green
+        };
+        _bitmapImage.SetPixels(initialPixels);
+        // Define a color matrix to convert colors to grayscale
+        var matrix = new[]
         {
-            _bitmapImage = new DirectBitmapImage(1, 1);
-            // Set initial pixel colors
-            var initialPixels = new List<PixelData>
-            {
-                new()
-                {
-                    X = 0,
-                    Y = 0,
-                    R = 0,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                } // Green
-            };
-            _bitmapImage.SetPixels(initialPixels);
-            // Define a color matrix to convert colors to grayscale
-            var matrix = new[]
-            {
-                new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
-                new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
-            };
-            _bitmapImage.ApplyColorMatrix(matrix);
+            new[] { 0.3f, 0.3f, 0.3f, 0, 0 }, new[] { 0.59f, 0.59f, 0.59f, 0, 0 },
+            new[] { 0.11f, 0.11f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
+        };
+        _bitmapImage.ApplyColorMatrix(matrix);
 
-            var colorValue = _bitmapImage.Bits[0];
+        var colorValue = _bitmapImage.Bits[0];
 
-            var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
-            var r = (byte)((colorValue >> 16) & 0xFF); // Red
-            var g = (byte)((colorValue >> 8) & 0xFF); // Green
-            var b = (byte)(colorValue & 0xFF); // Blue
+        var a = (byte)((colorValue >> 24) & 0xFF); // Alpha
+        var r = (byte)((colorValue >> 16) & 0xFF); // Red
+        var g = (byte)((colorValue >> 8) & 0xFF); // Green
+        var b = (byte)(colorValue & 0xFF); // Blue
 
-            Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
+        Trace.WriteLine($"A: {a}, R: {r}, G: {g}, B: {b}");
 
-            // Assert that colors were transformed correctly to grayscale
-            Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
-        }
+        // Assert that colors were transformed correctly to grayscale
+        Assert.AreEqual(4283209244, _bitmapImage.Bits[0]);
+    }
 
-        /// <summary>
-        ///     Applies the color matrix grayscale all pixels should be gray.
-        /// </summary>
-        [TestMethod]
-        public void ApplyColorMatrixGrayscaleShouldMakeRGBEqual()
+    /// <summary>
+    ///     Applies the color matrix grayscale all pixels should be gray.
+    /// </summary>
+    [TestMethod]
+    public void ApplyColorMatrixGrayscaleShouldMakeRGBEqual()
+    {
+        var bmp = new DirectBitmapImage(2, 2);
+        bmp.SetPixels(new[]
         {
-            var bmp = new DirectBitmapImage(2, 2);
-            bmp.SetPixels(new[]
-            {
-                new PixelData(0, 0, 255, 0, 0), // red
-                new PixelData(1, 0, 0, 255, 0), // green
-                new PixelData(0, 1, 0, 0, 255), // blue
-                new PixelData(1, 1, 255, 255, 0) // yellow
-            });
+            new PixelData(0, 0, 255, 0, 0), // red
+            new PixelData(1, 0, 0, 255, 0), // green
+            new PixelData(0, 1, 0, 0, 255), // blue
+            new PixelData(1, 1, 255, 255, 0) // yellow
+        });
 
-            float[][] grayscaleMatrix =
-            {
-                new[] { 0.299f, 0.587f, 0.114f, 0 }, new[] { 0.299f, 0.587f, 0.114f, 0 },
-                new[] { 0.299f, 0.587f, 0.114f, 0 }, new float[] { 0, 0, 0, 1 }
-            };
-
-            bmp.ApplyColorMatrix(grayscaleMatrix);
-
-            foreach (var pixel in bmp.Bits)
-            {
-                var r = (int)((pixel >> 16) & 0xFF);
-                var g = (int)((pixel >> 8) & 0xFF);
-                var b = (int)(pixel & 0xFF);
-
-                Assert.IsTrue(Math.Abs(r - g) <= 1 && Math.Abs(g - b) <= 1,
-                    $"Pixel RGB mismatch: R={r}, G={g}, B={b}");
-            }
-        }
-
-        /// <summary>
-        ///     Sets the pixels simd valid pixels updates bits.
-        /// </summary>
-        [TestMethod]
-        public void SetPixelsSimdValidPixelsUpdatesBits()
+        float[][] grayscaleMatrix =
         {
-            var pixels = new List<(int x, int y, Color color)>
-            {
-                (0, 0, Color.FromArgb(255, 255, 0, 0)), // Red
-                (1, 1, Color.FromArgb(255, 0, 255, 0)), // Green
-                (2, 2, Color.FromArgb(255, 0, 0, 255)) // Blue
-            };
+            new[] { 0.299f, 0.587f, 0.114f, 0 }, new[] { 0.299f, 0.587f, 0.114f, 0 },
+            new[] { 0.299f, 0.587f, 0.114f, 0 }, new float[] { 0, 0, 0, 1 }
+        };
 
-            _bitmapImage.SetPixelsSimd(pixels);
+        bmp.ApplyColorMatrix(grayscaleMatrix);
 
-            // Check that the colors were set correctly in the Bits array
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)), _bitmapImage.Bits[0]); // Red
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
-                _bitmapImage.Bits[Width + 1]); // Green
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
-                _bitmapImage.Bits[(Width * 2) + 2]); // Blue
-        }
-
-        /// <summary>
-        ///     Sets the pixels should set correct pixel values.
-        /// </summary>
-        [TestMethod]
-        public void SetPixelsShouldSetCorrectPixelValues()
+        foreach (var pixel in bmp.Bits)
         {
-            // Arrange
-            var bitmapImage = new DirectBitmapImage(2, 2);
-            var pixels = new List<PixelData>
-            {
-                new()
-                {
-                    X = 0,
-                    Y = 0,
-                    R = 255,
-                    G = 0,
-                    B = 0,
-                    A = 255
-                }, // Red
-                new()
-                {
-                    X = 1,
-                    Y = 0,
-                    R = 0,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                }, // Green
-                new()
-                {
-                    X = 0,
-                    Y = 1,
-                    R = 0,
-                    G = 0,
-                    B = 255,
-                    A = 255
-                }, // Blue
-                new()
-                {
-                    X = 1,
-                    Y = 1,
-                    R = 255,
-                    G = 255,
-                    B = 0,
-                    A = 255
-                } // Yellow
-            };
+            var r = (int)((pixel >> 16) & 0xFF);
+            var g = (int)((pixel >> 8) & 0xFF);
+            var b = (int)(pixel & 0xFF);
 
-            // Act
-            bitmapImage.SetPixels(pixels);
-
-            // Assert using unsigned integers
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)),
-                bitmapImage.Bits[0]); // Check Red (0xFFFF0000)
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
-                bitmapImage.Bits[1]); // Check Green (0xFF00FF00)
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
-                bitmapImage.Bits[2]); // Check Blue (0xFF0000FF)
-            Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (255 << 8) | 0)),
-                bitmapImage.Bits[3]); // Check Yellow (0xFFFFFF00)
+            Assert.IsTrue(Math.Abs(r - g) <= 1 && Math.Abs(g - b) <= 1,
+                $"Pixel RGB mismatch: R={r}, G={g}, B={b}");
         }
+    }
 
-        /// <summary>
-        ///     Constructors the with zero dimensions should throw.
-        /// </summary>
-        [TestMethod]
-        public void ConstructorWithZeroDimensionsShouldThrow()
+    /// <summary>
+    ///     Sets the pixels simd valid pixels updates bits.
+    /// </summary>
+    [TestMethod]
+    public void SetPixelsSimdValidPixelsUpdatesBits()
+    {
+        var pixels = new List<(int x, int y, Color color)>
         {
-            // Act & Assert
-            _ = Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
-        }
+            (0, 0, Color.FromArgb(255, 255, 0, 0)), // Red
+            (1, 1, Color.FromArgb(255, 0, 255, 0)), // Green
+            (2, 2, Color.FromArgb(255, 0, 0, 255)) // Blue
+        };
+
+        _bitmapImage.SetPixelsSimd(pixels);
+
+        // Check that the colors were set correctly in the Bits array
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)), _bitmapImage.Bits[0]); // Red
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
+            _bitmapImage.Bits[Width + 1]); // Green
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
+            _bitmapImage.Bits[(Width * 2) + 2]); // Blue
+    }
+
+    /// <summary>
+    ///     Sets the pixels should set correct pixel values.
+    /// </summary>
+    [TestMethod]
+    public void SetPixelsShouldSetCorrectPixelValues()
+    {
+        // Arrange
+        var bitmapImage = new DirectBitmapImage(2, 2);
+        var pixels = new List<PixelData>
+        {
+            new()
+            {
+                X = 0,
+                Y = 0,
+                R = 255,
+                G = 0,
+                B = 0,
+                A = 255
+            }, // Red
+            new()
+            {
+                X = 1,
+                Y = 0,
+                R = 0,
+                G = 255,
+                B = 0,
+                A = 255
+            }, // Green
+            new()
+            {
+                X = 0,
+                Y = 1,
+                R = 0,
+                G = 0,
+                B = 255,
+                A = 255
+            }, // Blue
+            new()
+            {
+                X = 1,
+                Y = 1,
+                R = 255,
+                G = 255,
+                B = 0,
+                A = 255
+            } // Yellow
+        };
+
+        // Act
+        bitmapImage.SetPixels(pixels);
+
+        // Assert using unsigned integers
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (0 << 8) | 0)),
+            bitmapImage.Bits[0]); // Check Red (0xFFFF0000)
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (255 << 8) | 0)),
+            bitmapImage.Bits[1]); // Check Green (0xFF00FF00)
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (0 << 16) | (0 << 8) | 255)),
+            bitmapImage.Bits[2]); // Check Blue (0xFF0000FF)
+        Assert.AreEqual(unchecked((uint)((255 << 24) | (255 << 16) | (255 << 8) | 0)),
+            bitmapImage.Bits[3]); // Check Yellow (0xFFFFFF00)
+    }
+
+    /// <summary>
+    ///     Constructors the with zero dimensions should throw.
+    /// </summary>
+    [TestMethod]
+    public void ConstructorWithZeroDimensionsShouldThrow()
+    {
+        // Act & Assert
+        _ = Assert.ThrowsException<ArgumentException>(() => new DirectBitmapImage(0, 0));
     }
 }

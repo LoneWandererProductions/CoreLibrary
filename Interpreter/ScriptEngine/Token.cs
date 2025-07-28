@@ -6,18 +6,17 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter.ScriptEngine
-{
-    internal sealed class Token
-    {
-        public TokenType Type { get; init; }
-        public string Lexeme { get; init; }
-        public int Line { get; init; }
-        public int Column { get; init; }
+namespace Interpreter.ScriptEngine;
 
-        public override string ToString()
-        {
-            return $"{Type}: '{Lexeme}' (Line {Line}, Col {Column})";
-        }
+internal sealed class Token
+{
+    public TokenType Type { get; init; }
+    public string Lexeme { get; init; }
+    public int Line { get; init; }
+    public int Column { get; init; }
+
+    public override string ToString()
+    {
+        return $"{Type}: '{Lexeme}' (Line {Line}, Col {Column})";
     }
 }

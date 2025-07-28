@@ -10,83 +10,82 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests
+namespace CommonLibrarySqlLiteTests;
+
+/// <summary>
+///     The sql lite helper table delete unit test class.
+/// </summary>
+[TestClass]
+public sealed class SqlLiteHelperTableDelete
 {
     /// <summary>
-    ///     The sql lite helper table delete unit test class.
+    ///     The table name (const). Value: "DeleteTest".
     /// </summary>
-    [TestClass]
-    public sealed class SqlLiteHelperTableDelete
+    private const string TableName = "DeleteTest";
+
+    /// <summary>
+    ///     The checking (const). Value: true.
+    /// </summary>
+    private const bool Checking = true;
+
+    /// <summary>
+    ///     The target (readonly). Value: new SqlLiteDatabase().
+    /// </summary>
+    private readonly SqliteDatabase _target = new();
+
+    /// <summary>
+    ///     Test for creating Table
+    ///     Create
+    ///     Delete
+    /// </summary>
+    [TestMethod]
+    public void TestDeleteTableRows()
     {
-        /// <summary>
-        ///     The table name (const). Value: "DeleteTest".
-        /// </summary>
-        private const string TableName = "DeleteTest";
+        _target.SendMessage += SharedHelperClass.DebugPrints;
+        //cleanup
+        SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbRowDelete);
 
-        /// <summary>
-        ///     The checking (const). Value: true.
-        /// </summary>
-        private const bool Checking = true;
+        //Check if file was created
+        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDeleteRow, true);
 
-        /// <summary>
-        ///     The target (readonly). Value: new SqlLiteDatabase().
-        /// </summary>
-        private readonly SqliteDatabase _target = new();
-
-        /// <summary>
-        ///     Test for creating Table
-        ///     Create
-        ///     Delete
-        /// </summary>
-        [TestMethod]
-        public void TestDeleteTableRows()
+        var elementone = new TableColumns
         {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
-            //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbRowDelete);
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+        };
 
-            //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDeleteRow, true);
+        var elementtwo = new TableColumns
+        {
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+        };
 
-            var elementone = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
-            };
+        var columns = new DictionaryTableColumns();
 
-            var elementtwo = new TableColumns
-            {
-                DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
-            };
+        columns.DColumns.Add("First", elementone);
+        columns.DColumns.Add("Second", elementtwo);
 
-            var columns = new DictionaryTableColumns();
+        var check = _target.CreateTable(TableName, columns);
+        Assert.IsTrue(check, "Create Test did not pass " + _target.LastErrors);
 
-            columns.DColumns.Add("First", elementone);
-            columns.DColumns.Add("Second", elementtwo);
+        //First
+        var lst = new List<string> { "2", "1" };
+        var tableOne = new TableSet { Row = lst };
 
-            var check = _target.CreateTable(TableName, columns);
-            Assert.IsTrue(check, "Create Test did not pass " + _target.LastErrors);
+        //Fill Data into Table
+        check = _target.InsertSingleRow(TableName, tableOne, Checking);
 
-            //First
-            var lst = new List<string> { "2", "1" };
-            var tableOne = new TableSet { Row = lst };
+        Assert.IsTrue(check, "Insert first failed " + _target.LastErrors);
 
-            //Fill Data into Table
-            check = _target.InsertSingleRow(TableName, tableOne, Checking);
+        //second
+        lst = new List<string> { "4", "3" };
+        tableOne = new TableSet { Row = lst };
 
-            Assert.IsTrue(check, "Insert first failed " + _target.LastErrors);
+        //Fill Data into Table
+        check = _target.InsertSingleRow(TableName, tableOne, Checking);
 
-            //second
-            lst = new List<string> { "4", "3" };
-            tableOne = new TableSet { Row = lst };
+        Assert.IsTrue(check, "Insert second failed " + _target.LastErrors);
 
-            //Fill Data into Table
-            check = _target.InsertSingleRow(TableName, tableOne, Checking);
+        var count = _target.DeleteRows(TableName, "Second", "1");
 
-            Assert.IsTrue(check, "Insert second failed " + _target.LastErrors);
-
-            var count = _target.DeleteRows(TableName, "Second", "1");
-
-            Assert.AreEqual(1, count, "Record not deleted" + _target.LastErrors);
-        }
+        Assert.AreEqual(1, count, "Record not deleted" + _target.LastErrors);
     }
 }

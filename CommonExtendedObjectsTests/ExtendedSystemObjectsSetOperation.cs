@@ -10,197 +10,196 @@ using System.Collections.Generic;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace CommonExtendedObjectsTests;
+
+/// <summary>
+///     Test for Base Set Operations
+/// </summary>
+[TestClass]
+public sealed class ExtendedSystemObjectsSetOperation
 {
     /// <summary>
-    ///     Test for Base Set Operations
+    ///     Here we Test our List AddReplace
     /// </summary>
-    [TestClass]
-    public sealed class ExtendedSystemObjectsSetOperation
+    [TestMethod]
+    public void ExtendedListRemoveListRange()
     {
-        /// <summary>
-        ///     Here we Test our List AddReplace
-        /// </summary>
-        [TestMethod]
-        public void ExtendedListRemoveListRange()
+        var baseLst = new List<int> { 1, 2, 3 };
+        var removeList = new List<int> { 1, 2 };
+        baseLst.Difference(removeList);
+        Assert.AreEqual(1, baseLst.Count, "Not removed");
+        Assert.AreEqual(3, baseLst[0], "Right Element removed");
+
+        baseLst.Add(5);
+        baseLst.Add(6);
+
+        var removeLstAlt = new List<int> { 1, 2 };
+        baseLst.Difference(removeLstAlt);
+        Assert.AreEqual(3, baseLst.Count, "Not removed");
+    }
+
+    /// <summary>
+    ///     Differences the removes elements in range.
+    /// </summary>
+    [TestMethod]
+    public void DifferenceRemovesElementsInRange()
+    {
+        var list = new List<int>
         {
-            var baseLst = new List<int> { 1, 2, 3 };
-            var removeList = new List<int> { 1, 2 };
-            baseLst.Difference(removeList);
-            Assert.AreEqual(1, baseLst.Count, "Not removed");
-            Assert.AreEqual(3, baseLst[0], "Right Element removed");
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4 };
+        list.Difference(range);
 
-            baseLst.Add(5);
-            baseLst.Add(6);
+        CollectionAssert.AreEqual(new List<int> { 1, 3, 5 }, list);
+    }
 
-            var removeLstAlt = new List<int> { 1, 2 };
-            baseLst.Difference(removeLstAlt);
-            Assert.AreEqual(3, baseLst.Count, "Not removed");
-        }
+    /// <summary>
+    ///     Unions the adds elements from range without duplicates.
+    /// </summary>
+    [TestMethod]
+    public void UnionAddsElementsFromRangeWithoutDuplicates()
+    {
+        var list = new List<int> { 1, 2, 3 };
+        var range = new List<int> { 2, 3, 4, 5 };
+        list.Union(range);
 
-        /// <summary>
-        ///     Differences the removes elements in range.
-        /// </summary>
-        [TestMethod]
-        public void DifferenceRemovesElementsInRange()
+        CollectionAssert.AreEquivalent(new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4 };
-            list.Difference(range);
+            1,
+            2,
+            3,
+            4,
+            5
+        }, list);
+    }
 
-            CollectionAssert.AreEqual(new List<int> { 1, 3, 5 }, list);
-        }
-
-        /// <summary>
-        ///     Unions the adds elements from range without duplicates.
-        /// </summary>
-        [TestMethod]
-        public void UnionAddsElementsFromRangeWithoutDuplicates()
+    /// <summary>
+    ///     Intersections the retains only common elements.
+    /// </summary>
+    [TestMethod]
+    public void IntersectionRetainsOnlyCommonElements()
+    {
+        var list = new List<int>
         {
-            var list = new List<int> { 1, 2, 3 };
-            var range = new List<int> { 2, 3, 4, 5 };
-            list.Union(range);
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4, 6, 8 };
+        list.Intersection(range);
 
-            CollectionAssert.AreEquivalent(new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            }, list);
-        }
+        CollectionAssert.AreEqual(new List<int> { 2, 4 }, list);
+    }
 
-        /// <summary>
-        ///     Intersections the retains only common elements.
-        /// </summary>
-        [TestMethod]
-        public void IntersectionRetainsOnlyCommonElements()
+    /// <summary>
+    ///     Symmetrics the difference retains elements not in both lists.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifferenceRetainsElementsNotInBothLists()
+    {
+        var list = new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4, 6, 8 };
-            list.Intersection(range);
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4, 6, 8 };
+        list.SymmetricDifference(range);
 
-            CollectionAssert.AreEqual(new List<int> { 2, 4 }, list);
-        }
-
-        /// <summary>
-        ///     Symmetrics the difference retains elements not in both lists.
-        /// </summary>
-        [TestMethod]
-        public void SymmetricDifferenceRetainsElementsNotInBothLists()
+        CollectionAssert.AreEquivalent(new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4, 6, 8 };
-            list.SymmetricDifference(range);
+            1,
+            3,
+            5,
+            6,
+            8
+        }, list);
+    }
 
-            CollectionAssert.AreEquivalent(new List<int>
-            {
-                1,
-                3,
-                5,
-                6,
-                8
-            }, list);
-        }
-
-        /// <summary>
-        ///     Intersections the retains non common elements when inverted.
-        /// </summary>
-        [TestMethod]
-        public void IntersectionRetainsNonCommonElementsWhenInverted()
+    /// <summary>
+    ///     Intersections the retains non common elements when inverted.
+    /// </summary>
+    [TestMethod]
+    public void IntersectionRetainsNonCommonElementsWhenInverted()
+    {
+        var list = new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4, 6, 8 };
-            list.Intersection(range, true);
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4, 6, 8 };
+        list.Intersection(range, true);
 
-            CollectionAssert.AreEquivalent(new List<int>
-            {
-                1,
-                3,
-                5,
-                6,
-                8
-            }, list);
-        }
-
-        /// <summary>
-        ///     Differences the adds elements in range when inverted.
-        /// </summary>
-        [TestMethod]
-        public void DifferenceAddsElementsInRangeWhenInverted()
+        CollectionAssert.AreEquivalent(new List<int>
         {
-            var list = new List<int> { 1, 2, 3 };
-            var range = new List<int> { 2, 4 };
-            list.Difference(range, true);
+            1,
+            3,
+            5,
+            6,
+            8
+        }, list);
+    }
 
-            CollectionAssert.AreEquivalent(new List<int> { 1, 2, 3, 4 }, list);
-        }
+    /// <summary>
+    ///     Differences the adds elements in range when inverted.
+    /// </summary>
+    [TestMethod]
+    public void DifferenceAddsElementsInRangeWhenInverted()
+    {
+        var list = new List<int> { 1, 2, 3 };
+        var range = new List<int> { 2, 4 };
+        list.Difference(range, true);
 
-        [TestMethod]
-        public void UnionRemovesElementsFromRangeWhenInverted()
+        CollectionAssert.AreEquivalent(new List<int> { 1, 2, 3, 4 }, list);
+    }
+
+    [TestMethod]
+    public void UnionRemovesElementsFromRangeWhenInverted()
+    {
+        var list = new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4 };
-            list.Union(range, true);
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4 };
+        list.Union(range, true);
 
-            CollectionAssert.AreEquivalent(new List<int> { 1, 3, 5 }, list);
-        }
+        CollectionAssert.AreEquivalent(new List<int> { 1, 3, 5 }, list);
+    }
 
 
-        /// <summary>
-        ///     Symmetrics the difference retains common elements when inverted.
-        /// </summary>
-        [TestMethod]
-        public void SymmetricDifferenceRetainsCommonElementsWhenInverted()
+    /// <summary>
+    ///     Symmetrics the difference retains common elements when inverted.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifferenceRetainsCommonElementsWhenInverted()
+    {
+        var list = new List<int>
         {
-            var list = new List<int>
-            {
-                1,
-                2,
-                3,
-                4,
-                5
-            };
-            var range = new List<int> { 2, 4, 6, 8 };
-            list.SymmetricDifference(range, true);
+            1,
+            2,
+            3,
+            4,
+            5
+        };
+        var range = new List<int> { 2, 4, 6, 8 };
+        list.SymmetricDifference(range, true);
 
-            CollectionAssert.AreEqual(new List<int> { 2, 4 }, list);
-        }
+        CollectionAssert.AreEqual(new List<int> { 2, 4 }, list);
     }
 }

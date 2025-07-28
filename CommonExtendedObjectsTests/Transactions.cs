@@ -11,180 +11,179 @@ using CommonControls;
 using ExtendedSystemObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace CommonExtendedObjectsTests;
+
+/// <summary>
+///     InterOps testing
+/// </summary>
+[TestClass]
+public class Transactions
 {
     /// <summary>
-    ///     InterOps testing
+    ///     Test Transactions.
     /// </summary>
-    [TestClass]
-    public class Transactions
+    [TestMethod]
+    public void TransactionLog()
     {
-        /// <summary>
-        ///     Test Transactions.
-        /// </summary>
-        [TestMethod]
-        public void TransactionLog()
+        //TODO improve
+
+        var log = new TransactionLogs();
+        //Generate Test data for stuff to copy
+
+        var key = log.GetNewKey();
+
+        var data = new DataItem { Id = key, Name = "start" };
+
+        //start of the event, nothing was done yet
+
+        log.Add(0, data, true);
+
+        key = log.GetNewKey();
+
+        data = new DataItem { Id = key, Name = "added" };
+        log.Add(data.Id, data, false);
+
+        data = new DataItem { Id = key, Name = "added Change" };
+        log.Change(data.Id, data);
+
+        data = new DataItem { Id = key, Name = "another Change" };
+        log.Change(data.Id, data);
+
+        var logEntry = log.Changelog[1];
+
+        if (logEntry.Data is DataItem obj)
         {
-            //TODO improve
-
-            var log = new TransactionLogs();
-            //Generate Test data for stuff to copy
-
-            var key = log.GetNewKey();
-
-            var data = new DataItem { Id = key, Name = "start" };
-
-            //start of the event, nothing was done yet
-
-            log.Add(0, data, true);
-
-            key = log.GetNewKey();
-
-            data = new DataItem { Id = key, Name = "added" };
-            log.Add(data.Id, data, false);
-
-            data = new DataItem { Id = key, Name = "added Change" };
-            log.Change(data.Id, data);
-
-            data = new DataItem { Id = key, Name = "another Change" };
-            log.Change(data.Id, data);
-
-            var logEntry = log.Changelog[1];
-
-            if (logEntry.Data is DataItem obj)
-            {
-                Assert.AreNotEqual((object)obj.Name, data.Name, "Overwrite Data");
-            }
-
-            var dct = log.GetNewItems();
-
-            Assert.AreNotEqual(dct.Count, 1, "Correct amount");
-
-            var item = log.GetPredecessor(1);
-
-            Assert.AreNotEqual(item, 0, "Correct id");
-
-            log.Remove(0);
-
-            Assert.AreNotEqual(log.Changelog.Count, 0, "Correct amount");
+            Assert.AreNotEqual((object)obj.Name, data.Name, "Overwrite Data");
         }
 
-        /// <summary>
-        ///     Adds the item success.
-        /// </summary>
-        [TestMethod]
-        public void AddItemSuccess()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
+        var dct = log.GetNewItems();
 
-            Assert.IsTrue(transactionLogs.Changed);
-            Assert.AreEqual(1, transactionLogs.Changelog.Count);
-            Assert.AreEqual("Item1", transactionLogs.Changelog[0].Data);
-        }
+        Assert.AreNotEqual(dct.Count, 1, "Correct amount");
 
-        /// <summary>
-        ///     Removes the item success.
-        /// </summary>
-        [TestMethod]
-        public void RemoveItemSuccess()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
-            transactionLogs.Remove(1);
+        var item = log.GetPredecessor(1);
 
-            Assert.IsTrue(transactionLogs.Changed);
-            Assert.AreEqual(2, transactionLogs.Changelog.Count);
-            Assert.AreEqual(LogState.Remove, transactionLogs.Changelog[1].State);
-        }
+        Assert.AreNotEqual(item, 0, "Correct id");
 
-        /// <summary>
-        ///     Changes the item success.
-        /// </summary>
-        [TestMethod]
-        public void ChangeItemSuccess()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
-            transactionLogs.Change(1, "Item1_Changed");
+        log.Remove(0);
 
-            Assert.IsTrue(transactionLogs.Changed);
-            Assert.AreEqual(2, transactionLogs.Changelog.Count);
-            Assert.AreEqual("Item1_Changed", transactionLogs.Changelog[1].Data);
-        }
+        Assert.AreNotEqual(log.Changelog.Count, 0, "Correct amount");
+    }
 
-        /// <summary>
-        ///     Gets the predecessor success.
-        /// </summary>
-        [TestMethod]
-        public void GetPredecessorSuccess()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
-            transactionLogs.Add(2, "Item2", false);
-            transactionLogs.Change(1, "Item1_Changed");
+    /// <summary>
+    ///     Adds the item success.
+    /// </summary>
+    [TestMethod]
+    public void AddItemSuccess()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
 
-            var predecessor = transactionLogs.GetPredecessor(2);
+        Assert.IsTrue(transactionLogs.Changed);
+        Assert.AreEqual(1, transactionLogs.Changelog.Count);
+        Assert.AreEqual("Item1", transactionLogs.Changelog[0].Data);
+    }
 
-            Assert.AreEqual(0, predecessor);
-        }
+    /// <summary>
+    ///     Removes the item success.
+    /// </summary>
+    [TestMethod]
+    public void RemoveItemSuccess()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
+        transactionLogs.Remove(1);
 
-        /// <summary>
-        ///     Gets the new items success.
-        /// </summary>
-        [TestMethod]
-        public void GetNewItemsSuccess()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", true);
-            transactionLogs.Add(2, "Item2", false);
-            transactionLogs.Change(1, "Item1_Changed");
+        Assert.IsTrue(transactionLogs.Changed);
+        Assert.AreEqual(2, transactionLogs.Changelog.Count);
+        Assert.AreEqual(LogState.Remove, transactionLogs.Changelog[1].State);
+    }
 
-            var newItems = transactionLogs.GetNewItems();
+    /// <summary>
+    ///     Changes the item success.
+    /// </summary>
+    [TestMethod]
+    public void ChangeItemSuccess()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
+        transactionLogs.Change(1, "Item1_Changed");
 
-            Assert.AreEqual(2, newItems.Count);
-            Assert.IsFalse(newItems.Values.Any(item => item.StartData));
-        }
+        Assert.IsTrue(transactionLogs.Changed);
+        Assert.AreEqual(2, transactionLogs.Changelog.Count);
+        Assert.AreEqual("Item1_Changed", transactionLogs.Changelog[1].Data);
+    }
 
-        /// <summary>
-        ///     Gets the index of the item item exists returns.
-        /// </summary>
-        [TestMethod]
-        public void GetItemItemExistsReturnsIndex()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
+    /// <summary>
+    ///     Gets the predecessor success.
+    /// </summary>
+    [TestMethod]
+    public void GetPredecessorSuccess()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
+        transactionLogs.Add(2, "Item2", false);
+        transactionLogs.Change(1, "Item1_Changed");
 
-            var index = transactionLogs.GetItem(1, LogState.Add);
+        var predecessor = transactionLogs.GetPredecessor(2);
 
-            Assert.AreEqual(0, index);
-        }
+        Assert.AreEqual(0, predecessor);
+    }
 
-        /// <summary>
-        ///     Gets the item item does not exist returns minus one.
-        /// </summary>
-        [TestMethod]
-        public void GetItemItemDoesNotExistReturnsMinusOne()
-        {
-            var transactionLogs = new TransactionLogs();
+    /// <summary>
+    ///     Gets the new items success.
+    /// </summary>
+    [TestMethod]
+    public void GetNewItemsSuccess()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", true);
+        transactionLogs.Add(2, "Item2", false);
+        transactionLogs.Change(1, "Item1_Changed");
 
-            var index = transactionLogs.GetItem(1, LogState.Add);
+        var newItems = transactionLogs.GetNewItems();
 
-            Assert.AreEqual(-1, index);
-        }
+        Assert.AreEqual(2, newItems.Count);
+        Assert.IsFalse(newItems.Values.Any(item => item.StartData));
+    }
 
-        /// <summary>
-        ///     Gets the new key returns correct key.
-        /// </summary>
-        [TestMethod]
-        public void GetNewKeyReturnsCorrectKey()
-        {
-            var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", false);
+    /// <summary>
+    ///     Gets the index of the item item exists returns.
+    /// </summary>
+    [TestMethod]
+    public void GetItemItemExistsReturnsIndex()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
 
-            var newKey = transactionLogs.GetNewKey();
+        var index = transactionLogs.GetItem(1, LogState.Add);
 
-            Assert.AreEqual(1, newKey);
-        }
+        Assert.AreEqual(0, index);
+    }
+
+    /// <summary>
+    ///     Gets the item item does not exist returns minus one.
+    /// </summary>
+    [TestMethod]
+    public void GetItemItemDoesNotExistReturnsMinusOne()
+    {
+        var transactionLogs = new TransactionLogs();
+
+        var index = transactionLogs.GetItem(1, LogState.Add);
+
+        Assert.AreEqual(-1, index);
+    }
+
+    /// <summary>
+    ///     Gets the new key returns correct key.
+    /// </summary>
+    [TestMethod]
+    public void GetNewKeyReturnsCorrectKey()
+    {
+        var transactionLogs = new TransactionLogs();
+        transactionLogs.Add(1, "Item1", false);
+
+        var newKey = transactionLogs.GetNewKey();
+
+        Assert.AreEqual(1, newKey);
     }
 }

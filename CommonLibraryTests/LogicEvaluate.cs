@@ -10,51 +10,50 @@ using System.Collections.Generic;
 using CommonFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonLibraryTests;
+
+/// <summary>
+///     test class for our logic engine
+/// </summary>
+[TestClass]
+public class LogicEvaluate
 {
     /// <summary>
-    ///     test class for our logic engine
+    ///     Test the logic Evaluation.
     /// </summary>
-    [TestClass]
-    public class LogicEvaluate
+    [TestMethod]
+    public void EvaluateTest()
     {
-        /// <summary>
-        ///     Test the logic Evaluation.
-        /// </summary>
-        [TestMethod]
-        public void EvaluateTest()
+        var evaluate = new LogicEvaluations();
+
+        // Example list of conditions
+        var conditions = new List<FilterOption>();
+
+        var con = new FilterOption
         {
-            var evaluate = new LogicEvaluations();
+            SelectedCompareOperator = CompareOperator.Like,
+            SelectedLogicalOperator = LogicOperator.And,
+            EntryText = "hello"
+        };
 
-            // Example list of conditions
-            var conditions = new List<FilterOption>();
+        conditions.Add(con);
 
-            var con = new FilterOption
-            {
-                SelectedCompareOperator = CompareOperator.Like,
-                SelectedLogicalOperator = LogicOperator.And,
-                EntryText = "hello"
-            };
+        con = new FilterOption
+        {
+            SelectedCompareOperator = CompareOperator.NotLike,
+            SelectedLogicalOperator = LogicOperator.Or,
+            EntryText = "world"
+        };
 
-            conditions.Add(con);
+        conditions.Add(con);
+        // Add more conditions as needed
 
-            con = new FilterOption
-            {
-                SelectedCompareOperator = CompareOperator.NotLike,
-                SelectedLogicalOperator = LogicOperator.Or,
-                EntryText = "world"
-            };
+        // Input string to test against the conditions
+        const string inputString = "hello";
 
-            conditions.Add(con);
-            // Add more conditions as needed
+        // Evaluate the conditions against the input string
+        var result = evaluate.Evaluate(inputString, conditions);
 
-            // Input string to test against the conditions
-            const string inputString = "hello";
-
-            // Evaluate the conditions against the input string
-            var result = evaluate.Evaluate(inputString, conditions);
-
-            Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
-        }
+        Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
     }
 }

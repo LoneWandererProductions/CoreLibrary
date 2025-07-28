@@ -32,217 +32,216 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace ExtendedSystemObjects
+namespace ExtendedSystemObjects;
+
+/// <summary>
+///     Basic Transaction Log with unique entries and generic entries.
+///     Supports Add, Change, and Remove logging.
+/// </summary>
+public sealed class TransactionLogs
 {
     /// <summary>
-    ///     Basic Transaction Log with unique entries and generic entries.
-    ///     Supports Add, Change, and Remove logging.
+    ///     The lock used to synchronize operations that require thread safety beyond what the ConcurrentDictionary provides.
     /// </summary>
-    public sealed class TransactionLogs
+    private readonly Lock _lock = new();
+
+    /// <summary>
+    ///     Flag used to track whether the changelog has been modified.
+    /// </summary>
+    private int _changedFlag;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TransactionLogs" /> class.
+    /// </summary>
+    public TransactionLogs()
     {
-        /// <summary>
-        ///     The lock used to synchronize operations that require thread safety beyond what the ConcurrentDictionary provides.
-        /// </summary>
-        private readonly Lock _lock = new();
+        Changelog = new ConcurrentDictionary<int, LogEntry>();
+    }
 
-        /// <summary>
-        ///     Flag used to track whether the changelog has been modified.
-        /// </summary>
-        private int _changedFlag;
+    /// <summary>
+    ///     Gets the changelog containing all tracked operations.
+    /// </summary>
+    public ConcurrentDictionary<int, LogEntry> Changelog { get; }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TransactionLogs" /> class.
-        /// </summary>
-        public TransactionLogs()
+    /// <summary>
+    ///     Gets a value indicating whether any changes have been logged.
+    /// </summary>
+    public bool Changed
+    {
+        get => Interlocked.CompareExchange(ref _changedFlag, 0, 0) == 1;
+        private set => Interlocked.Exchange(ref _changedFlag, value ? 1 : 0);
+    }
+
+    /// <summary>
+    ///     Adds a new log entry for an object.
+    /// </summary>
+    /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
+    /// <param name="item">The object being added.</param>
+    /// <param name="startData">Whether this is initial state data (i.e., pre-existing before logging).</param>
+    public void Add(int uniqueIdentifier, object item, bool startData)
+    {
+        lock (_lock)
         {
-            Changelog = new ConcurrentDictionary<int, LogEntry>();
-        }
-
-        /// <summary>
-        ///     Gets the changelog containing all tracked operations.
-        /// </summary>
-        public ConcurrentDictionary<int, LogEntry> Changelog { get; }
-
-        /// <summary>
-        ///     Gets a value indicating whether any changes have been logged.
-        /// </summary>
-        public bool Changed
-        {
-            get => Interlocked.CompareExchange(ref _changedFlag, 0, 0) == 1;
-            private set => Interlocked.Exchange(ref _changedFlag, value ? 1 : 0);
-        }
-
-        /// <summary>
-        ///     Adds a new log entry for an object.
-        /// </summary>
-        /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
-        /// <param name="item">The object being added.</param>
-        /// <param name="startData">Whether this is initial state data (i.e., pre-existing before logging).</param>
-        public void Add(int uniqueIdentifier, object item, bool startData)
-        {
-            lock (_lock)
+            var log = new LogEntry
             {
-                var log = new LogEntry
-                {
-                    State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
-                };
+                State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
+            };
 
-                Changelog[GetNewKey()] = log;
+            Changelog[GetNewKey()] = log;
+            Changed = true;
+        }
+    }
+
+    /// <summary>
+    ///     Adds a remove log entry for an object if an 'Add' entry exists for it.
+    /// </summary>
+    /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
+    public void Remove(int uniqueIdentifier)
+    {
+        lock (_lock)
+        {
+            var id = GetItem(uniqueIdentifier, LogState.Add);
+            if (id == -1)
+            {
+                return;
+            }
+
+            var item = Changelog[id].Data;
+
+            Changelog[GetNewKey()] = new LogEntry
+            {
+                State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
+            };
+
+            Changed = true;
+        }
+    }
+
+    /// <summary>
+    ///     Logs a change to an object, if the object has changed.
+    ///     Updates an existing change entry if one exists and differs.
+    /// </summary>
+    /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
+    /// <param name="item">The updated object.</param>
+    public void Change(int uniqueIdentifier, object item)
+    {
+        lock (_lock)
+        {
+            var entry = GetItem(uniqueIdentifier, LogState.Change);
+
+            if (entry != -1 && !Changelog[entry].Data.Equals(item))
+            {
+                Changelog[entry] = new LogEntry
+                {
+                    State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
+                };
                 Changed = true;
             }
-        }
-
-        /// <summary>
-        ///     Adds a remove log entry for an object if an 'Add' entry exists for it.
-        /// </summary>
-        /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
-        public void Remove(int uniqueIdentifier)
-        {
-            lock (_lock)
+            else if (entry == -1)
             {
-                var id = GetItem(uniqueIdentifier, LogState.Add);
-                if (id == -1)
-                {
-                    return;
-                }
-
-                var item = Changelog[id].Data;
-
                 Changelog[GetNewKey()] = new LogEntry
                 {
-                    State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                 };
-
                 Changed = true;
             }
         }
+    }
 
-        /// <summary>
-        ///     Logs a change to an object, if the object has changed.
-        ///     Updates an existing change entry if one exists and differs.
-        /// </summary>
-        /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
-        /// <param name="item">The updated object.</param>
-        public void Change(int uniqueIdentifier, object item)
+    /// <summary>
+    ///     Gets the predecessor Add entry key for a given log entry key, if available.
+    /// </summary>
+    /// <param name="id">The key of the log entry to search from.</param>
+    /// <returns>The key of the matching Add entry, or -1 if not found.</returns>
+    public int GetPredecessor(int id)
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            if (!Changelog.TryGetValue(id, out var reference))
             {
-                var entry = GetItem(uniqueIdentifier, LogState.Change);
-
-                if (entry != -1 && !Changelog[entry].Data.Equals(item))
-                {
-                    Changelog[entry] = new LogEntry
-                    {
-                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
-                    };
-                    Changed = true;
-                }
-                else if (entry == -1)
-                {
-                    Changelog[GetNewKey()] = new LogEntry
-                    {
-                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
-                    };
-                    Changed = true;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Gets the predecessor Add entry key for a given log entry key, if available.
-        /// </summary>
-        /// <param name="id">The key of the log entry to search from.</param>
-        /// <returns>The key of the matching Add entry, or -1 if not found.</returns>
-        public int GetPredecessor(int id)
-        {
-            lock (_lock)
-            {
-                if (!Changelog.TryGetValue(id, out var reference))
-                {
-                    return -1;
-                }
-
-                var unique = reference.UniqueIdentifier;
-
-                foreach (var (key, logEntry) in Changelog.Reverse())
-                {
-                    if (key >= id)
-                    {
-                        continue;
-                    }
-
-                    if (logEntry.UniqueIdentifier == unique && logEntry.State == LogState.Add)
-                    {
-                        return key;
-                    }
-                }
-
                 return -1;
             }
-        }
 
-        /// <summary>
-        ///     Gets all newly added items (i.e., those not marked as StartData).
-        /// </summary>
-        /// <returns>A dictionary of new items or null if none exist.</returns>
-        public Dictionary<int, LogEntry> GetNewItems()
-        {
-            lock (_lock)
+            var unique = reference.UniqueIdentifier;
+
+            foreach (var (key, logEntry) in Changelog.Reverse())
             {
-                if (Changelog.IsEmpty)
+                if (key >= id)
                 {
-                    return null;
+                    continue;
                 }
 
-                return Changelog
-                    .Where(entry => !entry.Value.StartData)
-                    .ToDictionary(entry => entry.Key, entry => entry.Value);
+                if (logEntry.UniqueIdentifier == unique && logEntry.State == LogState.Add)
+                {
+                    return key;
+                }
             }
+
+            return -1;
         }
+    }
 
-        /// <summary>
-        ///     Gets the most recent entry matching the specified unique identifier and state.
-        /// </summary>
-        /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
-        /// <param name="state">The state to match (Add, Remove, Change).</param>
-        /// <returns>The key of the matching entry or -1 if not found.</returns>
-        internal int GetItem(int uniqueIdentifier, LogState state)
+    /// <summary>
+    ///     Gets all newly added items (i.e., those not marked as StartData).
+    /// </summary>
+    /// <returns>A dictionary of new items or null if none exist.</returns>
+    public Dictionary<int, LogEntry> GetNewItems()
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            if (Changelog.IsEmpty)
             {
-                if (Changelog.IsEmpty)
-                {
-                    return -1;
-                }
+                return null;
+            }
 
-                foreach (var (key, value) in Changelog.Reverse())
-                {
-                    if (value.UniqueIdentifier == uniqueIdentifier && value.State == state)
-                    {
-                        return key;
-                    }
-                }
+            return Changelog
+                .Where(entry => !entry.Value.StartData)
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
+        }
+    }
 
+    /// <summary>
+    ///     Gets the most recent entry matching the specified unique identifier and state.
+    /// </summary>
+    /// <param name="uniqueIdentifier">The unique identifier of the object.</param>
+    /// <param name="state">The state to match (Add, Remove, Change).</param>
+    /// <returns>The key of the matching entry or -1 if not found.</returns>
+    internal int GetItem(int uniqueIdentifier, LogState state)
+    {
+        lock (_lock)
+        {
+            if (Changelog.IsEmpty)
+            {
                 return -1;
             }
-        }
 
-        /// <summary>
-        ///     Gets the next available key in the changelog.
-        /// </summary>
-        /// <returns>The first unused integer key.</returns>
-        public int GetNewKey()
-        {
-            lock (_lock)
+            foreach (var (key, value) in Changelog.Reverse())
             {
-                if (Changelog.IsEmpty)
+                if (value.UniqueIdentifier == uniqueIdentifier && value.State == state)
                 {
-                    return 0;
+                    return key;
                 }
-
-                var keys = Changelog.Keys.ToList();
-                return Utility.GetFirstAvailableIndex(keys);
             }
+
+            return -1;
+        }
+    }
+
+    /// <summary>
+    ///     Gets the next available key in the changelog.
+    /// </summary>
+    /// <returns>The first unused integer key.</returns>
+    public int GetNewKey()
+    {
+        lock (_lock)
+        {
+            if (Changelog.IsEmpty)
+            {
+                return 0;
+            }
+
+            var keys = Changelog.Keys.ToList();
+            return Utility.GetFirstAvailableIndex(keys);
         }
     }
 }

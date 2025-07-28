@@ -9,26 +9,25 @@
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Debugger
+namespace Debugger;
+
+/// <summary>
+///     The IDebugLog interface.
+/// </summary>
+internal interface IDebugLog
 {
     /// <summary>
-    ///     The IDebugLog interface.
+    ///     Start.
     /// </summary>
-    internal interface IDebugLog
-    {
-        /// <summary>
-        ///     Start.
-        /// </summary>
-        void Start();
+    void Start();
 
-        /// <summary>
-        ///     Start the window.
-        /// </summary>
-        void StartWindow();
+    /// <summary>
+    ///     Start the window.
+    /// </summary>
+    void StartWindow();
 
-        /// <summary>
-        ///     Stop the debugging.
-        /// </summary>
-        void StopDebugging();
-    }
+    /// <summary>
+    ///     Stop the debugging.
+    /// </summary>
+    void StopDebugging();
 }

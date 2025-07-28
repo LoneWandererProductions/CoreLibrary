@@ -11,225 +11,224 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests
+namespace CommonLibrarySqlLiteTests;
+
+/// <summary>
+///     The sql lite helper db select unit test class.
+/// </summary>
+[TestClass]
+public sealed class SqlLiteHelperDbSelect
 {
     /// <summary>
-    ///     The sql lite helper db select unit test class.
+    ///     The Table name (const). Value: "First_Select".
     /// </summary>
-    [TestClass]
-    public sealed class SqlLiteHelperDbSelect
+    private const string TblName = "First_Select";
+
+    /// <summary>
+    ///     The Table name renamed (const). Value: "Second_Select".
+    /// </summary>
+    private const string TblNameRenamed = "Second_Select";
+
+    /// <summary>
+    ///     The First header (const). Value: "First".
+    /// </summary>
+    private const string FrstHeader = "First";
+
+    /// <summary>
+    ///     The Second header (const). Value: "Second".
+    /// </summary>
+    private const string ScdHeader = "Second";
+
+    /// <summary>
+    ///     The target (readonly). Value: new SqlLiteDatabase().
+    /// </summary>
+    private readonly SqliteDatabase _target = new();
+
+    /// <summary>
+    ///     Test if we can Select a Database
+    /// </summary>
+    [TestMethod]
+    public void DatabaseSelect()
+
     {
-        /// <summary>
-        ///     The Table name (const). Value: "First_Select".
-        /// </summary>
-        private const string TblName = "First_Select";
+        _target.SendMessage += SharedHelperClass.DebugPrints;
 
-        /// <summary>
-        ///     The Table name renamed (const). Value: "Second_Select".
-        /// </summary>
-        private const string TblNameRenamed = "Second_Select";
+        //cleanup
+        SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbSelect);
 
-        /// <summary>
-        ///     The First header (const). Value: "First".
-        /// </summary>
-        private const string FrstHeader = "First";
+        //Check if file was created
+        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseSelect, true);
+        Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbSelect),
+            "Test not passed Create: " + _target.LastErrors);
 
-        /// <summary>
-        ///     The Second header (const). Value: "Second".
-        /// </summary>
-        private const string ScdHeader = "Second";
+        var header = SharedHelperClass.CreateTableHeadersMultiple();
+        //create the Table
+        var check = _target.CreateTable(TblName, header);
+        Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
 
-        /// <summary>
-        ///     The target (readonly). Value: new SqlLiteDatabase().
-        /// </summary>
-        private readonly SqliteDatabase _target = new();
+        var table = SharedHelperClass.CreateContent();
 
-        /// <summary>
-        ///     Test if we can Select a Database
-        /// </summary>
-        [TestMethod]
-        public void DatabaseSelect()
+        check = _target.InsertMultipleRow(TblName, table, false);
+        Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
 
-        {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+        //Select
+        var cache = _target.SimpleSelect(TblName);
 
-            //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbSelect);
+        var count = cache.Row.Count;
+        Assert.AreEqual(8, count, "Test not passed Select Table" + _target.LastErrors);
 
-            //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbDatabaseSelect, true);
-            Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbSelect),
-                "Test not passed Create: " + _target.LastErrors);
+        check = SharedHelperClass.CompareTableMultipleSet(table, cache.Row);
 
-            var header = SharedHelperClass.CreateTableHeadersMultiple();
-            //create the Table
-            var check = _target.CreateTable(TblName, header);
-            Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
+        Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
 
-            var table = SharedHelperClass.CreateContent();
+        //Select simple
+        cache = _target.SimpleSelect(TblName);
 
-            check = _target.InsertMultipleRow(TblName, table, false);
-            Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
+        Assert.AreEqual(false, cache.Raw == null, "Test not passed Dataview: " + _target.LastErrors);
 
-            //Select
-            var cache = _target.SimpleSelect(TblName);
+        count = cache.Row.Count;
+        Assert.AreEqual(8, count, "Test not passed Select Table: " + _target.LastErrors);
 
-            var count = cache.Row.Count;
-            Assert.AreEqual(8, count, "Test not passed Select Table" + _target.LastErrors);
+        check = SharedHelperClass.CompareTableMultipleSet(table, cache.Row);
 
-            check = SharedHelperClass.CompareTableMultipleSet(table, cache.Row);
+        Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
 
-            Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
+        //select only specific headers
+        var lst = new List<string> { FrstHeader };
+        cache = _target.SimpleSelect(TblName, lst);
 
-            //Select simple
-            cache = _target.SimpleSelect(TblName);
+        Assert.AreEqual(1, cache.Width,
+            "Test not passed specific select, count: " + cache.Width + " possible errors: " +
+            _target.LastErrors);
 
-            Assert.AreEqual(false, cache.Raw == null, "Test not passed Dataview: " + _target.LastErrors);
+        //Select specific
+        cache = _target.SimpleSelect(TblName, FrstHeader, CompareOperator.Equal, "0");
 
-            count = cache.Row.Count;
-            Assert.AreEqual(8, count, "Test not passed Select Table: " + _target.LastErrors);
+        Assert.AreEqual(8, cache.Row.Count,
+            "Test not passed specific select, count: " + cache.Row.Count + " possible errors: " +
+            _target.LastErrors);
 
-            check = SharedHelperClass.CompareTableMultipleSet(table, cache.Row);
+        //Rename
+        check = _target.RenameTable(TblName, TblNameRenamed);
 
-            Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
+        Assert.IsTrue(check, "Test not passed Rename Database: " + _target.LastErrors);
 
-            //select only specific headers
-            var lst = new List<string> { FrstHeader };
-            cache = _target.SimpleSelect(TblName, lst);
+        //Truncate
+        _target.TruncateTable(TblNameRenamed);
 
-            Assert.AreEqual(1, cache.Width,
-                "Test not passed specific select, count: " + cache.Width + " possible errors: " +
-                _target.LastErrors);
+        cache = _target.SimpleSelect(TblNameRenamed);
 
-            //Select specific
-            cache = _target.SimpleSelect(TblName, FrstHeader, CompareOperator.Equal, "0");
+        Assert.AreEqual(null, cache, "Test not passed Truncate Table: " + _target.LastErrors);
 
-            Assert.AreEqual(8, cache.Row.Count,
-                "Test not passed specific select, count: " + cache.Row.Count + " possible errors: " +
-                _target.LastErrors);
+        //check if Table Exists
+        Assert.AreEqual(true, _target.CheckIfDatabaseTableExists(TblNameRenamed),
+            "Test passed Table exists: " + _target.LastErrors);
+    }
 
-            //Rename
-            check = _target.RenameTable(TblName, TblNameRenamed);
+    /// <summary>
+    ///     Test if we can Select a Database, with more advanced features
+    /// </summary>
+    [TestMethod]
+    public void AdvancedSelect()
+    {
+        _target.SendMessage += SharedHelperClass.DebugPrints;
 
-            Assert.IsTrue(check, "Test not passed Rename Database: " + _target.LastErrors);
+        //cleanup
+        SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbAdvancedSelect);
 
-            //Truncate
-            _target.TruncateTable(TblNameRenamed);
+        //Check if file was created
+        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbAdvancedSelect, true);
+        Assert.IsTrue(File.Exists(ResourcesSqlLite.DbAdvancedSelect),
+            "Test not passed Create: " + _target.LastErrors);
 
-            cache = _target.SimpleSelect(TblNameRenamed);
+        var header = SharedHelperClass.CreateTableHeadersMultiple();
 
-            Assert.AreEqual(null, cache, "Test not passed Truncate Table: " + _target.LastErrors);
+        //create the Table
+        var check = _target.CreateTable(TblName, header);
+        Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
 
-            //check if Table Exists
-            Assert.AreEqual(true, _target.CheckIfDatabaseTableExists(TblNameRenamed),
-                "Test passed Table exists: " + _target.LastErrors);
-        }
+        var table = SharedHelperClass.CreateAdvancedContent();
 
-        /// <summary>
-        ///     Test if we can Select a Database, with more advanced features
-        /// </summary>
-        [TestMethod]
-        public void AdvancedSelect()
-        {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+        check = _target.InsertMultipleRow(TblName, table, false);
+        Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
 
-            //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbAdvancedSelect);
+        //Select simple
+        var cache = _target.SimpleSelect(TblName);
+        //check our custom Object
 
-            //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbAdvancedSelect, true);
-            Assert.IsTrue(File.Exists(ResourcesSqlLite.DbAdvancedSelect),
-                "Test not passed Create: " + _target.LastErrors);
+        Assert.AreEqual(8, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
+        Assert.AreEqual(5, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
 
-            var header = SharedHelperClass.CreateTableHeadersMultiple();
+        var item = cache.Cell(7, 4);
+        Assert.AreEqual("39", item, "Test not passed Get Value of Cell: " + item);
 
-            //create the Table
-            var check = _target.CreateTable(TblName, header);
-            Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
+        //now for the real deal multiple where Clause
+        var lst = new List<string> { FrstHeader };
+        cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0");
+        Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
+        Assert.AreEqual(1, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
+        Assert.AreEqual("0", cache.Cell(0, 0), "Test not passed selected right Value: " + cache.Cell(0, 0));
 
-            var table = SharedHelperClass.CreateAdvancedContent();
+        //more advanced
+        lst.Add(ScdHeader);
+        cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0", ScdHeader);
+        Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
+        Assert.AreEqual(2, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
+        Assert.AreEqual("0", cache.Cell(0, 0), "Test not passed selected right Value: " + cache.Cell(0, 0));
+        Assert.AreEqual("1", cache.Cell(0, 1), "Test not passed selected right Value: " + cache.Cell(0, 1));
+    }
 
-            check = _target.InsertMultipleRow(TblName, table, false);
-            Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
+    /// <summary>
+    ///     Test if we can Select a Database, with Select In
+    /// </summary>
+    [TestMethod]
+    public void SelectIn()
+    {
+        _target.SendMessage += SharedHelperClass.DebugPrints;
 
-            //Select simple
-            var cache = _target.SimpleSelect(TblName);
-            //check our custom Object
+        //cleanup
+        SharedHelperClass.CleanUp(ResourcesSqlLite.DbSelectIn);
 
-            Assert.AreEqual(8, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
-            Assert.AreEqual(5, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
+        //Check if file was created
+        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbSelectIn, true);
 
-            var item = cache.Cell(7, 4);
-            Assert.AreEqual("39", item, "Test not passed Get Value of Cell: " + item);
+        Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbDbSelectIn),
+            "Test not passed Create: " + _target.LastErrors);
 
-            //now for the real deal multiple where Clause
-            var lst = new List<string> { FrstHeader };
-            cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0");
-            Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
-            Assert.AreEqual(1, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
-            Assert.AreEqual("0", cache.Cell(0, 0), "Test not passed selected right Value: " + cache.Cell(0, 0));
+        var header = SharedHelperClass.CreateTableHeadersMultiple();
 
-            //more advanced
-            lst.Add(ScdHeader);
-            cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0", ScdHeader);
-            Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
-            Assert.AreEqual(2, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
-            Assert.AreEqual("0", cache.Cell(0, 0), "Test not passed selected right Value: " + cache.Cell(0, 0));
-            Assert.AreEqual("1", cache.Cell(0, 1), "Test not passed selected right Value: " + cache.Cell(0, 1));
-        }
+        //create the Table
+        var check = _target.CreateTable(TblName, header);
 
-        /// <summary>
-        ///     Test if we can Select a Database, with Select In
-        /// </summary>
-        [TestMethod]
-        public void SelectIn()
-        {
-            _target.SendMessage += SharedHelperClass.DebugPrints;
+        Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
 
-            //cleanup
-            SharedHelperClass.CleanUp(ResourcesSqlLite.DbSelectIn);
+        //data of the table
+        var table = SharedHelperClass.CreateAdvancedContent();
 
-            //Check if file was created
-            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbSelectIn, true);
+        //insert the Data
+        check = _target.InsertMultipleRow(TblName, table, false);
+        Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
 
-            Assert.IsTrue(File.Exists(ResourcesSqlLite.PathDbDbSelectIn),
-                "Test not passed Create: " + _target.LastErrors);
+        //check our custom Object
+        var lst = new List<string> { "0" };
 
-            var header = SharedHelperClass.CreateTableHeadersMultiple();
+        var headers = new List<string> { FrstHeader, ScdHeader };
 
-            //create the Table
-            var check = _target.CreateTable(TblName, header);
+        //test 1
+        var cache = _target.SelectIn(TblName, FrstHeader, lst);
 
-            Assert.IsTrue(check, "Test not passed Create Table: " + _target.LastErrors);
+        Assert.AreEqual(1, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
 
-            //data of the table
-            var table = SharedHelperClass.CreateAdvancedContent();
+        //test 2
+        lst.Add("5");
+        cache = _target.SelectIn(TblName, headers, FrstHeader, lst);
 
-            //insert the Data
-            check = _target.InsertMultipleRow(TblName, table, false);
-            Assert.IsTrue(check, "Test not passed Insert into Table: " + _target.LastErrors);
+        Assert.AreEqual(2, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
 
-            //check our custom Object
-            var lst = new List<string> { "0" };
+        //test 3
+        lst.Add("10");
+        cache = _target.SelectIn(TblName, headers, FrstHeader, lst, FrstHeader);
 
-            var headers = new List<string> { FrstHeader, ScdHeader };
-
-            //test 1
-            var cache = _target.SelectIn(TblName, FrstHeader, lst);
-
-            Assert.AreEqual(1, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
-
-            //test 2
-            lst.Add("5");
-            cache = _target.SelectIn(TblName, headers, FrstHeader, lst);
-
-            Assert.AreEqual(2, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
-
-            //test 3
-            lst.Add("10");
-            cache = _target.SelectIn(TblName, headers, FrstHeader, lst, FrstHeader);
-
-            Assert.AreEqual(3, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
-        }
+        Assert.AreEqual(3, cache.Row.Count, "Test not passed Right amount of Table contents: " + cache.Row.Count);
     }
 }

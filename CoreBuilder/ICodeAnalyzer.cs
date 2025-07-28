@@ -8,27 +8,26 @@
 
 using System.Collections.Generic;
 
-namespace CoreBuilder
+namespace CoreBuilder;
+
+/// <summary>
+///     Analyzer Interface, that will be shared around.
+/// </summary>
+public interface ICodeAnalyzer
 {
     /// <summary>
-    ///     Analyzer Interface, that will be shared around.
+    ///     Gets the name.
     /// </summary>
-    public interface ICodeAnalyzer
-    {
-        /// <summary>
-        ///     Gets the name.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        string Name { get; }
+    /// <value>
+    ///     The name.
+    /// </value>
+    string Name { get; }
 
-        /// <summary>
-        ///     Analyzes the specified file path.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="fileContent">Content of the file.</param>
-        /// <returns>Code Analyzer results.</returns>
-        IEnumerable<Diagnostic> Analyze(string filePath, string fileContent);
-    }
+    /// <summary>
+    ///     Analyzes the specified file path.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="fileContent">Content of the file.</param>
+    /// <returns>Code Analyzer results.</returns>
+    IEnumerable<Diagnostic> Analyze(string filePath, string fileContent);
 }

@@ -6,21 +6,20 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CommonFilter
+namespace CommonFilter;
+
+/// <summary>
+///     String Resources
+/// </summary>
+internal static class FilterResources
 {
     /// <summary>
-    ///     String Resources
+    ///     Error unsupported Compare Operator (const). Value: "Unsupported Compare operator: ".
     /// </summary>
-    internal static class FilterResources
-    {
-        /// <summary>
-        ///     Error unsupported Compare Operator (const). Value: "Unsupported Compare operator: ".
-        /// </summary>
-        internal const string ErrorCompareOperator = "Unsupported Compare operator: ";
+    internal const string ErrorCompareOperator = "Unsupported Compare operator: ";
 
-        /// <summary>
-        ///     Error unsupported Logical Operator (const). Value: "Unsupported Logical operator: ".
-        /// </summary>
-        internal const string ErrorLogicalOperator = "Unsupported Logical operator: ";
-    }
+    /// <summary>
+    ///     Error unsupported Logical Operator (const). Value: "Unsupported Logical operator: ".
+    /// </summary>
+    internal const string ErrorLogicalOperator = "Unsupported Logical operator: ";
 }

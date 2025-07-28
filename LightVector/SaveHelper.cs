@@ -11,71 +11,70 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace LightVector
+namespace LightVector;
+
+/// <summary>
+///     Helper class for saving and loading XML files
+/// </summary>
+internal static class SaveHelper
 {
     /// <summary>
-    ///     Helper class for saving and loading XML files
+    ///     Serializes an object to XML and saves it to a file.
     /// </summary>
-    internal static class SaveHelper
+    public static void XmlSerializerObject<T>(T serializeObject, string path)
     {
-        /// <summary>
-        ///     Serializes an object to XML and saves it to a file.
-        /// </summary>
-        public static void XmlSerializerObject<T>(T serializeObject, string path)
+        if (serializeObject is null)
         {
-            if (serializeObject is null)
-            {
-                Trace.WriteLine(WvgResources.ErrorSerializerEmpty + path);
-                File.Delete(path);
-                return;
-            }
-
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            try
-            {
-                var serializer = new XmlSerializer(typeof(T));
-                using var writer = new StreamWriter(path);
-                serializer.Serialize(writer, serializeObject);
-            }
-            catch (Exception error)
-            {
-                Trace.WriteLine(WvgResources.ErrorSerializer + error);
-            }
+            Trace.WriteLine(WvgResources.ErrorSerializerEmpty + path);
+            File.Delete(path);
+            return;
         }
 
-        /// <summary>
-        ///     Deserializes an XML file into an object of type T.
-        /// </summary>
-        public static T XmlDeSerializerObject<T>(string path) where T : new()
+        var directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
         {
-            if (!File.Exists(path))
-            {
-                Trace.WriteLine(WvgResources.ErrorPath);
-                return new T();
-            }
+            Directory.CreateDirectory(directory);
+        }
 
-            if (new FileInfo(path).Length == 0)
-            {
-                Trace.WriteLine(WvgResources.ErrorFileEmpty + path);
-                return new T();
-            }
+        try
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            using var writer = new StreamWriter(path);
+            serializer.Serialize(writer, serializeObject);
+        }
+        catch (Exception error)
+        {
+            Trace.WriteLine(WvgResources.ErrorSerializer + error);
+        }
+    }
 
-            try
-            {
-                var serializer = new XmlSerializer(typeof(T));
-                using Stream reader = File.OpenRead(path);
-                return (T)serializer.Deserialize(reader);
-            }
-            catch (Exception error)
-            {
-                Trace.WriteLine(WvgResources.ErrorDeSerializer + error);
-                return new T();
-            }
+    /// <summary>
+    ///     Deserializes an XML file into an object of type T.
+    /// </summary>
+    public static T XmlDeSerializerObject<T>(string path) where T : new()
+    {
+        if (!File.Exists(path))
+        {
+            Trace.WriteLine(WvgResources.ErrorPath);
+            return new T();
+        }
+
+        if (new FileInfo(path).Length == 0)
+        {
+            Trace.WriteLine(WvgResources.ErrorFileEmpty + path);
+            return new T();
+        }
+
+        try
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            using Stream reader = File.OpenRead(path);
+            return (T)serializer.Deserialize(reader);
+        }
+        catch (Exception error)
+        {
+            Trace.WriteLine(WvgResources.ErrorDeSerializer + error);
+            return new T();
         }
     }
 }

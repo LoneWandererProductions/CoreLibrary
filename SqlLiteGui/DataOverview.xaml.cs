@@ -10,21 +10,20 @@ using System.Windows;
 
 // ReSharper disable MemberCanBeInternal, no not possible for User-control
 
-namespace SQLiteGui
+namespace SQLiteGui;
+
+/// <inheritdoc cref="Window" />
+/// <summary>
+///     The data overview class.
+/// </summary>
+public sealed partial class DataOverview
 {
-    /// <inheritdoc cref="Window" />
+    /// <inheritdoc />
     /// <summary>
-    ///     The data overview class.
+    ///     Initializes a new instance of the <see cref="T:SQLiteGui.DataOverview" /> class.
     /// </summary>
-    public sealed partial class DataOverview
+    public DataOverview()
     {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SQLiteGui.DataOverview" /> class.
-        /// </summary>
-        public DataOverview()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

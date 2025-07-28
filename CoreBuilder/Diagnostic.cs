@@ -6,59 +6,58 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace CoreBuilder
+namespace CoreBuilder;
+
+/// <summary>
+///     Diagnostic Result
+/// </summary>
+public sealed class Diagnostic
 {
     /// <summary>
-    ///     Diagnostic Result
+    ///     Initializes a new instance of the <see cref="Diagnostic" /> class.
     /// </summary>
-    public sealed class Diagnostic
+    /// <param name="filePath">The file path.</param>
+    /// <param name="lineNumber">The line number.</param>
+    /// <param name="message">The message.</param>
+    internal Diagnostic(string filePath, int lineNumber, string message)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Diagnostic" /> class.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="lineNumber">The line number.</param>
-        /// <param name="message">The message.</param>
-        internal Diagnostic(string filePath, int lineNumber, string message)
-        {
-            FilePath = filePath;
-            LineNumber = lineNumber;
-            Message = message;
-        }
+        FilePath = filePath;
+        LineNumber = lineNumber;
+        Message = message;
+    }
 
-        /// <summary>
-        ///     Gets the file path.
-        /// </summary>
-        /// <value>
-        ///     The file path.
-        /// </value>
-        public string FilePath { get; }
+    /// <summary>
+    ///     Gets the file path.
+    /// </summary>
+    /// <value>
+    ///     The file path.
+    /// </value>
+    public string FilePath { get; }
 
-        /// <summary>
-        ///     Gets the line number.
-        /// </summary>
-        /// <value>
-        ///     The line number.
-        /// </value>
-        public int LineNumber { get; }
+    /// <summary>
+    ///     Gets the line number.
+    /// </summary>
+    /// <value>
+    ///     The line number.
+    /// </value>
+    public int LineNumber { get; }
 
-        /// <summary>
-        ///     Gets the message.
-        /// </summary>
-        /// <value>
-        ///     The message.
-        /// </value>
-        public string Message { get; }
+    /// <summary>
+    ///     Gets the message.
+    /// </summary>
+    /// <value>
+    ///     The message.
+    /// </value>
+    public string Message { get; }
 
-        /// <summary>
-        ///     Converts to string.
-        /// </summary>
-        /// <returns>
-        ///     A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        public override string ToString()
-        {
-            return $"{FilePath}({LineNumber}): {Message}";
-        }
+    /// <summary>
+    ///     Converts to string.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="System.String" /> that represents this instance.
+    /// </returns>
+    public override string ToString()
+    {
+        return $"{FilePath}({LineNumber}): {Message}";
     }
 }

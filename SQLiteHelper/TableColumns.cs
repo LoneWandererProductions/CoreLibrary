@@ -8,57 +8,56 @@
 
 using System.Collections.Generic;
 
-namespace SqliteHelper
+namespace SqliteHelper;
+
+/// <summary>
+///     The table columns class.
+/// </summary>
+public sealed class TableColumns
 {
     /// <summary>
-    ///     The table columns class.
+    ///     DataType
     /// </summary>
-    public sealed class TableColumns
+    public SqLiteDataTypes DataType { get; set; }
+
+    /// <summary>
+    ///     Optional
+    /// </summary>
+    public bool Unique { get; set; }
+
+    /// <summary>
+    ///     Optional
+    /// </summary>
+    public bool PrimaryKey { get; init; }
+
+    /// <summary>
+    ///     Optional
+    ///     false is standard
+    /// </summary>
+    public bool NotNull { get; init; }
+
+    /// <summary>
+    ///     Optional
+    /// </summary>
+    internal string RowId { get; init; }
+}
+
+/// <summary>
+///     The dictionary table columns class.
+/// </summary>
+public sealed class DictionaryTableColumns
+{
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DictionaryTableColumns" /> class.
+    ///     Initiates DColumns as well
+    /// </summary>
+    public DictionaryTableColumns()
     {
-        /// <summary>
-        ///     DataType
-        /// </summary>
-        public SqLiteDataTypes DataType { get; set; }
-
-        /// <summary>
-        ///     Optional
-        /// </summary>
-        public bool Unique { get; set; }
-
-        /// <summary>
-        ///     Optional
-        /// </summary>
-        public bool PrimaryKey { get; init; }
-
-        /// <summary>
-        ///     Optional
-        ///     false is standard
-        /// </summary>
-        public bool NotNull { get; init; }
-
-        /// <summary>
-        ///     Optional
-        /// </summary>
-        internal string RowId { get; init; }
+        DColumns = new Dictionary<string, TableColumns>();
     }
 
     /// <summary>
-    ///     The dictionary table columns class.
+    ///     Gets or sets the DColumns.
     /// </summary>
-    public sealed class DictionaryTableColumns
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="DictionaryTableColumns" /> class.
-        ///     Initiates DColumns as well
-        /// </summary>
-        public DictionaryTableColumns()
-        {
-            DColumns = new Dictionary<string, TableColumns>();
-        }
-
-        /// <summary>
-        ///     Gets or sets the DColumns.
-        /// </summary>
-        public Dictionary<string, TableColumns> DColumns { get; internal init; }
-    }
+    public Dictionary<string, TableColumns> DColumns { get; internal init; }
 }

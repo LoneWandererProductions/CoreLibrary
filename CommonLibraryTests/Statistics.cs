@@ -11,56 +11,55 @@ using System.Collections.Generic;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace CommonLibraryTests;
+
+/// <summary>
+///     Test some image related stuff
+/// </summary>
+[TestClass]
+public class Statistics
 {
     /// <summary>
-    ///     Test some image related stuff
+    ///     Test the custom DirectBitmap and how it works
     /// </summary>
-    [TestClass]
-    public class Statistics
+    [TestMethod]
+    public void Dispersion()
     {
-        /// <summary>
-        ///     Test the custom DirectBitmap and how it works
-        /// </summary>
-        [TestMethod]
-        public void Dispersion()
+        var lst = new List<double>
         {
-            var lst = new List<double>
-            {
-                1,
-                3,
-                5,
-                9,
-                12
-            };
-            var arithmetic = new Dispersion(lst);
+            1,
+            3,
+            5,
+            9,
+            12
+        };
+        var arithmetic = new Dispersion(lst);
 
-            Assert.AreEqual(6, arithmetic.ArithmeticMean, $"Test Failed: {arithmetic.ArithmeticMean}");
+        Assert.AreEqual(6, arithmetic.ArithmeticMean, $"Test Failed: {arithmetic.ArithmeticMean}");
 
-            Assert.AreEqual(16, arithmetic.Variance, $"Test Failed: {arithmetic.Variance}");
+        Assert.AreEqual(16, arithmetic.Variance, $"Test Failed: {arithmetic.Variance}");
 
-            Assert.AreEqual(4, arithmetic.StandardDeviation,
-                $"Test Failed: {arithmetic.StandardDeviation}");
+        Assert.AreEqual(4, arithmetic.StandardDeviation,
+            $"Test Failed: {arithmetic.StandardDeviation}");
 
-            Assert.AreEqual(0.667, Math.Round(arithmetic.CoefficientOfVariation, 3),
-                $"Test Failed: {arithmetic.CoefficientOfVariation}");
+        Assert.AreEqual(0.667, Math.Round(arithmetic.CoefficientOfVariation, 3),
+            $"Test Failed: {arithmetic.CoefficientOfVariation}");
 
-            Assert.AreEqual(11, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
+        Assert.AreEqual(11, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
 
-            Assert.AreEqual(3.6, arithmetic.MeanAbsoluteDeviation,
-                $"Test Failed: {arithmetic.MeanAbsoluteDeviation}");
+        Assert.AreEqual(3.6, arithmetic.MeanAbsoluteDeviation,
+            $"Test Failed: {arithmetic.MeanAbsoluteDeviation}");
 
-            lst = new List<double>
-            {
-                11,
-                3,
-                5,
-                9,
-                1
-            };
-            arithmetic = new Dispersion(lst);
+        lst = new List<double>
+        {
+            11,
+            3,
+            5,
+            9,
+            1
+        };
+        arithmetic = new Dispersion(lst);
 
-            Assert.AreEqual(10, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
-        }
+        Assert.AreEqual(10, arithmetic.Span, $"Test Failed: {arithmetic.Span}");
     }
 }

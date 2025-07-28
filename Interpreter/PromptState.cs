@@ -9,21 +9,20 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Interpreter
+namespace Interpreter;
+
+/// <summary>
+///     internal State of the Prompt
+/// </summary>
+public enum PromptState
 {
     /// <summary>
-    ///     internal State of the Prompt
+    ///     The normal
     /// </summary>
-    public enum PromptState
-    {
-        /// <summary>
-        ///     The normal
-        /// </summary>
-        Normal = 0,
+    Normal = 0,
 
-        /// <summary>
-        ///     The waiting for feedback
-        /// </summary>
-        WaitingForFeedback = 1
-    }
+    /// <summary>
+    ///     The waiting for feedback
+    /// </summary>
+    WaitingForFeedback = 1
 }
