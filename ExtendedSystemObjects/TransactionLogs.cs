@@ -43,7 +43,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The lock used to synchronize operations that require thread safety beyond what the ConcurrentDictionary provides.
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <summary>
         ///     Flag used to track whether the changelog has been modified.

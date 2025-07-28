@@ -14,6 +14,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -87,7 +88,6 @@ namespace CommonControls
         public static readonly DependencyProperty SelectedPointCommandProperty = DependencyProperty.Register(
             nameof(SelectedPointCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
 
-
         /// <summary>
         ///     The selected frame property
         /// </summary>
@@ -102,11 +102,10 @@ namespace CommonControls
             DependencyProperty.Register(nameof(SelectedFreeFormPointsCommand), typeof(ICommand), typeof(ImageZoom),
                 new PropertyMetadata(null));
 
-
         /// <summary>
         ///     The lock
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <summary>
         ///     The disposed
@@ -305,8 +304,7 @@ namespace CommonControls
         /// <exception cref="System.NotImplementedException"></exception>
         private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var control = d as ImageZoom;
-            if (control == null)
+            if (d is not ImageZoom control)
             {
                 return; // Ensure that we are working with an ImageZoom instance
             }
@@ -688,7 +686,6 @@ namespace CommonControls
             SelectedPoint?.Invoke(endpoint);
             SelectedPointCommand.Execute(endpoint);
         }
-
 
         /// <summary>
         ///     Clean up managed and unmanaged resources.

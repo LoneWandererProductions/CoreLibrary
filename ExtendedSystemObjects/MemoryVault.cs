@@ -37,7 +37,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The instance lock
         /// </summary>
-        private static readonly object InstanceLock = new();
+        private static readonly Lock InstanceLock = new();
 
         /// <summary>
         ///     The cleanup timer
@@ -246,7 +246,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-
         /// <summary>
         ///     Cleanups the expired items.
         /// </summary>
@@ -284,7 +283,6 @@ namespace ExtendedSystemObjects
                 _lock.ExitReadLock();
             }
         }
-
 
         /// <summary>
         ///     Retrieves metadata for an item.
@@ -345,13 +343,13 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                if (!_vault.ContainsKey(identifier))
+                if (!_vault.TryGetValue(identifier, out var value))
                 {
                     return;
                 }
 
-                _vault[identifier].Description = metaData.Description;
-                _vault[identifier].HasExpireTime = metaData.HasExpireTime;
+                value.Description = metaData.Description;
+                value.HasExpireTime = metaData.HasExpireTime;
             }
             finally
             {

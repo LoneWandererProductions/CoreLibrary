@@ -22,6 +22,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -41,7 +42,7 @@ namespace Imaging
         /// <summary>
         ///     The synchronize lock
         /// </summary>
-        private readonly object _syncLock = new();
+        private readonly Lock _syncLock = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.

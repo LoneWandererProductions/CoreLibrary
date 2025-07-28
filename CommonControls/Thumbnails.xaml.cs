@@ -90,14 +90,12 @@ namespace CommonControls
             typeof(bool),
             typeof(Thumbnails), null);
 
-
         /// <summary>
         ///     The is selected
         /// </summary>
         public static readonly DependencyProperty IsSelected = DependencyProperty.Register(nameof(IsSelected),
             typeof(bool),
             typeof(Thumbnails), null);
-
 
         /// <summary>
         ///     The items source property
@@ -390,7 +388,7 @@ namespace CommonControls
             // Clear existing images from the grid
             Thb.Children.Clear();
 
-            LoadImages();
+            _ = LoadImages();
 
             //All Images Loaded
             ImageLoadedCommand?.Execute(this);
@@ -407,13 +405,13 @@ namespace CommonControls
             _originalWidth = ThumbWidth;
             _originalHeight = ThumbHeight;
 
-            LoadImages();
+            _ = LoadImages();
         }
 
         /// <summary>
         ///     Loads the images.
         /// </summary>
-        private async void LoadImages()
+        private async Task LoadImages()
         {
             if (ItemsSource?.Any() != true)
             {
@@ -667,20 +665,17 @@ namespace CommonControls
                 return;
             }
 
-            if (!Keys.ContainsKey(clickedImage.Name))
+            if (!Keys.TryGetValue(clickedImage.Name, out var id))
             {
                 return;
             }
-
-            var id = Keys[clickedImage.Name];
 
             // Create new click object
             var args = new ImageEventArgs { Id = id };
             OnImageThumbClicked(args); // Trigger the event with the selected image ID
 
             // Get the parent border (since we wrapped the image in a Border)
-            var clickedBorder = clickedImage.Parent as Border;
-            if (clickedBorder == null)
+            if (clickedImage.Parent is not Border clickedBorder)
             {
                 return;
             }
@@ -756,12 +751,12 @@ namespace CommonControls
                 return;
             }
 
-            if (!Keys.ContainsKey(clickedButton.Name))
+            if (!Keys.TryGetValue(clickedButton.Name, out var value))
             {
                 return;
             }
 
-            _selection = Keys[clickedButton.Name];
+            _selection = value;
 
             var cm = new ContextMenu();
 
@@ -818,12 +813,10 @@ namespace CommonControls
                 return;
             }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            if (!Keys.TryGetValue(clickedCheckBox.Name, out var id))
             {
                 return;
             }
-
-            var id = Keys[clickedCheckBox.Name];
 
             Selection.Add(id);
         }
@@ -841,12 +834,10 @@ namespace CommonControls
                 return;
             }
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
+            if (!Keys.TryGetValue(clickedCheckBox.Name, out var id))
             {
                 return;
             }
-
-            var id = Keys[clickedCheckBox.Name];
 
             _ = Selection.Remove(id);
         }
@@ -883,12 +874,10 @@ namespace CommonControls
         /// <param name="index">The index.</param>
         private void SelectImageAtIndex(int index)
         {
-            if (index < 0 || index >= Border.Count || !Border.ContainsKey(index))
+            if (index < 0 || index >= Border.Count || !Border.TryGetValue(index, out var border))
             {
                 return;
             }
-
-            var border = Border[index];
 
             // Now, update the current selected border with the found Border
             UpdateSelectedBorder(border);

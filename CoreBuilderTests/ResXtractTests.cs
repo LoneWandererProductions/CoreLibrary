@@ -42,10 +42,12 @@ namespace CoreBuilderTests
         public void ExtractStringsFromFilesShouldExtractLiteralStrings()
         {
             // Arrange: Example source code (as a string) containing regular strings
-            const string code = @"
-                var message = ""Hello, World!"";
-                var errorMessage = ""Error: "" + ex.Message;
-            ";
+            const string code = """
+
+                var message = "Hello, World!";
+                var errorMessage = "Error: " + ex.Message;
+            
+""";
 
             // Act: Extract strings
             var extractedStrings = ResXtract.ExtractStrings(code);
@@ -62,9 +64,11 @@ namespace CoreBuilderTests
         public void ExtractStringsFromFilesShouldExtractInterpolatedStrings()
         {
             // Arrange: Example source code containing interpolated strings
-            const string code = @"
-                var message = $""Error: {ex.Message} at {DateTime.Now}"";
-            ";
+            const string code = """
+
+                var message = $"Error: {ex.Message} at {DateTime.Now}";
+            
+""";
 
             // Act: Extract strings
             var extractedStrings = ResXtract.ExtractStrings(code);

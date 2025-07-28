@@ -33,7 +33,7 @@ namespace Interpreter
         /// <summary>
         ///     Dictionary of available commands.
         /// </summary>
-        private Dictionary<int, InCommand> _commands;
+        private Dictionary<int, InCommand>? _commands;
 
         /// <summary>
         ///     Indicates whether the object has been disposed.
@@ -43,17 +43,17 @@ namespace Interpreter
         /// <summary>
         ///     Instance of IrtHandleInternal for handling internal command logic.
         /// </summary>
-        private IrtHandleInternal _irtHandleInternal;
+        private IrtHandleInternal? _irtHandleInternal;
 
         /// <summary>
         ///     Instance of IrtParser for internal use.
         /// </summary>
-        private IrtParserInput _irtHandlePrompt;
+        private IrtParserInput? _irtHandlePrompt;
 
         /// <summary>
         ///     Instance of Prompt to handle command input/output.
         /// </summary>
-        private Prompt _prompt;
+        private Prompt? _prompt;
 
         /// <summary>
         ///     Prevents a default instance of the <see cref="IrtHandleExtensionInternal" /> class from being created.

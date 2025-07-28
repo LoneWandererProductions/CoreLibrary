@@ -23,12 +23,14 @@ namespace InterpreteTests
         [TestMethod]
         public void RefineSemanticStructureSplitsIfElse()
         {
-            const string input = @"
+            const string input = """
+
         Label(one);
-        Print(""hello world"");
+        Print("hello world");
         goto(one);
-        if(condition) { Print(""if true""); } else { Print(""if false""); }
-    ";
+        if(condition) { Print("if true"); } else { Print("if false"); }
+    
+""";
 
             var lexer = new Lexer(input);
             var tokens = lexer.Tokenize();

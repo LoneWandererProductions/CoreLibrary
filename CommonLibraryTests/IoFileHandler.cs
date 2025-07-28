@@ -143,7 +143,6 @@ namespace CommonLibraryTests
             Assert.IsFalse(check, "File not deleted");
         }
 
-
         /// <summary>
         ///     Simple Check if Folders are in the right place and created correctly
         /// </summary>

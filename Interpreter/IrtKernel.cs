@@ -266,7 +266,7 @@ namespace Interpreter
 
             //remove all empty Parameters
             return (from item in paramLst
-                let result = Regex.Replace(item, IrtConst.RegexRemoveWhiteSpace, string.Empty)
+                    let result = Regex.Replace(item, IrtConst.RegexRemoveWhiteSpace, string.Empty)
                 where result != IrtConst.EmptyParameter
                 select item).ToList();
         }
@@ -731,7 +731,6 @@ namespace Interpreter
 
             return input;
         }
-
 
         /// <summary>
         ///     Determines whether [is valid if statement] [the specified input].

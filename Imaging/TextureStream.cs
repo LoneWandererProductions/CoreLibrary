@@ -72,7 +72,6 @@ namespace Imaging
                     var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue,
                         maxValue);
 
-
                     pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
                 }
             }
@@ -83,7 +82,6 @@ namespace Imaging
 
             return noiseBitmap.Bitmap;
         }
-
 
         /// <summary>
         ///     Generates the clouds bitmap.
@@ -497,7 +495,6 @@ namespace Imaging
             return canvasBitmap;
         }
 
-
         /// <summary>
         ///     HSL to RGB.
         /// </summary>
@@ -547,12 +544,12 @@ namespace Imaging
         {
             if (t < 0)
             {
-                t += 1;
+                t++;
             }
 
             if (t > 1)
             {
-                t -= 1;
+                t--;
             }
 
             if (t < 1.0 / 6.0)

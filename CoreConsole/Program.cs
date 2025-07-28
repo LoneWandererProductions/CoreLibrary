@@ -30,7 +30,7 @@ namespace CoreConsole
         /// <summary>
         ///     The console lock
         /// </summary>
-        private static readonly object ConsoleLock = new();
+        private static readonly Lock ConsoleLock = new();
 
         /// <summary>
         ///     The is event triggered

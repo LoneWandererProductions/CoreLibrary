@@ -15,8 +15,11 @@ namespace RenderEngineTests
     [TestClass]
     public class LayeredImageContainerTests
     {
+        /// <summary>
+        /// Composites the merges layers with alpha.
+        /// </summary>
         [TestMethod]
-        public void Composite_MergesLayersWithAlpha()
+        public void CompositeMergesLayersWithAlpha()
         {
             const int width = 1;
             const int height = 1;
@@ -44,17 +47,23 @@ namespace RenderEngineTests
             Assert.AreEqual(255, pixel[3]); // A (fully opaque after blend)
         }
 
+        /// <summary>
+        /// Adds the layer throws if size mismatch.
+        /// </summary>
         [TestMethod]
-        public void AddLayer_ThrowsIfSizeMismatch()
+        public void AddLayerThrowsIfSizeMismatch()
         {
             using var container = new LayeredImageContainer(2, 2);
             using var badLayer = new UnmanagedImageBuffer(1, 1);
 
-            Assert.ThrowsException<ArgumentException>(() => { container.AddLayer(badLayer); });
+            Assert.ThrowsException<ArgumentException>(() => container.AddLayer(badLayer));
         }
 
+        /// <summary>
+        /// Adds the empty layer adds transparent layer.
+        /// </summary>
         [TestMethod]
-        public void AddEmptyLayer_AddsTransparentLayer()
+        public void AddEmptyLayerAddsTransparentLayer()
         {
             using var container = new LayeredImageContainer(2, 2);
 
@@ -67,8 +76,11 @@ namespace RenderEngineTests
             }
         }
 
+        /// <summary>
+        /// Composites the throws if no layers.
+        /// </summary>
         [TestMethod]
-        public void Composite_ThrowsIfNoLayers()
+        public void CompositeThrowsIfNoLayers()
         {
             using var container = new LayeredImageContainer(2, 2);
             Assert.ThrowsException<InvalidOperationException>(() => container.Composite());
