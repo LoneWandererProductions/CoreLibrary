@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Communication/HttpClientManager.cs
@@ -28,20 +28,20 @@ public static class HttpClientManager
     public static async Task<string?> CallSoapServiceAsync()
     {
         //target url
-        var requestUri = new Uri(Resource.Resource3);
+        var requestUri = new Uri(string.Empty);
         //define commmand in xml body, see CreateSoapRequest
-        const string soapAction = Resource.Resource3;
+        var soapAction = string.Empty;
         var soapRequest = CreateSoapRequest();
         var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
         {
             Headers =
             {
                 {
-                    Resource.Resource6,
-                    Resource.Resource7
+                    ComResource.UserAgent,
+                    ComResource.InsomniaAgent
                 },
                 {
-                    Resource.Resource8,
+                    ComResource.SoapAction,
                     soapAction
                 }
             },
@@ -50,9 +50,9 @@ public static class HttpClientManager
                 // Set the correct Content-Type to 'text/xml; charset=utf-8'
                 Headers =
                 {
-                    ContentType = new MediaTypeHeaderValue(Resource.Resource9)
+                    ContentType = new MediaTypeHeaderValue(ComResource.FormatXml)
                     {
-                        CharSet = Resource.Resource10
+                        CharSet = ComResource.Formatting
                     }
                 }
             }
@@ -66,7 +66,7 @@ public static class HttpClientManager
         catch (Exception ex)
         {
             // Handle errors (e.g., network issues, timeouts, etc.)
-            Console.WriteLine(string.Format(Resource.Resource16, ex.Message));
+            Console.WriteLine(string.Format(ComResource.ErrorFormatOne, ex.Message));
             return null;
         }
     }
@@ -78,7 +78,7 @@ public static class HttpClientManager
     private static string CreateSoapRequest()
     {
         // You can structure the SOAP request body using string interpolation for readability
-        return Resource.Resource11;
+        return ComResource.SoapHeader;
     }
 
     /// <summary>
@@ -89,16 +89,16 @@ public static class HttpClientManager
     /// <param name = "body">The request body (optional).</param>
     /// <param name = "contentType">The content type (default: application/json).</param>
     /// <returns>A <see cref = "HttpResponseMessage"/> containing the response body.</returns>
-    internal static async Task<string> SendMessageAsync(string url, string method, string? body = null, string contentType = Resource.Resource12)
+    internal static async Task<string> SendMessageAsync(string url, string method, string? body = null, string contentType = ComResource.JsonHeader)
     {
         if (string.IsNullOrEmpty(url))
         {
-            throw new ArgumentException(Resource.Resource13, nameof(url));
+            throw new ArgumentException(ComResource.ErrorUrlEmpty, nameof(url));
         }
 
         if (string.IsNullOrEmpty(method))
         {
-            throw new ArgumentException(Resource.Resource14, nameof(method));
+            throw new ArgumentException(ComResource.ErrorMethodCannotBeNull, nameof(method));
         }
 
         var httpRequest = new HttpRequestMessage
@@ -120,12 +120,12 @@ public static class HttpClientManager
 
             // Handle HTTP error status codes
             var errorContent = await response.Content.ReadAsStringAsync();
-            throw new Exception(string.Format(Resource.Resource17, response.StatusCode, errorContent));
+            throw new Exception(string.Format(ComResource.ErrorFormatTwo, response.StatusCode, errorContent));
         }
         catch (Exception ex)
         {
             // Handle any exception that occurred during the request
-            throw new Exception(Resource.Resource15, ex);
+            throw new Exception(ComResource.ErrorMessageRequest, ex);
         }
     }
 }

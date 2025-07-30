@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Communication/FileTransfer.cs
@@ -68,12 +68,12 @@ internal static class FileTransfer
         }
         catch (Exception ex)when (ex is HttpRequestException or IOException)
         {
-            Trace.WriteLine(string.Format(Resource.Resource4, ex.Message));
+            Trace.WriteLine(string.Format(ComResource.ErrorSavingFile, ex.Message));
             return false;
         }
         catch (Exception ex)
         {
-            Trace.WriteLine(string.Format(Resource.Resource5, ex));
+            Trace.WriteLine(string.Format(ComResource.ErrorUnexpected, ex));
             throw; // Re-throw unexpected exceptions to let the caller handle them.
         }
     }
@@ -112,7 +112,7 @@ internal static class FileTransfer
             return Path.Combine(filePath, target);
         }
 
-        target = Regex.Replace(link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf(Resource.Resource1, StringComparison.Ordinal) + 2)..], Resource.Resource2, Resource.Resource3);
+        target = Regex.Replace(link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf(ComResource.Separator, StringComparison.Ordinal) + 2)..], ComResource.Backslash,string.Empty);
         return Path.Combine(filePath, target);
     }
 }

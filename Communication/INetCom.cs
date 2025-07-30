@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Communication/INetCom.cs
@@ -48,7 +48,7 @@ public interface INetCom
     /// <param name = "body">The request body (optional).</param>
     /// <param name = "contentType">The content type (default: application/json).</param>
     /// <returns>An HttpResponseMessage containing the response details.</returns>
-    Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = Resource.Resource12);
+    Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = ComResource.JsonHeader);
     /// <summary>
     ///     Listeners the specified port.
     /// </summary>

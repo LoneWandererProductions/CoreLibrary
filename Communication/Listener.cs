@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Listener.cs
@@ -47,7 +47,7 @@ public sealed class Listener
     {
         _isRunning = true;
         _tcpListener.Start();
-        Console.WriteLine(string.Format(Resource.Resource21, _port));
+        Console.WriteLine(string.Format(ComResource.MessageListening, _port));
         while (_isRunning)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -66,7 +66,7 @@ public sealed class Listener
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format(Resource.Resource22, ex.Message));
+                Console.WriteLine(string.Format(ComResource.ErrorAcceptingCommunication, ex.Message));
             }
         }
     }
@@ -78,7 +78,7 @@ public sealed class Listener
     {
         _isRunning = false;
         _tcpListener.Stop();
-        Console.WriteLine(Resource.Resource18);
+        Console.WriteLine(ComResource.ServerStatusStop);
     }
 
     /// <summary>
@@ -90,11 +90,11 @@ public sealed class Listener
         var client = (TcpClient)obj;
         var stream = client.GetStream();
         // Respond with a simple message (acting as the "ping response")
-        const string response = Resource.Resource19;
+        const string response = ComResource.AnswerMessage;
         var buffer = Encoding.ASCII.GetBytes(response);
         stream.Write(buffer, 0, buffer.Length);
         // Close the connection
         client.Close();
-        Console.WriteLine(Resource.Resource20);
+        Console.WriteLine(ComResource.MessageAnswer);
     }
 }

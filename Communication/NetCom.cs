@@ -1,10 +1,11 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Communication/NetCom.cs
  * PURPOSE:     Entry Point for File Downloads
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
 // ReSharper disable UnusedType.Global
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ public sealed class NetCom : INetCom
     /// <param name = "body">The request body (optional).</param>
     /// <param name = "contentType">The content type (default: application/json).</param>
     /// <returns>An HttpResponseMessage containing the response details.</returns>
-    public async Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = Resource.Resource12)
+    public async Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = ComResource.JsonHeader)
     {
         try
         {
@@ -67,7 +68,7 @@ public sealed class NetCom : INetCom
         catch (Exception ex)
         {
             // Handle or log the error as needed
-            throw new Exception(Resource.Resource23, ex);
+            throw new Exception(ComResource.ErrorSendingRequest, ex);
         }
     }
 
