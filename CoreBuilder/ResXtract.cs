@@ -62,6 +62,12 @@ public sealed class ResXtract : IResourceExtractor
         var allExtractedStrings = new HashSet<string>();
         var changedFiles = new List<string>();
 
+        if (string.IsNullOrWhiteSpace(outputResourceFile))
+        {
+            var defaultName = $"{Path.GetFileNameWithoutExtension(projectPath)}.Resources.cs";
+            outputResourceFile = Path.Combine(Path.GetDirectoryName(projectPath)!, defaultName);
+        }
+
         // 1️⃣ Extract all strings first
         foreach (var file in files)
         {
