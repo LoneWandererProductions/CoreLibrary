@@ -1,11 +1,10 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Listener.cs
  * PURPOSE:     Simple port checker.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
-
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -13,7 +12,6 @@ using System.Text;
 using System.Threading;
 
 namespace Communication;
-
 /// <summary>
 ///     Simple Port Listener
 /// </summary>
@@ -23,21 +21,18 @@ public sealed class Listener
     ///     The port
     /// </summary>
     private readonly int _port;
-
     /// <summary>
     ///     The TCP listener
     /// </summary>
     private readonly TcpListener _tcpListener;
-
     /// <summary>
     ///     The is running
     /// </summary>
     private bool _isRunning;
-
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Listener" /> class.
+    ///     Initializes a new instance of the <see cref = "Listener"/> class.
     /// </summary>
-    /// <param name="port">The port.</param>
+    /// <param name = "port">The port.</param>
     public Listener(int port)
     {
         _port = port;
@@ -47,13 +42,12 @@ public sealed class Listener
     /// <summary>
     ///     Starts the listening.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name = "cancellationToken">The cancellation token.</param>
     public void StartListening(CancellationToken cancellationToken)
     {
         _isRunning = true;
         _tcpListener.Start();
-        Console.WriteLine($"Listening on port {_port}...");
-
+        Console.WriteLine(string.Format(Resource.Resource21, _port));
         while (_isRunning)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -72,7 +66,7 @@ public sealed class Listener
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error accepting connection: {ex.Message}");
+                Console.WriteLine(string.Format(Resource.Resource22, ex.Message));
             }
         }
     }
@@ -84,25 +78,23 @@ public sealed class Listener
     {
         _isRunning = false;
         _tcpListener.Stop();
-        Console.WriteLine("Server stopped.");
+        Console.WriteLine(Resource.Resource18);
     }
 
     /// <summary>
     ///     Handles the client.
     /// </summary>
-    /// <param name="obj">The object.</param>
+    /// <param name = "obj">The object.</param>
     private static void HandleClient(object obj)
     {
         var client = (TcpClient)obj;
         var stream = client.GetStream();
-
         // Respond with a simple message (acting as the "ping response")
-        const string response = "PONG";
+        const string response = Resource.Resource19;
         var buffer = Encoding.ASCII.GetBytes(response);
         stream.Write(buffer, 0, buffer.Length);
-
         // Close the connection
         client.Close();
-        Console.WriteLine("Responded to a ping.");
+        Console.WriteLine(Resource.Resource20);
     }
 }

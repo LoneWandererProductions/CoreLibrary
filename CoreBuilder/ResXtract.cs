@@ -64,8 +64,8 @@ public sealed class ResXtract : IResourceExtractor
 
         if (string.IsNullOrWhiteSpace(outputResourceFile))
         {
-            var defaultName = Path.Combine(Path.GetDirectoryName(projectPath)!, "Resources.cs");
-            outputResourceFile = Path.Combine(Path.GetDirectoryName(projectPath)!, defaultName);
+            var defaultName = Path.Combine(projectPath, "Resources.cs");
+            outputResourceFile = Path.Combine(projectPath, defaultName);
         }
 
         // 1️⃣ Extract all strings first
