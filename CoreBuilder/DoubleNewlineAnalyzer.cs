@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
  * FILE:        DoubleNewlineAnalyzer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Simple Double Newline Analyzer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

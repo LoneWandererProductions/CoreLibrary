@@ -84,6 +84,9 @@ namespace Communication
         /// </summary>
         internal const string MessageAnswer = "Responded to a ping.";
 
+        /// <summary>
+        /// The message listening indicating the server is ready to accept connections.
+        /// </summary>
         internal const string MessageListening = "Listening on port {0}...";
 
         /// <summary>

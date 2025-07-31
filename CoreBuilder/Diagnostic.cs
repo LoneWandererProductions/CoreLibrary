@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
  * FILE:        Diagnostic.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Class representing a diagnostic result.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

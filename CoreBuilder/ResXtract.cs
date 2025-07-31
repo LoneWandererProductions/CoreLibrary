@@ -38,7 +38,7 @@ public sealed class ResXtract : IResourceExtractor
     /// </summary>
     /// <param name="ignoreList">The ignore list.</param>
     /// <param name="ignorePatterns">The ignore patterns.</param>
-    public ResXtract(List<string> ignoreList = null, List<string> ignorePatterns = null)
+    public ResXtract(List<string>? ignoreList = null, List<string>? ignorePatterns = null)
     {
         _ignoreList = ignoreList ?? new List<string>();
         _ignorePatterns = ignorePatterns ?? new List<string>();

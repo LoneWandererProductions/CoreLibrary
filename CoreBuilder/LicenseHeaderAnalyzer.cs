@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
  * FILE:        LicenseHeaderAnalyzer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Just a simple License Header Analyzer. Checks if the file starts with a license header.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
