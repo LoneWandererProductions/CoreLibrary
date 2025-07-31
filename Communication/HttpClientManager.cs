@@ -5,6 +5,7 @@
  * PURPOSE:     Handle Http Requests
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Communication;
+
 /// <summary>
 ///     Http Client for sending requests.
 /// </summary>
@@ -21,6 +23,7 @@ public static class HttpClientManager
     ///     The HTTP client (static to be shared across all usages).
     /// </summary>
     private static readonly HttpClient HttpClient = new();
+
     /// <summary>
     ///     Calls the SOAP service asynchronous.
     /// </summary>
@@ -34,17 +37,7 @@ public static class HttpClientManager
         var soapRequest = CreateSoapRequest();
         var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
         {
-            Headers =
-            {
-                {
-                    ComResource.UserAgent,
-                    ComResource.InsomniaAgent
-                },
-                {
-                    ComResource.SoapAction,
-                    soapAction
-                }
-            },
+            Headers = { { ComResource.UserAgent, ComResource.InsomniaAgent }, { ComResource.SoapAction, soapAction } },
             Content = new StringContent(soapRequest)
             {
                 // Set the correct Content-Type to 'text/xml; charset=utf-8'
@@ -66,7 +59,7 @@ public static class HttpClientManager
         catch (Exception ex)
         {
             // Handle errors (e.g., network issues, timeouts, etc.)
-            Console.WriteLine(string.Format(ComResource.ErrorFormatOne, ex.Message));
+            Console.WriteLine(ComResource.ErrorFormatOne, ex.Message);
             return null;
         }
     }
@@ -84,12 +77,13 @@ public static class HttpClientManager
     /// <summary>
     ///     Sends an HTTP request to the specified URL with the given method and body.
     /// </summary>
-    /// <param name = "url">The URL to send the request to.</param>
-    /// <param name = "method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
-    /// <param name = "body">The request body (optional).</param>
-    /// <param name = "contentType">The content type (default: application/json).</param>
-    /// <returns>A <see cref = "HttpResponseMessage"/> containing the response body.</returns>
-    internal static async Task<string> SendMessageAsync(string url, string method, string? body = null, string contentType = ComResource.JsonHeader)
+    /// <param name="url">The URL to send the request to.</param>
+    /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
+    /// <param name="body">The request body (optional).</param>
+    /// <param name="contentType">The content type (default: application/json).</param>
+    /// <returns>A <see cref="HttpResponseMessage" /> containing the response body.</returns>
+    internal static async Task<string> SendMessageAsync(string url, string method, string? body = null,
+        string contentType = ComResource.JsonHeader)
     {
         if (string.IsNullOrEmpty(url))
         {

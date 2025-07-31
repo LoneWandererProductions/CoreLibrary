@@ -36,7 +36,7 @@ public sealed class OutCommand
     /// <summary>
     ///     Gets or sets the parameter.
     /// </summary>
-    public List<string> Parameter { get; internal init; }
+    public List<string?> Parameter { get; internal init; }
 
     /// <summary>
     ///     Gets a value indicating whether [extension used].

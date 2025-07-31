@@ -56,7 +56,7 @@ internal static class ConsoleHelper
     /// </summary>
     /// <param name="path">The path string.</param>
     /// <returns>Cleaned path string.</returns>
-    private static string CleanPath(string path)
+    private static string? CleanPath(string? path)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
@@ -81,7 +81,7 @@ internal static class ConsoleHelper
     /// <param name="projectPath">Extracted project path.</param>
     /// <param name="error">Error message if invalid.</param>
     /// <returns>True if valid; otherwise false.</returns>
-    private static bool TryGetValidProjectPath(OutCommand command, out string projectPath, out string error)
+    private static bool TryGetValidProjectPath(OutCommand command, out string? projectPath, out string error)
     {
         error = string.Empty;
         projectPath = command.Parameter.Count > 0 ? CleanPath(command.Parameter[0]) : null;

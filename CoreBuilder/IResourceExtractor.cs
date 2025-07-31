@@ -29,7 +29,7 @@ public interface IResourceExtractor
     /// <returns>
     ///     List of changed Files with directory.
     /// </returns>
-    List<string> ProcessProject(string projectPath, string outputResourceFile = null,
+    List<string> ProcessProject(string? projectPath, string? outputResourceFile = null,
         bool appendToExisting = false, bool replace = false);
 
     /// <summary>
@@ -37,5 +37,5 @@ public interface IResourceExtractor
     /// </summary>
     /// <param name="projectPath">The project path.</param>
     /// <returns>Affected Files</returns>
-    string? DetectAffectedFiles(string projectPath);
+    string? DetectAffectedFiles(string? projectPath);
 }

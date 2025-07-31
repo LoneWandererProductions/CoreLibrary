@@ -37,7 +37,7 @@ public sealed class HeaderExtractor : IHeaderExtractor
     /// </summary>
     /// <param name="directoryPath">The directory path.</param>
     /// <param name="includeSubdirectories">if set to <c>true</c> [subdirectories].</param>
-    public string ProcessFiles(string directoryPath, bool includeSubdirectories)
+    public string ProcessFiles(string? directoryPath, bool includeSubdirectories)
     {
         var log = new StringBuilder();
         var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
@@ -83,7 +83,7 @@ public sealed class HeaderExtractor : IHeaderExtractor
     /// <param name="directoryPath">The root directory to scan.</param>
     /// <param name="includeSubdirectories">Whether to include subdirectories.</param>
     /// <returns>A newline-separated list of file paths needing headers.</returns>
-    public string DetectFilesNeedingHeaders(string directoryPath, bool includeSubdirectories)
+    public string DetectFilesNeedingHeaders(string? directoryPath, bool includeSubdirectories)
     {
         if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
         {

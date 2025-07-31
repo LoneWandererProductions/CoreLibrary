@@ -13,19 +13,20 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder;
 
+/// <inheritdoc />
 /// <summary>
-/// Converts string literals in C# code to resource references.
+///     Converts string literals in C# code to resource references.
 /// </summary>
-/// <seealso cref="Microsoft.CodeAnalysis.CSharp.CSharpSyntaxRewriter" />
+/// <seealso cref="T:Microsoft.CodeAnalysis.CSharp.CSharpSyntaxRewriter" />
 internal sealed class StringLiteralRewrite : CSharpSyntaxRewriter
 {
     /// <summary>
-    /// The string to resource map
+    ///     The string to resource map
     /// </summary>
     private readonly Dictionary<string, string> _stringToResourceMap;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StringLiteralRewrite"/> class.
+    ///     Initializes a new instance of the <see cref="StringLiteralRewrite" /> class.
     /// </summary>
     /// <param name="stringToResourceMap">The string to resource map.</param>
     internal StringLiteralRewrite(Dictionary<string, string> stringToResourceMap)
@@ -34,7 +35,7 @@ internal sealed class StringLiteralRewrite : CSharpSyntaxRewriter
     }
 
     /// <summary>
-    /// Rewrites the specified code.
+    ///     Rewrites the specified code.
     /// </summary>
     /// <param name="code">The code.</param>
     /// <returns>Rewritten Code</returns>
@@ -47,11 +48,11 @@ internal sealed class StringLiteralRewrite : CSharpSyntaxRewriter
     }
 
     /// <summary>
-    /// Visits the literal expression.
+    ///     Visits the literal expression.
     /// </summary>
     /// <param name="node">The node.</param>
     /// <returns>Replace string with expression.</returns>
-    public override SyntaxNode VisitLiteralExpression(LiteralExpressionSyntax node)
+    public override SyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax? node)
     {
         if (node == null)
         {
@@ -75,11 +76,11 @@ internal sealed class StringLiteralRewrite : CSharpSyntaxRewriter
     }
 
     /// <summary>
-    /// Visits the interpolated string expression.
+    ///     Visits the interpolated string expression.
     /// </summary>
     /// <param name="node">The node.</param>
-    /// <returns>Interpolated string as replacment for existing string.</returns>
-    public override SyntaxNode VisitInterpolatedStringExpression(InterpolatedStringExpressionSyntax node)
+    /// <returns>Interpolated string as replacement for existing string.</returns>
+    public override SyntaxNode? VisitInterpolatedStringExpression(InterpolatedStringExpressionSyntax node)
     {
         var staticParts = new List<string>();
         var placeholderArgs = new List<string>();

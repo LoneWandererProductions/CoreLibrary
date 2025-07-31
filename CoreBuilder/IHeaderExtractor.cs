@@ -19,7 +19,7 @@ public interface IHeaderExtractor
     /// <param name="directoryPath">The directory path.</param>
     /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>
     /// <returns>Messages about the converted files.</returns>
-    string ProcessFiles(string directoryPath, bool includeSubdirectories);
+    string ProcessFiles(string? directoryPath, bool includeSubdirectories);
 
     /// <summary>
     ///     Detects the files needing headers.
@@ -27,5 +27,5 @@ public interface IHeaderExtractor
     /// <param name="directoryPath">The directory path.</param>
     /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>
     /// <returns>List of files needing a header.</returns>
-    string DetectFilesNeedingHeaders(string directoryPath, bool includeSubdirectories);
+    string DetectFilesNeedingHeaders(string? directoryPath, bool includeSubdirectories);
 }

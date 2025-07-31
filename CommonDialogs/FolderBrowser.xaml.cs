@@ -14,71 +14,70 @@ using System.Windows;
 
 // TODO: Add basic Folder Infos
 
-namespace CommonDialogs
+namespace CommonDialogs;
+
+/// <inheritdoc cref="Window" />
+/// <summary>
+///     Simple Folder Browser dialog.
+/// </summary>
+[ToolboxItem(false)]
+public sealed partial class FolderBrowser
 {
-    /// <inheritdoc cref="Window" />
+    /// <inheritdoc />
     /// <summary>
-    ///     Simple Folder Browser dialog.
+    ///     Initializes a new instance of the FolderBrowser dialog.
     /// </summary>
-    [ToolboxItem(false)]
-    public sealed partial class FolderBrowser
+    internal FolderBrowser() : this(string.Empty)
     {
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the FolderBrowser dialog.
-        /// </summary>
-        internal FolderBrowser() : this(string.Empty)
-        {
-        }
+    }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes the dialog with a specified starting folder.
-        /// </summary>
-        /// <param name="startFolder">The target folder to start in.</param>
-        public FolderBrowser(string startFolder)
+    /// <inheritdoc />
+    /// <summary>
+    ///     Initializes the dialog with a specified starting folder.
+    /// </summary>
+    /// <param name="startFolder">The target folder to start in.</param>
+    public FolderBrowser(string startFolder)
+    {
+        try
         {
-            try
-            {
-                InitializeComponent();
-                VFolder.Initiate(startFolder);
-            }
-            catch (Exception ex)
-            {
-                // Handle potential XAML loading errors
-                Console.WriteLine($"Error initializing FolderBrowser: {ex.Message}");
-            }
+            InitializeComponent();
+            VFolder.Initiate(startFolder);
         }
-
-        /// <summary>
-        ///     The selected path after closing the dialog.
-        /// </summary>
-        internal string? Root { get; private set; }
-
-        /// <summary>
-        ///     Handles the OK button click event to confirm folder selection.
-        /// </summary>
-        private void BtnOk_Click(object sender, RoutedEventArgs e)
+        catch (Exception ex)
         {
-            HandleButtonClick(true);
+            // Handle potential XAML loading errors
+            Console.WriteLine($"Error initializing FolderBrowser: {ex.Message}");
         }
+    }
 
-        /// <summary>
-        ///     Handles the Cancel button click event to reset the folder and close.
-        /// </summary>
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            HandleButtonClick(false);
-        }
+    /// <summary>
+    ///     The selected path after closing the dialog.
+    /// </summary>
+    internal string? Root { get; private set; }
 
-        /// <summary>
-        ///     Handles both OK and Cancel clicks to avoid duplicate code.
-        /// </summary>
-        /// <param name="isOkClicked">True if OK was clicked, false for Cancel.</param>
-        private void HandleButtonClick(bool isOkClicked)
-        {
-            Root = isOkClicked ? FolderControl.Root : null; // Set Root only if OK is clicked
-            Close();
-        }
+    /// <summary>
+    ///     Handles the OK button click event to confirm folder selection.
+    /// </summary>
+    private void BtnOk_Click(object sender, RoutedEventArgs e)
+    {
+        HandleButtonClick(true);
+    }
+
+    /// <summary>
+    ///     Handles the Cancel button click event to reset the folder and close.
+    /// </summary>
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        HandleButtonClick(false);
+    }
+
+    /// <summary>
+    ///     Handles both OK and Cancel clicks to avoid duplicate code.
+    /// </summary>
+    /// <param name="isOkClicked">True if OK was clicked, false for Cancel.</param>
+    private void HandleButtonClick(bool isOkClicked)
+    {
+        Root = isOkClicked ? FolderControl.Root : null; // Set Root only if OK is clicked
+        Close();
     }
 }

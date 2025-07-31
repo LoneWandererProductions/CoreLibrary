@@ -54,7 +54,7 @@ public sealed class ResXtract : IResourceExtractor
     /// <param name="appendToExisting">If true, appends to the existing resource file, otherwise overwrites it.</param>
     /// <param name="replace">if set to <c>true</c> [replace].</param>
     /// <returns>List of changed Files with directory.</returns>
-    public List<string> ProcessProject(string projectPath, string outputResourceFile = null,
+    public List<string> ProcessProject(string? projectPath, string? outputResourceFile = null,
         bool appendToExisting = false, bool replace = false)
     {
         var files = GetFiles(projectPath);
@@ -126,7 +126,7 @@ public sealed class ResXtract : IResourceExtractor
     /// </summary>
     /// <param name="projectPath">The root directory of the C# project.</param>
     /// <returns>A formatted string of files that would be changed.</returns>
-    public string? DetectAffectedFiles(string projectPath)
+    public string? DetectAffectedFiles(string? projectPath)
     {
         var files = GetFiles(projectPath);
 
@@ -259,7 +259,7 @@ public sealed class ResXtract : IResourceExtractor
     /// <param name="resourceMap">The extracted strings.</param>
     /// <param name="outputFilePath">The output file path.</param>
     /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
-    private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string outputFilePath,
+    private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string? outputFilePath,
         bool appendToExisting)
     {
         var resourceEntries = resourceMap.OrderBy(kvp => kvp.Value)
@@ -299,7 +299,7 @@ public sealed class ResXtract : IResourceExtractor
     /// </summary>
     /// <param name="projectPath">The project path.</param>
     /// <returns>List of allowed files</returns>
-    private static IEnumerable<string> GetFiles(string projectPath)
+    private static IEnumerable<string> GetFiles(string? projectPath)
     {
         return Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
             .Where(f => !f.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) &&

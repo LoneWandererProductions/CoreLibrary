@@ -7,57 +7,62 @@
  */
 
 // ReSharper disable UnusedType.Global
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Communication;
-/// <inheritdoc/>
+
+/// <inheritdoc />
 /// <summary>
 ///     The com class.
 /// </summary>
 public sealed class NetCom : INetCom
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <summary>
     ///     Saves the file.
     /// </summary>
-    /// <param name = "filePath">The file path.</param>
-    /// <param name = "url">The URL.</param>
-    /// <param name = "progress"></param>
-    /// <param name = "cancellationToken"></param>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="url">The URL.</param>
+    /// <param name="progress"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     Success Status
     /// </returns>
-    public Task<bool> SaveFile(string filePath, string url, IProgress<int> progress = null, CancellationToken cancellationToken = default)
+    public Task<bool> SaveFile(string filePath, string url, IProgress<int> progress = null,
+        CancellationToken cancellationToken = default)
     {
         return FileTransfer.SaveFileAsync(filePath, url, progress, cancellationToken);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <summary>
     ///     Saves the file.
     /// </summary>
-    /// <param name = "filePath">The file path.</param>
-    /// <param name = "urls"></param>
-    /// <param name = "progress"></param>
-    /// <param name = "cancellationToken"></param>
-    public async Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int> progress = null, CancellationToken cancellationToken = default)
+    /// <param name="filePath">The file path.</param>
+    /// <param name="urls"></param>
+    /// <param name="progress"></param>
+    /// <param name="cancellationToken"></param>
+    public async Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int> progress = null,
+        CancellationToken cancellationToken = default)
     {
         await FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <summary>
     ///     Sends an HTTP request using the HttpClientManager.
     /// </summary>
-    /// <param name = "url">The URL to send the request to.</param>
-    /// <param name = "method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
-    /// <param name = "body">The request body (optional).</param>
-    /// <param name = "contentType">The content type (default: application/json).</param>
+    /// <param name="url">The URL to send the request to.</param>
+    /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
+    /// <param name="body">The request body (optional).</param>
+    /// <param name="contentType">The content type (default: application/json).</param>
     /// <returns>An HttpResponseMessage containing the response details.</returns>
-    public async Task<string> SendMessageAsync(string url, string method, string body = null, string contentType = ComResource.JsonHeader)
+    public async Task<string> SendMessageAsync(string url, string method, string body = null,
+        string contentType = ComResource.JsonHeader)
     {
         try
         {
@@ -72,11 +77,11 @@ public sealed class NetCom : INetCom
         }
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <summary>
     ///     Listeners the specified port.
     /// </summary>
-    /// <param name = "port">The port.</param>
+    /// <param name="port">The port.</param>
     /// <returns>
     ///     Reference to the listener
     /// </returns>

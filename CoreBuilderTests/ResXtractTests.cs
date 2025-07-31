@@ -90,8 +90,8 @@ public class ResXtractTests
     public void ProcessProjectShouldExtractStringsAndGenerateResourceFile()
     {
         // Arrange: Set up a test project path and output file
-        const string testProjectPath = @"C:\Temp\TestProject"; // Adjust with the correct test path
-        const string outputResourceFile = @"C:\Temp\outputResourceNamespace.cs";
+        const string? testProjectPath = @"C:\Temp\TestProject"; // Adjust with the correct test path
+        const string? outputResourceFile = @"C:\Temp\outputResourceNamespace.cs";
 
         // Prepare some test files in the project directory
         Directory.CreateDirectory(testProjectPath);

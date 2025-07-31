@@ -51,7 +51,7 @@ internal static class Program
     ///     Defines the entry point of the application.
     /// </summary>
     /// <param name="args">The arguments.</param>
-    private static void Main(string[] args)
+    private static void Main(string?[] args)
     {
         if (args.Length < 2)
         {

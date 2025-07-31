@@ -5,6 +5,7 @@
  * PURPOSE:     Simple port checker.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -12,6 +13,7 @@ using System.Text;
 using System.Threading;
 
 namespace Communication;
+
 /// <summary>
 ///     Simple Port Listener
 /// </summary>
@@ -21,18 +23,21 @@ public sealed class Listener
     ///     The port
     /// </summary>
     private readonly int _port;
+
     /// <summary>
     ///     The TCP listener
     /// </summary>
     private readonly TcpListener _tcpListener;
+
     /// <summary>
     ///     The is running
     /// </summary>
     private bool _isRunning;
+
     /// <summary>
-    ///     Initializes a new instance of the <see cref = "Listener"/> class.
+    ///     Initializes a new instance of the <see cref="Listener" /> class.
     /// </summary>
-    /// <param name = "port">The port.</param>
+    /// <param name="port">The port.</param>
     public Listener(int port)
     {
         _port = port;
@@ -42,12 +47,12 @@ public sealed class Listener
     /// <summary>
     ///     Starts the listening.
     /// </summary>
-    /// <param name = "cancellationToken">The cancellation token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public void StartListening(CancellationToken cancellationToken)
     {
         _isRunning = true;
         _tcpListener.Start();
-        Console.WriteLine(string.Format(ComResource.MessageListening, _port));
+        Console.WriteLine(ComResource.MessageListening, _port);
         while (_isRunning)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -66,7 +71,7 @@ public sealed class Listener
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format(ComResource.ErrorAcceptingCommunication, ex.Message));
+                Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
             }
         }
     }
@@ -84,7 +89,7 @@ public sealed class Listener
     /// <summary>
     ///     Handles the client.
     /// </summary>
-    /// <param name = "obj">The object.</param>
+    /// <param name="obj">The object.</param>
     private static void HandleClient(object obj)
     {
         var client = (TcpClient)obj;
