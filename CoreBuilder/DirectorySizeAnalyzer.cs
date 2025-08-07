@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +19,7 @@ namespace CoreBuilder;
 /// <summary>
 ///     Default implementation of IDirectorySizeAnalyzer.
 /// </summary>
-public class DirectorySizeAnalyzer : IDirectorySizeAnalyzer
+public sealed class DirectorySizeAnalyzer : IDirectorySizeAnalyzer
 {
     /// <inheritdoc />
     /// <summary>
@@ -35,11 +37,25 @@ public class DirectorySizeAnalyzer : IDirectorySizeAnalyzer
             return "Directory does not exist.";
         }
 
-        var files = Directory
-            .EnumerateFiles(directoryPath, "*.*",
-                includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-            .Select(f => new FileInfo(f))
-            .ToList();
+        List<FileInfo> files;
+
+        try
+        {
+            files = Directory
+                .EnumerateFiles(directoryPath, "*.*",
+                    includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
+                .Select(f => new FileInfo(f))
+                .ToList();
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return $"Access denied to one or more folders in: {directoryPath}\n{ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            return $"Error accessing directory: {directoryPath}\n{ex.Message}";
+        }
+
 
         if (files.Count == 0)
         {
