@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -60,9 +61,11 @@ public class ResXtractTests
     [TestMethod]
     public void ExtractStringsFromFilesShouldExtractInterpolatedStrings()
     {
-        // Arrange: Example source code containing interpolated strings
-        const string code =
-            "var message = \"Error: \" + ex.Message + \" at \" + DateTime.Now;";
+        // Arrange: Example source code containing an interpolated string
+        const string code = @"
+        var ex = new Exception(""Test"");
+        var message = $""Error: {ex.Message} at {DateTime.Now}"";
+    ";
 
         // Act: Extract strings
         var extractedStrings = ResXtract.ExtractStrings(code);
