@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreBuilder;
+using CoreBuilder.Interface;
 using Interpreter;
 
 namespace CoreConsole;
@@ -250,5 +251,27 @@ internal static class ConsoleHelper
         return string.IsNullOrEmpty(simulatedChanges)
             ? ConResources.HeaderTryrunNoChanges
             : string.Concat(ConResources.ResxtractTryrunWouldAffect, simulatedChanges);
+    }
+
+    /// <summary>
+    ///     Lists all files in the given directory with size and percentage of total.
+    /// </summary>
+    /// <param name="package">The command containing the directory path.</param>
+    /// <returns>Formatted result string with file sizes and their percentages.</returns>
+    internal static string HandleDirAnalyzer(OutCommand package)
+    {
+        var directoryPath = CleanPath(package.Parameter[0]);
+        if (string.IsNullOrWhiteSpace(directoryPath))
+        {
+            return ConResources.InformationDirectoryMissing;
+        }
+
+        if (!Directory.Exists(directoryPath))
+        {
+            return string.Format(ConResources.ErrorDirectory, directoryPath);
+        }
+
+        IDirectorySizeAnalyzer analyzer = new DirectorySizeAnalyzer();
+        return analyzer.DisplayDirectorySizeOverview(directoryPath, true); // true = include subdirs
     }
 }

@@ -23,15 +23,12 @@ public class RefineSemanticStructureSplitsIfElseCorrectly
     [TestMethod]
     public void RefineSemanticStructureSplitsIfElse()
     {
-        const string input = """
-
-        Label(one);
-        Print("hello world");
-        goto(one);
-        if (condition) { Print("if true"); }
-        else { Print("if false"); }
-
-        """;
+        const string input =
+            "Label(one);\n" +
+            "Print(\"hello world\");\n" +
+            "goto(one);\n" +
+            "if (condition) { Print(\"if true\"); }\n" +
+            "else { Print(\"if false\"); }";
 
         var lexer = new Lexer(input);
         var tokens = lexer.Tokenize();

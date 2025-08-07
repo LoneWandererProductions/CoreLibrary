@@ -11,7 +11,7 @@
 
 using System.Collections.Generic;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Interface;
 
 /// <summary>
 ///     Interface for my Resource Extractor

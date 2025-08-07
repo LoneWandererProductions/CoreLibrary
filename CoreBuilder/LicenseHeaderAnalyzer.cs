@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using CoreBuilder.Interface;
 
 namespace CoreBuilder;
 

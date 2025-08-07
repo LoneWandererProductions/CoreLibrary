@@ -232,6 +232,7 @@ public sealed class Solaris
         data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
 
         var polarisMap = polaris.PolarisMap;
+
         var map = new Dictionary<int, List<int>>
         {
             { 0, new List<int> { 0, 1, 2 } },

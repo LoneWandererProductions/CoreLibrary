@@ -12,6 +12,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreBuilder;
+using CoreBuilder.Interface;
 using Interpreter;
 using Interpreter.Resources;
 
@@ -215,6 +216,12 @@ internal static class Program
                 result = ConsoleHelper.RunAnalyzers(outCommand);
                 _prompt.Callback(result);
                 break;
+            case ConResources.DirAnalyzer:
+            {
+                result = ConsoleHelper.HandleDirAnalyzer(outCommand);
+                _prompt.Callback(result);
+                break;
+            }
             default:
                 _prompt.Callback(ConResources.ErrorCommandNotFound);
                 break;

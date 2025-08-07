@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -43,12 +42,9 @@ public class ResXtractTests
     public void ExtractStringsFromFilesShouldExtractLiteralStrings()
     {
         // Arrange: Example source code (as a string) containing regular strings
-        const string code = """
-
-        var message = "Hello, World!";
-        var errorMessage = "Error: " + ex.Message;
-
-        """;
+        const string code =
+            "var message = \"Hello, World!\";\n" +
+            "var errorMessage = \"Error: \" + ex.Message;";
 
         // Act: Extract strings
         var extractedStrings = ResXtract.ExtractStrings(code);
@@ -65,11 +61,8 @@ public class ResXtractTests
     public void ExtractStringsFromFilesShouldExtractInterpolatedStrings()
     {
         // Arrange: Example source code containing interpolated strings
-        const string code = """
-
-        var message = $"Error: {ex.Message} at {DateTime.Now}";
-
-        """;
+        const string code =
+            "var message = \"Error: \" + ex.Message + \" at \" + DateTime.Now;";
 
         // Act: Extract strings
         var extractedStrings = ResXtract.ExtractStrings(code);

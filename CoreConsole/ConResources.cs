@@ -43,6 +43,11 @@ internal static class ConResources
     internal const int Analyzer = 3;
 
     /// <summary>
+    ///     The dir analyzer
+    /// </summary>
+    internal const int DirAnalyzer = 4;
+
+    /// <summary>
     ///     The resource1
     /// </summary>
     internal const string ResourceHeader = "header";
@@ -144,13 +149,23 @@ internal static class ConResources
                 Description =
                     "Performs basic static analysis on all C# files in the specified directory. (1 parameter: <directoryPath>)"
             }
+        },
+        {
+            DirAnalyzer,
+            new InCommand
+            {
+                Command = "dir",
+                ParameterCount = 1,
+                Description =
+                    "Lists all files in the given directory with size and percentage of total. (1 parameter: <directoryPath>)"
+            }
         }
     };
 
     /// <summary>
     ///     For commands that need your feedback
     /// </summary>
-    internal static readonly Dictionary<int, UserFeedback> Feedback = new() { { 1, ReplaceFeedback } };
+    internal static readonly Dictionary<int, UserFeedback?> Feedback = new() { { 1, ReplaceFeedback } };
 
     /// <summary>
     ///     The extension commands

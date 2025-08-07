@@ -8,7 +8,7 @@
 
 using System.Collections.Generic;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Interface;
 
 /// <summary>
 ///     Analyzer Interface, that will be shared around.
