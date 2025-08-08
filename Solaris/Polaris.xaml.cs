@@ -57,9 +57,11 @@ public sealed partial class Polaris
     /// <summary>
     ///     The editor map
     /// </summary>
-    public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(nameof(PolarisMap),
+    public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(
+        nameof(PolarisMap),
         typeof(Dictionary<int, List<int>>),
-        typeof(Polaris), null);
+        typeof(Polaris),
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The editor textures
@@ -67,14 +69,16 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(
         nameof(PolarisTextures),
         typeof(Dictionary<int, Texture>),
-        typeof(Polaris), null);
+        typeof(Polaris), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The editor grid
     /// </summary>
     public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
         typeof(bool),
-        typeof(Polaris), new PropertyMetadata(false));
+        typeof(Polaris), 
+        new PropertyMetadata(false));
 
     /// <summary>
     ///     The editor number
@@ -82,14 +86,16 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(
         nameof(PolarisNumber),
         typeof(bool),
-        typeof(Polaris), new PropertyMetadata(false));
+        typeof(Polaris), 
+        new PropertyMetadata(false));
 
     /// <summary>
     ///     The editor add
     /// </summary>
     public static readonly DependencyProperty PolarisAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), null);
+        typeof(Polaris), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The editor remove
@@ -97,7 +103,8 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(
         nameof(PolarisRemove),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), null);
+        typeof(Polaris), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The editor add display
@@ -105,7 +112,8 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisAddDisplayProperty = DependencyProperty.Register(
         nameof(PolarisAddDisplay),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), null);
+        typeof(Polaris), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The editor remove display
@@ -113,7 +121,8 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisRemoveDisplayProperty = DependencyProperty.Register(
         nameof(PolarisRemoveDisplay),
         typeof(int),
-        typeof(Polaris), null);
+        typeof(Polaris), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The lock

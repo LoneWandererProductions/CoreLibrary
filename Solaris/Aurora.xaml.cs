@@ -57,7 +57,8 @@ public sealed partial class Aurora
     /// </summary>
     public static readonly DependencyProperty AuroraMapProperty = DependencyProperty.Register(nameof(AuroraMap),
         typeof(Dictionary<int, List<int>>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The avatar
@@ -65,7 +66,8 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraAvatarProperty = DependencyProperty.Register(
         nameof(AuroraAvatar),
         typeof(Bitmap),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The movement
@@ -73,7 +75,8 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraMovementProperty = DependencyProperty.Register(
         nameof(AuroraMovement),
         typeof(List<int>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The textures
@@ -81,21 +84,24 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(
         nameof(AuroraTextures),
         typeof(Dictionary<int, Texture>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The grid
     /// </summary>
     public static readonly DependencyProperty AuroraGridProperty = DependencyProperty.Register(nameof(AuroraGrid),
         typeof(bool),
-        typeof(Aurora), new PropertyMetadata(false));
+        typeof(Aurora), 
+        new PropertyMetadata(false));
 
     /// <summary>
     ///     The add
     /// </summary>
     public static readonly DependencyProperty AuroraAddProperty = DependencyProperty.Register(nameof(AuroraAdd),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The remove
@@ -103,7 +109,8 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraRemoveProperty = DependencyProperty.Register(
         nameof(AuroraRemove),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The add display
@@ -111,7 +118,8 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraAddDisplayProperty = DependencyProperty.Register(
         nameof(AuroraAddDisplay),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The remove display
@@ -119,7 +127,8 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(
         nameof(AuroraRemoveDisplay),
         typeof(int),
-        typeof(Aurora), null);
+        typeof(Aurora), 
+        new PropertyMetadata(null));
 
     /// <summary>
     ///     The cursor
