@@ -57,7 +57,7 @@ public sealed partial class Aurora
     /// </summary>
     public static readonly DependencyProperty AuroraMapProperty = DependencyProperty.Register(nameof(AuroraMap),
         typeof(Dictionary<int, List<int>>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -66,7 +66,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraAvatarProperty = DependencyProperty.Register(
         nameof(AuroraAvatar),
         typeof(Bitmap),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -75,7 +75,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraMovementProperty = DependencyProperty.Register(
         nameof(AuroraMovement),
         typeof(List<int>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -84,7 +84,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraTexturesProperty = DependencyProperty.Register(
         nameof(AuroraTextures),
         typeof(Dictionary<int, Texture>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -92,7 +92,7 @@ public sealed partial class Aurora
     /// </summary>
     public static readonly DependencyProperty AuroraGridProperty = DependencyProperty.Register(nameof(AuroraGrid),
         typeof(bool),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(false));
 
     /// <summary>
@@ -100,7 +100,7 @@ public sealed partial class Aurora
     /// </summary>
     public static readonly DependencyProperty AuroraAddProperty = DependencyProperty.Register(nameof(AuroraAdd),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -109,7 +109,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraRemoveProperty = DependencyProperty.Register(
         nameof(AuroraRemove),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -118,7 +118,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraAddDisplayProperty = DependencyProperty.Register(
         nameof(AuroraAddDisplay),
         typeof(KeyValuePair<int, int>),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -127,7 +127,7 @@ public sealed partial class Aurora
     public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(
         nameof(AuroraRemoveDisplay),
         typeof(int),
-        typeof(Aurora), 
+        typeof(Aurora),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -138,7 +138,7 @@ public sealed partial class Aurora
     /// <summary>
     ///     The third layer
     /// </summary>
-    private Bitmap _thirdLayer;
+    private Bitmap? _thirdLayer;
 
     /// <inheritdoc />
     /// <summary>
@@ -155,7 +155,7 @@ public sealed partial class Aurora
     /// <value>
     ///     The bitmap layer one.
     /// </value>
-    internal Bitmap BitmapLayerOne { get; private set; }
+    internal Bitmap? BitmapLayerOne { get; private set; }
 
     /// <summary>
     ///     Gets or sets the height of the dependency.
@@ -199,7 +199,7 @@ public sealed partial class Aurora
     /// <value>
     ///     The dependency map.
     /// </value>
-    public Dictionary<int, List<int>> AuroraMap
+    public Dictionary<int, List<int>>? AuroraMap
     {
         get => (Dictionary<int, List<int>>)GetValue(AuroraMapProperty);
         set => SetValue(AuroraMapProperty, value);
@@ -211,7 +211,7 @@ public sealed partial class Aurora
     /// <value>
     ///     The dependency avatar.
     /// </value>
-    public Bitmap AuroraAvatar
+    public Bitmap? AuroraAvatar
     {
         get => (Bitmap)GetValue(AuroraAvatarProperty);
         set => SetValue(AuroraAvatarProperty, value);

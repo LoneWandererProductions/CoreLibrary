@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -22,52 +23,82 @@ namespace Solaris;
 /// </summary>
 internal static class Helper
 {
+    /// <summary>
+    ///     The render
+    /// </summary>
     private static readonly ImageRender Render = new();
+
+    /// <summary>
+    ///     Cache for thread-safe bitmap loading
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, Bitmap> ImageCache = new();
 
     /// <summary>
     ///     Generates the final image based on map and textures.
     /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <param name="textures">The textures.</param>
+    /// <param name="map">The map.</param>
+    /// <returns></returns>
     internal static Bitmap GenerateImage(
         int width, int height, int textureSize,
         Dictionary<int, Texture> textures,
-        Dictionary<int, List<int>> map)
+        Dictionary<int, List<int>>? map)
     {
         var background = new Bitmap(width * textureSize, height * textureSize);
+
+        if (map == null)
+        {
+            return background;
+        }
 
         var tiles = new List<Box>();
 
         Parallel.ForEach(map, tile =>
         {
-            if (tile.Value is { Count: > 0 })
+            if (tile.Value is not { Count: > 0 })
             {
-                var x = tile.Key % width * textureSize;
-                var y = tile.Key / width * textureSize;
+                return;
+            }
 
-                lock (tiles)
-                {
-                    tiles.AddRange(tile.Value.Select(texture => new Box
-                    {
-                        X = x,
-                        Y = y,
-                        Layer = textures[texture].Layer,
-                        Image = Render.GetBitmapFile(textures[texture].Path)
-                    }));
-                }
+            var x = tile.Key % width * textureSize;
+            var y = tile.Key / width * textureSize;
+
+            var boxes = tile.Value.Select(textureId =>
+            {
+                var texture = textures[textureId];
+                var image = ImageCache.GetOrAdd(texture.Path, path => Render.GetBitmapFile(path));
+                return new Box { X = x, Y = y, Layer = texture.Layer, Image = image };
+            });
+
+            lock (tiles)
+            {
+                tiles.AddRange(boxes);
             }
         });
 
-        tiles.Sort((a, b) => a.Layer.CompareTo(b.Layer)); // Ensure layering order
+        tiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-        return tiles.Aggregate(background, (current, slice) =>
-            Render.CombineBitmap(current, slice.Image, slice.X, slice.Y));
+        foreach (var slice in tiles)
+        {
+            Render.CombineBitmap(background, slice.Image, slice.X, slice.Y);
+        }
+
+        return background;
     }
 
     /// <summary>
     ///     Generates a grid overlay.
     /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <returns></returns>
     internal static ImageSource GenerateGrid(int width, int height, int textureSize)
     {
-        var bitmap = new Bitmap(width * textureSize, height * textureSize);
+        using var bitmap = new Bitmap(width * textureSize, height * textureSize);
         using var graphics = Graphics.FromImage(bitmap);
 
         for (var y = 0; y < height; y++)
@@ -82,14 +113,19 @@ internal static class Helper
     /// <summary>
     ///     Generates a number overlay.
     /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <param name="padding">The padding.</param>
+    /// <returns></returns>
     internal static ImageSource GenerateNumbers(int width, int height, int textureSize, int padding = 2)
     {
-        var bitmap = new Bitmap(width * textureSize, height * textureSize);
+        using var bitmap = new Bitmap(width * textureSize, height * textureSize);
         using var graphics = Graphics.FromImage(bitmap);
+        using var font = new Font(Resources.Font, 8);
+        var brush = Brushes.Black;
 
         var count = 0;
-        var font = new Font(Resources.Font, 8);
-        var brush = Brushes.Black;
 
         for (var y = 0; y < height; y++)
         for (var x = 0; x < width; x++, count++)
@@ -109,64 +145,79 @@ internal static class Helper
     /// <summary>
     ///     Adds a tile to the map.
     /// </summary>
-    internal static KeyValuePair<bool, Dictionary<int, List<int>>> AddTile(
-        Dictionary<int, List<int>> map, KeyValuePair<int, int> idTexture)
+    /// <param name="map">The map.</param>
+    /// <param name="idTexture">The identifier texture.</param>
+    /// <returns></returns>
+    internal static MapChangeResult AddTile(
+        Dictionary<int, List<int>>? map, KeyValuePair<int, int> idTexture)
     {
         map ??= new Dictionary<int, List<int>>();
         var (key, value) = idTexture;
         var added = map.AddDistinct(key, value);
-        return new KeyValuePair<bool, Dictionary<int, List<int>>>(added, map);
+        return new MapChangeResult(added, map);
     }
 
     /// <summary>
     ///     Removes a tile from the map.
     /// </summary>
-    internal static KeyValuePair<bool, Dictionary<int, List<int>>> RemoveTile(
-        Dictionary<int, List<int>> map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
+    /// <param name="map">The map.</param>
+    /// <param name="textures">The textures.</param>
+    /// <param name="idLayer">The identifier layer.</param>
+    /// <returns></returns>
+    internal static MapChangeResult RemoveTile(
+        Dictionary<int, List<int>>? map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
     {
         if (map == null || !map.TryGetValue(idLayer.Key, out var tileList))
         {
-            return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            return new MapChangeResult(false, map);
         }
 
-        var updatedList = tileList.Where(tile => textures[tile].Layer != idLayer.Value).ToList();
-        if (updatedList.Count == tileList.Count) // No changes
+        var updatedList = tileList
+            .Where(tile => textures[tile].Layer != idLayer.Value)
+            .ToList();
+
+        if (updatedList.Count == tileList.Count)
         {
-            return new KeyValuePair<bool, Dictionary<int, List<int>>>(false, map);
+            return new MapChangeResult(false, map);
         }
 
         if (updatedList.Count == 0)
         {
-            map.Remove(idLayer.Key); // Remove empty entries
+            map.Remove(idLayer.Key);
         }
         else
         {
             map[idLayer.Key] = updatedList;
         }
 
-        return new KeyValuePair<bool, Dictionary<int, List<int>>>(true, map);
+        return new MapChangeResult(true, map);
     }
-
 
     /// <summary>
     ///     Adds a tile image to the display layer.
     /// </summary>
-    public static Bitmap AddDisplay(
-        int width, int textureSize, Dictionary<int, Texture> textures, Bitmap layer,
+    /// <param name="width">The width.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <param name="textures">The textures.</param>
+    /// <param name="layer">The layer.</param>
+    /// <param name="idTile">The identifier tile.</param>
+    /// <returns></returns>
+    public static Bitmap? AddDisplay(
+        int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
         KeyValuePair<int, int> idTile)
     {
         var (position, tileId) = idTile;
         var x = position % width * textureSize;
         var y = position / width * textureSize;
 
-        var image = Render.GetBitmapFile(textures[tileId].Path);
+        var image = ImageCache.GetOrAdd(textures[tileId].Path, path => Render.GetBitmapFile(path));
         return Render.CombineBitmap(layer, image, x, y);
     }
 
     /// <summary>
     ///     Removes a tile image from the display layer.
     /// </summary>
-    public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap layer, int position)
+    public static Bitmap? RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
     {
         var x = position % width * textureSize;
         var y = position / width * textureSize;
@@ -177,11 +228,11 @@ internal static class Helper
     /// <summary>
     ///     Displays movement animation.
     /// </summary>
-    internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap avatar,
+    internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
         int width, int height, int textureSize)
     {
         aurora.IsEnabled = false;
-        var background = new Bitmap(width * textureSize, height * textureSize);
+        using var background = new Bitmap(width * textureSize, height * textureSize);
 
         foreach (var step in steps)
         {
@@ -198,10 +249,16 @@ internal static class Helper
     /// <summary>
     ///     Moves the avatar to a new position with animation.
     /// </summary>
-    private static async Task<bool> MoveAvatar(int x, int y, Bitmap background, Bitmap avatar, int sleep)
+    private static async Task<bool> MoveAvatar(int x, int y, Bitmap? background, Bitmap? avatar, int sleep)
     {
         Render.CombineBitmap(background, avatar, x, y);
         await Task.Delay(sleep);
         return true;
     }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Return type for map manipulation methods.
+    /// </summary>
+    internal readonly record struct MapChangeResult(bool Changed, Dictionary<int, List<int>>? Map);
 }

@@ -69,7 +69,7 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(
         nameof(PolarisTextures),
         typeof(Dictionary<int, Texture>),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -77,7 +77,7 @@ public sealed partial class Polaris
     /// </summary>
     public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
         typeof(bool),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(false));
 
     /// <summary>
@@ -86,7 +86,7 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(
         nameof(PolarisNumber),
         typeof(bool),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(false));
 
     /// <summary>
@@ -94,7 +94,7 @@ public sealed partial class Polaris
     /// </summary>
     public static readonly DependencyProperty PolarisAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(
         nameof(PolarisRemove),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -112,7 +112,7 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisAddDisplayProperty = DependencyProperty.Register(
         nameof(PolarisAddDisplay),
         typeof(KeyValuePair<int, int>),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -121,7 +121,7 @@ public sealed partial class Polaris
     public static readonly DependencyProperty PolarisRemoveDisplayProperty = DependencyProperty.Register(
         nameof(PolarisRemoveDisplay),
         typeof(int),
-        typeof(Polaris), 
+        typeof(Polaris),
         new PropertyMetadata(null));
 
     /// <summary>
@@ -150,7 +150,7 @@ public sealed partial class Polaris
     /// <value>
     ///     The bitmap layer three.
     /// </value>
-    internal Bitmap BitmapLayerThree { get; private set; }
+    internal Bitmap? BitmapLayerThree { get; private set; }
 
     /// <summary>
     ///     Gets the bitmap layer one.
@@ -158,7 +158,7 @@ public sealed partial class Polaris
     /// <value>
     ///     The bitmap layer one.
     /// </value>
-    internal Bitmap BitmapLayerOne { get; private set; }
+    internal Bitmap? BitmapLayerOne { get; private set; }
 
     /// <summary>
     ///     Gets or sets the height of the polaris.
@@ -202,7 +202,7 @@ public sealed partial class Polaris
     /// <value>
     ///     The polaris map.
     /// </value>
-    public Dictionary<int, List<int>> PolarisMap
+    public Dictionary<int, List<int>>? PolarisMap
     {
         get => (Dictionary<int, List<int>>)GetValue(PolarisMapProperty);
         set
