@@ -61,6 +61,7 @@ internal static class Program
         else
         {
             var operation = args[0];
+
             switch (operation)
             {
                 case ConResources.ResourceHeader when args.Length == 2:
