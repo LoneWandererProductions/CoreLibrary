@@ -112,7 +112,7 @@ internal static class ConResources
     /// <summary>
     ///     The available commands
     /// </summary>
-    internal static readonly Dictionary<int, InCommand> DctCommandOne = new()
+    internal static readonly Dictionary<int, InCommand> CodeCommands = new()
     {
         {
             Header, new InCommand

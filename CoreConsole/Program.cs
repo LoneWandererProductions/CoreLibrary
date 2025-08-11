@@ -38,8 +38,6 @@ internal static class Program
     /// </summary>
     private static bool _isEventTriggered;
 
-
-
     /// <summary>
     ///     The extension
     /// </summary>
@@ -122,8 +120,8 @@ internal static class Program
         _prompt.SendCommands += SendCommands!;
         _prompt.HandleFeedback += PromptHandleFeedback;
         _prompt.Callback(ConResources.MessageInfo);
-        _prompt.Initiate(ConResources.DctCommandOne, ConResources.UserSpaceCode, ConResources.ExtensionCommands);
-        _prompt.AddCommands(ConResources.DctCommandOne, ConResources.UserSpaceCode);
+        _prompt.Initiate(ConResources.CodeCommands, ConResources.UserSpaceCode, ConResources.ExtensionCommands);
+        _prompt.AddCommands(ConResources.CodeCommands, ConResources.UserSpaceCode);
         _prompt.ConsoleInput(ConResources.ResourceUsingCmd);
         _prompt.Callback(Environment.NewLine);
         _prompt.ConsoleInput(ConResources.ResourceListCmd);
@@ -159,9 +157,9 @@ internal static class Program
         {
             _isEventTriggered = true;
             // Simulate event processing
-            _prompt.Callback(ConResources.ResourceEventWait);
+            _prompt?.Callback(ConResources.ResourceEventWait);
             _ = HandleCommandsAsync(e);
-            _prompt.Callback(ConResources.ResourceEventProcessing);
+            _prompt?.Callback(ConResources.ResourceEventProcessing);
             _isEventTriggered = false;
         }
     }
@@ -175,14 +173,14 @@ internal static class Program
         switch (outCommand.Command)
         {
             case -1:
-                _prompt.Callback(outCommand.ErrorMessage);
+                _prompt?.Callback(outCommand.ErrorMessage);
                 break;
             case 99:
                 // Simulate some work
-                _prompt.Callback(ConResources.MessageClose);
+                _prompt?.Callback(ConResources.MessageClose);
                 _prompt?.Dispose();
                 // Introduce a small delay before closing
-                Thread.Sleep(3000); // Delay for 3000 milliseconds (3 seconds)
+                await Task.Delay(3000); // Delay for 3000 milliseconds (3 seconds)
                 // Close the console application
                 Environment.Exit(0);
                 break;
@@ -200,28 +198,28 @@ internal static class Program
             //Just show some stuff
             case ConResources.Header:
                 result = ConsoleHelper.HandleHeader(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.Resxtract:
                 result = ConsoleHelper.HandleResxtract(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.ResXtractOverload:
                 result = ConsoleHelper.HandleResxtract(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.Analyzer:
                 result = ConsoleHelper.RunAnalyzers(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.DirAnalyzer:
             {
                 result = ConsoleHelper.HandleDirAnalyzer(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             }
             default:
-                _prompt.Callback(ConResources.ErrorCommandNotFound);
+                _prompt?.Callback(ConResources.ErrorCommandNotFound);
                 break;
         }
     }
@@ -235,10 +233,10 @@ internal static class Program
         string result;
 
         //check if the Command is contained.
-        if (!ConResources.DctCommandOne.ContainsKey(outCommand.Command) &&
+        if (!ConResources.CodeCommands.ContainsKey(outCommand.Command) &&
             outCommand.Command != ConResources.Analyzer)
         {
-            _prompt.Callback("Error: Extension, for this command not supported.");
+            _prompt?.Callback("Error: Extension, for this command not supported.");
         }
 
         _ext = outCommand.ExtensionCommand;
@@ -248,22 +246,22 @@ internal static class Program
             //Just show some stuff
             case ConResources.Header:
                 result = ConsoleHelper.HandleHeaderTryrun(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.Resxtract:
                 result = ConsoleHelper.HandleResxtractTryrun(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
             case ConResources.ResXtractOverload:
                 result = ConsoleHelper.HandleResxtractTryrun(outCommand);
-                _prompt.Callback(result);
+                _prompt?.Callback(result);
                 break;
         }
 
         // Wait a bit to let async logs finish before prompt
         await Task.Delay(200);
 
-        _prompt.ConsoleInput("confirm()");
+        _prompt?.ConsoleInput("confirm()");
     }
 
 
@@ -282,17 +280,17 @@ internal static class Program
                     ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
                     : $"{_ext.BaseCommand}";
 
-                    _prompt.ConsoleInput(reconstructed);
+                    _prompt?.ConsoleInput(reconstructed);
                 break;
             }
             case AvailableFeedback.No:
-                _prompt.Callback("Operation canceled");
+                _prompt?.Callback("Operation canceled");
                 break;
             case AvailableFeedback.Cancel:
-                _prompt.Callback("Operation canceled");
+                _prompt?.Callback("Operation canceled");
                 break;
             default:
-                _prompt.Callback(ConResources.InformationInvalidArgument);
+                _prompt?.Callback(ConResources.InformationInvalidArgument);
                 break;
         }
     }
@@ -307,7 +305,8 @@ internal static class Program
         lock (ConsoleLock)
         {
             _isEventTriggered = true;
-            Console.WriteLine(e);
+            _prompt?.Callback(e);
+            //Console.WriteLine(e);
             _isEventTriggered = false;
         }
     }
