@@ -305,8 +305,8 @@ internal static class Program
         lock (ConsoleLock)
         {
             _isEventTriggered = true;
-            _prompt?.Callback(e);
-            //Console.WriteLine(e);
+            //_prompt?.Callback(e);
+            Console.WriteLine(e);
             _isEventTriggered = false;
         }
     }
