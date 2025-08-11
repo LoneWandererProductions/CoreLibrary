@@ -38,10 +38,7 @@ internal static class Program
     /// </summary>
     private static bool _isEventTriggered;
 
-    /// <summary>
-    ///     The current command
-    /// </summary>
-    private static OutCommand _currentCommand;
+
 
     /// <summary>
     ///     The extension
@@ -244,7 +241,6 @@ internal static class Program
             _prompt.Callback("Error: Extension, for this command not supported.");
         }
 
-        _currentCommand = outCommand;
         _ext = outCommand.ExtensionCommand;
 
         switch (outCommand.Command)
@@ -286,7 +282,7 @@ internal static class Program
                     ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
                     : $"{_ext.BaseCommand}";
 
-                _prompt.ConsoleInput(reconstructed);
+                    _prompt.ConsoleInput(reconstructed);
                 break;
             }
             case AvailableFeedback.No:
