@@ -167,11 +167,13 @@ internal static class IrtConst
     internal const string ErrorInvalidInput = "Input was null or empty.";
 
     /// <summary>
-    ///     The error feedback for wrong input (const). Value: ""Input was not valid.".
+    ///     The error feedback for wrong input (const). Value: "Input was not valid.".
     /// </summary>
     internal const string ErrorFeedbackOptions = "Input was not valid.";
 
-
+    /// <summary>
+    /// The error feedback missing (const). Value: "Error, Feedback data is missing.".
+    /// </summary>
     internal const string ErrorFeedbackMissing = "Error, Feedback data is missing.";
 
     /// <summary>

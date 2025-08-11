@@ -61,19 +61,23 @@ internal static class IrtHelper
     {
         input = input.Trim().ToUpper();
 
-        // Check if input can be parsed to an AvailableFeedback enum value
-        if (!Enum.TryParse(input, true, out AvailableFeedback parsedFeedback))
+        // First try parsing as enum name
+        if (Enum.TryParse(input, true, out AvailableFeedback parsedFeedback))
         {
-            return -1;
+            if (feedbackOptions.ContainsKey(parsedFeedback))
+                return (int)parsedFeedback;
+
+            return -2; // parsed enum, but not in allowed options
         }
 
-        // Check if the parsed enum value is a key in the feedbackOptions dictionary
-        if (!feedbackOptions.ContainsKey(parsedFeedback))
+        // Otherwise, match against dictionary values
+        foreach (var kvp in feedbackOptions)
         {
-            return -2;
+            if (kvp.Value.Trim().Equals(input, StringComparison.CurrentCultureIgnoreCase))
+                return (int)kvp.Key;
         }
 
-        // Return the integer value of the parsed enum
-        return (int)parsedFeedback;
+        return -1; // not an enum name and not a value match
     }
+
 }

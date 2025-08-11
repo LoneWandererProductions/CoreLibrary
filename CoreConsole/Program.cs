@@ -284,8 +284,6 @@ internal static class Program
                 break;
             }
             case AvailableFeedback.No:
-                _prompt?.Callback("Operation canceled");
-                break;
             case AvailableFeedback.Cancel:
                 _prompt?.Callback("Operation canceled");
                 break;
