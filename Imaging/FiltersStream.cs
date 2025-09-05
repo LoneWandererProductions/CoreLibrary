@@ -302,7 +302,8 @@ internal static class FiltersStream
         using var sourceBuffer = UnmanagedImageBuffer.FromBitmap(greyscaleImage);
         using var resultBuffer = new UnmanagedImageBuffer(sourceBuffer.Width, sourceBuffer.Height);
 
-        var pixelsToSet = new List<(int x, int y, Color color)>();
+        var pixelsToSet = new (int x, int y, uint bgra)[sourceBuffer.Width * sourceBuffer.Height];
+        int index = 0;
 
         for (var y = 1; y < sourceBuffer.Height - 1; y++)
         {
@@ -316,7 +317,7 @@ internal static class FiltersStream
                     for (var i = -1; i <= 1; i++)
                     {
                         var pixel = sourceBuffer.GetPixel(x + i, y + j);
-                        int grayValue = pixel.R; // grayscale, so R=G=B
+                        int grayValue = pixel.R; // grayscale
 
                         gx += _imageSettings.SobelX[j + 1, i + 1] * grayValue;
                         gy += _imageSettings.SobelY[j + 1, i + 1] * grayValue;
@@ -326,12 +327,15 @@ internal static class FiltersStream
                 var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2));
 
-                var color = Color.FromArgb(magnitude, magnitude, magnitude);
-                pixelsToSet.Add((x, y, color));
+                // Convert to packed BGRA
+                uint bgra = (uint)((255 << 24) | (magnitude << 16) | (magnitude << 8) | magnitude);
+
+                pixelsToSet[index++] = (x, y, bgra);
             }
         }
 
-        resultBuffer.SetPixelsSimd(pixelsToSet);
+        // Apply all changes at once
+        resultBuffer.ApplyChanges(pixelsToSet.AsSpan(0, index));
 
         return resultBuffer.ToBitmap();
     }
