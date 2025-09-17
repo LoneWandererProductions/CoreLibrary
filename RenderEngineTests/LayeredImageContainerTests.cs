@@ -27,11 +27,14 @@ public class LayeredImageContainerTests
         var container = new LayeredImageContainer(width, height);
 
         var bottom = new UnmanagedImageBuffer(width, height);
-        bottom.SetPixel(0, 0, 255, 0, 0, 255); // fully opaque blue
+        // Bottom: fully opaque blue
+        bottom.SetPixel(0, 0, 0, 0, 255, 255); // R=0, G=0, B=255, A=255
         container.AddLayer(bottom);
 
         var top = new UnmanagedImageBuffer(width, height);
-        top.SetPixel(0, 0, 128, 255, 0, 0); // 50% transparent red
+
+        // Top: 50% transparent red
+        top.SetPixel(0, 0, 255, 0, 0, 128); // R=255, G=0, B=0, A=128
         container.AddLayer(top);
 
         var result = container.Composite();

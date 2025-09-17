@@ -26,7 +26,7 @@ public sealed class Plugins
     public void LoadPluginSqliIte()
     {
         var root = DirectoryInformation.GetParentDirectory(3);
-        var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net5.0-windows");
+        var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net9.0-windows");
         var check = PluginLoad.LoadAll(target);
 
         Assert.AreEqual(1, PluginLoad.PluginContainer.Count, "done");

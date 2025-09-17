@@ -94,7 +94,7 @@ public sealed class LayeredImageContainer : IDisposable
     public UnmanagedImageBuffer AddEmptyLayer()
     {
         var newLayer = new UnmanagedImageBuffer(_width, _height);
-        newLayer.Clear(0, 0, 0, 0); // transparent clear
+        newLayer.Clear(System.Drawing.Color.FromArgb(0, 0, 0, 0)); // transparent clear
         _layers.Add(newLayer);
         return newLayer;
     }
@@ -115,7 +115,7 @@ public sealed class LayeredImageContainer : IDisposable
         }
 
         var result = new UnmanagedImageBuffer(_width, _height);
-        result.Clear(0, 0, 0, 0); // start transparent
+        result.Clear(System.Drawing.Color.FromArgb(0, 0, 0, 0)); // start transparent
 
         var targetSpan = result.BufferSpan;
 
@@ -136,7 +136,7 @@ public sealed class LayeredImageContainer : IDisposable
     public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
     {
         var result = new UnmanagedImageBuffer(_width, _height);
-        result.Clear(0, 0, 0, 0);
+        result.Clear(System.Drawing.Color.FromArgb(0, 0, 0, 0)); // start transparent
 
         var targetSpan = result.BufferSpan;
         foreach (var index in layerIndices)

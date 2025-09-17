@@ -200,17 +200,26 @@ internal static class FiltersStream
     /// <param name="factor">The factor.</param>
     /// <param name="bias">The bias.</param>
     /// <returns>Image with applied filter</returns>
-    private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
-        double bias = 0.0)
+    /// <summary>
+    /// Applies a convolution filter (e.g., blur, sharpen) to the given source image.
+    /// Uses UnmanagedImageBuffer for fast bulk pixel writes.
+    /// </summary>
+    /// <param name="sourceBitmap">The source image to filter.</param>
+    /// <param name="filterMatrix">The convolution matrix (rows × columns).</param>
+    /// <param name="factor">Optional multiplier for the filtered value (default 1.0).</param>
+    /// <param name="bias">Optional bias added to filtered value (default 0.0).</param>
+    /// <returns>A new Bitmap containing the filtered image.</returns>
+    public static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
     {
-        using var source = UnmanagedImageBuffer.FromBitmap(new Bitmap(sourceBitmap));
+        // Convert source to unmanaged buffer for fast pixel access
+        using var source = ImagePrimitives.FromBitmap(new Bitmap(sourceBitmap));
         using var result = new UnmanagedImageBuffer(source.Width, source.Height);
 
-        var filterWidth = filterMatrix.GetLength(1);
         var filterHeight = filterMatrix.GetLength(0);
+        var filterWidth = filterMatrix.GetLength(1);
         var filterOffset = filterWidth / 2;
 
-        // Buffer changes as (x, y, packed BGRA uint)
+        // List of pixel changes to apply in bulk
         var pixelsToSet = new List<(int x, int y, uint bgra)>();
 
         for (var y = filterOffset; y < source.Height - filterOffset; y++)
@@ -219,34 +228,41 @@ internal static class FiltersStream
             {
                 double blue = 0, green = 0, red = 0;
 
-                for (var filterY = 0; filterY < filterHeight; filterY++)
+                // Apply convolution kernel
+                for (var fy = 0; fy < filterHeight; fy++)
                 {
-                    for (var filterX = 0; filterX < filterWidth; filterX++)
+                    for (var fx = 0; fx < filterWidth; fx++)
                     {
-                        var imageX = x + (filterX - filterOffset);
-                        var imageY = y + (filterY - filterOffset);
+                        var ix = x + (fx - filterOffset);
+                        var iy = y + (fy - filterOffset);
 
-                        var pixelColor = source.GetPixel(imageX, imageY);
+                        var pixel = source.GetPixel(ix, iy);
 
-                        blue += pixelColor.B * filterMatrix[filterY, filterX];
-                        green += pixelColor.G * filterMatrix[filterY, filterX];
-                        red += pixelColor.R * filterMatrix[filterY, filterX];
+                        blue += pixel.b * filterMatrix[fy, fx];
+                        green += pixel.g * filterMatrix[fy, fx];
+                        red += pixel.r * filterMatrix[fy, fx];
                     }
                 }
 
-                var newBlue = ImageHelper.ClampToByte((factor * blue) + bias);
-                var newGreen = ImageHelper.ClampToByte((factor * green) + bias);
-                var newRed = ImageHelper.ClampToByte((factor * red) + bias);
+                // Clamp results to byte range
+                var newB = ImageHelper.ClampToByte(factor * blue + bias);
+                var newG = ImageHelper.ClampToByte(factor * green + bias);
+                var newR = ImageHelper.ClampToByte(factor * red + bias);
 
-                var packedColor = UnmanagedImageBuffer.PackBgra(255, newRed, newGreen, newBlue);
-                pixelsToSet.Add((x, y, packedColor));
+                // Pack as BGRA uint for bulk write
+                var packed = UnmanagedImageBuffer.PackBgra(255, newR, newG, newB);
+
+                pixelsToSet.Add((x, y, packed));
             }
         }
 
+        // Apply all changes in one bulk operation
         result.ApplyChanges(pixelsToSet.ToArray());
 
+        // Convert back to Bitmap
         return result.ToBitmap();
     }
+
 
     /// <summary>
     ///     Pixelate the specified input image.
@@ -299,11 +315,11 @@ internal static class FiltersStream
     {
         var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
-        using var sourceBuffer = UnmanagedImageBuffer.FromBitmap(greyscaleImage);
+        using var sourceBuffer = ImagePrimitives.FromBitmap(greyscaleImage);
         using var resultBuffer = new UnmanagedImageBuffer(sourceBuffer.Width, sourceBuffer.Height);
 
         var pixelsToSet = new (int x, int y, uint bgra)[sourceBuffer.Width * sourceBuffer.Height];
-        int index = 0;
+        var index = 0;
 
         for (var y = 1; y < sourceBuffer.Height - 1; y++)
         {
@@ -317,7 +333,9 @@ internal static class FiltersStream
                     for (var i = -1; i <= 1; i++)
                     {
                         var pixel = sourceBuffer.GetPixel(x + i, y + j);
-                        int grayValue = pixel.R; // grayscale
+                        var (r, g, b, a) = sourceBuffer.GetPixel(x + i, y + j);
+
+                        int grayValue = r; // grayscale
 
                         gx += _imageSettings.SobelX[j + 1, i + 1] * grayValue;
                         gy += _imageSettings.SobelY[j + 1, i + 1] * grayValue;
@@ -328,14 +346,16 @@ internal static class FiltersStream
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2));
 
                 // Convert to packed BGRA
-                uint bgra = (uint)((255 << 24) | (magnitude << 16) | (magnitude << 8) | magnitude);
+                var bgra = (uint)((255 << 24) | (magnitude << 16) | (magnitude << 8) | magnitude);
 
                 pixelsToSet[index++] = (x, y, bgra);
             }
         }
 
         // Apply all changes at once
-        resultBuffer.ApplyChanges(pixelsToSet.AsSpan(0, index));
+        var changesToApply = new (int x, int y, uint bgra)[index];
+        Array.Copy(pixelsToSet, changesToApply, index);
+        resultBuffer.ApplyChanges(changesToApply);
 
         return resultBuffer.ToBitmap();
     }
@@ -486,7 +506,7 @@ internal static class FiltersStream
             g.DrawImage(image, 0, 0, scaledWidth, scaledHeight);
         }
 
-        using var scaledBuffer = UnmanagedImageBuffer.FromBitmap(scaledBitmap);
+        using var scaledBuffer = ImagePrimitives.FromBitmap(scaledBitmap);
         using var resultBuffer = new UnmanagedImageBuffer(image.Width, image.Height);
 
         const int bytesPerPixel = 4;

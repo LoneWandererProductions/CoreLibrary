@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngineTests
  * FILE:        UnmanagedImageBufferTests.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Tests for UnmanagedImageBuffer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -11,11 +11,17 @@ using RenderEngine;
 
 namespace RenderEngineTests;
 
+/// <summary>
+/// Some basic tests for my Unmanaged Buffer Image Format
+/// </summary>
 [TestClass]
 public class UnmanagedImageBufferTests
 {
+    /// <summary>
+    /// Creates the size of the buffer initializes correct.
+    /// </summary>
     [TestMethod]
-    public void CreateBuffer_InitializesCorrectSize()
+    public void CreateBufferInitializesCorrectSize()
     {
         using var buffer = new UnmanagedImageBuffer(10, 10);
 
@@ -24,11 +30,14 @@ public class UnmanagedImageBufferTests
         Assert.AreEqual(400, buffer.BufferSpan.Length); // 10 * 10 * 4
     }
 
+    /// <summary>
+    /// Sets the pixel sets correct values.
+    /// </summary>
     [TestMethod]
-    public void SetPixel_SetsCorrectValues()
+    public void SetPixelSetsCorrectValues()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
-        buffer.SetPixel(1, 1, 255, 100, 150, 200); // A,R,G,B
+        buffer.SetPixel(1, 1,100, 150, 200, 255); // R,G,B,A
 
         const int offset = (1 + (1 * 2)) * 4;
         var span = buffer.BufferSpan;
@@ -39,11 +48,15 @@ public class UnmanagedImageBufferTests
         Assert.AreEqual(255, span[offset + 3]); // A
     }
 
+    /// <summary>
+    /// Clears the color of the fills buffer with.
+    /// </summary>
     [TestMethod]
-    public void Clear_FillsBufferWithColor()
+    public void ClearFillsBufferWithColor()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
-        buffer.Clear(128, 10, 20, 30); // A,R,G,B
+
+        ImagePrimitives.Clear(buffer, 128, 10, 20, 30); // A,R,G,B
 
         var span = buffer.BufferSpan;
         for (var i = 0; i < span.Length; i += 4)
@@ -55,11 +68,14 @@ public class UnmanagedImageBufferTests
         }
     }
 
+    /// <summary>
+    /// Applies the changes updates only targeted pixels.
+    /// </summary>
     [TestMethod]
-    public void ApplyChanges_UpdatesOnlyTargetedPixels()
+    public void ApplyChangesUpdatesOnlyTargetedPixels()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
-        buffer.Clear(0, 0, 0, 0);
+        ImagePrimitives.Clear(buffer, 0, 0, 0, 0);
 
         var changes = new (int x, int y, uint bgra)[]
         {
@@ -85,8 +101,11 @@ public class UnmanagedImageBufferTests
         Assert.AreEqual(0x80, span[offset + 3]);
     }
 
+    /// <summary>
+    /// Replaces the buffer replaces all pixels.
+    /// </summary>
     [TestMethod]
-    public void ReplaceBuffer_ReplacesAllPixels()
+    public void ReplaceBufferReplacesAllPixels()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
 
@@ -102,11 +121,14 @@ public class UnmanagedImageBufferTests
         }
     }
 
+    /// <summary>
+    /// Gets the pixel span returns correct span.
+    /// </summary>
     [TestMethod]
-    public void GetPixelSpan_ReturnsCorrectSpan()
+    public void GetPixelSpanReturnsCorrectSpan()
     {
         using var buffer = new UnmanagedImageBuffer(4, 1);
-        buffer.Clear(255, 1, 2, 3);
+        ImagePrimitives.Clear(buffer, 255, 1, 2, 3);
 
         var span = buffer.GetPixelSpan(1, 0, 2);
         Assert.AreEqual(8, span.Length);

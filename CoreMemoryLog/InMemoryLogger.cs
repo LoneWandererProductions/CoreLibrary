@@ -1,286 +1,312 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
- * FILE:        CoreMemoryLog/InMemoryLogger.cs
- * PURPOSE:     Implementation of Logger Interface with dual interface for fallback and in-memory logging
- *              This class implements both ILogger (for dependency injection compatibility) and 
- *              IInMemoryLogger (for specialized in-memory logging with library-specific logs).
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * FILE:        InMemoryLogger.cs
+ * PURPOSE:     My in-memory logger implementation of an Logger. 
+ *              This library can be used as a fallback logger for any library and will also feature other kind of logging.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace CoreMemoryLog;
-
-/// <summary>
-///     Internal Memory Logger that implements both ILogger and IInMemoryLogger
-///     <para>
-///         Implements ILogger to be compatible with dependency injection systems and serve as a fallback
-///         logger when no other logger is provided. Implements IInMemoryLogger for managing logs in memory
-///         with support for library-specific logs and additional functionality like clearing logs or querying
-///         logs by level.
-///     </para>
-/// </summary>
-public sealed class InMemoryLogger : ILogger, IInMemoryLogger
+namespace CoreMemoryLog
 {
     /// <summary>
-    ///     The instance
+    /// In-memory logger that supports structured logging similar to Microsoft.Extensions.Logging
+    /// and acts as a fallback logger for any library.
     /// </summary>
-    private static readonly Lazy<InMemoryLogger> MemoryInstance = new(() => new InMemoryLogger());
-
-    /// <summary>
-    ///     The i logger logs
-    /// </summary>
-    private readonly ConcurrentQueue<LogEntry> _iLoggerLogs = new();
-
-    /// <summary>
-    ///     The library logs
-    /// </summary>
-    private readonly ConcurrentDictionary<string, ConcurrentQueue<LogEntry>> _libraryLogs = new();
-
-    /// <summary>
-    ///     The maximum log entries
-    /// </summary>
-    private readonly int _maxLogEntries;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="InMemoryLogger" /> class.
-    /// </summary>
-    /// <param name="maxLogEntries">The maximum number of log entries to store.</param>
-    public InMemoryLogger(int maxLogEntries = 1000)
+    public sealed class InMemoryLogger : ILogger, IInMemoryLogger, Microsoft.Extensions.Logging.ILogger
     {
-        _maxLogEntries = maxLogEntries;
-    }
+        /// <summary>
+        /// The memory instance
+        /// </summary>
+        private static readonly Lazy<InMemoryLogger> MemoryInstance = new(() => new InMemoryLogger());
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="InMemoryLogger" /> class with a default maximum of 1000 log entries.
-    /// </summary>
-    public InMemoryLogger()
-    {
-        _maxLogEntries = 1000;
-    }
+        /// <summary>
+        /// The library logs
+        /// </summary>
+        private readonly ConcurrentDictionary<string, ConcurrentQueue<LogEntry>> _libraryLogs = new();
 
-    /// <summary>
-    ///     Gets the instance.
-    /// </summary>
-    /// <value>
-    ///     The instance.
-    /// </value>
-    public static InMemoryLogger Instance => MemoryInstance.Value;
+        /// <summary>
+        /// The maximum log entries
+        /// </summary>
+        private readonly int _maxLogEntries;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Logs a message with a specified log level and library name.
-    /// </summary>
-    /// <param name="level">The log level.</param>
-    /// <param name="message">The message to log.</param>
-    /// <param name="libraryName">The name of the library or component logging the message.</param>
-    /// <param name="exception">An optional exception to log.</param>
-    /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
-    public void Log(LogLevel level, string message, string libraryName, Exception exception = null,
-        [CallerMemberName] string callerMethod = "")
-    {
-        // Ensure that the dictionary has a queue for the specified library
-        var libraryQueue = _libraryLogs.GetOrAdd(libraryName, new ConcurrentQueue<LogEntry>());
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryLogger" /> class.
+        /// </summary>
+        /// <param name="maxLogEntries">Maximum log entries per library queue.</param>
+        public InMemoryLogger(int maxLogEntries = 1000) => _maxLogEntries = maxLogEntries;
 
-        lock (libraryQueue)
+        /// <summary>
+        /// Singleton instance of the logger.
+        /// </summary>
+        public static InMemoryLogger Instance => MemoryInstance.Value;
+
+        /// <summary>
+        /// Gets or sets the minimum log level for this logger.
+        /// Messages below this level will be ignored.
+        /// </summary>
+        public LogLevel LogLevel { get; set; }
+
+        /// <summary>
+        /// Returns the caller method name (optional helper).
+        /// </summary>
+        /// <param name="caller">The caller.</param>
+        /// <returns></returns>
+        private string GetCaller([CallerMemberName] string caller = "") => caller;
+
+        /// <summary>
+        /// Adds a log entry to the library queue, removing oldest entries if the queue exceeds max size.
+        /// </summary>
+        /// <param name="library">The library.</param>
+        /// <param name="entry">The entry.</param>
+        private void EnqueueLog(string library, LogEntry entry)
         {
-            if (libraryQueue.Count >= _maxLogEntries)
-            {
-                libraryQueue.TryDequeue(out _); // Discard the oldest log if max is reached
-            }
+            var queue = _libraryLogs.GetOrAdd(library, _ => new ConcurrentQueue<LogEntry>());
+            if (queue.Count >= _maxLogEntries) queue.TryDequeue(out _);
+            queue.Enqueue(entry);
+        }
 
-            libraryQueue.Enqueue(new LogEntry
+        /// <summary>
+        /// Core structured logging method.
+        /// Stores the original template and args without formatting.
+        /// </summary>
+        public void Log(LogLevel level, string message, string libraryName, Exception exception = null,
+            [CallerMemberName] string callerMethod = "", params object[] args)
+        {
+            // Skip if filtered
+            if (!IsEnabled(LogLevel))
+                return;
+
+            var entry = new LogEntry
             {
                 Level = level,
-                Message = message,
+                Message = message,       // Store template
+                Args = args,             // Store structured args
                 Timestamp = DateTime.UtcNow,
                 Exception = exception,
                 CallerMethod = callerMethod,
                 LibraryName = libraryName
-            });
-        }
-    }
+            };
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Gets all logs for a specific library.
-    /// </summary>
-    /// <param name="libraryName">The name of the library for which to retrieve logs.</param>
-    /// <returns>All logs for the specified library.</returns>
-    public IEnumerable<LogEntry> GetLogsByLibrary(string libraryName)
-    {
-        return _libraryLogs.TryGetValue(libraryName, out var libraryQueue)
-            ? libraryQueue.ToList()
-            : Enumerable.Empty<LogEntry>();
-    }
+            EnqueueLog(libraryName, entry);
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Gets all logs from all libraries.
-    /// </summary>
-    /// <returns>All logs from all libraries.</returns>
-    public IEnumerable<LogEntry> GetLogs()
-    {
-        return _libraryLogs.Values
-            .SelectMany(queue => queue.ToList())
-            .OrderByDescending(log => log.Timestamp);
-    }
+            // Always also output to Trace
+            var formatted = args is { Length: > 0 }
+                ? SafeFormat(message, args)
+                : message;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Clears the logs for a specific library.
-    /// </summary>
-    /// <param name="libraryName">The name of the library for which to clear logs.</param>
-    public void ClearLogs(string libraryName)
-    {
-        if (_libraryLogs.ContainsKey(libraryName))
-        {
-            _libraryLogs[libraryName].Clear();
-        }
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Clears all logs.
-    /// </summary>
-    public void ClearAllLogs()
-    {
-        foreach (var libraryQueue in _libraryLogs.Values)
-        {
-            libraryQueue.Clear();
-        }
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Gets the latest logs for a specific library.
-    /// </summary>
-    /// <param name="libraryName">The name of the library for which to retrieve logs.</param>
-    /// <param name="count">The number of latest logs to retrieve.</param>
-    /// <returns>The latest logs for the specified library.</returns>
-    public IEnumerable<LogEntry> GetLatestLogs(string libraryName, int count)
-    {
-        return GetLogsByLibrary(libraryName)
-            .Reverse() // Reverse to get the latest logs first
-            .Take(count)
-            .Reverse(); // Reverse back to original order
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Checks if logs of a specific level exist for a given library.
-    /// </summary>
-    /// <param name="libraryName">The name of the library to check.</param>
-    /// <param name="logLevel">The log level to search for.</param>
-    /// <returns>True if logs of the specified level exist, otherwise false.</returns>
-    public bool HasLogsWithLevel(string libraryName, LogLevel logLevel)
-    {
-        return _libraryLogs.ContainsKey(libraryName) &&
-               _libraryLogs[libraryName].Any(log => log.Level == logLevel);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Gets logs of a specific level for a given library.
-    /// </summary>
-    /// <param name="libraryName">The name of the library for which to retrieve logs.</param>
-    /// <param name="logLevel">The log level to filter by.</param>
-    /// <returns>Logs of the specified level for the given library.</returns>
-    public IEnumerable<LogEntry> GetLogsByLevel(string libraryName, LogLevel logLevel)
-    {
-        return _libraryLogs.ContainsKey(libraryName)
-            ? _libraryLogs[libraryName].Where(log => log.Level == logLevel)
-            : Enumerable.Empty<LogEntry>();
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Logs the given message with the information level.
-    /// </summary>
-    /// <param name="message">The message to log.</param>
-    /// <param name="exception">An optional exception to log.</param>
-    /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
-    public void LogInformation(string message, Exception exception = null,
-        [CallerMemberName] string callerMethod = "")
-    {
-        LogToQueue(_iLoggerLogs, LogLevel.Information, message, exception, callerMethod);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Logs the given message with the warning level.
-    /// </summary>
-    /// <param name="message">The message to log.</param>
-    /// <param name="exception">An optional exception to log.</param>
-    /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
-    public void LogWarning(string message, Exception exception = null, [CallerMemberName] string callerMethod = "")
-    {
-        LogToQueue(_iLoggerLogs, LogLevel.Warning, message, exception, callerMethod);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Logs the given message with the error level.
-    /// </summary>
-    /// <param name="message">The message to log.</param>
-    /// <param name="exception">An optional exception to log.</param>
-    /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
-    public void LogError(string message, Exception exception = null, [CallerMemberName] string callerMethod = "")
-    {
-        LogToQueue(_iLoggerLogs, LogLevel.Error, message, exception, callerMethod);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Generic log method for ILogger to log messages with any log level.
-    /// </summary>
-    /// <param name="level">The log level.</param>
-    /// <param name="message">The message to log.</param>
-    /// <param name="exception">An optional exception to log.</param>
-    /// <param name="callerMethod">The method from which the log is called, automatically populated by the compiler.</param>
-    public void Log(LogLevel level, string message, Exception exception = null,
-        [CallerMemberName] string callerMethod = "")
-    {
-        Log(level, message, "ILogger", exception, callerMethod);
-    }
-
-    /// <summary>
-    ///     Gets the latest logs from the ILogger log queue.
-    /// </summary>
-    /// <returns>All logs from the ILogger log queue.</returns>
-    public List<LogEntry> GetLog()
-    {
-        return _iLoggerLogs.ToList();
-    }
-
-    /// <summary>
-    ///     A helper method that handles log entry insertion into the queue with log level, message, and exception.
-    /// </summary>
-    /// <param name="queue">The queue to insert the log entry into.</param>
-    /// <param name="level">The log level of the entry.</param>
-    /// <param name="message">The message of the log entry.</param>
-    /// <param name="exception">An optional exception associated with the log entry.</param>
-    /// <param name="callerMethod">The method name from which the log was called.</param>
-    private void LogToQueue(ConcurrentQueue<LogEntry> queue, LogLevel level, string message, Exception exception,
-        string callerMethod)
-    {
-        if (queue.Count >= _maxLogEntries)
-        {
-            queue.TryDequeue(out _); // Discard the oldest log if max is reached
+            Trace.WriteLine($"[{entry.Timestamp:O}] [{libraryName}] [{level}] {callerMethod}: {formatted}");
+            if (exception != null)
+                Trace.WriteLine($"    Exception: {exception}");
         }
 
-        queue.Enqueue(new LogEntry
+        /// <summary>
+        /// Default ILogger log (uses "ILogger" as library).
+        /// </summary>
+        public void Log(LogLevel level, string message, Exception exception = null, params object[] args)
+            => Log(level, message, "ILogger", exception, GetCaller(), args);
+
+        #region Convenience methods
+
+        public void LogDebug(string message, params object[] args) => Log(LogLevel.Debug, message, null, args);
+        public void LogTrace(string message, params object[] args) => Log(LogLevel.Trace, message, null, args);
+        public void LogInformation(string message, params object[] args) => Log(LogLevel.Information, message, null, args);
+        public void LogWarning(string message, params object[] args) => Log(LogLevel.Warning, message, null, args);
+        public void LogError(string message, params object[] args) => Log(LogLevel.Error, message, null, args);
+
+        #endregion
+
+        #region Query logs
+
+        /// <summary>
+        /// Gets the log.
+        /// </summary>
+        /// <returns></returns>
+        public List<LogEntry> GetLog() => GetLogsByLibrary("ILogger").ToList();
+
+        /// <summary>
+        /// Gets logs for a specific library.
+        /// </summary>
+        /// <param name="libraryName">The name of the library.</param>
+        /// <returns>
+        /// Log entries for the specified library.
+        /// </returns>
+        public IEnumerable<LogEntry> GetLogsByLibrary(string libraryName)
+            => _libraryLogs.TryGetValue(libraryName, out var q) ? q.ToList() : Enumerable.Empty<LogEntry>();
+
+        /// <summary>
+        /// Gets all logs from the memory.
+        /// </summary>
+        /// <returns>
+        /// All log entries
+        /// </returns>
+        public IEnumerable<LogEntry> GetLogs()
+            => _libraryLogs.Values.SelectMany(q => q).OrderByDescending(l => l.Timestamp);
+
+        /// <summary>
+        /// Gets the latest log entries from a specific library.
+        /// </summary>
+        /// <param name="libraryName">The name of the library.</param>
+        /// <param name="count">The number of latest logs to retrieve.</param>
+        /// <returns>
+        /// The latest log entries for the specified library.
+        /// </returns>
+        public IEnumerable<LogEntry> GetLatestLogs(string libraryName, int count)
+            => GetLogsByLibrary(libraryName).TakeLast(count);
+
+        /// <summary>
+        /// Determines whether there are logs with the specified log level for a specific library.
+        /// </summary>
+        /// <param name="libraryName">The name of the library.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <returns>
+        ///   <c>true</c> if there are logs with the specified log level for the library; otherwise, <c>false</c>.
+        /// </returns>
+        public bool HasLogsWithLevel(string libraryName, LogLevel logLevel)
+            => _libraryLogs.ContainsKey(libraryName) && _libraryLogs[libraryName].Any(l => l.Level == logLevel);
+
+        /// <summary>
+        /// Gets logs by log level for a specific library.
+        /// </summary>
+        /// <param name="libraryName">The name of the library.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <returns>
+        /// Logs matching the specified log level for the specified library.
+        /// </returns>
+        public IEnumerable<LogEntry> GetLogsByLevel(string libraryName, LogLevel logLevel)
+            => _libraryLogs.ContainsKey(libraryName) ? _libraryLogs[libraryName].Where(l => l.Level == logLevel) : Enumerable.Empty<LogEntry>();
+
+        /// <summary>
+        /// Clears log entries from a specific library.
+        /// </summary>
+        /// <param name="libraryName">The name of the library.</param>
+        public void ClearLogs(string libraryName)
         {
-            Level = level,
-            Message = message,
-            Timestamp = DateTime.UtcNow,
-            Exception = exception,
-            CallerMethod = callerMethod
-        });
+            if (_libraryLogs.ContainsKey(libraryName))
+                _libraryLogs[libraryName].Clear();
+        }
+
+        /// <summary>
+        /// Clears all logs for all libraries.
+        /// </summary>
+        public void ClearAllLogs()
+        {
+            foreach (var queue in _libraryLogs.Values)
+                queue.Clear();
+        }
+
+        #endregion
+        /// <summary>
+        /// Dumps all logs to a file, formatting template with args.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="append">If set to <c>true</c>, appends instead of overwriting.</param>
+        /// <param name="minimumLevel">Minimum log level to include (default: Trace).</param>
+        public void DumpToFile(string filePath, bool append = false, LogLevel minimumLevel = LogLevel.Trace)
+        {
+            using var writer = new StreamWriter(filePath, append);
+
+            foreach (var log in GetLogs()
+                         .Where(l => l.Level >= minimumLevel)
+                         .OrderBy(l => l.Timestamp))
+            {
+                var msg = log.Args is { Length: > 0 }
+                    ? SafeFormat(log.Message, log.Args)
+                    : log.Message;
+
+                writer.WriteLine($"[{log.Timestamp:O}] [{log.LibraryName}] [{log.Level}] {log.CallerMethod}: {msg}");
+                if (log.Exception != null)
+                    writer.WriteLine($"    Exception: {log.Exception}");
+            }
+        }
+
+        /// <summary>
+        /// Safely formats a message with arguments, falls back to template on error.
+        /// </summary>
+        /// <param name="template">The template.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        private static string SafeFormat(string template, object[] args)
+        {
+            try
+            {
+                return string.Format(template, args);
+            }
+            catch
+            {
+                return template; // fallback
+            }
+        }
+
+        #region Microsoft.Extensions.Logging compatibility
+
+        /// <summary>
+        /// Begins a logical operation scope.
+        /// </summary>
+        /// <typeparam name="TState">The type of the state to begin scope for.</typeparam>
+        /// <param name="state">The identifier for the scope.</param>
+        /// <returns>
+        /// An <see cref="T:System.IDisposable" /> that ends the logical operation scope on dispose.
+        /// </returns>
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
+
+        /// <summary>
+        /// Determines whether the specified log level is enabled.
+        /// </summary>
+        /// <param name="logLevel">The log level.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified log level is enabled; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsEnabled(LogLevel logLevel) =>
+            logLevel >= LogLevel;
+
+        /// <summary>
+        /// Checks if the given <paramref name="logLevel" /> is enabled.
+        /// </summary>
+        /// <param name="logLevel">Level to be checked.</param>
+        /// <returns>
+        ///   <see langword="true" /> if enabled.
+        /// </returns>
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => true;
+
+        /// <summary>
+        /// Logs the specified log level.
+        /// </summary>
+        /// <typeparam name="TState">The type of the state.</typeparam>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="eventId">The event identifier.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="exception">The exception.</param>
+        /// <param name="formatter">The formatter.</param>
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+            if (!IsEnabled(logLevel)) return;
+
+            var msg = formatter?.Invoke(state, exception) ?? state?.ToString() ?? string.Empty;
+            Log(logLevel, msg, exception);
+        }
+
+        /// <summary>
+        /// Logs the specified log level.
+        /// </summary>
+        /// <typeparam name="TState">The type of the state.</typeparam>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="eventId">The event identifier.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="exception">The exception.</param>
+        /// <param name="formatter">The formatter.</param>
+        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            => Log((LogLevel)logLevel, formatter(state, exception), exception);
+
+        #endregion
     }
 }

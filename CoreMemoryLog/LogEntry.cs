@@ -32,7 +32,7 @@ public sealed class LogEntry
     /// <value>
     ///     The message.
     /// </value>
-    public string Message { get; init; }
+    public string Message { get; set; }
 
     /// <summary>
     ///     Gets or sets the timestamp.
@@ -65,4 +65,12 @@ public sealed class LogEntry
     ///     The name of the library.
     /// </value>
     public string LibraryName { get; init; }
+
+    /// <summary>
+    /// Gets the arguments.
+    /// </summary>
+    /// <value>
+    /// The arguments.
+    /// </value>
+    public object[] Args { get; internal set; }
 }
