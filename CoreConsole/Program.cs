@@ -280,7 +280,7 @@ internal static class Program
                     ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
                     : $"{_ext.BaseCommand}";
 
-                    _prompt?.ConsoleInput(reconstructed);
+                _prompt?.ConsoleInput(reconstructed);
                 break;
             }
             case AvailableFeedback.No:

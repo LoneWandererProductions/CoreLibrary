@@ -2,317 +2,213 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ShaderResources.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Centralized storage of all shader programs for rendering effects.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedType.Global
-
-namespace RenderEngine;
-
-/// <summary>
-///     A static class containing different shader programs (vertex and fragment shaders) for various rendering effects.
-/// </summary>
-internal static class ShaderResource
+namespace RenderEngine
 {
     /// <summary>
-    ///     Skybox vertices.
-    ///     A set of vertices representing a cube used to render a skybox, typically used in environment mapping.
+    /// Provides centralized shader program sources for various rendering effects.
+    /// Avoids duplication by reusing vertex and fragment shaders where possible.
     /// </summary>
-    public static readonly float[] SkyboxVertices =
+    public static class ShaderResource
     {
-        // Positions
-        -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f
-    };
+        // -----------------------------
+        // Skybox Shader
+        // -----------------------------
+        /// <summary>
+        /// Vertex shader for rendering a skybox.
+        /// Outputs vertex positions transformed by view and projection matrices.
+        /// </summary>
+        public const string SkyboxVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+out vec3 vTexCoord;
+uniform mat4 view;
+uniform mat4 projection;
+void main() {
+    vTexCoord = aPosition;
+    gl_Position = projection * view * vec4(aPosition, 1.0);
+}";
 
-    /// <summary>
-    ///     Gets the vertex shader source.
-    ///     A basic shader that passes position and color from the vertex to the fragment shader. This is a simple shader
-    ///     typically used for basic object rendering with color.
-    /// </summary>
-    /// <value>
-    ///     The vertex shader source.
-    /// </value>
-    public static string VertexShaderSource => @"
-            #version 450 core
+        /// <summary>
+        /// Fragment shader for rendering a skybox.
+        /// Samples from a cubemap texture using the interpolated vertex coordinates.
+        /// </summary>
+        public const string SkyboxFragmentShader = @"#version 450 core
+in vec3 vTexCoord;
+out vec4 FragColor;
+uniform samplerCube uSkybox;
+void main() {
+    FragColor = texture(uSkybox, vTexCoord);
+}";
 
-            layout(location = 0) in vec3 aPosition;  // Changed from vec2 to vec3
-            layout(location = 1) in vec3 aColor;
+        /// <summary>
+        /// Array of vertex positions for a cube used by the skybox shader.
+        /// </summary>
+        public static readonly float[] SkyboxVertices = new float[]
+        {
+            // positions for a cube
+            -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f, -1f, -1f, 1f, -1f, -1f,
+            -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f,
+            1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, -1f, -1f, 1f,
+            -1f, 1f, -1f, 1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, -1f, -1f, 1f,
+            1f, -1f, -1f, 1f, -1f, -1f, -1f, -1f, 1f, 1f, -1f, 1f
+        };
 
-            out vec3 vColor;
+        // -----------------------------
+        // Solid Color Shader
+        // -----------------------------
+        /// <summary>
+        /// Vertex shader for solid color rendering.
+        /// Outputs vertex positions directly.
+        /// </summary>
+        public const string SolidColorVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+void main() { gl_Position = vec4(aPosition, 1.0); }";
 
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0);  // Use all three position values
-                vColor = aColor;
-            }
-        ";
+        /// <summary>
+        /// Fragment shader for solid color rendering.
+        /// Outputs the uniform color.
+        /// </summary>
+        public const string SolidColorFragmentShader = @"#version 450 core
+uniform vec4 uColor;
+out vec4 FragColor;
+void main() { FragColor = uColor; }";
 
+        // -----------------------------
+        // Texture Mapping Shader
+        // -----------------------------
+        /// <summary>
+        /// Vertex shader for texture mapping.
+        /// Passes texture coordinates to the fragment shader.
+        /// </summary>
+        public const string TextureMappingVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec2 aTexCoord;
+out vec2 vTexCoord;
+void main() {
+    gl_Position = vec4(aPosition, 1.0);
+    vTexCoord = aTexCoord;
+}";
 
-    /// <summary>
-    ///     Gets the fragment shader source.
-    ///     This is a basic fragment shader that outputs the color passed from the vertex shader. It's simple and can work with
-    ///     any shader that just passes the color from the vertex stage.
-    /// </summary>
-    /// <value>
-    ///     The fragment shader source.
-    /// </value>
-    public static string FragmentShaderSource => @"
-                #version 450 core
-                in vec3 vColor;
-                out vec4 FragColor;
-                void main()
-                {
-                    FragColor = vec4(vColor, 1.0);
-                }
-            ";
+        /// <summary>
+        /// Fragment shader for texture mapping.
+        /// Samples from a 2D texture.
+        /// </summary>
+        public const string TextureMappingFragmentShader = @"#version 450 core
+in vec2 vTexCoord;
+out vec4 FragColor;
+uniform sampler2D uTexture;
+void main() { FragColor = texture(uTexture, vTexCoord); }";
 
-    /// <summary>
-    ///     Solid Color Shader
-    ///     Renders objects with a solid color (e.g., red).
-    ///     A vertex shader that just transforms the vertex positions for a solid color shader. This is simple and just passes
-    ///     the position without color.
-    /// </summary>
-    /// <value>
-    ///     The solid color vertex shader.
-    /// </value>
-    public static string SolidColorVertexShader => @"
-            #version 450 core
-            layout(location = 0) in vec3 aPosition; // Vertex position input
+        // -----------------------------
+        // Vertex Color Shader
+        // -----------------------------
+        /// <summary>
+        /// Vertex shader for vertex color rendering.
+        /// Passes per-vertex color to the fragment shader.
+        /// </summary>
+        public const string VertexColorVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 aColor;
+out vec3 vColor;
+void main() {
+    gl_Position = vec4(aPosition, 1.0);
+    vColor = aColor;
+}";
 
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0); // Convert position to clip space
-            }
-        ";
+        /// <summary>
+        /// Fragment shader for vertex color rendering.
+        /// Outputs the interpolated vertex color.
+        /// </summary>
+        public const string VertexColorFragmentShader = @"#version 450 core
+in vec3 vColor;
+out vec4 FragColor;
+void main() { FragColor = vec4(vColor, 1.0); }";
 
-    /// <summary>
-    ///     Gets the solid color fragment shader.
-    /// </summary>
-    /// <value>
-    ///     The solid color fragment shader.
-    /// </value>
-    public static string SolidColorFragmentShader => @"
-            #version 450 core
-            out vec4 FragColor; // Output color
+        // -----------------------------
+        // Gradient Shader (uses VertexColor shaders)
+        // -----------------------------
+        public const string GradientVertexShader = VertexColorVertexShader;
+        public const string GradientFragmentShader = VertexColorFragmentShader;
 
-            void main()
-            {
-                FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Output a red color
-            }
-        ";
+        // -----------------------------
+        // Sprite Shader (uses TextureMapping shaders)
+        // -----------------------------
+        public const string SpriteVertexShader = TextureMappingVertexShader;
+        public const string SpriteFragmentShader = TextureMappingFragmentShader;
 
-    /// <summary>
-    ///     Vertex Color Shader
-    ///     Renders objects using colors assigned to each vertex.
-    ///     A vertex shader that passes both position and color information from the vertex to the fragment shader. This is
-    ///     used for vertex-colored objects.
-    /// </summary>
-    /// <value>
-    ///     The vertex color vertex shader.
-    /// </value>
-    public static string VertexColorVertexShader => @"
-            #version 450 core
-            layout(location = 0) in vec3 aPosition; // Vertex position
-            layout(location = 1) in vec3 aColor;    // Vertex color
+        // -----------------------------
+        // Wireframe Shader
+        // -----------------------------
+        public const string WireframeVertexShader = SolidColorVertexShader;
 
-            out vec3 vColor; // Pass color to fragment shader
+        public const string WireframeFragmentShader = @"#version 450 core
+out vec4 FragColor;
+void main() { FragColor = vec4(0.0, 1.0, 0.0, 1.0); }";
 
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0);
-                vColor = aColor; // Pass the vertex color to the fragment shader
-            }
-        ";
+        // -----------------------------
+        // Texture Array Tilemap Shader
+        // -----------------------------
+        /// <summary>
+        /// Vertex shader for texture array tilemap rendering.
+        /// Passes tile index and texture coordinates to the fragment shader.
+        /// </summary>
+        public const string TextureArrayTilemapVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec2 aTexCoord;
+layout(location = 2) in float aTileIndex;
+out vec2 vTexCoord;
+flat out int vTileIndex;
+uniform mat4 view;
+uniform mat4 projection;
+void main() {
+    gl_Position = projection * view * vec4(aPosition, 1.0);
+    vTexCoord = aTexCoord;
+    vTileIndex = int(aTileIndex);
+}";
 
-    /// <summary>
-    ///     Texture Mapping Shader
-    ///     Maps a 2D texture onto a 3D object.
-    ///     This vertex shader passes texture coordinates, which is useful when working with texture mapping.
-    /// </summary>
-    /// <value>
-    ///     The texture mapping vertex shader.
-    /// </value>
-    public static string TextureMappingVertexShader => @"
-            #version 450 core
-            layout(location = 0) in vec3 aPosition;  // Vertex position
-            layout(location = 1) in vec2 aTexCoord; // Texture coordinates
+        /// <summary>
+        /// Fragment shader for texture array tilemap rendering.
+        /// Samples from a 2D texture array.
+        /// </summary>
+        public const string TextureArrayTilemapFragmentShader = @"#version 450 core
+in vec2 vTexCoord;
+flat in int vTileIndex;
+out vec4 FragColor;
+uniform sampler2DArray uTextureArray;
+void main() { FragColor = texture(uTextureArray, vec3(vTexCoord, vTileIndex)); }";
 
-            out vec2 vTexCoord; // Pass texture coordinates to fragment shader
+        // -----------------------------
+        // General-purpose shaders
+        // -----------------------------
+        /// <summary>
+        /// Basic fragment shader: outputs vertex color with alpha 1.
+        /// Can be used for simple colored objects.
+        /// </summary>
+        public static string FragmentShaderSource => @"
+#version 450 core
+in vec3 vColor;
+out vec4 FragColor;
+void main()
+{
+    FragColor = vec4(vColor, 1.0);
+}";
 
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0);
-                vTexCoord = aTexCoord; // Pass texture coordinates to fragment shader
-            }
-        ";
-
-    /// <summary>
-    ///     Gets the texture mapping fragment shader.
-    /// </summary>
-    /// <value>
-    ///     The texture mapping fragment shader.
-    /// </value>
-    public static string TextureMappingFragmentShader => @"
-            #version 450 core
-            in vec2 vTexCoord;        // Interpolated texture coordinates
-            out vec4 FragColor;       // Output color
-
-            uniform sampler2D uTexture; // The texture
-
-            void main()
-            {
-                FragColor = texture(uTexture, vTexCoord); // Sample texture at coordinates
-            }
-        ";
-
-    /// <summary>
-    ///     Basic Lighting Shader (Phong Lighting)
-    ///     Adds simple directional lighting to a 3D object.
-    /// </summary>
-    /// <value>
-    ///     The basic lighting vertex shader.
-    /// </value>
-    public static string BasicLightingVertexShader => @"
-            #version 450 core
-            layout(location = 0) in vec3 aPosition; // Vertex position
-            layout(location = 1) in vec3 aNormal;   // Vertex normal
-
-            out vec3 vNormal; // Pass normal to fragment shader
-
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0);
-                vNormal = aNormal; // Pass the normal to the fragment shader
-            }
-        ";
-
-    /// <summary>
-    ///     Gets the basic lighting fragment shader.
-    /// </summary>
-    /// <value>
-    ///     The basic lighting fragment shader.
-    /// </value>
-    public static string BasicLightingFragmentShader => @"
-            #version 450 core
-            in vec3 vNormal;         // Interpolated normal
-            out vec4 FragColor;      // Output color
-
-            uniform vec3 uLightDir;  // Direction of the light
-
-            void main()
-            {
-                // Normalize the normal and light direction
-                vec3 normal = normalize(vNormal);
-                vec3 lightDir = normalize(uLightDir);
-
-                // Compute the lighting intensity
-                float intensity = max(dot(normal, lightDir), 0.0);
-
-                // Output the shaded color
-                FragColor = vec4(vec3(intensity), 1.0); // Grayscale shading
-            }
-        ";
-
-    /// <summary>
-    ///     Grayscale Shader
-    ///     Converts a texture to grayscale using luminance formula.
-    /// </summary>
-    public static string GrayscaleFragmentShader => @"
-            #version 450 core
-            in vec2 vTexCoord;        // Interpolated texture coordinates
-            out vec4 FragColor;       // Output color
-
-            uniform sampler2D uTexture; // The texture
-
-            void main()
-            {
-                vec4 color = texture(uTexture, vTexCoord); // Sample texture
-                float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114)); // Luminance formula
-                FragColor = vec4(vec3(gray), 1.0); // Output grayscale color
-            }
-        ";
-
-    /// <summary>
-    ///     Wireframe Shader
-    ///     Renders a mesh in wireframe mode (green color).
-    /// </summary>
-    /// <value>
-    ///     The wireframe vertex shader.
-    /// </value>
-    public static string WireframeVertexShader => @"
-            #version 450 core
-            layout(location = 0) in vec3 aPosition;
-
-            void main()
-            {
-                gl_Position = vec4(aPosition, 1.0);
-            }
-        ";
-
-    /// <summary>
-    ///     Gets the wireframe fragment shader.
-    /// </summary>
-    /// <value>
-    ///     The wireframe fragment shader.
-    /// </value>
-    public static string WireframeFragmentShader => @"
-            #version 450 core
-            out vec4 FragColor;
-
-            void main()
-            {
-                FragColor = vec4(0.0, 1.0, 0.0, 1.0); // Green wireframe
-            }
-        ";
-
-    /// <summary>
-    ///     Texture Array Tilemap Vertex Shader
-    ///     Supports texture arrays with tile index per vertex.
-    /// </summary>
-    public static string TextureArrayTilemapVertexShader => @"
-    #version 450 core
-
-    layout(location = 0) in vec3 aPosition;  // Vertex position
-    layout(location = 1) in vec2 aTexCoord;  // Texture coordinates
-    layout(location = 2) in float aTileIndex; // Tile layer index in texture array
-
-    out vec2 vTexCoord;
-    flat out int vTileIndex;
-
-    uniform mat4 view;
-    uniform mat4 projection;
-
-    void main()
-    {
-        gl_Position = projection * view * vec4(aPosition, 1.0);
-        vTexCoord = aTexCoord;
-        vTileIndex = int(aTileIndex);
+        /// <summary>
+        /// Basic vertex shader: passes position and color from vertex to fragment shader.
+        /// Can be used for simple colored objects.
+        /// </summary>
+        public static string VertexShaderSource => @"
+#version 450 core
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 aColor;
+out vec3 vColor;
+void main()
+{
+    gl_Position = vec4(aPosition, 1.0);
+    vColor = aColor;
+}";
     }
-";
-
-    /// <summary>
-    ///     Texture Array Tilemap Fragment Shader
-    ///     Samples from a 2D texture array using the tile index.
-    /// </summary>
-    public static string TextureArrayTilemapFragmentShader => @"
-    #version 450 core
-
-    in vec2 vTexCoord;
-    flat in int vTileIndex;
-
-    out vec4 FragColor;
-
-    uniform sampler2DArray uTextureArray;
-
-    void main()
-    {
-        FragColor = texture(uTextureArray, vec3(vTexCoord, vTileIndex));
-    }
-";
 }

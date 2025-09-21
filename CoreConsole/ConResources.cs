@@ -151,8 +151,7 @@ internal static class ConResources
             }
         },
         {
-            DirAnalyzer,
-            new InCommand
+            DirAnalyzer, new InCommand
             {
                 Command = "dir",
                 ParameterCount = 1,

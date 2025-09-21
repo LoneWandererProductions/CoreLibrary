@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Drawing;
 using System.Numerics;
@@ -80,13 +82,22 @@ namespace RenderEngine
             while (true)
             {
                 if ((uint)x0 < (uint)buf.Width && (uint)y0 < (uint)buf.Height)
-                    buf.SetPixel(x0, y0, c.A, c.R, c.G, c.B);
+                    buf.SetPixel(x0, y0, c.R, c.G, c.B, c.A);
 
                 if (x0 == x1 && y0 == y1) break;
 
                 var e2 = 2 * err;
-                if (e2 > -dy) { err -= dy; x0 += sx; }
-                if (e2 < dx) { err += dx; y0 += sy; }
+                if (e2 > -dy)
+                {
+                    err -= dy;
+                    x0 += sx;
+                }
+
+                if (e2 < dx)
+                {
+                    err += dx;
+                    y0 += sy;
+                }
             }
         }
 
@@ -107,7 +118,7 @@ namespace RenderEngine
             for (var y = top; y < bottom; y++)
             {
                 for (var x = left; x < right; x++)
-                    buf.SetPixel(x, y, c.A, c.R, c.G, c.B);
+                    buf.SetPixel(x, y, c.R, c.G, c.B, c.A);
             }
         }
 
@@ -118,7 +129,6 @@ namespace RenderEngine
         /// </summary>
         /// <param name="bmp">Source bitmap.</param>
         /// <returns>A new unmanaged buffer containing the bitmap data.</returns>
-
         public static UnmanagedImageBuffer FromBitmap(Bitmap bmp)
         {
             var width = bmp.Width;
@@ -200,7 +210,7 @@ namespace RenderEngine
 
                     if (u >= 0f && v >= 0f && w >= 0f)
                     {
-                        buf.SetPixel(x, y, color.A, color.R, color.G, color.B);
+                        buf.SetPixel(x, y, color.R, color.G, color.B, color.A);
                     }
                 }
             }
@@ -210,17 +220,23 @@ namespace RenderEngine
         // Textured triangle (perspective-correct if Zs provided)
         // ---------------------------
 
-        // Small helper for prepped vertices
+        /// <summary>
+        /// Small helper for prepped vertices
+        /// </summary>
         private struct PrepVertex
         {
-            public float X, Y;     // screen space
-            public readonly float UOverZ;   // u/z
-            public readonly float VOverZ;   // v/z
-            public readonly float InvZ;     // 1/z
+            public float X, Y; // screen space
+            public readonly float UOverZ; // u/z
+            public readonly float VOverZ; // v/z
+            public readonly float InvZ; // 1/z
 
             public PrepVertex(float x, float y, float uOverZ, float vOverZ, float invZ)
             {
-                X = x; Y = y; UOverZ = uOverZ; VOverZ = vOverZ; InvZ = invZ;
+                X = x;
+                Y = y;
+                UOverZ = uOverZ;
+                VOverZ = vOverZ;
+                InvZ = invZ;
             }
         }
 
@@ -245,7 +261,7 @@ namespace RenderEngine
             Point p0, Vector2 uv0, float z0,
             Point p1, Vector2 uv1, float z1,
             Point p2, Vector2 uv2, float z2,
-            UnmanagedImageBuffer texture,
+            UnmanagedImageBuffer? texture,
             bool wrap = false)
         {
             if (texture == null) return;
@@ -298,7 +314,9 @@ namespace RenderEngine
 
                     if (!PixelInside(w0, w1, w2)) continue;
 
-                    w0 /= area; w1 /= area; w2 /= area;
+                    w0 /= area;
+                    w1 /= area;
+                    w2 /= area;
 
                     float u, v;
                     if (usePerspective)
@@ -339,7 +357,7 @@ namespace RenderEngine
                     var ta = texBuf[toff + 3];
 
                     if (ta != 0)
-                        buf.SetPixelAlphaBlend(x, y, ta, tr, tg, tb);
+                        buf.SetPixelAlphaBlend(x, y, tr, tg, tb, ta);
                 }
             }
         }
@@ -361,7 +379,7 @@ namespace RenderEngine
             Point p0, Vector2 uv0,
             Point p1, Vector2 uv1,
             Point p2, Vector2 uv2,
-            UnmanagedImageBuffer texture,
+            UnmanagedImageBuffer? texture,
             bool wrap = false)
         {
             DrawTexturedTriangle(buf, p0, uv0, 1f, p1, uv1, 1f, p2, uv2, 1f, texture, wrap);
@@ -400,11 +418,13 @@ namespace RenderEngine
         /// <param name="wrap">Whether texture coordinates should wrap (true) or clamp (false).</param>
         public static void DrawTexturedQuad(UnmanagedImageBuffer buf,
             Point p0, Point p1, Point p2, Point p3,
-            UnmanagedImageBuffer texture, bool wrap = false)
+            UnmanagedImageBuffer? texture, bool wrap = false)
         {
             // UVs: p0=(0,0), p1=(1,0), p2=(1,1), p3=(0,1)
-            DrawTexturedTriangle(buf, p0, new Vector2(0f, 0f), p1, new Vector2(1f, 0f), p2, new Vector2(1f, 1f), texture, wrap);
-            DrawTexturedTriangle(buf, p0, new Vector2(0f, 0f), p2, new Vector2(1f, 1f), p3, new Vector2(0f, 1f), texture, wrap);
+            DrawTexturedTriangle(buf, p0, new Vector2(0f, 0f), p1, new Vector2(1f, 0f), p2, new Vector2(1f, 1f),
+                texture, wrap);
+            DrawTexturedTriangle(buf, p0, new Vector2(0f, 0f), p2, new Vector2(1f, 1f), p3, new Vector2(0f, 1f),
+                texture, wrap);
         }
     }
 }

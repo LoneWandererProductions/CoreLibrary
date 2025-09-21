@@ -13,7 +13,13 @@ namespace CoreMemoryLog
     public sealed class NullScope : IDisposable
     {
         public static readonly NullScope Instance = new();
-        private NullScope() { }
-        public void Dispose() { }
+
+        private NullScope()
+        {
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

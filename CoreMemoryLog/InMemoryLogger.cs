@@ -79,7 +79,7 @@ namespace CoreMemoryLog
         /// Core structured logging method.
         /// Stores the original template and args without formatting.
         /// </summary>
-        public void Log(LogLevel level, string message, string libraryName, Exception exception = null,
+        public void Log(LogLevel level, string? message, string libraryName, Exception exception = null,
             [CallerMemberName] string callerMethod = "", params object[] args)
         {
             // Skip if filtered
@@ -89,8 +89,8 @@ namespace CoreMemoryLog
             var entry = new LogEntry
             {
                 Level = level,
-                Message = message,       // Store template
-                Args = args,             // Store structured args
+                Message = message, // Store template
+                Args = args, // Store structured args
                 Timestamp = DateTime.UtcNow,
                 Exception = exception,
                 CallerMethod = callerMethod,
@@ -112,16 +112,19 @@ namespace CoreMemoryLog
         /// <summary>
         /// Default ILogger log (uses "ILogger" as library).
         /// </summary>
-        public void Log(LogLevel level, string message, Exception exception = null, params object[] args)
+        public void Log(LogLevel level, string? message, Exception exception = null, params object[] args)
             => Log(level, message, "ILogger", exception, GetCaller(), args);
 
         #region Convenience methods
 
-        public void LogDebug(string message, params object[] args) => Log(LogLevel.Debug, message, null, args);
-        public void LogTrace(string message, params object[] args) => Log(LogLevel.Trace, message, null, args);
-        public void LogInformation(string message, params object[] args) => Log(LogLevel.Information, message, null, args);
-        public void LogWarning(string message, params object[] args) => Log(LogLevel.Warning, message, null, args);
-        public void LogError(string message, params object[] args) => Log(LogLevel.Error, message, null, args);
+        public void LogDebug(string? message, params object[] args) => Log(LogLevel.Debug, message, null, args);
+        public void LogTrace(string? message, params object[] args) => Log(LogLevel.Trace, message, null, args);
+
+        public void LogInformation(string? message, params object[] args) =>
+            Log(LogLevel.Information, message, null, args);
+
+        public void LogWarning(string? message, params object[] args) => Log(LogLevel.Warning, message, null, args);
+        public void LogError(string? message, params object[] args) => Log(LogLevel.Error, message, null, args);
 
         #endregion
 
@@ -183,7 +186,9 @@ namespace CoreMemoryLog
         /// Logs matching the specified log level for the specified library.
         /// </returns>
         public IEnumerable<LogEntry> GetLogsByLevel(string libraryName, LogLevel logLevel)
-            => _libraryLogs.ContainsKey(libraryName) ? _libraryLogs[libraryName].Where(l => l.Level == logLevel) : Enumerable.Empty<LogEntry>();
+            => _libraryLogs.ContainsKey(libraryName)
+                ? _libraryLogs[libraryName].Where(l => l.Level == logLevel)
+                : Enumerable.Empty<LogEntry>();
 
         /// <summary>
         /// Clears log entries from a specific library.
@@ -205,6 +210,7 @@ namespace CoreMemoryLog
         }
 
         #endregion
+
         /// <summary>
         /// Dumps all logs to a file, formatting template with args.
         /// </summary>
@@ -235,7 +241,7 @@ namespace CoreMemoryLog
         /// <param name="template">The template.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        private static string SafeFormat(string template, object[] args)
+        private static string? SafeFormat(string? template, object[] args)
         {
             try
             {
@@ -287,7 +293,8 @@ namespace CoreMemoryLog
         /// <param name="state">The state.</param>
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+            Func<TState, Exception, string?> formatter)
         {
             if (!IsEnabled(logLevel)) return;
 
@@ -304,7 +311,8 @@ namespace CoreMemoryLog
         /// <param name="state">The state.</param>
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
-        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state,
+            Exception? exception, Func<TState, Exception?, string> formatter)
             => Log((LogLevel)logLevel, formatter(state, exception), exception);
 
         #endregion

@@ -38,7 +38,7 @@ public interface ILogger
     /// <param name="message">The log message text.</param>
     /// <param name="exception">Optional exception associated with the log entry.</param>
     /// <param name="args">Optional arguments for message formatting.</param>
-    void Log(LogLevel level, string message, Exception? exception = null, params object[] args);
+    void Log(LogLevel level, string? message, Exception? exception = null, params object[] args);
 
     // ---------------------------------------------------------
     // Convenience shortcuts
@@ -49,35 +49,35 @@ public interface ILogger
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
-    void LogDebug(string message, params object[] args);
+    void LogDebug(string? message, params object[] args);
 
     /// <summary>
     /// Logs the trace.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
-    void LogTrace(string message, params object[] args);
+    void LogTrace(string? message, params object[] args);
 
     /// <summary>
     /// Logs the information.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
-    void LogInformation(string message, params object[] args);
+    void LogInformation(string? message, params object[] args);
 
     /// <summary>
     /// Logs the warning.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
-    void LogWarning(string message, params object[] args);
+    void LogWarning(string? message, params object[] args);
 
     /// <summary>
     /// Logs the error.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
-    void LogError(string message, params object[] args);
+    void LogError(string? message, params object[] args);
 
     // ---------------------------------------------------------
     // Optional Microsoft.Extensions.Logging bridge
@@ -87,10 +87,10 @@ public interface ILogger
     /// Bridges to Microsoft.Extensions.Logging infrastructure.
     /// </summary>
     void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel,
-                     Microsoft.Extensions.Logging.EventId eventId,
-                     TState state,
-                     Exception? exception,
-                     Func<TState, Exception?, string> formatter);
+        Microsoft.Extensions.Logging.EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter);
 
     // ---------------------------------------------------------
     // Persistence

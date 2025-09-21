@@ -24,7 +24,7 @@ public sealed class LogEntry
     /// <value>
     ///     The level.
     /// </value>
-    public LogLevel Level { get; set; }
+    public LogLevel Level { get; init; }
 
     /// <summary>
     ///     Gets or sets the message.
@@ -32,7 +32,7 @@ public sealed class LogEntry
     /// <value>
     ///     The message.
     /// </value>
-    public string Message { get; set; }
+    public string? Message { get; init; }
 
     /// <summary>
     ///     Gets or sets the timestamp.
@@ -72,5 +72,5 @@ public sealed class LogEntry
     /// <value>
     /// The arguments.
     /// </value>
-    public object[] Args { get; internal set; }
+    public object[] Args { get; internal init; }
 }

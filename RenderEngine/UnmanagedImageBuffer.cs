@@ -8,13 +8,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 
 namespace RenderEngine
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDisposable" />
     /// <summary>
     /// Represents an unmanaged memory buffer for storing image pixel data with direct memory access,
     /// optimized for fast pixel manipulation and bulk operations using SIMD acceleration where available.
@@ -26,7 +27,8 @@ namespace RenderEngine
     /// It supports setting individual pixels, clearing the buffer to a uniform color,
     /// applying multiple pixel changes at once, and replacing the entire buffer efficiently.
     /// </remarks>
-    public unsafe class UnmanagedImageBuffer : IDisposable
+    public unsafe class UnmanagedImageBuffer : IDisposable, IEquatable<UnmanagedImageBuffer>, ICloneable,
+        IEnumerable<byte>
     {
         /// <summary>
         /// Image width in pixels.
@@ -56,6 +58,37 @@ namespace RenderEngine
         /// Useful for fast iteration over all pixels.
         /// </summary>
         public Span<byte> BufferSpan => new((void*)_buffer, Width * Height * BytesPerPixel);
+
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <value>
+        /// The count.
+        /// </value>
+        public int Count => Width * Height * BytesPerPixel;
+
+        /// <summary>
+        /// Gets the <see cref="System.Byte"/> at the specified index.
+        /// </summary>
+        /// <value>
+        /// The <see cref="System.Byte"/>.
+        /// </value>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        public byte this[int index]
+        {
+            get
+            {
+                if ((uint)index >= (uint)Count)
+                    throw new ArgumentOutOfRangeException(nameof(index));
+
+                return BufferSpan[index];
+            }
+        }
+
+        public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)BufferSpan.ToArray()).GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// Constructs a new unmanaged image buffer.
@@ -98,7 +131,7 @@ namespace RenderEngine
         /// <param name="color">The color to set</param>
         public void SetPixel(int x, int y, Color color)
         {
-            SetPixel(x, y, color.A, color.R, color.G, color.B);
+            SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
         /// <summary>
@@ -131,8 +164,8 @@ namespace RenderEngine
                 var offset = (y * Width + x) * BytesPerPixel;
 
                 // Unpack BGRA uint into bytes
-                buffer[offset + 0] = (byte)(bgra & 0xFF);         // B
-                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF);  // G
+                buffer[offset + 0] = (byte)(bgra & 0xFF); // B
+                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF); // G
                 buffer[offset + 2] = (byte)((bgra >> 16) & 0xFF); // R
                 buffer[offset + 3] = (byte)((bgra >> 24) & 0xFF); // A
             }
@@ -204,7 +237,7 @@ namespace RenderEngine
         /// Alpha-blends a pixel at (x, y) with the given color and alpha.
         /// Combines source color with destination pixel in the buffer.
         /// </summary>
-        public void SetPixelAlphaBlend(int x, int y, byte a, byte r, byte g, byte b)
+        public void SetPixelAlphaBlend(int x, int y, byte r, byte g, byte b, byte a)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height) return;
 
@@ -236,7 +269,8 @@ namespace RenderEngine
         /// <param name="height">Height of the region to copy.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX, int destY)
+        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX,
+            int destY)
         {
             for (var y = 0; y < height; y++)
             {
@@ -251,6 +285,59 @@ namespace RenderEngine
         /// Use with caution — pointer arithmetic required.
         /// </summary>
         public IntPtr Buffer => _buffer;
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode() => HashCode.Combine(Width, Height);
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
+        /// </returns>
+        public bool Equals(UnmanagedImageBuffer? other)
+        {
+            if (other is null) return false;
+            if (Width != other.Width || Height != other.Height) return false;
+
+            return BufferSpan.SequenceEqual(other.BufferSpan);
+        }
+
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>
+        ///   <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.
+        /// </returns>
+        public override bool Equals(object? obj) => Equals(obj as UnmanagedImageBuffer);
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString() => $"{nameof(UnmanagedImageBuffer)}({Width}x{Height}, Ptr=0x{_buffer:X})";
+
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            var clone = new UnmanagedImageBuffer(Width, Height);
+            BufferSpan.CopyTo(clone.BufferSpan);
+            return clone;
+        }
 
         /// <summary>
         /// Releases unmanaged memory allocated for the buffer.
@@ -277,7 +364,7 @@ namespace RenderEngine
         /// Clears the entire buffer to the given color.
         /// Fast implementation using Span iteration.
         /// </summary>
-        public void Clear(System.Drawing.Color color)
+        public void Clear(Color color)
         {
             var span = BufferSpan;
             for (var i = 0; i < span.Length; i += BytesPerPixel)
@@ -310,12 +397,9 @@ namespace RenderEngine
                 System.Drawing.Imaging.ImageLockMode.WriteOnly,
                 bmp.PixelFormat);
 
-            unsafe
-            {
-                var dstPtr = (byte*)bmpData.Scan0;
-                var dstSpan = new Span<byte>(dstPtr, Width * Height * BytesPerPixel);
-                BufferSpan.CopyTo(dstSpan);
-            }
+            var dstPtr = (byte*)bmpData.Scan0;
+            var dstSpan = new Span<byte>(dstPtr, Width * Height * BytesPerPixel);
+            BufferSpan.CopyTo(dstSpan);
 
             bmp.UnlockBits(bmpData);
             return bmp;

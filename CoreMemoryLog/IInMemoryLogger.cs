@@ -44,11 +44,11 @@ public interface IInMemoryLogger
     /// <param name="callerMethod">The calling method name (auto-filled via CallerMemberName).</param>
     /// <param name="args">Optional arguments for message formatting.</param>
     void Log(LogLevel logLevel,
-             string message,
-             string libraryName,
-             Exception? exception = null,
-             [CallerMemberName] string callerMethod = "",
-             params object[] args);
+        string? message,
+        string libraryName,
+        Exception? exception = null,
+        [CallerMemberName] string callerMethod = "",
+        params object[] args);
 
     // ---------------------------------------------------------
     // Retrieval

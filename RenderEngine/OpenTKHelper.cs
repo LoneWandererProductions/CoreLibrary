@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using OpenTK.GLControl;
+using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,17 +15,23 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
-using OpenTK.GLControl;
-using OpenTK.Graphics.OpenGL4;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
-
-// For Marshal.Copy and memory management
-// For GL methods, ShaderType, TextureTarget, etc.
 
 namespace RenderEngine;
 
-internal static class OpenTkHelper
+/// <summary>
+/// Exposes OpenTK / OpenGL helper methods in a neat static class.
+/// Provides utilities for checking OpenGL compatibility, shader compilation,
+/// texture creation and loading, and cube map handling.
+/// </summary>
+public static class OpenTkHelper
 {
+    /// <summary>
+    /// Checks if the system supports at least the given OpenGL version.
+    /// </summary>
+    /// <param name="requiredMajor">The required major version (default: 4).</param>
+    /// <param name="requiredMinor">The required minor version (default: 5).</param>
+    /// <returns><c>true</c> if the current system is compatible, otherwise <c>false</c>.</returns>
     internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
     {
         var isCompatible = false;
@@ -33,7 +41,7 @@ internal static class OpenTkHelper
             try
             {
                 using var tempContext = new GLControl();
-                tempContext.MakeCurrent(); // Set OpenGL-Context
+                tempContext.MakeCurrent();
 
                 var versionString = GL.GetString(StringName.Version);
                 var renderer = GL.GetString(StringName.Renderer);
@@ -64,65 +72,13 @@ internal static class OpenTkHelper
         return isCompatible;
     }
 
-
-    internal static float[] GenerateVertexData<T>(T[] data, int screenWidth, int screenHeight,
-        Func<T, float[]> getVertexAttributes)
-    {
-        var vertexData = new float[data.Length * 6 * 5]; // 6 vertices * 5 attributes (x, y, r, g, b)
-
-        for (var i = 0; i < data.Length; i++)
-        {
-            var attributes = getVertexAttributes(data[i]);
-            var xLeft = (i / (float)screenWidth * 2.0f) - 1.0f;
-            var xRight = ((i + 1) / (float)screenWidth * 2.0f) - 1.0f;
-
-            var columnHeight = attributes[0]; // In case of columns, this would be height, for example
-            var yTop = (columnHeight / screenHeight * 2.0f) - 1.0f;
-            const float yBottom = -1.0f; // Bottom of the screen is -1.0f
-
-            var offset = i * 30; // 6 vertices * 5 attributes (x, y, r, g, b)
-
-            // Set up vertices for the column or pixel
-            vertexData[offset + 0] = xLeft;
-            vertexData[offset + 1] = yTop;
-            vertexData[offset + 2] = attributes[1]; // r
-            vertexData[offset + 3] = attributes[2]; // g
-            vertexData[offset + 4] = attributes[3]; // b
-
-            vertexData[offset + 5] = xRight;
-            vertexData[offset + 6] = yTop;
-            vertexData[offset + 7] = attributes[1];
-            vertexData[offset + 8] = attributes[2];
-            vertexData[offset + 9] = attributes[3];
-
-            vertexData[offset + 10] = xRight;
-            vertexData[offset + 11] = yBottom;
-            vertexData[offset + 12] = attributes[1];
-            vertexData[offset + 13] = attributes[2];
-            vertexData[offset + 14] = attributes[3];
-
-            vertexData[offset + 15] = xLeft;
-            vertexData[offset + 16] = yTop;
-            vertexData[offset + 17] = attributes[1];
-            vertexData[offset + 18] = attributes[2];
-            vertexData[offset + 19] = attributes[3];
-
-            vertexData[offset + 20] = xRight;
-            vertexData[offset + 21] = yBottom;
-            vertexData[offset + 22] = attributes[1];
-            vertexData[offset + 23] = attributes[2];
-            vertexData[offset + 24] = attributes[3];
-
-            vertexData[offset + 25] = xLeft;
-            vertexData[offset + 26] = yBottom;
-            vertexData[offset + 27] = attributes[1];
-            vertexData[offset + 28] = attributes[2];
-            vertexData[offset + 29] = attributes[3];
-        }
-
-        return vertexData;
-    }
-
+    /// <summary>
+    /// Compiles a GLSL shader from source code.
+    /// </summary>
+    /// <param name="type">The type of shader (vertex, fragment, etc.).</param>
+    /// <param name="source">The GLSL shader source code.</param>
+    /// <returns>The OpenGL shader ID.</returns>
+    /// <exception cref="Exception">Thrown if compilation fails with error log.</exception>
     internal static int CompileShader(ShaderType type, string source)
     {
         var shader = GL.CreateShader(type);
@@ -139,7 +95,14 @@ internal static class OpenTkHelper
         throw new Exception($"Error compiling shader of type {type}: {infoLog}");
     }
 
-    internal static int LoadShader(string vertexPath, string fragmentPath)
+    /// <summary>
+    /// Loads and links a vertex + fragment shader program from files.
+    /// </summary>
+    /// <param name="vertexPath">Path to the vertex shader file.</param>
+    /// <param name="fragmentPath">Path to the fragment shader file.</param>
+    /// <returns>The OpenGL program ID.</returns>
+    /// <exception cref="Exception">Thrown if linking fails with error log.</exception>
+    public static int LoadShader(string vertexPath, string fragmentPath)
     {
         var vertexSource = File.ReadAllText(vertexPath);
         var fragmentSource = File.ReadAllText(fragmentPath);
@@ -167,16 +130,37 @@ internal static class OpenTkHelper
         return shaderProgram;
     }
 
-    internal static byte[] LoadTexture(string filePath, out int width, out int height)
+    /// <summary>
+    /// Creates a 2D OpenGL texture from an <see cref="UnmanagedImageBuffer"/>.
+    /// </summary>
+    /// <param name="image">The image buffer containing raw pixel data.</param>
+    /// <param name="opaqueFastPath">If true, assumes opaque (RGB only) for performance.</param>
+    /// <returns>OpenGL texture ID.</returns>
+    public static int CreateTexture(UnmanagedImageBuffer image, bool opaqueFastPath = false)
     {
-        using var bitmap = new Bitmap(filePath);
+        var texId = GL.GenTexture();
+        GL.BindTexture(TextureTarget.Texture2D, texId);
 
-        width = bitmap.Width;
-        height = bitmap.Height;
+        var internalFormat = opaqueFastPath ? PixelInternalFormat.Rgb : PixelInternalFormat.Rgba;
+        var format = opaqueFastPath ? PixelFormat.Rgb : PixelFormat.Bgra;
 
-        return GetBitmapBytes(bitmap);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, internalFormat, image.Width, image.Height,
+            0, format, PixelType.UnsignedByte, image.Buffer);
+
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
+        return texId;
     }
 
+    /// <summary>
+    /// Loads a cubemap texture from 6 image files.
+    /// </summary>
+    /// <param name="filePaths">Array of 6 image file paths in cubemap order.</param>
+    /// <returns>OpenGL cubemap texture ID.</returns>
+    /// <exception cref="ArgumentException">Thrown if the array does not contain exactly 6 paths.</exception>
     internal static int LoadCubeMap(string[] filePaths)
     {
         if (filePaths.Length != 6)
@@ -215,15 +199,13 @@ internal static class OpenTkHelper
         return textureId;
     }
 
-
     /// <summary>
-    ///     Loads the texture.
+    /// Loads a texture from a file path into a 2D OpenGL texture.
     /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <returns>Id of texture.</returns>
-    internal static int LoadTexture(string filePath)
+    /// <param name="filePath">The file path of the texture image.</param>
+    /// <returns>OpenGL texture ID or -1 if file not found.</returns>
+    internal static int LoadTextureFromFile(string filePath)
     {
-        // Check if the file exists
         if (!File.Exists(filePath))
         {
             Trace.WriteLine($"File not found: {filePath}");
@@ -251,10 +233,10 @@ internal static class OpenTkHelper
     }
 
     /// <summary>
-    ///     Gets the bitmap bytes.
+    /// Converts a <see cref="Bitmap"/> into a tightly packed byte array (BGRA).
     /// </summary>
-    /// <param name="bitmap">The bitmap.</param>
-    /// <returns>Image data in byte format.</returns>
+    /// <param name="bitmap">The bitmap to process.</param>
+    /// <returns>Byte array containing image data in BGRA order.</returns>
     private static byte[] GetBitmapBytes(Bitmap bitmap)
     {
         var width = bitmap.Width;
@@ -270,7 +252,6 @@ internal static class OpenTkHelper
             var rawData = new byte[stride * height];
             Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
 
-            // Create tightly packed buffer
             var pixels = new byte[width * height * bytesPerPixel];
 
             for (var y = 0; y < height; y++)
@@ -283,14 +264,10 @@ internal static class OpenTkHelper
                     var srcIndex = srcRow + (x * bytesPerPixel);
                     var dstIndex = dstRow + (x * bytesPerPixel);
 
-                    // GDI+ Bitmap memory order for Format32bppArgb is actually BGRA, which matches OpenGL PixelFormat.Bgra,
-                    // so we copy bytes directly without channel swapping.
-
-                    // Copy BGRA directly:
-                    pixels[dstIndex + 0] = rawData[srcIndex + 0]; // Blue
-                    pixels[dstIndex + 1] = rawData[srcIndex + 1]; // Green
-                    pixels[dstIndex + 2] = rawData[srcIndex + 2]; // Red
-                    pixels[dstIndex + 3] = rawData[srcIndex + 3]; // Alpha
+                    pixels[dstIndex + 0] = rawData[srcIndex + 0];
+                    pixels[dstIndex + 1] = rawData[srcIndex + 1];
+                    pixels[dstIndex + 2] = rawData[srcIndex + 2];
+                    pixels[dstIndex + 3] = rawData[srcIndex + 3];
                 }
             }
 

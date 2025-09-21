@@ -28,12 +28,12 @@ public sealed class Cif
     /// <summary>
     ///     The cif image
     /// </summary>
-    private Dictionary<Color, SortedSet<int>> _cifImage = [];
+    private Dictionary<Color, SortedSet<int>> _cifImage =  [];
 
     /// <summary>
     ///     The cif sorted
     /// </summary>
-    private Dictionary<Color, SortedSet<int>> _cifSorted = [];
+    private Dictionary<Color, SortedSet<int>> _cifSorted =  [];
 
     /// <summary>
     ///     The sort required

@@ -79,5 +79,4 @@ internal static class IrtHelper
 
         return -1; // not an enum name and not a value match
     }
-
 }

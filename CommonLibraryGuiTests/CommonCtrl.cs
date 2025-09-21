@@ -16,6 +16,7 @@ using CommonControls;
 using Imaging;
 using InterOp;
 using NUnit.Framework;
+using RenderEngine;
 using RenderEngine.RenderEngine;
 
 namespace CommonLibraryGuiTests;

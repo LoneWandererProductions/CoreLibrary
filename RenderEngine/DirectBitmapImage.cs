@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/DirectBitmap.cs
+ * PROJECT:     RenderEngine
+ * FILE:        DirectBitmap.cs
  * PURPOSE:     Custom BitmapImage Class, speeds up Set Pixel
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -27,9 +27,24 @@ namespace RenderEngine;
 /// </summary>
 public sealed class DirectBitmapImage : IDisposable
 {
+    /// <summary>
+    /// The bitmap
+    /// </summary>
     private readonly WriteableBitmap _bitmap;
+
+    /// <summary>
+    /// The bits handle
+    /// </summary>
     private GCHandle _bitsHandle;
+
+    /// <summary>
+    /// The cached image
+    /// </summary>
     private BitmapImage? _cachedImage;
+
+    /// <summary>
+    /// The disposed
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

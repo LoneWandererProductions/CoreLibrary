@@ -368,7 +368,8 @@ public static class ImagingResources
     /// <summary>
     ///     The File Appendix
     /// </summary>
-    public static readonly List<string> Appendix =
+    public static readonly List<string> Appendix = 
+
     [
         JpgExt,
         PngExt,
