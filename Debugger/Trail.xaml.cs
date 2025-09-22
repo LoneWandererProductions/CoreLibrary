@@ -2,18 +2,14 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
  * FILE:        Debugger/Trail.xaml.cs
- * PURPOSE:     Output Window
+ * PURPOSE:     Output Window (Log Viewer)
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBeInternal, you can't make a starting Window internal
-
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -25,240 +21,268 @@ namespace Debugger;
 
 /// <inheritdoc cref="Window" />
 /// <summary>
-///     The trail class.
+///     The <see cref="Trail"/> class represents the main log viewer window.
+///     It displays log messages from a given <see cref="ILogSource"/> and allows filtering,
+///     switching sources, clearing logs, and basic configuration.
 /// </summary>
 public sealed partial class Trail
 {
     /// <summary>
-    ///     The filter
+    /// Filter instance used to evaluate whether lines should be highlighted.
     /// </summary>
     private readonly Filter _filter;
 
     /// <summary>
-    ///     The counter.
+    /// The current log source. Can be swapped at runtime.
     /// </summary>
-    private int _counter;
+    private ILogSource _logSource;
 
     /// <summary>
-    ///     The dispatcher timer.
+    /// Dispatcher timer used to periodically poll the log source for updates.
     /// </summary>
     private DispatcherTimer _dispatcherTimer;
 
     /// <summary>
-    ///     The index.
+    /// Tracks the last known line count to avoid re-appending duplicate entries.
     /// </summary>
-    private int _index;
+    private int _lastLineCount;
 
-    /// <inheritdoc />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Trail" /> class.
+    /// Initializes a new instance of the <see cref="Trail"/> class
+    /// with a default <see cref="FileLogSource"/> ("default.log").
+    /// This constructor is required for XAML/WPF designer support.
     /// </summary>
-    public Trail()
+    public Trail() : this(new FileLogSource("default.log"))
     {
         InitializeComponent();
-        _filter = new Filter();
     }
 
     /// <summary>
-    ///     The window loaded.
+    /// Initializes a new instance of the <see cref="Trail" /> class
+    /// with a specific <paramref name="logSource" />.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
+    /// <param name="logSource">The initial log source (must not be null).</param>
+    /// <exception cref="System.ArgumentNullException">logSource</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="logSource" /> is null.</exception>
+    public Trail(ILogSource logSource)
+    {
+        InitializeComponent();
+        _filter = new Filter();
+        _logSource = logSource ?? throw new ArgumentNullException(nameof(logSource));
+        _logSource.LineReceived += OnLogLineReceived;
+    }
+
+    /// <summary>
+    /// Handles the window <see cref="FrameworkElement.Loaded" /> event.
+    /// Loads all current log entries, scrolls to the end, and starts listening for updates.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        //set Index and Counter
-        _index = _counter = ReadLines(DebugRegister.DebugPath).Count();
+        foreach (var line in _logSource.ReadAll())
+        {
+            AppendLine(line, false);
+        }
 
-        DebugProcessing.StartDebug();
-
-        var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-        //Tell them that we started.
-        DebugProcessing.DebugLogEntry(DebuggerResources.InformationCreateLogFile, ErCode.Information,
-            DebuggerResources.ManualStart, path);
-
+        Log.ScrollToEnd();
+        _logSource.Start();
         StartTick();
     }
 
     /// <summary>
-    ///     Start the tick.
+    /// Starts the dispatcher timer used to periodically refresh log content.
     /// </summary>
     private void StartTick()
     {
-        _dispatcherTimer = new DispatcherTimer();
+        _dispatcherTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1) // configurable interval
+        };
         _dispatcherTimer.Tick += DispatcherTimer_Tick;
-        _dispatcherTimer.Interval = new TimeSpan(DebugRegister.HourTick, DebugRegister.MinutesTick,
-            DebugRegister.SecondsTick);
-
         _dispatcherTimer.Start();
     }
 
     /// <summary>
-    ///     The dispatcher timer tick.
+    /// Periodic tick handler. Compares line counts and appends any new lines from the log source.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The event arguments.</param>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void DispatcherTimer_Tick(object sender, EventArgs e)
     {
-        _counter = ReadLines(DebugRegister.DebugPath).Count();
-
-        if (_index == _counter)
+        var lines = _logSource.ReadAll().ToList();
+        if (lines.Count == _lastLineCount)
         {
             return;
         }
 
-        var diff = _counter - _index;
-
-        var lst = ReadLines(DebugRegister.DebugPath).ToList();
-
-
-        foreach (var line in lst.GetRange(_counter - diff, diff))
+        foreach (var line in lines.Skip(_lastLineCount))
         {
-            var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
-
-            DebugHelper.AddRange(textRange, line, false);
+            AppendLine(line, false);
         }
 
         Log.ScrollToEnd();
-
-        _index = _counter;
+        _lastLineCount = lines.Count;
     }
 
     /// <summary>
-    ///     Read the lines.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>
-    ///     The line we have read<see cref="T:IEnumerable{string}" />.
-    /// </returns>
-    private static IEnumerable<string> ReadLines(string path)
-    {
-        if (!File.Exists(path))
-        {
-            using var fs = new FileStream(path, FileMode.CreateNew);
-        }
-        else
-        {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 0x1000,
-                FileOptions.SequentialScan);
-            using var sr = new StreamReader(fs, Encoding.UTF8);
-
-            while (sr.ReadLine() is { } line)
-            {
-                yield return line;
-            }
-        }
-    }
-
-    /// <summary>
-    ///     The menu close click.
+    /// Event handler called when the log source emits a new line.
+    /// Appends the line to the UI on the dispatcher thread.
     /// </summary>
     /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
-    private void MenClose_Click(object sender, RoutedEventArgs e)
+    /// <param name="line">The line.</param>
+    private void OnLogLineReceived(object sender, string line)
     {
-        Close();
+        Dispatcher.Invoke(() => AppendLine(line, false));
     }
 
     /// <summary>
-    ///     The menu delete click.
+    /// Replaces the current log source with a new one.
+    /// Stops and unsubscribes from the old source, clears the UI,
+    /// loads the new source, and resumes listening.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
+    /// <param name="newSource">The new log source (must not be null).</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="newSource"/> is null.</exception>
+    private void ReplaceLogSource(ILogSource newSource)
+    {
+        if (newSource == null) throw new ArgumentNullException(nameof(newSource));
+        if (ReferenceEquals(newSource, _logSource)) return;
+
+        _dispatcherTimer?.Stop();
+
+        try
+        {
+            _logSource.LineReceived -= OnLogLineReceived;
+            _logSource.Stop();
+        }
+        catch
+        {
+            // Defensive: swallow exceptions during cleanup
+        }
+
+        _logSource = newSource;
+        _logSource.LineReceived += OnLogLineReceived;
+
+        Log.Document.Blocks.Clear();
+        var lines = _logSource.ReadAll().ToList();
+        foreach (var line in lines)
+        {
+            AppendLine(line, false);
+        }
+
+        _lastLineCount = lines.Count;
+        Log.ScrollToEnd();
+
+        _logSource.Start();
+        _dispatcherTimer?.Start();
+    }
+
+    /// <summary>
+    /// Appends a line of text to the log viewer.
+    /// </summary>
+    /// <param name="line">The text to append.</param>
+    /// <param name="highlight">True to highlight the line, false otherwise.</param>
+    private void AppendLine(string line, bool highlight)
+    {
+        var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
+        DebugHelper.AddRange(textRange, line, highlight);
+    }
+
+    /// <summary>
+    /// Menu handler: Closes the window.
+    /// </summary>
+    private void MenClose_Click(object sender, RoutedEventArgs e) => Close();
+
+    /// <summary>
+    /// Menu handler: Stops the log source and attempts to delete its backing file (if file-based).
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenDel_Click(object sender, RoutedEventArgs e)
     {
         _dispatcherTimer?.Stop();
-        DebugProcessing.StopDebuggingClose();
+        _logSource.Stop();
+
         try
         {
-            File.Delete(DebugRegister.DebugPath);
+            if (_logSource is FileLogSource fileSource &&
+                File.Exists(fileSource.LogFilePath))
+            {
+                File.Delete(fileSource.LogFilePath);
+            }
         }
         catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
         {
-            Trace.WriteLine(string.Concat(DebuggerResources.ErrorLogFileDelete, ex), nameof(ErCode.Error));
+            Trace.WriteLine(string.Concat("Error deleting log file: ", ex), nameof(Trace));
         }
     }
 
     /// <summary>
-    ///     The menu stop click. Stops Debugging
+    /// Menu handler: Stops log updates.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenStop_Click(object sender, RoutedEventArgs e)
     {
         _dispatcherTimer?.Stop();
-        DebugProcessing.StopDebuggingClose();
+        _logSource.Stop();
     }
 
     /// <summary>
-    ///     The menu start click. Start Debugging
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
-    private void MenStart_Click(object sender, RoutedEventArgs e)
-    {
-        //get index
-        _index = ReadLines(DebugRegister.DebugPath).Count();
-        DebugProcessing.StartDebug();
-
-        var path = DebugHelper.GetLogFile(DebugRegister.DebugPath);
-        //Tell them we started
-        DebugProcessing.DebugLogEntry(DebuggerResources.InformationCreateLogFile, ErCode.Information,
-            DebuggerResources.ManualStart, path);
-        StartTick();
-    }
-
-    /// <summary>
-    ///     The menu load log File click.
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
-    private void MenLoadA_Click(object sender, RoutedEventArgs e)
-    {
-        if (!File.Exists(DebugRegister.DebugPath))
-        {
-            return;
-        }
-
-        _ = LoadFile();
-    }
-
-    /// <summary>
-    ///     Handles the Click event of the MenLog control.
+    /// Menu handler: Starts or resumes log updates.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+    private void MenStart_Click(object sender, RoutedEventArgs e)
+    {
+        _lastLineCount = _logSource.ReadAll().Count();
+        _logSource.Start();
+        _dispatcherTimer?.Start();
+    }
+
+    /// <summary>
+    /// Menu handler: Loads all lines asynchronously into the UI.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+    private async void MenLoadA_Click(object sender, RoutedEventArgs e)
+    {
+        await LoadFileAsync();
+    }
+
+    /// <summary>
+    /// Menu handler: Opens a log file chosen by the user and replaces the current source.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenLog_Click(object sender, RoutedEventArgs e)
     {
-        var file = DialogHandler.HandleFileOpen(DebuggerResources.FileExt);
+        var file = DialogHandler.HandleFileOpen("*.log");
 
-        if (file != null && !File.Exists(file.FilePath))
+        if (file == null || !File.Exists(file.FilePath))
         {
             return;
         }
 
-        //already checked, can't be null
-        // ReSharper disable PossibleNullReferenceException
-        DebugRegister.DebugPath = file.FilePath;
-        // ReSharper restore PossibleNullReferenceException
-
-        _ = LoadFile();
+        var newSource = new FileLogSource(file.FilePath);
+        ReplaceLogSource(newSource);
     }
 
     /// <summary>
-    ///     The menu clear click.
+    /// Menu handler: Clears the UI log display.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenClear_Click(object sender, RoutedEventArgs e)
     {
         Log.Document.Blocks.Clear();
     }
 
     /// <summary>
-    ///     The menu config click.
+    /// Menu handler: Opens the configuration window.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The routed event arguments.</param>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenConfig_Click(object sender, RoutedEventArgs e)
     {
         var conf = new ConfigWindow();
@@ -266,45 +290,36 @@ public sealed partial class Trail
     }
 
     /// <summary>
-    ///     Loads the file async to speed up the whole mess.
+    /// Loads the current source contents asynchronously into the UI.
     /// </summary>
-    private async Task LoadFile()
+    private async Task LoadFileAsync()
     {
         _dispatcherTimer?.Stop();
-
-        DebugProcessing.StopDebuggingClose();
+        _logSource.Stop();
 
         Log.Document.Blocks.Clear();
-
-        var lines = ReadLines(DebugRegister.DebugPath).ToList();
+        var lines = _logSource.ReadAll().ToList();
 
         await Task.Run(() =>
         {
             foreach (var line in lines)
             {
-                // Use Dispatcher to update the UI
-                Dispatcher.Invoke(() =>
-                {
-                    var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
-                    DebugHelper.AddRange(textRange, line, false);
-                });
+                Dispatcher.Invoke(() => AppendLine(line, false));
             }
         });
 
         Log.ScrollToEnd();
+        _lastLineCount = lines.Count;
 
-        //set index
-        _index = ReadLines(DebugRegister.DebugPath).Count();
-        DebugProcessing.StartDebug();
-
+        _logSource.Start();
         _dispatcherTimer?.Start();
     }
 
     /// <summary>
-    ///     Handles the Click event of the MenFilter control.
+    /// Menu handler: Starts the filter dialog and listens for filter changes.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+    /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
     private void MenFilter_Click(object sender, RoutedEventArgs e)
     {
         _filter.FilterChanged += FilterChanged;
@@ -312,26 +327,22 @@ public sealed partial class Trail
     }
 
     /// <summary>
-    ///     Handles the FilterChanged event of the _filter control.
+    /// Event handler called when the filter changes.
+    /// Re-applies the filter to all lines and highlights matches.
     /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
     private void FilterChanged(object sender, EventArgs e)
     {
         Log.Document.Blocks.Clear();
 
-        foreach (var line in ReadLines(DebugRegister.DebugPath).ToList())
+        foreach (var line in _logSource.ReadAll())
         {
-            var textRange = new TextRange(Log.Document.ContentEnd, Log.Document.ContentEnd);
-
-            var check = _filter.CheckFilter(line);
-
-            DebugHelper.AddRange(textRange, line, check);
+            var highlight = _filter.CheckFilter(line);
+            AppendLine(line, highlight);
         }
 
         Log.ScrollToEnd();
-
-        //set index
-        _index = ReadLines(DebugRegister.DebugPath).Count();
+        _lastLineCount = _logSource.ReadAll().Count();
     }
 }
