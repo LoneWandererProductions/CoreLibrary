@@ -32,7 +32,7 @@ public sealed class NetCom : INetCom
     /// <returns>
     ///     Success Status
     /// </returns>
-    public Task<bool> SaveFile(string filePath, string url, IProgress<int> progress = null,
+    public Task<bool> SaveFile(string filePath, string url, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {
         return FileTransfer.SaveFileAsync(filePath, url, progress, cancellationToken);
@@ -46,7 +46,7 @@ public sealed class NetCom : INetCom
     /// <param name="urls"></param>
     /// <param name="progress"></param>
     /// <param name="cancellationToken"></param>
-    public async Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int> progress = null,
+    public async Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {
         await FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken).ConfigureAwait(false);
@@ -61,7 +61,7 @@ public sealed class NetCom : INetCom
     /// <param name="body">The request body (optional).</param>
     /// <param name="contentType">The content type (default: application/json).</param>
     /// <returns>An HttpResponseMessage containing the response details.</returns>
-    public async Task<string> SendMessageAsync(string url, string method, string body = null,
+    public async Task<string> SendMessageAsync(string url, string method, string? body = null,
         string contentType = ComResource.JsonHeader)
     {
         try

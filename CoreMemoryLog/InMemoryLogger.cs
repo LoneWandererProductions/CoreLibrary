@@ -94,7 +94,7 @@ namespace CoreMemoryLog
         /// Core structured logging method.
         /// Stores the original template and args without formatting.
         /// </summary>
-        public void Log(LogLevel level, string? message, string libraryName, Exception exception = null,
+        public void Log(LogLevel level, string? message, string libraryName, Exception? exception = null,
             [CallerMemberName] string callerMethod = "", params object[] args)
         {
             // Skip if filtered
@@ -137,7 +137,7 @@ namespace CoreMemoryLog
         /// <summary>
         /// Default ILogger log (uses "ILogger" as library).
         /// </summary>
-        public void Log(LogLevel level, string? message, Exception exception = null, params object[] args)
+        public void Log(LogLevel level, string? message, Exception? exception = null, params object[] args)
             => Log(level, message, "ILogger", exception, GetCaller(), args);
 
         #region Convenience methods
@@ -211,8 +211,8 @@ namespace CoreMemoryLog
         /// Logs matching the specified log level for the specified library.
         /// </returns>
         public IEnumerable<LogEntry> GetLogsByLevel(string libraryName, LogLevel logLevel)
-            => _libraryLogs.ContainsKey(libraryName)
-                ? _libraryLogs[libraryName].Where(l => l.Level == logLevel)
+            => _libraryLogs.TryGetValue(libraryName, out var value)
+                ? value.Where(l => l.Level == logLevel)
                 : Enumerable.Empty<LogEntry>();
 
         /// <summary>
@@ -221,8 +221,8 @@ namespace CoreMemoryLog
         /// <param name="libraryName">The name of the library.</param>
         public void ClearLogs(string libraryName)
         {
-            if (_libraryLogs.ContainsKey(libraryName))
-                _libraryLogs[libraryName].Clear();
+            if (_libraryLogs.TryGetValue(libraryName, out var value))
+                value.Clear();
         }
 
         /// <summary>

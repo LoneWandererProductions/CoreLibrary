@@ -36,7 +36,7 @@ internal static class FileTransfer
     /// <param name="progress">Optional progress reporter.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>A task that resolves to true if the file was saved successfully; otherwise, false.</returns>
-    internal static async Task<bool> SaveFileAsync(string filePath, string url, IProgress<int> progress = null,
+    internal static async Task<bool> SaveFileAsync(string filePath, string url, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {
         try
@@ -92,7 +92,7 @@ internal static class FileTransfer
     /// <param name="urls">The file URLs.</param>
     /// <param name="progress">Optional progress reporter.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
-    internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls, IProgress<int> progress = null,
+    internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {
         foreach (var url in urls)

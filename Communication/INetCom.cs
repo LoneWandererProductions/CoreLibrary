@@ -32,7 +32,7 @@ public interface INetCom
     /// <returns>
     ///     Success Status
     /// </returns>
-    Task<bool> SaveFile(string filePath, string url, IProgress<int> progress = null,
+    Task<bool> SaveFile(string filePath, string url, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -43,7 +43,7 @@ public interface INetCom
     /// <param name="progress">The progress.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>If task is finished</returns>
-    Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int> progress = null,
+    Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -54,7 +54,7 @@ public interface INetCom
     /// <param name="body">The request body (optional).</param>
     /// <param name="contentType">The content type (default: application/json).</param>
     /// <returns>An HttpResponseMessage containing the response details.</returns>
-    Task<string> SendMessageAsync(string url, string method, string body = null,
+    Task<string> SendMessageAsync(string url, string method, string? body = null,
         string contentType = ComResource.JsonHeader);
 
     /// <summary>

@@ -23,7 +23,6 @@ namespace Debugger
     /// </summary>
     public class FileLogSource : ILogSource, IDisposable
     {
-        private readonly string _path;
         private CancellationTokenSource? _cts;
         private Task? _tailTask;
 
@@ -35,7 +34,10 @@ namespace Debugger
         /// <summary>
         /// Gets the file path for this source.
         /// </summary>
-        public string LogFilePath => _path;
+        /// <value>
+        /// The log file path.
+        /// </value>
+        public string LogFilePath { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="FileLogSource"/>.
@@ -43,7 +45,7 @@ namespace Debugger
         /// <param name="path">Path to the log file.</param>
         public FileLogSource(string path)
         {
-            _path = path ?? throw new ArgumentNullException(nameof(path));
+            LogFilePath = path ?? throw new ArgumentNullException(nameof(path));
         }
 
         /// <summary>
@@ -51,15 +53,15 @@ namespace Debugger
         /// </summary>
         public IEnumerable<string> ReadAll()
         {
-            if (!File.Exists(_path))
+            if (!File.Exists(LogFilePath))
             {
                 // ensure file exists
-                using var fs = new FileStream(_path, FileMode.CreateNew);
+                using var fs = new FileStream(LogFilePath, FileMode.CreateNew);
                 return Enumerable.Empty<string>();
             }
 
             // return snapshot
-            return File.ReadAllLines(_path, Encoding.UTF8);
+            return File.ReadAllLines(LogFilePath, Encoding.UTF8);
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace Debugger
         /// </summary>
         public void Start()
         {
-            if (_tailTask != null && !_tailTask.IsCompleted) return;
+            if (_tailTask?.IsCompleted == false) return;
 
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
@@ -77,12 +79,12 @@ namespace Debugger
                 try
                 {
                     // Ensure file exists
-                    if (!File.Exists(_path))
+                    if (!File.Exists(LogFilePath))
                     {
-                        using var _ = new FileStream(_path, FileMode.CreateNew);
+                        await using var _ = new FileStream(LogFilePath, FileMode.CreateNew);
                     }
 
-                    using var fs = new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    await using var fs = new FileStream(LogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     using var reader = new StreamReader(fs, Encoding.UTF8);
 
                     // fast-forward to end to only get new lines

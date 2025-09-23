@@ -216,7 +216,7 @@ public sealed class ResXtract : IResourceExtractor
     /// <param name="existingFile">The existing file.</param>
     /// <returns>Extracted strings.</returns>
     private static Dictionary<string, string> GenerateResourceMap(IEnumerable<string> strings,
-        string existingFile = null)
+        string? existingFile = null)
     {
         var map = new Dictionary<string, string>();
         var counter = 1;
