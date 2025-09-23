@@ -108,14 +108,14 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
         {
             case 0:
                 // Switch namespace
-                _prompt.SwitchNameSpaces(extension.ExtensionParameter[0]);
-                _prompt.ConsoleInput(extension.BaseCommand);
+                _prompt?.SwitchNameSpaces(extension.ExtensionParameter[0]);
+                _prompt?.ConsoleInput(extension.BaseCommand);
                 break;
             case 1:
                 ProcessHelpCommand(extension);
                 break;
             default:
-                _prompt.SendLogs(nameof(ProcessExtensionInternal), IrtConst.ErrorInternalExtensionNotFound);
+                _prompt?.SendLogs(nameof(ProcessExtensionInternal), IrtConst.ErrorInternalExtensionNotFound);
                 break;
         }
     }
@@ -178,11 +178,11 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
     /// <param name="extension">The extension command.</param>
     private void HandleExternalCommand(ExtensionCommands extension)
     {
-        var com = _irtHandlePrompt.ProcessInput(extension.BaseCommand);
+        var com = _irtHandlePrompt?.ProcessInput(extension.BaseCommand);
         if (com != null)
         {
             var command = _commands[com.Command];
-            _irtHandleInternal.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
+            _irtHandleInternal?.ProcessInput(IrtConst.InternalHelpWithParameter, command.Command);
         }
 
         var feedback = IrtConst.InternalFeedback[-1];
@@ -192,7 +192,7 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
             RequestId = _myRequestId, Feedback = feedback, BranchId = 12, AwaitedOutput = com
         };
 
-        _prompt.RequestFeedback(feedbackReceiver);
+        _prompt?.RequestFeedback(feedbackReceiver);
     }
 
     /// <summary>
@@ -213,14 +213,14 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
                 switch (e.Answer)
                 {
                     case AvailableFeedback.Yes:
-                        _prompt.SendLog(this, IrtConst.FeedbackOperationExecutedYes);
-                        _irtHandleInternal.ProcessInput(e.Key, e.Command);
+                        _prompt?.SendLog(this, IrtConst.FeedbackOperationExecutedYes);
+                        _irtHandleInternal?.ProcessInput(e.Key, e.Command);
                         break;
                     case AvailableFeedback.No:
-                        _prompt.SendLog(this, IrtConst.FeedbackOperationExecutedNo);
+                        _prompt?.SendLog(this, IrtConst.FeedbackOperationExecutedNo);
                         break;
                     case AvailableFeedback.Cancel:
-                        _prompt.SendLog(this, IrtConst.FeedbackCancelOperation);
+                        _prompt?.SendLog(this, IrtConst.FeedbackCancelOperation);
                         break;
                 }
 
@@ -229,14 +229,14 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
                 switch (e.Answer)
                 {
                     case AvailableFeedback.Yes:
-                        _prompt.SendLog(this, IrtConst.FeedbackOperationExecutedYes);
-                        _prompt.SendCommands(this, e.AwaitedOutput);
+                        _prompt?.SendLog(this, IrtConst.FeedbackOperationExecutedYes);
+                        _prompt?.SendCommands(this, e.AwaitedOutput);
                         break;
                     case AvailableFeedback.No:
-                        _prompt.SendLog(this, IrtConst.FeedbackOperationExecutedNo);
+                        _prompt?.SendLog(this, IrtConst.FeedbackOperationExecutedNo);
                         break;
                     case AvailableFeedback.Cancel:
-                        _prompt.SendLog(this, IrtConst.FeedbackCancelOperation);
+                        _prompt?.SendLog(this, IrtConst.FeedbackCancelOperation);
                         break;
                 }
 

@@ -27,7 +27,7 @@ public sealed class IrtFeedbackInputEventArgs : EventArgs
     /// <value>
     ///     The input.
     /// </value>
-    internal string Input { get; set; }
+    internal string? Input { get; set; }
 
     /// <summary>
     ///     Gets or sets the request identifier.
@@ -35,7 +35,7 @@ public sealed class IrtFeedbackInputEventArgs : EventArgs
     /// <value>
     ///     The request identifier.
     /// </value>
-    internal string RequestId { get; init; }
+    internal string? RequestId { get; init; }
 
     /// <summary>
     ///     Gets or sets the branch identifier.
@@ -59,7 +59,7 @@ public sealed class IrtFeedbackInputEventArgs : EventArgs
     /// <value>
     ///     The command.
     /// </value>
-    internal string Command { get; init; }
+    internal string? Command { get; init; }
 
     /// <summary>
     ///     Gets or sets the awaited output.
@@ -67,7 +67,7 @@ public sealed class IrtFeedbackInputEventArgs : EventArgs
     /// <value>
     ///     The awaited output.
     /// </value>
-    internal OutCommand AwaitedOutput { get; init; }
+    internal OutCommand? AwaitedOutput { get; init; }
 
     /// <summary>
     ///     Gets or sets the answer.
