@@ -3,16 +3,11 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/MemoryVault.cs
  * PURPOSE:     In Memory Storage
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedMember.Global
-// ReSharper disable EventNeverSubscribedTo.Global
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable UnusedMethodReturnValue.Global
-
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,47 +25,43 @@ namespace ExtendedSystemObjects;
 public sealed class MemoryVault<TU> : IDisposable
 {
     /// <summary>
-    ///     The instance
+    ///     The singleton instance.
     /// </summary>
     private static MemoryVault<TU> _instance;
 
     /// <summary>
-    ///     The instance lock
+    ///     Lock for singleton instance initialization.
     /// </summary>
-    private static readonly Lock InstanceLock = new();
+    private static readonly object InstanceLock = new();
 
     /// <summary>
-    ///     The cleanup timer
+    ///     Thread-safe dictionary for storing items.
+    /// </summary>
+    private readonly ConcurrentDictionary<long, VaultItem<TU>> _vault;
+
+    /// <summary>
+    ///     Timer for periodic cleanup of expired items.
     /// </summary>
     private readonly Timer _cleanupTimer;
 
     /// <summary>
-    ///     The lock
+    ///     Atomic counter for generating unique identifiers.
     /// </summary>
-    private readonly ReaderWriterLockSlim _lock = new();
+    private long _nextId;
 
     /// <summary>
-    ///     The vault
+    ///     Indicates whether the vault has been disposed.
     /// </summary>
-    private readonly Dictionary<long, VaultItem<TU>> _vault;
+    private bool _disposed;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MemoryVault{TU}" /> class.
+    ///     Interval at which expired items are cleaned up.
     /// </summary>
-    private MemoryVault()
-    {
-        _vault = new Dictionary<long, VaultItem<TU>>();
-        // Initialize the cleanup timer
-        _cleanupTimer =
-            new Timer(CleanupExpiredItems, null, TimeSpan.Zero, TimeSpan.FromMinutes(5)); // Run every 5 minutes
-    }
+    public TimeSpan CleanupInterval { get; set; } = TimeSpan.FromMinutes(5);
 
     /// <summary>
-    ///     Public static property to access the Singleton instance
+    ///     Public static property to access the Singleton instance.
     /// </summary>
-    /// <value>
-    ///     The instance.
-    /// </value>
     public static MemoryVault<TU> Instance
     {
         get
@@ -83,20 +74,9 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     The memory usage threshold in bytes.
-    ///     If the memory usage exceeds this value, the event will be triggered.
+    ///     Memory usage threshold in bytes. Triggers event when exceeded.
     /// </summary>
     public long MemoryThreshold { get; set; } = 10 * 1024 * 1024; // Default 10 MB
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    public void Dispose()
-    {
-        _lock?.Dispose();
-        _cleanupTimer?.Dispose();
-    }
 
     /// <summary>
     ///     Event triggered when memory usage exceeds the threshold.
@@ -104,29 +84,32 @@ public sealed class MemoryVault<TU> : IDisposable
     public event EventHandler<VaultMemoryThresholdExceededEventArgs> MemoryThresholdExceeded;
 
     /// <summary>
-    ///     Adds data to the vault with an optional expiration time.
+    ///     Private constructor for singleton pattern.
     /// </summary>
-    public long Add(TU data, TimeSpan? expiryTime = null, string description = "", long identifier = -1)
+    private MemoryVault()
     {
-        // If identifier is not provided (default -1), generate a new identifier
-        if (identifier == -1)
-        {
-            identifier = Utility.GetFirstAvailableIndex(_vault.Keys.ToList());
-        }
+        _vault = new ConcurrentDictionary<long, VaultItem<TU>>();
+        _nextId = 0;
+
+        // Initialize cleanup timer with configurable interval
+        _cleanupTimer = new Timer(CleanupExpiredItems, null, CleanupInterval, CleanupInterval);
+    }
+
+    /// <summary>
+    ///     Adds data to the vault with optional expiration and description.
+    /// </summary>
+    public long Add(TU data, TimeSpan? expiryTime = null, string description = "")
+    {
+        EnsureNotDisposed();
+
+        // Generate next available unique ID atomically
+        var identifier = Interlocked.Increment(ref _nextId);
 
         var vaultItem = new VaultItem<TU>(data, expiryTime, description);
 
-        _lock.EnterWriteLock();
-        try
-        {
-            _vault[identifier] = vaultItem;
-        }
-        finally
-        {
-            _lock.ExitWriteLock();
-        }
+        _vault[identifier] = vaultItem;
 
-        // Now calculate memory usage outside the write lock
+        // Calculate memory usage after adding
         var currentMemoryUsage = CalculateMemoryUsage();
         if (currentMemoryUsage > MemoryThreshold)
         {
@@ -137,289 +120,221 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Gets the data by its identifier.
+    ///     Retrieves an item by its identifier. Returns default if not found or expired.
     /// </summary>
-    public TU Get(long identifier)
+    public TU? Get(long identifier)
     {
-        _lock.EnterUpgradeableReadLock();
-        try
+        EnsureNotDisposed();
+
+        if (_vault.TryGetValue(identifier, out var item))
         {
-            // Try to get the item from the vault
-            if (_vault.TryGetValue(identifier, out var item))
+            if (item.HasExpireTime && item.HasExpired)
             {
-                // Check if the item has expired and has an expiration time
-                if (item.HasExpireTime && item.HasExpired)
-                {
-                    // Remove expired item within a write lock
-                    _lock.EnterWriteLock();
-                    try
-                    {
-                        _vault.Remove(identifier);
-                    }
-                    finally
-                    {
-                        _lock.ExitWriteLock();
-                    }
-
-                    // Return default value if the item is expired
-                    return default; // For reference types, this will be 'null'
-                }
-
-                // Return the item's data if it hasn't expired
-                return item.Data;
+                _vault.TryRemove(identifier, out _);
+                return default;
             }
 
-            // If the item is not found, return default value
-            return
-                default; // Or you can throw an exception or return a specific value depending on your requirements
+            return item.Data;
         }
-        finally
-        {
-            _lock.ExitUpgradeableReadLock();
-        }
+
+        return default;
     }
 
     /// <summary>
-    ///     Removes an item from the vault by its identifier.
+    ///     Removes an item from the vault.
     /// </summary>
     public bool Remove(long identifier)
     {
-        _lock.EnterWriteLock();
-        try
-        {
-            return _vault.Remove(identifier);
-        }
-        finally
-        {
-            _lock.ExitWriteLock();
-        }
+        EnsureNotDisposed();
+        return _vault.TryRemove(identifier, out _);
     }
 
     /// <summary>
-    ///     Gets all non-expired items in the vault.
+    ///     Returns all non-expired items in the vault.
     /// </summary>
     public List<TU> GetAll()
     {
-        _lock.EnterUpgradeableReadLock();
-        try
+        EnsureNotDisposed();
+
+        var results = new List<TU>();
+        var expiredKeys = new List<long>();
+
+        foreach (var kvp in _vault)
         {
-            var nonExpiredItems = new List<TU>();
-            var expiredKeys = new List<long>();
-
-            // Iterate over the vault and classify items
-            foreach (var (identifier, item) in _vault)
+            if (kvp.Value.HasExpireTime && kvp.Value.HasExpired)
             {
-                if (item.HasExpired && item.HasExpireTime)
-                {
-                    // Add expired item keys for removal
-                    expiredKeys.Add(identifier);
-                }
-                else
-                {
-                    // Add non-expired item data
-                    nonExpiredItems.Add(item.Data);
-                }
+                expiredKeys.Add(kvp.Key);
             }
-
-            // Remove expired items with a write lock
-            if (expiredKeys.Count > 0)
+            else
             {
-                _lock.EnterWriteLock();
-                try
-                {
-                    foreach (var key in expiredKeys)
-                    {
-                        _vault.Remove(key);
-                    }
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
+                results.Add(kvp.Value.Data);
             }
-
-            return nonExpiredItems;
         }
-        finally
+
+        foreach (var key in expiredKeys)
         {
-            _lock.ExitUpgradeableReadLock();
+            _vault.TryRemove(key, out _);
         }
+
+        return results;
     }
 
     /// <summary>
-    ///     Cleanups the expired items.
+    ///     Retrieves metadata for a specific item.
     /// </summary>
-    /// <param name="state">The state.</param>
-    private void CleanupExpiredItems(object state)
+    public VaultMetadata? GetMetadata(long identifier)
     {
-        _lock.EnterWriteLock();
-        try
+        EnsureNotDisposed();
+
+        if (!_vault.TryGetValue(identifier, out var item))
         {
-            foreach (var key in _vault.Where(kvp => kvp.Value.HasExpired && kvp.Value.HasExpireTime)
-                         .Select(kvp => kvp.Key).ToList())
-            {
-                _vault.Remove(key);
-            }
+            return default;
         }
-        finally
+
+        if (item.HasExpireTime && item.HasExpired)
         {
-            _lock.ExitWriteLock();
+            _vault.TryRemove(identifier, out _);
+            return default;
         }
+
+        return new VaultMetadata
+        {
+            Identifier = identifier,
+            Description = item.Description,
+            CreationDate = item.CreationDate,
+            HasExpireTime = item.HasExpireTime,
+            AdditionalMetadata = item.AdditionalMetadata
+        };
     }
 
     /// <summary>
-    ///     Calculates the current memory usage of the vault.
-    /// </summary>
-    private long CalculateMemoryUsage()
-    {
-        _lock.EnterReadLock();
-        try
-        {
-            // Assuming 'Values' is a collection of items, each having a 'DataSize' property.
-            return _vault.Values.Sum(item => item.DataSize);
-        }
-        finally
-        {
-            _lock.ExitReadLock();
-        }
-    }
-
-    /// <summary>
-    ///     Retrieves metadata for an item.
-    /// </summary>
-    public VaultMetadata GetMetadata(long identifier)
-    {
-        _lock.EnterReadLock();
-        try
-        {
-            // Try to get the item from the vault
-            if (!_vault.TryGetValue(identifier, out var item))
-            {
-                return default; // Item not found
-            }
-
-            // Check if the item has expired and can expire
-            if (item.HasExpireTime && item.HasExpired)
-            {
-                // Item has expired, remove it
-                _lock.EnterWriteLock();
-                try
-                {
-                    _vault.Remove(identifier);
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
-
-                return default; // Expired item, return default or indicate expired state
-            }
-
-            // Item is valid (not expired or does not expire), return metadata
-            return new VaultMetadata
-            {
-                Description = item.Description,
-                CreationDate = item.CreationDate,
-                Identifier = identifier,
-                HasExpireTime = item.HasExpireTime
-            };
-        }
-        finally
-        {
-            _lock.ExitReadLock(); // Ensure read lock is released
-        }
-    }
-
-    /// <summary>
-    ///     Adds metadata to an item.
+    ///     Updates metadata for a specific item.
     /// </summary>
     public void AddMetadata(long identifier, VaultMetadata metaData)
     {
-        if (metaData == null)
-        {
-            throw new ArgumentNullException(nameof(metaData));
-        }
+        EnsureNotDisposed();
 
-        _lock.EnterWriteLock();
-        try
-        {
-            if (!_vault.TryGetValue(identifier, out var value))
-            {
-                return;
-            }
+        if (metaData == null) throw new ArgumentNullException(nameof(metaData));
 
-            value.Description = metaData.Description;
-            value.HasExpireTime = metaData.HasExpireTime;
-        }
-        finally
+        if (_vault.TryGetValue(identifier, out var item))
         {
-            _lock.ExitWriteLock();
+            item.Description = metaData.Description;
+            item.HasExpireTime = metaData.HasExpireTime;
+            item.AdditionalMetadata = metaData.AdditionalMetadata;
         }
     }
 
     /// <summary>
-    ///     Saves an item to disk by its identifier in a binary format.
+    ///     Saves an item to disk in JSON format.
     /// </summary>
-    /// <param name="identifier">The identifier of the item.</param>
-    /// <param name="filePath">The file path to save the item.</param>
-    /// <returns>True if the item is saved successfully; otherwise, false.</returns>
     public bool SaveToDisk(long identifier, string filePath)
     {
+        EnsureNotDisposed();
+
         try
         {
-            var item = _vault[identifier]; // Retrieve the item from the vault
+            if (!_vault.TryGetValue(identifier, out var item))
+                return false;
 
-            // Serialize the VaultItem to JSON
             var json = JsonSerializer.Serialize(item);
-
-            // Write the JSON string to a file
             File.WriteAllText(filePath, json);
 
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
 
     /// <summary>
-    ///     Loads an item from disk into the vault from a binary format.
+    ///     Loads an item from disk and stores it in the vault.
     /// </summary>
-    /// <param name="filePath">The file path of the saved item.</param>
-    /// <returns>The identifier of the loaded item, or -1 if loading fails.</returns>
     public long LoadFromDisk(string filePath)
     {
+        EnsureNotDisposed();
+
         try
         {
-            // Read the JSON string from the file
             var json = File.ReadAllText(filePath);
-
-            // Deserialize the JSON string to a VaultItem<TU>
             var item = JsonSerializer.Deserialize<VaultItem<TU>>(json);
 
             if (item != null)
             {
-                var identifier = Add(item.Data);
-
-                //set metadata
-                var metadata = new VaultMetadata
+                // Add item to vault and preserve metadata via init-only constructor
+                var vaultItem = new VaultItem<TU>(item.Data, item.ExpiryTime, item.Description)
                 {
-                    Description = item.Description,
-                    CreationDate = item.CreationDate,
                     AdditionalMetadata = item.AdditionalMetadata
                 };
 
-                AddMetadata(identifier, metadata);
-
-                return identifier;
+                return Add(vaultItem.Data, vaultItem.ExpiryTime, vaultItem.Description);
             }
         }
-        catch (Exception)
+        catch
         {
-            return -1; // Return -1 if loading fails
+            return -1;
         }
 
-        return -1; // Return -1 if loading fails
+        return -1;
+    }
+
+    /// <summary>
+    ///     Periodic cleanup of expired items.
+    /// </summary>
+    private void CleanupExpiredItems(object? state)
+    {
+        foreach (var kvp in _vault)
+        {
+            if (kvp.Value.HasExpireTime && kvp.Value.HasExpired)
+            {
+                _vault.TryRemove(kvp.Key, out _);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Calculates approximate memory usage of the vault including metadata.
+    /// </summary>
+    private long CalculateMemoryUsage()
+    {
+        long total = 0;
+
+        foreach (var item in _vault.Values)
+        {
+            total += item.DataSize;
+
+            // Rough estimate of metadata size
+            if (!string.IsNullOrEmpty(item.Description))
+                total += item.Description.Length * sizeof(char);
+
+            if (item.AdditionalMetadata != null)
+                total += item.AdditionalMetadata.Count * 64; // rough estimate per entry
+        }
+
+        // Include dictionary overhead (approximation)
+        total += _vault.Count * 32;
+
+        return total;
+    }
+
+    /// <summary>
+    ///     Ensures the vault has not been disposed.
+    /// </summary>
+    private void EnsureNotDisposed()
+    {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(nameof(MemoryVault<TU>));
+        }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (_disposed) return;
+
+        _cleanupTimer.Dispose();
+        _vault.Clear();
+        _disposed = true;
     }
 }

@@ -120,7 +120,7 @@ internal sealed class VaultItem<TU>
     /// <value>
     ///     The additional metadata.
     /// </value>
-    public Dictionary<string, object> AdditionalMetadata { get; init; } = new();
+    public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
 
     /// <summary>
     ///     Calculates the size of an object using memory allocation.

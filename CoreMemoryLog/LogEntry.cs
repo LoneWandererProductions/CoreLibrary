@@ -73,4 +73,30 @@ public sealed class LogEntry
     /// The arguments.
     /// </value>
     public object[] Args { get; internal init; }
+
+    // Optional debugging info
+
+    /// <summary>
+    /// Gets or sets the name of the file.
+    /// </summary>
+    /// <value>
+    /// The name of the file.
+    /// </value>
+    public string? FileName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the line number.
+    /// </summary>
+    /// <value>
+    /// The line number.
+    /// </value>
+    public int? LineNumber { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the method.
+    /// </summary>
+    /// <value>
+    /// The name of the method.
+    /// </value>
+    public string? MethodName { get; set; }
 }

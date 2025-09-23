@@ -1,4 +1,11 @@
-### General Utilities
+# Common Utilities & Frameworks
+
+This repository provides a collection of reusable libraries, tools, and utilities for WPF, data handling, math, rendering, debugging, and more.  
+It’s organized into modular projects that can be used independently or combined.
+
+---
+
+## General Utilities
 
 - **Generic Interpreter**  
   Command-line-like interpreter for executing user-defined commands or internal scripting.
@@ -22,7 +29,7 @@
   In-memory cache store for temporary object persistence.
 
 - **Memory Manager**  
-  Some experimental work on custom Memory Management.
+  Experimental work on custom memory management.
 
 - **Image Manipulation & Comparison**  
   Libraries for editing and comparing images; includes filters and format utilities.
@@ -54,7 +61,9 @@
 - **Dialogs**  
   Custom dialogs including SQL login, folder pickers, etc.
 
-### Math Utilities
+---
+
+## Math Utilities
 
 - **Matrix Calculation**  
   Basic matrix math: addition, multiplication, inversion, etc.
@@ -68,13 +77,16 @@
 - **Statistics**  
   Calculate mean, median, variance, and basic statistical analysis.
 
-### Coding & Framework Tools
+---
+
+## Coding & Framework Tools
 
 - **Resource String Generator**  
   Auto-generates strongly typed string classes from raw resource files.
 
-- **In-Memory Logger**  
-  Lightweight logger that keeps runtime logs in memory.
+- **In-Memory Logger (CoreMemoryLog)**  
+  Lightweight logger that keeps runtime logs in memory.  
+  See [CoreMemoryLog](#corememorylog) for details.
 
 - **Simple Dependency Injection**  
   Minimal DI container to inject and manage services across projects.
@@ -83,6 +95,49 @@
   Manages background threads and long-running jobs with clean abstraction.
 
 ---
+
+## Highlighted Modules
+
+### Debugger
+
+A flexible **debugging and log inspection framework**.
+
+- Defines the `ILogSource` abstraction so log providers (memory, file, stream, external) can be plugged in and consumed uniformly.  
+- Supports event-driven log streaming (`LineReceived`) for real-time UI updates.  
+- Includes adapters like `InMemoryLogSource` to expose `CoreMemoryLog` into UI log viewers.  
+- Designed for WPF dashboards and log viewer tools.
+
+**Skeleton usage:**
+```csharp
+var source = new InMemoryLogSource(logger);
+source.LineReceived += (_, line) => Console.WriteLine(line);
+source.Start();
+```
+
+---
+
+### CoreMemoryLog
+
+A **lightweight, structured, in-memory logger** for runtime diagnostics.
+
+- Captures logs without writing to disk.  
+- Stores a rolling buffer of entries, accessible via `GetLogs()`.  
+- Provides structured log entries with timestamp, level, caller method, and optional exception.  
+- Can be adapted into `Debugger` for visualization, or consumed directly in tests.
+
+**Example:**
+```csharp
+var logger = new InMemoryLogger();
+logger.Log(LogLevel.Info, "Starting job {0}", jobId);
+
+// Later
+foreach (var entry in logger.GetLogs())
+    Console.WriteLine($"{entry.Timestamp}: {entry.Message}");
+```
+
+---
+
+## Project Overview
 
 | Module                      | Purpose / Description                           |
 | --------------------------- | ----------------------------------------------- |
@@ -98,25 +153,25 @@
 | `RenderEngine`              | Experimental 2D/3D rendering backend            |
 | `RenderEngineTests`         | All Tests related to rendering                  |
 | `SQLiteGui`                 | UI frontend for SQLiteHelper                    |
-| `Debugger`                  | Custom debugging tools with UI support          |
+| `Debugger`                  | Debugging framework + log viewer integration    |
 | `ImageCompare`              | Pixel-based image comparison utility            |
 | `CommonDialogs`             | Prebuilt WPF dialogs (folders, login, etc.)     |
 | `Interpreter`               | Text command processor and parser               |
 | `CommonLibraryGuiTests`     | GUI testing for common components               |
 | `Solaris`                   | 2D chessboard-style tile renderer               |
-| `LightVector`               | Likely lightweight vector math tools            |
+| `LightVector`               | Lightweight vector math tools                   |
 | `Serializer`                | XML serialization of data and structures        |
 | `DataFormatter`             | CSV reading/writing and formatting              |
-| `Communication`             | Some Network and webservice                     |
+| `Communication`             | Networking and web service helpers              |
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
 | `PluginLoader`              | Plugin management and loading system            |
 | `CommonFilter`              | WPF control to filter data tables               |
-| `CoreBuilder`               | Possibly utilities for image/vector creation    |
-| `Pathfinder`                | A\* pathfinding for grid-based maps             |
-| `InterOp`                   | Some useful bindings to Windows libraries.      |
+| `CoreBuilder`               | Utilities for image/vector creation             |
+| `Pathfinder`                | A* pathfinding for grid-based maps              |
+| `InterOp`                   | Useful bindings to Windows libraries            |
 | `CoreInject`                | Minimal DI/injection support                    |
-| `CoreConsole`               | Quick Console to use some of my applications    |
-| `CoreMemoryLog`             | In-memory runtime logger                        |
+| `CoreConsole`               | Quick Console runner for applications           |
+| `CoreMemoryLog`             | In-memory logger, structured, UI-ready          |
 | `Plugin`                    | Base classes/interfaces for plugin system       |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
 | `CoreWorker`                | Worker service abstraction                      |

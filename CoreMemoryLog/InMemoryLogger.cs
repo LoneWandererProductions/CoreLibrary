@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
  * FILE:        InMemoryLogger.cs
@@ -57,6 +57,19 @@ namespace CoreMemoryLog
         public LogLevel LogLevel { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [enable stack trace].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [enable stack trace]; otherwise, <c>false</c>.
+        /// </value>
+        public bool EnableStackTrace { get; set; }
+
+        /// <summary>
+        /// Occurs when [log added].
+        /// </summary>
+        public event EventHandler<LogEntry>? LogAdded;
+
+        /// <summary>
         /// Returns the caller method name (optional helper).
         /// </summary>
         /// <param name="caller">The caller.</param>
@@ -73,6 +86,8 @@ namespace CoreMemoryLog
             var queue = _libraryLogs.GetOrAdd(library, _ => new ConcurrentQueue<LogEntry>());
             if (queue.Count >= _maxLogEntries) queue.TryDequeue(out _);
             queue.Enqueue(entry);
+
+            LogAdded?.Invoke(this, entry);
         }
 
         /// <summary>
@@ -96,6 +111,16 @@ namespace CoreMemoryLog
                 CallerMethod = callerMethod,
                 LibraryName = libraryName
             };
+
+            // Capture stack trace info for Error and Trace levels if enabled
+            if ((level == LogLevel.Error || level == LogLevel.Trace) && EnableStackTrace)
+            {
+                var st = new StackTrace(true);
+                var frame = st.GetFrame(2); // skip logger itself
+                entry.MethodName = frame?.GetMethod()?.Name;
+                entry.LineNumber = frame?.GetFileLineNumber();
+                entry.FileName = frame?.GetFileName();
+            }
 
             EnqueueLog(libraryName, entry);
 
@@ -222,14 +247,18 @@ namespace CoreMemoryLog
             using var writer = new StreamWriter(filePath, append);
 
             foreach (var log in GetLogs()
-                         .Where(l => l.Level >= minimumLevel)
-                         .OrderBy(l => l.Timestamp))
+                                 .Where(l => l.Level >= minimumLevel)
+                                 .OrderBy(l => l.Timestamp))
             {
                 var msg = log.Args is { Length: > 0 }
                     ? SafeFormat(log.Message, log.Args)
                     : log.Message;
 
                 writer.WriteLine($"[{log.Timestamp:O}] [{log.LibraryName}] [{log.Level}] {log.CallerMethod}: {msg}");
+
+                if (!string.IsNullOrEmpty(log.MethodName))
+                    writer.WriteLine($"    at {log.MethodName} in {log.FileName}:{log.LineNumber}");
+
                 if (log.Exception != null)
                     writer.WriteLine($"    Exception: {log.Exception}");
             }

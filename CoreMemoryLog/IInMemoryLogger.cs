@@ -28,7 +28,18 @@ public interface IInMemoryLogger
     /// Gets or sets the minimum log level for this logger.
     /// Messages below this level will be ignored.
     /// </summary>
+    /// <value>
+    /// The log level.
+    /// </value>
     LogLevel LogLevel { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether [enable stack trace].
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if [enable stack trace]; otherwise, <c>false</c>.
+    /// </value>
+    bool EnableStackTrace { get; set; }
 
     // ---------------------------------------------------------
     // Core logging
@@ -78,6 +89,11 @@ public interface IInMemoryLogger
     /// Determines whether there are logs with the specified log level for a specific library.
     /// </summary>
     bool HasLogsWithLevel(string libraryName, LogLevel logLevel);
+
+    /// <summary>
+    /// Occurs when [log added].
+    /// </summary>
+    event EventHandler<LogEntry>? LogAdded;
 
     // ---------------------------------------------------------
     // Persistence
