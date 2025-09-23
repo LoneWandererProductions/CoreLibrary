@@ -17,6 +17,9 @@ public class ThreadedPrompt
 {
     private readonly ConcurrentDictionary<Guid, TaskCompletionSource<string>> _pendingInputs;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ThreadedPrompt"/> class.
+    /// </summary>
     public ThreadedPrompt()
     {
         _pendingInputs = new ConcurrentDictionary<Guid, TaskCompletionSource<string>>();
@@ -30,7 +33,11 @@ public class ThreadedPrompt
         return tcs.Task;
     }
 
-    // Method to provide input, checks if the input matches the caller's request
+    /// <summary>
+    ///  Method to provide input, checks if the input matches the caller's request
+    /// </summary>
+    /// <param name="callerId">The caller identifier.</param>
+    /// <param name="input">The input.</param>
     public void ConsoleInput(Guid callerId, string input)
     {
         if (_pendingInputs.TryRemove(callerId, out var tcs))

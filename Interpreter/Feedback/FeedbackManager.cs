@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
+ * PROJECT:     Interpreter.Feedback
  * FILE:        FeedbackManager.cs
  * PURPOSE:     Manages user feedback interaction and input validation within the command interpreter.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System;
 using Interpreter.Resources;
 
-namespace Interpreter;
+namespace Interpreter.Feedback;
 
 /// <summary>
 ///     Responsible for managing the state and processing of user feedback requests.

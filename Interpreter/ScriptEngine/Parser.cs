@@ -24,6 +24,10 @@ internal sealed class Parser
         _tokens = tokens;
     }
 
+    /// <summary>
+    /// Parses the into categorized blocks.
+    /// </summary>
+    /// <returns></returns>
     public CategorizedDictionary<int, string?> ParseIntoCategorizedBlocks()
     {
         var result = new CategorizedDictionary<int, string?>();
@@ -75,6 +79,11 @@ internal sealed class Parser
         return result;
     }
 
+    /// <summary>
+    /// Parses if statement.
+    /// </summary>
+    /// <param name="output">The output.</param>
+    /// <param name="commandIndex">Index of the command.</param>
     private void ParseIfStatement(CategorizedDictionary<int, string?> output, ref int commandIndex)
     {
         // Consume 'if' keyword
@@ -105,6 +114,11 @@ internal sealed class Parser
         }
     }
 
+    /// <summary>
+    /// Parses the else block.
+    /// </summary>
+    /// <param name="output">The output.</param>
+    /// <param name="commandIndex">Index of the command.</param>
     private void ParseElseBlock(CategorizedDictionary<int, string?> output, ref int commandIndex)
     {
         // Consume 'else' keyword
@@ -125,6 +139,10 @@ internal sealed class Parser
         output.Add("Else_End", commandIndex++, null);
     }
 
+    /// <summary>
+    /// Reads the condition.
+    /// </summary>
+    /// <returns></returns>
     private string? ReadCondition()
     {
         // Expect '('
@@ -155,6 +173,10 @@ internal sealed class Parser
         return sb.ToString().Trim();
     }
 
+    /// <summary>
+    /// Parses the block statements.
+    /// </summary>
+    /// <returns>Tuble of Block statements</returns>
     private List<(string Category, string? Statement)> ParseBlockStatements()
     {
         var statements = new List<(string, string?)>();
@@ -212,6 +234,11 @@ internal sealed class Parser
     }
 
 
+    /// <summary>
+    /// Expects the specified expected.
+    /// </summary>
+    /// <param name="expected">The expected.</param>
+    /// <exception cref="System.ArgumentException">Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'.</exception>
     private void Expect(TokenType expected)
     {
         if (IsAtEnd() || Peek().Type != expected)
@@ -264,6 +291,13 @@ internal sealed class Parser
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Determines whether the specified type is alphanumeric.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified type is alphanumeric; otherwise, <c>false</c>.
+    /// </returns>
     private bool IsAlphanumeric(TokenType type)
     {
         return type == TokenType.Identifier ||
@@ -272,21 +306,40 @@ internal sealed class Parser
                type == TokenType.Number; // add any others you want spaced
     }
 
+    /// <summary>
+    /// Determines whether [is at end].
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if [is at end]; otherwise, <c>false</c>.
+    /// </returns>
     private bool IsAtEnd()
     {
         return _position >= _tokens.Count;
     }
 
+    /// <summary>
+    /// Advances this instance.
+    /// </summary>
+    /// <returns>Next Token.</returns>
     private Token Advance()
     {
         return _tokens[_position++];
     }
 
+    /// <summary>
+    /// Peeks this instance.
+    /// </summary>
+    /// <returns>Token at position</returns>
     private Token Peek()
     {
         return _tokens[_position];
     }
 
+    /// <summary>
+    /// Matches the specified type.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>If type of token is matched.</returns>
     private bool Match(TokenType type)
     {
         if (IsAtEnd() || _tokens[_position].Type != type)

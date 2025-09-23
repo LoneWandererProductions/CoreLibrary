@@ -18,6 +18,11 @@ public class ConditionValidator
         engine.SendCommands += OnCommandExecuted;
     }
 
+    /// <summary>
+    /// Called when [command executed].
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="outCmd">The out command.</param>
     private void OnCommandExecuted(object sender, OutCommand outCmd)
     {
         // Only validate if this is part of a condition context
@@ -43,6 +48,13 @@ public class ConditionValidator
         }
     }
 
+    /// <summary>
+    /// Determines whether [is condition context] [the specified command].
+    /// </summary>
+    /// <param name="cmd">The command.</param>
+    /// <returns>
+    ///   <c>true</c> if [is condition context] [the specified command]; otherwise, <c>false</c>.
+    /// </returns>
     private bool IsConditionContext(OutCommand cmd)
     {
         // You define this logic:

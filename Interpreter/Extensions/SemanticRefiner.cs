@@ -49,6 +49,11 @@ internal static class SemanticRefiner
         return output;
     }
 
+    /// <summary>
+    /// Adds the control structure braces.
+    /// </summary>
+    /// <param name="input">The input.</param>
+    /// <returns>Refines CategorizedDictionary further and adds Branches.</returns>
     public static CategorizedDictionary<int, string> AddControlStructureBraces(
         this CategorizedDictionary<int, string> input)
     {
@@ -190,6 +195,12 @@ internal static class SemanticRefiner
         return output;
     }
 
+    /// <summary>
+    /// Extracts the inner value.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="keyword">The keyword.</param>
+    /// <returns>Inner value from keyword.</returns>
     private static string ExtractInnerValue(string value, string keyword)
     {
         var pattern = $@"\b{keyword}\s*\(\s*(.*?)\s*\)";
@@ -197,12 +208,22 @@ internal static class SemanticRefiner
         return match.Success ? match.Groups[1].Value : value.Trim();
     }
 
+    /// <summary>
+    /// Extracts the condition.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>Condition from if clause</returns>
     private static string ExtractCondition(string value)
     {
         var m = Regex.Match(value, @"if\s*\((.*?)\)");
         return m.Success ? m.Groups[1].Value.Trim() : string.Empty;
     }
 
+    /// <summary>
+    /// Extracts the body.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>Exctracts body.</returns>
     private static string ExtractBody(string value)
     {
         var m = Regex.Match(value, @"\{(.*?)\}", RegexOptions.Singleline);

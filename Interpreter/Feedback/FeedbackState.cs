@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Interpreter
+ * PROJECT:     Interpreter.Feedback
  * FILE:        FeedbackState.cs
  * PURPOSE:     Internal States fo the Feedbackmanager
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Interpreter;
+namespace Interpreter.Feedback;
 
 /// <summary>
 ///     State of the Feedbackmanager
