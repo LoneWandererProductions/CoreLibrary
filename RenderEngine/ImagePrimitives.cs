@@ -290,7 +290,7 @@ namespace RenderEngine
             var texBuf = texture.BufferSpan;
             var texW = texture.Width;
             var texH = texture.Height;
-            var bpp = UnmanagedImageBuffer.BytesPerPixel;
+            const int bpp = UnmanagedImageBuffer.BytesPerPixel;
 
             PrepVertex pv0 = default, pv1 = default, pv2 = default;
             if (usePerspective)

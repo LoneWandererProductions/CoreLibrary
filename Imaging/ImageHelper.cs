@@ -103,8 +103,8 @@ internal static class ImageHelper
     /// <returns>The mean color of the specified region.</returns>
     internal static Color GetMeanColor(DirectBitmap dbm, Rectangle region)
     {
-        var processPixels = ProcessPixels(dbm, region);
-        return processPixels.Mean ?? Color.Black; // Handle case where meanColor is null
+        var (Pixels, Mean) = ProcessPixels(dbm, region);
+        return Mean ?? Color.Black; // Handle case where meanColor is null
     }
 
     /// <summary>

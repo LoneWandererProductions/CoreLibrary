@@ -21,7 +21,7 @@ public class ImagingFilterTests
     /// <summary>
     ///     The render
     /// </summary>
-    private IImageRender _render;
+    private IImageRender? _render;
 
     [TestInitialize]
     public void Setup()
@@ -37,10 +37,9 @@ public class ImagingFilterTests
     {
         // Arrange
         var input = CreateTestBitmap(10, 10, Color.Red); // A simple color, the output should still be red
-        const int stepWidth = 2;
 
         // Act
-        var result = _render.Pixelate(input);
+        var result = _render?.Pixelate(input);
 
         // Assert
         Assert.AreNotEqual(input, result, "The pixelated image should not be exactly the same as the input image.");
@@ -57,7 +56,7 @@ public class ImagingFilterTests
         const int stepWidth = 5;
 
         // Act
-        var result = _render.Pixelate(input, stepWidth);
+        var result = _render?.Pixelate(input, stepWidth);
         var dbm = new DirectBitmap(result);
 
         // Assert
@@ -84,7 +83,7 @@ public class ImagingFilterTests
         const int stepWidth = 10; // Step width larger than the image dimensions
 
         // Act
-        var result = _render.Pixelate(input, stepWidth);
+        var result = _render?.Pixelate(input, stepWidth);
         var dbm = new DirectBitmap(result);
 
         // Assert

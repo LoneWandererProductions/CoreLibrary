@@ -76,7 +76,7 @@ public sealed class ImmutableLookupMap<TKey, TValue> : IEnumerable<KeyValuePair<
 
                 if (_keys[hash].Equals(key))
                 {
-                    throw new InvalidOperationException(string.Format(SharedResources.ErrorDuplicateKey, key));
+                    throw new InvalidOperationException(message: string.Format(SharedResources.ErrorDuplicateKey, key));
                 }
             }
         }

@@ -27,7 +27,7 @@ internal static class AnalysisProcessing
     /// <summary>
     ///     The render
     /// </summary>
-    private static IImageRender _render;
+    private static IImageRender? _render;
 
     /// <summary>
     ///     Compares a list of Images and returns the Difference in Percentage

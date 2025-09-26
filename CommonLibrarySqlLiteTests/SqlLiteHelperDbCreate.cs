@@ -134,7 +134,7 @@ public sealed class SqlLiteHelperDbCreate
         Assert.AreEqual("Name of Db", cache.DbName,
             "Test failed Wrong Data: " + cache.DbName);
 
-        Assert.IsTrue(cache.Location.Contains(@"Path"),
+        Assert.IsTrue(cache.Location.Contains("Path"),
             "Test failed Wrong Data: " + cache.Location);
 
         Assert.AreEqual(3, cache.DbVersion,

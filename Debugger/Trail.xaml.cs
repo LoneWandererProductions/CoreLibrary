@@ -213,7 +213,7 @@ public sealed partial class Trail
         }
         catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
         {
-            Trace.WriteLine(string.Concat("Error deleting log file: ", ex), nameof(Trace));
+            Trace.WriteLine($"Error deleting log file: {ex}", nameof(Trace));
         }
     }
 

@@ -147,7 +147,7 @@ public class Transactions
     }
 
     /// <summary>
-    ///     Gets the index of the item item exists returns.
+    ///     Gets the index of the item exists returns.
     /// </summary>
     [TestMethod]
     public void GetItemItemExistsReturnsIndex()
@@ -161,7 +161,7 @@ public class Transactions
     }
 
     /// <summary>
-    ///     Gets the item item does not exist returns minus one.
+    ///     Gets the item does not exist returns minus one.
     /// </summary>
     [TestMethod]
     public void GetItemItemDoesNotExistReturnsMinusOne()

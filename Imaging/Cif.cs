@@ -260,12 +260,11 @@ public sealed class Cif
     /// <returns>Success Status</returns>
     public bool ChangeColor(Color oldColor, Color newColor)
     {
-        if (!CifImage.ContainsKey(oldColor))
+        if (!CifImage.TryGetValue(oldColor, out var cache))
         {
             return false;
         }
 
-        var cache = CifImage[oldColor];
         CifImage.Remove(oldColor);
 
         if (CifImage.TryGetValue(newColor, out var value))

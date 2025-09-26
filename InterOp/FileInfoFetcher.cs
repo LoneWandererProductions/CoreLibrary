@@ -35,7 +35,7 @@ public static class FileInfoFetcher
     /// <param name="lpFileName">The directory or file pattern to search for.</param>
     /// <param name="lpFindFileData">The structure to hold file data returned by the function.</param>
     /// <returns>Handle to the search operation if successful, IntPtr.Zero otherwise.</returns>
-    [DllImport(InterOpResources.KernelDll, CharSet = CharSet.Auto, SetLastError = true)]
+    [DllImport(InterOpResources.KernelDll, CharSet = CharSet.Unicode, SetLastError = true)]
     public static extern IntPtr FindFirstFile(string lpFileName, ref WIN32_FIND_DATA lpFindFileData);
 
     /// <summary>

@@ -10,7 +10,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using ExtendedSystemObjects.Helper;
@@ -27,12 +26,12 @@ public sealed class MemoryVault<TU> : IDisposable
     /// <summary>
     ///     The singleton instance.
     /// </summary>
-    private static MemoryVault<TU> _instance;
+    private static MemoryVault<TU>? _instance;
 
     /// <summary>
     ///     Lock for singleton instance initialization.
     /// </summary>
-    private static readonly object InstanceLock = new();
+    private static readonly Lock InstanceLock = new();
 
     /// <summary>
     ///     Thread-safe dictionary for storing items.

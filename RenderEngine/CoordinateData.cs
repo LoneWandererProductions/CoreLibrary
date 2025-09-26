@@ -23,7 +23,6 @@ public struct CoordinateData
     /// <summary>
     /// The y point.
     /// </summary>
-    /// 
     public int Y;
 
     /// <summary>

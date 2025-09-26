@@ -77,12 +77,10 @@ public class GraphicManager : IGraphicManager
     /// <exception cref="KeyNotFoundException">No object found with ID {id}.</exception>
     public bool ApplyTransformation(int id, Transform transformation)
     {
-        if (!_objects.ContainsKey(id))
+        if (!_objects.TryGetValue(id, out var obj))
         {
             throw new KeyNotFoundException($"No object found with ID {id}.");
         }
-
-        var obj = _objects[id];
 
         // Check if the object supports the transformation
         if (!obj.Graphic.SupportsTransformation(transformation))

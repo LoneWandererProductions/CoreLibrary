@@ -145,7 +145,7 @@ public class ParserTests
     [TestMethod]
     public void ParseHandlesChainedMethodCallsAsSingleCommand()
     {
-        const string input = @"some().thing().do();";
+        const string input = "some().thing().do();";
         var parser = new Parser(new Lexer(input).Tokenize());
         var result = parser.ParseIntoCategorizedBlocks();
 
@@ -165,7 +165,7 @@ public class ParserTests
     [TestMethod]
     public void ParseHandlesSpacingInsideParentheses()
     {
-        const string input = @"Print(hello   world);";
+        const string input = "Print(hello   world);";
         var parser = new Parser(new Lexer(input).Tokenize());
         var result = parser.ParseIntoCategorizedBlocks();
 

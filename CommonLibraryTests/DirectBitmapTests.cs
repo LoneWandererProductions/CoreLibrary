@@ -130,36 +130,13 @@ public class DirectBitmapTests
         });
 
         // Benchmark your DirectBitmap
-        var directBitmapTime = MeasurePerformance(100, () =>
-        {
-            directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black);
-        });
+        var directBitmapTime = MeasurePerformance(100, () => directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
 
         Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
 
         // Allow a little slack if in CI
         var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 3 : 1.0;
         AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
-    }
-
-
-    /// <summary>
-    ///     Warms up vertical line drawing.
-    /// </summary>
-    /// <param name="bitmap">The bitmap.</param>
-    /// <param name="brush">The brush.</param>
-    /// <param name="directBitmap">The direct bitmap.</param>
-    /// <param name="lineWidth">Width of the line.</param>
-    /// <param name="height">The height.</param>
-    private static void WarmUpVerticalLineDrawing(Image bitmap, Brush brush, DirectBitmap directBitmap,
-        int lineWidth, int height)
-    {
-        for (var i = 0; i < 10; i++)
-        {
-            using var graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(brush, 0, 0, lineWidth, height);
-            directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black);
-        }
     }
 
     /// <summary>

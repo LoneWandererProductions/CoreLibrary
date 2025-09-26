@@ -236,11 +236,11 @@ internal static class FiltersStream
                         var ix = x + (fx - filterOffset);
                         var iy = y + (fy - filterOffset);
 
-                        var pixel = source.GetPixel(ix, iy);
+                        var (r, g, b, a) = source.GetPixel(ix, iy);
 
-                        blue += pixel.b * filterMatrix[fy, fx];
-                        green += pixel.g * filterMatrix[fy, fx];
-                        red += pixel.r * filterMatrix[fy, fx];
+                        blue += b * filterMatrix[fy, fx];
+                        green += g * filterMatrix[fy, fx];
+                        red += r * filterMatrix[fy, fx];
                     }
                 }
 

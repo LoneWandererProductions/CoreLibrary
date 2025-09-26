@@ -110,15 +110,15 @@ internal static class CifProcessing
 
         foreach (var data in imageData)
         {
-            if (!cif.CifImage.ContainsKey(data.Color))
+            if (!cif.CifImage.TryGetValue(data.Color, out var value))
             {
-                cif.CifImage[data.Color] =  []
-                ;
+                value = [];
+                cif.CifImage[data.Color] = value;
             }
 
             foreach (var coordinates in data.Coordinates)
             {
-                cif.CifImage[data.Color].Add(coordinates);
+                value.Add(coordinates);
             }
         }
 

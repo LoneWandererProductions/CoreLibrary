@@ -82,14 +82,13 @@ public static class DictionaryExtensions
     /// <param name="value">Value to add</param>
     public static bool AddDistinct<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic, TKey key, TValue value)
     {
-        if (!dic.ContainsKey(key))
+        if (!dic.TryGetValue(key, out var cache))
         {
             var lst = new List<TValue> { value };
-            dic.Add(key, lst);
+            cache = lst;
+            dic.Add(key, cache);
             return true;
         }
-
-        var cache = dic[key];
 
         if (cache.Contains(value))
         {
@@ -307,14 +306,14 @@ public static class DictionaryExtensions
     /// <typeparam name="TValue">Internal Value</typeparam>
     public static void Swap<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey i, TKey j)
     {
-        if (!dic.ContainsKey(j))
+        if (!dic.TryGetValue(j, out var value))
         {
             dic[j] = dic[i];
             _ = dic.Remove(i);
         }
         else
         {
-            (dic[j], dic[i]) = (dic[i], dic[j]);
+            (value, dic[i]) = (dic[i], value);
         }
     }
 

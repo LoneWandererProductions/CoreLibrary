@@ -7,7 +7,6 @@
  */
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Windows.Documents;
 
@@ -50,46 +49,5 @@ internal static class DebugHelper
 
         // Apply the foreground color
         newRange.ApplyPropertyValue(TextElement.ForegroundProperty, option.ColorName);
-    }
-
-    /// <summary>
-    ///     Rotates the log files and returns the original file name if the maximum number of allowed files is reached.
-    /// </summary>
-    /// <param name="logFilePath">The path to the main log file (without a number).</param>
-    /// <returns>The original log file name if the maximum number of log files is reached; otherwise, null.</returns>
-    private static string RotateLogFiles(string logFilePath)
-    {
-        var maxBackupFiles = DebugRegister.MaxFileCount; // Configurable max backup count
-        var logFileDirectory = Path.GetDirectoryName(logFilePath) ?? string.Empty;
-        var logFileNameWithoutExtension = Path.GetFileNameWithoutExtension(logFilePath);
-        var logFileExtension = Path.GetExtension(logFilePath);
-
-        var originalFileName = logFilePath;
-
-        // Rotate existing log files
-        for (var i = maxBackupFiles - 1; i >= 1; i--)
-        {
-            var olderLogFile =
-                Path.Combine(logFileDirectory, $"{logFileNameWithoutExtension}_{i}{logFileExtension}");
-            var newerLogFile = Path.Combine(logFileDirectory,
-                $"{logFileNameWithoutExtension}_{i + 1}{logFileExtension}");
-
-            if (File.Exists(olderLogFile))
-            {
-                // Rename older logs to their new position
-                File.Move(olderLogFile, newerLogFile);
-            }
-        }
-
-        // Move the original log file to the first backup slot
-        var firstBackupLogFile =
-            Path.Combine(logFileDirectory, $"{logFileNameWithoutExtension}_1{logFileExtension}");
-        if (File.Exists(originalFileName))
-        {
-            File.Move(originalFileName, firstBackupLogFile);
-        }
-
-        // If the maximum number of backups is reached, return the original file name
-        return maxBackupFiles > 0 ? originalFileName : null;
     }
 }

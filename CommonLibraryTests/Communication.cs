@@ -65,7 +65,7 @@ public class Communication
         {
             var stream = client.GetStream();
             var requestMessage = Encoding.ASCII.GetBytes("PING");
-            await stream.WriteAsync(requestMessage, 0, requestMessage.Length, cancellationTokenSource.Token);
+            await stream.WriteAsync(requestMessage, cancellationTokenSource.Token);
 
             // Read the response
             var buffer = new byte[1024];

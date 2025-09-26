@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Interpreter.Resources;
 
@@ -31,25 +30,40 @@ public sealed class IrtHandleScript : IDisposable
 
     // Track nesting level of if blocks
     private int _ifDepth;
-    private IrtHandleInternal _irtHandleInternal;
-    private Prompt _prompt;
+    private IrtHandleInternal? _irtHandleInternal;
+    private Prompt? _prompt;
 
+    /// <summary>
+    /// Prevents a default instance of the <see cref="IrtHandleScript"/> class from being created.
+    /// </summary>
     private IrtHandleScript()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IrtHandleScript"/> class.
+    /// </summary>
+    /// <param name="irtHandleInternal">The irt handle internal.</param>
+    /// <param name="prompt">The prompt.</param>
     internal IrtHandleScript(IrtHandleInternal irtHandleInternal, Prompt prompt)
     {
         _irtHandleInternal = irtHandleInternal;
         _prompt = prompt;
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Commands the container.
+    /// </summary>
+    /// <param name="parameterPart">The parameter part.</param>
     internal void CommandContainer(string parameterPart)
     {
         parameterPart = IrtKernel.CutLastOccurrence(parameterPart, IrtConst.AdvancedClose);
@@ -58,6 +72,10 @@ public sealed class IrtHandleScript : IDisposable
         GenerateCommands(parameterPart);
     }
 
+    /// <summary>
+    /// Commands the batch execute.
+    /// </summary>
+    /// <param name="parameterPart">The parameter part.</param>
     internal void CommandBatchExecute(string parameterPart)
     {
         parameterPart = IrtKernel.RemoveParenthesis(parameterPart, IrtConst.BaseOpen, IrtConst.BaseClose);
@@ -65,13 +83,17 @@ public sealed class IrtHandleScript : IDisposable
 
         if (string.IsNullOrEmpty(parameterPart))
         {
-            _irtHandleInternal.SetError(IrtConst.ErrorFileNotFound);
+            _irtHandleInternal?.SetError(IrtConst.ErrorFileNotFound);
             return;
         }
 
         GenerateCommands(parameterPart);
     }
 
+    /// <summary>
+    /// Generates the commands.
+    /// </summary>
+    /// <param name="parameterPart">The parameter part.</param>
     private void GenerateCommands(string parameterPart)
     {
         var commands = IrtKernel.SplitParameter(parameterPart, IrtConst.NewCommand).ToList();
@@ -85,8 +107,8 @@ public sealed class IrtHandleScript : IDisposable
             if (key == IrtConst.Error)
             {
                 // Unknown command, treat as normal command
-                _prompt.AddToLog(com);
-                _prompt.ConsoleInput(com);
+                _prompt?.AddToLog(com);
+                _prompt?.ConsoleInput(com);
                 _parsedCommands.Add("COMMAND", currentPosition, com);
             }
             else
@@ -117,7 +139,7 @@ public sealed class IrtHandleScript : IDisposable
             if (currentPosition == IrtConst.Error)
             {
                 var message = Logging.SetLastError($"{IrtConst.JumpLabelNotFoundError}{com}", 0);
-                _prompt.SendLogs(this, message);
+                _prompt?.SendLogs(this, message);
                 break;
             }
 
@@ -129,19 +151,17 @@ public sealed class IrtHandleScript : IDisposable
         Trace.WriteLine($"Parsed {_parsedCommands.Count} commands.");
     }
 
-    // Placeholder for actual if/else block handling (expand as needed)
-    private Task<int> HandleIfElseBlock(List<string> commands, int currentPosition)
-    {
-        // TODO: Implement evaluation of the if condition and command execution
-        // You may want to parse nested blocks, execute or skip based on condition
 
-        // Example placeholder:
-        // bool conditionMet = EvaluateCondition(commands[currentPosition]);
-        // if (conditionMet) { ExecuteIfBlock(); } else { ExecuteElseBlock(); }
-
-        return Task.FromResult(currentPosition);
-    }
-
+    /// <summary>
+    /// Determines whether [is jump command] [the specified input].
+    /// </summary>
+    /// <param name="input">The input.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="position">The position.</param>
+    /// <param name="commands">The commands.</param>
+    /// <returns>
+    ///   <c>true</c> if [is jump command] [the specified input]; otherwise, <c>false</c>.
+    /// </returns>
     private static bool IsJumpCommand(string input, int key, out int position, IReadOnlyList<string> commands)
     {
         position = 0;
@@ -158,6 +178,12 @@ public sealed class IrtHandleScript : IDisposable
         return position >= 0;
     }
 
+    /// <summary>
+    /// Finds the label position.
+    /// </summary>
+    /// <param name="label">The label.</param>
+    /// <param name="commands">The commands.</param>
+    /// <returns>Label Position.</returns>
     private static int FindLabelPosition(string label, IReadOnlyList<string> commands)
     {
         for (var i = 0; i < commands.Count; i++)
@@ -174,35 +200,9 @@ public sealed class IrtHandleScript : IDisposable
     }
 
     /// <summary>
-    ///     Optional helper to parse a single line into categories if needed externally.
+    /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
-    /// <param name="line">The command line</param>
-    /// <param name="lineCount">Line index</param>
-    /// <param name="ifDepth">Current if depth</param>
-    private void ParseLine(string line, int lineCount, int ifDepth)
-    {
-        if (line.StartsWith(":")) // Label
-        {
-            _parsedCommands.Add("LABEL", lineCount, line);
-        }
-        else if (line.Trim().StartsWith("goto")) // Goto
-        {
-            _parsedCommands.Add("GOTO", lineCount, line);
-        }
-        else if (line.Trim().StartsWith("if")) // If
-        {
-            _parsedCommands.Add($"IF_{ifDepth + 1}", lineCount, line);
-        }
-        else if (line.Trim().StartsWith("else")) // Else
-        {
-            _parsedCommands.Add($"ELSE_{ifDepth}", lineCount, line);
-        }
-        else // Default
-        {
-            _parsedCommands.Add("COMMAND", lineCount, line);
-        }
-    }
-
+    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
     private void Dispose(bool disposing)
     {
         if (_disposed)
@@ -220,6 +220,9 @@ public sealed class IrtHandleScript : IDisposable
         _disposed = true;
     }
 
+    /// <summary>
+    /// Finalizes an instance of the <see cref="IrtHandleScript"/> class.
+    /// </summary>
     ~IrtHandleScript()
     {
         Dispose(false);

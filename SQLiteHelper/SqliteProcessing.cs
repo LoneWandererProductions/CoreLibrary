@@ -103,9 +103,9 @@ internal static class SqliteProcessing
     {
         foreach (var header in uniqueHeaders)
         {
-            if (tableInfo.ContainsKey(header))
+            if (tableInfo.TryGetValue(header, out var value))
             {
-                tableInfo[header].Unique = true;
+                value.Unique = true;
             }
         }
 

@@ -614,8 +614,8 @@ public sealed class InterpretInternal
     public void ExtractFirstIfElseNoIfReturnsNull()
     {
         const string input = "com1; com2; com3;";
-        var result = IrtKernel.ExtractFirstIfElse(input);
-        Assert.IsNull(result.block);
+        var (block, elsePosition) = IrtKernel.ExtractFirstIfElse(input);
+        Assert.IsNull(block);
     }
 
     /// <summary>

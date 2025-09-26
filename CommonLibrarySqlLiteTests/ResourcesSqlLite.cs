@@ -158,10 +158,10 @@ internal static class ResourcesSqlLite
     internal static string PathDbCreateComplex => Path.Combine(Root, DbComplex);
 
     /// <summary>
-    ///     Gets the path database database select in.
+    ///     Gets the path database select in.
     /// </summary>
     /// <value>
-    ///     The path database database select in.
+    ///     The path database select in.
     /// </value>
     internal static string PathDbDbSelectIn => Path.Combine(Root, DbSelectIn);
 
