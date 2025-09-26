@@ -12,67 +12,76 @@
 using System;
 using System.Windows.Input;
 
-namespace ViewModel;
-
-/// <inheritdoc />
-/// <summary>
-///     The delegate command class.
-/// </summary>
-public sealed class DelegateCommand<T> : ICommand
+namespace ViewModel
 {
-    /// <summary>
-    ///     The action to execute.
-    /// </summary>
-    private readonly Action<T> _action;
-
-    /// <summary>
-    ///     The predicate to determine if the command can execute.
-    /// </summary>
-    private readonly Predicate<T> _canExecute;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
-    /// </summary>
-    /// <param name="action">The action to execute.</param>
-    /// <param name="canExecute">
-    ///     A predicate to determine if the command can execute. If null, the command is always
-    ///     executable.
-    /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-    public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
-    {
-        _action = action ?? throw new ArgumentNullException(nameof(action));
-        _canExecute = canExecute;
-    }
-
     /// <inheritdoc />
     /// <summary>
-    ///     Executes the command.
+    ///     The delegate command class.
     /// </summary>
-    /// <param name="parameter">The parameter for the action.</param>
-    public void Execute(object parameter)
+    public sealed class DelegateCommand<T> : ICommand
     {
-        _action((T)parameter);
-    }
+        /// <summary>
+        ///     The action to execute.
+        /// </summary>
+        private readonly Action<T> _action;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Determines if the command can execute.
-    /// </summary>
-    /// <param name="parameter">The parameter for the predicate.</param>
-    /// <returns>True if the command can execute, otherwise false.</returns>
-    public bool CanExecute(object parameter)
-    {
-        return _canExecute?.Invoke((T)parameter) ?? true;
-    }
+        /// <summary>
+        ///     The predicate to determine if the command can execute.
+        /// </summary>
+        private readonly Predicate<T> _canExecute;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Occurs when changes occur that affect whether or not the command should execute.
-    /// </summary>
-    public event EventHandler CanExecuteChanged
-    {
-        add => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="canExecute">
+        ///     A predicate to determine if the command can execute. If null, the command is always
+        ///     executable.
+        /// </param>
+        /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
+        public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
+        {
+            _action = action ?? throw new ArgumentNullException(nameof(action));
+            _canExecute = canExecute;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Executes the command.
+        /// </summary>
+        /// <param name="parameter">The parameter for the action.</param>
+        public void Execute(object parameter)
+        {
+            _action((T)parameter);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Determines if the command can execute.
+        /// </summary>
+        /// <param name="parameter">The parameter for the predicate.</param>
+        /// <returns>True if the command can execute, otherwise false.</returns>
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute?.Invoke((T)parameter) ?? true;
+        }
+
+        /// <summary>
+        ///     Raises the <see cref="CanExecuteChanged"/> event to force WPF to re-query CanExecute.
+        /// </summary>
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
     }
 }
