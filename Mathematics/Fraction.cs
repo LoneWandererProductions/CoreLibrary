@@ -129,7 +129,7 @@ public sealed class Fraction : IEquatable<Fraction>
     /// </summary>
     /// <param name="other">other Coordinate</param>
     /// <returns>True if equal, false if not</returns>
-    public bool Equals(Fraction other)
+    public bool Equals(Fraction? other)
     {
         return Numerator == other?.Numerator && Denominator == other.Denominator && Exponent == other.Exponent;
     }
@@ -141,7 +141,7 @@ public sealed class Fraction : IEquatable<Fraction>
     /// <returns>
     ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is Fraction other && Equals(other);
     }

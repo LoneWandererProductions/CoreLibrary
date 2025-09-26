@@ -29,12 +29,12 @@ public static class XmlTools
     /// <summary>
     ///     Event triggered when an error occurs.
     /// </summary>
-    public static event Action<string, Exception> OnError;
+    public static event Action<string, Exception>? OnError;
 
     /// <summary>
     ///     Event triggered for informational messages.
     /// </summary>
-    public static event Action<string> OnInformation;
+    public static event Action<string>? OnInformation;
 
     /// <summary>
     ///     Logs the error.

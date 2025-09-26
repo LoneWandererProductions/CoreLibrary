@@ -90,9 +90,7 @@ public class VectorTests
         Assert.IsTrue(one != two, "Inequality");
         //inequality
         // ReSharper disable once EqualExpressionComparison
-#pragma warning disable CS1718 // Vergleich erfolgte mit derselben Variable
         Assert.IsTrue(one == one, "Equality, first");
-#pragma warning restore CS1718 // Vergleich erfolgte mit derselben Variable
         Assert.IsTrue(one.Equals(one), "Equality, second");
 
         var nullVector = Vector3D.ZeroVector;

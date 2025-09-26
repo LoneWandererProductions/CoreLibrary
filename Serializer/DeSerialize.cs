@@ -29,12 +29,12 @@ public static class DeSerialize
     /// <summary>
     ///     Event for logging messages
     /// </summary>
-    public static event Action<string, Exception> OnError;
+    public static event Action<string, Exception>? OnError;
 
     /// <summary>
     ///     Occurs when [on information].
     /// </summary>
-    public static event Action<string> OnInformation;
+    public static event Action<string>? OnInformation;
 
     /// <summary>
     ///     Logs the provided message.

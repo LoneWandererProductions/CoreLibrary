@@ -73,8 +73,8 @@ namespace CoreMemoryLog
         /// Returns the caller method name (optional helper).
         /// </summary>
         /// <param name="caller">The caller.</param>
-        /// <returns></returns>
-        private string GetCaller([CallerMemberName] string caller = "") => caller;
+        /// <returns>Name of the caller</returns>
+        private static string GetCaller([CallerMemberName] string caller = "") => caller;
 
         /// <summary>
         /// Adds a log entry to the library queue, removing oldest entries if the queue exceeds max size.

@@ -200,7 +200,7 @@ namespace RenderEngine
                 var col = columns[i];
                 var x0 = i * columnWidth;
                 var x1 = x0 + columnWidth;
-                float y0 = 0;
+                const float y0 = 0;
                 var y1 = col.Height;
 
                 // Two triangles per column

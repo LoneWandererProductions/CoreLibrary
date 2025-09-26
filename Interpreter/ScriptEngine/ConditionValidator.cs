@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Interpreter.ScriptEngine
  * FILE:        ConditionValidator.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Validator for script conditions.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -11,7 +11,7 @@ namespace Interpreter.ScriptEngine;
 public class ConditionValidator
 {
     public bool? LastConditionResult { get; private set; }
-    public string LastError { get; private set; }
+    public string? LastError { get; private set; }
 
     public void Attach(Prompt engine)
     {

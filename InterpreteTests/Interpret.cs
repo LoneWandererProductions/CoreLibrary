@@ -34,17 +34,17 @@ public sealed class InterpreterCompleteTests
     /// <summary>
     ///     The prompt
     /// </summary>
-    private static Prompt _prompt;
+    private static Prompt? _prompt;
 
     /// <summary>
     ///     The out command
     /// </summary>
-    private static OutCommand _outCommand;
+    private static OutCommand? _outCommand;
 
     /// <summary>
     ///     The log
     /// </summary>
-    private static string _log;
+    private static string? _log;
 
     /// <summary>
     ///     The batch

@@ -25,7 +25,7 @@ public sealed class Transform
     /// <value>
     ///     The camera.
     /// </value>
-    public Vector3D Position { get; set; }
+    public Vector3D? Position { get; set; }
 
     /// <summary>
     ///     Gets or sets the target Camera.
@@ -87,7 +87,7 @@ public sealed class Transform
     /// <value>
     ///     The translation.
     /// </value>
-    public Vector3D Translation { get; set; }
+    public Vector3D? Translation { get; set; }
 
     /// <summary>
     ///     Gets or sets the rotation of the World.
@@ -95,7 +95,7 @@ public sealed class Transform
     /// <value>
     ///     The rotation.
     /// </value>
-    public Vector3D Rotation { get; set; }
+    public Vector3D? Rotation { get; set; }
 
     /// <summary>
     ///     Gets or sets the scale of the World.
@@ -103,7 +103,7 @@ public sealed class Transform
     /// <value>
     ///     The scale.
     /// </value>
-    public Vector3D Scale { get; set; }
+    public Vector3D? Scale { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
