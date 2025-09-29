@@ -211,6 +211,7 @@ public class PluginLoadTests
     private static T InvokePrivateStaticMethod<T>(Type type, string methodName, params object[] parameters)
     {
         var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+
         if (method == null)
         {
             throw new ArgumentException($"Method '{methodName}' not found.", nameof(methodName));

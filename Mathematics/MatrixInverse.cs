@@ -157,13 +157,9 @@ internal static class MatrixInverse
     {
         var n = matrix.GetLength(0);
         var result = matrix.Duplicate();
-        var lum = MatrixDecompose(matrix, out var perm,
-            out _);
 
-        if (lum == null)
-        {
-            throw new ArithmeticException(MathResources.MatrixErrorInverse);
-        }
+        var lum = MatrixDecompose(matrix, out var perm,
+            out _) ?? throw new ArithmeticException(MathResources.MatrixErrorInverse);
 
         var b = new double[n];
         for (var i = 0; i < n; ++i)

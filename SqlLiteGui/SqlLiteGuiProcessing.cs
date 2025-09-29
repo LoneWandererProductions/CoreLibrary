@@ -80,10 +80,7 @@ internal static class SqLiteGuiProcessing
 
         _db = new SqliteDatabase(location, dbName);
 
-        if (Register.Info != null)
-        {
-            Register.Info.AppendInfo(_db.GetDatabaseInfos());
-        }
+        Register.Info?.AppendInfo(_db.GetDatabaseInfos());
     }
 
     /// <summary>
@@ -94,10 +91,7 @@ internal static class SqLiteGuiProcessing
     {
         if (_db == null)
         {
-            if (Register.Info != null)
-            {
-                Register.Info.AppendInfo("No Database Connection provided.");
-            }
+            Register.Info?.AppendInfo("No Database Connection provided.");
 
             return null;
         }

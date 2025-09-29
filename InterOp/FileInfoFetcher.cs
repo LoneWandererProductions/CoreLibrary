@@ -36,7 +36,7 @@ public static class FileInfoFetcher
     /// <param name="lpFindFileData">The structure to hold file data returned by the function.</param>
     /// <returns>Handle to the search operation if successful, IntPtr.Zero otherwise.</returns>
     [DllImport(InterOpResources.KernelDll, CharSet = CharSet.Unicode, SetLastError = true)]
-    public static extern IntPtr FindFirstFile(string lpFileName, ref WIN32_FIND_DATA lpFindFileData);
+    internal static extern IntPtr FindFirstFile(string lpFileName, ref WIN32_FIND_DATA lpFindFileData);
 
     /// <summary>
     ///     P/Invoke declaration for FindNextFile function from kernel32.dll.
@@ -48,7 +48,7 @@ public static class FileInfoFetcher
     /// <param name="lpFindFileData">The structure to hold the file data returned by the function.</param>
     /// <returns>True if the next file is found, false otherwise.</returns>
     [DllImport(InterOpResources.KernelDll, SetLastError = true)]
-    public static extern bool FindNextFile(IntPtr hFindFile, ref WIN32_FIND_DATA lpFindFileData);
+    internal static extern bool FindNextFile(IntPtr hFindFile, ref WIN32_FIND_DATA lpFindFileData);
 
     /// <summary>
     ///     P/Invoke declaration for FindClose function from kernel32.dll.
@@ -59,7 +59,7 @@ public static class FileInfoFetcher
     /// <param name="hFindFile">Handle to the search operation to be closed.</param>
     /// <returns>True if successful, false otherwise.</returns>
     [DllImport(InterOpResources.KernelDll, SetLastError = true)]
-    public static extern bool FindClose(IntPtr hFindFile);
+    internal static extern bool FindClose(IntPtr hFindFile);
 
     /// <summary>
     ///     Retrieves a list of files (not directories) in the specified directory along with their metadata.

@@ -306,14 +306,18 @@ public static class DictionaryExtensions
     /// <typeparam name="TValue">Internal Value</typeparam>
     public static void Swap<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey i, TKey j)
     {
-        if (!dic.TryGetValue(j, out var value))
+        if (!dic.ContainsKey(i)) throw new KeyNotFoundException(nameof(i));
+
+        if (dic.TryGetValue(j, out var jValue))
         {
-            dic[j] = dic[i];
-            _ = dic.Remove(i);
+            var iValue = dic[i];
+            dic[i] = jValue;
+            dic[j] = iValue;
         }
         else
         {
-            (value, dic[i]) = (dic[i], value);
+            dic[j] = dic[i];
+            dic.Remove(i);
         }
     }
 

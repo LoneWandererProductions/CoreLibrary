@@ -104,7 +104,7 @@ internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     ///     The operator options.
     /// </value>
     public IEnumerable<CompareOperator> OperatorOptions =>
-        Enum.GetValues(typeof(CompareOperator)) as IEnumerable<CompareOperator>;
+        Enum.GetValues<CompareOperator>() as IEnumerable<CompareOperator>;
 
     /// <summary>
     ///     Gets the logical operator options.
@@ -113,7 +113,7 @@ internal sealed class SearchParameterViewModel : INotifyPropertyChanged
     ///     The logical operator options.
     /// </value>
     public IEnumerable<LogicOperator> LogicalOperatorOptions =>
-        Enum.GetValues(typeof(LogicOperator)) as IEnumerable<LogicOperator>;
+        Enum.GetValues<LogicOperator>() as IEnumerable<LogicOperator>;
 
     /// <summary>
     ///     Gets the delete command.
