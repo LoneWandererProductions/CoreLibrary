@@ -166,10 +166,10 @@ public class CoreBackgroundWorkerTests
         ///     Defines the worker task that must be implemented in a derived class.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task ExecuteAsync(CancellationToken cancellationToken)
+        public Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Test worker is running..."); // Log the message
-            await Task.Delay(500, cancellationToken); // Simulate work with a short delay
+            return Task.Delay(500, cancellationToken); // Simulate work with a short delay
         }
     }
 }

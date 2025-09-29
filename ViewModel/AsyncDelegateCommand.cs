@@ -68,7 +68,7 @@ public sealed class AsyncDelegateCommand<T> : ICommand
     /// <summary>
     /// Raises the <see cref="CanExecuteChanged" /> event to force WPF to re-query CanExecute.
     /// </summary>
-    public async void RaiseCanExecuteChanged()
+    public void RaiseCanExecuteChanged()
     {
         CommandManager.InvalidateRequerySuggested();
     }

@@ -155,7 +155,7 @@ public sealed partial class FolderControl : INotifyPropertyChanged
     ///     Function to set items (folders and files) asynchronously
     /// </summary>
     /// <param name="path">The path.</param>
-    private async void SetItems(string path)
+    private async Task SetItems(string path)
     {
         var directories = Array.Empty<string>();
         var files = Array.Empty<string>();

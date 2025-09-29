@@ -28,22 +28,22 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <summary>
     ///     The close command
     /// </summary>
-    private ICommand _closeCommand;
+    private ICommand? _closeCommand;
 
     /// <summary>
     ///     The connect command
     /// </summary>
-    private ICommand _connectCommand;
+    private ICommand? _connectCommand;
 
     /// <summary>
     ///     The data base
     /// </summary>
-    private string _dataBase;
+    private string? _dataBase;
 
     /// <summary>
     ///     The server
     /// </summary>
-    private string _server;
+    private string? _server;
 
     /// <summary>
     ///     Is Attribute set
@@ -158,7 +158,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <value>
     ///     Builds the Connection String.
     /// </value>
-    public SqlConnect Connection { get; private set; }
+    public SqlConnect? Connection { get; private set; }
 
     /// <summary>
     ///     Gets the connection string for a Database.
@@ -167,7 +167,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <value>
     ///     The connection string.
     /// </value>
-    public string ConnectionStringDb { get; private set; }
+    public string? ConnectionStringDb { get; private set; }
 
     /// <summary>
     ///     Gets the connection string for server only.
@@ -175,7 +175,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <value>
     ///     The connection string server.
     /// </value>
-    public string ConnectionStringServer { get; private set; }
+    public string? ConnectionStringServer { get; private set; }
 
     /// <summary>
     ///     Gets or sets the add log.
@@ -184,7 +184,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <value>
     ///     The add log.
     /// </value>
-    public string AddLog { get; set; }
+    public string? AddLog { get; set; }
 
     /// <inheritdoc />
     /// <summary>

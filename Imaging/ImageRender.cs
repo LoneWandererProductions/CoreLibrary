@@ -776,9 +776,9 @@ public sealed class ImageRender : IImageRender
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif</returns>
     /// <exception cref="IOException">Could not find the File</exception>
-    public async Task<List<Bitmap>> SplitGif(string path)
+    public Task<List<Bitmap>> SplitGif(string path)
     {
-        return await ImageGifHandler.SplitGifAsync(path);
+        return ImageGifHandler.SplitGifAsync(path);
     }
 
     /// <inheritdoc />
@@ -788,9 +788,9 @@ public sealed class ImageRender : IImageRender
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif as ImageSource</returns>
     /// <exception cref="IOException">Could not find the File</exception>
-    public async Task<List<ImageSource>> LoadGifAsync(string path)
+    public Task<List<ImageSource>> LoadGifAsync(string path)
     {
-        return await ImageGifHandler.LoadGif(path);
+        return ImageGifHandler.LoadGif(path);
     }
 
     /// <inheritdoc />

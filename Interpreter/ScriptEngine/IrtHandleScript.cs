@@ -97,9 +97,8 @@ public sealed class IrtHandleScript : IDisposable
     private void GenerateCommands(string parameterPart)
     {
         var commands = IrtKernel.SplitParameter(parameterPart, IrtConst.NewCommand).ToList();
-        var currentPosition = 0;
 
-        while (currentPosition < commands.Count)
+        for (var currentPosition = 0; currentPosition < commands.Count; currentPosition++)
         {
             var com = commands[currentPosition];
             var key = IrtKernel.CheckForKeyWord(com, IrtConst.InternContainerCommands);
@@ -142,8 +141,6 @@ public sealed class IrtHandleScript : IDisposable
                 _prompt?.SendLogs(this, message);
                 break;
             }
-
-            currentPosition++;
         }
 
         // At this point, _parsedCommands holds the full categorized command list

@@ -324,7 +324,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     An Image was clicked <see cref="DelegateImage" />.
     /// </summary>
-    public event DelegateImage ImageClicked;
+    public event EventHandler<ImageEventArgs> ImageClicked;
 
     /// <summary>
     ///     Occurs when [image loaded].

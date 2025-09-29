@@ -77,7 +77,7 @@ public class Communication
         }
 
         // Stop the listener after the test
-        cancellationTokenSource.Cancel();
+        await cancellationTokenSource.CancelAsync();
         await listenerTask; // Ensure listener has finished
 
         listener.StopListening();

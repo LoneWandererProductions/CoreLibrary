@@ -46,10 +46,10 @@ public sealed class NetCom : INetCom
     /// <param name="urls"></param>
     /// <param name="progress"></param>
     /// <param name="cancellationToken"></param>
-    public async Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
+    public Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        await FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken).ConfigureAwait(false);
+        return FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken);
     }
 
     /// <inheritdoc />
