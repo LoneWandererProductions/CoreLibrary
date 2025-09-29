@@ -18,7 +18,7 @@ namespace InterOp;
 ///     Win32 API imports.
 ///     Functions and Callback Functions
 /// </summary>
-internal static class Win32Api
+internal static partial class Win32Api
 {
     /// <summary>
     ///     Unhooks the windows hook.
@@ -29,10 +29,9 @@ internal static class Win32Api
     /// <returns>
     ///     True if successful, false otherwise
     /// </returns>
-    [DllImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionUnhookWindowsHookEx,
-        SetLastError = true)]
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionUnhookWindowsHookEx, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+    internal static partial bool UnhookWindowsHookEx(IntPtr hInstance);
 
     /// <summary>
     ///     Loads the library
@@ -43,9 +42,8 @@ internal static class Win32Api
     /// <returns>
     ///     A handle to the library
     /// </returns>
-    [DllImport(InterOpResources.KernelDll, EntryPoint = InterOpResources.FunctionGetModuleHandle,
-        CharSet = CharSet.Unicode, SetLastError = true)]
-    public static extern IntPtr GetModuleHandle(string lpModuleName);
+    [LibraryImport(InterOpResources.KernelDll, EntryPoint = InterOpResources.FunctionGetModuleHandle, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    internal static partial IntPtr GetModuleHandle(string lpModuleName);
 
     /// <summary>
     ///     Calls the next hook.
@@ -58,9 +56,8 @@ internal static class Win32Api
     /// <returns>
     ///     A handle to the library
     /// </returns>
-    [DllImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionCallNextHookEx,
-        CharSet = CharSet.Unicode, SetLastError = true)]
-    public static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionCallNextHookEx, SetLastError = true)]
+    internal static partial IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
 
     /// <summary>
     ///     Sets the windows hook, do the desired event, one of hInstance or threadId must be non-null
@@ -73,9 +70,8 @@ internal static class Win32Api
     /// <returns>
     ///     a handle to the desired hook
     /// </returns>
-    [DllImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionSetWindowsHookEx,
-        CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance,
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionSetWindowsHookEx, SetLastError = true)]
+    internal static partial IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance,
         uint threadId);
 
     /// <summary>
@@ -84,10 +80,9 @@ internal static class Win32Api
     /// </summary>
     /// <param name="pt">Pointer to </param>
     /// <returns>Mouse Position</returns>
-    [DllImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionGetPhysicalCursorPos,
-        SetLastError = true)]
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionGetPhysicalCursorPos, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool GetPhysicalCursorPos(ref Win32Points pt);
+    internal static partial bool GetPhysicalCursorPos(ref Win32Points pt);
 
     /// <summary>
     ///     Header: Winuser.h

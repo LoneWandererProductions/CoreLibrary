@@ -39,15 +39,9 @@ public static class FileHandleRenameExtension
     public static string RemoveAppendage(this string str, string appendage,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (str == null)
-        {
-            throw new ArgumentNullException(nameof(str));
-        }
+        ArgumentNullException.ThrowIfNull(str);
 
-        if (appendage == null)
-        {
-            throw new ArgumentNullException(nameof(appendage));
-        }
+        ArgumentNullException.ThrowIfNull(appendage);
 
         return !str.StartsWith(appendage, comparison)
             ? str
@@ -69,15 +63,9 @@ public static class FileHandleRenameExtension
     public static string AddAppendage(this string str, string appendage,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (str == null)
-        {
-            throw new ArgumentNullException(nameof(str));
-        }
+        ArgumentNullException.ThrowIfNull(str);
 
-        if (appendage == null)
-        {
-            throw new ArgumentNullException(nameof(appendage));
-        }
+        ArgumentNullException.ThrowIfNull(appendage);
 
         return str.StartsWith(appendage, comparison) ? str : string.Concat(appendage, str);
     }
@@ -96,10 +84,7 @@ public static class FileHandleRenameExtension
     public static string ReplacePart(this string str, string targetStr, string update,
         StringComparison comparison = StringComparison.Ordinal)
     {
-        if (str == null)
-        {
-            throw new ArgumentNullException(nameof(str));
-        }
+        ArgumentNullException.ThrowIfNull(str);
 
         if (string.IsNullOrEmpty(targetStr))
         {

@@ -453,10 +453,7 @@ public static class ImageStream
     /// <exception cref="ArgumentNullException"></exception>
     internal static Bitmap CropImage(Bitmap image)
     {
-        if (image == null)
-        {
-            throw new ArgumentNullException(nameof(image));
-        }
+        ArgumentNullException.ThrowIfNull(image);
 
         var bounds = ImageHelper.GetNonTransparentBounds(image);
 
@@ -756,10 +753,7 @@ public static class ImageStream
         Point? startPoint = null)
     {
         // Validate input
-        if (image == null)
-        {
-            throw new ArgumentNullException(nameof(image));
-        }
+        ArgumentNullException.ThrowIfNull(image);
 
         // Default start point
         var actualStartPoint = startPoint ?? new Point(0, 0);

@@ -233,7 +233,7 @@ internal static class ImageHelper
     private static (List<Color> Pixels, Color? Mean) ProcessPixels(DirectBitmap dbmBase, Rectangle region,
         bool calculateMeanColor = true)
     {
-        var pixels = new List<Color>();
+        var pixels = new List<Color>(region.Height * region.Width);
         int rSum = 0, gSum = 0, bSum = 0;
         var count = 0;
 

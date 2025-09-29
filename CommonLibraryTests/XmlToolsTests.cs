@@ -23,7 +23,7 @@ public class XmlToolsTests
     /// <summary>
     ///     The test XML
     /// </summary>
-    private static readonly string TestXml = "test.xml";
+    private const string TestXml = "test.xml";
 
     /// <summary>
     ///     The test XML path

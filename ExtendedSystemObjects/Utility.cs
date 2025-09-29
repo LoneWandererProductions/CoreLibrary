@@ -34,10 +34,7 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetFirstAvailableIndex(List<int> lst)
     {
-        if (lst == null)
-        {
-            throw new ArgumentNullException(nameof(lst));
-        }
+        ArgumentNullException.ThrowIfNull(lst);
 
         lock (lst) // Ensure exclusive access to the list
         {
@@ -66,10 +63,7 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long GetFirstAvailableIndex(List<long> lst)
     {
-        if (lst == null)
-        {
-            throw new ArgumentNullException(nameof(lst));
-        }
+        ArgumentNullException.ThrowIfNull(lst);
 
         lock (lst) // Ensure exclusive access to the list
         {

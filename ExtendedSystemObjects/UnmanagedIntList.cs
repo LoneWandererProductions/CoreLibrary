@@ -182,10 +182,7 @@ public sealed unsafe class UnmanagedIntList : IUnmanagedArray<int>, IEnumerable<
     /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
     public void Resize(int newSize)
     {
-        if (newSize < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(newSize));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 
         EnsureCapacity(newSize);
         Length = newSize;
@@ -417,10 +414,7 @@ public sealed unsafe class UnmanagedIntList : IUnmanagedArray<int>, IEnumerable<
     public void CopyTo(int[] array, int arrayIndex = 0)
     {
 #if DEBUG
-        if (array == null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
+        ArgumentNullException.ThrowIfNull(array);
 
         if (arrayIndex < 0 || arrayIndex + Length > array.Length)
         {

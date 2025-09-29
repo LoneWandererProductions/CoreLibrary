@@ -145,7 +145,7 @@ public sealed partial class Trail
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="newSource"/> is null.</exception>
     private void ReplaceLogSource(ILogSource newSource)
     {
-        if (newSource == null) throw new ArgumentNullException(nameof(newSource));
+        ArgumentNullException.ThrowIfNull(newSource);
         if (ReferenceEquals(newSource, _logSource)) return;
 
         _dispatcherTimer?.Stop();

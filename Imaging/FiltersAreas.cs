@@ -45,10 +45,7 @@ internal static class FiltersAreas
         Point? startPoint = null)
     {
         // Validate input
-        if (image == null)
-        {
-            throw new ArgumentNullException(nameof(image));
-        }
+        ArgumentNullException.ThrowIfNull(image);
 
         if (filter == FiltersType.None)
         {

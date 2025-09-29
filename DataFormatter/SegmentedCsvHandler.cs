@@ -47,10 +47,9 @@ public static class SegmentedCsvHandler
     ///     Reads the CSV with layer keywords.
     /// </summary>
     /// <param name="filepath">The filepath.</param>
-    /// <param name="separator">The separator.</param>
     /// <param name="layerKeyword">The layer keyword.</param>
     /// <returns>Content of our special format file</returns>
-    public static List<string> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
+    public static List<string> ReadCsvWithLayerKeywords(string filepath, string layerKeyword)
     {
         var lst = CsvHelper.ReadFileContent(filepath);
         if (lst == null)

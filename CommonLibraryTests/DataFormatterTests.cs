@@ -159,7 +159,6 @@ public class DataFormatterTests
     {
         // Arrange
         const string filepath = "test.csv";
-        const char separator = ',';
         const string layerKeyword = "Layer_";
 
         // Create test CSV content
@@ -182,7 +181,7 @@ public class DataFormatterTests
         File.WriteAllLines(filepath, csvContent);
 
         // Act
-        var layers = SegmentedCsvHandler.ReadCsvWithLayerKeywords(filepath, separator, layerKeyword);
+        var layers = SegmentedCsvHandler.ReadCsvWithLayerKeywords(filepath, layerKeyword);
 
         // Assert
         Assert.IsNotNull(layers, "The layers should not be null.");

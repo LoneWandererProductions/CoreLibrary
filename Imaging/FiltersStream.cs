@@ -41,7 +41,7 @@ internal static class FiltersStream
     /// <summary>
     ///     The image settings
     /// </summary>
-    private static ImageRegister _imageSettings;
+    private static ImageRegister? _imageSettings;
 
     /// <summary>
     ///     Converts an image to gray scale
@@ -491,10 +491,7 @@ internal static class FiltersStream
     /// <returns>Filtered Image</returns>
     private static Bitmap ApplySupersamplingAntialiasing(Bitmap image, int scale = 1)
     {
-        if (scale <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(scale));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(scale);
 
         var scaledWidth = image.Width * scale;
         var scaledHeight = image.Height * scale;

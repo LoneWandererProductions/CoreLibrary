@@ -50,10 +50,7 @@ public static class ExtendedList
     /// <param name="item">item we will replace or add</param>
     public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
     {
-        if (lst == null)
-        {
-            throw new ArgumentNullException(nameof(lst));
-        }
+        ArgumentNullException.ThrowIfNull(lst);
 
         lst.Insert(0, item);
     }

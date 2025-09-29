@@ -213,7 +213,7 @@ public sealed class MemoryVault<TU> : IDisposable
     {
         EnsureNotDisposed();
 
-        if (metaData == null) throw new ArgumentNullException(nameof(metaData));
+        ArgumentNullException.ThrowIfNull(metaData);
 
         if (_vault.TryGetValue(identifier, out var item))
         {
