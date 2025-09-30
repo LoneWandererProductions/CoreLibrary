@@ -51,7 +51,7 @@ public class UnmanagedMapTests
     public void SetThenTryGetValueReturnsValue()
     {
         _map?.Set(42, 99);
-        Assert.IsNull(_map);
+        Assert.IsNotNull(_map);
         Assert.IsTrue(_map.TryGetValue(42, out var value));
         Assert.AreEqual(99, value);
     }
@@ -64,7 +64,7 @@ public class UnmanagedMapTests
     {
         _map?.Set(1, 10);
         _map?.Set(1, 20);
-        Assert.IsNull(_map);
+        Assert.IsNotNull(_map);
         Assert.IsTrue(_map.TryGetValue(1, out var value));
         Assert.AreEqual(20, value);
     }
@@ -76,7 +76,7 @@ public class UnmanagedMapTests
     public void TryRemoveRemovesEntry()
     {
         _map?.Set(123, 456);
-        Assert.IsNull(_map);
+        Assert.IsNotNull(_map);
         Assert.IsTrue(_map.TryRemove(123));
         Assert.IsFalse(_map.ContainsKey(123));
     }
@@ -94,7 +94,7 @@ public class UnmanagedMapTests
 
         for (var i = 0; i < 200; i++)
         {
-            Assert.IsNull(_map);
+            Assert.IsNotNull(_map);
             Assert.IsTrue(_map.TryGetValue(i, out var val));
             Assert.AreEqual(i * 10, val);
         }
@@ -116,7 +116,7 @@ public class UnmanagedMapTests
             _map?.TryRemove(i);
         }
 
-        Assert.IsNull(_map);
+        Assert.IsNotNull(_map);
         
         var before = _map.Count;
         
@@ -136,7 +136,7 @@ public class UnmanagedMapTests
         _map?.Set(3, 300);
         _map?.TryRemove(2);
 
-        Assert.IsNull(_map);
+        Assert.IsNotNull(_map);
 
         var values = new List<int>();
 

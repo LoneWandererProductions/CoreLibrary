@@ -92,10 +92,22 @@ internal static class ImageHelper
     /// <param name="dbm">The DirectBitmap base.</param>
     /// <param name="region">The region to process.</param>
     /// <returns>A tuple containing a list of colors and the mean color.</returns>
-    internal static (List<Color> Pixels, Color Mean) GetRegionPixelsAndMeanColor(DirectBitmap dbm, Rectangle region)
+    internal static Color GetMeanColorOnly(DirectBitmap dbm, Rectangle region)
     {
-        var (pixels, meanColor) = ProcessPixels(dbm, region);
-        return (pixels, meanColor ?? Color.Black); // Ensure a non-null value for meanColor
+        int rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+        for (int y = region.Top; y < region.Bottom; y++)
+            for (int x = region.Left; x < region.Right; x++)
+            {
+                var p = dbm.GetPixel(x, y);
+                rSum += p.R;
+                gSum += p.G;
+                bSum += p.B;
+                count++;
+            }
+
+        if (count == 0) return Color.Black;
+        return Color.FromArgb(rSum / count, gSum / count, bSum / count);
     }
 
     /// <summary>
@@ -288,9 +300,7 @@ internal static class ImageHelper
     /// <returns>Rounded value as int, here 0 to 255</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int Clamp(double value, double min = 0, double max = 255)
-    {
-        return (int)Math.Max(min, Math.Min(max, value));
-    }
+        => (int)(value < min ? min : value > max ? max : value);
 
     /// <summary>
     ///     Clamps to byte.
