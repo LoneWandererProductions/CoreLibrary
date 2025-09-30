@@ -92,7 +92,7 @@ internal static class ImageHelper
     /// <param name="dbm">The DirectBitmap base.</param>
     /// <param name="region">The region to process.</param>
     /// <returns>A tuple containing a list of colors and the mean color.</returns>
-    internal static Color GetMeanColorOnly(DirectBitmap dbm, Rectangle region)
+    internal static Color GetMeanColor(DirectBitmap dbm, Rectangle region)
     {
         int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
@@ -111,15 +111,15 @@ internal static class ImageHelper
     }
 
     /// <summary>
-    ///     Gets the mean color of a specified region.
+    ///     Gets the color of the region pixels and the mean color.
     /// </summary>
     /// <param name="dbm">The DirectBitmap base.</param>
     /// <param name="region">The region to process.</param>
-    /// <returns>The mean color of the specified region.</returns>
-    internal static Color GetMeanColor(DirectBitmap dbm, Rectangle region)
+    /// <returns>A tuple containing a list of colors and the mean color.</returns>
+    internal static (List<Color> Pixels, Color Mean) GetRegionPixelsAndMeanColor(DirectBitmap dbm, Rectangle region)
     {
-        var (Pixels, Mean) = ProcessPixels(dbm, region);
-        return Mean ?? Color.Black; // Handle case where meanColor is null
+        var (pixels, meanColor) = ProcessPixels(dbm, region);
+        return (pixels, meanColor ?? Color.Black); // Ensure a non-null value for meanColor
     }
 
     /// <summary>
