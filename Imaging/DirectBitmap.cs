@@ -37,7 +37,7 @@ namespace Imaging;
 ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
 /// </summary>
 /// <seealso cref="T:System.IDisposable" />
-public sealed class DirectBitmap : IDisposable
+public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>
 {
     /// <summary>
     ///     The synchronize lock
@@ -570,7 +570,7 @@ public sealed class DirectBitmap : IDisposable
     public BitmapImage ToBitmapImage()
     {
         // Ensure this method runs on the UI thread.
-        BitmapImage bitmapImage = null;
+        BitmapImage? bitmapImage = null;
         Application.Current.Dispatcher.Invoke(() =>
         {
             // Create a WriteableBitmap with the same dimensions as the DirectBitmap
@@ -631,6 +631,32 @@ public sealed class DirectBitmap : IDisposable
     {
         return HashCode.Combine(Height, Width);
     }
+
+    /// <summary>
+    /// Indicates whether the current object is equal to another object of the same type.
+    /// </summary>
+    /// <param name="other">An object to compare with this object.</param>
+    /// <returns>
+    ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool Equals(DirectBitmap? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        if (Width != other.Width || Height != other.Height) return false;
+
+        // Compare pixel buffer
+        return Bits.AsSpan().SequenceEqual(other.Bits);
+    }
+
+    /// <summary>
+    /// Determines whether the specified object is equal to the current object.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current object.</param>
+    /// <returns>
+    ///   <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.
+    /// </returns>
+    public override bool Equals(object? obj) => Equals(obj as DirectBitmap);
 
     /// <summary>
     ///     Releases unmanaged and - optionally - managed resources.

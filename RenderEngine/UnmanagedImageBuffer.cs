@@ -27,7 +27,7 @@ namespace RenderEngine
     /// It supports setting individual pixels, clearing the buffer to a uniform color,
     /// applying multiple pixel changes at once, and replacing the entire buffer efficiently.
     /// </remarks>
-    public unsafe class UnmanagedImageBuffer : IDisposable, IEquatable<UnmanagedImageBuffer>, ICloneable,
+    public sealed unsafe class UnmanagedImageBuffer : IDisposable, IEquatable<UnmanagedImageBuffer>, ICloneable,
         IEnumerable<byte>
     {
         /// <summary>

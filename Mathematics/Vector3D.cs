@@ -23,7 +23,7 @@ namespace Mathematics;
 /// <summary>
 ///     Basic Vector Implementation
 /// </summary>
-public class Vector3D : ICloneable, IEquatable<Vector3D>
+public sealed class Vector3D : ICloneable, IEquatable<Vector3D>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="Vector3D" /> class.
