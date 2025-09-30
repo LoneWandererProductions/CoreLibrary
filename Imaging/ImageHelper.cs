@@ -20,7 +20,7 @@ using System.Windows.Media.Imaging;
 namespace Imaging;
 
 /// <summary>
-///     Helper methods for image processing.
+/// Helper methods for image processing.
 /// </summary>
 internal static class ImageHelper
 {
@@ -58,30 +58,33 @@ internal static class ImageHelper
     /// <param name="sigma">The sigma value for the Gaussian distribution.</param>
     /// <param name="size">The size of the kernel (must be odd).</param>
     /// <returns>A 2D array representing the Gaussian kernel.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static double[,] GenerateGaussianKernel(double sigma, int size)
     {
         var kernel = new double[size, size];
         var mean = size / 2.0;
+
+        // Precompute 1D
+        var gauss1D = new double[size];
         var sum = 0.0;
-
-        for (var y = 0; y < size; y++)
-        for (var x = 0; x < size; x++)
+        for (int i = 0; i < size; i++)
         {
-            kernel[y, x] =
-                Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
-                / (2 * Math.PI * sigma * sigma);
-            sum += kernel[y, x];
+            var x = (i - mean) / sigma;
+            gauss1D[i] = Math.Exp(-0.5 * x * x);
+            sum += gauss1D[i];
         }
 
-        // Normalize the kernel
-        for (var y = 0; y < size; y++)
-        for (var x = 0; x < size; x++)
-        {
-            kernel[y, x] /= sum;
-        }
+        // Normalize 1D
+        for (int i = 0; i < size; i++) gauss1D[i] /= sum;
+
+        // Build separable 2D
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+                kernel[y, x] = gauss1D[y] * gauss1D[x];
 
         return kernel;
     }
+
 
     /// <summary>
     ///     Gets the color of the region pixels and the mean color.
@@ -311,6 +314,15 @@ internal static class ImageHelper
 
         return (byte)value;
     }
+
+    /// <summary>
+    /// Clamps to byte.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>Rounded value as byte.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static byte ClampToByte(double value)
+    => (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
 
     /// <summary>
     ///     Validates the file path.

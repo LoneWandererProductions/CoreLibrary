@@ -24,7 +24,7 @@ public class UnmanagedMapTests
     /// <summary>
     ///     The test object.
     /// </summary>
-    private UnmanagedMap<int> _map;
+    private UnmanagedMap<int>? _map;
 
     /// <summary>
     ///     Setups this instance.
@@ -41,7 +41,7 @@ public class UnmanagedMapTests
     [TestCleanup]
     public void Cleanup()
     {
-        _map.Dispose();
+        _map?.Dispose();
     }
 
     /// <summary>
@@ -50,7 +50,8 @@ public class UnmanagedMapTests
     [TestMethod]
     public void SetThenTryGetValueReturnsValue()
     {
-        _map.Set(42, 99);
+        _map?.Set(42, 99);
+        Assert.IsNull(_map);
         Assert.IsTrue(_map.TryGetValue(42, out var value));
         Assert.AreEqual(99, value);
     }
@@ -61,8 +62,9 @@ public class UnmanagedMapTests
     [TestMethod]
     public void OverwriteValueUpdatesCorrectly()
     {
-        _map.Set(1, 10);
-        _map.Set(1, 20);
+        _map?.Set(1, 10);
+        _map?.Set(1, 20);
+        Assert.IsNull(_map);
         Assert.IsTrue(_map.TryGetValue(1, out var value));
         Assert.AreEqual(20, value);
     }
@@ -73,7 +75,8 @@ public class UnmanagedMapTests
     [TestMethod]
     public void TryRemoveRemovesEntry()
     {
-        _map.Set(123, 456);
+        _map?.Set(123, 456);
+        Assert.IsNull(_map);
         Assert.IsTrue(_map.TryRemove(123));
         Assert.IsFalse(_map.ContainsKey(123));
     }
@@ -86,11 +89,12 @@ public class UnmanagedMapTests
     {
         for (var i = 0; i < 200; i++)
         {
-            _map.Set(i, i * 10);
+            _map?.Set(i, i * 10);
         }
 
         for (var i = 0; i < 200; i++)
         {
+            Assert.IsNull(_map);
             Assert.IsTrue(_map.TryGetValue(i, out var val));
             Assert.AreEqual(i * 10, val);
         }
@@ -104,15 +108,18 @@ public class UnmanagedMapTests
     {
         for (var i = 0; i < 50; i++)
         {
-            _map.Set(i, i);
+            _map?.Set(i, i);
         }
 
         for (var i = 0; i < 25; i++)
         {
-            _map.TryRemove(i);
+            _map?.TryRemove(i);
         }
 
+        Assert.IsNull(_map);
+        
         var before = _map.Count;
+        
         _map.Compact();
 
         Assert.AreEqual(25, _map.Count);
@@ -124,12 +131,15 @@ public class UnmanagedMapTests
     [TestMethod]
     public void EnumeratorYieldsOnlyOccupied()
     {
-        _map.Set(1, 100);
-        _map.Set(2, 200);
-        _map.Set(3, 300);
-        _map.TryRemove(2);
+        _map?.Set(1, 100);
+        _map?.Set(2, 200);
+        _map?.Set(3, 300);
+        _map?.TryRemove(2);
+
+        Assert.IsNull(_map);
 
         var values = new List<int>();
+
         foreach (var entry in _map)
         {
             values.Add(entry.Item2);
@@ -172,8 +182,11 @@ public class UnmanagedMapTests
             "UnmanagedIntMap insert is unreasonably slow");
     }
 
+    /// <summary>
+    /// Benchmarks the lookup compare with dictionary.
+    /// </summary>
     [TestMethod]
-    public void Benchmark_Lookup_CompareWithDictionary()
+    public void BenchmarkLookupCompareWithDictionary()
     {
         var dict = new Dictionary<int, int>(Iterations);
         var map = new UnmanagedMap<int>(17);
