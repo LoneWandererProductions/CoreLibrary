@@ -56,7 +56,7 @@ public interface IInMemoryLogger
     /// <param name="args">Optional arguments for message formatting.</param>
     void Log(LogLevel logLevel,
         string? message,
-        string libraryName,
+        string? libraryName = null,
         Exception? exception = null,
         [CallerMemberName] string callerMethod = "",
         params object[] args);

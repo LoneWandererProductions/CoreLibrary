@@ -16,7 +16,7 @@ namespace CoreMemoryLog;
 /// <summary>
 ///     Logger Object, holds all needed data
 /// </summary>
-public sealed class LogEntry
+public sealed class LogEntry : ILogEntry
 {
     /// <summary>
     ///     Gets or sets the level.
@@ -48,7 +48,7 @@ public sealed class LogEntry
     /// <value>
     ///     The exception.
     /// </value>
-    public Exception Exception { get; init; }
+    public Exception? Exception { get; init; }
 
     /// <summary>
     ///     Gets or sets the caller method.
@@ -56,7 +56,7 @@ public sealed class LogEntry
     /// <value>
     ///     The caller method.
     /// </value>
-    public string CallerMethod { get; init; } // Stores the calling method name
+    public string? CallerMethod { get; init; } // Stores the calling method name
 
     /// <summary>
     ///     Gets or sets the name of the library that called the Log.
@@ -64,7 +64,7 @@ public sealed class LogEntry
     /// <value>
     ///     The name of the library.
     /// </value>
-    public string LibraryName { get; init; }
+    public string? LibraryName { get; init; }
 
     /// <summary>
     /// Gets the arguments.
@@ -72,7 +72,7 @@ public sealed class LogEntry
     /// <value>
     /// The arguments.
     /// </value>
-    public object[] Args { get; internal init; }
+    public object[]? Args { get; internal init; }
 
     // Optional debugging info
 

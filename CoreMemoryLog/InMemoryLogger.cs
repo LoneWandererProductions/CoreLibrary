@@ -7,7 +7,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +14,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace CoreMemoryLog
 {
@@ -70,6 +71,14 @@ namespace CoreMemoryLog
         public event EventHandler<LogEntry>? LogAdded;
 
         /// <summary>
+        /// Gets or sets the formatter.
+        /// </summary>
+        /// <value>
+        /// The formatter.
+        /// </value>
+        public ILogFormatter Formatter { get; set; } = new DefaultLogFormatter();
+
+        /// <summary>
         /// Returns the caller method name (optional helper).
         /// </summary>
         /// <param name="caller">The caller.</param>
@@ -94,12 +103,18 @@ namespace CoreMemoryLog
         /// Core structured logging method.
         /// Stores the original template and args without formatting.
         /// </summary>
-        public void Log(LogLevel level, string? message, string libraryName, Exception? exception = null,
-            [CallerMemberName] string callerMethod = "", params object[] args)
+        public void Log(LogLevel level,
+                        string? message,
+                         string? libraryName = null,
+                        Exception? exception = null,
+                        [CallerMemberName] string callerMethod = "",
+                        params object[] args)
         {
             // Skip if filtered
             if (!IsEnabled(LogLevel))
                 return;
+
+            libraryName ??= GetDefaultLibraryName(); // auto-resolve if not set
 
             var entry = new LogEntry
             {
@@ -129,9 +144,7 @@ namespace CoreMemoryLog
                 ? SafeFormat(message, args)
                 : message;
 
-            Trace.WriteLine($"[{entry.Timestamp:O}] [{libraryName}] [{level}] {callerMethod}: {formatted}");
-            if (exception != null)
-                Trace.WriteLine($"    Exception: {exception}");
+            Trace.WriteLine(Formatter.Format(entry));
         }
 
         /// <summary>
@@ -142,13 +155,45 @@ namespace CoreMemoryLog
 
         #region Convenience methods
 
+        /// <summary>
+        /// Logs the debug.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Debug message</returns>
         public void LogDebug(string? message, params object[] args) => Log(LogLevel.Debug, message, null, args);
+
+        /// <summary>
+        /// Logs the trace.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Trace Message</returns>
         public void LogTrace(string? message, params object[] args) => Log(LogLevel.Trace, message, null, args);
 
+        /// <summary>
+        /// Logs the information.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Information message</returns>
         public void LogInformation(string? message, params object[] args) =>
             Log(LogLevel.Information, message, null, args);
 
+        /// <summary>
+        /// Logs the warning.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Warning Mssage</returns>
         public void LogWarning(string? message, params object[] args) => Log(LogLevel.Warning, message, null, args);
+
+        /// <summary>
+        /// Logs the error.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>Error Message</returns>
         public void LogError(string? message, params object[] args) => Log(LogLevel.Error, message, null, args);
 
         #endregion
@@ -254,13 +299,7 @@ namespace CoreMemoryLog
                     ? SafeFormat(log.Message, log.Args)
                     : log.Message;
 
-                writer.WriteLine($"[{log.Timestamp:O}] [{log.LibraryName}] [{log.Level}] {log.CallerMethod}: {msg}");
-
-                if (!string.IsNullOrEmpty(log.MethodName))
-                    writer.WriteLine($"    at {log.MethodName} in {log.FileName}:{log.LineNumber}");
-
-                if (log.Exception != null)
-                    writer.WriteLine($"    Exception: {log.Exception}");
+                writer.WriteLine(Formatter.Format(log));
             }
         }
 
@@ -269,16 +308,32 @@ namespace CoreMemoryLog
         /// </summary>
         /// <param name="template">The template.</param>
         /// <param name="args">The arguments.</param>
-        /// <returns></returns>
+        /// <returns>Converted message.</returns>
         private static string? SafeFormat(string? template, object[] args)
         {
             try
             {
-                return string.Format(template, args);
+                return template != null ? string.Format(template, args) : null;
             }
             catch
             {
                 return template; // fallback
+            }
+        }
+
+        /// <summary>
+        /// Returns the default library name based on the calling type/assembly.
+        /// </summary>
+        private static string GetDefaultLibraryName([CallerFilePath] string filePath = "")
+        {
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetCallingAssembly();
+                return assembly.GetName().Name ?? "UnknownLibrary";
+            }
+            catch
+            {
+                return "UnknownLibrary";
             }
         }
 
