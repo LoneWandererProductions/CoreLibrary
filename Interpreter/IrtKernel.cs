@@ -34,7 +34,8 @@ internal static class IrtKernel
         IReadOnlyDictionary<int, InCommand> commands)
     {
         // Check if the command requires parameters or if the input has correctly formatted single parameter
-        return commands[key].ParameterCount == parametersCount;
+        var cmd = commands[key];
+        return cmd.ParameterCount == parametersCount;
     }
 
     /// <summary>
@@ -51,7 +52,7 @@ internal static class IrtKernel
     internal static bool SingleCheck(string input)
     {
         // Index of the currently open parentheses:
-        var parentheses = new Stack<int>();
+        var parentheses = new Stack<int>(input.Length);
 
         foreach (var chr in input)
         {
@@ -100,37 +101,23 @@ internal static class IrtKernel
             return false;
         }
 
-        // Index of the currently open parentheses:
-        var parentheses = new Stack<int>();
+        var openMap = new Dictionary<char, int>(openParenthesis.Length);
+        var closeMap = new Dictionary<char, int>(closeParenthesis.Length);
 
+        for (var i = 0; i < openParenthesis.Length; i++) { openMap[openParenthesis[i]] = i; closeMap[closeParenthesis[i]] = i; }
+
+        var stack = new Stack<int>(input.Length);
         foreach (var chr in input)
         {
-            int index;
-
-            // Check if the 'chr' is an open parenthesis, and get its index:
-            if ((index = Array.IndexOf(openParenthesis, chr)) != -1)
+            if (openMap.TryGetValue(chr, out var idx)) stack.Push(idx);
+            else if (closeMap.TryGetValue(chr, out idx))
             {
-                parentheses.Push(index); // Add index to stack
-            }
-            // Check if the 'chr' is a close parenthesis, and get its index:
-            else
-            {
-                if ((index = Array.IndexOf(closeParenthesis, chr)) == -1)
-                {
-                    continue;
-                }
-
-                // Return 'false' if the stack is empty or if the currently
-                // open parenthesis is not paired with the 'chr':
-                if (parentheses.Count == 0 || parentheses.Pop() != index)
-                {
-                    return false;
-                }
+                if (stack.Count == 0 || stack.Pop() != idx) return false;
             }
         }
 
         // Return 'true' if there is no open parentheses, and 'false' - otherwise:
-        return parentheses.Count == 0;
+        return stack.Count == 0;
     }
 
     /// <summary>
@@ -151,7 +138,7 @@ internal static class IrtKernel
         }
 
         // Ensure the string starts with the openClause and ends with the closeClause
-        return StartsAndEndsWith(input, openClause, closeClause)
+        return (input.Length > 1 && input[0] == openClause && input[^1] == closeClause)
             ? input.Substring(1, input.Length - 2).Trim()
             : IrtConst.ParenthesisError;
     }
@@ -164,7 +151,8 @@ internal static class IrtKernel
     /// <returns>The modified string.</returns>
     internal static string RemoveFirstOccurrence(string input, char symbol)
     {
-        return input.Remove(input.IndexOf(symbol.ToString(), StringComparison.Ordinal), 1);
+        var idx = input.IndexOf(symbol);
+        return idx >= 0 ? input.Remove(idx, 1) : input;
     }
 
     /// <summary>
@@ -175,7 +163,8 @@ internal static class IrtKernel
     /// <returns>The modified string.</returns>
     internal static string CutLastOccurrence(string input, char symbol)
     {
-        return input.Substring(0, input.LastIndexOf(symbol.ToString(), StringComparison.Ordinal));
+        var idx = input.LastIndexOf(symbol);
+        return idx >= 0 ? input.Substring(0, idx) : input;
     }
 
     /// <summary>
@@ -188,13 +177,7 @@ internal static class IrtKernel
     {
         // Find the index of remove in target, ignoring case
         var index = input.IndexOf(remove, StringComparison.OrdinalIgnoreCase);
-
-        // If remove is found, remove it from target
-        if (index != IrtConst.Error)
-        {
-            input = input.Remove(index, remove.Length);
-        }
-
+        if (index != IrtConst.Error) input = input.Remove(index, remove.Length);
         return input.Trim();
     }
 
@@ -212,7 +195,7 @@ internal static class IrtKernel
         }
 
         //just for the compare, make it to upper do not change the input string
-        input = input.ToUpperInvariant();
+        input = input.ToUpperInvariant().Trim();
 
         if (input.Contains(IrtConst.AdvancedOpen))
         {
@@ -256,19 +239,17 @@ internal static class IrtKernel
     /// <returns>Splits Parameter Part by Splitter</returns>
     internal static List<string> SplitParameter(string parameterPart, char splitter)
     {
-        var lst = parameterPart.Split(splitter).ToList();
-        var paramLst = new List<string>(lst.Count);
-
-        paramLst.AddRange(lst.Select(param => param.Trim()));
-
-        // remove empty trash
-        paramLst = paramLst.Where(element => !string.IsNullOrEmpty(element)).ToList();
-
-        //remove all empty Parameters
-        return (from item in paramLst
-            let result = Regex.Replace(item, IrtConst.RegexRemoveWhiteSpace, string.Empty)
-            where result != IrtConst.EmptyParameter
-            select item).ToList();
+        var results = new List<string>();
+        foreach (var part in parameterPart.Split(splitter))
+        {
+            var trimmed = part.Trim();
+            if (!string.IsNullOrEmpty(trimmed) &&
+                Regex.Replace(trimmed, IrtConst.RegexRemoveWhiteSpace, string.Empty) != IrtConst.EmptyParameter)
+            {
+                results.Add(trimmed);
+            }
+        }
+        return results;
     }
 
     /// <summary>
@@ -281,8 +262,10 @@ internal static class IrtKernel
     internal static string WellFormedParenthesis(string input)
     {
         input = input.Trim();
-        var regex = Regex.Replace(input, IrtConst.RegexParenthesisWellFormedPatternLeft, string.Empty);
-        return Regex.Replace(regex, IrtConst.RegexParenthesisWellFormedPatternRight, string.Empty);
+
+        var regexLeft = new Regex(IrtConst.RegexParenthesisWellFormedPatternLeft, RegexOptions.Compiled);
+        var regexRight = new Regex(IrtConst.RegexParenthesisWellFormedPatternRight, RegexOptions.Compiled);
+        return regexRight.Replace(regexLeft.Replace(input, string.Empty), string.Empty);
     }
 
     /// <summary>
@@ -660,31 +643,21 @@ internal static class IrtKernel
     /// <returns>The index of the matching command, or an error code if no match is found.</returns>
     internal static int GetCommandIndex(string input, Dictionary<int, InCommand> commands)
     {
-        input = input.ToUpperInvariant();
+        ReadOnlySpan<char> spanInput = input.Trim().AsSpan();
 
-        if (input.Contains(IrtConst.BaseOpen))
-        {
-            var index = input.IndexOf(IrtConst.BaseOpen);
-            if (index >= 0)
-            {
-                input = input.Substring(0, index).Trim();
-            }
-        }
+        int baseIndex = spanInput.IndexOf(IrtConst.BaseOpen);
+        if (baseIndex >= 0) spanInput = spanInput.Slice(0, baseIndex).Trim();
 
-        if (input.Contains(IrtConst.AdvancedOpen))
-        {
-            var index = input.IndexOf(IrtConst.AdvancedOpen);
-            if (index >= 0)
-            {
-                input = input.Substring(0, index).Trim();
-            }
-        }
+        int advIndex = spanInput.IndexOf(IrtConst.AdvancedOpen);
+        if (advIndex >= 0) spanInput = spanInput.Slice(0, advIndex).Trim();
 
         foreach (var (key, command) in commands)
-            if (string.Equals(input, command.Command, StringComparison.OrdinalIgnoreCase))
+        {
+            if (spanInput.Equals(command.Command.AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
                 return key;
             }
+        }
 
         return IrtConst.Error;
     }
@@ -774,17 +747,5 @@ internal static class IrtKernel
         command = command.Trim();
         var keywordIndex = GetCommandIndex(command, IrtConst.InternContainerCommands);
         return keywordIndex == -1 ? "Command" : IrtConst.InternContainerCommands[keywordIndex].Command;
-    }
-
-    /// <summary>
-    ///     Checks if the string starts and ends with the specified characters.
-    /// </summary>
-    /// <param name="input">Input string to check.</param>
-    /// <param name="start">Expected starting character.</param>
-    /// <param name="end">Expected ending character.</param>
-    /// <returns>True if the string starts with 'start' and ends with 'end', false otherwise.</returns>
-    private static bool StartsAndEndsWith(string input, char start, char end)
-    {
-        return input.Length > 1 && input[0] == start && input[^1] == end;
     }
 }

@@ -140,10 +140,6 @@ namespace CoreMemoryLog
             EnqueueLog(libraryName, entry);
 
             // Always also output to Trace
-            var formatted = args is { Length: > 0 }
-                ? SafeFormat(message, args)
-                : message;
-
             Trace.WriteLine(Formatter.Format(entry));
         }
 
@@ -295,36 +291,15 @@ namespace CoreMemoryLog
                                  .Where(l => l.Level >= minimumLevel)
                                  .OrderBy(l => l.Timestamp))
             {
-                var msg = log.Args is { Length: > 0 }
-                    ? SafeFormat(log.Message, log.Args)
-                    : log.Message;
-
                 writer.WriteLine(Formatter.Format(log));
-            }
-        }
-
-        /// <summary>
-        /// Safely formats a message with arguments, falls back to template on error.
-        /// </summary>
-        /// <param name="template">The template.</param>
-        /// <param name="args">The arguments.</param>
-        /// <returns>Converted message.</returns>
-        private static string? SafeFormat(string? template, object[] args)
-        {
-            try
-            {
-                return template != null ? string.Format(template, args) : null;
-            }
-            catch
-            {
-                return template; // fallback
             }
         }
 
         /// <summary>
         /// Returns the default library name based on the calling type/assembly.
         /// </summary>
-        private static string GetDefaultLibraryName([CallerFilePath] string filePath = "")
+        /// <returns>Namespace of the caller.</returns>
+        private static string GetDefaultLibraryName()
         {
             try
             {

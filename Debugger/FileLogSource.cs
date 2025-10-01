@@ -95,7 +95,7 @@ namespace Debugger
 
                     while (!token.IsCancellationRequested)
                     {
-                        string? line = await reader.ReadLineAsync().ConfigureAwait(false);
+                        var line = await reader.ReadLineAsync().ConfigureAwait(false);
                         if (line != null)
                         {
                             LineReceived?.Invoke(this, line);

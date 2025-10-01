@@ -67,7 +67,7 @@ internal static class ImageHelper
         // Precompute 1D
         var gauss1D = new double[size];
         var sum = 0.0;
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++)
         {
             var x = (i - mean) / sigma;
             gauss1D[i] = Math.Exp(-0.5 * x * x);
@@ -75,11 +75,11 @@ internal static class ImageHelper
         }
 
         // Normalize 1D
-        for (int i = 0; i < size; i++) gauss1D[i] /= sum;
+        for (var i = 0; i < size; i++) gauss1D[i] /= sum;
 
         // Build separable 2D
-        for (int y = 0; y < size; y++)
-            for (int x = 0; x < size; x++)
+        for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
                 kernel[y, x] = gauss1D[y] * gauss1D[x];
 
         return kernel;
@@ -96,8 +96,8 @@ internal static class ImageHelper
     {
         int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
-        for (int y = region.Top; y < region.Bottom; y++)
-            for (int x = region.Left; x < region.Right; x++)
+        for (var y = region.Top; y < region.Bottom; y++)
+            for (var x = region.Left; x < region.Right; x++)
             {
                 var p = dbm.GetPixel(x, y);
                 rSum += p.R;
