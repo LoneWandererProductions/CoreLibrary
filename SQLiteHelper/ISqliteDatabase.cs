@@ -39,13 +39,13 @@ public interface ISqliteDatabase
     ///     Gets or sets the location.
     /// </summary>
     /// <value>The <see cref="string" />.</value>
-    string Location { get; set; }
+    string? Location { get; set; }
 
     /// <summary>
     ///     Gets or sets the db name.
     /// </summary>
     /// <value>The <see cref="string" />.</value>
-    string DbName { get; set; }
+    string? DbName { get; set; }
 
     /// <summary>
     ///     Gets or sets the db version.
@@ -77,7 +77,7 @@ public interface ISqliteDatabase
     /// <param name="location">The location.</param>
     /// <param name="dbName">The dbName.</param>
     /// <returns>The <see cref="bool" />.</returns>
-    bool DatabaseContextSwitch(string location, string dbName);
+    bool DatabaseContextSwitch(string? location, string? dbName);
 
     /// <summary>
     ///     Create the database.
@@ -92,7 +92,7 @@ public interface ISqliteDatabase
     /// <param name="dbName">The dbName.</param>
     /// <param name="overwrite">The overwrite.</param>
     /// <returns>The <see cref="bool" />.</returns>
-    bool CreateDatabase(string dbName, bool overwrite);
+    bool CreateDatabase(string? dbName, bool overwrite);
 
     /// <summary>
     ///     Create the database.
@@ -101,7 +101,7 @@ public interface ISqliteDatabase
     /// <param name="dbName">The dbName.</param>
     /// <param name="overwrite">The overwrite.</param>
     /// <returns>The <see cref="bool" />.</returns>
-    bool CreateDatabase(string location, string dbName, bool overwrite);
+    bool CreateDatabase(string? location, string? dbName, bool overwrite);
 
     /// <summary>
     ///     Copy the table.
@@ -126,7 +126,7 @@ public interface ISqliteDatabase
     /// <param name="location">The location.</param>
     /// <param name="dbName">The dbName.</param>
     /// <returns>The <see cref="bool" />.</returns>
-    bool DeleteDatabase(string location, string dbName);
+    bool DeleteDatabase(string? location, string? dbName);
 
     /// <summary>
     ///     The rename table.

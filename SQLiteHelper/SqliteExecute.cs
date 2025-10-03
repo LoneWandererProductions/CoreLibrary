@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -40,7 +39,7 @@ internal sealed class SqliteExecute
     /// <param name="location">Local Path to the Database</param>
     /// <param name="dbName">Name of the database</param>
     /// <returns>True if Connection is possible</returns>
-    internal bool DatabaseContextSwitch(string location, string dbName)
+    internal bool DatabaseContextSwitch(string? location, string? dbName)
     {
         MessageHandling.ClearErrors();
         var message = new MessageItem { Message = SqliteHelperResources.ContextSwitchLog, Level = 2 };
@@ -57,7 +56,7 @@ internal sealed class SqliteExecute
     /// <param name="dbName">Name of Database</param>
     /// <param name="overwrite">overwrite existing Database</param>
     /// <returns>Operation Success</returns>
-    internal bool CreateDatabase(string location, string dbName, bool overwrite)
+    internal bool CreateDatabase(string? location, string? dbName, bool overwrite)
     {
         var check = GetDataBaseInfo(location, dbName, overwrite);
 
@@ -93,7 +92,7 @@ internal sealed class SqliteExecute
     /// <param name="location">Local Path of the Database</param>
     /// <param name="dbName">Name of Database</param>
     /// <returns>Operation Success</returns>
-    internal bool DeleteDatabase(string location, string dbName)
+    internal bool DeleteDatabase(string? location, string? dbName)
     {
         var check = SetDataBaseInfo(location, dbName);
         //Do your work
@@ -476,8 +475,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="tableAlias">Name of the Table</param>
     /// <returns>List of Names of all Table Headers with the Unique Property</returns>
-    [return: MaybeNull]
-    internal List<string> Pragma_index_list(string tableAlias)
+    internal List<string>? Pragma_index_list(string tableAlias)
     {
         var uniqueColumnsList = new List<string>();
 
@@ -535,8 +533,7 @@ internal sealed class SqliteExecute
     ///     Returns a List with Names of all Table Headers with the Unique Property
     /// </summary>
     /// <returns>List of Names of all Table Headers</returns>
-    [return: MaybeNull]
-    internal List<string> GetTables()
+    internal List<string>? GetTables()
     {
         var sqlQuery = SqliteQueryConst.GetTables();
 
@@ -556,8 +553,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="tableAlias">Must Name of Table</param>
     /// <returns>Result Set</returns>
-    [return: MaybeNull]
-    internal DataSet SimpleSelect(string tableAlias)
+    internal DataSet? SimpleSelect(string tableAlias)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
         {
@@ -581,8 +577,7 @@ internal sealed class SqliteExecute
     /// <param name="header">Optional, select over specific headers</param>
     /// <param name="tableAlias">Must Name of Table</param>
     /// <returns>Result Set</returns>
-    [return: MaybeNull]
-    internal DataSet SimpleSelect(List<string> header, string tableAlias)
+    internal DataSet? SimpleSelect(List<string> header, string tableAlias)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
         {
@@ -609,8 +604,7 @@ internal sealed class SqliteExecute
     /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
     /// <param name="whereValue">Compare to</param>
     /// <returns>Result Set as TableSet</returns>
-    [return: MaybeNull]
-    internal DataSet SimpleSelect(List<string> header, string tableAlias,
+    internal DataSet? SimpleSelect(List<string> header, string tableAlias,
         string where, CompareOperator operators, string whereValue)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
@@ -637,8 +631,7 @@ internal sealed class SqliteExecute
     /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
     /// <param name="whereValue">Compare to</param>
     /// <returns>Result Set as TableSet</returns>
-    [return: MaybeNull]
-    internal DataSet SimpleSelect(string tableAlias, string where, CompareOperator operators,
+    internal DataSet? SimpleSelect(string tableAlias, string where, CompareOperator operators,
         string whereValue)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
@@ -667,8 +660,7 @@ internal sealed class SqliteExecute
     /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
     /// <param name="whereValue">Compare to</param>
     /// <returns>Result Set as TableSet</returns>
-    [return: MaybeNull]
-    internal DataSet SimpleSelect(List<string> header, string tableAlias, string oderBy,
+    internal DataSet? SimpleSelect(List<string> header, string tableAlias, string oderBy,
         string where, CompareOperator operators, string whereValue)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
@@ -695,8 +687,7 @@ internal sealed class SqliteExecute
     /// <param name="inClause">All in specifics</param>
     /// <param name="oderBy">Optional, order by header</param>
     /// <returns>TableMultipleSet, results as string</returns>
-    [return: MaybeNull]
-    internal DataSet SelectIn(string tableAlias, List<string> headers, string whereValue, List<string> inClause,
+    internal DataSet? SelectIn(string tableAlias, List<string> headers, string whereValue, List<string> inClause,
         string oderBy)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
@@ -717,8 +708,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="sqlQuery">Generated Query</param>
     /// <returns>Result Set as TableSet</returns>
-    [return: MaybeNull]
-    private DataSet ExecSelect(string sqlQuery)
+    private DataSet? ExecSelect(string sqlQuery)
     {
         if (sqlQuery == SqliteHelperResources.ErrorCheck)
         {
@@ -769,7 +759,7 @@ internal sealed class SqliteExecute
     /// <param name="location">Path of Database File</param>
     /// <param name="dbName">Name of Database</param>
     /// <returns>False if it doesn't exist</returns>
-    private bool SetDataBaseInfo(string location, string dbName)
+    private bool SetDataBaseInfo(string? location, string? dbName)
     {
         if (!File.Exists(location + Path.DirectorySeparatorChar + dbName))
         {
@@ -843,8 +833,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="sqlQuery">Query Text</param>
     /// <returns>Result Table</returns>
-    [return: MaybeNull]
-    private DataTable SelectDataTable(string sqlQuery)
+    private DataTable? SelectDataTable(string sqlQuery)
     {
         DataTable dt = new();
 
@@ -890,8 +879,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="sqlQuery">Query Text</param>
     /// <returns>Result Table</returns>
-    [return: MaybeNull]
-    private DataSet SelectMultipleDataTable(string sqlQuery)
+    private DataSet? SelectMultipleDataTable(string sqlQuery)
     {
         var dt = SelectDataTable(sqlQuery);
         if (dt == null || dt.Rows.Count == 0)
@@ -1127,8 +1115,7 @@ internal sealed class SqliteExecute
     /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
     /// <param name="whereValue">Compare to</param>
     /// <returns>TableMultipleSet, results as string</returns>
-    [return: MaybeNull]
-    private string Select(IReadOnlyCollection<string> headers, string tableAlias, string oderBy,
+    private string? Select(IReadOnlyCollection<string> headers, string tableAlias, string oderBy,
         string where, CompareOperator operators, string whereValue)
     {
         var tableInfo = InternalPragmaTableInfo(tableAlias);
@@ -1227,8 +1214,7 @@ internal sealed class SqliteExecute
     /// </summary>
     /// <param name="tableAlias">Name of the Table</param>
     /// <returns>Headers, Data Type and Constraints of the table</returns>
-    [return: MaybeNull]
-    private Dictionary<string, TableColumns> InternalPragmaTableInfo(string tableAlias)
+    private Dictionary<string, TableColumns>? InternalPragmaTableInfo(string tableAlias)
     {
         if (!CheckIfDatabaseTableExists(tableAlias))
         {
@@ -1290,7 +1276,7 @@ internal sealed class SqliteExecute
     /// <param name="dbName">Name of Database</param>
     /// <param name="overwrite">overwrite existing Database</param>
     /// <returns>False if it exists</returns>
-    private static bool GetDataBaseInfo(string location, string dbName, bool overwrite)
+    private static bool GetDataBaseInfo(string? location, string? dbName, bool overwrite)
     {
         //Database exists and we are not allowed to overwrite, Return
         if (File.Exists(Path.Combine(location, dbName)) && !overwrite)
@@ -1308,8 +1294,7 @@ internal sealed class SqliteExecute
     ///     If something went wrong we send null, this will have to be handled by the Queries that try to use this connection
     /// </summary>
     /// <returns>Connection or null, if we couldn't create a connection</returns>
-    [return: MaybeNull]
-    private SQLiteConnection GetConn()
+    private SQLiteConnection? GetConn()
     {
         try
         {

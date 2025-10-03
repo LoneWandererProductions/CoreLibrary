@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -124,8 +123,7 @@ public sealed class ImageRender : IImageRender
     /// </returns>
     /// <exception cref="ArgumentNullException">if Image is null</exception>
     /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-    [return: MaybeNull]
-    public Bitmap FilterImage(Bitmap image, FiltersType filter)
+    public Bitmap? FilterImage(Bitmap image, FiltersType filter)
     {
         return FiltersStream.FilterImage(image, filter, ImageSettings);
     }
@@ -177,8 +175,7 @@ public sealed class ImageRender : IImageRender
     ///     a new Bitmap with all combined Images
     /// </returns>
     /// <exception cref="ArgumentNullException">if Image is null</exception>
-    [return: MaybeNull]
-    public Bitmap CombineBitmap(List<string> files)
+    public Bitmap? CombineBitmap(List<string> files)
     {
         return ImageStream.CombineBitmap(files);
     }
@@ -193,8 +190,7 @@ public sealed class ImageRender : IImageRender
     /// <param name="y">The y position.</param>
     /// <returns>Combined Image</returns>
     /// <exception cref="ArgumentNullException"></exception>
-    [return: MaybeNull]
-    public Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+    public Bitmap? CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
     {
         return ImageStream.CombineBitmap(original, overlay, x, y);
     }

@@ -104,7 +104,11 @@ internal static class IrtKernel
         var openMap = new Dictionary<char, int>(openParenthesis.Length);
         var closeMap = new Dictionary<char, int>(closeParenthesis.Length);
 
-        for (var i = 0; i < openParenthesis.Length; i++) { openMap[openParenthesis[i]] = i; closeMap[closeParenthesis[i]] = i; }
+        for (var i = 0; i < openParenthesis.Length; i++)
+        {
+            openMap[openParenthesis[i]] = i;
+            closeMap[closeParenthesis[i]] = i;
+        }
 
         var stack = new Stack<int>(input.Length);
         foreach (var chr in input)
@@ -249,6 +253,7 @@ internal static class IrtKernel
                 results.Add(trimmed);
             }
         }
+
         return results;
     }
 

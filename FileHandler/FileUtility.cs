@@ -8,7 +8,6 @@
 
 // ReSharper disable UnusedMember.Global
 
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace FileHandler;
@@ -20,8 +19,7 @@ public static class FileUtility
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>new Path with new FileName</returns>
-    [return: MaybeNull]
-    public static string GetNewFileName(string path)
+    public static string? GetNewFileName(string path)
     {
         if (!File.Exists(path))
         {

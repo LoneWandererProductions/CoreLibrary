@@ -83,7 +83,7 @@ public sealed partial class PluginController : INotifyPropertyChanged
     ///     Tells the Components something was changed
     ///     Needed since we have to trigger it user defined
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     ///     The notify property changed.

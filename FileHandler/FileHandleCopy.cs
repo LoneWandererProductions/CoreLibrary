@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -157,8 +156,7 @@ public static class FileHandleCopy
     /// <param name="target">Full qualified target Path</param>
     /// <returns>List of Files that were not copied, can be null.</returns>
     /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    [return: MaybeNull]
-    public static IList<string> CopyFiles(string source, string target)
+    public static IList<string>? CopyFiles(string source, string target)
     {
         FileHandlerProcessing.ValidatePaths(source, target);
 

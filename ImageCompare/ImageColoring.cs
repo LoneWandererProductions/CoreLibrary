@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -39,8 +38,7 @@ internal static class ImageColoring
     /// <param name="checkSubfolders">Whether to look in subfolders too</param>
     /// <param name="extensions">The extensions.</param>
     /// <returns>List of Images with similar Color range</returns>
-    [return: MaybeNull]
-    internal static List<string> GetSimilarColors(int r, int g, int b, int range, string folderPath,
+    internal static List<string>? GetSimilarColors(int r, int g, int b, int range, string folderPath,
         bool checkSubfolders, IEnumerable<string> extensions)
     {
         var localDate = DateTime.Now;

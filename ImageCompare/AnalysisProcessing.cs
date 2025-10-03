@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -35,8 +34,7 @@ internal static class AnalysisProcessing
     /// <param name="imagePaths">Paths to the Images</param>
     /// <returns>Similarity to the first Image in the List</returns>
     /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-    [return: MaybeNull]
-    internal static List<float> GetSimilarity(List<string> imagePaths)
+    internal static List<float>? GetSimilarity(List<string> imagePaths)
     {
         if (imagePaths.IsNullOrEmpty())
         {
@@ -177,8 +175,7 @@ internal static class AnalysisProcessing
     /// </summary>
     /// <param name="imagePath">The image path.</param>
     /// <returns>Image Data</returns>
-    [return: MaybeNull]
-    internal static ImageData GetImageDetails(string imagePath)
+    internal static ImageData? GetImageDetails(string imagePath)
     {
         if (!File.Exists(imagePath))
         {
@@ -208,8 +205,7 @@ internal static class AnalysisProcessing
     /// </summary>
     /// <param name="image">The image.</param>
     /// <returns>Image Data</returns>
-    [return: MaybeNull]
-    internal static ImageData GetImageDetails(Bitmap image)
+    internal static ImageData? GetImageDetails(Bitmap image)
     {
         var color = GenerateData(image, string.Empty);
 

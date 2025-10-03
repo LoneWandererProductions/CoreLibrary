@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using Mathematics;
@@ -317,8 +316,7 @@ public sealed class Cif
     ///     Gets the image.
     /// </summary>
     /// <returns>Cif Converted to Image</returns>
-    [return: MaybeNull]
-    public Bitmap GetImage()
+    public Bitmap? GetImage()
     {
         if (CifImage == null)
         {

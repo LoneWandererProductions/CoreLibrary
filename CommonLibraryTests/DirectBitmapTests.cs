@@ -130,7 +130,8 @@ public class DirectBitmapTests
         });
 
         // Benchmark your DirectBitmap
-        var directBitmapTime = MeasurePerformance(100, () => directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
+        var directBitmapTime =
+            MeasurePerformance(100, () => directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
 
         Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
 

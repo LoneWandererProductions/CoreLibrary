@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -198,8 +197,7 @@ public static class ImageStream
     ///     a new Bitmap with all combined Images
     /// </returns>
     /// <exception cref="ArgumentNullException">if file is null or Empty</exception>
-    [return: MaybeNull]
-    internal static Bitmap CombineBitmap(List<string> files)
+    internal static Bitmap? CombineBitmap(List<string> files)
     {
         if (files.IsNullOrEmpty())
         {

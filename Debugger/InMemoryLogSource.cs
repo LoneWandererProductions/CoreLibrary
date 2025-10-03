@@ -40,8 +40,8 @@ namespace Debugger
         public IEnumerable<string> ReadAll()
         {
             return _logger.GetLogs()
-                          .OrderBy(l => l.Timestamp)
-                          .Select(FormatLogEntry);
+                .OrderBy(l => l.Timestamp)
+                .Select(FormatLogEntry);
         }
 
         /// <inheritdoc />

@@ -18,12 +18,12 @@ internal static class SqliteConnectionConfig
     /// <summary>
     ///     Gets or sets the location.
     /// </summary>
-    internal static string Location { get; set; }
+    internal static string? Location { get; set; }
 
     /// <summary>
     ///     Gets or sets the db name.
     /// </summary>
-    internal static string DbName { get; set; }
+    internal static string? DbName { get; set; }
 
     /// <summary>
     ///     Basic Value is 3

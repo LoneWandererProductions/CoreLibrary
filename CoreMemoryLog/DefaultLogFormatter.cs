@@ -33,13 +33,13 @@ namespace CoreMemoryLog
         public DefaultLogFormatter(IEnumerable<string>? order = null)
         {
             _order = order?.ToList() ?? new List<string>
-        {
-            "Timestamp",
-            "LibraryName",
-            "Level",
-            "CallerMethod",
-            "Message"
-        };
+            {
+                "Timestamp",
+                "LibraryName",
+                "Level",
+                "CallerMethod",
+                "Message"
+            };
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace CoreMemoryLog
                     "Level" => $"[{entry.Level}]",
                     "CallerMethod" => $"{entry.CallerMethod}:",
                     "Message" => entry.Args is { Length: > 0 }
-                                    ? SafeFormat(entry.Message, entry.Args)
-                                    : entry.Message ?? string.Empty,
+                        ? SafeFormat(entry.Message, entry.Args)
+                        : entry.Message ?? string.Empty,
                     _ => string.Empty
                 });
             }

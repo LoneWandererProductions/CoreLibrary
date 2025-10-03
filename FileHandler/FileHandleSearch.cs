@@ -11,7 +11,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,8 +29,7 @@ public static class FileHandleSearch
     /// <param name="appendix">List of File Extension</param>
     /// <param name="subdirectories">Include Sub-folders</param>
     /// <returns>List of Files with Path and extensions<see cref="T:List{string}" />.</returns>
-    [return: MaybeNull]
-    public static List<string> GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
+    public static List<string>? GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
         bool subdirectories)
     {
         var lst = new List<string>();
@@ -62,8 +60,7 @@ public static class FileHandleSearch
     /// <param name="appendix">File Extension</param>
     /// <param name="subdirectories">Include Sub-folders</param>
     /// <returns>List of Files with Path and extension<see cref="T:List{string}" />.</returns>
-    [return: MaybeNull]
-    public static List<string> GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
+    public static List<string>? GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
     {
         return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
     }
@@ -75,8 +72,7 @@ public static class FileHandleSearch
     /// <param name="appendix">File Extension</param>
     /// <param name="subdirectories">Include Sub-folders</param>
     /// <returns>List of Name of Files, with extension<see cref="T:List{string}" />.</returns>
-    [return: MaybeNull]
-    public static List<string> GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
+    public static List<string>? GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
     {
         var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
 
@@ -97,8 +93,7 @@ public static class FileHandleSearch
     /// <param name="path">The path.</param>
     /// <param name="subdirectories">The subdirectories.</param>
     /// <returns>List of Name of Files, with extension and Path<see cref="T:List{string}" />.</returns>
-    [return: MaybeNull]
-    public static List<string> GetAllFiles(string path, bool subdirectories)
+    public static List<string>? GetAllFiles(string path, bool subdirectories)
     {
         return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories);
     }
@@ -108,8 +103,7 @@ public static class FileHandleSearch
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>The Details of a File, to be extended<see cref="T:List{FileDetails}" /> can return null.</returns>
-    [return: MaybeNull]
-    public static FileDetails GetFileDetails(string path)
+    public static FileDetails? GetFileDetails(string path)
     {
         if (!File.Exists(path))
         {
@@ -139,8 +133,7 @@ public static class FileHandleSearch
     /// </summary>
     /// <param name="files">The files.</param>
     /// <returns>The Details of the File, to be extended<see cref="T:List{FileDetails}" />.</returns>
-    [return: MaybeNull]
-    public static List<FileDetails> GetFilesDetails(List<string> files)
+    public static List<FileDetails>? GetFilesDetails(List<string> files)
     {
         if (files == null || files.Count == 0)
         {
@@ -161,8 +154,7 @@ public static class FileHandleSearch
     /// <param name="appendix">File Extension</param>
     /// <param name="subdirectories">Include Sub-folders</param>
     /// <returns>List of Name of Files, without extension and Path</returns>
-    [return: MaybeNull]
-    public static List<string> GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
+    public static List<string>? GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
     {
         var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
 
@@ -183,8 +175,7 @@ public static class FileHandleSearch
     /// <param name="path">Target Folder</param>
     /// <returns>Returns all Subfolders</returns>
     /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    [return: MaybeNull]
-    public static List<string> GetAllSubfolders(string path)
+    public static List<string>? GetAllSubfolders(string path)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -236,8 +227,7 @@ public static class FileHandleSearch
     /// <param name="subString">The sub string.</param>
     /// <param name="invert">if set to <c>true</c> [invert], does not contain [subString].</param>
     /// <returns>List of files with Extension and Path that contain this string</returns>
-    [return: MaybeNull]
-    public static List<string> GetFilesWithSubString(string path, IEnumerable<string> appendix, bool subdirectories,
+    public static List<string>? GetFilesWithSubString(string path, IEnumerable<string> appendix, bool subdirectories,
         string subString, bool invert)
     {
         var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);

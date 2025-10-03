@@ -48,5 +48,5 @@ internal interface ISqliteUtility
     /// <param name="row">The row.</param>
     /// <param name="obj">The obj.</param>
     /// <returns>The <see cref="object" />.</returns>
-    object FillObjectFromAttributes(List<string> row, object obj);
+    object? FillObjectFromAttributes(List<string> row, object obj);
 }

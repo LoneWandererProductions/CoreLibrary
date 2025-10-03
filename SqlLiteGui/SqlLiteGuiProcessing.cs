@@ -36,7 +36,7 @@ internal static class SqLiteGuiProcessing
     /// </summary>
     /// <param name="location">Local location of the Database</param>
     /// <param name="dbName">Name of Database</param>
-    internal static void CreateDatabase(string location, string dbName)
+    internal static void CreateDatabase(string? location, string? dbName)
     {
         try
         {

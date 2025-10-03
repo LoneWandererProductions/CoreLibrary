@@ -8,7 +8,6 @@
  */
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ImageCompare;
 
@@ -30,8 +29,7 @@ public sealed class ImageComparer : IImageComparer
     /// <returns>
     ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
     /// </returns>
-    [return: MaybeNull]
-    public List<List<string>> GetSimilarImages(string folderPath, bool checkSubfolders,
+    public List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
         IEnumerable<string> extensions, float threshold)
     {
         return ImageSimilarity.GetSimilarImages(folderPath, checkSubfolders, extensions, threshold);
@@ -47,8 +45,7 @@ public sealed class ImageComparer : IImageComparer
     /// <returns>
     ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
     /// </returns>
-    [return: MaybeNull]
-    public List<List<string>> GetDuplicateImages(string folderPath, bool checkSubfolders,
+    public List<List<string>>? GetDuplicateImages(string folderPath, bool checkSubfolders,
         IEnumerable<string> extensions)
     {
         return ImageDuplication.GetDuplicateImages(folderPath, checkSubfolders, extensions);

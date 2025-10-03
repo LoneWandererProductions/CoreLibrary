@@ -124,7 +124,7 @@ internal sealed class IrtHandleInternal : IDisposable
                 break;
 
             case 3:
-                CommandUsing(_nameSpace);
+                CommandUsing();
                 break;
 
             case 4:
@@ -244,8 +244,7 @@ internal sealed class IrtHandleInternal : IDisposable
     }
 
     /// <summary>Display all using and the Current in Use.</summary>
-    /// <param name="nameSpace">The name space.</param>
-    private void CommandUsing(string nameSpace)
+    private void CommandUsing()
     {
         OnStatus(IrtConst.Active);
         foreach (var key in _prompt.CollectedSpaces.Keys)

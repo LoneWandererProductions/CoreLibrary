@@ -21,4 +21,3 @@ namespace CoreMemoryLog
         string Format(ILogEntry entry);
     }
 }
-

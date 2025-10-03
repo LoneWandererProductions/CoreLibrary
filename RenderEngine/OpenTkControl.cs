@@ -19,12 +19,13 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
+    /// <inheritdoc />
     /// <summary>
     /// OpenGL viewer control for WPF, using OpenTKDrawHelper for drawing primitives and textured quads.
     /// Supports background textures, optional skybox, column overlays, pixel overlays,
     /// and also accepts raw OpenGL-style vertex data (via Span&lt;float&gt; or Span&lt;byte&gt;).
     /// </summary>
-    public sealed class OpenTkControl : WindowsFormsHost, IDisposable
+    public sealed class OpenTkControl : WindowsFormsHost
     {
         private GLControl? _glControl;
 
@@ -183,7 +184,7 @@ namespace RenderEngine
         /// <summary>
         /// Draws column overlays (e.g., debug rectangles) using the reusable VBO.
         /// </summary>
-        public void RenderColumns(ColumnData[] columns, int screenWidth, int screenHeight)
+        public void RenderColumns(ColumnData[] columns, int screenWidth)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -204,7 +205,7 @@ namespace RenderEngine
                 var y1 = col.Height;
 
                 // Two triangles per column
-                var verts = new float[,] { { x0, y0 }, { x1, y0 }, { x1, y1 }, { x1, y1 }, { x0, y1 }, { x0, y0 } };
+                var verts = new[,] { { x0, y0 }, { x1, y0 }, { x1, y1 }, { x1, y1 }, { x0, y1 }, { x0, y0 } };
 
                 for (var v = 0; v < 6; v++)
                 {
@@ -297,7 +298,10 @@ namespace RenderEngine
         /// <summary>
         /// Generic renderer for raw vertex data provided as bytes.
         /// </summary>
-        public void RenderRaw(ReadOnlySpan<byte> data, int vertexSize, int vertexCount, PrimitiveType primitiveType)
+        /// <param name="data">The data.</param>
+        /// <param name="vertexCount">The vertex count.</param>
+        /// <param name="primitiveType">Type of the primitive.</param>
+        public void RenderRaw(ReadOnlySpan<byte> data, int vertexCount, PrimitiveType primitiveType)
         {
             if (_glControl == null) return;
             if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();

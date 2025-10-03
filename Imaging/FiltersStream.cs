@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -56,8 +55,7 @@ internal static class FiltersStream
     /// </returns>
     /// <exception cref="ArgumentNullException">if Image is null</exception>
     /// <exception cref="OutOfMemoryException"></exception>
-    [return: MaybeNull]
-    internal static Bitmap FilterImage(Bitmap image, FiltersType filter, ImageRegister imageSettings = null)
+    internal static Bitmap? FilterImage(Bitmap image, FiltersType filter, ImageRegister imageSettings = null)
     {
         ImageHelper.ValidateImage(nameof(FilterImage), image);
 
@@ -181,35 +179,33 @@ internal static class FiltersStream
     /// <summary>
     ///     Applies the filter.
     /// </summary>
-    /// <param name="sourceBitmap">The source bitmap.</param>
-    /// <param name="filterMatrix">
-    ///     The filter matrix.
-    ///     Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that defines how each pixel
-    ///     in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5, or 7x7.
-    ///     Placement: Place the center of the convolution matrix on the target pixel in the image.
-    ///     Neighborhood Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the
-    ///     convolution matrix.
-    ///     Summation: Sum all these products.
-    ///     Normalization: Often, the result is normalized (e.g., dividing by the sum of the matrix values) to ensure that
-    ///     pixel values remain within a valid range.
-    ///     Pixel Update: The resulting value is assigned to the target pixel in the output image.
-    ///     Matrix Size: The size of the matrix affects the area of the image that influences each output pixel. For example:
-    ///     3x3 Matrix: Considers the pixel itself and its immediate 8 neighbors.
-    ///     5x5 Matrix: Considers a larger area, including 24 neighbors and the pixel itself.
+    /// <param name="sourceBitmap">
+    ///     The source image to filter.
     /// </param>
-    /// <param name="factor">The factor.</param>
-    /// <param name="bias">The bias.</param>
-    /// <returns>Image with applied filter</returns>
-    /// <summary>
-    /// Applies a convolution filter (e.g., blur, sharpen) to the given source image.
-    /// Uses UnmanagedImageBuffer for fast bulk pixel writes.
-    /// </summary>
-    /// <param name="sourceBitmap">The source image to filter.</param>
-    /// <param name="filterMatrix">The convolution matrix (rows × columns).</param>
-    /// <param name="factor">Optional multiplier for the filtered value (default 1.0).</param>
-    /// <param name="bias">Optional bias added to filtered value (default 0.0).</param>
+    /// <param name="filterMatrix">
+    ///     The filter matrix. Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that
+    ///     defines how each pixel in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5,
+    ///     or 7x7. Placement: Place the center of the convolution matrix on the target pixel in the image. Neighborhood
+    ///     Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the convolution
+    ///     matrix. Summation: Sum all these products. Normalization: Often, the result is normalized (e.g., dividing by the
+    ///     sum of the matrix values) to ensure that pixel values remain within a valid range. Pixel Update: The resulting
+    ///     value is assigned to the target pixel in the output image. Matrix Size: The size of the matrix affects the area of
+    ///     the image that influences each output pixel. For example: 3x3 Matrix: Considers the pixel itself and its immediate
+    ///     8 neighbors. 5x5 Matrix: Considers a larger area, including 24 neighbors and the pixel itself.
+    ///     The convolution matrix (rows × columns).
+    ///     Applies a convolution filter (e.g., blur, sharpen) to the given source image.
+    ///     Uses UnmanagedImageBuffer for fast bulk pixel writes.
+    /// </param>
+    /// <param name="factor">
+    ///     The factor.
+    ///     Optional multiplier for the filtered value (default 1.0).
+    /// </param>
+    /// <param name="bias">
+    ///     The bias.
+    ///     Optional bias added to filtered value (default 0.0).
+    /// </param>
     /// <returns>A new Bitmap containing the filtered image.</returns>
-    public static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
+    private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
     {
         // Convert source to unmanaged buffer for fast pixel access
         using var source = ImagePrimitives.FromBitmap(new Bitmap(sourceBitmap));

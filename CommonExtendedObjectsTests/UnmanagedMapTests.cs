@@ -117,9 +117,9 @@ public class UnmanagedMapTests
         }
 
         Assert.IsNotNull(_map);
-        
+
         var before = _map.Count;
-        
+
         _map.Compact();
 
         Assert.AreEqual(25, _map.Count);

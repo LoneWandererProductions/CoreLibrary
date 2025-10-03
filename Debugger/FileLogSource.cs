@@ -84,7 +84,8 @@ namespace Debugger
                         await using var _ = new FileStream(LogFilePath, FileMode.CreateNew);
                     }
 
-                    await using var fs = new FileStream(LogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    await using var fs = new FileStream(LogFilePath, FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite);
                     using var reader = new StreamReader(fs, Encoding.UTF8);
 
                     // fast-forward to end to only get new lines
@@ -128,7 +129,10 @@ namespace Debugger
                 _cts?.Cancel();
                 _tailTask?.Wait(500);
             }
-            catch { /* ignore */ }
+            catch
+            {
+                /* ignore */
+            }
             finally
             {
                 _cts?.Dispose();

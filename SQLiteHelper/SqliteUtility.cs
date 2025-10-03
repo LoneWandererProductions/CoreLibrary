@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace SqliteHelper;
@@ -28,8 +27,7 @@ public sealed class SqliteUtility : ISqliteUtility
     /// </summary>
     /// <param name="obj">Generic Object</param>
     /// <returns>Table Suggestion</returns>
-    [return: MaybeNull]
-    public DictionaryTableColumns ConvertObjectToTableColumns(object obj)
+    public DictionaryTableColumns? ConvertObjectToTableColumns(object obj)
     {
         if (obj == null)
         {
@@ -68,8 +66,7 @@ public sealed class SqliteUtility : ISqliteUtility
     /// </summary>
     /// <param name="obj">Generic Object</param>
     /// <returns>List of Attribute as String, can return null.</returns>
-    [return: MaybeNull]
-    public List<string> ConvertObjectToAttributes(object obj)
+    public List<string>? ConvertObjectToAttributes(object obj)
     {
         if (obj == null)
         {
@@ -94,8 +91,7 @@ public sealed class SqliteUtility : ISqliteUtility
     /// </summary>
     /// <param name="obj">The object.</param>
     /// <returns>TableSet of Attribute, can return null.</returns>
-    [return: MaybeNull]
-    public TableSet ConvertObjectToTableSet(object obj)
+    public TableSet? ConvertObjectToTableSet(object obj)
     {
         if (obj == null)
         {
@@ -124,8 +120,7 @@ public sealed class SqliteUtility : ISqliteUtility
     /// <param name="attributes">Dictionary of Attribute Names and Values</param>
     /// <param name="obj">Object to be filled</param>
     /// <returns>Filled Object</returns>
-    [return: MaybeNull]
-    public object FillObjectFromAttributes(List<string> attributes, object obj)
+    public object? FillObjectFromAttributes(List<string> attributes, object obj)
     {
         if (attributes == null || obj == null || attributes.Count != obj.GetType().GetProperties().Length)
         {
@@ -159,8 +154,7 @@ public sealed class SqliteUtility : ISqliteUtility
     /// </summary>
     /// <param name="obj">The object.</param>
     /// <returns>List of Attribute as String, can return null</returns>
-    [return: MaybeNull]
-    public List<string> ConvertAttributes(object obj)
+    public List<string>? ConvertAttributes(object obj)
     {
         var attributes = new List<string>();
 

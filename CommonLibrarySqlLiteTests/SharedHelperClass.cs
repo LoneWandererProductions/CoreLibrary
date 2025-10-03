@@ -23,7 +23,7 @@ internal static class SharedHelperClass
     ///     Delete Database
     /// </summary>
     /// <param name="fullPath">Full Path</param>
-    internal static void CleanUp(string fullPath)
+    internal static void CleanUp(string? fullPath)
     {
         if (File.Exists(fullPath))
         {

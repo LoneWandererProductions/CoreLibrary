@@ -143,7 +143,7 @@ internal sealed class Parser
     /// Reads the condition.
     /// </summary>
     /// <returns></returns>
-    private string? ReadCondition()
+    private string ReadCondition()
     {
         // Expect '('
         Expect(TokenType.OpenParen);
@@ -251,7 +251,7 @@ internal sealed class Parser
     }
 
 
-    private string? ReadStatementAsString()
+    private string ReadStatementAsString()
     {
         var sb = new StringBuilder();
         var insideParens = false;

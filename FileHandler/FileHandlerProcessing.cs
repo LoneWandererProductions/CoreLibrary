@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -66,8 +65,7 @@ internal static class FileHandlerProcessing
     /// <param name="subdirectories">Indicates whether to include subdirectories.</param>
     /// <returns>List of files with the specified extension.</returns>
     /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
-    [return: MaybeNull]
-    internal static List<string> GetFilesByExtension(string path, string appendix, bool subdirectories)
+    internal static List<string>? GetFilesByExtension(string path, string appendix, bool subdirectories)
     {
         if (string.IsNullOrEmpty(path))
         {

@@ -18,7 +18,10 @@ namespace SQLiteGui;
 /// <seealso cref="T:ViewModel.ViewModelBase" />
 public sealed class DbInfoViewModel : ViewModelBase
 {
-    private string _infoText;
+    /// <summary>
+    /// The information text
+    /// </summary>
+    private string? _infoText;
 
     /// <summary>
     ///     Gets or sets the information text.
@@ -26,7 +29,7 @@ public sealed class DbInfoViewModel : ViewModelBase
     /// <value>
     ///     The information text.
     /// </value>
-    public string InfoText
+    public string? InfoText
     {
         get => _infoText;
         set

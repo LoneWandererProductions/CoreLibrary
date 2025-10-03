@@ -18,12 +18,12 @@ public sealed class Config
     /// <summary>
     ///     Gets or sets the location.
     /// </summary>
-    public string Location { get; internal init; }
+    public string? Location { get; internal init; }
 
     /// <summary>
     ///     Gets or sets the Database name.
     /// </summary>
-    public string DbName { get; internal init; }
+    public string? DbName { get; internal init; }
 
     /// <summary>
     ///     Gets or sets the time out.

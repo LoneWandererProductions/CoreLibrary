@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects.Helper;
@@ -202,8 +201,7 @@ public static class Utility
     /// <param name="set">The set.</param>
     /// <param name="sequence">The sequence.</param>
     /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-    [return: MaybeNull]
-    public static List<KeyValuePair<int, int>> Sequencer(SortedSet<int> set, int sequence)
+    public static List<KeyValuePair<int, int>>? Sequencer(SortedSet<int> set, int sequence)
     {
         var sequenceGroups = new List<List<int>>();
         var currentSequence = new List<int>();
@@ -251,8 +249,7 @@ public static class Utility
     /// <param name="numbers">The input list.</param>
     /// <param name="sequenceLength">The min count of the sequence.</param>
     /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-    [return: MaybeNull]
-    public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int sequenceLength)
+    public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int sequenceLength)
     {
         var sequenceGroups = new List<List<int>>();
         var currentSequence = new List<int>();

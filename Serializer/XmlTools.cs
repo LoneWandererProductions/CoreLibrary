@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -165,8 +164,7 @@ public static class XmlTools
     /// </summary>
     /// <param name="path">Target file path with extension.</param>
     /// <returns>XML document or null in case of error.</returns>
-    [return: MaybeNull]
-    public static XmlDocument LoadXml(string path)
+    public static XmlDocument? LoadXml(string path)
     {
         var doc = new XmlDocument();
         try

@@ -32,7 +32,8 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging;
 
-/// <inheritdoc />
+/// <inheritdoc cref="IDisposable" />
+/// <inheritdoc cref="IEquatable" />
 /// <summary>
 ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
 /// </summary>

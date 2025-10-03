@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SqliteHelper;
@@ -33,8 +32,7 @@ internal static class SqliteProcessing
     /// </summary>
     /// <param name="table">DataTable representing the table schema.</param>
     /// <returns>A dictionary where the key is the column name and the value contains the column information.</returns>
-    [return: MaybeNull]
-    internal static Dictionary<string, TableColumns> ConvertTableHeaders(DataTable table)
+    internal static Dictionary<string, TableColumns>? ConvertTableHeaders(DataTable table)
     {
         var headers = new Dictionary<string, TableColumns>();
 
@@ -152,8 +150,7 @@ internal static class SqliteProcessing
     /// <param name="column">The TableColumns object to update.</param>
     /// <param name="type">The type string from the SQLite schema.</param>
     /// <returns>The updated TableColumns object, or null if the type is invalid.</returns>
-    [return: MaybeNull]
-    private static TableColumns SetDataType(TableColumns column, string type)
+    private static TableColumns? SetDataType(TableColumns column, string type)
     {
         return type.ToLower() switch
         {

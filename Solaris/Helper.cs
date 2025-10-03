@@ -217,7 +217,7 @@ internal static class Helper
     /// <summary>
     ///     Removes a tile image from the display layer.
     /// </summary>
-    public static Bitmap? RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
+    public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
     {
         var x = position % width * textureSize;
         var y = position / width * textureSize;

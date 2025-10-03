@@ -7,7 +7,6 @@
  */
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SqliteHelper;
@@ -23,8 +22,7 @@ internal static class SqliteHelper
     /// <param name="csv">The CSV.</param>
     /// <param name="headers">if set to <c>true</c> [headers].</param>
     /// <returns>Table Set</returns>
-    [return: MaybeNull]
-    public static List<TableSet> LoadCsv(List<List<string>> csv, bool headers)
+    public static List<TableSet>? LoadCsv(List<List<string>> csv, bool headers)
     {
         var cache = new List<List<string>>(csv);
 
@@ -51,8 +49,7 @@ internal static class SqliteHelper
     /// <param name="table">The table.</param>
     /// <param name="info">The information.</param>
     /// <returns>Csv ready Format</returns>
-    [return: MaybeNull]
-    public static List<List<string>> ExportCsv(DataSet table, DictionaryTableColumns info)
+    public static List<List<string>>? ExportCsv(DataSet table, DictionaryTableColumns info)
     {
         if (table == null)
         {
@@ -75,8 +72,7 @@ internal static class SqliteHelper
     /// </summary>
     /// <param name="table">The table.</param>
     /// <returns>Csv ready Format</returns>
-    [return: MaybeNull]
-    internal static List<List<string>> ExportCsv(DataSet table)
+    internal static List<List<string>>? ExportCsv(DataSet table)
     {
         return table == null ? null : Converge(table);
     }

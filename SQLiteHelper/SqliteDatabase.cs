@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -59,7 +58,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     ///     Initiate Database
     /// </summary>
     /// <param name="dbName">Name of the Database</param>
-    public SqliteDatabase(string dbName)
+    public SqliteDatabase(string? dbName)
     {
         Location = Directory.GetCurrentDirectory();
         DbName = dbName;
@@ -72,7 +71,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// </summary>
     /// <param name="location">Path to location</param>
     /// <param name="dbName">Name of the Database</param>
-    public SqliteDatabase(string location, string dbName)
+    public SqliteDatabase(string? location, string? dbName)
     {
         Location = location;
         DbName = dbName;
@@ -86,7 +85,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <param name="location">Path to location</param>
     /// <param name="dbName">Name of the Database</param>
     /// <param name="timeOut">Time Out</param>
-    public SqliteDatabase(string location, string dbName, int timeOut)
+    public SqliteDatabase(string? location, string? dbName, int timeOut)
     {
         Location = location;
         DbName = dbName;
@@ -116,7 +115,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <summary>
     ///     Folder where the Database resides
     /// </summary>
-    public string Location
+    public string? Location
     {
         get => SqliteConnectionConfig.Location;
 
@@ -127,7 +126,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <summary>
     ///     Name of the Database
     /// </summary>
-    public string DbName
+    public string? DbName
     {
         get => SqliteConnectionConfig.DbName;
 
@@ -204,7 +203,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <param name="dbName">Name of Database</param>
     /// <param name="overwrite">Overwrite existing Database</param>
     /// <returns>Operation Success</returns>
-    public bool CreateDatabase(string dbName, bool overwrite)
+    public bool CreateDatabase(string? dbName, bool overwrite)
     {
         DbName = dbName;
         return _execute.CreateDatabase(Location, dbName, overwrite);
@@ -219,7 +218,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <param name="dbName">Name of Database</param>
     /// <param name="overwrite">Overwrite existing Database</param>
     /// <returns>Operation Success</returns>
-    public bool CreateDatabase(string location, string dbName, bool overwrite)
+    public bool CreateDatabase(string? location, string? dbName, bool overwrite)
     {
         Location = location;
         DbName = dbName;
@@ -267,7 +266,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <param name="location">Local location of the Database</param>
     /// <param name="dbName">Name of Database</param>
     /// <returns>Operation Success</returns>
-    public bool DeleteDatabase(string location, string dbName)
+    public bool DeleteDatabase(string? location, string? dbName)
     {
         return _execute.DeleteDatabase(location, dbName);
     }
@@ -316,7 +315,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <param name="location">Local location to the Database</param>
     /// <param name="dbName">Name of the database</param>
     /// <returns>True if Connection is possible</returns>
-    public bool DatabaseContextSwitch(string location, string dbName)
+    public bool DatabaseContextSwitch(string? location, string? dbName)
     {
         return _execute.DatabaseContextSwitch(location, dbName);
     }
@@ -494,8 +493,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// </summary>
     /// <param name="tableAlias">Name of the Table</param>
     /// <returns>List of Names of all Table Headers with the Unique Property</returns>
-    [return: MaybeNull]
-    public List<string> Pragma_index_list(string tableAlias)
+    public List<string>? Pragma_index_list(string tableAlias)
     {
         return _execute.Pragma_index_list(tableAlias);
     }
@@ -700,8 +698,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
     /// <returns>
     ///     List of Lines, that should be converted into a csv
     /// </returns>
-    [return: MaybeNull]
-    public List<List<string>> ExportCvs(string tableAlias, bool headers)
+    public List<List<string>>? ExportCvs(string tableAlias, bool headers)
     {
         var table = _execute.SimpleSelect(tableAlias);
         var info = _execute.PragmaTable_Info(tableAlias);

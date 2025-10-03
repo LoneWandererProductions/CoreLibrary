@@ -79,8 +79,8 @@ internal static class ImageHelper
 
         // Build separable 2D
         for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
-                kernel[y, x] = gauss1D[y] * gauss1D[x];
+        for (var x = 0; x < size; x++)
+            kernel[y, x] = gauss1D[y] * gauss1D[x];
 
         return kernel;
     }
@@ -97,14 +97,14 @@ internal static class ImageHelper
         int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
         for (var y = region.Top; y < region.Bottom; y++)
-            for (var x = region.Left; x < region.Right; x++)
-            {
-                var p = dbm.GetPixel(x, y);
-                rSum += p.R;
-                gSum += p.G;
-                bSum += p.B;
-                count++;
-            }
+        for (var x = region.Left; x < region.Right; x++)
+        {
+            var p = dbm.GetPixel(x, y);
+            rSum += p.R;
+            gSum += p.G;
+            bSum += p.B;
+            count++;
+        }
 
         if (count == 0) return Color.Black;
         return Color.FromArgb(rSum / count, gSum / count, bSum / count);
@@ -332,7 +332,7 @@ internal static class ImageHelper
     /// <returns>Rounded value as byte.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte ClampToByte(double value)
-    => (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
+        => (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
 
     /// <summary>
     ///     Validates the file path.

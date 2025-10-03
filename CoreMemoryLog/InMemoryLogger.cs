@@ -14,7 +14,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using Microsoft.Extensions.Logging;
 
 namespace CoreMemoryLog
@@ -104,11 +103,11 @@ namespace CoreMemoryLog
         /// Stores the original template and args without formatting.
         /// </summary>
         public void Log(LogLevel level,
-                        string? message,
-                         string? libraryName = null,
-                        Exception? exception = null,
-                        [CallerMemberName] string callerMethod = "",
-                        params object[] args)
+            string? message,
+            string? libraryName = null,
+            Exception? exception = null,
+            [CallerMemberName] string callerMethod = "",
+            params object[] args)
         {
             // Skip if filtered
             if (!IsEnabled(LogLevel))
@@ -288,8 +287,8 @@ namespace CoreMemoryLog
             using var writer = new StreamWriter(filePath, append);
 
             foreach (var log in GetLogs()
-                                 .Where(l => l.Level >= minimumLevel)
-                                 .OrderBy(l => l.Timestamp))
+                         .Where(l => l.Level >= minimumLevel)
+                         .OrderBy(l => l.Timestamp))
             {
                 writer.WriteLine(Formatter.Format(log));
             }

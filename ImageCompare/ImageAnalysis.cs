@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -39,8 +38,7 @@ public sealed class ImageAnalysis : IImageAnalysis
     /// <returns>List of Images with similar Color range</returns>
     /// <exception cref="ArgumentException">Argument Exception</exception>
     /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-    [return: MaybeNull]
-    public List<string> FindImagesInColorRange(int r, int g, int b, int range, string folderPath,
+    public List<string>? FindImagesInColorRange(int r, int g, int b, int range, string folderPath,
         bool checkSubfolders, IEnumerable<string> extensions)
     {
         return ImageColoring.GetSimilarColors(r, g, b, range, folderPath, checkSubfolders, extensions);
@@ -54,8 +52,7 @@ public sealed class ImageAnalysis : IImageAnalysis
     /// <returns>Image Details as Image Data Object</returns>
     /// <exception cref="ArgumentException">Argument Exception</exception>
     /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-    [return: MaybeNull]
-    public ImageData GetImageDetails(string imagePath)
+    public ImageData? GetImageDetails(string imagePath)
     {
         return AnalysisProcessing.GetImageDetails(imagePath);
     }
@@ -68,8 +65,7 @@ public sealed class ImageAnalysis : IImageAnalysis
     /// <returns>List of Image Details as Image Data Object</returns>
     /// <exception cref="ArgumentException">Argument Exception</exception>
     /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-    [return: MaybeNull]
-    public List<ImageData> GetImageDetails(List<string> imagePaths)
+    public List<ImageData>? GetImageDetails(List<string> imagePaths)
     {
         var lst = new List<ImageData>(imagePaths.Count);
 

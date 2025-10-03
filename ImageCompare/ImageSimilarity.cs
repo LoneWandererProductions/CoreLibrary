@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -40,8 +39,7 @@ internal static class ImageSimilarity
     /// <returns>
     ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
     /// </returns>
-    [return: MaybeNull]
-    internal static List<List<string>> GetSimilarImages(string folderPath, bool checkSubfolders,
+    internal static List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
         IEnumerable<string> extensions, float threshold)
     {
         var localDate = DateTime.Now;

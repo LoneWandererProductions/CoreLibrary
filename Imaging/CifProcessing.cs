@@ -112,7 +112,8 @@ internal static class CifProcessing
         {
             if (!cif.CifImage.TryGetValue(data.Color, out var value))
             {
-                value = [];
+                value =  []
+                ;
                 cif.CifImage[data.Color] = value;
             }
 

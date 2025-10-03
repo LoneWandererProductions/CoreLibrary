@@ -11,7 +11,6 @@
 // ReSharper disable UnusedType.Global
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DataFormatter;
@@ -27,8 +26,7 @@ public static class ReaderObj
     /// </summary>
     /// <param name="filePath">The file path.</param>
     /// <returns>Readable Obj File</returns>
-    [return: MaybeNull]
-    public static ObjFile ReadObj(string filePath)
+    public static ObjFile? ReadObj(string filePath)
     {
         var lst = ReadText.ReadFile(filePath);
         if (lst == null)

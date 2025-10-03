@@ -37,9 +37,9 @@ public class ParserTests
         var parser = new Parser(tokens);
         var result = parser.ParseIntoCategorizedBlocks();
 
-        foreach (var (Key, Category, Value) in result)
+        foreach (var (key, category, value) in result)
         {
-            Trace.WriteLine($"[{Key}] {Category}: {Value ?? "(null)"}");
+            Trace.WriteLine($"[{key}] {category}: {value ?? "(null)"}");
         }
 
         Assert.AreEqual(10, result.Count, "Expected 10 categorized blocks.");
@@ -130,9 +130,9 @@ public class ParserTests
         var result = parser.ParseIntoCategorizedBlocks();
 
         // 🔽 Fix: Clean up possible artifacts
-        foreach (var (Key, Category, Value) in result)
+        foreach (var (key, category, value) in result)
         {
-            Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            Trace.WriteLine($"[{key}] {category}: {value}");
         }
 
         // 🔧 Defensive assertion: ignore empty statements
@@ -149,9 +149,9 @@ public class ParserTests
         var parser = new Parser(new Lexer(input).Tokenize());
         var result = parser.ParseIntoCategorizedBlocks();
 
-        foreach (var (Key, Category, Value) in result)
+        foreach (var (key, category, value) in result)
         {
-            Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            Trace.WriteLine($"[{key}] {category}: {value}");
         }
 
         Assert.AreEqual(1, result.Count);
@@ -170,9 +170,9 @@ public class ParserTests
         var result = parser.ParseIntoCategorizedBlocks();
 
 
-        foreach (var (Key, Category, Value) in result)
+        foreach (var (key, category, value) in result)
         {
-            Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            Trace.WriteLine($"[{key}] {category}: {value}");
         }
 
         Assert.AreEqual(1, result.Count);

@@ -24,27 +24,27 @@ public sealed class SqlLiteHelperTableCreate
     /// <summary>
     ///     The db name one (const). Value: "DbTableCreateOne.db".
     /// </summary>
-    private const string DbNameOne = "DbTableCreateOne.db";
+    private const string? DbNameOne = "DbTableCreateOne.db";
 
     /// <summary>
     ///     The db name two (const). Value: "DbTableCreateTwo.db".
     /// </summary>
-    private const string DbNameTwo = "DbTableCreateTwo.db";
+    private const string? DbNameTwo = "DbTableCreateTwo.db";
 
     /// <summary>
     ///     The db name three (const). Value: "DbTableCreateThree.db".
     /// </summary>
-    private const string DbNameThree = "DbTableCreateThree.db";
+    private const string? DbNameThree = "DbTableCreateThree.db";
 
     /// <summary>
     ///     The db name four (const). Value: "DbTableCreateFour.db".
     /// </summary>
-    private const string DbNameFour = "DbTableCreateFour.db";
+    private const string? DbNameFour = "DbTableCreateFour.db";
 
     /// <summary>
     ///     The db name five (const). Value: "DbTableCreateFive.db".
     /// </summary>
-    private const string DbNameFive = "DbTableCreateFive.db";
+    private const string? DbNameFive = "DbTableCreateFive.db";
 
     /// <summary>
     ///     The db source (const). Value: "Source".
