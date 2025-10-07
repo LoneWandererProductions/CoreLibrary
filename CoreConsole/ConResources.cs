@@ -52,10 +52,16 @@ internal static class ConResources
     /// </summary>
     internal const string ResourceHeader = "header";
 
+    /// <summary>
+    /// The resource event processing completed.
+    /// </summary>
     internal const string ResourceEventProcessing = "Event processing completed.";
 
     internal const string ResourceCsExtension = "*.cs";
 
+    /// <summary>
+    /// The list command
+    /// </summary>
     internal const string ResourceListCmd = "list";
 
     internal const string ResourceInput = "Enter something: ";
@@ -66,6 +72,9 @@ internal static class ConResources
 
     internal const string ResourceEventWait = "Event is processing. Please wait...";
 
+    /// <summary>
+    /// The using command
+    /// </summary>
     internal const string ResourceUsingCmd = "using";
 
     internal const string ErrorDirectory = "Error: Directory path '{0}' does not exist.";
@@ -90,6 +99,8 @@ internal static class ConResources
     internal const string MessageSeparator = "  - ";
 
     internal const string Quotes = "\"";
+
+    internal const string MessageError = "Error";
 
     internal const string MessageFilesIgnored = "Loaded {0} files to ignore.";
 

@@ -33,6 +33,11 @@ internal static class ConsoleHelper
     {
         Analyzers.Add(new DoubleNewlineAnalyzer());
         Analyzers.Add(new LicenseHeaderAnalyzer());
+
+        // New Roslyn-based analyzers
+        Analyzers.Add(new UnusedLocalVariableAnalyzer());
+        Analyzers.Add(new UnusedParameterAnalyzer());
+        Analyzers.Add(new UnusedPrivateFieldAnalyzer());
     }
 
     /// <summary>
@@ -185,27 +190,29 @@ internal static class ConsoleHelper
     /// </summary>
     /// <param name="package">The command containing the directory path.</param>
     /// <returns>Diagnostics result from analyzers.</returns>
-    internal static string RunAnalyzers(OutCommand package)
+    internal static (IReadOnlyList<Diagnostic> Diagnostics, string Output) RunAnalyzers(OutCommand package)
     {
         var path = CleanPath(package.Parameter[0]);
+        var diagnostics = new List<Diagnostic>();
+
         if (!Directory.Exists(path))
         {
-            return string.Format(ConResources.ErrorDirectory, path);
+            diagnostics.Add(new Diagnostic(ConResources.MessageError,DiagnosticSeverity.Error, path, -1, string.Format(ConResources.ErrorDirectory, path)));
         }
-
-        var files = Directory.GetFiles(path, ConResources.ResourceCsExtension, SearchOption.AllDirectories);
-        var result = string.Empty;
-
-        foreach (var file in files)
+        else
         {
-            var content = File.ReadAllText(file);
-            result = Analyzers.SelectMany(analyzer => analyzer.Analyze(file, content))
-                .Aggregate(result, (current, diagnostic) =>
-                    current + string.Concat(diagnostic.ToString(), Environment.NewLine));
+            var files = Directory.GetFiles(path, ConResources.ResourceCsExtension, SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                var content = File.ReadAllText(file);
+                diagnostics.AddRange(Analyzers.SelectMany(analyzer => analyzer.Analyze(file, content)));
+            }
         }
 
-        return result;
+        var output = string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString()));
+        return (diagnostics, output);
     }
+
 
     /// <summary>
     ///     Simulates applying license headers to preview affected files.

@@ -14,17 +14,36 @@ namespace CoreBuilder;
 public sealed class Diagnostic
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Diagnostic" /> class.
+    /// Initializes a new instance of the <see cref="Diagnostic" /> class.
     /// </summary>
+    /// <param name="name">The name.</param>
     /// <param name="filePath">The file path.</param>
     /// <param name="lineNumber">The line number.</param>
     /// <param name="message">The message.</param>
-    internal Diagnostic(string filePath, int lineNumber, string message)
+    public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message)
     {
+        Name = name;
+        Severity = severity;
         FilePath = filePath;
         LineNumber = lineNumber;
         Message = message;
     }
+
+    /// <summary>
+    /// Gets the name.
+    /// </summary>
+    /// <value>
+    /// The name.
+    /// </value>
+    public string Name { get; }
+
+    /// <summary>
+    /// Gets the severity.
+    /// </summary>
+    /// <value>
+    /// The severity.
+    /// </value>
+    public DiagnosticSeverity Severity { get; }
 
     /// <summary>
     ///     Gets the file path.
@@ -58,6 +77,6 @@ public sealed class Diagnostic
     /// </returns>
     public override string ToString()
     {
-        return $"{FilePath}({LineNumber}): {Message}";
+        return $"{Name}, {Severity}, {FilePath}({LineNumber}): {Message}";
     }
 }

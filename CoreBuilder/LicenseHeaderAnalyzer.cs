@@ -46,7 +46,7 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
         // Check if the file starts with the license header
         if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))
         {
-            yield return new Diagnostic(filePath, 1, "Missing license header.");
+            yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, 1, "Missing license header.");
         }
     }
 }
