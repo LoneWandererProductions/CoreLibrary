@@ -27,6 +27,12 @@ public sealed class UnusedPrivateFieldAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
+        // 🔹 Ignore generated code and compiler artifacts
+        if (CoreHelper.ShouldIgnoreFile(filePath))
+        {
+            yield break;
+        }
+
         var tree = CSharpSyntaxTree.ParseText(fileContent);
         var compilation = CSharpCompilation.Create("Analysis")
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))

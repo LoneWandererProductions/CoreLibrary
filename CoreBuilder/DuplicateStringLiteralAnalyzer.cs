@@ -27,6 +27,12 @@ public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
+        // 🔹 Ignore generated code and compiler artifacts
+        if (CoreHelper.ShouldIgnoreFile(filePath))
+        {
+            yield break;
+        }
+
         // This analyzer needs the global dictionary.
         // For per-file call, we just yield nothing
         yield break; // Placeholder; real project-wide detection happens in ConsoleHelper

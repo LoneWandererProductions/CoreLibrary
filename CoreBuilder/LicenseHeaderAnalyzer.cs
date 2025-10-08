@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreBuilder.Interface;
 
 namespace CoreBuilder;
@@ -25,16 +26,33 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
-        // Skip ignored files
+        // Skip ignored files (obj/, .g.cs, generated, etc.)
         if (CoreHelper.ShouldIgnoreFile(filePath))
-        {
             yield break;
-        }
 
-        // Check if the file starts with the license header
-        if (!fileContent.StartsWith("// Licensed under", StringComparison.OrdinalIgnoreCase))
+        // Trim leading whitespace/newlines
+        var trimmed = fileContent.TrimStart();
+
+        // Acceptable license header patterns
+        var validHeaders = new[]
         {
-            yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, 1, "Missing license header.");
+        "// Licensed under",
+        "/* COPYRIGHT",
+        "/* LICENSE",
+    };
+
+        // Check if file starts with one of the known headers
+        bool hasHeader = validHeaders.Any(h =>
+            trimmed.StartsWith(h, StringComparison.OrdinalIgnoreCase));
+
+        if (!hasHeader)
+        {
+            yield return new Diagnostic(
+                Name,
+                DiagnosticSeverity.Info,
+                filePath,
+                1,
+                "Missing license header.");
         }
     }
 }
