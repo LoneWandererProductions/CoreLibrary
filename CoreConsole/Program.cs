@@ -15,7 +15,6 @@ using CoreBuilder;
 using CoreBuilder.Interface;
 using Interpreter;
 using Interpreter.Resources;
-using Microsoft.CodeAnalysis;
 
 namespace CoreConsole;
 

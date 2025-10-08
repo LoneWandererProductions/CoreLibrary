@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ShaderTypeApp.cs
@@ -10,10 +10,10 @@ namespace RenderEngine
 {
     public enum ShaderTypeApp
     {
-        SolidColor,
-        TexturedQuad,
-        VertexColor,
-        Wireframe,
-        TextureArrayTilemap
+        SolidColor = 0,
+        TexturedQuad = 1,
+        VertexColor = 2,
+        Wireframe = 3,
+        TextureArrayTilemap = 4
     }
 }

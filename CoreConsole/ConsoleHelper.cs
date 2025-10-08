@@ -38,6 +38,7 @@ internal static class ConsoleHelper
         Analyzers.Add(new UnusedLocalVariableAnalyzer());
         Analyzers.Add(new UnusedParameterAnalyzer());
         Analyzers.Add(new UnusedPrivateFieldAnalyzer());
+        Analyzers.Add(new HotPathAnalyzer());
     }
 
     /// <summary>

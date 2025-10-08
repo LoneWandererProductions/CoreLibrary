@@ -19,22 +19,10 @@ namespace CoreBuilder;
 /// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
 public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
 {
-    /// <summary>
-    ///     Gets the name.
-    /// </summary>
-    /// <value>
-    ///     The name.
-    /// </value>
+    /// <inheritdoc />
     public string Name => "LicenseHeader";
 
-    /// <summary>
-    ///     Analyzes the specified file path.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <param name="fileContent">Content of the file.</param>
-    /// <returns>
-    ///     Code Analyzer results.
-    /// </returns>
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // Skip ignored files

@@ -17,16 +17,19 @@ public sealed class Diagnostic
     /// Initializes a new instance of the <see cref="Diagnostic" /> class.
     /// </summary>
     /// <param name="name">The name.</param>
+    /// <param name="severity">The severity.</param>
     /// <param name="filePath">The file path.</param>
     /// <param name="lineNumber">The line number.</param>
     /// <param name="message">The message.</param>
-    public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message)
+    /// <param name="impact">The impact.</param>
+    public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message, DiagnosticImpact? impact  = null)
     {
         Name = name;
         Severity = severity;
         FilePath = filePath;
         LineNumber = lineNumber;
         Message = message;
+        Impact = impact;
     }
 
     /// <summary>
@@ -44,6 +47,14 @@ public sealed class Diagnostic
     /// The severity.
     /// </value>
     public DiagnosticSeverity Severity { get; }
+
+    /// <summary>
+    /// Gets the impact.
+    /// </summary>
+    /// <value>
+    /// The impact.
+    /// </value>
+    public DiagnosticImpact? Impact { get; }  // nullable
 
     /// <summary>
     ///     Gets the file path.
@@ -77,6 +88,8 @@ public sealed class Diagnostic
     /// </returns>
     public override string ToString()
     {
-        return $"{Name}, {Severity}, {FilePath}({LineNumber}): {Message}";
+        return Impact.HasValue
+            ? $"{Name}, {Severity}, {FilePath}({LineNumber}): {Message} [{Impact.Value}]"
+            : $"{Name}, {Severity}, {FilePath}({LineNumber}): {Message}";
     }
 }

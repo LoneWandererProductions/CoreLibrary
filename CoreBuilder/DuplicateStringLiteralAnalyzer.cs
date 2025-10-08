@@ -21,6 +21,7 @@ namespace CoreBuilder;
 /// </summary>
 public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
 {
+    /// <inheritdoc />
     public string Name => "DuplicateStringLiteral";
 
     /// <inheritdoc />
