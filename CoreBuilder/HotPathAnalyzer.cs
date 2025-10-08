@@ -19,7 +19,7 @@ namespace CoreBuilder;
 /// Analyzer that detects method calls in hot paths (loops) and aggregates statistics.
 /// </summary>
 public sealed class HotPathAnalyzer : ICodeAnalyzer
-{   
+{
     /// <inheritdoc />
     public string Name => "HotPath";
 
@@ -45,7 +45,7 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
     /// The nested loop weight
     /// </summary>
     private const int NestedLoopWeight = 50;
-   
+
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
@@ -66,7 +66,7 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
                 symbolName.StartsWith("Directory."))
                 continue;
 
-            var loopContext = GetLoopContext(invocation);
+            var loopContext = CoreHelper.GetLoopContext(invocation);
             if (loopContext == LoopContext.None)
                 continue;
 
@@ -137,60 +137,5 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
             LoopContext.Nested => $"Method '{method}' inside nested loops.",
             _ => $"Method '{method}' inside loop."
         };
-    }
-
-    /// <summary>
-    /// Gets the loop context.
-    /// </summary>
-    /// <param name="node">The node.</param>
-    /// <returns>The type of the loop.</returns>
-    private static LoopContext GetLoopContext(SyntaxNode node)
-    {
-        var loops = node.Ancestors().Where(a =>
-            a is ForStatementSyntax ||
-            a is ForEachStatementSyntax ||
-            a is WhileStatementSyntax ||
-            a is DoStatementSyntax).ToList();
-
-        if (!loops.Any()) return LoopContext.None;
-        if (loops.Count > 1) return LoopContext.Nested;
-
-        var loop = loops.First();
-        return loop switch
-        {
-            ForStatementSyntax forLoop => AnalyzeForLoop(forLoop),
-            ForEachStatementSyntax => LoopContext.VariableBounded,
-            WhileStatementSyntax => LoopContext.VariableBounded,
-            DoStatementSyntax => LoopContext.VariableBounded,
-            _ => LoopContext.VariableBounded
-        };
-    }
-
-    /// <summary>
-    /// Analyzes for loop.
-    /// </summary>
-    /// <param name="loop">The loop.</param>
-    /// <returns>The type of the loop.</returns>
-    private static LoopContext AnalyzeForLoop(ForStatementSyntax loop)
-    {
-        if (loop.Condition is BinaryExpressionSyntax binary &&
-            binary.Right is LiteralExpressionSyntax literal &&
-            literal.IsKind(SyntaxKind.NumericLiteralExpression))
-        {
-            return LoopContext.ConstantBounded;
-        }
-
-        return LoopContext.VariableBounded;
-    }
-
-    /// <summary>
-    /// loop Contexts we consider
-    /// </summary>
-    private enum LoopContext
-    {
-        None = 0,
-        ConstantBounded = 1,
-        VariableBounded = 2,
-        Nested = 3,
     }
 }

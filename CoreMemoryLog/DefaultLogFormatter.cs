@@ -27,7 +27,7 @@ namespace CoreMemoryLog
         /// Initializes a new instance of the <see cref="DefaultLogFormatter"/> class.
         /// </summary>
         /// <param name="order">
-        /// The order of fields to include in formatted output. 
+        /// The order of fields to include in formatted output.
         /// Supported keys: Timestamp, LibraryName, Level, CallerMethod, Message.
         /// </param>
         public DefaultLogFormatter(IEnumerable<string>? order = null)

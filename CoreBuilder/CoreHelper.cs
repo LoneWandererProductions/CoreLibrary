@@ -9,6 +9,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder;
 
@@ -50,5 +53,49 @@ internal static class CoreHelper
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Detects the loop context of a node (constant, variable, nested).
+    /// </summary>
+    /// <param name="node">The node.</param>
+    /// <returns>LoopContext enum.</returns>
+    internal static LoopContext GetLoopContext(SyntaxNode node)
+    {
+        var loops = node.Ancestors().Where(a =>
+            a is ForStatementSyntax ||
+            a is ForEachStatementSyntax ||
+            a is WhileStatementSyntax ||
+            a is DoStatementSyntax).ToList();
+
+        if (!loops.Any()) return LoopContext.None;
+        if (loops.Count > 1) return LoopContext.Nested;
+
+        var loop = loops.First();
+        return loop switch
+        {
+            ForStatementSyntax forLoop => AnalyzeForLoop(forLoop),
+            ForEachStatementSyntax => LoopContext.VariableBounded,
+            WhileStatementSyntax => LoopContext.VariableBounded,
+            DoStatementSyntax => LoopContext.VariableBounded,
+            _ => LoopContext.VariableBounded
+        };
+    }
+
+    /// <summary>
+    /// Checks if a for loop has a constant numeric bound.
+    /// </summary>
+    /// <param name="loop">The for loop.</param>
+    /// <returns>LoopContext.ConstantBounded or VariableBounded.</returns>
+    private static LoopContext AnalyzeForLoop(ForStatementSyntax loop)
+    {
+        if (loop.Condition is BinaryExpressionSyntax binary &&
+            binary.Right is LiteralExpressionSyntax literal &&
+            literal.IsKind(SyntaxKind.NumericLiteralExpression))
+        {
+            return LoopContext.ConstantBounded;
+        }
+
+        return LoopContext.VariableBounded;
     }
 }

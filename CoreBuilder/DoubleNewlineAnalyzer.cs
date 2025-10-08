@@ -19,21 +19,9 @@ namespace CoreBuilder;
 public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    /// <summary>
-    ///     Gets the name.
-    /// </summary>
-    /// <value>
-    ///     The name.
-    /// </value>
     public string Name => "DoubleNewline";
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Analyzes the specified file path.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <param name="fileContent">Content of the file.</param>
-    /// <returns>Diagnostic results.</returns>
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // Skip ignored files
