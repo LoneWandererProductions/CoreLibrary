@@ -24,28 +24,47 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
     public string Name => "LicenseHeader";
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
-        // Skip ignored files (obj/, .g.cs, generated, etc.)
         if (CoreHelper.ShouldIgnoreFile(filePath))
             yield break;
 
-        // Trim leading whitespace/newlines
+        // Trim leading whitespace
         var trimmed = fileContent.TrimStart();
 
-        // Acceptable license header patterns
-        var validHeaders = new[]
+        // Quick exit if no comment at all
+        if (!(trimmed.StartsWith("/*") || trimmed.StartsWith("//")))
         {
-        "// Licensed under",
-        "/* COPYRIGHT",
-        "/* LICENSE",
-    };
+            yield return new Diagnostic(
+                Name,
+                DiagnosticSeverity.Info,
+                filePath,
+                1,
+                "Missing license header.");
+            yield break;
+        }
 
-        // Check if file starts with one of the known headers
-        bool hasHeader = validHeaders.Any(h =>
-            trimmed.StartsWith(h, StringComparison.OrdinalIgnoreCase));
+        // Extract the first comment block or line(s)
+        string firstChunk;
+        if (trimmed.StartsWith("/*"))
+        {
+            // Find the end of block comment
+            var endIdx = trimmed.IndexOf("*/", StringComparison.Ordinal);
+            firstChunk = endIdx > 0 ? trimmed[..(endIdx + 2)] : trimmed;
+        }
+        else
+        {
+            // Line comments at start
+            var lines = trimmed.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//"));
+            firstChunk = string.Join("\n", lines);
+        }
 
-        if (!hasHeader)
+        // Normalize
+        var header = firstChunk.ToUpperInvariant();
+
+        // Acceptable keywords
+        if (!(header.Contains("COPYRIGHT") || header.Contains("LICENSE")))
         {
             yield return new Diagnostic(
                 Name,
