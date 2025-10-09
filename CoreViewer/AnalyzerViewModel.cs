@@ -1,4 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreViewer
+ * FILE:        CoreViewer/AnalyzerViewModel.cs
+ * PURPOSE:     ViewModel for Analyzer Viewer, handles loading and running analyzers, filtering diagnostics, and folder selection
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
 using CoreBuilder;
@@ -6,135 +14,183 @@ using CoreBuilder.Interface;
 using CommonDialogs;
 using ViewModel;
 
-namespace CoreViewer;
-
-/// <summary>
-/// ViewModel for the Analyzer Viewer.
-/// Handles loading analyzers, running them, filtering, and selecting folders.
-/// </summary>
-public sealed class AnalyzerViewModel : ViewModelBase
+namespace CoreViewer
 {
-    private string _filterText = string.Empty;
-    private string _targetDirectory = @"C:\Repos\Source\ServiceCraneScale";
-    private ICodeAnalyzer? _selectedAnalyzer;
-
-    private readonly List<ICodeAnalyzer> _analyzers = new();
-    private readonly List<Diagnostic> _currentDiagnostics = new();
-
-    public AnalyzerViewModel()
+    /// <summary>
+    /// ViewModel for the Analyzer Viewer.
+    /// Handles loading analyzers, running them, filtering results, and selecting folders.
+    /// </summary>
+    public sealed class AnalyzerViewModel : ViewModelBase
     {
-        LoadAnalyzers();
-        RunAnalyzerCommand = new RelayCommand(RunAnalyzer);
-        SelectFolderCommand = new RelayCommand(SelectFolder);
-    }
+        /// <summary>
+        /// The filter text
+        /// </summary>
+        private string _filterText = string.Empty;
 
-    /// <summary>
-    /// Available analyzers.
-    /// </summary>
-    public IReadOnlyList<ICodeAnalyzer> Analyzers => _analyzers;
+        /// <summary>
+        /// The target directory
+        /// </summary>
+        private string _targetDirectory;
 
-    /// <summary>
-    /// The analyzer selected by the user.
-    /// </summary>
-    public ICodeAnalyzer? SelectedAnalyzer
-    {
-        get => _selectedAnalyzer;
-        set => SetProperty(ref _selectedAnalyzer, value);
-    }
+        /// <summary>
+        /// The selected analyzer
+        /// </summary>
+        private ICodeAnalyzer? _selectedAnalyzer;
 
-    /// <summary>
-    /// Diagnostics displayed in the UI.
-    /// </summary>
-    public ObservableCollection<Diagnostic> DiagnosticsView { get; } = new();
+        /// <summary>
+        /// The analyzers
+        /// </summary>
+        private readonly List<ICodeAnalyzer> _analyzers = new();
 
-    /// <summary>
-    /// Text filter for diagnostics.
-    /// </summary>
-    public string FilterText
-    {
-        get => _filterText;
-        set
+        /// <summary>
+        /// The current diagnostics
+        /// </summary>
+        private readonly List<Diagnostic> _currentDiagnostics = new();
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="AnalyzerViewModel"/> and sets up commands.
+        /// </summary>
+        public AnalyzerViewModel()
         {
-            if (SetProperty(ref _filterText, value))
-                ApplyFilter();
+            LoadAnalyzers();
+            RunAnalyzerCommand = new RelayCommand(RunAnalyzer);
+            SelectFolderCommand = new RelayCommand(SelectFolder);
         }
-    }
 
-    /// <summary>
-    /// The directory where source files are analyzed.
-    /// </summary>
-    public string TargetDirectory
-    {
-        get => _targetDirectory;
-        set => SetProperty(ref _targetDirectory, value);
-    }
+        /// <summary>
+        /// Read-only list of all available analyzers.
+        /// </summary>
+        public IReadOnlyList<ICodeAnalyzer> Analyzers => _analyzers;
 
-    public ICommand RunAnalyzerCommand { get; }
-    public ICommand SelectFolderCommand { get; }
-
-    private void LoadAnalyzers()
-    {
-        _analyzers.AddRange(new ICodeAnalyzer[]
+        /// <summary>
+        /// The analyzer currently selected by the user.
+        /// </summary>
+        public ICodeAnalyzer? SelectedAnalyzer
         {
-            new DoubleNewlineAnalyzer(),
-            new LicenseHeaderAnalyzer(),
-            new UnusedLocalVariableAnalyzer(),
-            new UnusedParameterAnalyzer(),
-            new UnusedPrivateFieldAnalyzer(),
-            new HotPathAnalyzer(),
-            new AllocationAnalyzer(),
-            new DisposableAnalyzer(),
-            new EventHandlerAnalyzer(),
-        });
-    }
+            get => _selectedAnalyzer;
+            set => SetProperty(ref _selectedAnalyzer, value);
+        }
 
-    private void RunAnalyzer()
-    {
-        if (!Directory.Exists(TargetDirectory))
-            return;
+        /// <summary>
+        /// Diagnostics to be displayed in the UI, filtered as needed.
+        /// </summary>
+        public ObservableCollection<Diagnostic> DiagnosticsView { get; } = new();
 
-        IEnumerable<ICodeAnalyzer> analyzersToRun = SelectedAnalyzer is not null
-            ? new[] { SelectedAnalyzer }
-            : _analyzers;
-
-        _currentDiagnostics.Clear();
-
-        var files = Directory.GetFiles(TargetDirectory, "*.cs", SearchOption.AllDirectories);
-        foreach (var file in files)
+        /// <summary>
+        /// Filter text to narrow down displayed diagnostics.
+        /// Setting this property automatically updates the filtered view.
+        /// </summary>
+        public string FilterText
         {
-            var content = File.ReadAllText(file);
-            foreach (var analyzer in analyzersToRun)
+            get => _filterText;
+            set
             {
-                _currentDiagnostics.AddRange(analyzer.Analyze(file, content));
+                if (SetProperty(ref _filterText, value))
+                    ApplyFilter();
             }
         }
 
-        ApplyFilter();
-    }
-
-    private void SelectFolder()
-    {
-        var selected = DialogHandler.ShowFolder(TargetDirectory);
-        if (!string.IsNullOrWhiteSpace(selected))
+        /// <summary>
+        /// The directory to analyze. Updating this does not automatically run analyzers.
+        /// </summary>
+        public string TargetDirectory
         {
-            TargetDirectory = selected;
+            get => _targetDirectory;
+            set => SetProperty(ref _targetDirectory, value);
         }
-    }
 
-    private void ApplyFilter()
-    {
-        DiagnosticsView.Clear();
+        /// <summary>
+        /// Command to run analyzers on the current target directory.
+        /// </summary>
+        public ICommand RunAnalyzerCommand { get; }
 
-        var filtered = string.IsNullOrWhiteSpace(FilterText)
-            ? _currentDiagnostics
-            : _currentDiagnostics.Where(d =>
-                d.FilePath.ToLower().Contains(FilterText.ToLower()) ||
-                d.Message.ToLower().Contains(FilterText.ToLower()) ||
-                d.Name.ToLower().Contains(FilterText.ToLower()));
+        /// <summary>
+        /// Command to select a new target folder.
+        /// Automatically updates <see cref="TargetDirectory"/> and runs analyzers.
+        /// </summary>
+        public ICommand SelectFolderCommand { get; }
 
-        foreach (var d in filtered)
+        /// <summary>
+        /// Loads all available analyzers into the <see cref="_analyzers"/> list.
+        /// </summary>
+        private void LoadAnalyzers()
         {
-            DiagnosticsView.Add(d);
+            _analyzers.AddRange(new ICodeAnalyzer[]
+            {
+                new DoubleNewlineAnalyzer(),
+                new LicenseHeaderAnalyzer(),
+                new UnusedLocalVariableAnalyzer(),
+                new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(),
+                new HotPathAnalyzer(),
+                new AllocationAnalyzer(),
+                new DisposableAnalyzer(),
+                new EventHandlerAnalyzer(),
+            });
+        }
+
+        /// <summary>
+        /// Runs analyzers on all C# files in the target directory.
+        /// If <see cref="SelectedAnalyzer"/> is set, only that analyzer is run.
+        /// Results are stored in <see cref="DiagnosticsView"/> and filtered according to <see cref="FilterText"/>.
+        /// </summary>
+        private void RunAnalyzer()
+        {
+            if (!Directory.Exists(TargetDirectory))
+                return;
+
+            IEnumerable<ICodeAnalyzer> analyzersToRun = SelectedAnalyzer is not null
+                ? new[] { SelectedAnalyzer }
+                : _analyzers;
+
+            _currentDiagnostics.Clear();
+
+            var files = Directory.GetFiles(TargetDirectory, "*.cs", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                var content = File.ReadAllText(file);
+                foreach (var analyzer in analyzersToRun)
+                {
+                    _currentDiagnostics.AddRange(analyzer.Analyze(file, content));
+                }
+            }
+
+            ApplyFilter();
+        }
+
+        /// <summary>
+        /// Opens a folder selection dialog and updates <see cref="TargetDirectory"/>.
+        /// Automatically runs analyzers on the selected folder.
+        /// </summary>
+        private void SelectFolder()
+        {
+            var selected = DialogHandler.ShowFolder(TargetDirectory);
+            if (!string.IsNullOrWhiteSpace(selected))
+            {
+                TargetDirectory = selected;
+                RunAnalyzer();
+            }
+        }
+
+        /// <summary>
+        /// Applies the current <see cref="FilterText"/> to the <see cref="_currentDiagnostics"/>
+        /// and updates <see cref="DiagnosticsView"/> accordingly.
+        /// </summary>
+        private void ApplyFilter()
+        {
+            DiagnosticsView.Clear();
+
+            var filtered = string.IsNullOrWhiteSpace(FilterText)
+                ? _currentDiagnostics
+                : _currentDiagnostics.Where(d =>
+                    d.FilePath.ToLower().Contains(FilterText.ToLower()) ||
+                    d.Message.ToLower().Contains(FilterText.ToLower()) ||
+                    d.Name.ToLower().Contains(FilterText.ToLower()));
+
+            foreach (var d in filtered)
+            {
+                DiagnosticsView.Add(d);
+            }
         }
     }
 }

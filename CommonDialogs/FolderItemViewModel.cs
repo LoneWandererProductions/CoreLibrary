@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
