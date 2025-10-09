@@ -1,53 +1,43 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top-level directory
+﻿/* 
+ * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
  * FILE:        CommonDialogs/FolderBrowser.xaml.cs
- * PURPOSE:     Old FolderBrowser restored
+ * PURPOSE:     Basic Folder Browser dialog based on WPF, using my own FolderControl.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBeInternal
-
-using System;
 using System.ComponentModel;
 using System.Windows;
 
-// TODO: Add basic Folder Infos
-
 namespace CommonDialogs;
 
-/// <inheritdoc cref="Window" />
 /// <summary>
 ///     Simple Folder Browser dialog.
 /// </summary>
 [ToolboxItem(false)]
-public sealed partial class FolderBrowser
+public sealed partial class FolderBrowser : Window
 {
-    /// <inheritdoc />
+    private readonly FolderViewModel _viewModel;
+
     /// <summary>
     ///     Initializes a new instance of the FolderBrowser dialog.
     /// </summary>
-    internal FolderBrowser() : this(string.Empty)
+    public FolderBrowser() : this(string.Empty)
     {
     }
 
-    /// <inheritdoc />
     /// <summary>
     ///     Initializes the dialog with a specified starting folder.
     /// </summary>
     /// <param name="startFolder">The target folder to start in.</param>
     public FolderBrowser(string startFolder)
     {
-        try
-        {
-            InitializeComponent();
-            VFolder.Initiate(startFolder);
-        }
-        catch (Exception ex)
-        {
-            // Handle potential XAML loading errors
-            Console.WriteLine($"Error initializing FolderBrowser: {ex.Message}");
-        }
+        InitializeComponent();
+
+        // Set up the ViewModel
+        _viewModel = new FolderViewModel();
+        VFolder.DataContext = _viewModel;
+        VFolder.Initiate(startFolder);
     }
 
     /// <summary>
@@ -77,7 +67,10 @@ public sealed partial class FolderBrowser
     /// <param name="isOkClicked">True if OK was clicked, false for Cancel.</param>
     private void HandleButtonClick(bool isOkClicked)
     {
-        Root = isOkClicked ? FolderControl.Root : null; // Set Root only if OK is clicked
+        Root = isOkClicked
+            ? _viewModel.Paths  // take currently navigated folder
+            : null;
+
         Close();
     }
 }

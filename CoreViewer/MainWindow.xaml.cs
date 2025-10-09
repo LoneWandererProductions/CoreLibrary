@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using CoreBuilder;
-using CoreBuilder.Interface;
+﻿using System.Windows;
 
 namespace CoreViewer
 {
