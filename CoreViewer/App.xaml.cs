@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace CoreViewer
+﻿namespace CoreViewer
 {
     /// <summary>
     /// Interaction logic for App.xaml

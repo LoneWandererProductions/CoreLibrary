@@ -31,8 +31,7 @@ public sealed class CustomImageFormat : ICustomImageFormat
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>Image in pure Cif format</returns>
-    [return: MaybeNull]
-    public Cif GetCif(string path)
+    public Cif? GetCif(string path)
     {
         return CifProcessing.CifFromFile(path);
     }
@@ -43,8 +42,7 @@ public sealed class CustomImageFormat : ICustomImageFormat
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>Image</returns>
-    [return: MaybeNull]
-    public Bitmap GetImageFromCif(string path)
+    public Bitmap? GetImageFromCif(string path)
     {
         return CifProcessing.CifFileToImage(path);
     }

@@ -8,6 +8,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -28,7 +29,7 @@ namespace CommonControls
         /// <value>
         /// The content grid.
         /// </value>
-        internal Grid ContentGrid => PART_Content;
+        internal Grid ContentGrid => PartContent;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InspectorGrid"/> class.
@@ -72,11 +73,11 @@ namespace CommonControls
         /// </summary>
         private void EnsureColumns()
         {
-            if (PART_Content.ColumnDefinitions.Count < 2)
+            if (PartContent.ColumnDefinitions.Count < 2)
             {
-                PART_Content.ColumnDefinitions.Clear();
-                PART_Content.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                PART_Content.ColumnDefinitions.Add(
+                PartContent.ColumnDefinitions.Clear();
+                PartContent.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                PartContent.ColumnDefinitions.Add(
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
         }
@@ -89,8 +90,8 @@ namespace CommonControls
         /// </summary>
         private void BuildGrid()
         {
-            PART_Content.Children.Clear();
-            PART_Content.RowDefinitions.Clear();
+            PartContent.Children.Clear();
+            PartContent.RowDefinitions.Clear();
 
             if (SelectedObject == null) return;
 
@@ -104,7 +105,7 @@ namespace CommonControls
             int row = 0;
             foreach (var prop in props)
             {
-                PART_Content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                PartContent.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
                 // Label (with DisplayName/DataAnnotations support)
                 var displayName = prop.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
@@ -120,7 +121,7 @@ namespace CommonControls
                 };
                 Grid.SetRow(label, row);
                 Grid.SetColumn(label, 0);
-                PART_Content.Children.Add(label);
+                PartContent.Children.Add(label);
 
                 // Determine property characteristics
                 bool isInitOnly = !prop.CanWrite;
@@ -163,7 +164,7 @@ namespace CommonControls
 
                 Grid.SetRow(editor, row);
                 Grid.SetColumn(editor, 1);
-                PART_Content.Children.Add(editor);
+                PartContent.Children.Add(editor);
 
                 row++;
             }
@@ -206,15 +207,18 @@ namespace CommonControls
                 };
                 comboBox.SelectionChanged += (_, _) =>
                 {
-                    if (prop.CanWrite)
+                    if (!prop.CanWrite)
                     {
-                        try
-                        {
-                            prop.SetValue(target, comboBox.SelectedItem);
-                        }
-                        catch
-                        {
-                        }
+                        return;
+                    }
+
+                    try
+                    {
+                        prop.SetValue(target, comboBox.SelectedItem);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"Failed to set enum property '{prop.Name}': {ex.Message}");
                     }
                 };
                 return comboBox;

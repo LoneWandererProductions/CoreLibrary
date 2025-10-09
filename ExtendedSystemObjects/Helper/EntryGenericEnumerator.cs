@@ -12,9 +12,10 @@ using System.Collections.Generic;
 namespace ExtendedSystemObjects.Helper;
 
 /// <summary>
-///     Generic enumerator for iterating over entries in a collection of type <see cref="EntryGeneric{TValue}" />.
+/// Generic enumerator for iterating over entries in a collection of type <see cref="EntryGeneric{TValue}" />.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
+/// <seealso cref="System.Collections.Generic.IEnumerator&lt;(System.Int32, TValue)&gt;" />
 /// <seealso cref="System.Collections.Generic.IEnumerator&lt;(System.Int32, TValue)&gt;" />
 public unsafe struct EntryGenericEnumerator<TValue> : IEnumerator<(int, TValue)> where TValue : unmanaged
 {

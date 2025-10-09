@@ -37,7 +37,7 @@ public class UnmanagedImageBufferTests
     public void SetPixelSetsCorrectValues()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
-        buffer.SetPixel(1, 1, 100, 150, 200, 255); // R,G,B,A
+        buffer.SetPixel(1, 1, 100, 150, 200); // R,G,B,A
 
         const int offset = (1 + (1 * 2)) * 4;
         var span = buffer.BufferSpan;

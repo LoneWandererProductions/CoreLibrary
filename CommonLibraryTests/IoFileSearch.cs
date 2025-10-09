@@ -41,7 +41,7 @@ public sealed class IoFileSearch
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var check = false;
-        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
         HelperMethods.CreateFile(file);
         var list =
             FileHandleSearch.GetFileByExtensionWithExtension(_path, ResourcesGeneral.TstExt, false);
@@ -74,7 +74,7 @@ public sealed class IoFileSearch
         var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
-        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
 
         //Create File
         HelperMethods.CreateFile(file);
@@ -182,7 +182,7 @@ public sealed class IoFileSearch
     [TestMethod]
     public async Task GetFileInformationAsync()
     {
-        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
         HelperMethods.CreateFile(file);
 
         var info = FileHandleSearch.GetFileDetails(file);
@@ -214,7 +214,7 @@ public sealed class IoFileSearch
         //Set Amount of Repeats
         FileHandlerRegister.Tries = 2;
 
-        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+        var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
         HelperMethods.CreateFile(file);
 
         var list =

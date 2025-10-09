@@ -11,14 +11,16 @@ using System.Windows;
 
 namespace CommonDialogs;
 
+/// <inheritdoc cref="Window" />
 /// <summary>
 ///     Simple Folder Browser dialog.
 /// </summary>
 [ToolboxItem(false)]
-public sealed partial class FolderBrowser : Window
+public sealed partial class FolderBrowser
 {
     private readonly FolderViewModel _viewModel;
 
+    /// <inheritdoc />
     /// <summary>
     ///     Initializes a new instance of the FolderBrowser dialog.
     /// </summary>

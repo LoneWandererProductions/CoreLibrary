@@ -28,7 +28,7 @@ public class LayeredImageContainerTests
 
         var bottom = new UnmanagedImageBuffer(width, height);
         // Bottom: fully opaque blue
-        bottom.SetPixel(0, 0, 0, 0, 255, 255); // R=0, G=0, B=255, A=255
+        bottom.SetPixel(0, 0, 0, 0, 255); // R=0, G=0, B=255, A=255
         container.AddLayer(bottom);
 
         var top = new UnmanagedImageBuffer(width, height);

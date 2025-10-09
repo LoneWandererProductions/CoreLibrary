@@ -42,9 +42,9 @@ public class RefineSemanticStructureSplitsIfElseCorrectly
             .RemoveControlStatements()
             .NormalizeJumpTargets();
 
-        foreach (var (Key, Category, Value) in refined)
+        foreach (var (key, category, value) in refined)
         {
-            Trace.WriteLine($"[{Key}] {Category}: {Value}");
+            Trace.WriteLine($"[{key}] {category}: {value}");
         }
 
         Assert.AreEqual(10, refined.Count);

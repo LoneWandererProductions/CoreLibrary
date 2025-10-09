@@ -13,6 +13,7 @@ using CoreMemoryLog;
 
 namespace Debugger
 {
+    /// <inheritdoc />
     /// <summary>
     /// Adapter: exposes InMemoryLogger as an ILogSource.
     /// </summary>
@@ -57,6 +58,11 @@ namespace Debugger
             _logger.LogAdded -= OnLogAdded;
         }
 
+        /// <summary>
+        /// Called when [log added].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="entry">The entry.</param>
         private void OnLogAdded(object? sender, LogEntry entry)
         {
             LineReceived?.Invoke(this, FormatLogEntry(entry));

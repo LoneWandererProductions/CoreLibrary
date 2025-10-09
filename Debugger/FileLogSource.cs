@@ -13,9 +13,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Debugger
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
     /// A simple file-backed log source that can read all lines and tail appended lines.
     /// Note: this implementation is intentionally simple; it tails by keeping an open reader
@@ -23,9 +25,17 @@ namespace Debugger
     /// </summary>
     public sealed class FileLogSource : ILogSource, IDisposable
     {
+        /// <summary>
+        /// The cancellation Token
+        /// </summary>
         private CancellationTokenSource? _cts;
+
+        /// <summary>
+        /// The tail task
+        /// </summary>
         private Task? _tailTask;
 
+        /// <inheritdoc />
         /// <summary>
         /// Raised when a new line arrives.
         /// </summary>
@@ -37,33 +47,36 @@ namespace Debugger
         /// <value>
         /// The log file path.
         /// </value>
-        public string LogFilePath { get; }
+        internal string LogFilePath { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="FileLogSource"/>.
         /// </summary>
         /// <param name="path">Path to the log file.</param>
-        public FileLogSource(string path)
+        internal FileLogSource(string path)
         {
             LogFilePath = path ?? throw new ArgumentNullException(nameof(path));
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns all current lines in the file.
         /// </summary>
         public IEnumerable<string> ReadAll()
         {
-            if (!File.Exists(LogFilePath))
+            if (File.Exists(LogFilePath))
             {
-                // ensure file exists
-                using var fs = new FileStream(LogFilePath, FileMode.CreateNew);
-                return Enumerable.Empty<string>();
+                return File.ReadAllLines(LogFilePath, Encoding.UTF8);
             }
 
+            // ensure file exists
+            using var fs = new FileStream(LogFilePath, FileMode.CreateNew);
+            return Enumerable.Empty<string>();
+
             // return snapshot
-            return File.ReadAllLines(LogFilePath, Encoding.UTF8);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Starts tailing the file for appended lines.
         /// </summary>
@@ -91,12 +104,12 @@ namespace Debugger
                     // fast-forward to end to only get new lines
                     while (!reader.EndOfStream)
                     {
-                        await reader.ReadLineAsync().ConfigureAwait(false);
+                        await reader.ReadLineAsync(token).ConfigureAwait(false);
                     }
 
                     while (!token.IsCancellationRequested)
                     {
-                        var line = await reader.ReadLineAsync().ConfigureAwait(false);
+                        var line = await reader.ReadLineAsync(token).ConfigureAwait(false);
                         if (line != null)
                         {
                             LineReceived?.Invoke(this, line);
@@ -119,6 +132,7 @@ namespace Debugger
             }, token);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Stops tailing.
         /// </summary>
@@ -141,6 +155,7 @@ namespace Debugger
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Clean up.
         /// </summary>

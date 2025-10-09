@@ -92,7 +92,7 @@ public sealed class IoFileHandler
         _ = FileHandleDelete.DeleteAllContents(_path);
 
         var fileOne = Path.Combine(_path, nameof(GetNewFileName),
-            Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt)!);
+            Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
 
         // Create the initial file synchronously
         HelperMethods.CreateFile(fileOne);

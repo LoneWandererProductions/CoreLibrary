@@ -205,8 +205,7 @@ public static class DebugRegister
     ///     Deserialize the config file.
     /// </summary>
     /// <returns>The <see cref="ConfigExtended" />.</returns>
-    [return: MaybeNull]
-    private static ConfigExtended DeserializeConfig()
+    private static ConfigExtended? DeserializeConfig()
     {
         try
         {

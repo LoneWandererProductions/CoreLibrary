@@ -514,7 +514,7 @@ public static class ImageStream
             while (File.Exists(newPath))
             {
                 var tempFileName = $"{fileNameOnly}({count++})";
-                newPath = Path.Combine(directory!, tempFileName + extension);
+                newPath = Path.Combine(directory, tempFileName + extension);
             }
 
             SaveBitmap(image, newPath, format);
