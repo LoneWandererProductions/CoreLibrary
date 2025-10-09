@@ -183,11 +183,7 @@ namespace CommonControls
             // Boolean => CheckBox
             if (type == typeof(bool))
             {
-                var checkBox = new CheckBox
-                {
-                    IsChecked = (bool?)prop.GetValue(target),
-                    Margin = new Thickness(2)
-                };
+                var checkBox = new CheckBox { IsChecked = (bool?)prop.GetValue(target), Margin = new Thickness(2) };
                 checkBox.Checked += (_, _) =>
                 {
                     if (prop.CanWrite) prop.SetValue(target, true);
@@ -227,13 +223,13 @@ namespace CommonControls
             // Default => TextBox (string or numeric types)
             var textBox = new TextBox
             {
-                Text = prop.GetValue(target)?.ToString() ?? string.Empty,
-                Margin = new Thickness(2)
+                Text = prop.GetValue(target)?.ToString() ?? string.Empty, Margin = new Thickness(2)
             };
 
             textBox.LostFocus += (_, _) =>
             {
                 if (!prop.CanWrite) return; // do not set init-only or read-only
+
                 try
                 {
                     var converted = Convert.ChangeType(textBox.Text, type);

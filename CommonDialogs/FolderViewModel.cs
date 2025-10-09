@@ -48,6 +48,7 @@ namespace CommonDialogs
         }
 
         private string _lookUp = string.Empty;
+
         /// <summary>
         /// User input for navigating to a specific folder.
         /// Bound to the LookUp TextBox in the UI.
@@ -59,6 +60,7 @@ namespace CommonDialogs
         }
 
         private bool _showFiles;
+
         /// <summary>
         /// Determines whether files should be displayed in addition to folders.
         /// Bound to a ShowFiles toggle in the UI if needed.
@@ -169,7 +171,8 @@ namespace CommonDialogs
         {
             Paths = path;
 
-            string[] directories = Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
+            string[] directories =
+                Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
             string[] files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -184,10 +187,7 @@ namespace CommonDialogs
                 if (ShowFiles)
                 {
                     foreach (var file in files)
-                        FolderItems.Add(new FolderItemViewModel(file)
-                        {
-                            Header = Path.GetFileName(file) ?? file
-                        });
+                        FolderItems.Add(new FolderItemViewModel(file) { Header = Path.GetFileName(file) ?? file });
                 }
             });
         }

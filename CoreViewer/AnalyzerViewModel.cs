@@ -117,15 +117,9 @@ namespace CoreViewer
         {
             _analyzers.AddRange(new ICodeAnalyzer[]
             {
-                new DoubleNewlineAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new HotPathAnalyzer(),
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new EventHandlerAnalyzer(),
+                new DoubleNewlineAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedLocalVariableAnalyzer(),
+                new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(), new HotPathAnalyzer(),
+                new AllocationAnalyzer(), new DisposableAnalyzer(), new EventHandlerAnalyzer(),
             });
         }
 

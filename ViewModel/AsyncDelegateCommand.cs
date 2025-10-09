@@ -9,12 +9,15 @@
  *              https://stackoverflow.com/questions/48527651/full-implementation-of-relay-command-can-it-be-applied-to-all-cases
  */
 
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ViewModel;
 
+/// <inheritdoc />
 /// <summary>
 ///     An asynchronous delegate command class.
 /// </summary>
@@ -39,17 +42,18 @@ public sealed class AsyncDelegateCommand<T> : ICommand
     ///     executable.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when the execute action is null.</exception>
-    public AsyncDelegateCommand(Func<T, Task> execute, Predicate<T> canExecute = null)
+    public AsyncDelegateCommand(Func<T, Task> execute, Predicate<T>? canExecute = null)
     {
         _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute;
     }
 
+    /// <inheritdoc />
     /// <summary>
     ///     Executes the command asynchronously.
     /// </summary>
     /// <param name="parameter">The parameter for the action.</param>
-    public async void Execute(object parameter)
+    public async void Execute(object? parameter)
     {
         await _execute((T)parameter);
     }

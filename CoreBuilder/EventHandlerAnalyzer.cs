@@ -21,7 +21,8 @@ namespace CoreBuilder;
 /// <seealso cref="CoreBuilder.Interface.ICodeAnalyzer" />
 public sealed class EventHandlerAnalyzer : ICodeAnalyzer
 
-{    /// <inheritdoc />
+{
+    /// <inheritdoc />
     public string Name => "EventHandler";
 
     private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
@@ -67,15 +68,5 @@ public sealed class EventHandlerAnalyzer : ICodeAnalyzer
                 );
             }
         }
-    }
-
-    /// <summary>
-    /// Gets the summary.
-    /// </summary>
-    /// <returns>Create the summary.</returns>
-    public IEnumerable<string> GetSummary()
-    {
-        foreach (var kv in _eventStats)
-            yield return $"{kv.Key} -> {kv.Value.Count} subscriptions in {kv.Value.Files.Count} files";
     }
 }

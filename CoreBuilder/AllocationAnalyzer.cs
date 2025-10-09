@@ -14,19 +14,34 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder;
 
+/// <inheritdoc />
 /// <summary>
 /// Analyzer that detects allocations in hot paths.
 /// </summary>
-/// <seealso cref="CoreBuilder.Interface.ICodeAnalyzer" />
-public sealed partial class AllocationAnalyzer : ICodeAnalyzer
+/// <seealso cref="T:CoreBuilder.Interface.ICodeAnalyzer" />
+public sealed class AllocationAnalyzer : ICodeAnalyzer
 {
+    /// <inheritdoc />
     public string Name => "Allocation";
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The aggregate stats
+    /// </summary>
     private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
 
+    /// <summary>
+    /// The constant loop weight
+    /// </summary>
     private const int ConstantLoopWeight = 10;
+
+    /// <summary>
+    /// The variable loop weight
+    /// </summary>
     private const int VariableLoopWeight = 20;
+
+    /// <summary>
+    /// The nested loop weight
+    /// </summary>
     private const int NestedLoopWeight = 50;
 
     /// <inheritdoc />
@@ -71,15 +86,5 @@ public sealed partial class AllocationAnalyzer : ICodeAnalyzer
                 DiagnosticImpact.CpuBound
             );
         }
-    }
-
-    /// <summary>
-    /// Gets the summary.
-    /// </summary>
-    /// <returns>The analyzer Summary</returns>
-    public IEnumerable<string> GetSummary()
-    {
-        foreach (var kv in _aggregateStats.OrderByDescending(k => k.Value.TotalRisk))
-            yield return $"{kv.Key} -> {kv.Value.Count} allocations, total risk {kv.Value.TotalRisk} (in {kv.Value.Files.Count} files)";
     }
 }

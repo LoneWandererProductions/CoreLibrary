@@ -107,6 +107,7 @@ internal static class ImageHelper
         }
 
         if (count == 0) return Color.Black;
+
         return Color.FromArgb(rSum / count, gSum / count, bSum / count);
     }
 

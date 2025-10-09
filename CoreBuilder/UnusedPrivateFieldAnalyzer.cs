@@ -54,7 +54,8 @@ public sealed class UnusedPrivateFieldAnalyzer : ICodeAnalyzer
                 {
                     var references = root.DescendantNodes()
                         .OfType<IdentifierNameSyntax>()
-                        .Where(id => SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, fieldSymbol));
+                        .Where(id =>
+                            SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, fieldSymbol));
 
                     if (!references.Any())
                     {

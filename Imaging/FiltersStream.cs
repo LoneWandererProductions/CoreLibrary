@@ -205,7 +205,8 @@ internal static class FiltersStream
     ///     Optional bias added to filtered value (default 0.0).
     /// </param>
     /// <returns>A new Bitmap containing the filtered image.</returns>
-    private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0, double bias = 0.0)
+    private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+        double bias = 0.0)
     {
         // Convert source to unmanaged buffer for fast pixel access
         using var source = ImagePrimitives.FromBitmap(new Bitmap(sourceBitmap));

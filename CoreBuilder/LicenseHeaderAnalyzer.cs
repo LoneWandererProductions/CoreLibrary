@@ -42,6 +42,7 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
                 filePath,
                 1,
                 "Missing license header.");
+
             yield break;
         }
 

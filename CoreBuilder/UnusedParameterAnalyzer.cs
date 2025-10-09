@@ -49,18 +49,22 @@ public sealed class UnusedParameterAnalyzer : ICodeAnalyzer
             foreach (var parameter in methodDecl.ParameterList.Parameters)
             {
                 var symbol = model.GetDeclaredSymbol(parameter);
-                if (symbol is IParameterSymbol paramSymbol)
-                {
-                    var references = methodDecl.DescendantNodes()
-                        .OfType<IdentifierNameSyntax>()
-                        .Where(id => SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, paramSymbol));
 
-                    if (!references.Any())
-                    {
-                        var line = parameter.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                        yield return new Diagnostic(Name, DiagnosticSeverity.Warning, filePath, line,
-                            $"Unused parameter '{parameter.Identifier.Text}' in method '{methodDecl.Identifier.Text}'.");
-                    }
+                if (symbol is not { } paramSymbol)
+                {
+                    continue;
+                }
+
+                var references = methodDecl.DescendantNodes()
+                    .OfType<IdentifierNameSyntax>()
+                    .Where(id =>
+                        SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, paramSymbol));
+
+                if (!references.Any())
+                {
+                    var line = parameter.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                    yield return new Diagnostic(Name, DiagnosticSeverity.Warning, filePath, line,
+                        $"Unused parameter '{parameter.Identifier.Text}' in method '{methodDecl.Identifier.Text}'.");
                 }
             }
         }

@@ -263,6 +263,7 @@ namespace RenderEngine
             PrimitiveType primitiveType)
         {
             if (_glControl == null) return;
+
             if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
 
             GL.BindVertexArray(_vao);
@@ -304,6 +305,7 @@ namespace RenderEngine
         public void RenderRaw(ReadOnlySpan<byte> data, int vertexCount, PrimitiveType primitiveType)
         {
             if (_glControl == null) return;
+
             if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
 
             GL.BindVertexArray(_vao);

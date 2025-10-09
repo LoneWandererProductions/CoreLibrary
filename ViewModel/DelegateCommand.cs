@@ -9,6 +9,8 @@
  *              https://stackoverflow.com/questions/48527651/full-implementation-of-relay-command-can-it-be-applied-to-all-cases
  */
 
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Windows.Input;
 
@@ -28,7 +30,7 @@ namespace ViewModel
         /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
-        private readonly Predicate<T> _canExecute;
+        private readonly Predicate<T>? _canExecute;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
@@ -39,7 +41,7 @@ namespace ViewModel
         ///     executable.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-        public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
+        public DelegateCommand(Action<T> action, Predicate<T>? canExecute = null)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
             _canExecute = canExecute;

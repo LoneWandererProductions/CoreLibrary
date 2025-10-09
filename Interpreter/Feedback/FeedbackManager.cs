@@ -16,7 +16,7 @@ namespace Interpreter.Feedback;
 ///     Handles validation of input against expected feedback options,
 ///     raises events when feedback is resolved, and manages internal state.
 /// </summary>
-internal class FeedbackManager
+internal sealed class FeedbackManager
 {
     /// <summary>
     ///     Stores the current feedback request that is waiting for user input.

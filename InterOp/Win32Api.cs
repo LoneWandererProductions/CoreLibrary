@@ -29,7 +29,8 @@ internal static partial class Win32Api
     /// <returns>
     ///     True if successful, false otherwise
     /// </returns>
-    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionUnhookWindowsHookEx, SetLastError = true)]
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionUnhookWindowsHookEx,
+        SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool UnhookWindowsHookEx(IntPtr hInstance);
 
@@ -42,7 +43,8 @@ internal static partial class Win32Api
     /// <returns>
     ///     A handle to the library
     /// </returns>
-    [LibraryImport(InterOpResources.KernelDll, EntryPoint = InterOpResources.FunctionGetModuleHandle, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(InterOpResources.KernelDll, EntryPoint = InterOpResources.FunctionGetModuleHandle,
+        SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
     internal static partial IntPtr GetModuleHandle(string lpModuleName);
 
     /// <summary>
@@ -70,7 +72,8 @@ internal static partial class Win32Api
     /// <returns>
     ///     a handle to the desired hook
     /// </returns>
-    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionSetWindowsHookEx, SetLastError = true)]
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionSetWindowsHookEx,
+        SetLastError = true)]
     internal static partial IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance,
         uint threadId);
 
@@ -80,7 +83,8 @@ internal static partial class Win32Api
     /// </summary>
     /// <param name="pt">Pointer to </param>
     /// <returns>Mouse Position</returns>
-    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionGetPhysicalCursorPos, SetLastError = true)]
+    [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionGetPhysicalCursorPos,
+        SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool GetPhysicalCursorPos(ref Win32Points pt);
 

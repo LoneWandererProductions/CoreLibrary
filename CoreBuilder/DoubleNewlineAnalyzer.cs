@@ -35,7 +35,8 @@ public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer
         {
             if (string.IsNullOrWhiteSpace(lines[i]) && string.IsNullOrWhiteSpace(lines[i - 1]))
             {
-                yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, i + 1, "Multiple blank lines in a row.");
+                yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, i + 1,
+                    "Multiple blank lines in a row.");
             }
         }
     }

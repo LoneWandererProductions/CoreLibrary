@@ -20,7 +20,8 @@ namespace CoreBuilder;
 /// </summary>
 /// <seealso cref="CoreBuilder.Interface.ICodeAnalyzer" />
 public sealed class DisposableAnalyzer : ICodeAnalyzer
-{    /// <inheritdoc />
+{
+    /// <inheritdoc />
     public string Name => "DisposableLeak";
 
     /// <inheritdoc />
@@ -91,6 +92,7 @@ public sealed class DisposableAnalyzer : ICodeAnalyzer
             if (u.Declaration?.Variables.Any(v => v.Identifier.Text == variable.Identifier.Text) ?? false)
                 return true;
         }
+
         return false;
     }
 }

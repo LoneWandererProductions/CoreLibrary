@@ -43,7 +43,6 @@ public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
         }
 
         // Per-file analysis not supported here
-        yield break;
     }
 
     /// <summary>
@@ -65,8 +64,8 @@ public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
             var tree = CSharpSyntaxTree.ParseText(content);
             var root = tree.GetRoot();
             var literals = root.DescendantNodes()
-                               .OfType<LiteralExpressionSyntax>()
-                               .Where(lit => lit.IsKind(SyntaxKind.StringLiteralExpression));
+                .OfType<LiteralExpressionSyntax>()
+                .Where(lit => lit.IsKind(SyntaxKind.StringLiteralExpression));
 
             foreach (var lit in literals)
             {

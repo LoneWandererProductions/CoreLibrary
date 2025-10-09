@@ -201,7 +201,8 @@ internal static class ConsoleHelper
 
         if (!Directory.Exists(path))
         {
-            diagnostics.Add(new Diagnostic(ConResources.MessageError,DiagnosticSeverity.Error, path, -1, string.Format(ConResources.ErrorDirectory, path)));
+            diagnostics.Add(new Diagnostic(ConResources.MessageError, DiagnosticSeverity.Error, path, -1,
+                string.Format(ConResources.ErrorDirectory, path)));
         }
         else
         {

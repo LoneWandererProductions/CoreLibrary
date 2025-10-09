@@ -173,11 +173,6 @@ internal static class ConResources
     };
 
     /// <summary>
-    ///     For commands that need your feedback
-    /// </summary>
-    internal static readonly Dictionary<int, UserFeedback?> Feedback = new() { { 1, ReplaceFeedback } };
-
-    /// <summary>
     ///     The extension commands
     /// </summary>
     internal static readonly Dictionary<int, InCommand> ExtensionCommands = new()

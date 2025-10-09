@@ -14,6 +14,7 @@ using System.Windows;
 
 namespace CommonDialogs
 {
+    /// <inheritdoc />
     /// <summary>
     /// Represents a single folder or file in a TreeView. Supports lazy loading of children and selection tracking.
     /// </summary>
@@ -41,6 +42,9 @@ namespace CommonDialogs
         /// </summary>
         public bool HasChildren { get; private set; }
 
+        /// <summary>
+        /// The is selected
+        /// </summary>
         private bool _isSelected;
 
         /// <summary>
@@ -53,6 +57,7 @@ namespace CommonDialogs
             set
             {
                 if (_isSelected == value) return;
+
                 _isSelected = value;
                 OnPropertyChanged(nameof(IsSelected));
 
@@ -96,6 +101,7 @@ namespace CommonDialogs
             set
             {
                 if (_isExpanded == value) return;
+
                 _isExpanded = value;
                 OnPropertyChanged(nameof(IsExpanded));
 
@@ -122,10 +128,7 @@ namespace CommonDialogs
                         Children.Add(new FolderItemViewModel(dir));
 
                     foreach (var file in files)
-                        Children.Add(new FolderItemViewModel(file)
-                        {
-                            Header = System.IO.Path.GetFileName(file)
-                        });
+                        Children.Add(new FolderItemViewModel(file) { Header = System.IO.Path.GetFileName(file) });
                 });
             }
             catch
@@ -140,6 +143,5 @@ namespace CommonDialogs
         /// <param name="propertyName">Name of the property that changed.</param>
         private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
     }
 }

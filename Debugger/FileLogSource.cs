@@ -21,7 +21,7 @@ namespace Debugger
     /// Note: this implementation is intentionally simple; it tails by keeping an open reader
     /// and polling for new lines. If you need rotation/truncation handling we can harden it.
     /// </summary>
-    public class FileLogSource : ILogSource, IDisposable
+    public sealed class FileLogSource : ILogSource, IDisposable
     {
         private CancellationTokenSource? _cts;
         private Task? _tailTask;

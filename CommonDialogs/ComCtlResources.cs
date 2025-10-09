@@ -14,26 +14,6 @@ namespace CommonDialogs;
 internal static class ComCtlResources
 {
     /// <summary>
-    ///     The path element (const). Value: @"\".
-    /// </summary>
-    internal const string PathElement = @"\";
-
-    /// <summary>
-    ///     The Image for the drive (const). @"System\drive.png".
-    /// </summary>
-    internal const string DriveImage = @"System\drive.png";
-
-    /// <summary>
-    ///     The Image for the folder (const). Value: = @"System\folder.png".
-    /// </summary>
-    internal const string FolderImage = @"System\folder.png";
-
-    /// <summary>
-    ///     The error conversion (const). Value: "Could not convert back".
-    /// </summary>
-    internal const string ErrorConversion = "Could not convert back";
-
-    /// <summary>
     ///     Error, Database problem with the Server Name (const). Value: "Error: Server Name was empty.".
     /// </summary>
     internal const string DbServerError = "Error: Server Name was empty.";

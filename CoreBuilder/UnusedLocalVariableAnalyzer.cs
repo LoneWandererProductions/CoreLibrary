@@ -49,7 +49,8 @@ public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer
                 {
                     var references = root.DescendantNodes()
                         .OfType<IdentifierNameSyntax>()
-                        .Where(id => SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, localSymbol));
+                        .Where(id =>
+                            SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, localSymbol));
 
                     if (!references.Any())
                     {

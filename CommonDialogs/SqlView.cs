@@ -190,7 +190,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <summary>
     ///     Triggers if an Attribute gets changed
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     ///     Called when [property changed].
@@ -198,7 +198,7 @@ public sealed class SqlView : INotifyPropertyChanged
     /// <param name="propertyName">Name of the property.</param>
     private void OnPropertyChanged(string propertyName)
     {
-        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>

@@ -22,7 +22,8 @@ public sealed class Diagnostic
     /// <param name="lineNumber">The line number.</param>
     /// <param name="message">The message.</param>
     /// <param name="impact">The impact.</param>
-    public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message, DiagnosticImpact? impact  = null)
+    public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message,
+        DiagnosticImpact? impact = null)
     {
         Name = name;
         Severity = severity;
@@ -54,7 +55,7 @@ public sealed class Diagnostic
     /// <value>
     /// The impact.
     /// </value>
-    public DiagnosticImpact? Impact { get; }  // nullable
+    public DiagnosticImpact? Impact { get; } // nullable
 
     /// <summary>
     ///     Gets the file path.

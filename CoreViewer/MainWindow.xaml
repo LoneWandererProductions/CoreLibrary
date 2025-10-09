@@ -8,37 +8,36 @@
         Title="Analyzer Viewer" Height="450" Width="900">
 
     <Window.DataContext>
-        <local:AnalyzerViewModel/>
+        <local:AnalyzerViewModel />
     </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Analyzer selection and controls -->
         <StackPanel Orientation="Horizontal" Margin="5">
-            <ComboBox ItemsSource="{Binding Analyzers}" 
+            <ComboBox ItemsSource="{Binding Analyzers}"
                       SelectedItem="{Binding SelectedAnalyzer}"
-                      Width="200" DisplayMemberPath="Name"/>
-            <Button Content="Run Analyzer" Margin="5,0" Command="{Binding RunAnalyzerCommand}"/>
-            <Button Content="Select Folder" Margin="5,0" Command="{Binding SelectFolderCommand}"/>
-            <TextBox Width="200" Margin="5,0" 
-                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" 
-                     />
+                      Width="200" DisplayMemberPath="Name" />
+            <Button Content="Run Analyzer" Margin="5,0" Command="{Binding RunAnalyzerCommand}" />
+            <Button Content="Select Folder" Margin="5,0" Command="{Binding SelectFolderCommand}" />
+            <TextBox Width="200" Margin="5,0"
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <!-- Diagnostics display -->
         <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Analyzer" Width="120" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="Severity" Width="70" DisplayMemberBinding="{Binding Severity}"/>
-                    <GridViewColumn Header="Impact" Width="80" DisplayMemberBinding="{Binding Impact}"/>
-                    <GridViewColumn Header="File" Width="250" DisplayMemberBinding="{Binding FilePath}"/>
-                    <GridViewColumn Header="Line" Width="50" DisplayMemberBinding="{Binding LineNumber}"/>
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Header="Analyzer" Width="120" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Severity" Width="70" DisplayMemberBinding="{Binding Severity}" />
+                    <GridViewColumn Header="Impact" Width="80" DisplayMemberBinding="{Binding Impact}" />
+                    <GridViewColumn Header="File" Width="250" DisplayMemberBinding="{Binding FilePath}" />
+                    <GridViewColumn Header="Line" Width="50" DisplayMemberBinding="{Binding LineNumber}" />
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
                 </GridView>
             </ListView.View>
         </ListView>

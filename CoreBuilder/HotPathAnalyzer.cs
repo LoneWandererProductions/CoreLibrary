@@ -116,18 +116,6 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
     }
 
     /// <summary>
-    /// Returns a project-wide summary of hot paths.
-    /// </summary>
-    /// <returns>Collected messages.</returns>
-    public IEnumerable<string> GetSummary()
-    {
-        foreach (var kv in _aggregateStats.OrderByDescending(k => k.Value.TotalRisk))
-        {
-            yield return $"{kv.Key} -> {kv.Value.Count} calls, total risk {kv.Value.TotalRisk} (in {kv.Value.Files.Count} files)";
-        }
-    }
-
-    /// <summary>
     /// Builds the message.
     /// </summary>
     /// <param name="method">The method.</param>

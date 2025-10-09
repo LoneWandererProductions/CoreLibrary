@@ -17,6 +17,7 @@ namespace CoreBuilder
         /// high CPU usage, repeated calculations, tight loops
         /// </summary>
         CpuBound = 0,
+
         /// <summary>
         /// file/network/database operations
         /// </summary>

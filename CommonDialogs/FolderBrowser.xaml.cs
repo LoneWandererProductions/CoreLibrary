@@ -68,7 +68,7 @@ public sealed partial class FolderBrowser : Window
     private void HandleButtonClick(bool isOkClicked)
     {
         Root = isOkClicked
-            ? _viewModel.Paths  // take currently navigated folder
+            ? _viewModel.Paths // take currently navigated folder
             : null;
 
         Close();
