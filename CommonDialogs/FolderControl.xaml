@@ -7,8 +7,9 @@
              xmlns:common="clr-namespace:CommonDialogs"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
+
     <Grid>
-        <!-- Grid Definitions -->
+        <!-- Row/Column Definitions -->
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
@@ -39,91 +40,42 @@
         </Grid.ColumnDefinitions>
 
         <!-- Display Path -->
-        <TextBlock
-            TextWrapping="Wrap"
-            VerticalAlignment="Center"
-            TextAlignment="Left"
-            TextTrimming="CharacterEllipsis"
-            Text="{Binding Path=Paths}"
-            Background="White" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                   Text="{Binding Paths}" TextWrapping="Wrap"
+                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                   Background="White"/>
 
         <!-- Input Path -->
-        <TextBox
-            Grid.Row="2"
-            TextWrapping="Wrap"
-            VerticalAlignment="Center"
-            Text="{Binding Path=LookUp}"
-            Grid.ColumnSpan="3" Grid.Column="0" />
+        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                 Text="{Binding LookUp}" TextWrapping="Wrap" VerticalAlignment="Center"/>
 
         <!-- Navigation Buttons -->
-        <Button Content="Up"
-                Grid.Row="0"
-                Grid.Column="3"
-                Click="BtnUpClick" />
-
-        <Button Content="Go"
-                Grid.Column="3"
-                Grid.Row="2"
-                Click="BtnGoClick" />
-
-        <Button Content="Exp"
-                Grid.Column="5"
-                Grid.Row="2"
-                Click="BtnExplorerClick" />
+        <Button Content="Up" Grid.Row="0" Grid.Column="3" Click="BtnUpClick"/>
+        <Button Content="Go" Grid.Row="2" Grid.Column="3" Click="BtnGoClick"/>
+        <Button Content="Exp" Grid.Row="2" Grid.Column="5" Click="BtnExplorerClick"/>
 
         <!-- Shortcut Buttons -->
-        <Button Content="Desktop"
-                Grid.Row="6"
-                Grid.Column="0"
-                Click="BtnDesktopClick" />
-
-        <Button Content="Root"
-                Grid.Row="4"
-                Grid.Column="0"
-                Click="BtnRootClick" />
-
-        <Button Content="Docs"
-                Grid.Row="8"
-                Grid.Column="0"
-                Click="BtnDocsClick" />
-
-        <Button Content="Personal"
-                Grid.Row="10"
-                Grid.Column="0"
-                Click="BtnPersonalClick" />
-
-        <Button Content="Pictures"
-                Grid.Row="12"
-                Grid.Column="0"
-                Click="BtnPictureClick" />
-
-        <Button Content="Folder"
-                Grid.Row="14"
-                Grid.Column="0"
-                Click="BtnFolderClick" />
+        <Button Content="Desktop" Grid.Row="6" Grid.Column="0" Click="BtnDesktopClick"/>
+        <Button Content="Root" Grid.Row="4" Grid.Column="0" Click="BtnRootClick"/>
+        <Button Content="Docs" Grid.Row="8" Grid.Column="0" Click="BtnDocsClick"/>
+        <Button Content="Personal" Grid.Row="10" Grid.Column="0" Click="BtnPersonalClick"/>
+        <Button Content="Pictures" Grid.Row="12" Grid.Column="0" Click="BtnPictureClick"/>
+        <Button Content="Folder" Grid.Row="14" Grid.Column="0" Click="BtnFolderClick"/>
 
         <!-- TreeView -->
-        <TreeView x:Name="FoldersItem"
-                  SelectedItemChanged="FoldersItemSelectedItemChanged"
-                  Width="Auto"
-                  Background="#FFFFFFFF"
-                  BorderBrush="#FFFFFFFF"
-                  Foreground="#FFFFFFFF"
-                  Grid.ColumnSpan="4" Grid.Row="4" Grid.Column="2" Grid.RowSpan="13">
+        <TreeView x:Name="FoldersItem" Grid.Row="4" Grid.Column="2" Grid.RowSpan="13"
+                  Grid.ColumnSpan="4" SelectedItemChanged="FoldersItemSelectedItemChanged"
+                  Background="White" BorderBrush="White" Foreground="Black"
+                  ItemsSource="{Binding FolderItems}">
             <TreeView.Resources>
-                <Style TargetType="{x:Type TreeViewItem}">
+                <Style TargetType="TreeViewItem">
                     <Setter Property="HeaderTemplate">
                         <Setter.Value>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Name="img" Width="20" Height="20" Stretch="Fill"
-                                           Source="{Binding
-                                           RelativeSource={RelativeSource
-                                           Mode = FindAncestor,
-                                           AncestorType = { x:Type TreeViewItem }},
-                                           Path=Header,
-                                           Converter={x:Static common:HeaderToImageConverter.Instance}}" />
-                                    <TextBlock Text="{Binding}" Margin="5,0" />
+                                    <Image Width="20" Height="20" Stretch="Fill"
+                                           Source="{Binding Header, Converter={x:Static common:HeaderToImageConverter.Instance}}"/>
+                                    <TextBlock Text="{Binding Header}" Margin="5,0"/>
                                 </StackPanel>
                             </DataTemplate>
                         </Setter.Value>
@@ -132,13 +84,12 @@
             </TreeView.Resources>
         </TreeView>
     </Grid>
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/CommonDialogs;component/Themes/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
-
 </UserControl>

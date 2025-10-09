@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CoreViewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Analyzer Viewer" Height="450" Width="900">
+
+    <Window.DataContext>
+        <local:AnalyzerViewModel/>
+    </Window.DataContext>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,13 +19,18 @@
 
         <!-- Analyzer selection and controls -->
         <StackPanel Orientation="Horizontal" Margin="5">
-            <ComboBox x:Name="AnalyzerSelector" Width="250" DisplayMemberPath="Name"/>
-            <Button Content="Run Analyzer" Margin="5,0" Click="RunAnalyzer_Click"/>
-            <TextBox x:Name="FilterBox" Width="200" Margin="5,0" Text="Filter..." TextChanged="FilterBox_TextChanged"/>
+            <ComboBox ItemsSource="{Binding Analyzers}" 
+                      SelectedItem="{Binding SelectedAnalyzer}"
+                      Width="200" DisplayMemberPath="Name"/>
+            <Button Content="Run Analyzer" Margin="5,0" Command="{Binding RunAnalyzerCommand}"/>
+            <Button Content="Select Folder" Margin="5,0" Command="{Binding SelectFolderCommand}"/>
+            <TextBox Width="200" Margin="5,0" 
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" 
+                     />
         </StackPanel>
 
         <!-- Diagnostics display -->
-        <ListView x:Name="DiagnosticsList" Grid.Row="1" ItemsSource="{Binding DiagnosticsView}">
+        <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Analyzer" Width="120" DisplayMemberBinding="{Binding Name}"/>
@@ -28,8 +38,7 @@
                     <GridViewColumn Header="Impact" Width="80" DisplayMemberBinding="{Binding Impact}"/>
                     <GridViewColumn Header="File" Width="250" DisplayMemberBinding="{Binding FilePath}"/>
                     <GridViewColumn Header="Line" Width="50" DisplayMemberBinding="{Binding LineNumber}"/>
-                    <GridViewColumn Header="Message" 
-                                    DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
                 </GridView>
             </ListView.View>
         </ListView>

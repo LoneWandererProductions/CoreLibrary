@@ -21,7 +21,7 @@ namespace CommonFilter;
 ///     FilterWindow View
 /// </summary>
 /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
-internal sealed class FilterWindowView : INotifyPropertyChanged
+internal sealed class FilterWindowView : ViewModelBase
 {
     /// <summary>
     ///     Gets or sets the reference.
@@ -56,37 +56,6 @@ internal sealed class FilterWindowView : INotifyPropertyChanged
     ///     The filter.
     /// </value>
     public Dictionary<int, SearchParameterControl> Filter { get; set; }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Triggers if an Attribute gets changed
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    ///     Gets a value indicating whether this instance can execute.
-    /// </summary>
-    /// <param name="obj">The object.</param>
-    /// <returns>
-    ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-    /// </returns>
-    /// <value>
-    ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-    /// </value>
-    public bool CanExecute(object obj)
-    {
-        // check if executing is allowed, not used right now
-        return true;
-    }
-
-    /// <summary>
-    ///     Called when [property changed].
-    /// </summary>
-    /// <param name="propertyName">Name of the property.</param>
-    public void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    }
 
     /// <summary>
     ///     Adds action.

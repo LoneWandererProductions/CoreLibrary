@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        LicenseHeaderAnalyzer.cs
- * PURPOSE:     Analyzer that finds duplicate string literals in a file.
+ * FILE:        DuplicateStringLiteralAnalyzer.cs
+ * PURPOSE:     Analyzer that finds duplicate string literals across a project.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -16,15 +16,24 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CoreBuilder;
 
+/// <inheritdoc />
 /// <summary>
-/// Analyzer that finds duplicate string literals across a project.
+///     Analyzer that identifies duplicate string literals across a project.
+///     Useful for detecting hardcoded strings that should be centralized
+///     in constants, resources, or configuration.
 /// </summary>
+/// <seealso cref="ICodeAnalyzer" />
 public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
     public string Name => "DuplicateStringLiteral";
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     This method intentionally yields no results, since duplicate
+    ///     string detection requires project-wide context. Use
+    ///     <see cref="AnalyzeDirectory"/> instead.
+    /// </remarks>
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts
@@ -33,16 +42,18 @@ public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
             yield break;
         }
 
-        // This analyzer needs the global dictionary.
-        // For per-file call, we just yield nothing
-        yield break; // Placeholder; real project-wide detection happens in ConsoleHelper
+        // Per-file analysis not supported here
+        yield break;
     }
 
     /// <summary>
-    /// Project-wide analysis.
+    ///     Performs project-wide analysis for duplicate string literals.
     /// </summary>
-    /// <param name="directory">Root directory to scan.</param>
-    /// <returns>Diagnostics for duplicated string literals.</returns>
+    /// <param name="directory">The root directory to scan for C# files.</param>
+    /// <returns>
+    ///     A collection of <see cref="Diagnostic"/> instances for string literals
+    ///     that occur multiple times across the project.
+    /// </returns>
     public IEnumerable<Diagnostic> AnalyzeDirectory(string directory)
     {
         var literalOccurrences = new Dictionary<string, List<(string file, int line)>>();

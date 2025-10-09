@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ViewModel
 {
@@ -42,7 +43,7 @@ namespace ViewModel
         /// <param name="value">New value to set.</param>
         /// <param name="propertyName">Name of the property (optional, automatically provided by caller).</param>
         /// <returns>If property was changed.</returns>
-        protected bool SetProperty<T>(ref T field, T value, string propertyName)
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))
                 return false;
