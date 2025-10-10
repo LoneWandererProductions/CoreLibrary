@@ -48,6 +48,15 @@ namespace CoreViewer
         private readonly List<Diagnostic> _currentDiagnostics = new();
 
         /// <summary>
+        /// The fixable analyzers
+        /// </summary>
+        private static readonly HashSet<string> FixableAnalyzers = new()
+        {
+            "LicenseHeaderAnalyzer",
+            "..."
+        };
+
+        /// <summary>
         /// Initializes a new instance of <see cref="AnalyzerViewModel"/> and sets up commands.
         /// </summary>
         public AnalyzerViewModel()
@@ -74,7 +83,7 @@ namespace CoreViewer
         /// <summary>
         /// Diagnostics to be displayed in the UI, filtered as needed.
         /// </summary>
-        public ObservableCollection<Diagnostic> DiagnosticsView { get; } = new();
+        public ObservableCollection<DiagnosticItemViewModel> DiagnosticsView { get; } = new();
 
         /// <summary>
         /// Filter text to narrow down displayed diagnostics.
@@ -190,8 +199,51 @@ namespace CoreViewer
 
             foreach (var d in filtered)
             {
-                DiagnosticsView.Add(d);
+                DiagnosticsView.Add(new DiagnosticItemViewModel(d,
+                    openFile: _ => HandleOpen(d.Name),
+                    ignore: _ => HandleIgnore(d.Name),
+                    fix: FixableAnalyzers.Contains(d.Name) ? _ => HandleFix(d.Name) : null));
             }
         }
+        /// <summary>
+        /// Handles the ignore.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        private void HandleIgnore(string name)
+        {
+            // Minimal implementation: just remove all diagnostics with this name from the view
+            var toRemove = DiagnosticsView.Where(d => d.Diagnostic.Name == name).ToList();
+            foreach (var d in toRemove)
+            {
+                DiagnosticsView.Remove(d);
+            }
+        }
+
+        /// <summary>
+        /// Handles the open.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        private void HandleOpen(string name)
+        {
+            // Minimal implementation: just show a message box with the file paths
+            var files = DiagnosticsView
+                .Where(d => d.Diagnostic.Name == name)
+                .Select(d => d.Diagnostic.FilePath)
+                .Distinct();
+
+            var message = string.Join(Environment.NewLine, files);
+            System.Windows.MessageBox.Show(message, $"Open files for {name}");
+        }
+
+        /// <summary>
+        /// Handles the fix.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        private void HandleFix(string name)
+        {
+            // Minimal placeholder
+            System.Windows.MessageBox.Show($"Fix logic for {name} not implemented yet.", "Fix");
+        }
+
     }
 }

@@ -7,9 +7,14 @@
         mc:Ignorable="d"
         Title="Analyzer Viewer" Height="450" Width="900">
 
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+    </Window.Resources>
+
     <Window.DataContext>
         <local:AnalyzerViewModel />
     </Window.DataContext>
+    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -32,14 +37,24 @@
         <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Analyzer" Width="120" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Severity" Width="70" DisplayMemberBinding="{Binding Severity}" />
-                    <GridViewColumn Header="Impact" Width="80" DisplayMemberBinding="{Binding Impact}" />
-                    <GridViewColumn Header="File" Width="250" DisplayMemberBinding="{Binding FilePath}" />
-                    <GridViewColumn Header="Line" Width="50" DisplayMemberBinding="{Binding LineNumber}" />
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
+                    <GridViewColumn Header="Analyzer" DisplayMemberBinding="{Binding Diagnostic.Name}" />
+                    <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
+                    <GridViewColumn Header="Actions">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Open File" Command="{Binding OpenFileCommand}" />
+                                    <Button Content="Fix" Command="{Binding FixCommand}" 
+                                    Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}" />
+                                    <Button Content="Ignore" Command="{Binding IgnoreCommand}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
+
     </Grid>
 </Window>
