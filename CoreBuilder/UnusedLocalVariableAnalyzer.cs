@@ -47,7 +47,11 @@ public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer
         {
             foreach (var variable in localDecl.Declaration.Variables)
             {
+                if (variable.Identifier.Text == "_")
+                    continue; // discard, don’t flag
+
                 var symbol = model.GetDeclaredSymbol(variable);
+
                 if (symbol is ILocalSymbol localSymbol)
                 {
                     var references = root.DescendantNodes()
