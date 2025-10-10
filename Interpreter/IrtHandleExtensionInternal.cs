@@ -189,7 +189,10 @@ internal sealed class IrtHandleExtensionInternal : IDisposable
 
         var feedbackReceiver = new IrtFeedback
         {
-            RequestId = _myRequestId, Feedback = feedback, BranchId = 12, AwaitedOutput = com
+            RequestId = _myRequestId,
+            Feedback = feedback,
+            BranchId = 12,
+            AwaitedOutput = com
         };
 
         _prompt?.RequestFeedback(feedbackReceiver);

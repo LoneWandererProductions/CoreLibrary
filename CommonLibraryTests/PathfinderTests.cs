@@ -387,10 +387,10 @@ public class PathfinderTests
         var displayGrid = new char[grid.GetLength(0), grid.GetLength(1)];
         //build map
         for (var i = 0; i < grid.GetLength(0); i++)
-        for (var j = 0; j < grid.GetLength(1); j++)
-        {
-            displayGrid[i, j] = grid[i, j] == 0 ? 'X' : '.';
-        }
+            for (var j = 0; j < grid.GetLength(1); j++)
+            {
+                displayGrid[i, j] = grid[i, j] == 0 ? 'X' : '.';
+            }
 
         //build map
         for (var i = 0; i < path.Count; i++)

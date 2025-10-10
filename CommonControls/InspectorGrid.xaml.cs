@@ -227,7 +227,8 @@ namespace CommonControls
             // Default => TextBox (string or numeric types)
             var textBox = new TextBox
             {
-                Text = prop.GetValue(target)?.ToString() ?? string.Empty, Margin = new Thickness(2)
+                Text = prop.GetValue(target)?.ToString() ?? string.Empty,
+                Margin = new Thickness(2)
             };
 
             textBox.LostFocus += (_, _) =>

@@ -25,6 +25,12 @@ public sealed class EventHandlerAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public string Name => "EventHandler";
 
+    /// <inheritdoc />
+    public string Description => "Analyzer that detects potential event handler leaks.";
+
+    /// <summary>
+    /// The event stats
+    /// </summary>
     private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
 
     /// <inheritdoc />

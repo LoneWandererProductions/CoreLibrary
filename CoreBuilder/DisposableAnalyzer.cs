@@ -25,6 +25,9 @@ public sealed class DisposableAnalyzer : ICodeAnalyzer
     public string Name => "DisposableLeak";
 
     /// <inheritdoc />
+    public string Description => "Analyzer that detects undisposed IDisposable objects.";
+
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts

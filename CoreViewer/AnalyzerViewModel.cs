@@ -115,12 +115,19 @@ namespace CoreViewer
         /// </summary>
         private void LoadAnalyzers()
         {
-            _analyzers.AddRange(new ICodeAnalyzer[]
-            {
-                new DoubleNewlineAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(), new HotPathAnalyzer(),
-                new AllocationAnalyzer(), new DisposableAnalyzer(), new EventHandlerAnalyzer(),
-            });
+            _analyzers.AddRange(
+            [
+                new DoubleNewlineAnalyzer(),
+                new LicenseHeaderAnalyzer(),
+                new UnusedLocalVariableAnalyzer(),
+                new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(),
+                new HotPathAnalyzer(),
+                new AllocationAnalyzer(),
+                new DisposableAnalyzer(),
+                new EventHandlerAnalyzer(),
+                new UnusedConstantAnalyzer()
+            ]);
         }
 
         /// <summary>

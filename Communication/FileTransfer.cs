@@ -73,7 +73,7 @@ internal static class FileTransfer
 
             return true;
         }
-        catch (Exception ex)when (ex is HttpRequestException or IOException)
+        catch (Exception ex) when (ex is HttpRequestException or IOException)
         {
             Trace.WriteLine(string.Format(ComResource.ErrorSavingFile, ex.Message));
             return false;

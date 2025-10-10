@@ -50,12 +50,18 @@ public sealed class SqlLiteHelperTableDelete
 
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+            DataType = SqLiteDataTypes.Text,
+            PrimaryKey = false,
+            Unique = false,
+            NotNull = false
         };
 
         var elementtwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+            DataType = SqLiteDataTypes.Integer,
+            PrimaryKey = true,
+            Unique = true,
+            NotNull = false
         };
 
         var columns = new DictionaryTableColumns();

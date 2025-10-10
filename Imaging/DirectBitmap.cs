@@ -324,23 +324,23 @@ public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>
             // Loop over the rectangle's rows.
             for (var y = y2; y < y2 + height && y < Height; y++)
                 // Loop over the rectangle's columns with SIMD optimizations.
-            for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
-            {
-                var startIndex = x + (y * Width);
-                // Ensure we don't go out of bounds.
-                if (startIndex + vectorCount <= Bits.Length)
+                for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
                 {
-                    colorVector.CopyTo(Bits, startIndex);
-                }
-                else
-                    // Handle remainder if not divisible by vectorCount
-                {
-                    for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
+                    var startIndex = x + (y * Width);
+                    // Ensure we don't go out of bounds.
+                    if (startIndex + vectorCount <= Bits.Length)
                     {
-                        Bits[startIndex + j] = colorArgb;
+                        colorVector.CopyTo(Bits, startIndex);
+                    }
+                    else
+                    // Handle remainder if not divisible by vectorCount
+                    {
+                        for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
+                        {
+                            Bits[startIndex + j] = colorArgb;
+                        }
                     }
                 }
-            }
         }
     }
 

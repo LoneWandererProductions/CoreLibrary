@@ -130,7 +130,8 @@ internal static class ImageGifMetadataExtractor
                     case ImagingResources.ImageDescriptorId:
                         metadata.Frames.Add(new FrameInfo
                         {
-                            Description = ImagingResources.ImageFrameDescription, DelayTime = lastFrameDelay
+                            Description = ImagingResources.ImageFrameDescription,
+                            DelayTime = lastFrameDelay
                         });
 
                         reader.BaseStream.Seek(ImagingResources.ImageDescriptorLength, SeekOrigin.Current);

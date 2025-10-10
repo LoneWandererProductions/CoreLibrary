@@ -24,6 +24,9 @@ public sealed class UnusedParameterAnalyzer : ICodeAnalyzer
     public string Name => "UnusedParameter";
 
     /// <inheritdoc />
+    public string Description => "Analyzer that finds unused method parameters.";
+
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts

@@ -175,12 +175,12 @@ internal static class ImageDuplication
         var g = 0;
 
         for (var y = 0; y < ImageResources.DuplicateSize; y++)
-        for (var x = 0; x < ImageResources.DuplicateSize; x++)
-        {
-            r += dbm.GetPixel(x, y).R;
-            b += dbm.GetPixel(x, y).B;
-            g += dbm.GetPixel(x, y).G;
-        }
+            for (var x = 0; x < ImageResources.DuplicateSize; x++)
+            {
+                r += dbm.GetPixel(x, y).R;
+                b += dbm.GetPixel(x, y).B;
+                g += dbm.GetPixel(x, y).G;
+            }
 
         r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
         b /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
@@ -199,13 +199,13 @@ internal static class ImageDuplication
         {
             var i = -1;
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
-            for (var x = 0; x < ImageResources.DuplicateSize; x++)
-            {
-                i++;
-                var cache = dbm.GetPixel(x, y).R;
-                image[x, y] = cache;
-                hash[i] = cache;
-            }
+                for (var x = 0; x < ImageResources.DuplicateSize; x++)
+                {
+                    i++;
+                    var cache = dbm.GetPixel(x, y).R;
+                    image[x, y] = cache;
+                    hash[i] = cache;
+                }
         }
         catch (InvalidOperationException ex)
         {

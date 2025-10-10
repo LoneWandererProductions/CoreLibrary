@@ -342,57 +342,57 @@ public sealed class DataListView : INotifyPropertyChanged
         switch (e.ListChangedType)
         {
             case ListChangedType.ItemChanged:
-            {
-                //NewIndex = OldIndex
-                var item = Items[e.NewIndex];
-
-                check = _uniqueName.AddDistinct(item.Name);
-
-                if (!check && _unique)
                 {
-                    _dataList.NotUnique(item.Name);
-                    return;
+                    //NewIndex = OldIndex
+                    var item = Items[e.NewIndex];
+
+                    check = _uniqueName.AddDistinct(item.Name);
+
+                    if (!check && _unique)
+                    {
+                        _dataList.NotUnique(item.Name);
+                        return;
+                    }
+
+                    ChangeLog.Change(item.Id, item);
+
+                    break;
                 }
-
-                ChangeLog.Change(item.Id, item);
-
-                break;
-            }
             case ListChangedType.ItemAdded:
-            {
-                //must be NewIndex
-                var item = Items[e.NewIndex];
-
-                check = _uniqueName.AddDistinct(item.Name);
-
-                if (!check && _unique)
                 {
-                    _dataList.NotUnique(item.Name);
-                    return;
+                    //must be NewIndex
+                    var item = Items[e.NewIndex];
+
+                    check = _uniqueName.AddDistinct(item.Name);
+
+                    if (!check && _unique)
+                    {
+                        _dataList.NotUnique(item.Name);
+                        return;
+                    }
+
+                    ChangeLog.Add(item.Id, item, false);
+
+                    _id.Add(item.Id);
+
+                    break;
                 }
-
-                ChangeLog.Add(item.Id, item, false);
-
-                _id.Add(item.Id);
-
-                break;
-            }
             case ListChangedType.ItemDeleted:
-            {
-                //must be OldIndex
-                var id = _id[e.NewIndex];
+                {
+                    //must be OldIndex
+                    var id = _id[e.NewIndex];
 
-                _id.Remove(id);
+                    _id.Remove(id);
 
-                //must be NewIndex
-                var item = Items[id];
+                    //must be NewIndex
+                    var item = Items[id];
 
-                ChangeLog.Remove(item.Id);
+                    ChangeLog.Remove(item.Id);
 
-                _uniqueName.Remove(item.Name);
+                    _uniqueName.Remove(item.Name);
 
-                break;
-            }
+                    break;
+                }
         }
     }
 

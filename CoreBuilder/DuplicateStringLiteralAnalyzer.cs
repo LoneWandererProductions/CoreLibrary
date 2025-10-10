@@ -29,6 +29,9 @@ public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
     public string Name => "DuplicateStringLiteral";
 
     /// <inheritdoc />
+    public string Description => "Analyzer that finds duplicate string literals across a project.";
+
+    /// <inheritdoc />
     /// <remarks>
     ///     This method intentionally yields no results, since duplicate
     ///     string detection requires project-wide context. Use

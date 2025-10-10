@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CoreBuilder.Interface;
 
@@ -24,6 +25,8 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
     public string Name => "LicenseHeader";
 
     /// <inheritdoc />
+    public string Description => " Just a simple License Header Analyzer. Checks if the file starts with a license header.";
+
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {

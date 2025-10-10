@@ -50,29 +50,29 @@ internal sealed class Parser
                     break;
 
                 case TokenType.Label:
-                {
-                    var stmt = ReadStatementAsString();
-                    result.Add("Label", commandIndex++, stmt);
-                    break;
-                }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Label", commandIndex++, stmt);
+                        break;
+                    }
 
                 case TokenType.KeywordGoto:
-                {
-                    var stmt = ReadStatementAsString();
-                    result.Add("Goto", commandIndex++, stmt);
-                    break;
-                }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Goto", commandIndex++, stmt);
+                        break;
+                    }
 
                 case TokenType.Comment:
                     Advance(); // skip comments
                     break;
 
                 default:
-                {
-                    var stmt = ReadStatementAsString();
-                    result.Add("Command", commandIndex++, stmt);
-                    break;
-                }
+                    {
+                        var stmt = ReadStatementAsString();
+                        result.Add("Command", commandIndex++, stmt);
+                        break;
+                    }
             }
         }
 

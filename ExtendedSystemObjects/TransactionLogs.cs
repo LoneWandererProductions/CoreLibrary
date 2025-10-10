@@ -84,7 +84,10 @@ public sealed class TransactionLogs
         {
             var log = new LogEntry
             {
-                State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
+                State = LogState.Add,
+                Data = item,
+                UniqueIdentifier = uniqueIdentifier,
+                StartData = startData
             };
 
             Changelog[GetNewKey()] = log;
@@ -110,7 +113,9 @@ public sealed class TransactionLogs
 
             Changelog[GetNewKey()] = new LogEntry
             {
-                State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
+                State = LogState.Remove,
+                Data = item,
+                UniqueIdentifier = uniqueIdentifier
             };
 
             Changed = true;
@@ -133,7 +138,9 @@ public sealed class TransactionLogs
             {
                 Changelog[entry] = new LogEntry
                 {
-                    State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Change,
+                    Data = item,
+                    UniqueIdentifier = uniqueIdentifier
                 };
                 Changed = true;
             }
@@ -141,7 +148,9 @@ public sealed class TransactionLogs
             {
                 Changelog[GetNewKey()] = new LogEntry
                 {
-                    State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Change,
+                    Data = item,
+                    UniqueIdentifier = uniqueIdentifier
                 };
                 Changed = true;
             }

@@ -7,6 +7,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoreBuilder.Interface;
 
@@ -24,10 +25,24 @@ public interface ICodeAnalyzer
     string Name { get; }
 
     /// <summary>
+    /// Gets the description.
+    /// </summary>
+    /// <value>
+    /// The description.
+    /// </value>
+    string Description { get; }
+
+    /// <summary>
     ///     Analyzes the specified file path.
     /// </summary>
     /// <param name="filePath">The file path.</param>
     /// <param name="fileContent">Content of the file.</param>
     /// <returns>Code Analyzer results.</returns>
-    IEnumerable<Diagnostic> Analyze(string filePath, string fileContent);
+    IEnumerable<Diagnostic> Analyze(string filePath, string fileContent) => Enumerable.Empty<Diagnostic>();
+
+    /// <summary>
+    /// Analyze all files together. 
+    /// Override this only if your analyzer requires project-wide context.
+    /// </summary>
+    IEnumerable<Diagnostic> AnalyzeProject(Dictionary<string, string> allFiles) => Enumerable.Empty<Diagnostic>();
 }

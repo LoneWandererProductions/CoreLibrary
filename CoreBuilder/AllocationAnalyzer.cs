@@ -24,6 +24,9 @@ public sealed class AllocationAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public string Name => "Allocation";
 
+    /// <inheritdoc />
+    public string Description => "Analyzer that detects allocations in hot paths.";
+
     /// <summary>
     /// The aggregate stats
     /// </summary>

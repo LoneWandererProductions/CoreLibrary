@@ -60,46 +60,46 @@ internal static class Program
             switch (operation)
             {
                 case ConResources.ResourceHeader when args.Length == 2:
-                {
-                    var directoryPath = args[1];
-                    IHeaderExtractor headerExtractor = new HeaderExtractor();
-                    var message = headerExtractor.ProcessFiles(directoryPath, true);
-                    Console.WriteLine(message);
-                    break;
-                }
-                case ConResources.ResourceResxtract when args.Length >= 3:
-                {
-                    var projectPath = args[1];
-                    var outputResourceFile = args[2];
-                    var ignoreList = new List<string>();
-                    var ignorePatterns = new List<string>();
-                    if (args.Length > 3 && File.Exists(args[3]))
                     {
-                        ignoreList = new List<string>(File.ReadAllLines(args[3]));
-                        Console.WriteLine(ConResources.MessageFilesIgnored, ignoreList.Count);
+                        var directoryPath = args[1];
+                        IHeaderExtractor headerExtractor = new HeaderExtractor();
+                        var message = headerExtractor.ProcessFiles(directoryPath, true);
+                        Console.WriteLine(message);
+                        break;
                     }
-
-                    if (args.Length > 4 && File.Exists(args[4]))
+                case ConResources.ResourceResxtract when args.Length >= 3:
                     {
-                        foreach (var pattern in File.ReadAllLines(args[4]))
+                        var projectPath = args[1];
+                        var outputResourceFile = args[2];
+                        var ignoreList = new List<string>();
+                        var ignorePatterns = new List<string>();
+                        if (args.Length > 3 && File.Exists(args[3]))
                         {
-                            try
-                            {
-                                ignorePatterns.Add(pattern);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ConResources.ErrorRegexpattern, pattern, ex.Message);
-                            }
+                            ignoreList = new List<string>(File.ReadAllLines(args[3]));
+                            Console.WriteLine(ConResources.MessageFilesIgnored, ignoreList.Count);
                         }
 
-                        Console.WriteLine(ConResources.MessageOutputIgnore, ignorePatterns.Count);
-                    }
+                        if (args.Length > 4 && File.Exists(args[4]))
+                        {
+                            foreach (var pattern in File.ReadAllLines(args[4]))
+                            {
+                                try
+                                {
+                                    ignorePatterns.Add(pattern);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ConResources.ErrorRegexpattern, pattern, ex.Message);
+                                }
+                            }
 
-                    IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
-                    resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
-                    break;
-                }
+                            Console.WriteLine(ConResources.MessageOutputIgnore, ignorePatterns.Count);
+                        }
+
+                        IResourceExtractor resXtractExtractor = new ResXtract(ignoreList, ignorePatterns);
+                        resXtractExtractor.ProcessProject(projectPath, outputResourceFile);
+                        break;
+                    }
                 default:
                     Console.WriteLine(ConResources.InformationInvalidArgument);
                     break;
@@ -213,11 +213,11 @@ internal static class Program
                 _prompt?.Callback(output);
                 break;
             case ConResources.DirAnalyzer:
-            {
-                result = ConsoleHelper.HandleDirAnalyzer(outCommand);
-                _prompt?.Callback(result);
-                break;
-            }
+                {
+                    result = ConsoleHelper.HandleDirAnalyzer(outCommand);
+                    _prompt?.Callback(result);
+                    break;
+                }
             default:
                 _prompt?.Callback(ConResources.ErrorCommandNotFound);
                 break;
@@ -275,14 +275,14 @@ internal static class Program
         switch (e.Answer)
         {
             case AvailableFeedback.Yes:
-            {
-                var reconstructed = _ext.ExtensionParameter?.Count > 0
-                    ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
-                    : $"{_ext.BaseCommand}";
+                {
+                    var reconstructed = _ext.ExtensionParameter?.Count > 0
+                        ? $"{_ext.BaseCommand}({string.Join(",", _ext.ExtensionParameter)})"
+                        : $"{_ext.BaseCommand}";
 
-                _prompt?.ConsoleInput(reconstructed);
-                break;
-            }
+                    _prompt?.ConsoleInput(reconstructed);
+                    break;
+                }
             case AvailableFeedback.No:
             case AvailableFeedback.Cancel:
                 _prompt?.Callback("Operation canceled");

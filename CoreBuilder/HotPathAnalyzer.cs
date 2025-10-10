@@ -22,6 +22,9 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
     /// <inheritdoc />
     public string Name => "HotPath";
 
+    /// <inheritdoc />
+    public string Description => "Analyzer that detects frequently called methods and flags hot paths.";
+
     /// <summary>
     /// Project-wide aggregation: method FQN -> (call count, total risk, files seen)
     /// </summary>

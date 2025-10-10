@@ -104,14 +104,20 @@ internal sealed class Lexer
                     Advance(); // Skip closing quote
                     tokens.Add(new Token
                     {
-                        Type = TokenType.String, Lexeme = stringBuilder.ToString(), Line = line, Column = col
+                        Type = TokenType.String,
+                        Lexeme = stringBuilder.ToString(),
+                        Line = line,
+                        Column = col
                     });
                 }
                 else
                 {
                     tokens.Add(new Token
                     {
-                        Type = TokenType.Unknown, Lexeme = "\"" + stringBuilder, Line = line, Column = col
+                        Type = TokenType.Unknown,
+                        Lexeme = "\"" + stringBuilder,
+                        Line = line,
+                        Column = col
                     });
                 }
             }
@@ -154,7 +160,10 @@ internal sealed class Lexer
                             var comment = ReadWhile(ch => ch != '\n' && ch != '\r');
                             tokens.Add(new Token
                             {
-                                Type = TokenType.Comment, Lexeme = comment.Trim(), Line = line, Column = col
+                                Type = TokenType.Comment,
+                                Lexeme = comment.Trim(),
+                                Line = line,
+                                Column = col
                             });
                         }
                         else

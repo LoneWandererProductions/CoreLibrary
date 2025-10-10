@@ -48,11 +48,12 @@ public static class FileHandleCut
 
         //Give the User Optional Infos about the Amount we Copy
         var lstFiles = (from file in files
-            select file.Name).ToList();
+                        select file.Name).ToList();
 
         var itm = new FileItems
         {
-            Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
+            Elements = new List<string>(lstFiles),
+            Message = FileHandlerResources.InformationFileDeletion
         };
 
         FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles), itm);
@@ -128,7 +129,8 @@ public static class FileHandleCut
         //Give the User Optional Infos about the Amount we Copy
         var itm = new FileItems
         {
-            Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
+            Elements = new List<string>(source),
+            Message = FileHandlerResources.InformationFileDeletion
         };
 
         FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles), itm);

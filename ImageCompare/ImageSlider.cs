@@ -60,22 +60,22 @@ internal static class ImageSlider
         var smallImageBottomEdge = new DirectBitmap(smallWidth, 1);
 
         for (var i = 0; i <= bigHeight - smallHeight; i++)
-        for (var j = 0; j <= bigWidth - smallWidth; j++)
-        {
-            // Update the bottom edge for the current position in the big image
-            for (var x = 0; x < smallWidth; x++)
+            for (var j = 0; j <= bigWidth - smallWidth; j++)
             {
-                smallImageBottomEdge.SetPixel(x, 0, dbmBig.GetPixel(j + x, i + smallHeight - 1));
-            }
+                // Update the bottom edge for the current position in the big image
+                for (var x = 0; x < smallWidth; x++)
+                {
+                    smallImageBottomEdge.SetPixel(x, 0, dbmBig.GetPixel(j + x, i + smallHeight - 1));
+                }
 
-            if (CheckEdges(dbmBig, dbmSmall, i, j, smallImageBottomEdge, threshold) &&
-                CheckFull(dbmBig, dbmSmall, i, j, threshold))
-            {
-                smallImageBottomEdge.Dispose();
-                startCoordinates = new Coordinate2D(j, i);
-                return true;
+                if (CheckEdges(dbmBig, dbmSmall, i, j, smallImageBottomEdge, threshold) &&
+                    CheckFull(dbmBig, dbmSmall, i, j, threshold))
+                {
+                    smallImageBottomEdge.Dispose();
+                    startCoordinates = new Coordinate2D(j, i);
+                    return true;
+                }
             }
-        }
 
         smallImageBottomEdge.Dispose();
         startCoordinates = Coordinate2D.NullPoint;
@@ -157,14 +157,14 @@ internal static class ImageSlider
         var smallWidth = smallImage.Width;
 
         for (var y = 0; y < smallHeight; y++)
-        for (var x = 0; x < smallWidth; x++)
-        {
-            if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + y), smallImage.GetPixel(x, y),
-                    threshold))
+            for (var x = 0; x < smallWidth; x++)
             {
-                return false;
+                if (!IsColorMatch(bigImage.GetPixel(startCol + x, startRow + y), smallImage.GetPixel(x, y),
+                        threshold))
+                {
+                    return false;
+                }
             }
-        }
 
         return true;
     }

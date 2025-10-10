@@ -42,6 +42,7 @@ internal static class ConsoleHelper
         Analyzers.Add(new AllocationAnalyzer());
         Analyzers.Add(new DisposableAnalyzer());
         Analyzers.Add(new EventHandlerAnalyzer());
+        Analyzers.Add(new UnusedConstantAnalyzer());
     }
 
     /// <summary>

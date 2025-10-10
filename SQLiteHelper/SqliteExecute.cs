@@ -65,7 +65,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = string.Concat(SqliteHelperResources.ErrorDbInfoCreate, overwrite), Level = 0
+                Message = string.Concat(SqliteHelperResources.ErrorDbInfoCreate, overwrite),
+                Level = 0
             };
             OnError(_message);
             return false;
@@ -78,7 +79,8 @@ internal sealed class SqliteExecute
 
         _message = new MessageItem
         {
-            Message = string.Concat(SqliteHelperResources.SuccessCreatedLog, dbName), Level = 2
+            Message = string.Concat(SqliteHelperResources.SuccessCreatedLog, dbName),
+            Level = 2
         };
         OnError(_message);
 
@@ -100,7 +102,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = string.Concat(SqliteHelperResources.ErrorDbInfoDelete, location, dbName), Level = 0
+                Message = string.Concat(SqliteHelperResources.ErrorDbInfoDelete, location, dbName),
+                Level = 0
             };
             OnError(_message);
 
@@ -114,7 +117,8 @@ internal sealed class SqliteExecute
 
             _message = new MessageItem
             {
-                Message = string.Concat(SqliteHelperResources.SuccessDeletedLog, dbName), Level = 2
+                Message = string.Concat(SqliteHelperResources.SuccessDeletedLog, dbName),
+                Level = 2
             };
             OnError(_message);
 
@@ -192,7 +196,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = string.Concat(SqliteHelperResources.ErrorDbNotFound, toAttach), Level = 0
+                Message = string.Concat(SqliteHelperResources.ErrorDbNotFound, toAttach),
+                Level = 0
             };
             OnError(_message);
 
@@ -309,7 +314,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError,
+                Level = 0
             };
             OnError(_message);
             return false;
@@ -383,7 +389,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError,
+                Level = 0
             };
             OnError(_message);
 
@@ -807,7 +814,8 @@ internal sealed class SqliteExecute
 
             _message = new MessageItem
             {
-                Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery), Level = 2
+                Message = string.Concat(SqliteHelperResources.SuccessExecutedLog, sqlQuery),
+                Level = 2
             };
             OnError(_message);
         }
@@ -863,7 +871,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = $"{SqliteHelperResources.ErrorInSelectStatement}{sqlQuery}", Level = 1
+                Message = $"{SqliteHelperResources.ErrorInSelectStatement}{sqlQuery}",
+                Level = 1
             };
             OnError(_message);
 
@@ -1124,7 +1133,8 @@ internal sealed class SqliteExecute
         {
             _message = new MessageItem
             {
-                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError, Level = 0
+                Message = SqliteHelperResources.ErrorInsertCouldNotGetTableInfoError,
+                Level = 0
             };
             OnError(_message);
 

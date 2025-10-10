@@ -108,24 +108,24 @@ internal static class TextureStream
         var pixelData = new List<(int x, int y, Color color)>();
 
         for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-        {
-            // Generate turbulence value
-            var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
+            for (var x = 0; x < width; x++)
+            {
+                // Generate turbulence value
+                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
 
-            // Adjust turbulence value like in the C code (divide by 4)
-            var l = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
+                // Adjust turbulence value like in the C code (divide by 4)
+                var l = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
 
-            // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
-            const int h = 190; // Adjusted Hue value closer to light blue
-            const int s = 200; // Reduced Saturation for a more muted, light blue
+                // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
+                const int h = 190; // Adjusted Hue value closer to light blue
+                const int s = 200; // Reduced Saturation for a more muted, light blue
 
-            // Convert HSL to RGB
-            var color = HsLtoRgb(h, s, l);
+                // Convert HSL to RGB
+                var color = HsLtoRgb(h, s, l);
 
-            // Add the pixel data for SIMD processing
-            pixelData.Add((x, y, color));
-        }
+                // Add the pixel data for SIMD processing
+                pixelData.Add((x, y, color));
+            }
 
         // Convert list to array for SIMD processing
         var pixelArray = pixelData.ToArray();
@@ -166,21 +166,21 @@ internal static class TextureStream
         var pixelData = new List<(int x, int y, Color color)>();
 
         for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-        {
-            // Replace fixed NoiseWidth/NoiseHeight with width/height
-            var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
-                          (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0) +
-                          (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
+            for (var x = 0; x < width; x++)
+            {
+                // Replace fixed NoiseWidth/NoiseHeight with width/height
+                var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
+                              (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0) +
+                              (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
 
-            var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
+                var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
 
-            var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-            var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-            var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
+                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
+                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
+                var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
 
-            pixelData.Add((x, y, Color.FromArgb(alpha, r, g, b)));
-        }
+                pixelData.Add((x, y, Color.FromArgb(alpha, r, g, b)));
+            }
 
         // Use SIMD-based bulk pixel setting
         marbleBitmap.SetPixelsSimd(pixelData.ToArray());
@@ -218,21 +218,21 @@ internal static class TextureStream
         var pixelData = new List<(int x, int y, Color color)>();
 
         for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-        {
-            var xValue = (x - (width / 2.0)) / width;
-            var yValue = (y - (height / 2.0)) / height;
-            var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
-                            (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
-            var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
+            for (var x = 0; x < width; x++)
+            {
+                var xValue = (x - (width / 2.0)) / width;
+                var yValue = (y - (height / 2.0)) / height;
+                var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
+                                (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
+                var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
-            var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-            var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-            var b = Math.Clamp((int)baseColor.B, 0, 255);
+                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
+                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
+                var b = Math.Clamp((int)baseColor.B, 0, 255);
 
-            var color = Color.FromArgb(alpha, r, g, b);
-            pixelData.Add((x, y, color));
-        }
+                var color = Color.FromArgb(alpha, r, g, b);
+                pixelData.Add((x, y, color));
+            }
 
         // Convert list to array for SIMD processing
         var pixelArray = pixelData.ToArray();
@@ -268,20 +268,20 @@ internal static class TextureStream
         var pixelData = new List<(int x, int y, Color color)>();
 
         for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-        {
-            var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
-            var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
-            var yValue = ((y - (height / 2.0)) / height) +
-                         (turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+            for (var x = 0; x < width; x++)
+            {
+                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
+                var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
+                var yValue = ((y - (height / 2.0)) / height) +
+                             (turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 
-            var sineValue = 22.0 *
-                            Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
-                                     Math.Sin(xyPeriod * yValue * Math.PI));
-            var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, alpha);
+                var sineValue = 22.0 *
+                                Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
+                                         Math.Sin(xyPeriod * yValue * Math.PI));
+                var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, alpha);
 
-            pixelData.Add((x, y, hsvColor.GetDrawingColor()));
-        }
+                pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+            }
 
         // Convert list to array for SIMD processing
         var pixelArray = pixelData.ToArray();

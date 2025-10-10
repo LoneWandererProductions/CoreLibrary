@@ -523,7 +523,9 @@ public sealed partial class Thumbnails : IDisposable
         // Create the image placeholder
         var images = new Image
         {
-            Height = ThumbCellSize, Width = ThumbCellSize, Name = string.Concat(ComCtlResources.ImageAdd, key)
+            Height = ThumbCellSize,
+            Width = ThumbCellSize,
+            Name = string.Concat(ComCtlResources.ImageAdd, key)
         };
 
         // Create a border around the image
@@ -576,7 +578,7 @@ public sealed partial class Thumbnails : IDisposable
         });
 
         if (SelectBox)
-            // Handle checkboxes for selection on the UI thread
+        // Handle checkboxes for selection on the UI thread
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

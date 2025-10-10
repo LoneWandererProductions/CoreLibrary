@@ -25,6 +25,9 @@ public sealed class UnusedPrivateFieldAnalyzer : ICodeAnalyzer
     public string Name => "UnusedPrivateField";
 
     /// <inheritdoc />
+    public string Description => "Analyzer that finds unused private fields.";
+
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts

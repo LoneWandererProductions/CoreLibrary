@@ -56,11 +56,11 @@ public static class FileSearchExtension
         var maxLen = enumerable.Max(s => s.Length);
 
         return enumerable.Select(s => new
-            {
-                OrgStr = s,
-                SortStr = Regex.Replace(s,
+        {
+            OrgStr = s,
+            SortStr = Regex.Replace(s,
                     m => m.Value.PadLeft(maxLen, char.IsDigit(m.Value[0]) ? ' ' : '\xffff'))
-            })
+        })
             .OrderBy(x => x.SortStr)
             .Select(x => x.OrgStr);
     }

@@ -157,17 +157,17 @@ internal static class HelperMethods
         var newMatrix = new double[m1.GetLength(0), m2.GetLength(1)];
 
         for (var i = 0; i < m1.GetLength(0); i++)
-        for (var j = 0; j < m2.GetLength(1); j++)
-        {
-            double sum = 0;
-
-            for (var k = 0; k < m1.GetLength(1); k++)
+            for (var j = 0; j < m2.GetLength(1); j++)
             {
-                sum += m1[i, k] * m2[k, j];
-            }
+                double sum = 0;
 
-            newMatrix[i, j] = sum;
-        }
+                for (var k = 0; k < m1.GetLength(1); k++)
+                {
+                    sum += m1[i, k] * m2[k, j];
+                }
+
+                newMatrix[i, j] = sum;
+            }
 
         return newMatrix;
     }

@@ -24,6 +24,9 @@ public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer
     public string Name => "UnusedLocalVariable";
 
     /// <inheritdoc />
+    public string Description => "Unused local variable Analyzer.";
+
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts

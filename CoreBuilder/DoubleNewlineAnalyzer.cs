@@ -22,6 +22,9 @@ public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer
     public string Name => "DoubleNewline";
 
     /// <inheritdoc />
+    public string Description => "Simple Double Newline Analyzer.";
+
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // Skip ignored files

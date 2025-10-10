@@ -423,7 +423,9 @@ internal static class SqLiteGuiProcessing
                 item =>
                     new UpdateItem
                     {
-                        DataType = item.Value.DataType, HeaderName = item.Key, Value = SqLiteGuiResource.ParamDummy
+                        DataType = item.Value.DataType,
+                        HeaderName = item.Key,
+                        Value = SqLiteGuiResource.ParamDummy
                     })
             .ToList();
     }
@@ -443,7 +445,8 @@ internal static class SqLiteGuiProcessing
         {
             _paramsClause = new Binary
             {
-                Where = Register.PrimaryKey, Value = Register.PrimaryKeyItem(Register.PrimaryKey)
+                Where = Register.PrimaryKey,
+                Value = Register.PrimaryKeyItem(Register.PrimaryKey)
             };
             return true;
         }

@@ -1,4 +1,12 @@
-﻿namespace CoreViewer
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CoreViewer
+ * FILE:        CoreViewer/MainWindow.xaml.cs
+ * PURPOSE:     Entry for the WPF application.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+namespace CoreViewer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

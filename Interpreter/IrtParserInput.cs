@@ -365,7 +365,9 @@ internal sealed class IrtParserInput : IDisposable
                 var feedback = _userFeedback[id];
                 var feedbackReceiver = new IrtFeedback
                 {
-                    RequestId = _myRequestId, Feedback = feedback, AwaitedOutput = command
+                    RequestId = _myRequestId,
+                    Feedback = feedback,
+                    AwaitedOutput = command
                 };
 
                 _prompt.RequestFeedback(feedbackReceiver);
@@ -408,7 +410,10 @@ internal sealed class IrtParserInput : IDisposable
     {
         var com = new OutCommand
         {
-            Command = IrtConst.Error, Parameter = null, UsedNameSpace = _nameSpace, ErrorMessage = error
+            Command = IrtConst.Error,
+            Parameter = null,
+            UsedNameSpace = _nameSpace,
+            ErrorMessage = error
         };
 
         _prompt.SendCommand(this, com);
@@ -429,7 +434,7 @@ internal sealed class IrtParserInput : IDisposable
         }
 
         if (disposing)
-            // Dispose managed resources here if needed
+        // Dispose managed resources here if needed
         {
             _irtHandleInternal?.Dispose();
         }

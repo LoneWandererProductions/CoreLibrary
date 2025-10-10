@@ -84,7 +84,10 @@ public sealed class SqlLiteHelperDbCreate
         //add some content
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+            DataType = SqLiteDataTypes.Text,
+            PrimaryKey = false,
+            Unique = false,
+            NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -101,7 +104,10 @@ public sealed class SqlLiteHelperDbCreate
         //add some content
         elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+            DataType = SqLiteDataTypes.Text,
+            PrimaryKey = false,
+            Unique = false,
+            NotNull = false
         };
 
         columns = new DictionaryTableColumns();
@@ -180,12 +186,18 @@ public sealed class SqlLiteHelperDbCreate
 
         var elementOne = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
+            DataType = SqLiteDataTypes.Text,
+            PrimaryKey = false,
+            Unique = false,
+            NotNull = false
         };
 
         var elementTwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+            DataType = SqLiteDataTypes.Integer,
+            PrimaryKey = true,
+            Unique = true,
+            NotNull = false
         };
 
         var columns = new DictionaryTableColumns();

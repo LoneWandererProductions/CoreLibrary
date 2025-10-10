@@ -89,14 +89,14 @@ internal readonly struct ImageDuplicate : IComparable<ImageDuplicate>
         }
 
         for (var y = 0; y < ImageResources.DuplicateSize; y++)
-        for (var x = 0; x < ImageResources.DuplicateSize; x++)
-        {
-            var comparisonResult = Image[x, y].CompareTo(other.Image[x, y]);
-            if (comparisonResult != 0)
+            for (var x = 0; x < ImageResources.DuplicateSize; x++)
             {
-                return false;
+                var comparisonResult = Image[x, y].CompareTo(other.Image[x, y]);
+                if (comparisonResult != 0)
+                {
+                    return false;
+                }
             }
-        }
 
         return other.R.Interval(R, ImageResources.ColorThreshold) &&
                other.G.Interval(G, ImageResources.ColorThreshold) &&
@@ -119,14 +119,14 @@ internal readonly struct ImageDuplicate : IComparable<ImageDuplicate>
         }
 
         for (var i = 0; i < ImageResources.DuplicateSize; i++)
-        for (var j = 0; j < ImageResources.DuplicateSize; j++)
-        {
-            var comparisonResult = Image[i, j].CompareTo(other.Image[i, j]);
-            if (comparisonResult != 0)
+            for (var j = 0; j < ImageResources.DuplicateSize; j++)
             {
-                return comparisonResult;
+                var comparisonResult = Image[i, j].CompareTo(other.Image[i, j]);
+                if (comparisonResult != 0)
+                {
+                    return comparisonResult;
+                }
             }
-        }
 
         return 0;
     }
