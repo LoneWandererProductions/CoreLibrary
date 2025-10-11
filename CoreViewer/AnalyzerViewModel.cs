@@ -135,7 +135,8 @@ namespace CoreViewer
                 new AllocationAnalyzer(),
                 new DisposableAnalyzer(),
                 new EventHandlerAnalyzer(),
-                new UnusedConstantAnalyzer()
+                new UnusedConstantAnalyzer(),
+                new UnusedClassAnalyzer()
             ]);
         }
 
