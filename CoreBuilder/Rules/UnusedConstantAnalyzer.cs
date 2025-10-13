@@ -25,17 +25,10 @@ namespace CoreBuilder.Rules;
 /// </summary>
 public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
 {
-    /// <summary>
-    /// Unique identifier of this analyzer.
-    /// </summary>
+    /// <inheritdoc />
     public string Name => "UnusedConstantAnalyzer";
 
-    /// <summary>
-    /// Gets the description.
-    /// </summary>
-    /// <value>
-    /// The description.
-    /// </value>
+    /// <inheritdoc />
     public string Description => "Analyzer to detect unused constants and static readonly fields across a project.";
 
     /// <summary>
@@ -48,10 +41,7 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
         return Enumerable.Empty<Diagnostic>();
     }
 
-    /// <summary>
-    /// Runs project-wide analysis for unused constants.
-    /// </summary>
-    /// <param name="allFiles">Dictionary of file path -> file content.</param>
+    /// <inheritdoc />
     public IEnumerable<Diagnostic> AnalyzeProject(Dictionary<string, string> allFiles)
     {
         var results = new List<Diagnostic>();
@@ -82,10 +72,21 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
         // Cross-check each declaration against all file contents
         foreach (var decl in declarations)
         {
-            var isUsed = allFiles.Values.Any(c =>
-                Regex.IsMatch(c, $@"\b{Regex.Escape(decl.Name)}\b"));
+            int usageCount = 0;
 
-            if (!isUsed)
+            foreach (var kvp in allFiles)
+            {
+                var lines = kvp.Value.Split('\n');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    // Skip the declaration line itself
+                    if (kvp.Key == decl.FilePath && i == decl.Line - 1) continue;
+
+                    usageCount += Regex.Matches(lines[i], $@"\b{Regex.Escape(decl.Name)}\b").Count;
+                }
+            }
+
+            if (usageCount == 0)
             {
                 results.Add(new Diagnostic(
                     decl.Name,
@@ -96,6 +97,7 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
                 ));
             }
         }
+
         return results;
     }
 }
