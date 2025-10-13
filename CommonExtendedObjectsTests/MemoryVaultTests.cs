@@ -90,9 +90,7 @@ public class MemoryVaultTests
         var identifier = _vault.Add(data);
         var metadata = new VaultMetadata
         {
-            Description = "A test item",
-            CreationDate = DateTime.UtcNow,
-            Identifier = identifier
+            Description = "A test item", CreationDate = DateTime.UtcNow, Identifier = identifier
         };
 
         // Act

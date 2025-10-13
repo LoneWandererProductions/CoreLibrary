@@ -6,10 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using ExtendedSystemObjects.Helper;
@@ -29,12 +33,12 @@ public sealed class MemoryVault<TU> : IDisposable
     private static MemoryVault<TU>? _instance;
 
     /// <summary>
-    ///     Lock for singleton instance initialization.
+    /// Lock for singleton instance initialization.
     /// </summary>
     private static readonly Lock InstanceLock = new();
 
     /// <summary>
-    ///     Thread-safe dictionary for storing items.
+    /// Thread-safe dictionary for storing items.
     /// </summary>
     private readonly ConcurrentDictionary<long, VaultItem<TU>> _vault;
 
@@ -54,8 +58,11 @@ public sealed class MemoryVault<TU> : IDisposable
     private bool _disposed;
 
     /// <summary>
-    ///     Interval at which expired items are cleaned up.
+    /// Interval at which expired items are cleaned up.
     /// </summary>
+    /// <value>
+    /// The cleanup interval.
+    /// </value>
     public TimeSpan CleanupInterval { get; set; } = TimeSpan.FromMinutes(5);
 
     /// <summary>
@@ -73,14 +80,17 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Memory usage threshold in bytes. Triggers event when exceeded.
+    /// Memory usage threshold in bytes. Triggers event when exceeded.
     /// </summary>
+    /// <value>
+    /// The memory threshold.
+    /// </value>
     public long MemoryThreshold { get; set; } = 10 * 1024 * 1024; // Default 10 MB
 
     /// <summary>
     ///     Event triggered when memory usage exceeds the threshold.
     /// </summary>
-    public event EventHandler<VaultMemoryThresholdExceededEventArgs> MemoryThresholdExceeded;
+    public event EventHandler<VaultMemoryThresholdExceededEventArgs>? MemoryThresholdExceeded;
 
     /// <summary>
     ///     Private constructor for singleton pattern.
@@ -95,8 +105,12 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Adds data to the vault with optional expiration and description.
+    /// Adds data to the vault with optional expiration and description.
     /// </summary>
+    /// <param name="data">The data.</param>
+    /// <param name="expiryTime">The expiry time.</param>
+    /// <param name="description">The description.</param>
+    /// <returns>Address of memory</returns>
     public long Add(TU data, TimeSpan? expiryTime = null, string description = "")
     {
         EnsureNotDisposed();
@@ -125,23 +139,25 @@ public sealed class MemoryVault<TU> : IDisposable
     {
         EnsureNotDisposed();
 
-        if (_vault.TryGetValue(identifier, out var item))
+        if (!_vault.TryGetValue(identifier, out var item))
         {
-            if (item.HasExpireTime && item.HasExpired)
-            {
-                _vault.TryRemove(identifier, out _);
-                return default;
-            }
+            return default;
+        }
 
+        if (!item.HasExpireTime || !item.HasExpired)
+        {
             return item.Data;
         }
 
+        _vault.TryRemove(identifier, out _);
         return default;
     }
 
     /// <summary>
-    ///     Removes an item from the vault.
+    /// Removes an item from the vault.
     /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <returns>Status of operation.</returns>
     public bool Remove(long identifier)
     {
         EnsureNotDisposed();
@@ -149,8 +165,9 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Returns all non-expired items in the vault.
+    /// Returns all non-expired items in the vault.
     /// </summary>
+    /// <returns>List with stored data.</returns>
     public List<TU> GetAll()
     {
         EnsureNotDisposed();
@@ -179,8 +196,10 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Retrieves metadata for a specific item.
+    /// Retrieves metadata for a specific item.
     /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <returns></returns>
     public VaultMetadata? GetMetadata(long identifier)
     {
         EnsureNotDisposed();
@@ -207,25 +226,33 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Updates metadata for a specific item.
+    /// Updates metadata for a specific item.
     /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <param name="metaData">The meta data.</param>
+    /// <exception cref="System.ArgumentNullException"></exception>
     public void AddMetadata(long identifier, VaultMetadata metaData)
     {
         EnsureNotDisposed();
 
         ArgumentNullException.ThrowIfNull(metaData);
 
-        if (_vault.TryGetValue(identifier, out var item))
+        if (!_vault.TryGetValue(identifier, out var item))
         {
-            item.Description = metaData.Description;
-            item.HasExpireTime = metaData.HasExpireTime;
-            item.AdditionalMetadata = metaData.AdditionalMetadata;
+            return;
         }
+
+        item.Description = metaData.Description;
+        item.HasExpireTime = metaData.HasExpireTime;
+        item.AdditionalMetadata = metaData.AdditionalMetadata;
     }
 
     /// <summary>
-    ///     Saves an item to disk in JSON format.
+    /// Saves an item to disk in JSON format.
     /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <param name="filePath">The file path.</param>
+    /// <returns>Success status.</returns>
     public bool SaveToDisk(long identifier, string filePath)
     {
         EnsureNotDisposed();
@@ -278,22 +305,21 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Periodic cleanup of expired items.
+    /// Periodic cleanup of expired items.
     /// </summary>
+    /// <param name="state">The state.</param>
     private void CleanupExpiredItems(object? state)
     {
-        foreach (var kvp in _vault)
+        foreach (var kvp in _vault.Where(kvp => kvp.Value.HasExpireTime && kvp.Value.HasExpired))
         {
-            if (kvp.Value.HasExpireTime && kvp.Value.HasExpired)
-            {
-                _vault.TryRemove(kvp.Key, out _);
-            }
+            _vault.TryRemove(kvp.Key, out _);
         }
     }
 
     /// <summary>
-    ///     Calculates approximate memory usage of the vault including metadata.
+    /// Calculates approximate memory usage of the vault including metadata.
     /// </summary>
+    /// <returns>Used memory.</returns>
     private long CalculateMemoryUsage()
     {
         long total = 0;
@@ -317,14 +343,17 @@ public sealed class MemoryVault<TU> : IDisposable
     }
 
     /// <summary>
-    ///     Ensures the vault has not been disposed.
+    /// Ensures the vault has not been disposed.
     /// </summary>
+    /// <exception cref="System.ObjectDisposedException">TU</exception>
     private void EnsureNotDisposed()
     {
-        if (_disposed)
+        if (!_disposed)
         {
-            throw new ObjectDisposedException(nameof(MemoryVault<TU>));
+            return;
         }
+
+        throw new ObjectDisposedException(nameof(MemoryVault<TU>));
     }
 
     /// <inheritdoc />

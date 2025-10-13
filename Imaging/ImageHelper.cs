@@ -79,8 +79,8 @@ internal static class ImageHelper
 
         // Build separable 2D
         for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
-                kernel[y, x] = gauss1D[y] * gauss1D[x];
+        for (var x = 0; x < size; x++)
+            kernel[y, x] = gauss1D[y] * gauss1D[x];
 
         return kernel;
     }
@@ -97,14 +97,14 @@ internal static class ImageHelper
         int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
         for (var y = region.Top; y < region.Bottom; y++)
-            for (var x = region.Left; x < region.Right; x++)
-            {
-                var p = dbm.GetPixel(x, y);
-                rSum += p.R;
-                gSum += p.G;
-                bSum += p.B;
-                count++;
-            }
+        for (var x = region.Left; x < region.Right; x++)
+        {
+            var p = dbm.GetPixel(x, y);
+            rSum += p.R;
+            gSum += p.G;
+            bSum += p.B;
+            count++;
+        }
 
         if (count == 0) return Color.Black;
 
@@ -138,35 +138,35 @@ internal static class ImageHelper
         var hasNonTransparentPixel = false;
 
         for (var y = 0; y < image.Height; y++)
-            for (var x = 0; x < image.Width; x++)
+        for (var x = 0; x < image.Width; x++)
+        {
+            var pixel = image.GetPixel(x, y);
+            if (pixel.A == 0)
             {
-                var pixel = image.GetPixel(x, y);
-                if (pixel.A == 0)
-                {
-                    continue;
-                }
-
-                hasNonTransparentPixel = true;
-                if (x < minX)
-                {
-                    minX = x;
-                }
-
-                if (x > maxX)
-                {
-                    maxX = x;
-                }
-
-                if (y < minY)
-                {
-                    minY = y;
-                }
-
-                if (y > maxY)
-                {
-                    maxY = y;
-                }
+                continue;
             }
+
+            hasNonTransparentPixel = true;
+            if (x < minX)
+            {
+                minX = x;
+            }
+
+            if (x > maxX)
+            {
+                maxX = x;
+            }
+
+            if (y < minY)
+            {
+                minY = y;
+            }
+
+            if (y > maxY)
+            {
+                maxY = y;
+            }
+        }
 
         // If all pixels are transparent, return a zero-sized rectangle
         return !hasNonTransparentPixel
@@ -254,15 +254,15 @@ internal static class ImageHelper
         var count = 0;
 
         for (var y = region.Top; y < region.Bottom; y++)
-            for (var x = region.Left; x < region.Right; x++)
-            {
-                var pixel = dbmBase.GetPixel(x, y);
-                pixels.Add(pixel);
-                rSum += pixel.R;
-                gSum += pixel.G;
-                bSum += pixel.B;
-                count++;
-            }
+        for (var x = region.Left; x < region.Right; x++)
+        {
+            var pixel = dbmBase.GetPixel(x, y);
+            pixels.Add(pixel);
+            rSum += pixel.R;
+            gSum += pixel.G;
+            bSum += pixel.B;
+            count++;
+        }
 
         if (!calculateMeanColor || count <= 0)
         {

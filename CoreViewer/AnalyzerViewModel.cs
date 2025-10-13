@@ -51,11 +51,7 @@ namespace CoreViewer
         /// <summary>
         /// The fixable analyzers
         /// </summary>
-        private static readonly HashSet<string> FixableAnalyzers = new()
-        {
-            nameof(LicenseHeaderAnalyzer),
-            "..."
-        };
+        private static readonly HashSet<string> FixableAnalyzers = new() { nameof(LicenseHeaderAnalyzer), "..." };
 
         /// <summary>
         /// Initializes a new instance of <see cref="AnalyzerViewModel"/> and sets up commands.
@@ -194,6 +190,7 @@ namespace CoreViewer
                     fix: FixableAnalyzers.Contains(d.Name) ? _ => HandleFix(d.Name) : null));
             }
         }
+
         /// <summary>
         /// Handles the ignore.
         /// </summary>
@@ -233,6 +230,5 @@ namespace CoreViewer
             // Minimal placeholder
             System.Windows.MessageBox.Show($"Fix logic for {name} not implemented yet.", "Fix");
         }
-
     }
 }

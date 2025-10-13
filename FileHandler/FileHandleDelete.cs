@@ -161,8 +161,7 @@ public static class FileHandleDelete
             //Give the User Optional Infos about the Amount we delete
             var itm = new FileItems
             {
-                Elements = new List<string>(myFiles),
-                Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(myFiles), Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteAllContents), itm);
@@ -233,8 +232,7 @@ public static class FileHandleDelete
             //Give the User Optional Infos about the Amount we delete
             var itm = new FileItems
             {
-                Elements = new List<string>(myFiles),
-                Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string>(myFiles), Message = FileHandlerResources.InformationFileDeletion
             };
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtension), itm);

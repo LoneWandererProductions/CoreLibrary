@@ -237,10 +237,10 @@ public static class Utility
         return sequenceGroups.Count == 0
             ? null
             : (from stack in sequenceGroups
-               where stack.Count >= sequence
-               let start = stack[0]
-               let end = stack[^1]
-               select new KeyValuePair<int, int>(start, end)).ToList();
+                where stack.Count >= sequence
+                let start = stack[0]
+                let end = stack[^1]
+                select new KeyValuePair<int, int>(start, end)).ToList();
     }
 
     /// <summary>
@@ -283,10 +283,10 @@ public static class Utility
         return sequenceGroups.Count == 0
             ? null
             : (from stack in sequenceGroups
-               where stack.Count >= sequenceLength
-               let start = stack[0]
-               let end = stack[^1]
-               select new KeyValuePair<int, int>(start, end)).ToList();
+                where stack.Count >= sequenceLength
+                let start = stack[0]
+                let end = stack[^1]
+                select new KeyValuePair<int, int>(start, end)).ToList();
     }
 
     /// <summary>

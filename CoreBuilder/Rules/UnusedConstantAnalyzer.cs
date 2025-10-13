@@ -36,7 +36,7 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
     /// </summary>
     public IEnumerable<Diagnostic> Analyze(string filePath, string content)
     {
-        // This analyzer does not work per file; 
+        // This analyzer does not work per file;
         // it only makes sense project-wide.
         return Enumerable.Empty<Diagnostic>();
     }
@@ -48,7 +48,8 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
 
         // Regex to find constant or static readonly declarations
         // Matches e.g.: public const int Foo = 1; or private static readonly string Bar = "X";
-        var declRegex = new Regex(@"\b(?:const|static\s+readonly)\s+\w[\w<>,\s]*\s+(?<name>\w+)\s*=", RegexOptions.Compiled);
+        var declRegex = new Regex(@"\b(?:const|static\s+readonly)\s+\w[\w<>,\s]*\s+(?<name>\w+)\s*=",
+            RegexOptions.Compiled);
 
         // Collect all declarations
         var declarations = new List<(string FilePath, int Line, string Name)>();

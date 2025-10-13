@@ -73,6 +73,7 @@ namespace CoreBuilder
             // Check if each class is used anywhere
             foreach (var decl in declarations)
             {
+                //TODO: unused field 'isUsed'
                 var isUsed = allFiles.Values.Any(c =>
                     Regex.IsMatch(c, $@"\b{Regex.Escape(decl.Name)}\b"));
 

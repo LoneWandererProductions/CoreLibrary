@@ -28,8 +28,6 @@ internal static class ResourcesGeneral
     /// </summary>
     internal static readonly XmlItem DataItemThree = new()
     {
-        Number = 3,
-        GenericText = nameof(DataItemThree),
-        Other = 0.2
+        Number = 3, GenericText = nameof(DataItemThree), Other = 0.2
     };
 }

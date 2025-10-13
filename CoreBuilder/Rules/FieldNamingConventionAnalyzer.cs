@@ -25,7 +25,8 @@ namespace CoreBuilder.Rules
         public string Name => nameof(FieldNamingConventionAnalyzer);
 
         /// <inheritdoc />
-        public string Description => "Ensures field names follow proper casing conventions based on visibility and constness.";
+        public string Description =>
+            "Ensures field names follow proper casing conventions based on visibility and constness.";
 
         // Regex patterns for naming rules
 

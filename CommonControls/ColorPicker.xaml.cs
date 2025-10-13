@@ -412,7 +412,7 @@ public sealed partial class ColorPicker : INotifyPropertyChanged
     private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is ColorPicker colorPicker)
-        // Force layout update on visibility change
+            // Force layout update on visibility change
         {
             colorPicker.UpdateLayout();
         }

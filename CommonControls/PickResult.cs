@@ -156,26 +156,26 @@ internal static class ColorPick
     {
         var img = new Bitmap(ColorPickerRegister.Size, ColorPickerRegister.Size, PixelFormat.Format32bppArgb);
         for (var y = 0; y < ColorPickerRegister.Size; y++)
-            for (var x = 0; x < ColorPickerRegister.Size; x++)
+        for (var x = 0; x < ColorPickerRegister.Size; x++)
+        {
+            var result = Pick(x, y);
+
+            Color color;
+            switch (result.Area)
             {
-                var result = Pick(x, y);
-
-                Color color;
-                switch (result.Area)
-                {
-                    case Area.Outside:
-                        color = Color.Transparent;
-                        break;
-                    case Area.Wheel:
-                        color = Hsv(result.Hue, sat, val, 1);
-                        break;
-                    default:
-                        color = Hsv(hue, result.Sat, result.Val, 1);
-                        break;
-                }
-
-                img.SetPixel(x, y, color);
+                case Area.Outside:
+                    color = Color.Transparent;
+                    break;
+                case Area.Wheel:
+                    color = Hsv(result.Hue, sat, val, 1);
+                    break;
+                default:
+                    color = Hsv(hue, result.Sat, result.Val, 1);
+                    break;
             }
+
+            img.SetPixel(x, y, color);
+        }
 
         return img;
     }
@@ -193,7 +193,7 @@ internal static class ColorPick
         var sqrt3 = Math.Sqrt(3);
 
         if (distanceFromCenter > OuterRadius)
-        // Outside
+            // Outside
         {
             return new PickResults { Area = Area.Outside };
         }

@@ -40,8 +40,7 @@ internal static class CifProcessing
 
             if (!imageFormat.ContainsKey(color))
             {
-                imageFormat[color] = []
-                ;
+                imageFormat[color] =  [];
             }
 
             imageFormat[color].Add(i);
@@ -106,14 +105,13 @@ internal static class CifProcessing
             return null;
         }
 
-        var cif = new Cif { Height = meta.Height, Width = meta.Width, Compressed = meta.Compressed, CifImage = [] };
+        var cif = new Cif { Height = meta.Height, Width = meta.Width, Compressed = meta.Compressed, CifImage =  [] };
 
         foreach (var data in imageData)
         {
             if (!cif.CifImage.TryGetValue(data.Color, out var value))
             {
-                value = []
-                ;
+                value =  [];
                 cif.CifImage[data.Color] = value;
             }
 

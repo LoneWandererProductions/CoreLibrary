@@ -39,26 +39,17 @@ internal static class SharedHelperClass
     {
         var elementOne = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementTwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = true,
-            Unique = true,
-            NotNull = false
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
         };
 
         var elementThree = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = true,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
         };
 
         var columns = new DictionaryTableColumns();
@@ -79,42 +70,27 @@ internal static class SharedHelperClass
     {
         var elementOne = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementTwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementThree = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
         };
 
         var elementFour = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
         };
 
         var elementFive = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
         };
 
         var columns = new DictionaryTableColumns();
@@ -136,10 +112,7 @@ internal static class SharedHelperClass
     {
         var elementFour = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = true,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = true, NotNull = true
         };
 
         var columns = new DictionaryTableColumns();
@@ -151,19 +124,13 @@ internal static class SharedHelperClass
         columns.DColumns.Add("Third",
             new TableColumns
             {
-                DataType = SqLiteDataTypes.Integer,
-                PrimaryKey = false,
-                Unique = false,
-                NotNull = true
+                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
             });
         columns.DColumns.Add("Fourth", elementFour);
         columns.DColumns.Add("Five",
             new TableColumns
             {
-                DataType = SqLiteDataTypes.Integer,
-                PrimaryKey = false,
-                Unique = false,
-                NotNull = true
+                DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
             });
 
         return columns;

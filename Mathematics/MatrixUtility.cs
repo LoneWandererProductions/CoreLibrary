@@ -98,12 +98,12 @@ public static class MatrixUtility
         fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
         {
             for (var i = 0; i < h; i++)
-                for (var j = 0; j < w; j++)
-                {
-                    var cursor = i + (j * mOne.Width);
+            for (var j = 0; j < w; j++)
+            {
+                var cursor = i + (j * mOne.Width);
 
-                    pm[cursor] = pmOne[cursor] + pmTwo[cursor];
-                }
+                pm[cursor] = pmOne[cursor] + pmTwo[cursor];
+            }
         }
 
         return result;
@@ -133,14 +133,14 @@ public static class MatrixUtility
         fixed (double* pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
         {
             for (var i = 0; i < h; i++)
-                for (var j = 0; j < w; j++)
+            for (var j = 0; j < w; j++)
+            {
+                var cursor = i + (j * mOne.Width);
+                if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance)
                 {
-                    var cursor = i + (j * mOne.Width);
-                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
+            }
         }
 
         return true;
@@ -161,12 +161,12 @@ public static class MatrixUtility
         fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
         {
             for (var i = 0; i < h; i++)
-                for (var j = 0; j < w; j++)
-                {
-                    var cursor = i + (j * mOne.Width);
+            for (var j = 0; j < w; j++)
+            {
+                var cursor = i + (j * mOne.Width);
 
-                    pm[cursor] = pmOne[cursor] - pmTwo[cursor];
-                }
+                pm[cursor] = pmOne[cursor] - pmTwo[cursor];
+            }
         }
 
         return result;

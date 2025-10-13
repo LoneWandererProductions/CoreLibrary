@@ -27,12 +27,12 @@ public sealed class Cif
     /// <summary>
     ///     The cif image
     /// </summary>
-    private Dictionary<Color, SortedSet<int>> _cifImage = [];
+    private Dictionary<Color, SortedSet<int>> _cifImage =  [];
 
     /// <summary>
     ///     The cif sorted
     /// </summary>
-    private Dictionary<Color, SortedSet<int>> _cifSorted = [];
+    private Dictionary<Color, SortedSet<int>> _cifSorted =  [];
 
     /// <summary>
     ///     The sort required
@@ -327,10 +327,10 @@ public sealed class Cif
         var dbm = DirectBitmap.GetInstance(image);
 
         foreach (var (key, value) in CifImage)
-            foreach (var coordinate in value.Select(id => Coordinate2D.GetInstance(id, Width)))
-            {
-                dbm.SetPixel(coordinate.X, coordinate.Y, key);
-            }
+        foreach (var coordinate in value.Select(id => Coordinate2D.GetInstance(id, Width)))
+        {
+            dbm.SetPixel(coordinate.X, coordinate.Y, key);
+        }
 
         return dbm.Bitmap;
     }

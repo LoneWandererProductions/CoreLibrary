@@ -754,10 +754,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
                 // Default column settings; can be customized if needed
                 tableHeaders.DColumns[columnName] = new TableColumns
                 {
-                    DataType = SqLiteDataTypes.Text,
-                    Unique = false,
-                    PrimaryKey = false,
-                    NotNull = false
+                    DataType = SqLiteDataTypes.Text, Unique = false, PrimaryKey = false, NotNull = false
                 };
             }
 
@@ -770,10 +767,7 @@ public sealed class SqliteDatabase : ISqliteDatabase
             {
                 tableHeaders.DColumns[$"{SqliteHelperResources.ColumnName}{i + 1}"] = new TableColumns
                 {
-                    DataType = SqLiteDataTypes.Text,
-                    Unique = false,
-                    PrimaryKey = false,
-                    NotNull = false
+                    DataType = SqLiteDataTypes.Text, Unique = false, PrimaryKey = false, NotNull = false
                 };
             }
         }

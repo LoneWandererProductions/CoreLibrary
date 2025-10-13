@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,11 +18,12 @@ using System.Windows.Controls;
 
 namespace CommonControls
 {
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
     ///     A reusable reflection-based property grid control.
-    ///     Automatically generates editors for properties of the bound <see cref="SelectedObject"/>.
+    ///     Automatically generates editors for properties of the bound <see cref="P:CommonControls.InspectorGrid.SelectedObject" />.
     /// </summary>
-    public partial class InspectorGrid : UserControl
+    public partial class InspectorGrid
     {
         /// <summary>
         /// Gets the content grid.
@@ -31,8 +34,9 @@ namespace CommonControls
         /// </value>
         internal Grid ContentGrid => PartContent;
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InspectorGrid"/> class.
+        ///     Initializes a new instance of the <see cref="T:CommonControls.InspectorGrid" /> class.
         /// </summary>
         public InspectorGrid()
         {
@@ -227,8 +231,7 @@ namespace CommonControls
             // Default => TextBox (string or numeric types)
             var textBox = new TextBox
             {
-                Text = prop.GetValue(target)?.ToString() ?? string.Empty,
-                Margin = new Thickness(2)
+                Text = prop.GetValue(target)?.ToString() ?? string.Empty, Margin = new Thickness(2)
             };
 
             textBox.LostFocus += (_, _) =>

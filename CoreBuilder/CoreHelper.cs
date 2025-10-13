@@ -89,7 +89,8 @@ internal static class CoreHelper
     /// <returns>LoopContext.ConstantBounded or VariableBounded.</returns>
     private static LoopContext AnalyzeForLoop(ForStatementSyntax loop)
     {
-        if (loop.Condition is BinaryExpressionSyntax { Right: LiteralExpressionSyntax literal } && literal.IsKind(SyntaxKind.NumericLiteralExpression))
+        if (loop.Condition is BinaryExpressionSyntax { Right: LiteralExpressionSyntax literal } &&
+            literal.IsKind(SyntaxKind.NumericLiteralExpression))
         {
             return LoopContext.ConstantBounded;
         }

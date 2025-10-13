@@ -33,7 +33,6 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 namespace Imaging;
 
 /// <inheritdoc cref="IDisposable" />
-/// <inheritdoc cref="IEquatable" />
 /// <summary>
 ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
 /// </summary>
@@ -324,23 +323,23 @@ public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>
             // Loop over the rectangle's rows.
             for (var y = y2; y < y2 + height && y < Height; y++)
                 // Loop over the rectangle's columns with SIMD optimizations.
-                for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
+            for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
+            {
+                var startIndex = x + (y * Width);
+                // Ensure we don't go out of bounds.
+                if (startIndex + vectorCount <= Bits.Length)
                 {
-                    var startIndex = x + (y * Width);
-                    // Ensure we don't go out of bounds.
-                    if (startIndex + vectorCount <= Bits.Length)
-                    {
-                        colorVector.CopyTo(Bits, startIndex);
-                    }
-                    else
+                    colorVector.CopyTo(Bits, startIndex);
+                }
+                else
                     // Handle remainder if not divisible by vectorCount
+                {
+                    for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
                     {
-                        for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
-                        {
-                            Bits[startIndex + j] = colorArgb;
-                        }
+                        Bits[startIndex + j] = colorArgb;
                     }
                 }
+            }
         }
     }
 

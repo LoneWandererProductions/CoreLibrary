@@ -373,10 +373,7 @@ public sealed class ImageRegister
 
         TextureSetting[TextureType.Clouds] = new TextureConfiguration
         {
-            MinValue = 0,
-            MaxValue = 255,
-            Alpha = 255,
-            TurbulenceSize = 64
+            MinValue = 0, MaxValue = 255, Alpha = 255, TurbulenceSize = 64
         };
 
         TextureSetting[TextureType.Marble] = new TextureConfiguration
@@ -391,10 +388,7 @@ public sealed class ImageRegister
 
         TextureSetting[TextureType.Wave] = new TextureConfiguration
         {
-            Alpha = 255,
-            XyPeriod = 12.0,
-            TurbulencePower = 0.1,
-            TurbulenceSize = 32.0
+            Alpha = 255, XyPeriod = 12.0, TurbulencePower = 0.1, TurbulenceSize = 32.0
         };
 
         TextureSetting[TextureType.Wood] = new TextureConfiguration
@@ -452,7 +446,7 @@ public sealed class ImageRegister
     /// <value>
     ///     The error log.
     /// </value>
-    public Dictionary<DateTime, string> ErrorLog { get; } = [];
+    public Dictionary<DateTime, string> ErrorLog { get; } =  [];
 
     /// <summary>
     ///     Gets the last error.
@@ -519,8 +513,7 @@ public sealed class ImageRegister
     /// <returns>List of properties needed for our Filters</returns>
     public HashSet<string> GetUsedProperties(FiltersType filter)
     {
-        return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : []
-        ;
+        return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : [];
     }
 
     /// <summary>
@@ -553,8 +546,7 @@ public sealed class ImageRegister
     {
         return _texturePropertyMap.TryGetValue(textureType, out var properties)
             ? properties
-            : []
-        ;
+            : [];
     }
 
     /// <summary>

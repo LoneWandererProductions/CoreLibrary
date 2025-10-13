@@ -14,7 +14,7 @@
     <Window.DataContext>
         <local:AnalyzerViewModel />
     </Window.DataContext>
-    
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -45,8 +45,8 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="Open File" Command="{Binding OpenFileCommand}" />
-                                    <Button Content="Fix" Command="{Binding FixCommand}" 
-                                    Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}" />
+                                    <Button Content="Fix" Command="{Binding FixCommand}"
+                                            Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}" />
                                     <Button Content="Ignore" Command="{Binding IgnoreCommand}" />
                                 </StackPanel>
                             </DataTemplate>

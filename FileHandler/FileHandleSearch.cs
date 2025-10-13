@@ -242,17 +242,17 @@ public static class FileHandleSearch
         if (invert)
         {
             list.AddRange(from element in lst
-                          let file = Path.GetFileName(element)
-                          where !file.Contains(subString)
-                          select element);
+                let file = Path.GetFileName(element)
+                where !file.Contains(subString)
+                select element);
 
             return list;
         }
 
         list.AddRange(from element in lst
-                      let file = Path.GetFileName(element)
-                      where file.Contains(subString)
-                      select element);
+            let file = Path.GetFileName(element)
+            where file.Contains(subString)
+            select element);
 
         return list;
     }

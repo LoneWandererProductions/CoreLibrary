@@ -50,18 +50,12 @@ public class SqlLiteCvs
 
         var elementOne = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
         };
 
         var elementTwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = true
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = false, Unique = false, NotNull = true
         };
 
         var columns = new DictionaryTableColumns();

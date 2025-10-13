@@ -76,5 +76,4 @@ namespace CoreViewer
                 FixCommand = new RelayCommand(() => fix(diagnostic));
         }
     }
-
 }

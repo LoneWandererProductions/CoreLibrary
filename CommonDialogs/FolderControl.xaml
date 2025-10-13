@@ -63,7 +63,7 @@
                  Text="{Binding LookUp}" TextWrapping="Wrap" VerticalAlignment="Center" />
 
         <!-- Navigation Buttons -->
-        <Button Content="Up" Grid.Column="3" Command="{Binding UpCommand}" />
+        <Button Content="Up" Grid.Row="0" Grid.Column="3" Command="{Binding UpCommand}" />
         <Button Content="Go" Grid.Row="2" Grid.Column="3" Command="{Binding GoCommand}" />
         <Button Content="Exp" Grid.Row="2" Grid.Column="5" Command="{Binding ExplorerCommand}" />
 

@@ -284,21 +284,21 @@ internal static class FiltersStream
 
         // Iterate over the image with the specified step width
         for (var y = 0; y < dbm.Height; y += stepWidth)
-            for (var x = 0; x < dbm.Width; x += stepWidth)
-            {
-                // Ensure the rectangle doesn't exceed image boundaries
-                var rectWidth = Math.Min(stepWidth, dbm.Width - x);
-                var rectHeight = Math.Min(stepWidth, dbm.Height - y);
+        for (var x = 0; x < dbm.Width; x += stepWidth)
+        {
+            // Ensure the rectangle doesn't exceed image boundaries
+            var rectWidth = Math.Min(stepWidth, dbm.Width - x);
+            var rectHeight = Math.Min(stepWidth, dbm.Height - y);
 
-                // Get the color of the current rectangle
-                var rectangle = new Rectangle(x, y, rectWidth, rectHeight);
-                var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
+            // Get the color of the current rectangle
+            var rectangle = new Rectangle(x, y, rectWidth, rectHeight);
+            var averageColor = ImageHelper.GetMeanColor(dbm, rectangle);
 
-                // Draw the rectangle with the average color
-                using var g = Graphics.FromImage(processedImage);
-                using var brush = new SolidBrush(averageColor);
-                g.FillRectangle(brush, x, y, rectWidth, rectHeight);
-            }
+            // Draw the rectangle with the average color
+            using var g = Graphics.FromImage(processedImage);
+            using var brush = new SolidBrush(averageColor);
+            g.FillRectangle(brush, x, y, rectWidth, rectHeight);
+        }
 
         return processedImage;
     }
@@ -410,17 +410,17 @@ internal static class FiltersStream
 
 
         for (var y = halfBaseWindow; y < dbmBase.Height - halfBaseWindow; y++)
-            for (var x = halfBaseWindow; x < dbmBase.Width - halfBaseWindow; x++)
-            {
-                // Determine region size and shape based on local image characteristics
-                DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth,
-                    out var regionHeight);
+        for (var x = halfBaseWindow; x < dbmBase.Width - halfBaseWindow; x++)
+        {
+            // Determine region size and shape based on local image characteristics
+            DetermineRegionSizeAndShape(dbmBase, x, y, halfBaseWindow, out var regionWidth,
+                out var regionHeight);
 
-                var bestColor = ComputeBestRegionColor(dbmBase, x, y, regionWidth, regionHeight);
+            var bestColor = ComputeBestRegionColor(dbmBase, x, y, regionWidth, regionHeight);
 
-                // Instead of setting the pixel immediately, add it to the list
-                pixelsToSet.Add((x, y, bestColor));
-            }
+            // Instead of setting the pixel immediately, add it to the list
+            pixelsToSet.Add((x, y, bestColor));
+        }
 
         // Use SIMD to set all the pixels in bulk
         try
@@ -460,22 +460,22 @@ internal static class FiltersStream
 
         // Apply dithering
         for (var y = 0; y < grayBitmap.Height; y++)
-            for (var x = 0; x < grayBitmap.Width; x++)
-            {
-                // Get the original grayscale pixel value
-                var oldColor = grayBitmap.GetPixel(x, y);
-                var oldIntensity = oldColor.R; // Since it's grayscale, R=G=B
+        for (var x = 0; x < grayBitmap.Width; x++)
+        {
+            // Get the original grayscale pixel value
+            var oldColor = grayBitmap.GetPixel(x, y);
+            var oldIntensity = oldColor.R; // Since it's grayscale, R=G=B
 
-                // Find the closest color in the palette
-                var newColor = GetNearestColor(oldIntensity, palette);
-                result.SetPixel(x, y, newColor);
+            // Find the closest color in the palette
+            var newColor = GetNearestColor(oldIntensity, palette);
+            result.SetPixel(x, y, newColor);
 
-                // Calculate the quantization error
-                var error = oldIntensity - newColor.R;
+            // Calculate the quantization error
+            var error = oldIntensity - newColor.R;
 
-                // Distribute the error to neighboring pixels
-                DistributeError(dbmBase, x, y, error, ditherMatrix);
-            }
+            // Distribute the error to neighboring pixels
+            DistributeError(dbmBase, x, y, error, ditherMatrix);
+        }
 
         return result.Bitmap;
     }
@@ -599,17 +599,17 @@ internal static class FiltersStream
     {
         var result = new Bitmap(baseImage.Width, baseImage.Height);
         for (var y = 0; y < baseImage.Height; y++)
-            for (var x = 0; x < baseImage.Width; x++)
-            {
-                var baseColor = baseImage.GetPixel(x, y);
-                var blendColor = blendImage.GetPixel(x, y);
+        for (var x = 0; x < baseImage.Width; x++)
+        {
+            var baseColor = baseImage.GetPixel(x, y);
+            var blendColor = blendImage.GetPixel(x, y);
 
-                var r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
-                var g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
-                var b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
+            var r = blendColor.R == 255 ? 255 : ImageHelper.Clamp((baseColor.R << 8) / (255 - blendColor.R));
+            var g = blendColor.G == 255 ? 255 : ImageHelper.Clamp((baseColor.G << 8) / (255 - blendColor.G));
+            var b = blendColor.B == 255 ? 255 : ImageHelper.Clamp((baseColor.B << 8) / (255 - blendColor.B));
 
-                result.SetPixel(x, y, Color.FromArgb(r, g, b));
-            }
+            result.SetPixel(x, y, Color.FromArgb(r, g, b));
+        }
 
         return result;
     }
@@ -658,13 +658,13 @@ internal static class FiltersStream
         var sum = 0.0;
 
         for (var ky = -halfKernelSize; ky <= halfKernelSize; ky++)
-            for (var kx = -halfKernelSize; kx <= halfKernelSize; kx++)
-            {
-                var pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
-                var pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
-                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
-                sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
-            }
+        for (var kx = -halfKernelSize; kx <= halfKernelSize; kx++)
+        {
+            var pixelX = Math.Clamp(x + kx, 0, dbmBase.Width - 1);
+            var pixelY = Math.Clamp(y + ky, 0, dbmBase.Height - 1);
+            var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+            sum += intensity * kernel[ky + halfKernelSize, kx + halfKernelSize];
+        }
 
         return sum;
     }
@@ -684,16 +684,16 @@ internal static class FiltersStream
         var count = 0;
 
         for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
-            for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
-            {
-                var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+        for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+        {
+            var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+            var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+            var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
-                sum += intensity;
-                sumSquared += intensity * intensity;
-                count++;
-            }
+            sum += intensity;
+            sumSquared += intensity * intensity;
+            count++;
+        }
 
         var mean = sum / count;
         return (sumSquared / count) - (mean * mean);
@@ -715,15 +715,15 @@ internal static class FiltersStream
         var count = 0;
 
         for (var dy = -halfWindowSize; dy <= halfWindowSize; dy++)
-            for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
-            {
-                var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
-                var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
-                var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
+        for (var dx = -halfWindowSize; dx <= halfWindowSize; dx++)
+        {
+            var pixelX = Math.Clamp(x + dx, 0, dbmBase.Width - 1);
+            var pixelY = Math.Clamp(y + dy, 0, dbmBase.Height - 1);
+            var intensity = GetPixelIntensity(dbmBase, pixelX, pixelY);
 
-                sum += Math.Abs(localIntensity - intensity);
-                count++;
-            }
+            sum += Math.Abs(localIntensity - intensity);
+            count++;
+        }
 
         return sum / count;
     }
@@ -864,21 +864,21 @@ internal static class FiltersStream
         var pixelsToSet = new List<(int x, int y, Color color)>();
 
         for (var dy = 0; dy < matrixHeight; dy++)
-            for (var dx = 0; dx < matrixWidth; dx++)
+        for (var dx = 0; dx < matrixWidth; dx++)
+        {
+            var nx = x + dx - 1;
+            var ny = y + dy;
+
+            if (nx >= 0 && nx < dbmBase.Width && ny >= 0 && ny < dbmBase.Height)
             {
-                var nx = x + dx - 1;
-                var ny = y + dy;
+                var pixel = dbmBase.GetPixel(nx, ny);
+                var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
+                var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
+                var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
 
-                if (nx >= 0 && nx < dbmBase.Width && ny >= 0 && ny < dbmBase.Height)
-                {
-                    var pixel = dbmBase.GetPixel(nx, ny);
-                    var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                    var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
-                    var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
-
-                    pixelsToSet.Add((nx, ny, newColor));
-                }
+                pixelsToSet.Add((nx, ny, newColor));
             }
+        }
 
         try
         {
@@ -907,18 +907,18 @@ internal static class FiltersStream
         var dbmTwo = new DirectBitmap(imgTwo);
 
         for (var y = 0; y < dbmOne.Height; y++)
-            for (var x = 0; x < dbmOne.Width; x++)
-            {
-                var color1 = dbmOne.GetPixel(x, y);
-                var color2 = dbmTwo.GetPixel(x, y);
+        for (var x = 0; x < dbmOne.Width; x++)
+        {
+            var color1 = dbmOne.GetPixel(x, y);
+            var color2 = dbmTwo.GetPixel(x, y);
 
-                var r = Math.Max(0, color1.R - color2.R);
-                var g = Math.Max(0, color1.G - color2.G);
-                var b = Math.Max(0, color1.B - color2.B);
+            var r = Math.Max(0, color1.R - color2.R);
+            var g = Math.Max(0, color1.G - color2.G);
+            var b = Math.Max(0, color1.B - color2.B);
 
-                // Instead of setting the pixel immediately, add it to the list
-                pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-            }
+            // Instead of setting the pixel immediately, add it to the list
+            pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
+        }
 
         // Use SIMD to set all the pixels in bulk
         try

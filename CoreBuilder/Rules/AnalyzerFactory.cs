@@ -20,30 +20,31 @@ namespace CoreBuilder.Rules
         /// Gets all analyzers.
         /// </summary>
         /// <returns>List of all Analyzers</returns>
-        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers() => _analyzers;
+        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers() => Analyzers;
 
         /// <summary>
         /// The analyzers
         /// </summary>
-        private static readonly List<ICodeAnalyzer> _analyzers = new()
+        private static readonly List<ICodeAnalyzer> Analyzers = new()
         {
-                new UnusedConstantAnalyzer(),
-                new AllocationAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new DoubleNewlineAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new HotPathAnalyzer(),
-                new DisposableAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new UnusedClassAnalyzer(),
-                new TodoCommentAnalyzer(),
-                new EmptyCatchBlockAnalyzer(),
-                new UnawaitedAsyncCallAnalyzer(),
-                new EventSubscriptionAnalyzer(),
-                new FieldNamingConventionAnalyzer()
-                // Add more analyzers here as needed
+            new UnusedConstantAnalyzer(),
+            new AllocationAnalyzer(),
+            new LicenseHeaderAnalyzer(),
+            new DoubleNewlineAnalyzer(),
+            new UnusedLocalVariableAnalyzer(),
+            new UnusedParameterAnalyzer(),
+            new UnusedPrivateFieldAnalyzer(),
+            new HotPathAnalyzer(),
+            new DisposableAnalyzer(),
+            new EventHandlerAnalyzer(),
+            new UnusedClassAnalyzer(),
+            new TodoCommentAnalyzer(),
+            new EmptyCatchBlockAnalyzer(),
+            new UnawaitedAsyncCallAnalyzer(),
+            new EventSubscriptionAnalyzer(),
+            new FieldNamingConventionAnalyzer(),
+            new DuplicateStringLiteralAnalyzer()
+            // Add more analyzers here as needed
         };
     }
 }

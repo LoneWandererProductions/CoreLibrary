@@ -50,6 +50,7 @@ internal sealed class IrtHandleInternal : IDisposable
     /// <param name="commands">The commands.</param>
     /// <param name="nameSpace">The name space.</param>
     /// <param name="prompt">The prompt</param>
+    /// <param name="userFeedback">the user defined feedback</param>
     internal IrtHandleInternal(Dictionary<int, InCommand> commands, string nameSpace, Prompt prompt,
         Dictionary<int, UserFeedback> userFeedback)
     {
@@ -168,9 +169,7 @@ internal sealed class IrtHandleInternal : IDisposable
                 guid = Guid.NewGuid().ToString();
                 feedbackReceiver = new IrtFeedback
                 {
-                    RequestId = guid,
-                    BranchId = 12,
-                    Feedback = IrtConst.GenericFeedback
+                    RequestId = guid, BranchId = 12, Feedback = IrtConst.GenericFeedback
                 };
 
                 _prompt.RequestFeedback(feedbackReceiver);
@@ -304,10 +303,7 @@ internal sealed class IrtHandleInternal : IDisposable
     {
         var com = new OutCommand
         {
-            Command = IrtConst.Error,
-            Parameter = null,
-            UsedNameSpace = _nameSpace,
-            ErrorMessage = error
+            Command = IrtConst.Error, Parameter = null, UsedNameSpace = _nameSpace, ErrorMessage = error
         };
 
         OnCommand(com);
@@ -346,8 +342,8 @@ internal sealed class IrtHandleInternal : IDisposable
         }
 
         if (disposing)
-        // Dispose managed resources here if needed
-        // Set the local dictionary reference to null to remove references without clearing the dictionary
+            // Dispose managed resources here if needed
+            // Set the local dictionary reference to null to remove references without clearing the dictionary
         {
             _commands = null;
         }

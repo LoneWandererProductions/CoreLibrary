@@ -125,7 +125,7 @@ public sealed class ImageGif : Image, IDisposable
     {
         // Check if the image exists
         if (!File.Exists(GifSource))
-        // Log or show an error message
+            // Log or show an error message
         {
             return;
         }

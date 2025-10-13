@@ -109,10 +109,8 @@ namespace CoreBuilder.Rules
                         var symbolInfo = model.GetSymbolInfo(invocation);
                         var methodSymbol = symbolInfo.Symbol as IMethodSymbol
                                            ?? symbolInfo.CandidateSymbols.FirstOrDefault() as IMethodSymbol;
-                        if (methodSymbol == null)
-                            continue;
 
-                        var returnType = methodSymbol.ReturnType;
+                        var returnType = methodSymbol?.ReturnType;
                         if (returnType == null)
                             continue;
 
@@ -120,7 +118,7 @@ namespace CoreBuilder.Rules
                         var isTaskLike = string.Equals(rtName, "Task", StringComparison.Ordinal)
                                          || string.Equals(rtName, "ValueTask", StringComparison.Ordinal);
 
-                        if (!isTaskLike && returnType is INamedTypeSymbol namedType && namedType.IsGenericType)
+                        if (!isTaskLike && returnType is INamedTypeSymbol { IsGenericType: true } namedType)
                         {
                             var genericName = namedType.ConstructedFrom?.Name;
                             isTaskLike = string.Equals(genericName, "Task", StringComparison.Ordinal)

@@ -116,8 +116,8 @@ public sealed class DataSet
         var lst = new List<string>(Width);
 
         lst.AddRange(from TableSet cell in Row
-                     let element = cell.Row[width]
-                     select element);
+            let element = cell.Row[width]
+            select element);
         return lst;
     }
 

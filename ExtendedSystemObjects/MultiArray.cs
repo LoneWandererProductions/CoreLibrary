@@ -109,12 +109,12 @@ public static class MultiArray
         fixed (TValue* one = result, two = array)
         {
             for (var i = 0; i < array.GetLength(0); i++)
-                for (var j = 0; j < array.GetLength(1); j++)
-                {
-                    var cursor = i + (j * array.GetLength(1));
+            for (var j = 0; j < array.GetLength(1); j++)
+            {
+                var cursor = i + (j * array.GetLength(1));
 
-                    one[cursor] = two[cursor];
-                }
+                one[cursor] = two[cursor];
+            }
         }
 
         return result;

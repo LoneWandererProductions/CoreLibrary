@@ -516,9 +516,9 @@ internal static class IrtConst
         {
             7,
             new InCommand
-                {
-                    Command = InternalLogFull, Description = "Logfull : Enumerate full Log", ParameterCount = 0
-                }
+            {
+                Command = InternalLogFull, Description = "Logfull : Enumerate full Log", ParameterCount = 0
+            }
         },
         {
             InternalContainerId, new InCommand

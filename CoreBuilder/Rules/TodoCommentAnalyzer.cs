@@ -47,10 +47,9 @@ public sealed class TodoCommentAnalyzer : ICodeAnalyzer
         }
 
         using var reader = new StringReader(fileContent);
-        string? line;
         var lineNumber = 0;
 
-        while ((line = reader.ReadLine()) != null)
+        while (reader.ReadLine() is { } line)
         {
             lineNumber++;
 

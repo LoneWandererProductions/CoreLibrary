@@ -61,7 +61,7 @@ public static class SegmentedCsvHandler
         var currentLayer = new StringBuilder(); // Use StringBuilder to accumulate lines for each layer
 
         foreach (var line in lst)
-        // When the layer keyword is encountered, store the current layer
+            // When the layer keyword is encountered, store the current layer
         {
             if (line.StartsWith(layerKeyword))
             {

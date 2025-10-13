@@ -119,42 +119,27 @@ public sealed class SqlLiteHelperTableCreate
 
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementtwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = true,
-            Unique = true,
-            NotNull = false
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
         };
 
         var elementthree = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = true,
-            NotNull = true
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = true
         };
 
         var elementfour = new TableColumns
         {
-            DataType = SqLiteDataTypes.DateTime,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.DateTime, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementfive = new TableColumns
         {
-            DataType = SqLiteDataTypes.Real,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Real, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -198,18 +183,12 @@ public sealed class SqlLiteHelperTableCreate
 
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementtwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = true,
-            Unique = true,
-            NotNull = false
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -238,10 +217,7 @@ public sealed class SqlLiteHelperTableCreate
 
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -275,10 +251,7 @@ public sealed class SqlLiteHelperTableCreate
         //add Column with specific Name
         var element = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -314,10 +287,7 @@ public sealed class SqlLiteHelperTableCreate
 
         var elementone = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = true,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = true, Unique = false, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();
@@ -344,42 +314,27 @@ public sealed class SqlLiteHelperTableCreate
 
         var elementOne = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementTwo = new TableColumns
         {
-            DataType = SqLiteDataTypes.Integer,
-            PrimaryKey = true,
-            Unique = true,
-            NotNull = false
+            DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
         };
 
         var elementThree = new TableColumns
         {
-            DataType = SqLiteDataTypes.Text,
-            PrimaryKey = false,
-            Unique = true,
-            NotNull = true
+            DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = true
         };
 
         var elementFour = new TableColumns
         {
-            DataType = SqLiteDataTypes.DateTime,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.DateTime, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var elementFive = new TableColumns
         {
-            DataType = SqLiteDataTypes.Real,
-            PrimaryKey = false,
-            Unique = false,
-            NotNull = false
+            DataType = SqLiteDataTypes.Real, PrimaryKey = false, Unique = false, NotNull = false
         };
 
         var columns = new DictionaryTableColumns();

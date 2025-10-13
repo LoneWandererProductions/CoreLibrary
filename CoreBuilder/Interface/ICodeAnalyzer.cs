@@ -41,7 +41,7 @@ public interface ICodeAnalyzer
     IEnumerable<Diagnostic> Analyze(string filePath, string fileContent) => Enumerable.Empty<Diagnostic>();
 
     /// <summary>
-    /// Analyze all files together. 
+    /// Analyze all files together.
     /// Override this only if your analyzer requires project-wide context.
     /// </summary>
     IEnumerable<Diagnostic> AnalyzeProject(Dictionary<string, string> allFiles) => Enumerable.Empty<Diagnostic>();

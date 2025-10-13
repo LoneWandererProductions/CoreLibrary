@@ -133,11 +133,11 @@ public sealed class ResXtract : IResourceExtractor
 
         var affectedFiles =
             (from file in files
-             where !ShouldIgnoreFile(file)
-             let code = File.ReadAllText(file)
-             let strings = ExtractStrings(code)
-             where strings.Any()
-             select Path.GetFullPath(file)).ToList();
+                where !ShouldIgnoreFile(file)
+                let code = File.ReadAllText(file)
+                let strings = ExtractStrings(code)
+                where strings.Any()
+                select Path.GetFullPath(file)).ToList();
 
         return affectedFiles.Count == 0
             ? null

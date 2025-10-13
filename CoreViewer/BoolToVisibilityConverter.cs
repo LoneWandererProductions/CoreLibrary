@@ -12,12 +12,14 @@ using System.Windows.Data;
 
 namespace CoreViewer
 {
+    /// <inheritdoc />
     /// <summary>
     /// Converts a bool to Visibility (true → Visible, false → Collapsed)
     /// </summary>
     [ValueConversion(typeof(bool), typeof(Visibility))]
-    public class BoolToVisibilityConverter : IValueConverter
+    public sealed class BoolToVisibilityConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -30,7 +32,7 @@ namespace CoreViewer
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is bool b && b ? Visibility.Visible : Visibility.Collapsed;
+            return value is bool and true ? Visibility.Visible : Visibility.Collapsed;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace CoreViewer
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is Visibility v && v == Visibility.Visible;
+            return value is Visibility.Visible;
         }
     }
 }
