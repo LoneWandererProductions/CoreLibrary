@@ -22,7 +22,7 @@ namespace CoreBuilder.Rules;
 public sealed class DisposableAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "DisposableLeak";
+    public string Name => nameof(DisposableAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that detects undisposed IDisposable objects.";

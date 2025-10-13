@@ -26,7 +26,7 @@ namespace CoreBuilder.Rules;
 public sealed class DuplicateStringLiteralAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "DuplicateStringLiteral";
+    public string Name => nameof(DuplicateStringLiteralAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that finds duplicate string literals across a project.";

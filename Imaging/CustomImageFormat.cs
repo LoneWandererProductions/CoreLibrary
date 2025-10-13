@@ -10,7 +10,6 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using DataFormatter;
 

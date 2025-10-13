@@ -19,11 +19,14 @@ namespace CoreBuilder.Rules
         /// <summary>
         /// Gets all analyzers.
         /// </summary>
-        /// <returns>All Analyzers.</returns>
-        public static List<ICodeAnalyzer> GetAllAnalyzers()
+        /// <returns>List of all Analyzers</returns>
+        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers() => _analyzers;
+
+        /// <summary>
+        /// The analyzers
+        /// </summary>
+        private static readonly List<ICodeAnalyzer> _analyzers = new()
         {
-            return
-            [
                 new UnusedConstantAnalyzer(),
                 new AllocationAnalyzer(),
                 new LicenseHeaderAnalyzer(),
@@ -35,8 +38,12 @@ namespace CoreBuilder.Rules
                 new DisposableAnalyzer(),
                 new EventHandlerAnalyzer(),
                 new UnusedClassAnalyzer(),
+                new TodoCommentAnalyzer(),
+                new EmptyCatchBlockAnalyzer(),
+                new UnawaitedAsyncCallAnalyzer(),
+                new EventSubscriptionAnalyzer(),
+                new FieldNamingConventionAnalyzer()
                 // Add more analyzers here as needed
-            ];
-        }
+        };
     }
 }

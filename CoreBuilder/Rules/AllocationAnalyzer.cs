@@ -22,7 +22,7 @@ namespace CoreBuilder.Rules;
 public sealed class AllocationAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "Allocation";
+    public string Name => nameof(AllocationAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that detects allocations in hot paths.";

@@ -19,7 +19,7 @@ namespace CoreBuilder.Rules;
 public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "DoubleNewline";
+    public string Name => nameof(DoubleNewlineAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Simple Double Newline Analyzer.";

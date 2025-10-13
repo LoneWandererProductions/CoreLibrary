@@ -21,7 +21,7 @@ namespace CoreBuilder.Rules;
 public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "UnusedLocalVariable";
+    public string Name => nameof(UnusedLocalVariableAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Unused local variable Analyzer.";

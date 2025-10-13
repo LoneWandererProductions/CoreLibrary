@@ -22,7 +22,7 @@ namespace CoreBuilder.Rules;
 public sealed class UnusedPrivateFieldAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "UnusedPrivateField";
+    public string Name => nameof(UnusedPrivateFieldAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that finds unused private fields.";

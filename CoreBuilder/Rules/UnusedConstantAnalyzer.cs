@@ -26,7 +26,7 @@ namespace CoreBuilder.Rules;
 public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "UnusedConstantAnalyzer";
+    public string Name => nameof(UnusedConstantAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer to detect unused constants and static readonly fields across a project.";

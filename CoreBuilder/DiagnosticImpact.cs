@@ -31,6 +31,21 @@ namespace CoreBuilder
         /// <summary>
         /// miscellaneous, low-risk
         /// </summary>
-        Other = 3
+        Other = 3,
+
+        /// <summary>
+        /// The logic
+        /// </summary>
+        Logic = 4,
+
+        /// <summary>
+        /// The concurrency
+        /// </summary>
+        Concurrency = 5,
+
+        /// <summary>
+        /// The maintainability
+        /// </summary>
+        Maintainability = 6
     }
 }

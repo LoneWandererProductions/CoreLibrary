@@ -21,7 +21,7 @@ namespace CoreBuilder.Rules;
 public sealed class UnusedParameterAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "UnusedParameter";
+    public string Name => nameof(UnusedParameterAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that finds unused method parameters.";

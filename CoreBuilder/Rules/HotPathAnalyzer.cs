@@ -20,7 +20,7 @@ namespace CoreBuilder.Rules;
 public sealed class HotPathAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />
-    public string Name => "HotPath";
+    public string Name => nameof(HotPathAnalyzer);
 
     /// <inheritdoc />
     public string Description => "Analyzer that detects frequently called methods and flags hot paths.";

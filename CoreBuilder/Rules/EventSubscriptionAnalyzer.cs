@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        Rules/EventHandlerAnalyzer.cs
- * PURPOSE:     Analyzer that detects potential event handler leaks.
+ * FILE:        Rules/EventSubscriptionAnalyzer.cs
+ * PURPOSE:     Detects event subscriptions and checks for potential unsubscribes.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -16,28 +16,28 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace CoreBuilder.Rules;
 
 /// <summary>
-/// Check if Event is unsubscribed.
+/// Detects event subscriptions and warns if events are repeatedly subscribed without unsubscribing.
 /// </summary>
-/// <seealso cref="ICodeAnalyzer" />
-public sealed class EventHandlerAnalyzer : ICodeAnalyzer
-
+public sealed class EventSubscriptionAnalyzer : ICodeAnalyzer
 {
-    /// <inheritdoc />
-    public string Name => nameof(EventHandlerAnalyzer);
-
-    /// <inheritdoc />
-    public string Description => "Analyzer that detects potential event handler leaks.";
-
-    /// <summary>
-    /// The event stats
-    /// </summary>
     private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
+
+    /// <inheritdoc />
+    public string Name => nameof(EventSubscriptionAnalyzer);
+
+    /// <inheritdoc />
+    public string Description => "Detects event subscriptions and checks for potential unsubscribes.";
 
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         // 🔹 Ignore generated code and compiler artifacts
         if (CoreHelper.ShouldIgnoreFile(filePath))
+        {
+            yield break;
+        }
+
+        if (string.IsNullOrWhiteSpace(fileContent))
         {
             yield break;
         }
