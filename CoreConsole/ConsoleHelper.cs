@@ -25,7 +25,7 @@ internal static class ConsoleHelper
     /// <summary>
     ///     List of code analyzers to apply.
     /// </summary>
-    private static readonly List<ICodeAnalyzer> Analyzers = new();
+    private static readonly IReadOnlyList<ICodeAnalyzer> Analyzers;
 
     /// <summary>
     ///     Static constructor to initialize analyzers.

@@ -41,7 +41,7 @@ namespace CoreViewer
         /// <summary>
         /// The analyzers
         /// </summary>
-        private List<ICodeAnalyzer> _analyzers = new();
+        private IReadOnlyList<ICodeAnalyzer> _analyzers;
 
         /// <summary>
         /// The current diagnostics
