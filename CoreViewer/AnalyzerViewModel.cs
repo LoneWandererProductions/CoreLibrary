@@ -53,7 +53,7 @@ namespace CoreViewer
         /// </summary>
         private static readonly HashSet<string> FixableAnalyzers = new()
         {
-            "LicenseHeaderAnalyzer",
+            nameof(LicenseHeaderAnalyzer),
             "..."
         };
 
