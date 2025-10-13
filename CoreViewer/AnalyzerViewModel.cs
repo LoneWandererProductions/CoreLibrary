@@ -13,6 +13,7 @@ using CoreBuilder;
 using CoreBuilder.Interface;
 using CommonDialogs;
 using ViewModel;
+using CoreBuilder.Rules;
 
 namespace CoreViewer
 {

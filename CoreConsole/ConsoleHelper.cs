@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using CoreBuilder;
 using CoreBuilder.Interface;
+using CoreBuilder.Rules;
 using Interpreter;
 
 namespace CoreConsole;

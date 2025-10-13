@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        LicenseHeaderAnalyzer.cs
+ * FILE:        Rules/LicenseHeaderAnalyzer.cs
  * PURPOSE:     Just a simple License Header Analyzer. Checks if the file starts with a license header.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using CoreBuilder.Interface;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <inheritdoc />
 /// <summary>

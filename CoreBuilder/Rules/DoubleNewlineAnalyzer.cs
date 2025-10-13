@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        DoubleNewlineAnalyzer.cs
+ * FILE:        Rules/DoubleNewlineAnalyzer.cs
  * PURPOSE:     Simple Double Newline Analyzer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using CoreBuilder.Interface;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <inheritdoc />
 /// <summary>

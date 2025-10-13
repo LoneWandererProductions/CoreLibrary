@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        AllocationAnalyzer.cs
+ * FILE:        Rules/AllocationAnalyzer.cs
  * PURPOSE:     Analyzer that detects allocations in hot paths.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@ using CoreBuilder.Interface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <inheritdoc />
 /// <summary>
@@ -62,7 +62,7 @@ public sealed class AllocationAnalyzer : ICodeAnalyzer
             var loopContext = CoreHelper.GetLoopContext(alloc);
             if (loopContext == LoopContext.None) continue;
 
-            int risk = loopContext switch
+            var risk = loopContext switch
             {
                 LoopContext.ConstantBounded => ConstantLoopWeight,
                 LoopContext.VariableBounded => VariableLoopWeight,

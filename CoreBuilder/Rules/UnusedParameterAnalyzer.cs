@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        UnusedParameterAnalyzer.cs
+ * FILE:        Rules/UnusedParameterAnalyzer.cs
  * PURPOSE:     Unused parameter Analyzer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <summary>
 /// Analyzer that finds unused method parameters.

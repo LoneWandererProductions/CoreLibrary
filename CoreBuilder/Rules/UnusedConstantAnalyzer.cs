@@ -1,7 +1,7 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        CoreBuilder/UnusedConstantAnalyzer.cs
+ * FILE:        Rules/UnusedConstantAnalyzer.cs
  * PURPOSE:     Analyzer to detect unused constants and static readonly fields across a project.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CoreBuilder.Interface;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <summary>
 /// Analyzer that detects unused constants and static readonly fields.

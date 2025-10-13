@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        DuplicateStringLiteralAnalyzer.cs
+ * FILE:        Rules/DuplicateStringLiteralAnalyzer.cs
  * PURPOSE:     Analyzer that finds duplicate string literals across a project.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <inheritdoc />
 /// <summary>

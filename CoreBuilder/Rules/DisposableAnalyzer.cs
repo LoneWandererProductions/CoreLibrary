@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        DisposableAnalyzer.cs
+ * FILE:        Rules/DisposableAnalyzer.cs
  * PURPOSE:     Analyzer that detects undisposed IDisposable objects.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -13,12 +13,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <summary>
 /// Analyzer that detects undisposed IDisposable objects.
 /// </summary>
-/// <seealso cref="CoreBuilder.Interface.ICodeAnalyzer" />
+/// <seealso cref="ICodeAnalyzer" />
 public sealed class DisposableAnalyzer : ICodeAnalyzer
 {
     /// <inheritdoc />

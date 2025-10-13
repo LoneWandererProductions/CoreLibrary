@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        HotPathAnalyzer.cs
+ * FILE:        Rules/HotPathAnalyzer.cs
  * PURPOSE:     Analyzer that detects frequently called methods and flags hot paths.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@ using CoreBuilder.Interface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <summary>
 /// Analyzer that detects method calls in hot paths (loops) and aggregates statistics.
@@ -78,7 +78,7 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
             if (loopContext == LoopContext.None)
                 continue;
 
-            int risk = loopContext switch
+            var risk = loopContext switch
             {
                 LoopContext.ConstantBounded => ConstantLoopWeight,
                 LoopContext.VariableBounded => VariableLoopWeight,
@@ -99,7 +99,7 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
 
             var line = invocation.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
 
-            DiagnosticImpact impact = loopContext switch
+            var impact = loopContext switch
             {
                 LoopContext.ConstantBounded => DiagnosticImpact.CpuBound,
                 LoopContext.VariableBounded => DiagnosticImpact.CpuBound,

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        EventHandlerAnalyzer.cs
+ * FILE:        Rules/EventHandlerAnalyzer.cs
  * PURPOSE:     Analyzer that detects potential event handler leaks.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -13,12 +13,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CoreBuilder;
+namespace CoreBuilder.Rules;
 
 /// <summary>
 /// Check if Event is unsubscribed.
 /// </summary>
-/// <seealso cref="CoreBuilder.Interface.ICodeAnalyzer" />
+/// <seealso cref="ICodeAnalyzer" />
 public sealed class EventHandlerAnalyzer : ICodeAnalyzer
 
 {
