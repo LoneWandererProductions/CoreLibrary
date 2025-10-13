@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CoreBuilder;
+using CoreBuilder.Rules;
 
 namespace CoreBuilderTests
 {

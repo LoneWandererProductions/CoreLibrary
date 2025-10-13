@@ -41,7 +41,7 @@ namespace CoreViewer
         /// <summary>
         /// The analyzers
         /// </summary>
-        private readonly List<ICodeAnalyzer> _analyzers = new();
+        private List<ICodeAnalyzer> _analyzers = new();
 
         /// <summary>
         /// The current diagnostics
@@ -125,20 +125,7 @@ namespace CoreViewer
         /// </summary>
         private void LoadAnalyzers()
         {
-            _analyzers.AddRange(
-            [
-                new DoubleNewlineAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new HotPathAnalyzer(),
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new UnusedConstantAnalyzer(),
-                new UnusedClassAnalyzer()
-            ]);
+            _analyzers = AnalyzerFactory.GetAllAnalyzers();
         }
 
         /// <summary>

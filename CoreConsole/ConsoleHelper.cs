@@ -32,19 +32,7 @@ internal static class ConsoleHelper
     /// </summary>
     static ConsoleHelper()
     {
-        Analyzers.Add(new DoubleNewlineAnalyzer());
-        Analyzers.Add(new LicenseHeaderAnalyzer());
-
-        // New Roslyn-based analyzers
-        Analyzers.Add(new UnusedLocalVariableAnalyzer());
-        Analyzers.Add(new UnusedParameterAnalyzer());
-        Analyzers.Add(new UnusedPrivateFieldAnalyzer());
-        Analyzers.Add(new HotPathAnalyzer());
-        Analyzers.Add(new AllocationAnalyzer());
-        Analyzers.Add(new DisposableAnalyzer());
-        Analyzers.Add(new EventHandlerAnalyzer());
-        Analyzers.Add(new UnusedConstantAnalyzer());
-        Analyzers.Add(new UnusedClassAnalyzer());
+        Analyzers = AnalyzerFactory.GetAllAnalyzers();
     }
 
     /// <summary>
