@@ -107,5 +107,6 @@ public interface ILogger
     /// <summary>
     /// Gets the in-memory collection of log entries.
     /// </summary>
+    /// <returns>A list of all Log entries.</returns>
     List<LogEntry> GetLog();
 }
