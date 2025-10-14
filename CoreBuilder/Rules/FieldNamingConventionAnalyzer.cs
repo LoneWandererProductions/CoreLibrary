@@ -26,22 +26,22 @@ namespace CoreBuilder.Rules
 
         /// <inheritdoc />
         public string Description =>
-            "Ensures field names follow proper casing conventions based on visibility and constness.";
+            "Ensures field names follow proper casing conventions based on visibility, constness, and static/readonly modifiers.";
 
         // Regex patterns for naming rules
 
         /// <summary>
-        /// The private field pattern
+        /// The private field pattern.
         /// </summary>
         private static readonly Regex PrivateFieldPattern = new(@"^_[a-z][a-zA-Z0-9]*$", RegexOptions.Compiled);
 
         /// <summary>
-        /// The public field pattern
+        /// The public field pattern.
         /// </summary>
         private static readonly Regex PublicFieldPattern = new(@"^[A-Z][a-zA-Z0-9]*$", RegexOptions.Compiled);
 
         /// <summary>
-        /// The constant field pattern
+        /// The constant field pattern.
         /// </summary>
         private static readonly Regex ConstantFieldPattern = new(@"^[A-Z0-9_]+$", RegexOptions.Compiled);
 
@@ -69,6 +69,8 @@ namespace CoreBuilder.Rules
                 var isConst = modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword));
                 var isPublic = modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword));
                 var isPrivate = modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword)) || !isPublic;
+                var isStatic = modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword));
+                var isReadonly = modifiers.Any(m => m.IsKind(SyntaxKind.ReadOnlyKeyword));
 
                 foreach (var variable in fieldDecl.Declaration.Variables)
                 {
@@ -80,6 +82,7 @@ namespace CoreBuilder.Rules
 
                     var lineNumber = GetLineNumber(fieldDecl);
 
+                    // 🔸 Constant fields: expect UPPER_CASE_WITH_UNDERSCORES
                     if (isConst)
                     {
                         if (!ConstantFieldPattern.IsMatch(name))
@@ -92,42 +95,66 @@ namespace CoreBuilder.Rules
                                 $"Constant '{name}' should be in UPPER_CASE_WITH_UNDERSCORES format."
                             );
                         }
+
+                        continue;
                     }
-                    else if (isPrivate)
+
+                    // 🔸 Exception for private static readonly numeric fields (e.g. Sqrt3)
+                    if (isPrivate && isStatic && isReadonly && IsNumericType(fieldDecl))
                     {
-                        if (!PrivateFieldPattern.IsMatch(name))
+                        if (PublicFieldPattern.IsMatch(name))
                         {
-                            yield return new Diagnostic(
-                                Name,
-                                DiagnosticSeverity.Info,
-                                filePath,
-                                lineNumber,
-                                $"Private field '{name}' should start with '_' and use camelCase (e.g., '_myField')."
-                            );
+                            // Accept PascalCase for numeric constants
+                            continue;
                         }
                     }
-                    else if (isPublic)
+
+                    // 🔸 Private field naming rule
+                    if (isPrivate && !PrivateFieldPattern.IsMatch(name))
                     {
-                        if (!PublicFieldPattern.IsMatch(name))
-                        {
-                            yield return new Diagnostic(
-                                Name,
-                                DiagnosticSeverity.Info,
-                                filePath,
-                                lineNumber,
-                                $"Public field '{name}' should be PascalCase (e.g., 'MyField')."
-                            );
-                        }
+                        yield return new Diagnostic(
+                            Name,
+                            DiagnosticSeverity.Info,
+                            filePath,
+                            lineNumber,
+                            $"Private field '{name}' should start with '_' and use camelCase (e.g., '_myField')."
+                        );
+
+                        continue;
+                    }
+
+                    // 🔸 Public field naming rule
+                    if (isPublic && !PublicFieldPattern.IsMatch(name))
+                    {
+                        yield return new Diagnostic(
+                            Name,
+                            DiagnosticSeverity.Info,
+                            filePath,
+                            lineNumber,
+                            $"Public field '{name}' should be PascalCase (e.g., 'MyField')."
+                        );
                     }
                 }
             }
         }
 
         /// <summary>
+        /// Determines whether the field type is numeric.
+        /// Used to allow PascalCase for static readonly numeric constants.
+        /// </summary>
+        /// <param name="fieldDecl">The field declaration.</param>
+        /// <returns><see langword="true"/> if the field is numeric; otherwise, <see langword="false"/>.</returns>
+        private static bool IsNumericType(FieldDeclarationSyntax fieldDecl)
+        {
+            var type = fieldDecl.Declaration.Type.ToString();
+            return type is "int" or "float" or "double" or "decimal" or "long" or "short" or "byte";
+        }
+
+        /// <summary>
         /// Gets the 1-based line number of a node.
         /// </summary>
-        /// <param name="node">The node.</param>
-        /// <returns>The line number.</returns>
+        /// <param name="node">The syntax node.</param>
+        /// <returns>The line number, or 1 if unavailable.</returns>
         private static int GetLineNumber(SyntaxNode node)
         {
             try
