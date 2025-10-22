@@ -26,7 +26,7 @@ internal interface IPrompt
     /// <param name="extension">Optional extension methods.</param>
     /// <param name="userFeedback">Optional user feedback.</param>
     void Initiate(Dictionary<int, InCommand> commands, string userSpace,
-        Dictionary<int, InCommand> extension = null, Dictionary<int, UserFeedback> userFeedback = null);
+        Dictionary<int, InCommand>? extension = null, Dictionary<int, UserFeedback>? userFeedback = null);
 
     /// <summary>
     ///     Adds further command namespaces.
@@ -35,7 +35,7 @@ internal interface IPrompt
     /// <param name="userSpace">The user space of the register.</param>
     /// <param name="extension">Optional extension methods.</param>
     void AddCommands(Dictionary<int, InCommand> commands, string userSpace,
-        Dictionary<int, InCommand> extension = null);
+        Dictionary<int, InCommand>? extension = null);
 
     /// <summary>
     ///     Starts the window, if we want to use the included window.

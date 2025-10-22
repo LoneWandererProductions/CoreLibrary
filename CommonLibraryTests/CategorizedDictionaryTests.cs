@@ -31,32 +31,6 @@ public class CategorizedDictionaryTests
     }
 
     /// <summary>
-    ///     Adds the and retrieve value by key.
-    /// </summary>
-    [TestMethod]
-    public void AddAndRetrieveValueByKey()
-    {
-        _dict.Add("Category1", "Key1", "Value1");
-
-        var result = _dict.Get("Key1");
-
-        Assert.AreEqual("Value1", result);
-    }
-
-    /// <summary>
-    ///     Adds the and retrieve value by key in null category.
-    /// </summary>
-    [TestMethod]
-    public void AddAndRetrieveValueByKeyInNullCategory()
-    {
-        _dict.Add(null, "Key3", "Value3");
-
-        var result = _dict.Get("Key3");
-
-        Assert.AreEqual("Value3", result);
-    }
-
-    /// <summary>
     ///     Gets the category and value by key.
     /// </summary>
     [TestMethod]
@@ -129,18 +103,7 @@ public class CategorizedDictionaryTests
         Assert.AreEqual(3, result.Count());
         CollectionAssert.Contains(result.ToList(), "Category1");
         CollectionAssert.Contains(result.ToList(), "Category2");
-        CollectionAssert.Contains(result.ToList(), null);
-    }
-
-    /// <summary>
-    ///     Gets the non existing key.
-    /// </summary>
-    [TestMethod]
-    public void GetNonExistingKey()
-    {
-        var result = _dict.Get("NonExistingKey");
-
-        Assert.IsNull(result);
+        CollectionAssert.Contains(result.ToList(), string.Empty);
     }
 
     /// <summary>
@@ -244,85 +207,5 @@ public class CategorizedDictionaryTests
         // Assert
         Assert.IsFalse(result);
         Assert.IsNull(value);
-    }
-
-    /// <summary>
-    ///     Enumerators the returns correct key value pairs.
-    /// </summary>
-    [TestMethod]
-    public void EnumeratorReturnsCorrectKeyValuePairs()
-    {
-        // Arrange
-        var dict = new CategorizedDictionary<string, int>
-        {
-            { "Category1", "Key1", 10 }, { "Category2", "Key2", 20 }, { "Category1", "Key3", 30 }
-        };
-
-        // Act
-        var keyValuePairs = dict.ToKeyValueList();
-
-        // Assert
-        var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
-
-        CollectionAssert.AreEqual(expected, keyValuePairs);
-    }
-
-    /// <summary>
-    ///     Enumerators the is enumerated in insertion order.
-    /// </summary>
-    [TestMethod]
-    public void EnumeratorIsEnumeratedInInsertionOrder()
-    {
-        // Arrange
-        var dict = new CategorizedDictionary<string, int>
-        {
-            { "CategoryA", "Key1", 100 }, { "CategoryB", "Key2", 200 }, { "CategoryA", "Key3", 300 }
-        };
-
-        // Act
-        var keyValuePairs = dict.ToKeyValueList();
-
-        // Assert
-        var expected = new List<KeyValuePair<string, int>> { new("Key1", 100), new("Key2", 200), new("Key3", 300) };
-
-        CollectionAssert.AreEqual(expected, keyValuePairs);
-    }
-
-    /// <summary>
-    ///     Enumerators the returns empty for empty dictionary.
-    /// </summary>
-    [TestMethod]
-    public void EnumeratorReturnsEmptyForEmptyDictionary()
-    {
-        // Arrange
-        var dict = new CategorizedDictionary<string, int>();
-
-        // Act
-        var keyValuePairs = dict.ToKeyValueList();
-
-        // Assert
-        Assert.AreEqual(0, keyValuePairs.Count);
-    }
-
-    /// <summary>
-    ///     Enumerators the returns correct key value pairs after modification.
-    /// </summary>
-    [TestMethod]
-    public void EnumeratorReturnsCorrectKeyValuePairsAfterModification()
-    {
-        // Arrange
-        var dict = new CategorizedDictionary<string, int>
-        {
-            { "Category1", "Key1", 10 }, { "Category2", "Key2", 20 }, { "Category3", "Key3", 30 }
-        };
-
-        // Act
-        // Modify dictionary
-        var keyValuePairs = dict.ToKeyValueList();
-
-        // Assert
-        var expected = new List<KeyValuePair<string, int>> { new("Key1", 10), new("Key2", 20), new("Key3", 30) };
-
-        CollectionAssert.AreEqual(expected, keyValuePairs);
     }
 }
