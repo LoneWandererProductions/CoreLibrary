@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageMask.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        ImageMask.cs
  * PURPOSE:     Helper class to handle some shape operations on an Image
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Handle all the possible selections on an Image

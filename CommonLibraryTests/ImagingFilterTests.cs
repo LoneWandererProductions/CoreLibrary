@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Imaging;
+using Imaging.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /*

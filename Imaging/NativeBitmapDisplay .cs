@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/NativeBitmapDisplay.cs
+ * FILE:        NativeBitmapDisplay.cs
  * PURPOSE:     Fast Bitmap Display in Wpf do not expect wonders though.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ICustomImageFormat.cs
+ * PROJECT:     Imaging.Interfaces
+ * FILE:        ICustomImageFormat.cs
  * PURPOSE:     Interface of our custom Image Format
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 using System.Drawing;
 
-namespace Imaging;
+namespace Imaging.Interfaces;
 
 /// <summary>
 ///     Interface for Custom Image Format

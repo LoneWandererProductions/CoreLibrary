@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/TextureStream.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        TextureStream.cs
  * PURPOSE:     Basic stuff for generating textures
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 // ReSharper disable UnusedMember.Local
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Class that generates Textures
@@ -169,9 +169,9 @@ internal static class TextureStream
         for (var x = 0; x < width; x++)
         {
             // Replace fixed NoiseWidth/NoiseHeight with width/height
-            var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
-                          (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0) +
-                          (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
+            var xyValue = x * xPeriod / width + y * yPeriod / height +
+                          turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0 +
+                          Math.Sin((x + y) * 0.1) * 0.5; // Slight random distortion
 
             var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
 
@@ -220,10 +220,10 @@ internal static class TextureStream
         for (var y = 0; y < height; y++)
         for (var x = 0; x < width; x++)
         {
-            var xValue = (x - (width / 2.0)) / width;
-            var yValue = (y - (height / 2.0)) / height;
-            var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
-                            (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
+            var xValue = (x - width / 2.0) / width;
+            var yValue = (y - height / 2.0) / height;
+            var distValue = Math.Sqrt(xValue * xValue + yValue * yValue) +
+                            turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
             var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
             var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
@@ -271,16 +271,21 @@ internal static class TextureStream
         for (var x = 0; x < width; x++)
         {
             var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
-            var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
-            var yValue = ((y - (height / 2.0)) / height) +
-                         (turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0);
+            var xValue = (x - width / 2.0) / width + turbulencePower * turbulenceValue / 256.0;
+            var yValue = (y - height / 2.0) / height +
+                         turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0;
 
             var sineValue = 22.0 *
                             Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
                                      Math.Sin(xyPeriod * yValue * Math.PI));
-            var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, alpha);
 
-            pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+
+                var hue = sineValue % 360.0;
+                if (hue < 0) hue += 360.0;
+
+                var hsvColor =  ColorHsv.FromHsv(hue, 1.0, 1.0, alpha);
+
+                pixelData.Add((x, y, hsvColor.GetDrawingColor()));
         }
 
         // Convert list to array for SIMD processing
@@ -356,10 +361,10 @@ internal static class TextureStream
         var maxDistance = Math.Max(width, height) * Math.Sqrt(2); // Diagonal coverage
 
         // Calculate line endpoints far enough to cover the entire image
-        var endpointStart = new PointF((float)(startPoint.X + (dx * maxDistance)),
-            (float)(startPoint.Y + (dy * maxDistance)));
-        var endpointEnd = new PointF((float)(startPoint.X - (dx * maxDistance)),
-            (float)(startPoint.Y - (dy * maxDistance)));
+        var endpointStart = new PointF((float)(startPoint.X + dx * maxDistance),
+            (float)(startPoint.Y + dy * maxDistance));
+        var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance),
+            (float)(startPoint.Y - dy * maxDistance));
 
         using var graphics = Graphics.FromImage(bitmap);
         graphics.DrawLine(pen, endpointStart, endpointEnd);
@@ -398,8 +403,8 @@ internal static class TextureStream
         {
             for (var x = 0; x < width; x++)
             {
-                var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
-                              (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
+                var xyValue = x * xPeriod / width + y * yPeriod / height +
+                              turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
 
                 var sineValue = 256 * Math.Abs(Math.Sin(xyValue * Math.PI));
 
@@ -464,8 +469,8 @@ internal static class TextureStream
 
             for (var y = cutoffStart; y < cutoffEnd; y += 5)
             {
-                var xOffset = (waveAmplitude * Math.Sin(waveFrequency * y))
-                              + (randomizationFactor * (random.NextDouble() - 0.5));
+                var xOffset = waveAmplitude * Math.Sin(waveFrequency * y)
+                              + randomizationFactor * (random.NextDouble() - 0.5);
                 path.AddLine(x + (float)xOffset, y, x + (float)xOffset, y + 5);
             }
 
@@ -484,8 +489,8 @@ internal static class TextureStream
 
             for (var x = cutoffStart; x < cutoffEnd; x += 5)
             {
-                var yOffset = (waveAmplitude * Math.Sin(waveFrequency * x))
-                              + (randomizationFactor * (random.NextDouble() - 0.5));
+                var yOffset = waveAmplitude * Math.Sin(waveFrequency * x)
+                              + randomizationFactor * (random.NextDouble() - 0.5);
                 path.AddLine(x, y + (float)yOffset, x + 5, y + (float)yOffset);
             }
 
@@ -517,12 +522,12 @@ internal static class TextureStream
         }
         else
         {
-            var q = l < 0.5 ? l * (1 + s) : l + s - (l * s);
-            var p = (2 * l) - q;
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
 
-            r = HueToRgb(p, q, h + (1.0 / 3.0));
+            r = HueToRgb(p, q, h + 1.0 / 3.0);
             g = HueToRgb(p, q, h);
-            b = HueToRgb(p, q, h - (1.0 / 3.0));
+            b = HueToRgb(p, q, h - 1.0 / 3.0);
         }
 
         return Color.FromArgb(
@@ -554,7 +559,7 @@ internal static class TextureStream
 
         if (t < 1.0 / 6.0)
         {
-            return p + ((q - p) * 6 * t);
+            return p + (q - p) * 6 * t;
         }
 
         if (t < 1.0 / 2.0)
@@ -564,7 +569,7 @@ internal static class TextureStream
 
         if (t < 2.0 / 3.0)
         {
-            return p + ((q - p) * ((2.0 / 3.0) - t) * 6);
+            return p + (q - p) * (2.0 / 3.0 - t) * 6;
         }
 
         return p;

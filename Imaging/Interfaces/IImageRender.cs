@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/IImageRender.cs
+ * PROJECT:     Imaging.Interfaces
+ * FILE:        IImageRender.cs
  * PURPOSE:     Image Interface for most Image Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,12 +15,13 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Enums;
 using Color = System.Drawing.Color;
 
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Imaging;
+namespace Imaging.Interfaces;
 
 /// <summary>
 ///     The IImageRender interface.

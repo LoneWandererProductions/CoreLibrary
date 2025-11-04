@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImagingResources.cs
+ * FILE:        ImagingResources.cs
  * PURPOSE:     String Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

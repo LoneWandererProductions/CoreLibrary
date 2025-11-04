@@ -130,7 +130,7 @@ public sealed partial class ColorPicker : INotifyPropertyChanged
         InitializeComponent();
         DataContext = this;
 
-        var hsv = new ColorHsv(R, G, B, Alpha);
+        var hsv = ColorHsv.FromRgb(R, G, B, Alpha);
 
         Hue = hsv.H;
         Val = hsv.V;

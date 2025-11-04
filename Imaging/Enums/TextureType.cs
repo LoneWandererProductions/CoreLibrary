@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/TextureType.cs
+ * PROJECT:     Imaging.Enums
+ * FILE:        TextureType.cs
  * PURPOSE:     Enum that shows all textures
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Local
 
-namespace Imaging;
+namespace Imaging.Enums;
 
 /// <summary>
 ///     Type of Textures

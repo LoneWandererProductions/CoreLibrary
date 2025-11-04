@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/DirectBitmap.cs
+ * FILE:        DirectBitmap.cs
  * PURPOSE:     Custom Image Class, speeds up Get and Set Pixel
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=net-7.0

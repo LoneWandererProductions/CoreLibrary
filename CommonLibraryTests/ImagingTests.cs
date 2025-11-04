@@ -14,6 +14,7 @@ using System.IO;
 using FileHandler;
 using ImageCompare;
 using Imaging;
+using Imaging.Helpers;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -553,10 +554,10 @@ public class ImagingTests
     }
 
     /// <summary>
-    ///     Test some Conversions
+    /// Test some Conversions
     /// </summary>
     [TestMethod]
-    public void ColorHsv()
+    public void ColorHsvConversionsWorkCorrectly()
     {
         /*
          * 4 Colors:
@@ -566,20 +567,25 @@ public class ImagingTests
          * 40,40,40, #282828
          */
 
-        var converter = new ColorHsv(255, 255, 255, 255);
+        var converter = ColorHsv.FromRgb(255, 255, 255, 255);
         Assert.IsTrue("#ffffff".Equals(converter.Hex, StringComparison.OrdinalIgnoreCase), converter.Hex, "done");
-        converter = new ColorHsv(111, 6, 6, 255);
+
+        converter = ColorHsv.FromRgb(111, 6, 6, 255);
         Assert.IsTrue("#6f0606".Equals(converter.Hex, StringComparison.OrdinalIgnoreCase), converter.Hex, "done");
-        converter = new ColorHsv(40, 72, 4, 6);
+
+        converter = ColorHsv.FromRgb(40, 72, 4, 6);
         Assert.IsTrue("#284804".Equals(converter.Hex, StringComparison.OrdinalIgnoreCase), converter.Hex, "done");
-        converter = new ColorHsv(40, 40, 40, 255);
+
+        converter = ColorHsv.FromRgb(40, 40, 40, 255);
         Assert.IsTrue("#282828".Equals(converter.Hex, StringComparison.OrdinalIgnoreCase), converter.Hex, "done");
 
-        converter = new ColorHsv("#282828", 255);
+        // Hex factory
+        converter = ColorHsv.FromHex("#282828", 255);
         Assert.AreEqual(40, converter.R, "done");
         Assert.AreEqual(40, converter.B, "done");
         Assert.AreEqual(40, converter.G, "done");
     }
+
 
     /// <summary>
     ///     Test the Line Algorithm, including Bresenham and Linear Line.

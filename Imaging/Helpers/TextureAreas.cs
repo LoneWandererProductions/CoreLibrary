@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/TextureAreas.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        TextureAreas.cs
  * PURPOSE:     Provide textures for certain areas
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -9,8 +9,9 @@
 #nullable enable
 using System;
 using System.Drawing;
+using Imaging.Enums;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Apply textures to certain areas

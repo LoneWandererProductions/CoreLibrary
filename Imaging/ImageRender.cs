@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageRender.cs
+ * FILE:        ImageRender.cs
  * PURPOSE:     Interface that handles all Image Interactions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.csharphelper.com/howtos/howto_colorize2.html
@@ -20,6 +20,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Enums;
+using Imaging.Helpers;
+using Imaging.Interfaces;
 using Color = System.Drawing.Color;
 
 namespace Imaging;
@@ -832,7 +835,7 @@ public sealed class ImageRender : IImageRender
     /// </returns>
     public string BitmapToBase64(Bitmap bitmap)
     {
-        return ImageConverter.BitmapToBase64(bitmap);
+        return Helpers.ImageConverter.BitmapToBase64(bitmap);
     }
 
     /// <inheritdoc />
@@ -845,6 +848,6 @@ public sealed class ImageRender : IImageRender
     /// </returns>
     public string BitmapImageToBase64(BitmapImage bitmapImage)
     {
-        return ImageConverter.BitmapImageToBase64(bitmapImage);
+        return Helpers.ImageConverter.BitmapImageToBase64(bitmapImage);
     }
 }

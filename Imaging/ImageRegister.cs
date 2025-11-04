@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text.Json;
+using Imaging.Enums;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
@@ -555,7 +556,7 @@ public sealed class ImageRegister
     /// <param name="exception">The exception.</param>
     public void SetError(Exception exception)
     {
-        ErrorLog.Add(DateTime.MinValue, exception.Message);
+        ErrorLog.Add(DateTime.Now, exception.Message);
     }
 
     /// <summary>
@@ -566,19 +567,39 @@ public sealed class ImageRegister
     {
         try
         {
-            var settings = JsonSerializer.Deserialize<Dictionary<FiltersType, HashSet<string>>>(json);
+            var doc = JsonSerializer.Deserialize<SettingsContainer>(json);
+            if (doc == null) return;
 
-            if (settings != null)
+            // Load filter property map
+            if (doc.FilterProperties != null)
             {
-                foreach (var (imageFilters, filter) in settings)
+                foreach (var (filter, props) in doc.FilterProperties)
                 {
-                    _filterPropertyMap[imageFilters] = filter;
+                    _filterPropertyMap[filter] = props;
+                }
+            }
+
+            // Load filter runtime settings
+            if (doc.FilterSettings != null)
+            {
+                foreach (var (filter, config) in doc.FilterSettings)
+                {
+                    FilterSettings[filter] = config;
+                }
+            }
+
+            // Load texture runtime settings
+            if (doc.TextureSettings != null)
+            {
+                foreach (var (texture, config) in doc.TextureSettings)
+                {
+                    TextureSetting[texture] = config;
                 }
             }
         }
         catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
         {
-            ErrorLog.Add(DateTime.MinValue, $"{ImagingResources.ErrorLoadSettings} {ex.Message}");
+            SetError(ex);
         }
     }
 
@@ -588,6 +609,43 @@ public sealed class ImageRegister
     /// <returns>JSON representation of current settings.</returns>
     public string GetSettingsAsJson()
     {
-        return JsonSerializer.Serialize(_filterPropertyMap, new JsonSerializerOptions { WriteIndented = true });
+        var container = new SettingsContainer
+        {
+            FilterProperties = _filterPropertyMap,
+            FilterSettings = FilterSettings,
+            TextureSettings = TextureSetting
+        };
+
+        return JsonSerializer.Serialize(container, new JsonSerializerOptions { WriteIndented = true });
+    }
+
+    /// <summary>
+    /// Helper container class for JSON serialization.
+    /// </summary>
+    private class SettingsContainer
+    {
+        /// <summary>
+        /// Gets or sets the filter properties.
+        /// </summary>
+        /// <value>
+        /// The filter properties.
+        /// </value>
+        public Dictionary<FiltersType, HashSet<string>>? FilterProperties { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter settings.
+        /// </summary>
+        /// <value>
+        /// The filter settings.
+        /// </value>
+        public ConcurrentDictionary<FiltersType, FiltersConfig>? FilterSettings { get; set; }
+
+        /// <summary>
+        /// Gets or sets the texture settings.
+        /// </summary>
+        /// <value>
+        /// The texture settings.
+        /// </value>
+        public ConcurrentDictionary<TextureType, TextureConfiguration>? TextureSettings { get; set; }
     }
 }

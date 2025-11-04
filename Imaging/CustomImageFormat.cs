@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ICustomImageFormat.cs
+ * FILE:        ICustomImageFormat.cs
  * PURPOSE:     Implementation and main entry of our custom Image Format
  *              Main use is a small save footprint and Image Color manipulation on a large scale
  *              Further uses are Image analysis, mostly color and color range.
@@ -12,6 +12,7 @@
 
 using System.Drawing;
 using DataFormatter;
+using Imaging.Interfaces;
 
 //TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?

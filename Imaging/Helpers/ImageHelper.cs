@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageHelper.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        ImageHelper.cs
  * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
@@ -17,7 +17,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 /// Helper methods for image processing.
@@ -41,7 +41,7 @@ internal static class ImageHelper
         for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
         {
             var dx = x - center.X;
-            var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
+            var height = (int)Math.Sqrt(radius * radius - dx * dx);
 
             for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
             {
@@ -178,7 +178,7 @@ internal static class ImageHelper
     ///     Handles the exception.
     /// </summary>
     /// <param name="ex">The ex.</param>
-    /// <exception cref="System.ApplicationException"></exception>
+    /// <exception cref="ApplicationException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void HandleException(Exception ex)
     {
@@ -206,7 +206,7 @@ internal static class ImageHelper
     /// </summary>
     /// <param name="method">The method.</param>
     /// <param name="image">The image.</param>
-    /// <exception cref="System.ArgumentNullException"></exception>
+    /// <exception cref="ArgumentNullException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ValidateImage(string method, Bitmap image)
     {
@@ -225,7 +225,7 @@ internal static class ImageHelper
     /// </summary>
     /// <param name="method">The method.</param>
     /// <param name="image">The BitmapImage.</param>
-    /// <exception cref="System.ArgumentNullException"></exception>
+    /// <exception cref="ArgumentNullException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ValidateImage(string method, BitmapImage image)
     {
@@ -289,7 +289,7 @@ internal static class ImageHelper
     {
         var ft = t * Math.PI;
         var f = (1 - Math.Cos(ft)) * 0.5;
-        return (a * (1 - f)) + (b * f);
+        return a * (1 - f) + b * f;
     }
 
     /// <summary>
@@ -339,7 +339,7 @@ internal static class ImageHelper
     ///     Validates the file path.
     /// </summary>
     /// <param name="path">The path.</param>
-    /// <exception cref="System.IO.IOException"></exception>
+    /// <exception cref="IOException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ValidateFilePath(string path)
     {
