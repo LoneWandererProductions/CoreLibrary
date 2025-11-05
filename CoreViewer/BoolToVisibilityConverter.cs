@@ -32,7 +32,7 @@ namespace CoreViewer
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is bool and true ? Visibility.Visible : Visibility.Collapsed;
+            return value is true ? Visibility.Visible : Visibility.Collapsed;
         }
 
         /// <summary>

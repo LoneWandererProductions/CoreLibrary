@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -151,6 +152,7 @@ namespace ExtendedSystemObjects
                 set = new HashSet<TK>();
                 _categories[category] = set;
             }
+
             set.Add(key);
         }
 
@@ -209,6 +211,7 @@ namespace ExtendedSystemObjects
                     value = entry.Value;
                     return true;
                 }
+
                 value = default;
                 return false;
             }
@@ -232,6 +235,7 @@ namespace ExtendedSystemObjects
                     category = entry.Category;
                     return true;
                 }
+
                 category = null;
                 return false;
             }
@@ -282,6 +286,7 @@ namespace ExtendedSystemObjects
                     set = new HashSet<TK>();
                     _categories[newCategory] = set;
                 }
+
                 set.Add(key);
 
                 return true;
@@ -408,4 +413,3 @@ namespace ExtendedSystemObjects
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
-
