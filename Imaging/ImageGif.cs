@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Imaging
-* FILE:        Imaging/ImageGif.cs
+* FILE:        ImageGif.cs
 * PURPOSE:     Extends the Image Control and adds Gif Support via SourceGif Property
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

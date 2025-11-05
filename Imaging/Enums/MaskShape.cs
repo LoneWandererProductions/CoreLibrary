@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/MaskShape.cs
+ * PROJECT:     Imaging.Enums
+ * FILE:        MaskShape.cs
  * PURPOSE:     Enum that shows all allowed shapes
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Local
 
-namespace Imaging;
+namespace Imaging.Enums;
 
 /// <summary>
 ///     Texture Shapes

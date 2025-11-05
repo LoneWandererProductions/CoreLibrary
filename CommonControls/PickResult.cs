@@ -128,7 +128,7 @@ internal static class ColorPick
         {
             _sat = ColorProcessing.CalcSat(x, y);
             _val = ColorProcessing.CalcVal(x, y);
-            ColorPickerRegister.Colors = new ColorHsv(_hue, _sat, _val, alpha);
+            ColorPickerRegister.Colors = ColorHsv.FromHsv(_hue, _sat, _val, alpha);
 
             return;
         }
@@ -140,7 +140,7 @@ internal static class ColorPick
             _hue = ColorProcessing.CalcHue(x, y);
         }
 
-        ColorPickerRegister.Colors = new ColorHsv(_hue, _sat, _val, alpha);
+        ColorPickerRegister.Colors = ColorHsv.FromHsv(_hue, _sat, _val, alpha);
     }
 
     /// <summary>

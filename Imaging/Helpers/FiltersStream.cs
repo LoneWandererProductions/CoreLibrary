@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/FiltersStream.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        FiltersStream.cs
  * PURPOSE:     Separate out all Filter Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -23,9 +23,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using Imaging.Enums;
 using RenderEngine;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Here we handle the grunt work for all image filters
@@ -339,11 +340,11 @@ internal static class FiltersStream
                     }
                 }
 
-                var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
+                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
                 magnitude = ImageHelper.Clamp(magnitude / Math.Sqrt(2));
 
                 // Convert to packed BGRA
-                var bgra = (uint)((255 << 24) | (magnitude << 16) | (magnitude << 8) | magnitude);
+                var bgra = (uint)(255 << 24 | magnitude << 16 | magnitude << 8 | magnitude);
 
                 pixelsToSet[index++] = (x, y, bgra);
             }
@@ -517,13 +518,13 @@ internal static class FiltersStream
 
                 for (var dy = 0; dy < scale; dy++)
                 {
-                    var scaledY = (y * scale) + dy;
+                    var scaledY = y * scale + dy;
                     var rowStart = scaledY * scaledWidth * bytesPerPixel;
 
                     for (var dx = 0; dx < scale; dx++)
                     {
-                        var scaledX = (x * scale) + dx;
-                        var offset = rowStart + (scaledX * bytesPerPixel);
+                        var scaledX = x * scale + dx;
+                        var offset = rowStart + scaledX * bytesPerPixel;
 
                         sumB += scaledSpan[offset];
                         sumG += scaledSpan[offset + 1];
@@ -535,7 +536,7 @@ internal static class FiltersStream
                 var avgG = (byte)(sumG / scaleSquared);
                 var avgB = (byte)(sumB / scaleSquared);
 
-                var resultOffset = ((y * image.Width) + x) * bytesPerPixel;
+                var resultOffset = (y * image.Width + x) * bytesPerPixel;
                 resultSpan[resultOffset] = avgB;
                 resultSpan[resultOffset + 1] = avgG;
                 resultSpan[resultOffset + 2] = avgR;
@@ -629,7 +630,7 @@ internal static class FiltersStream
         // Compute gradient magnitude using Sobel operators
         var gradientX = ApplyKernel(dbmBase, x, y, _imageSettings.SobelX);
         var gradientY = ApplyKernel(dbmBase, x, y, _imageSettings.SobelY);
-        var gradientMagnitude = Math.Sqrt((gradientX * gradientX) + (gradientY * gradientY));
+        var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
 
         // Compute local variance
         var variance = ComputeLocalVariance(dbmBase, x, y, baseHalfWindow);
@@ -696,7 +697,7 @@ internal static class FiltersStream
         }
 
         var mean = sum / count;
-        return (sumSquared / count) - (mean * mean);
+        return sumSquared / count - mean * mean;
     }
 
     /// <summary>
@@ -793,17 +794,17 @@ internal static class FiltersStream
         var regions = new List<Rectangle>
         {
             // Base region
-            new(centerX - (width / 2), centerY - (height / 2), width, height)
+            new(centerX - width / 2, centerY - height / 2, width, height)
         };
 
         for (var i = 1; i <= numAdditionalRegions; i++) // Adding 3 additional regions with varying sizes
         {
-            var newWidth = width - (i * step);
-            var newHeight = height - (i * step);
+            var newWidth = width - i * step;
+            var newHeight = height - i * step;
             if (newWidth > 0 && newHeight > 0)
             {
-                regions.Add(new Rectangle(centerX - (newWidth / 2) + (offset * i),
-                    centerY - (newHeight / 2) + (offset * i), newWidth, newHeight));
+                regions.Add(new Rectangle(centerX - newWidth / 2 + offset * i,
+                    centerY - newHeight / 2 + offset * i, newWidth, newHeight));
             }
         }
 
@@ -873,7 +874,7 @@ internal static class FiltersStream
             {
                 var pixel = dbmBase.GetPixel(nx, ny);
                 var oldIntensity = pixel.R; // Since it's grayscale, R=G=B
-                var newIntensity = ImageHelper.Clamp(oldIntensity + (error * ditherMatrix[dy, dx] / 16));
+                var newIntensity = ImageHelper.Clamp(oldIntensity + error * ditherMatrix[dy, dx] / 16);
                 var newColor = Color.FromArgb(newIntensity, newIntensity, newIntensity);
 
                 pixelsToSet.Add((nx, ny, newColor));

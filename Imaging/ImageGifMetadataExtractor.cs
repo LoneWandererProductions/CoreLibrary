@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Imaging
-* FILE:        Imaging/ImageGifMetadataExtractor.cs
+* FILE:        ImageGifMetadataExtractor.cs
 * PURPOSE:     Get all the info of a gif
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
@@ -20,7 +20,7 @@ internal static class ImageGifMetadataExtractor
     ///     Extracts the GIF metadata.
     /// </summary>
     /// <param name="filePath">The file path.</param>
-    /// <returns></returns>
+    /// <returns>Metadata of the gif in question.</returns>
     /// <exception cref="FileNotFoundException">File not found.</exception>
     /// <exception cref="InvalidDataException">Not a valid GIF file.</exception>
     internal static ImageGifInfo ExtractGifMetadata(string filePath)

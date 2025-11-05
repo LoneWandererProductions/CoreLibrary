@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/CifImageData.cs
+ * FILE:        CifImageData.cs
  * PURPOSE:     The Parser Object that will hold the actual Image Data
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,8 +17,8 @@ namespace Imaging;
 internal sealed class CifImageData
 {
     /// <summary>
-    ///     Define a converter delegate for image data parsing
-    ///     The converter
+    /// Define a converter delegate for image data parsing
+    /// The converter
     /// </summary>
     internal static readonly Func<List<string>, CifImageData> Converter = parts =>
     {
@@ -28,7 +28,7 @@ internal sealed class CifImageData
             return null;
         }
 
-        var converter = new ColorHsv(hex, a);
+        var converter = ColorHsv.FromHex(hex, a);
         var color = Color.FromArgb((byte)converter.A, (byte)converter.R, (byte)converter.G, (byte)converter.B);
         var coordinates = new List<int>();
 

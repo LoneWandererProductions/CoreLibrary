@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageGifHandler.cs
+ * FILE:        ImageGifHandler.cs
  * PURPOSE:     Some processing stuff for Gif Images, not perfect, the files are slightly bigger though.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
@@ -25,6 +25,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using FileHandler;
+using Imaging.Helpers;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging;

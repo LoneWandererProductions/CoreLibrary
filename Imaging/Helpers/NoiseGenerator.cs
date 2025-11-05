@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/NoiseGenerator.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        NoiseGenerator.cs
  * PURPOSE:     Provides noise generation utilities for procedural texture generation.
  * AUTHOR:      Peter Geinitz (Wayfarer)
  */
 
 using System;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Generates procedural noise for texture generation.
@@ -36,7 +36,7 @@ internal sealed class NoiseGenerator
     /// </summary>
     /// <param name="width">The width of the noise map.</param>
     /// <param name="height">The height of the noise map.</param>
-    public NoiseGenerator(int width, int height)
+    internal NoiseGenerator(int width, int height)
     {
         _width = width;
         _height = height;
@@ -71,7 +71,7 @@ internal sealed class NoiseGenerator
     /// <param name="x">The x-coordinate.</param>
     /// <param name="y">The y-coordinate.</param>
     /// <returns>A noise value between 0 and 1.</returns>
-    public double GetNoise(int x, int y)
+    internal double GetNoise(int x, int y)
     {
         x = (x + _width) % _width; // Wrap around horizontally
         y = (y + _height) % _height; // Wrap around vertically
@@ -86,7 +86,7 @@ internal sealed class NoiseGenerator
     /// <param name="y">The y-coordinate.</param>
     /// <param name="size">The initial size of the noise layers (higher values create larger patterns).</param>
     /// <returns>A turbulence value that enhances visual texture variation.</returns>
-    public double Turbulence(int x, int y, double size)
+    internal double Turbulence(int x, int y, double size)
     {
         double value = 0.0, initialSize = size;
 
@@ -106,7 +106,7 @@ internal sealed class NoiseGenerator
     /// <param name="x">The x-coordinate (floating-point for interpolation).</param>
     /// <param name="y">The y-coordinate (floating-point for interpolation).</param>
     /// <returns>A smoothed noise value between 0 and 1.</returns>
-    public double SmoothNoise(double x, double y)
+    internal double SmoothNoise(double x, double y)
     {
         var xInt = (int)x;
         var yInt = (int)y;

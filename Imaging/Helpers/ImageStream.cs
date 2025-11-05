@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageStream.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        ImageStream.cs
  * PURPOSE:     Does all the leg work for the Image operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
@@ -21,15 +21,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects;
+using Imaging.Enums;
 using Mathematics;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Loads a BitMapImage out of a specific path
 ///     Can Combine two Images and returns a new one
 /// </summary>
-public static class ImageStream
+internal static class ImageStream
 {
     /// <summary>
     ///     Get the bitmap file.
@@ -406,8 +407,8 @@ public static class ImageStream
             var point = corners[i];
             corners[i] =
                 new PointF(
-                    (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
-                    (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
+                    (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
+                    (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
         }
 
         // Find the min and max x and y coordinates.
@@ -906,9 +907,9 @@ public static class ImageStream
     private static ColorMatrix CreateColorMatrix(Color sourceColor, Color targetColor)
     {
         // Calculate the difference between source and target colors for each channel
-        var rRatio = (targetColor.R / 255f) - (sourceColor.R / 255f);
-        var gRatio = (targetColor.G / 255f) - (sourceColor.G / 255f);
-        var bRatio = (targetColor.B / 255f) - (sourceColor.B / 255f);
+        var rRatio = targetColor.R / 255f - sourceColor.R / 255f;
+        var gRatio = targetColor.G / 255f - sourceColor.G / 255f;
+        var bRatio = targetColor.B / 255f - sourceColor.B / 255f;
 
         return new ColorMatrix(new[]
         {

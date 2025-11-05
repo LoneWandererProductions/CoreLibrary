@@ -4,7 +4,6 @@
  * FILE:        Imaging/TextureConfiguration.cs
  * PURPOSE:     Basic stuff for generating textures, this class is used for finetuning
  * PROGRAMER:   Peter Geinitz (Wayfarer)
- * Sources:     https://lodev.org/cgtutor/randomnoise.html
  */
 
 using System.Drawing;

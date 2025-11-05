@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageConverter.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        ImageConverter.cs
  * PURPOSE:     Image Converter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Image Converter stuff

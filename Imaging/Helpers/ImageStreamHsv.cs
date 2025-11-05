@@ -1,10 +1,9 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     Imaging
-* FILE:        Imaging/ColorHsv.cs
+* PROJECT:     Imaging.Helpers
+* FILE:        ColorHsv.cs
 * PURPOSE:     General Conversions for images via my Hsv class
 * PROGRAMER:   Peter Geinitz (Wayfarer)
-* SOURCE:      https://lodev.org/cgtutor/color.html#Color_Model_Conversions_
 */
 
 using System;
@@ -12,7 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Another round of minor Image manipulations
@@ -84,31 +83,35 @@ internal static class ImageStreamHsv
     ///     Processes the image.
     /// </summary>
     /// <param name="image">The image.</param>
-    /// <param name="pixelOperation">The pixel operation.</param>
+    /// <param name="pixelOp">The pixel operation.</param>
     /// <returns>Processed Image</returns>
-    private static Bitmap ProcessImage(Bitmap image, Action<ColorHsv> pixelOperation)
+    private static Bitmap ProcessImage(Bitmap image, Action<ColorHsv> pixelOp)
     {
         ImageHelper.ValidateImage(nameof(ProcessImage), image);
 
         var source = new DirectBitmap(image);
         var result = new DirectBitmap(source.Width, source.Height);
-        var pixelsToSet = new List<(int x, int y, Color color)>();
 
-        for (var y = 0; y < source.Height; y++)
-        for (var x = 0; x < source.Width; x++)
+        for (int y = 0; y < source.Height; y++)
         {
-            var pixelColor = source.GetPixel(x, y);
-            var colorHsv = new ColorHsv(pixelColor.R, pixelColor.G, pixelColor.B, pixelColor.A);
+            for (int x = 0; x < source.Width; x++)
+            {
+                var c = source.GetPixel(x, y);
 
-            // Apply the pixel operation (adjustments)
-            pixelOperation(colorHsv);
+                // Convert RGB -> HSV using your shared class
+                var hsv = new ColorHsv(c.R, c.G, c.B, c.A);
 
-            // Add modified pixel to the list
-            pixelsToSet.Add((x, y, Color.FromArgb(colorHsv.A, colorHsv.R, colorHsv.G, colorHsv.B)));
+                // User provided operation on HSV
+                pixelOp(hsv);
+
+                // Convert HSV -> RGB (your class handles it)
+                result.SetPixel(x, y, Color.FromArgb(hsv.A, hsv.R, hsv.G, hsv.B));
+            }
         }
 
-        return ApplyPixelChanges(result, pixelsToSet);
+        return result.Bitmap;
     }
+
 
     /// <summary>
     ///     Applies the pixel changes.

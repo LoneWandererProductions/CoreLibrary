@@ -9,6 +9,8 @@
 
 using System.Drawing;
 using Imaging;
+using Imaging.Enums;
+using Imaging.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests;

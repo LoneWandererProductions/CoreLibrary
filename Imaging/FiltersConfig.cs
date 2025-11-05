@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/FiltersConfig.cs
+ * FILE:        FiltersConfig.cs
  * PURPOSE:     Object that will be used for fine tuning the filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

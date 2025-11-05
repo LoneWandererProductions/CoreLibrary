@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageGifInfo.cs
+ * FILE:        ImageGifInfo.cs
  * PURPOSE:     Class Container that holds all informations about the gif in question.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
@@ -27,7 +27,7 @@ public sealed class ImageGifInfo
     /// <value>
     ///     The header.
     /// </value>
-    public string Header { get; set; }
+    public string? Header { get; set; }
 
     /// <summary>
     ///     Gets or sets the width.

@@ -1,15 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/FilterType.cs
+ * PROJECT:     Imaging.Helpers
+ * FILE:        FilterType.cs
  * PURPOSE:     Provide filters for certain areas
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System;
 using System.Drawing;
+using Imaging.Enums;
 
-namespace Imaging;
+namespace Imaging.Helpers;
 
 /// <summary>
 ///     Apply textures to certain areas
@@ -30,18 +31,18 @@ internal static class FiltersAreas
     /// <returns>
     ///     Generates a filter for a certain area
     /// </returns>
-    /// <exception cref="System.ArgumentOutOfRangeException">
+    /// <exception cref="ArgumentOutOfRangeException">
     ///     filter - null
     ///     or
     ///     shape - null
     /// </exception>
-    internal static Bitmap GenerateFilter(Bitmap image,
+    internal static Bitmap? GenerateFilter(Bitmap image,
         int? width,
         int? height,
         FiltersType filter,
         MaskShape shape,
         ImageRegister imageSettings,
-        object shapeParams = null,
+        object? shapeParams = null,
         Point? startPoint = null)
     {
         // Validate input
@@ -61,6 +62,8 @@ internal static class FiltersAreas
 
         // Apply filter
         var filterBitmap = FiltersStream.FilterImage(image, filter, imageSettings);
+
+        if (filterBitmap == null) return null;
 
         // Apply mask
         filterBitmap = shape switch
