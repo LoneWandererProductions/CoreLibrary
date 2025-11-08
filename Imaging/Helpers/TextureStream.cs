@@ -280,12 +280,12 @@ internal static class TextureStream
                                      Math.Sin(xyPeriod * yValue * Math.PI));
 
 
-                var hue = sineValue % 360.0;
-                if (hue < 0) hue += 360.0;
+            var hue = sineValue % 360.0;
+            if (hue < 0) hue += 360.0;
 
-                var hsvColor =  ColorHsv.FromHsv(hue, 1.0, 1.0, alpha);
+            var hsvColor = ColorHsv.FromHsv(hue, 1.0, 1.0, alpha);
 
-                pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+            pixelData.Add((x, y, hsvColor.GetDrawingColor()));
         }
 
         // Convert list to array for SIMD processing

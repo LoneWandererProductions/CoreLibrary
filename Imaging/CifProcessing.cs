@@ -40,7 +40,8 @@ internal static class CifProcessing
 
             if (!imageFormat.ContainsKey(color))
             {
-                imageFormat[color] =  [];
+                imageFormat[color] =  []
+                ;
             }
 
             imageFormat[color].Add(i);
@@ -111,7 +112,8 @@ internal static class CifProcessing
         {
             if (!cif.CifImage.TryGetValue(data.Color, out var value))
             {
-                value =  [];
+                value =  []
+                ;
                 cif.CifImage[data.Color] = value;
             }
 
