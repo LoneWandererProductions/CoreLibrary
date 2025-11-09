@@ -132,7 +132,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The current selected border
     /// </summary>
-    private Border _currentSelectedBorder;
+    private Border? _currentSelectedBorder;
 
     /// <summary>
     ///     The disposed
@@ -317,7 +317,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///   <c>true</c> if this instance is selection valid; otherwise, <c>false</c>.
     /// </value>
-    public bool IsSelectionValid => Selection != null && Selection.Count > 0;
+    public bool IsSelectionValid => Selection is { Count: > 0 };
 
     /// <inheritdoc />
     /// <summary>
@@ -375,10 +375,7 @@ public sealed partial class Thumbnails : IDisposable
 
         var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-        if (image != null)
-        {
-            image.Source = null;
-        }
+        image.Source = null;
 
         _ = ItemsSource.Remove(id);
 
@@ -399,8 +396,8 @@ public sealed partial class Thumbnails : IDisposable
         _ = LoadImages();
 
         //All Images Loaded
-        ImageLoadedCommand?.Execute(this);
-        ImageLoaded?.Invoke();
+        ImageLoadedCommand.Execute(this);
+        ImageLoaded();
     }
 
     /// <summary>
@@ -421,7 +418,7 @@ public sealed partial class Thumbnails : IDisposable
     /// </summary>
     private async Task LoadImages()
     {
-        if (ItemsSource?.Any() != true)
+        if (ItemsSource.Any() != true)
         {
             return;
         }
@@ -508,7 +505,7 @@ public sealed partial class Thumbnails : IDisposable
         Trace.WriteLine(string.Concat(ComCtlResources.DebugTimer, timer.Elapsed));
 
         // Notify that loading is finished
-        ImageLoaded?.Invoke();
+        ImageLoaded();
     }
 
     /// <summary>
@@ -526,7 +523,7 @@ public sealed partial class Thumbnails : IDisposable
             return;
         }
 
-        BitmapImage myBitmapCell = null;
+        BitmapImage? myBitmapCell = null;
 
         // Create the image placeholder
         var images = new Image
@@ -623,17 +620,17 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
     /// <returns>The loaded and resized Image</returns>
-    private static async Task<BitmapImage> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
+    private static async Task<BitmapImage?> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
     {
         return string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)
             ? null
             : await Task.Run(() =>
             {
-                BitmapImage bitmapImage = null;
+                BitmapImage? bitmapImage = null;
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    FileStream stream = null;
+                    FileStream? stream = null;
                     try
                     {
                         bitmapImage = new BitmapImage();
@@ -722,28 +719,30 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="id">The ID of the item to center on.</param>
     public void CenterOnItem(int id)
     {
-        if (MainScrollViewer == null || Border == null)
+        if (MainScrollViewer == null)
         {
             return;
         }
 
         // Check if the item with the specified ID exists
-        if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
+        if (!Border.TryGetValue(id, out var targetElement))
         {
-            // Get the position of the target element relative to the ScrollViewer
-            var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
-            var itemPosition = itemTransform.Transform(new Point(0, 0));
-
-            // Calculate the offsets needed to center the item
-            var centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) +
-                                (targetElement.RenderSize.Width / 2);
-            var centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) +
-                                (targetElement.RenderSize.Height / 2);
-
-            // Set the ScrollViewer's offset to center the item
-            MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
-            MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
+            return;
         }
+
+        // Get the position of the target element relative to the ScrollViewer
+        var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
+        var itemPosition = itemTransform.Transform(new Point(0, 0));
+
+        // Calculate the offsets needed to center the item
+        var centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) +
+                            (targetElement.RenderSize.Width / 2);
+        var centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) +
+                            (targetElement.RenderSize.Height / 2);
+
+        // Set the ScrollViewer's offset to center the item
+        MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
+        MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
     }
 
     /// <summary>
@@ -859,7 +858,7 @@ public sealed partial class Thumbnails : IDisposable
     {
         ImageClickedCommand.Execute(args);
 
-        ImageClicked?.Invoke(this, args);
+        ImageClicked(this, args);
     }
 
     /// <summary>
