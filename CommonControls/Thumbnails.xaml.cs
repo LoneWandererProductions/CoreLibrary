@@ -311,6 +311,14 @@ public sealed partial class Thumbnails : IDisposable
     /// </value>
     public List<int> Selection { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether this instance is selection valid.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if this instance is selection valid; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsSelectionValid => Selection != null && Selection.Count > 0;
+
     /// <inheritdoc />
     /// <summary>
     ///     Releases unmanaged and - optionally - managed resources.
