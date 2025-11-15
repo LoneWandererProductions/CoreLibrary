@@ -1,4 +1,13 @@
-﻿using System;
+﻿/* 
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonDialogs
+ * FILE:        FolderViewModel.cs
+ * PURPOSE:     ViewModel for FolderControl UserControl, handles folder navigation and loading
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +31,9 @@ namespace CommonDialogs
         /// </summary>
         public ObservableCollection<FolderItemViewModel> FolderItems { get; } = new();
 
+        /// <summary>
+        /// The selected folder
+        /// </summary>
         private FolderItemViewModel? _selectedFolder;
 
         /// <summary>
@@ -36,6 +48,9 @@ namespace CommonDialogs
             set => SetProperty(ref _selectedFolder, value); // SetProperty from your ViewModelBase
         }
 
+        /// <summary>
+        /// The paths
+        /// </summary>
         private string? _paths;
 
         /// <summary>
@@ -48,6 +63,9 @@ namespace CommonDialogs
             set => SetProperty(ref _paths, value); // ViewModelBase provides INotifyPropertyChanged
         }
 
+        /// <summary>
+        /// The look up
+        /// </summary>
         private string _lookUp = string.Empty;
 
         /// <summary>
@@ -60,6 +78,9 @@ namespace CommonDialogs
             set => SetProperty(ref _lookUp, value);
         }
 
+        /// <summary>
+        /// The show files
+        /// </summary>
         private bool _showFiles;
 
         /// <summary>
@@ -74,14 +95,76 @@ namespace CommonDialogs
 
         #region Commands
 
+        /// <summary>
+        /// Gets up command.
+        /// </summary>
+        /// <value>
+        /// Up command.
+        /// </value>
         public RelayCommand UpCommand { get; }
+
+        /// <summary>
+        /// Gets the go command.
+        /// </summary>
+        /// <value>
+        /// The go command.
+        /// </value>
         public RelayCommand GoCommand { get; }
+
+        /// <summary>
+        /// Gets the explorer command.
+        /// </summary>
+        /// <value>
+        /// The explorer command.
+        /// </value>
         public RelayCommand ExplorerCommand { get; }
+
+        /// <summary>
+        /// Gets the desktop command.
+        /// </summary>
+        /// <value>
+        /// The desktop command.
+        /// </value>
         public RelayCommand DesktopCommand { get; }
+
+        /// <summary>
+        /// Gets the root command.
+        /// </summary>
+        /// <value>
+        /// The root command.
+        /// </value>
         public RelayCommand RootCommand { get; }
+
+        /// <summary>
+        /// Gets the docs command.
+        /// </summary>
+        /// <value>
+        /// The docs command.
+        /// </value>
         public RelayCommand DocsCommand { get; }
+
+        /// <summary>
+        /// Gets the personal command.
+        /// </summary>
+        /// <value>
+        /// The personal command.
+        /// </value>
         public RelayCommand PersonalCommand { get; }
+
+        /// <summary>
+        /// Gets the pictures command.
+        /// </summary>
+        /// <value>
+        /// The pictures command.
+        /// </value>
         public RelayCommand PicturesCommand { get; }
+
+        /// <summary>
+        /// Gets the create folder command.
+        /// </summary>
+        /// <value>
+        /// The create folder command.
+        /// </value>
         public RelayCommand CreateFolderCommand { get; }
 
         #endregion

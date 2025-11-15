@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/ErrorDialog.cs
+ * FILE:        ErrorDialog.cs
  * PURPOSE:     Viewer for our Error Dialog
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

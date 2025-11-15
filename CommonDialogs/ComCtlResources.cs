@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/ComCtlResources.cs
+ * FILE:        ComCtlResources.cs
  * PURPOSE:     String Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

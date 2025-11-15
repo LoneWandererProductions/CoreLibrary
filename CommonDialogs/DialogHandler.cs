@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/DialogHandler.cs
+ * FILE:        DialogHandler.cs
  * PURPOSE:     Extension for Dialogs, some smaller extras and Extensions like a Folder View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

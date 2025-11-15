@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/InputBox.xaml.cs
+ * FILE:        InputBox.xaml.cs
  * PURPOSE:     FolderView Control, can be used independently of the FolderBrowser
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

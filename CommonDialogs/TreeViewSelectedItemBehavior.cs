@@ -1,7 +1,7 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/TreeViewSelectedItemBehavior.cs
+ * FILE:        TreeViewSelectedItemBehavior.cs
  * PURPOSE:     Provides an attached property to bind TreeView.SelectedItem to a ViewModel
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/FolderItemViewModel.cs
+ * FILE:        FolderItemViewModel.cs
  * PURPOSE:     ViewModel representing a single folder or file in a TreeView
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

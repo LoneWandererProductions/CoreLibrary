@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/SqlConnect.cs
+ * FILE:        SqlConnect.cs
  * PURPOSE:     View for Sql Connection dialog
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

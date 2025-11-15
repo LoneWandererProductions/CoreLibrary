@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/FolderControl.cs
+ * FILE:        FolderControl.cs
  * PURPOSE:     FolderView Control, drop-in replacement for FolderBrowser, improved and thread-safe
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
