@@ -1,17 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        ComCtlResources.cs
- * PURPOSE:     String Resources
+ * FILE:        ComDlgResources.cs
+ * PURPOSE:     String Resources for Dialog Controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 namespace CommonDialogs;
 
 /// <summary>
-///     The com Control resources class.
+///     The common Dialog Control resources class.
 /// </summary>
-internal static class ComCtlResources
+internal static class ComDlgResources
 {
     /// <summary>
     ///     Error, Database problem with the Server Name (const). Value: "Error: Server Name was empty.".
@@ -74,4 +74,15 @@ internal static class ComCtlResources
     ///     File Extension. Value: ".*".
     /// </summary>
     internal const string Appendix = ".*";
+
+    /// <summary>
+    ///     The root Path. Value: @"C:\".
+    /// </summary>
+    internal const string Root = @"C:\";
+
+
+    /// <summary>
+    ///     The new Folder name. Value:  "New Folder".
+    /// </summary>
+    internal const string NewFolder = "New Folder";
 }

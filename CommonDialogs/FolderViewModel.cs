@@ -45,8 +45,25 @@ namespace CommonDialogs
         public FolderItemViewModel? SelectedFolder
         {
             get => _selectedFolder;
-            set => SetProperty(ref _selectedFolder, value); // SetProperty from your ViewModelBase
+            set
+            {
+                if (SetProperty(ref _selectedFolder, value))
+                {
+                    if (value != null && Directory.Exists(value.Path))
+                    {
+                        Paths = value.Path;
+                    }
+                }
+            }
         }
+
+        /// <summary>
+        /// Gets the selected path.
+        /// </summary>
+        /// <value>
+        /// The selected path.
+        /// </value>
+        public string? SelectedPath => SelectedFolder?.Path;
 
         /// <summary>
         /// The paths
@@ -177,7 +194,8 @@ namespace CommonDialogs
         {
             UpCommand = new RelayCommand(async () =>
             {
-                var parent = Directory.GetParent(Paths ?? string.Empty)?.FullName;
+                var parent = SafeGetParent(Paths);
+
                 if (!string.IsNullOrEmpty(parent))
                     await LoadRootAsync(parent);
             });
@@ -199,7 +217,7 @@ namespace CommonDialogs
             DesktopCommand = new RelayCommand(() =>
                 _ = LoadRootAsync(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-            RootCommand = new RelayCommand(() => _ = LoadRootAsync(@"C:\"));
+            RootCommand = new RelayCommand(() => _ = LoadRootAsync(ComDlgResources.Root));
 
             DocsCommand = new RelayCommand(() =>
                 _ = LoadRootAsync(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
@@ -214,7 +232,7 @@ namespace CommonDialogs
             {
                 if (string.IsNullOrEmpty(Paths)) return;
 
-                var newDirPath = Path.Combine(Paths, "New Folder");
+                var newDirPath = Path.Combine(Paths, ComDlgResources.NewFolder);
                 var dirName = newDirPath;
                 int i = 1;
 
@@ -265,15 +283,48 @@ namespace CommonDialogs
 
                 // Add directories first
                 foreach (var dir in directories)
-                    FolderItems.Add(new FolderItemViewModel(dir));
+                    FolderItems.Add(new FolderItemViewModel(dir, this));
 
                 // Add files if enabled
                 if (ShowFiles)
                 {
                     foreach (var file in files)
-                        FolderItems.Add(new FolderItemViewModel(file) { Header = Path.GetFileName(file) ?? file });
+                        FolderItems.Add(new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
                 }
             });
         }
+
+        /// <summary>
+        /// Safes the get parent.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Safe parent Path.</returns>
+        private string? SafeGetParent(string? path)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(path))
+                    return null;
+
+                // Normalize path (removes trailing slashes)
+                string full = Path.GetFullPath(path);
+
+                // Detect root (C:\, D:\, etc.)
+                string? root = Path.GetPathRoot(full);
+                if (root != null &&
+                    root.Equals(full, StringComparison.OrdinalIgnoreCase))
+                {
+                    return null; // No parent above root
+                }
+
+                // Normal parent lookup
+                return Directory.GetParent(full)?.FullName;
+            }
+            catch
+            {
+                return null; // On ANY error, return null
+            }
+        }
+
     }
 }

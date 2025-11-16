@@ -9,6 +9,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -35,6 +36,9 @@ namespace CommonDialogs
         /// </summary>
         public ObservableCollection<FolderItemViewModel> Children { get; } = new();
 
+        /// <summary>
+        /// The is expanded
+        /// </summary>
         private bool _isExpanded;
 
         /// <summary>
@@ -51,25 +55,17 @@ namespace CommonDialogs
         /// True if this folder or file is selected in the TreeView.
         /// Setting this property raises <see cref="PropertyChanged"/>.
         /// </summary>
-        public bool IsSelected
+       public bool IsSelected
         {
             get => _isSelected;
             set
             {
                 if (_isSelected == value) return;
-
                 _isSelected = value;
                 OnPropertyChanged(nameof(IsSelected));
 
-                // Optionally update parent ViewModel property when selected
                 if (_isSelected)
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        // Example: propagate selection to main ViewModel
-                        // SelectedFolder = this;
-                    });
-                }
+                    _parentVM.SelectedFolder = this;  // ← direct, safe
             }
         }
 
@@ -79,16 +75,21 @@ namespace CommonDialogs
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="FolderItemViewModel"/> for a given path.
+        /// The parent vm
+        /// </summary>
+        private readonly FolderViewModel _parentVM;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="FolderItemViewModel" /> for a given path.
         /// </summary>
         /// <param name="path">Full path of the folder or file.</param>
-        public FolderItemViewModel(string path)
+        /// <param name="parentVM">The parent vm.</param>
+        public FolderItemViewModel(string path, FolderViewModel parentVM)
         {
             Path = path;
             Header = System.IO.Path.GetFileName(path) ?? path;
-
-            // TODO: Wrap in try/catch to safely handle access exceptions
-            HasChildren = Directory.Exists(path) && Directory.GetDirectories(path).Length > 0;
+            _parentVM = parentVM;
+            HasChildren = SafeHasChildren(path);
         }
 
         /// <summary>
@@ -113,7 +114,24 @@ namespace CommonDialogs
         }
 
         /// <summary>
-        /// Loads child directories and files asynchronously and adds them to <see cref="Children"/>.
+        /// Safes the has children.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>If folder has child</returns>
+        private static bool SafeHasChildren(string path)
+        {
+            try
+            {
+                return Directory.EnumerateFileSystemEntries(path).Any();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Loads child directories and files asynchronously and adds them to <see cref="Children" />.
         /// </summary>
         private async Task LoadChildrenAsync()
         {
@@ -125,10 +143,10 @@ namespace CommonDialogs
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     foreach (var dir in dirs)
-                        Children.Add(new FolderItemViewModel(dir));
+                        Children.Add(new FolderItemViewModel(dir, _parentVM));
 
                     foreach (var file in files)
-                        Children.Add(new FolderItemViewModel(file) { Header = System.IO.Path.GetFileName(file) });
+                        Children.Add(new FolderItemViewModel(file, _parentVM) { Header = System.IO.Path.GetFileName(file) });
                 });
             }
             catch

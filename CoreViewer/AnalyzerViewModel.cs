@@ -59,8 +59,10 @@ namespace CoreViewer
         public AnalyzerViewModel()
         {
             LoadAnalyzers();
-            RunAnalyzerCommand = new RelayCommand(RunAnalyzer);
-            SelectFolderCommand = new RelayCommand(SelectFolder);
+
+            // Use AsyncDelegateCommand instead of RelayCommand
+            RunAnalyzerCommand = new AsyncDelegateCommand<object>(_ => RunAnalyzerAsync());
+            SelectFolderCommand = new AsyncDelegateCommand<object>(_ => SelectFolderAsync());
         }
 
         /// <summary>
@@ -129,7 +131,7 @@ namespace CoreViewer
         /// If <see cref="SelectedAnalyzer"/> is set, only that analyzer is run.
         /// Results are stored in <see cref="DiagnosticsView"/> and filtered according to <see cref="FilterText"/>.
         /// </summary>
-        private void RunAnalyzer()
+        private async Task RunAnalyzerAsync()
         {
             if (!Directory.Exists(TargetDirectory))
                 return;
@@ -140,30 +142,73 @@ namespace CoreViewer
 
             _currentDiagnostics.Clear();
 
-            var files = Directory.GetFiles(TargetDirectory, "*.cs", SearchOption.AllDirectories);
+            // Run file enumeration and analysis on a background thread
+            var files = await Task.Run(() => SafeEnumerateFiles(TargetDirectory, CoreResources.ResourceCsExtension));
+
             foreach (var file in files)
             {
-                var content = File.ReadAllText(file);
+                // Read file and analyze in background thread
+                var content = await Task.Run(() => File.ReadAllText(file));
+
                 foreach (var analyzer in analyzersToRun)
                 {
-                    _currentDiagnostics.AddRange(analyzer.Analyze(file, content));
+                    var diagnostics = await Task.Run(() => analyzer.Analyze(file, content));
+                    _currentDiagnostics.AddRange(diagnostics);
                 }
             }
 
-            ApplyFilter();
+            ApplyFilter(); // This can stay on UI thread
+        }
+
+
+        /// <summary>
+        /// Safes the enumerate files.
+        /// </summary>
+        /// <param name="root">The root.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <returns>Allowed Folders.</returns>
+        private static IEnumerable<string> SafeEnumerateFiles(string root, string pattern)
+        {
+            var stack = new Stack<string>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                string current = stack.Pop();
+
+                string[] files = Array.Empty<string>();
+                try
+                {
+                    files = Directory.GetFiles(current, pattern);
+                }
+                catch { }
+
+                foreach (var file in files)
+                    yield return file;
+
+                string[] dirs = Array.Empty<string>();
+                try
+                {
+                    dirs = Directory.GetDirectories(current);
+                }
+                catch { }
+
+                foreach (var dir in dirs)
+                    stack.Push(dir);
+            }
         }
 
         /// <summary>
         /// Opens a folder selection dialog and updates <see cref="TargetDirectory"/>.
         /// Automatically runs analyzers on the selected folder.
         /// </summary>
-        private void SelectFolder()
+        private async Task SelectFolderAsync()
         {
             var selected = DialogHandler.ShowFolder(TargetDirectory);
             if (!string.IsNullOrWhiteSpace(selected))
             {
                 TargetDirectory = selected;
-                RunAnalyzer();
+                await RunAnalyzerAsync();
             }
         }
 

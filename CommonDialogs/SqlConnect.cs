@@ -34,8 +34,8 @@ public sealed class SqlConnect
     /// <summary>
     ///     The persist information string configuration for the connection string.
     /// </summary>
-    private readonly string _persistInfo = string.Concat(ComCtlResources.DbPersistSecurityInfo, PersistSecurityInfo,
-        ComCtlResources.DbFin);
+    private readonly string _persistInfo = string.Concat(ComDlgResources.DbPersistSecurityInfo, PersistSecurityInfo,
+        ComDlgResources.DbFin);
 
     /// <summary>
     ///     The IntegratedSecurity string for the connection string
@@ -94,36 +94,36 @@ public sealed class SqlConnect
     /// <returns>Connection String</returns>
     public string GetConnectionString(bool includeDatabaseName)
     {
-        _security = ComCtlResources.DbIntegratedTrue;
+        _security = ComDlgResources.DbIntegratedTrue;
         _trust = TrustServerCertificate
-            ? ComCtlResources.DbTrustServerCertificateTrue
-            : ComCtlResources.DbTrustServerCertificateFalse;
+            ? ComDlgResources.DbTrustServerCertificateTrue
+            : ComDlgResources.DbTrustServerCertificateFalse;
 
         if (string.IsNullOrEmpty(Server))
         {
-            Trace.WriteLine(ComCtlResources.DbServerError);
-            return ComCtlResources.DbServerError;
+            Trace.WriteLine(ComDlgResources.DbServerError);
+            return ComDlgResources.DbServerError;
         }
 
         if (includeDatabaseName && string.IsNullOrEmpty(Database))
         {
-            Trace.WriteLine(ComCtlResources.DbNameError);
-            return ComCtlResources.DbServerError;
+            Trace.WriteLine(ComDlgResources.DbNameError);
+            return ComDlgResources.DbServerError;
         }
 
         var connectionStringBuilder = new StringBuilder();
         connectionStringBuilder.Append(_persistInfo);
         connectionStringBuilder.Append(_trust);
         connectionStringBuilder.Append(_security);
-        connectionStringBuilder.Append(ComCtlResources.DbServer);
+        connectionStringBuilder.Append(ComDlgResources.DbServer);
         connectionStringBuilder.Append(Server);
-        connectionStringBuilder.Append(ComCtlResources.DbFin);
+        connectionStringBuilder.Append(ComDlgResources.DbFin);
 
         if (includeDatabaseName)
         {
-            connectionStringBuilder.Append(ComCtlResources.DbDatabase);
+            connectionStringBuilder.Append(ComDlgResources.DbDatabase);
             connectionStringBuilder.Append(Database);
-            connectionStringBuilder.Append(ComCtlResources.DbFin);
+            connectionStringBuilder.Append(ComDlgResources.DbFin);
         }
 
         return connectionStringBuilder.ToString();

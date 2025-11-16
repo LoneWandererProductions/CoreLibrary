@@ -95,7 +95,7 @@ public static class DialogHandler
     {
         if (string.IsNullOrEmpty(appendage))
         {
-            appendage = ComCtlResources.Appendix;
+            appendage = ComDlgResources.Appendix;
         }
 
         if (!Directory.Exists(folder))
@@ -127,7 +127,7 @@ public static class DialogHandler
     {
         if (string.IsNullOrEmpty(appendage))
         {
-            appendage = ComCtlResources.Appendix;
+            appendage = ComDlgResources.Appendix;
         }
 
         if (!Directory.Exists(folder))

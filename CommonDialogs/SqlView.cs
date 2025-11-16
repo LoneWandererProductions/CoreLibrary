@@ -243,7 +243,7 @@ public sealed class SqlView : INotifyPropertyChanged
         }
 
         Log = string.Concat(Log,
-            check ? ComCtlResources.DbLogConnectionStringBuild : ComCtlResources.DbLogConnectionStringBuildError,
+            check ? ComDlgResources.DbLogConnectionStringBuild : ComDlgResources.DbLogConnectionStringBuildError,
             Environment.NewLine);
     }
 

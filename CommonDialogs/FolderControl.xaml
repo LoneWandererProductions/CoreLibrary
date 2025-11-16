@@ -68,12 +68,12 @@
         <Button Content="Exp" Grid.Row="2" Grid.Column="5" Command="{Binding ExplorerCommand}" />
 
         <!-- Shortcut Buttons -->
-        <Button Content="Desktop" Grid.Row="6" Grid.Column="0" Command="{Binding DesktopCommand}" />
-        <Button Content="Root" Grid.Row="4" Grid.Column="0" Command="{Binding RootCommand}" />
-        <Button Content="Docs" Grid.Row="8" Grid.Column="0" Command="{Binding DocsCommand}" />
-        <Button Content="Personal" Grid.Row="10" Grid.Column="0" Command="{Binding PersonalCommand}" />
-        <Button Content="Pictures" Grid.Row="12" Grid.Column="0" Command="{Binding PicturesCommand}" />
-        <Button Content="Folder" Grid.Row="14" Grid.Column="0" Command="{Binding CreateFolderCommand}" />
+        <Button Content="Desktop" Grid.Row="6" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding DesktopCommand}" />
+        <Button Content="Root" Grid.Row="4" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding RootCommand}" />
+        <Button Content="Docs" Grid.Row="8" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding DocsCommand}" />
+        <Button Content="Personal" Grid.Row="10" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding PersonalCommand}" />
+        <Button Content="Pictures" Grid.Row="12" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding PicturesCommand}" />
+        <Button Content="Folder" Grid.Row="14" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding CreateFolderCommand}" />
 
         <!-- TreeView -->
         <TreeView ItemsSource="{Binding FolderItems}" Grid.Row="4" Grid.Column="2" Grid.RowSpan="12"
