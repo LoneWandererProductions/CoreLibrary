@@ -289,7 +289,8 @@ namespace CommonDialogs
                 if (ShowFiles)
                 {
                     foreach (var file in files)
-                        FolderItems.Add(new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
+                        FolderItems.Add(
+                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
                 }
             });
         }
@@ -325,6 +326,5 @@ namespace CommonDialogs
                 return null; // On ANY error, return null
             }
         }
-
     }
 }

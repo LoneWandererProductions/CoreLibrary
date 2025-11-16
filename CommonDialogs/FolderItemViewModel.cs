@@ -55,7 +55,7 @@ namespace CommonDialogs
         /// True if this folder or file is selected in the TreeView.
         /// Setting this property raises <see cref="PropertyChanged"/>.
         /// </summary>
-       public bool IsSelected
+        public bool IsSelected
         {
             get => _isSelected;
             set
@@ -65,7 +65,7 @@ namespace CommonDialogs
                 OnPropertyChanged(nameof(IsSelected));
 
                 if (_isSelected)
-                    _parentVM.SelectedFolder = this;  // ← direct, safe
+                    _parentVM.SelectedFolder = this; // ← direct, safe
             }
         }
 
@@ -146,7 +146,8 @@ namespace CommonDialogs
                         Children.Add(new FolderItemViewModel(dir, _parentVM));
 
                     foreach (var file in files)
-                        Children.Add(new FolderItemViewModel(file, _parentVM) { Header = System.IO.Path.GetFileName(file) });
+                        Children.Add(
+                            new FolderItemViewModel(file, _parentVM) { Header = System.IO.Path.GetFileName(file) });
                 });
             }
             catch
