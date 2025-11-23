@@ -1,4 +1,12 @@
-﻿using System;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        FastLinqTests.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -74,7 +74,7 @@ namespace RenderEngine
         /// The <see cref="System.Byte"/>.
         /// </value>
         /// <param name="index">The index.</param>
-        /// <returns></returns>
+        /// <returns>Data at index</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
         public byte this[int index]
         {
@@ -352,6 +352,83 @@ namespace RenderEngine
             }
 
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Clears the entire buffer to the specified color.
+        /// </summary>
+        /// <param name="buf">Target image buffer.</param>
+        /// <param name="a">a.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        public void Clear(UnmanagedImageBuffer buf, int a, int r, int g, int b)
+        {
+            var span = buf.BufferSpan;
+            const int bpp = UnmanagedImageBuffer.BytesPerPixel;
+            var len = span.Length;
+            for (var i = 0; i < len; i += bpp)
+            {
+                span[i + 0] = (byte)b;
+                span[i + 1] = (byte)g;
+                span[i + 2] = (byte)r;
+                span[i + 3] = (byte)a;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="UnmanagedImageBuffer"/> from a <see cref="Bitmap"/>.
+        /// Converts the bitmap into 32bpp ARGB format.
+        /// </summary>
+        /// <param name="bmp">Source bitmap.</param>
+        /// <returns>A new unmanaged buffer containing the bitmap data.</returns>
+        public static UnmanagedImageBuffer FromBitmap(Bitmap bmp)
+        {
+            var width = bmp.Width;
+            var height = bmp.Height;
+            var buffer = new UnmanagedImageBuffer(width, height);
+
+            var rect = new Rectangle(0, 0, width, height);
+            var bmpData = bmp.LockBits(rect,
+                System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                unsafe
+                {
+                    var srcPtr = (byte*)bmpData.Scan0;
+                    var dstSpan = buffer.BufferSpan;
+
+                    for (var y = 0; y < height; y++)
+                    {
+                        var rowOffset = y * width * UnmanagedImageBuffer.BytesPerPixel;
+                        var rowSrc = srcPtr + y * bmpData.Stride;
+
+                        for (var x = 0; x < width; x++)
+                        {
+                            var colOffset = x * UnmanagedImageBuffer.BytesPerPixel;
+
+                            var b = rowSrc[colOffset + 0];
+                            var g = rowSrc[colOffset + 1];
+                            var r = rowSrc[colOffset + 2];
+                            var a = rowSrc[colOffset + 3];
+
+                            var dstIndex = rowOffset + colOffset;
+                            dstSpan[dstIndex + 0] = b;
+                            dstSpan[dstIndex + 1] = g;
+                            dstSpan[dstIndex + 2] = r;
+                            dstSpan[dstIndex + 3] = a;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                bmp.UnlockBits(bmpData);
+            }
+
+            return buffer;
         }
 
         /// <summary>

@@ -56,7 +56,7 @@ public class UnmanagedImageBufferTests
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
 
-        ImagePrimitives.Clear(buffer, 128, 10, 20, 30); // A,R,G,B
+        buffer.Clear(buffer, 128, 10, 20, 30); // A,R,G,B
 
         var span = buffer.BufferSpan;
         for (var i = 0; i < span.Length; i += 4)
@@ -75,7 +75,7 @@ public class UnmanagedImageBufferTests
     public void ApplyChangesUpdatesOnlyTargetedPixels()
     {
         using var buffer = new UnmanagedImageBuffer(2, 2);
-        ImagePrimitives.Clear(buffer, 0, 0, 0, 0);
+        buffer.Clear(buffer, 0, 0, 0, 0);
 
         var changes = new (int x, int y, uint bgra)[]
         {
@@ -128,7 +128,7 @@ public class UnmanagedImageBufferTests
     public void GetPixelSpanReturnsCorrectSpan()
     {
         using var buffer = new UnmanagedImageBuffer(4, 1);
-        ImagePrimitives.Clear(buffer, 255, 1, 2, 3);
+        buffer.Clear(buffer, 255, 1, 2, 3);
 
         var span = buffer.GetPixelSpan(1, 0, 2);
         Assert.AreEqual(8, span.Length);

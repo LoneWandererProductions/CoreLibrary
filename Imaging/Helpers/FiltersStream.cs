@@ -210,7 +210,7 @@ internal static class FiltersStream
         double bias = 0.0)
     {
         // Convert source to unmanaged buffer for fast pixel access
-        using var source = ImagePrimitives.FromBitmap(new Bitmap(sourceBitmap));
+        using var source = UnmanagedImageBuffer.FromBitmap(new Bitmap(sourceBitmap));
         using var result = new UnmanagedImageBuffer(source.Width, source.Height);
 
         var filterHeight = filterMatrix.GetLength(0);
@@ -313,7 +313,7 @@ internal static class FiltersStream
     {
         var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
-        using var sourceBuffer = ImagePrimitives.FromBitmap(greyscaleImage);
+        using var sourceBuffer = UnmanagedImageBuffer.FromBitmap(greyscaleImage);
         using var resultBuffer = new UnmanagedImageBuffer(sourceBuffer.Width, sourceBuffer.Height);
 
         var pixelsToSet = new (int x, int y, uint bgra)[sourceBuffer.Width * sourceBuffer.Height];
@@ -501,7 +501,7 @@ internal static class FiltersStream
             g.DrawImage(image, 0, 0, scaledWidth, scaledHeight);
         }
 
-        using var scaledBuffer = ImagePrimitives.FromBitmap(scaledBitmap);
+        using var scaledBuffer = UnmanagedImageBuffer.FromBitmap(scaledBitmap);
         using var resultBuffer = new UnmanagedImageBuffer(image.Width, image.Height);
 
         const int bytesPerPixel = 4;
