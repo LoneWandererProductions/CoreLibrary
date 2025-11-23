@@ -143,6 +143,5 @@ namespace ExtendedSystemObjects
         {
             return span.Length;
         }
-
     }
 }

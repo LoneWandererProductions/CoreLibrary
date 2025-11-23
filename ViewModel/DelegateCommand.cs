@@ -52,7 +52,7 @@ namespace ViewModel
         ///     Executes the command.
         /// </summary>
         /// <param name="parameter">The parameter for the action.</param>
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             _action((T)parameter);
         }

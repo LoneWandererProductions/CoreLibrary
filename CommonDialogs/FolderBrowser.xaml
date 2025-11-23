@@ -21,7 +21,7 @@
                 Click="BtnOk_Click" />
         <Button Content="Cancel" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch"
                 Click="BtnCancel_Click" />
-        <common:FolderControl Grid.Row="0"  Grid.Column="1" x:Name="VFolder" Grid.ColumnSpan="3" />
+        <common:FolderControl Grid.Row="0" Grid.Column="1" x:Name="VFolder" Grid.ColumnSpan="3" />
     </Grid>
     <Window.Resources>
         <ResourceDictionary>
