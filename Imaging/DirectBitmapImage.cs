@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
+ * PROJECT:     Imaging
  * FILE:        DirectBitmap.cs
  * PURPOSE:     Custom BitmapImage Class, speeds up Set Pixel
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -17,8 +17,9 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using RenderEngine;
 
-namespace RenderEngine;
+namespace Imaging;
 
 /// <inheritdoc />
 /// <summary>
@@ -123,14 +124,14 @@ public sealed class DirectBitmapImage : IDisposable
                     continue;
                 }
 
-                var offset = ((pixel.Y * Width) + pixel.X) * 4;
+                var offset = (pixel.Y * Width + pixel.X) * 4;
                 buffer[offset + 0] = pixel.B;
                 buffer[offset + 1] = pixel.G;
                 buffer[offset + 2] = pixel.R;
                 buffer[offset + 3] = pixel.A;
 
-                Bits[(pixel.Y * Width) + pixel.X] =
-                    (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
+                Bits[pixel.Y * Width + pixel.X] =
+                    (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
             }
         }
 
@@ -144,7 +145,7 @@ public sealed class DirectBitmapImage : IDisposable
     /// <param name="color">The color to fill with.</param>
     public void FillSimd(Color color)
     {
-        var packed = (uint)((color.A << 24) | (color.R << 16) | (color.G << 8) | color.B);
+        var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
         var vector = new Vector<uint>(packed);
         var i = 0;
         for (; i <= Bits.Length - Vector<uint>.Count; i += Vector<uint>.Count)
@@ -215,8 +216,8 @@ public sealed class DirectBitmapImage : IDisposable
                 continue;
             }
 
-            var index = (pixel.Y * Width) + pixel.X;
-            Bits[index] = (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
+            var index = pixel.Y * Width + pixel.X;
+            Bits[index] = (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
         }
 
         UpdateBitmapFromBits();
@@ -243,8 +244,8 @@ public sealed class DirectBitmapImage : IDisposable
                     var (x, y, c) = pixelArray[i + j];
                     if (x >= 0 && x < Width && y >= 0 && y < Height)
                     {
-                        indices[j] = x + (y * Width);
-                        colors[j] = (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
+                        indices[j] = x + y * Width;
+                        colors[j] = c.A << 24 | c.R << 16 | c.G << 8 | c.B;
                     }
                     else
                     {
