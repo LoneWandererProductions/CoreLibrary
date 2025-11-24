@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/PixelData.cs
+ * FILE:        PixelData.cs
  * PURPOSE:     Custom Pixel Container for DirectBitmapImage
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace RenderEngine;
+namespace Imaging;
 
 /// <summary>
 ///     Pixel Data Container
