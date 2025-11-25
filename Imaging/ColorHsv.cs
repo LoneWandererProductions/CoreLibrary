@@ -16,10 +16,7 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using ExtendedSystemObjects;
 
 namespace Imaging
 {

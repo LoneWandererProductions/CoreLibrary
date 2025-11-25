@@ -13,7 +13,6 @@ using System.Windows.Media;
 using Imaging;
 using Mathematics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RenderEngine;
 
 namespace CommonLibraryTests;
 
