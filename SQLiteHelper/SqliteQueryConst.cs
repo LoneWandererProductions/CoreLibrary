@@ -352,74 +352,48 @@ internal static class SqliteQueryConst
     /// <param name="tableHeaders">List of Names and Parameters</param>
     /// <param name="query">Start of the query</param>
     /// <returns>Table creation, empty if Key Constraint</returns>
-    private static string ConcatenateHeaders(DictionaryTableColumns tableHeaders,
-        string query)
+    /// <summary>
+    /// Connects string for Create Table query, side-effect-free.
+    /// </summary>
+    /// <param name="tableHeaders">List of Names and Parameters</param>
+    /// <param name="query">Start of the query</param>
+    /// <returns>Table creation, empty if Key Constraint</returns>
+    private static string ConcatenateHeaders(DictionaryTableColumns tableHeaders, string query)
     {
-        var cache = new Dictionary<string, TableColumns>(tableHeaders.DColumns);
+        if (tableHeaders.DColumns.Count == 0)
+            return SqliteHelperResources.ErrorCheck;
 
-        var first = cache.First();
-        var last = cache.Last();
+        var headersList = tableHeaders.DColumns.ToList();
+        bool primaryKeyUsed = false;
 
-        switch (cache.Count)
+        string AddHeader(KeyValuePair<string, TableColumns> kv)
         {
-            case 0:
-                return SqliteHelperResources.ErrorCheck;
+            var col = kv.Value;
+            string line = $"{kv.Key} {col.DataType}";
 
-            case 1:
-                var queryOne = query;
-                queryOne = string.Concat(queryOne, SqliteHelperResources.BracketOpen);
-                queryOne = AddRowDefinitions(queryOne, first);
-                if (queryOne == SqliteHelperResources.ErrorCheck)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
+            if (col.PrimaryKey)
+            {
+                if (primaryKeyUsed) return SqliteHelperResources.ErrorCheck;
+                primaryKeyUsed = true;
+                line += " PRIMARY KEY";
+            }
+            else if (col.Unique)
+            {
+                line += " UNIQUE";
+            }
 
-                return string.Concat(queryOne, SqliteHelperResources.BracketClose);
+            if (col.NotNull)
+                line += SqliteHelperResources.SqlNotNull;
 
-            case 2:
-                var queryTwo = query;
-                queryTwo = string.Concat(queryTwo, SqliteHelperResources.BracketOpen);
-                queryTwo = AddRowDefinitions(queryTwo, first);
-                if (queryTwo == SqliteHelperResources.ErrorCheck)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                queryTwo = string.Concat(queryTwo, SqliteHelperResources.Comma);
-                queryTwo = AddRowDefinitions(queryTwo, last);
-                if (queryTwo == SqliteHelperResources.ErrorCheck)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                return string.Concat(queryTwo, SqliteHelperResources.BracketClose);
-
-            default:
-                cache.Remove(first.Key);
-                cache.Remove(last.Key);
-
-                query = string.Concat(query, SqliteHelperResources.BracketOpen);
-                query = AddRowDefinitions(query, first);
-                query = string.Concat(query, SqliteHelperResources.Comma);
-                if (query == SqliteHelperResources.ErrorCheck)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                foreach (var headers in cache)
-                {
-                    query = AddRowDefinitions(query, headers);
-                    if (query == SqliteHelperResources.ErrorCheck)
-                    {
-                        return SqliteHelperResources.ErrorCheck;
-                    }
-
-                    query = string.Concat(query, SqliteHelperResources.Comma);
-                }
-
-                query = AddRowDefinitions(query, last);
-                return string.Concat(query, SqliteHelperResources.BracketClose);
+            return line;
         }
+
+        // Build all columns joined with commas
+        var columnsSql = string.Join(SqliteHelperResources.Comma, headersList.Select(AddHeader));
+        if (columnsSql.Contains(SqliteHelperResources.ErrorCheck))
+            return SqliteHelperResources.ErrorCheck;
+
+        return $"{query}{SqliteHelperResources.BracketOpen}{columnsSql}{SqliteHelperResources.BracketClose}";
     }
 
     /// <summary>
@@ -540,60 +514,12 @@ internal static class SqliteQueryConst
     /// <returns>Added Parameters, empty if wrong parameters</returns>
     private static string GetTableHeaders(string queryStart, IList<string> headers, IList<string> headerTable)
     {
-        string lastRow;
-        bool isFound;
+        IList<string> workingHeaders = headers != null ? headers.ToList() : headerTable.ToList();
 
-        //custom headers
-        switch (headers.Count)
-        {
-            case 0:
-                break;
+        if (!workingHeaders.All(h => headerTable.Contains(h)))
+            return SqliteHelperResources.ErrorCheck;
 
-            case 1:
-                isFound = headers.Intersect(headerTable).Any();
-                if (!isFound)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                lastRow = headers.Last();
-
-                return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
-
-            default:
-                isFound = headers.Intersect(headerTable).Any();
-                if (!isFound)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                lastRow = headers.Last();
-                headers.RemoveAt(headers.Count - 1);
-
-                queryStart = headers.Aggregate(queryStart,
-                    (current, row) => string.Concat(current, row, SqliteHelperResources.Comma));
-
-                return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
-        }
-
-        //standard headers
-        switch (headerTable.Count)
-        {
-            case 1:
-                lastRow = headerTable.Last();
-
-                return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
-
-            default:
-                lastRow = headerTable.Last();
-
-                headerTable.RemoveAt(headerTable.Count - 1);
-
-                queryStart = headerTable.Aggregate(queryStart,
-                    (current, row) => string.Concat(current, row, SqliteHelperResources.Comma));
-
-                return string.Concat(queryStart, lastRow, SqliteHelperResources.Spacing);
-        }
+        return queryStart + string.Join(SqliteHelperResources.Comma, workingHeaders) + SqliteHelperResources.Spacing;
     }
 
     /// <summary>

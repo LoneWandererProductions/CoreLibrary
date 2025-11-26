@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace SqliteHelper;
@@ -22,11 +23,6 @@ namespace SqliteHelper;
 /// </summary>
 internal static class SqliteProcessing
 {
-    // Constants for easier readability and better maintainability
-    private const string PrimaryKey = "1";
-    private const string NotNull = "1";
-    private const string Unique = "1";
-
     /// <summary>
     ///     Converts the headers of a SQL table into a dictionary of column information.
     /// </summary>
@@ -34,31 +30,34 @@ internal static class SqliteProcessing
     /// <returns>A dictionary where the key is the column name and the value contains the column information.</returns>
     internal static Dictionary<string, TableColumns>? ConvertTableHeaders(DataTable table)
     {
-        var headers = new Dictionary<string, TableColumns>();
+        var headers = new Dictionary<string, TableColumns>(table.Rows.Count, StringComparer.Ordinal);
 
         foreach (DataRow row in table.Rows)
         {
-            if (row == null)
-            {
+            if (row == null) continue;
+
+            string? name = row.Field<string>(1);
+            if (string.IsNullOrEmpty(name))
                 continue;
-            }
 
             var column = new TableColumns
             {
-                NotNull = row.ItemArray[3].ToString() == NotNull,
-                RowId = row.ItemArray[0]?.ToString(),
-                PrimaryKey = row.ItemArray[5].ToString() == PrimaryKey,
-                Unique = row.ItemArray[5].ToString() == Unique
+                RowId = row[0]?.ToString(),
+                NotNull = row.Field<long?>(3) == 1,
+                PrimaryKey = row.Field<long?>(5) == 1
             };
 
-            column = SetDataType(column, row.ItemArray[2]?.ToString());
+            // Extract type and normalize
+            string? type = row.Field<string>(2);
+            column = SetDataType(column, type);
 
             if (column == null)
-            {
-                return null; // Early exit if type is invalid
-            }
+                return null; // bail-out on invalid type
 
-            headers.Add(row.ItemArray[1]?.ToString(), column);
+            // Unique is not reliable here, only PRIMARY KEY reliably marks uniqueness.
+            column.Unique = column.PrimaryKey;
+
+            headers[name] = column;
         }
 
         return headers;
@@ -71,10 +70,17 @@ internal static class SqliteProcessing
     /// <returns>A list of unique column names.</returns>
     internal static List<string> CheckUniqueTableHeaders(DataTable table)
     {
-        return table.Rows.Cast<DataRow>()
-            .Select(row => row.ItemArray[1]?.ToString())
-            .Where(name => !string.IsNullOrEmpty(name))
-            .ToList();
+        var uniqueCols = new List<string>(table.Rows.Count);
+
+        foreach (DataRow row in table.Rows)
+        {
+            string? col = row.Field<string>(1);
+
+            if (!string.IsNullOrEmpty(col))
+                uniqueCols.Add(col);
+        }
+
+        return uniqueCols;
     }
 
     /// <summary>
@@ -82,11 +88,15 @@ internal static class SqliteProcessing
     /// </summary>
     /// <param name="table">DataTable containing index information.</param>
     /// <returns>The name of the indexed column.</returns>
-    internal static string GetTableHeader(DataTable table)
+    internal static string? GetTableHeader(DataTable table)
     {
-        return table.Rows.Cast<DataRow>()
-            .Select(row => row.ItemArray[2]?.ToString())
-            .FirstOrDefault();
+        foreach (DataRow row in table.Rows)
+        {
+            string? name = row.Field<string>(2);
+            if (!string.IsNullOrEmpty(name))
+                return name;
+        }
+        return null;
     }
 
     /// <summary>
@@ -99,12 +109,10 @@ internal static class SqliteProcessing
         Dictionary<string, TableColumns> tableInfo,
         List<string> uniqueHeaders)
     {
-        foreach (var header in uniqueHeaders)
+        foreach (string header in uniqueHeaders)
         {
-            if (tableInfo.TryGetValue(header, out var value))
-            {
-                value.Unique = true;
-            }
+            if (tableInfo.TryGetValue(header, out var col))
+                col.Unique = true; // mark as unique if indexed
         }
 
         return tableInfo;
@@ -118,13 +126,15 @@ internal static class SqliteProcessing
     /// <returns>True if the value can be converted to the target type, otherwise false.</returns>
     internal static bool CheckConvert(SqLiteDataTypes convert, string value)
     {
+        if (value == null) return false;
+
         return convert switch
         {
-            SqLiteDataTypes.DateTime => DateTime.TryParse(value, out _),
-            SqLiteDataTypes.Decimal => decimal.TryParse(value, out _),
-            SqLiteDataTypes.Integer => int.TryParse(value, out _),
-            SqLiteDataTypes.Real => double.TryParse(value, out _),
-            SqLiteDataTypes.Text => true, // Text is always convertible from string
+            SqLiteDataTypes.DateTime => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out _),
+            SqLiteDataTypes.Decimal => decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out _),
+            SqLiteDataTypes.Integer => long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
+            SqLiteDataTypes.Real => double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _),
+            SqLiteDataTypes.Text => true,
             _ => false
         };
     }
@@ -136,12 +146,19 @@ internal static class SqliteProcessing
     /// <returns>A DataSet containing the converted table data.</returns>
     internal static DataSet ConvertToTableMultipleSet(DataTable dt)
     {
-        return new DataSet
+        var result = new DataSet { Row = new List<TableSet>(dt.Rows.Count) };
+
+        foreach (DataRow row in dt.Rows)
         {
-            Row = dt.Rows.Cast<DataRow>()
-                .Select(row => new TableSet { Row = row.ItemArray.Select(item => item?.ToString()).ToList() })
-                .ToList()
-        };
+            var set = new TableSet { Row = new List<string?>(row.ItemArray.Length) };
+
+            foreach (object? item in row.ItemArray)
+                set.Row.Add(item?.ToString());
+
+            result.Row.Add(set);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -163,11 +180,14 @@ internal static class SqliteProcessing
         };
     }
 
-    private static TableColumns LogInvalidType(string type)
+    /// <summary>
+    /// Logs the type of the invalid.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>Null or TableColumns.</returns>
+    private static TableColumns? LogInvalidType(string type)
     {
         Trace.WriteLine($"{SqliteHelperResources.TraceCouldNotConvert}{type}");
         return null;
     }
 }
-
-// Extension method for TableColumns to set the data type.
