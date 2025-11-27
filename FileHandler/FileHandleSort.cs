@@ -3,39 +3,63 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandler/FileHandleSort.cs
  * PURPOSE:     Extension for File Sort
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// ReSharper disable MemberCanBeInternal, we use it external
-// ReSharper disable UnusedMember.Global, it is a library
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
 namespace FileHandler;
 
 /// <summary>
-///     Some Extensions for Search results
-/// </summary>
-/// <summary>
-///     Some Extensions for Search results
+///     Sorting helpers for file paths using <see cref="FilePathStruct"/> for
+///     natural, human-friendly path sorting.
 /// </summary>
 public static class FileHandleSort
 {
     /// <summary>
-    ///     Path Sort. Sorts a list of strings in a more sane way.
+    /// Sorts any sequence based on a path string extracted from the objects.
     /// </summary>
-    /// <param name="value">The list.</param>
-    /// <returns>The sorted list.</returns>
-    public static List<string> PathSort(this List<string> value)
+    /// <typeparam name="T">Generic Container, it must contain paths though.</typeparam>
+    /// <param name="values">The values.</param>
+    /// <param name="pathSelector">The path selector.</param>
+    /// <returns>
+    ///     A sorted list. If the input is <c>null</c> or has 0–1 elements,
+    ///     the original list is returned unchanged.
+    /// </returns>
+    public static List<T>? PathSort<T>(this IEnumerable<T> values, Func<T, string> pathSelector)
     {
-        var lst = new List<FilePathStruct>(value.Count);
+        if (values is null)
+            return new List<T>();
 
-        lst.AddRange(value.Select(element => new FilePathStruct(element)));
+        return values
+            .OrderBy(v => new FilePathStruct(pathSelector(v)))
+            .ToList();
+    }
 
-        lst.Sort();
+    /// <summary>
+    ///     Sorts a list of file path strings using <see cref="FilePathStruct"/>
+    ///     to improve ordering (e.g. <c>file2</c> comes before <c>file10</c>).
+    /// </summary>
+    /// <param name="value">The list of file paths.</param>
+    /// <returns>
+    ///     A sorted list. If the input is <c>null</c> or has 0–1 elements,
+    ///     the original list is returned unchanged.
+    /// </returns>
+    public static List<string> PathSort(this List<string>? value)
+    {
+        if (value is null || value.Count <= 1)
+            return value ?? new List<string>();
 
-        return lst.ConvertAll(element => element.Path);
+        return value
+            .Select(path => new FilePathStruct(path))
+            .OrderBy(fps => fps)
+            .Select(fps => fps.Path)
+            .ToList();
     }
 }
