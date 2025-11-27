@@ -7,6 +7,7 @@
  */
 
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using CoreBuilder;
@@ -174,24 +175,30 @@ namespace CoreViewer
 
             while (stack.Count > 0)
             {
-                string current = stack.Pop();
+                var current = stack.Pop();
 
-                string[] files = Array.Empty<string>();
+                var files = Array.Empty<string>();
                 try
                 {
                     files = Directory.GetFiles(current, pattern);
                 }
-                catch { }
+                catch (Exception exe)
+                {
+                    Trace.WriteLine($"Error accessing files in {current}: {exe.Message}");
+                }
 
                 foreach (var file in files)
                     yield return file;
 
-                string[] dirs = Array.Empty<string>();
+                var dirs = Array.Empty<string>();
                 try
                 {
                     dirs = Directory.GetDirectories(current);
                 }
-                catch { }
+                catch (Exception exe)
+                {
+                    Trace.WriteLine($"Error accessing directories in {current}: {exe.Message}");
+                }
 
                 foreach (var dir in dirs)
                     stack.Push(dir);

@@ -1,31 +1,49 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
- * FILE:        Rules/DisposableAnalyzer.cs
+ * PROJECT:     CoreBuilder.Rules
+ * FILE:        DisposableAnalyzer.cs
  * PURPOSE:     Analyzer that detects undisposed IDisposable objects.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
-using System.Linq;
+// ReSharper disable UnusedType.Global
+
+using CoreBuilder.Enums;
+using CoreBuilder.Helper;
 using CoreBuilder.Interface;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Weaver;
+using Weaver.Interfaces;
+using Weaver.Messages;
 
 namespace CoreBuilder.Rules;
 
+/// <inheritdoc cref="ICodeAnalyzer" />
 /// <summary>
 /// Analyzer that detects undisposed IDisposable objects.
 /// </summary>
 /// <seealso cref="ICodeAnalyzer" />
-public sealed class DisposableAnalyzer : ICodeAnalyzer
+public sealed class DisposableAnalyzer : ICodeAnalyzer, ICommand
 {
-    /// <inheritdoc />
-    public string Name => nameof(DisposableAnalyzer);
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Name => "DisposableLeak";
+
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Description => "Analyzer that detects undisposed IDisposable objects.";
 
     /// <inheritdoc />
-    public string Description => "Analyzer that detects undisposed IDisposable objects.";
+    public string Namespace => "Analyzer";
+
+    /// <inheritdoc />
+    public int ParameterCount => 1;
+
+    /// <inheritdoc />
+    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
     /// <inheritdoc />
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
@@ -54,7 +72,7 @@ public sealed class DisposableAnalyzer : ICodeAnalyzer
 
                     yield return new Diagnostic(
                         Name,
-                        DiagnosticSeverity.Warning,
+                        Enums.DiagnosticSeverity.Warning,
                         filePath,
                         line,
                         $"'{v.Identifier.Text}' implements IDisposable but is not disposed. Risk of resource leak.",
@@ -97,5 +115,28 @@ public sealed class DisposableAnalyzer : ICodeAnalyzer
         }
 
         return false;
+    }
+
+    /// <inheritdoc />
+    public CommandResult Execute(params string[] args)
+    {
+        List<Diagnostic> results;
+        try
+        {
+            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: DisposableLeak<fileOrDirectoryPath>");
+        }
+        catch (Exception ex)
+        {
+            return CommandResult.Fail(ex.Message);
+        }
+
+        var output = string.Join("\n", results.Select(d => d.ToString()));
+        return CommandResult.Ok(output, results);
+    }
+
+    /// <inheritdoc />
+    public CommandResult InvokeExtension(string extensionName, params string[] args)
+    {
+        return CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

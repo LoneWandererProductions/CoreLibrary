@@ -1,74 +1,60 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
- * FILE:        Rules/LicenseHeaderAnalyzer.cs
- * PURPOSE:     Just a simple License Header Analyzer. Checks if the file starts with a license header.
+ * PROJECT:     CoreBuilder.Rules
+ * FILE:        LicenseHeaderAnalyzer.cs
+ * PURPOSE:     Analyzer to detect missing license headers in C# files.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
+using CoreBuilder.Enums;
+using CoreBuilder.Helper;
+using CoreBuilder.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreBuilder.Interface;
+using Weaver;
+using Weaver.Interfaces;
+using Weaver.Messages;
 
 namespace CoreBuilder.Rules;
 
-/// <inheritdoc />
+/// <inheritdoc cref="ICodeAnalyzer" />
 /// <summary>
-///     Find missing License Header.
+/// Detects missing license headers at the start of C# files.
+/// Implements ICommand for Weaver integration.
 /// </summary>
-/// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
-public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
+public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer, ICommand
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICodeAnalyzer" />
     public string Name => "LicenseHeader";
 
-    /// <inheritdoc />
-    public string Description =>
-        " Just a simple License Header Analyzer. Checks if the file starts with a license header.";
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Description => "Simple analyzer that checks if a file starts with a license header.";
 
     /// <inheritdoc />
+    public string Namespace => "Analyzer";
+
+    /// <inheritdoc />
+    public int ParameterCount => 1;
+
+    /// <inheritdoc />
+    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Analyzes the file content and detects whether a license header is present.
+    /// </summary>
     public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
     {
         if (CoreHelper.ShouldIgnoreFile(filePath))
             yield break;
 
-        // Trim leading whitespace
         var trimmed = fileContent.TrimStart();
+        var firstComment = ExtractFirstCommentBlock(trimmed);
 
-        // Quick exit if no comment at all
-        if (!(trimmed.StartsWith("/*") || trimmed.StartsWith("//")))
-        {
-            yield return new Diagnostic(
-                Name,
-                DiagnosticSeverity.Info,
-                filePath,
-                1,
-                "Missing license header.");
-
-            yield break;
-        }
-
-        // Extract the first comment block or line(s)
-        string firstChunk;
-        if (trimmed.StartsWith("/*"))
-        {
-            // Find the end of block comment
-            var endIdx = trimmed.IndexOf("*/", StringComparison.Ordinal);
-            firstChunk = endIdx > 0 ? trimmed[..(endIdx + 2)] : trimmed;
-        }
-        else
-        {
-            // Line comments at start
-            var lines = trimmed.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//"));
-            firstChunk = string.Join("\n", lines);
-        }
-
-        // Normalize
-        var header = firstChunk.ToUpperInvariant();
-
-        // Acceptable keywords
-        if (!(header.Contains("COPYRIGHT") || header.Contains("LICENSE")))
+        if (!HasLicenseHeader(firstComment))
         {
             yield return new Diagnostic(
                 Name,
@@ -77,5 +63,80 @@ public sealed class LicenseHeaderAnalyzer : ICodeAnalyzer
                 1,
                 "Missing license header.");
         }
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    /// Executes the analyzer on a directory path using centralized RunAnalyze logic.
+    /// </summary>
+    /// <inheritdoc />
+    public CommandResult Execute(params string[] args)
+    {
+        List<Diagnostic> results;
+        try
+        {
+            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: LicenseHeader <fileOrDirectoryPath>");
+        }
+        catch (Exception ex)
+        {
+            return CommandResult.Fail(ex.Message);
+        }
+
+        var output = string.Join(Environment.NewLine,
+            results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")
+        );
+
+        return CommandResult.Ok(output, results);
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    /// This analyzer has no extensions or interactive feedback.
+    /// </summary>
+    public CommandResult InvokeExtension(string extensionName, params string[] args)
+    {
+        return CommandResult.Fail($"'{Name}' has no extensions.");
+    }
+
+    /// <summary>
+    /// Extracts the first comment block (/* ... */) or contiguous line comments (// ...).
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <returns>Extrected block.</returns>
+    private static string ExtractFirstCommentBlock(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return string.Empty;
+
+        if (content.StartsWith("/*", StringComparison.Ordinal))
+        {
+            var endIdx = content.IndexOf("*/", StringComparison.Ordinal);
+            return endIdx > 0 ? content[..(endIdx + 2)] : content;
+        }
+
+        if (content.StartsWith("//", StringComparison.Ordinal))
+        {
+            var lines = content.Split('\n')
+                .TakeWhile(line => line.TrimStart().StartsWith("//", StringComparison.Ordinal));
+            return string.Join("\n", lines);
+        }
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Determines if a comment block contains license or copyright information.
+    /// </summary>
+    /// <param name="commentBlock">The comment block.</param>
+    /// <returns>
+    ///   <c>true</c> if [has license header] [the specified comment block]; otherwise, <c>false</c>.
+    /// </returns>
+    private static bool HasLicenseHeader(string commentBlock)
+    {
+        if (string.IsNullOrEmpty(commentBlock))
+            return false;
+
+        var header = commentBlock.ToUpperInvariant();
+        return header.Contains("COPYRIGHT") || header.Contains("LICENSE");
     }
 }

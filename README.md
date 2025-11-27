@@ -1,98 +1,52 @@
 # Common Utilities & Frameworks
 
-This repository provides a collection of reusable libraries, tools, and utilities for WPF, data handling, math, rendering, debugging, and more.  
-It’s organized into modular projects that can be used independently or combined.
+A collection of **reusable libraries, tools, and utilities** for WPF, data handling, math, rendering, debugging, and more.  
+Organized into modular projects that can be used independently or combined.
 
 ---
 
 ## General Utilities
 
-- **Generic Interpreter**  
-  Command-line-like interpreter for executing user-defined commands or internal scripting.
+- **Weaver / Lector** – Lightweight C# command engines for scripting and runtime execution.
+  - **Weaver** is the new interpreter, replacing the legacy Interpreter engine. Which is it's own sub Project see: https://github.com/LoneWandererProductions/Lector
+  - **Lector** is the CommandLine integration of Weaver, providing CLI command execution and script parsing.
+  - Supports namespaces, extensions, interactive feedback, command registration, structured scripts, loops, conditionals, variables, and debugging.
 
-- **Custom Controls**  
-  Reusable WPF UI components for forms, trees, tables, and dialogs.
-
-- **Extension Methods**  
-  Helpers for extending native types like `List<T>`, `Dictionary<K,V>`, and more.
-
-- **SQLite Extensions**  
-  Methods and UI helpers for SQLite interactions; includes GUI frontend for data browsing and manipulation.
-
-- **Generic Serializer**  
-  XML-based serialization for lists, dictionaries, and complex objects.
-
-- **Fast Lookup Dictionary**  
-  Optimized data structure for extremely fast dictionary lookups.
-
-- **RAM Memory Cache**  
-  In-memory cache store for temporary object persistence.
-
-- **Memory Manager**  
-  Experimental work on custom memory management.
-
-- **Image Manipulation & Comparison**  
-  Libraries for editing and comparing images; includes filters and format utilities.
-
-- **File Handling Abstraction**  
-  Unified file operation interface: copy, move, delete, metadata, etc.
-
-- **CSV Reader/Writer**  
-  Simple I/O utility to read/write CSV files and serialize object data.
-
-- **Vector Graphics Implementation**  
-  Basic tools for rendering vector shapes and paths.
-
-- **3D Projection Tools**  
-  Simple 3D projection and transformation library for experimental visual rendering.
-
-- **Debugging & Logging Framework**  
-  Structured logging and in-memory debug tracing, optionally UI-bound.
-
-- **Win32k Wrappers**  
-  Access low-level system features like registry editing and native dialogs.
-
-- **Plugin Interface**  
-  Plugin system with loading/unloading and discovery support.
-
-- **Pathfinder**  
-  Grid-based A* algorithm for turn-based strategy/pathfinding needs.
-
-- **Dialogs**  
-  Custom dialogs including SQL login, folder pickers, etc.
+- **Custom Controls** – Reusable WPF UI components (forms, trees, tables, dialogs).
+- **Extension Methods** – Helpers for `List<T>`, `Dictionary<K,V>`, and other types.
+- **SQLite Extensions & GUI** – Methods and WPF frontend for SQLite browsing and editing.
+- **Generic Serializer** – XML-based serialization for complex objects.
+- **Fast Lookup Dictionary** – Optimized for high-speed dictionary access.
+- **RAM Memory Cache** – Temporary in-memory object storage.
+- **Memory Manager** – Experimental custom memory management.
+- **Image Manipulation & Comparison** – Filters, transformations, and pixel comparison tools.
+- **File Handling Abstraction** – Unified interface for copy, move, delete, metadata, etc.
+- **CSV Reader/Writer** – Simple serialization and I/O utility.
+- **Vector Graphics Implementation** – Basic rendering of vector shapes and paths.
+- **3D Projection Tools** – Experimental 3D projection and transformation.
+- **Debugging & Logging Framework** – Structured logging with optional UI integration.
+- **Win32k Wrappers** – Access low-level system features like registry and native dialogs.
+- **Plugin Interface** – Loading/unloading and discovery support for plugins.
+- **Pathfinder** – Grid-based A* pathfinding for turn-based maps.
+- **Dialogs** – Prebuilt SQL login, folder pickers, and confirmation dialogs.
 
 ---
 
 ## Math Utilities
 
-- **Matrix Calculation**  
-  Basic matrix math: addition, multiplication, inversion, etc.
-
-- **3D Vector Calculations**  
-  Vector math used in rendering, physics, and pathfinding.
-
-- **Fractals**  
-  Tools for procedural generation of fractal imagery.
-
-- **Statistics**  
-  Calculate mean, median, variance, and basic statistical analysis.
+- **Matrix Calculations** – Addition, multiplication, inversion, etc.
+- **3D Vector Calculations** – Vector math for rendering, physics, and pathfinding.
+- **Fractals** – Procedural fractal generation tools.
+- **Statistics** – Mean, median, variance, and basic analysis.
 
 ---
 
 ## Coding & Framework Tools
 
-- **Resource String Generator**  
-  Auto-generates strongly typed string classes from raw resource files.
-
-- **In-Memory Logger (CoreMemoryLog)**  
-  Lightweight logger that keeps runtime logs in memory.  
-  See [CoreMemoryLog](#corememorylog) for details.
-
-- **Simple Dependency Injection**  
-  Minimal DI container to inject and manage services across projects.
-
-- **Worker Service Framework**  
-  Manages background threads and long-running jobs with clean abstraction.
+- **Resource String Generator** – Strongly typed classes from raw resource files.
+- **In-Memory Logger (`CoreMemoryLog`)** – Runtime log capture without disk I/O.
+- **Simple Dependency Injection** – Lightweight DI container.
+- **Worker Service Framework** – Abstraction for background threads and long-running jobs.
 
 ---
 
@@ -100,14 +54,13 @@ It’s organized into modular projects that can be used independently or combined.
 
 ### Debugger
 
-A flexible **debugging and log inspection framework**.
+Flexible **log inspection and debugging framework**.
 
-- Defines the `ILogSource` abstraction so log providers (memory, file, stream, external) can be plugged in and consumed uniformly.  
-- Supports event-driven log streaming (`LineReceived`) for real-time UI updates.  
-- Includes adapters like `InMemoryLogSource` to expose `CoreMemoryLog` into UI log viewers.  
-- Designed for WPF dashboards and log viewer tools.
+- Defines `ILogSource` abstraction for plug-and-play log providers.
+- Supports event-driven log streaming (`LineReceived`) for real-time UI updates.
+- Includes adapters like `InMemoryLogSource` to visualize `CoreMemoryLog`.
 
-**Skeleton usage:**
+**Example:**
 ```csharp
 var source = new InMemoryLogSource(logger);
 source.LineReceived += (_, line) => Console.WriteLine(line);
@@ -118,22 +71,40 @@ source.Start();
 
 ### CoreMemoryLog
 
-A **lightweight, structured, in-memory logger** for runtime diagnostics.
+**Lightweight, structured, in-memory logger** for diagnostics.
 
-- Captures logs without writing to disk.  
-- Stores a rolling buffer of entries, accessible via `GetLogs()`.  
-- Provides structured log entries with timestamp, level, caller method, and optional exception.  
-- Can be adapted into `Debugger` for visualization, or consumed directly in tests.
+- Rolling buffer of log entries (timestamp, level, caller, optional exception).
+- Can integrate with `Debugger` UI or be used directly in tests.
 
 **Example:**
 ```csharp
 var logger = new InMemoryLogger();
 logger.Log(LogLevel.Info, "Starting job {0}", jobId);
 
-// Later
 foreach (var entry in logger.GetLogs())
     Console.WriteLine($"{entry.Timestamp}: {entry.Message}");
 ```
+
+---
+
+### CoreBuilder & Code Analyzer
+
+**Scriptable code analyzers and developer utilities**, fully integrated with **Weaver**.
+
+- Detect unused code, formatting issues, missing comments, allocations, etc.
+- Utilities for header extraction, license blocks, and string resources.
+- Lightweight API exploration (reflection metadata).
+- Filesystem utilities (directory size, complexity checks).
+
+**Integration:** Can be executed from:
+- GUI via **CoreViewer**
+- CLI using **Weaver command engine**
+- Scripts inside **Weaver Script Engine**
+
+**Supporting Projects:**
+- **CoreViewer** – GUI for visualizing analysis results.
+- **CommonDialogs** – File/folder pickers and confirmation prompts.
+- **ViewModel** – MVVM bindings for GUI interactions.
 
 ---
 
@@ -141,6 +112,8 @@ foreach (var entry in logger.GetLogs())
 
 | Module                      | Purpose / Description                           |
 | --------------------------- | ----------------------------------------------- |
+| `Weaver`                    | New command interpreter replacing legacy Lector |
+| `Lector`                    | CLI integration of Weaver                       |
 | `CommonLibraryTests`        | Unit tests for common libraries                 |
 | `CommonExtendedObjectsTests`| Unit tests for ExtendedSystemObjects            |
 | `Imaging`                   | Image manipulation tools                        |
@@ -149,14 +122,13 @@ foreach (var entry in logger.GetLogs())
 | `Mathematics`               | Math utilities and calculation libraries        |
 | `CommonLibrarySqlLiteTests` | Tests for SQLite-related features               |
 | `ExtendedSystemObjects`     | Extensions for .NET base classes                |
-| `FileHandler`               | File system abstraction (copy, move, etc.)      |
+| `FileHandler`               | File system abstraction                          |
 | `RenderEngine`              | Experimental 2D/3D rendering backend            |
-| `RenderEngineTests`         | All Tests related to rendering                  |
+| `RenderEngineTests`         | Rendering-related tests                          |
 | `SQLiteGui`                 | UI frontend for SQLiteHelper                    |
 | `Debugger`                  | Debugging framework + log viewer integration    |
 | `ImageCompare`              | Pixel-based image comparison utility            |
-| `CommonDialogs`             | Prebuilt WPF dialogs (folders, login, etc.)     |
-| `Interpreter`               | Text command processor and parser               |
+| `CommonDialogs`             | Prebuilt WPF dialogs                             |
 | `CommonLibraryGuiTests`     | GUI testing for common components               |
 | `Solaris`                   | 2D chessboard-style tile renderer               |
 | `LightVector`               | Lightweight vector math tools                   |
@@ -168,10 +140,11 @@ foreach (var entry in logger.GetLogs())
 | `CommonFilter`              | WPF control to filter data tables               |
 | `CoreBuilder`               | Utilities for image/vector creation             |
 | `Pathfinder`                | A* pathfinding for grid-based maps              |
-| `InterOp`                   | Useful bindings to Windows libraries            |
+| `InterOp`                   | Windows API bindings                             |
 | `CoreInject`                | Minimal DI/injection support                    |
-| `CoreConsole`               | Quick Console runner for applications           |
+| `CoreConsole`               | Quick console runner for apps                   |
 | `CoreMemoryLog`             | In-memory logger, structured, UI-ready          |
 | `Plugin`                    | Base classes/interfaces for plugin system       |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
 | `CoreWorker`                | Worker service abstraction                      |
+

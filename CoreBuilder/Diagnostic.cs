@@ -6,6 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
+using CoreBuilder.Enums;
+
 namespace CoreBuilder;
 
 /// <summary>

@@ -1,18 +1,26 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
- * FILE:        Rules/UnusedConstantAnalyzer.cs
+ * PROJECT:     CoreBuilder.Rules
+ * FILE:        UnusedConstantAnalyzer.cs
  * PURPOSE:     Analyzer to detect unused constants and static readonly fields across a project.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
+using CoreBuilder.Enums;
+using CoreBuilder.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CoreBuilder.Interface;
+using Weaver;
+using Weaver.Interfaces;
+using Weaver.Messages;
 
 namespace CoreBuilder.Rules;
 
+/// <inheritdoc cref="ICodeAnalyzer" />
 /// <summary>
 /// Analyzer that detects unused constants and static readonly fields.
 /// Works by scanning all files for declarations and then checking
@@ -23,13 +31,22 @@ namespace CoreBuilder.Rules;
 /// - May flag false positives if a constant is used via reflection, nameof(), etc.
 /// - Project-wide scope is achieved by cross-file matching.
 /// </summary>
-public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
+public sealed class UnusedConstantAnalyzer : ICodeAnalyzer, ICommand
 {
-    /// <inheritdoc />
-    public string Name => nameof(UnusedConstantAnalyzer);
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Name => "UnusedConstantAnalyzer";
+
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Description => "Analyzer to detect unused constants and static readonly fields across a project.";
 
     /// <inheritdoc />
-    public string Description => "Analyzer to detect unused constants and static readonly fields across a project.";
+    public string Namespace => "Analyzer";
+
+    /// <inheritdoc />
+    public int ParameterCount => 1;
+
+    /// <inheritdoc />
+    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
     /// <summary>
     /// Runs a per-file analysis (not used in this analyzer).
@@ -73,12 +90,12 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
         // Cross-check each declaration against all file contents
         foreach (var decl in declarations)
         {
-            int usageCount = 0;
+            var usageCount = 0;
 
             foreach (var kvp in allFiles)
             {
                 var lines = kvp.Value.Split('\n');
-                for (int i = 0; i < lines.Length; i++)
+                for (var i = 0; i < lines.Length; i++)
                 {
                     // Skip the declaration line itself
                     if (kvp.Key == decl.FilePath && i == decl.Line - 1) continue;
@@ -100,5 +117,32 @@ public sealed class UnusedConstantAnalyzer : ICodeAnalyzer
         }
 
         return results;
+    }
+
+    /// <inheritdoc />
+    public CommandResult Execute(params string[] args)
+    {
+        List<Diagnostic> results;
+        try
+        {
+            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedConstantAnalyzer <fileOrDirectoryPath>");
+        }
+        catch (Exception ex)
+        {
+            return CommandResult.Fail(ex.Message);
+        }
+
+        var output = string.Join("\n", results.Select(d =>
+                         $"{d.FilePath}({d.LineNumber}): {d.Message}"))
+                     + $"\nTotal: {results.Count} unused private fields.";
+
+        return CommandResult.Ok(output);
+    }
+
+
+    /// <inheritdoc />
+    public CommandResult InvokeExtension(string extensionName, params string[] args)
+    {
+        return CommandResult.Fail($"No extension '{extensionName}' exists for {Name}.");
     }
 }

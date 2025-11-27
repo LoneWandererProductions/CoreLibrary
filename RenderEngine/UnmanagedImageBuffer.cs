@@ -88,7 +88,20 @@ namespace RenderEngine
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)BufferSpan.ToArray()).GetEnumerator();
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
@@ -113,7 +126,7 @@ namespace RenderEngine
         /// <param name="x">X coordinate (0-based)</param>
         /// <param name="y">Y coordinate (0-based)</param>
         /// <param name="color">The color to set</param>
-        public void SetPixel(int x, int y, Color color)
+        public void SetPixel(int x, int y, System.Drawing.Color color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
@@ -439,11 +452,32 @@ namespace RenderEngine
         /// </summary>
         ~UnmanagedImageBuffer() => Dispose();
 
+
+        /// <summary>
+        /// Clears the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="a">a.</param>
+        public void Clear(UnmanagedImageBuffer buffer, int a, int r, int g, int b)
+        {
+            var span = BufferSpan;
+            for (var i = 0; i < span.Length; i += BytesPerPixel)
+            {
+                span[i + 0] = (byte)b;
+                span[i + 1] = (byte)g;
+                span[i + 2] = (byte)r;
+                span[i + 3] = (byte)a;
+            }
+        }
+
         /// <summary>
         /// Clears the entire buffer to the given color.
         /// Fast implementation using Span iteration.
         /// </summary>
-        public void Clear(Color color)
+        public void Clear(System.Drawing.Color color)
         {
             var span = BufferSpan;
             for (var i = 0; i < span.Length; i += BytesPerPixel)

@@ -1,10 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
+ * PROJECT:     CoreBuilder.Interface
  * FILE:        ICodeAnalyzer.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 using System.Collections.Generic;
 using System.Linq;

@@ -6,14 +6,21 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CoreBuilder.Interface;
+using CoreBuilder.Helper;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Weaver;
+using Weaver.Interfaces;
+using Weaver.Messages;
+
 
 namespace CoreBuilder;
 
@@ -22,7 +29,7 @@ namespace CoreBuilder;
 ///     Our Code resource refactor tool. In this case strings.
 /// </summary>
 /// <seealso cref="T:CoreBuilder.IResourceExtractor" />
-public sealed class ResXtract : IResourceExtractor
+public sealed class ResXtract : ICommand
 {
     /// <summary>
     ///     The ignore list
@@ -33,6 +40,21 @@ public sealed class ResXtract : IResourceExtractor
     ///     The ignore patterns
     /// </summary>
     private readonly List<string> _ignorePatterns;
+
+    /// <inheritdoc />
+    public string Name => "ResXtract";
+
+    /// <inheritdoc />
+    public string Description => "Extracts hardcoded strings into a resource file and optionally rewrites code.";
+
+    /// <inheritdoc />
+    public string Namespace => "Development";
+
+    /// <inheritdoc />
+    public int ParameterCount => 1;
+
+    /// <inheritdoc />
+    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ResXtract" /> class.
@@ -45,7 +67,6 @@ public sealed class ResXtract : IResourceExtractor
         _ignorePatterns = ignorePatterns ?? new List<string>();
     }
 
-    /// <inheritdoc />
     /// <summary>
     ///     Processes the given project directory, extracting string literals
     ///     and replacing them with resource references.
@@ -58,82 +79,20 @@ public sealed class ResXtract : IResourceExtractor
     public List<string> ProcessProject(string? projectPath, string? outputResourceFile = null,
         bool appendToExisting = false, bool replace = false)
     {
-        var files = GetFiles(projectPath);
-
-        var allExtractedStrings = new HashSet<string>();
-        var changedFiles = new List<string>();
-
-        if (string.IsNullOrWhiteSpace(outputResourceFile))
-        {
-            var defaultName = Path.Combine(projectPath, "Resources.cs");
-            outputResourceFile = Path.Combine(projectPath, defaultName);
-        }
-
-        // 1️⃣ Extract all strings first
-        foreach (var file in files)
-        {
-            if (ShouldIgnoreFile(file))
-            {
-                continue;
-            }
-
-            var code = File.ReadAllText(file);
-            var strings = ExtractStrings(code);
-
-            foreach (var str in strings)
-            {
-                allExtractedStrings.Add(str);
-            }
-        }
-
-        // 2️⃣ Generate string-to-resource map
-        var stringToResourceMap =
-            GenerateResourceMap(allExtractedStrings, appendToExisting ? outputResourceFile : null);
-
-        if (replace)
-        {
-            // 3️⃣ Rewrite source files
-            foreach (var file in files)
-            {
-                if (ShouldIgnoreFile(file))
-                {
-                    continue;
-                }
-
-                var code = File.ReadAllText(file);
-                var rewrite = new StringLiteralRewrite(stringToResourceMap);
-                var rewrittenCode = rewrite.Rewrite(code);
-
-                if (code == rewrittenCode)
-                {
-                    continue;
-                }
-
-                File.WriteAllText(file, rewrittenCode);
-                changedFiles.Add(Path.GetFullPath(file));
-            }
-        }
-
-        // 4️⃣ Generate the resource file
-        GenerateResourceFile(stringToResourceMap, outputResourceFile, appendToExisting);
-        changedFiles.Add(Path.GetFullPath(outputResourceFile));
-
-        return changedFiles;
+        return RunExtraction(projectPath, outputResourceFile, appendToExisting, replace).ChangedFiles;
     }
 
-    /// <inheritdoc />
     /// <summary>
-    ///     Simulates a dry-run of the resource extraction process, showing which files would be affected.
+    /// Detects the affected files.
     /// </summary>
-    /// <param name="projectPath">The root directory of the C# project.</param>
-    /// <returns>A formatted string of files that would be changed.</returns>
+    /// <param name="projectPath">The project path.</param>
+    /// <returns>Files that would be affected.</returns>
     public string? DetectAffectedFiles(string? projectPath)
     {
-        var files = GetFiles(projectPath);
+        var files = CoreHelper.GetSourceFiles(projectPath);
 
         var affectedFiles =
             (from file in files
-                where !ShouldIgnoreFile(file)
                 let code = File.ReadAllText(file)
                 let strings = ExtractStrings(code)
                 where strings.Any()
@@ -144,29 +103,101 @@ public sealed class ResXtract : IResourceExtractor
             : string.Join(Environment.NewLine, affectedFiles);
     }
 
-    /// <summary>
-    ///     Determines whether the specified file should be ignored.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <returns><c>true</c> if the file should be ignored; otherwise, <c>false</c>.</returns>
-    private bool ShouldIgnoreFile(string filePath)
+    /// <inheritdoc />
+    public CommandResult Execute(params string[] args)
     {
-        // Check if it's on the ignore list or matches known patterns
-        if (_ignoreList.Contains(filePath) || _ignorePatterns.Any(pattern =>
-                filePath.Contains(pattern, StringComparison.OrdinalIgnoreCase)))
+        if (args.Length == 0)
+            return CommandResult.Fail("Usage:\n  ResXtract <projectPath>\n  ResXtract --detect <projectPath>");
+
+        // detect mode
+        if (args[0].Equals("--detect", StringComparison.OrdinalIgnoreCase))
         {
-            return true;
+            if (args.Length < 2)
+                return CommandResult.Fail("Usage: ResXtract --detect <projectPath>");
+
+            var projectPath = args[1];
+            var result = DetectAffectedFiles(projectPath);
+
+            if (string.IsNullOrWhiteSpace(result))
+                return CommandResult.Ok("No files would be changed.");
+
+            return new CommandResult
+            {
+                Success = true,
+                Message = "Files that would be affected:\n" + result
+            };
         }
 
-        return CoreHelper.ShouldIgnoreFile(filePath);
+        // standard mode
+        var changed = RunExtraction(args[0], null, appendToExisting: false, replace: true).ChangedFiles;
+        var msg = changed.Count == 0
+            ? "No files changed."
+            : $"Updated {changed.Count} files:\n" + string.Join(Environment.NewLine, changed);
+
+        return new CommandResult
+        {
+            Success = true,
+            Message = msg
+        };
+    }
+
+    /// <inheritdoc />
+    public CommandResult InvokeExtension(string extensionName, params string[] args)
+    {
+        if (!string.Equals(extensionName, "tryrun", StringComparison.OrdinalIgnoreCase))
+            return CommandResult.Fail($"Extension '{extensionName}' not supported by '{Name}'.");
+
+        if (args.Length == 0)
+            return CommandResult.Fail("Missing argument: project path.");
+
+        var projectPath = args[0];
+        var preview = DetectAffectedFiles(projectPath);
+        if (string.IsNullOrWhiteSpace(preview))
+            return CommandResult.Ok("No files would be changed.");
+
+        FeedbackRequest? feedback = null;
+        var cache = feedback;
+
+        feedback = new FeedbackRequest(
+            $"The following files would be updated:\n\n{preview}\n\nProceed? (yes/no)",
+            new[] { "yes", "no" },
+            input =>
+            {
+                input = input.Trim().ToLowerInvariant();
+                return input switch
+                {
+                    "yes" => Execute(projectPath),
+                    "no" => CommandResult.Fail("Operation cancelled by user."),
+                    _ => new CommandResult
+                    {
+                        Message = "Please answer yes/no.",
+                        RequiresConfirmation = true,
+                        Feedback = cache
+                    }
+                };
+            });
+
+        return new CommandResult
+        {
+            Message =
+                $"Preview complete. The following files would be updated:\n\n{preview}\n\nAwaiting user confirmation.",
+            Feedback = feedback,
+            RequiresConfirmation = true,
+            Success = false
+        };
     }
 
     /// <summary>
-    ///     Extracts the strings.
+    /// Represents the result of an extraction run.
+    /// </summary>
+    private sealed record ExtractionResult(List<string> ChangedFiles, Dictionary<string, string> Map);
+
+    /// <summary>
+    /// Extracts the strings.
     /// </summary>
     /// <param name="code">The code.</param>
-    /// <returns>Extracted strings.</returns>
-    public static IEnumerable<string> ExtractStrings(string code)
+    /// <returns>Strings to extract.</returns>
+    internal static IEnumerable<string> ExtractStrings(string code)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
         var root = syntaxTree.GetRoot();
@@ -195,9 +226,8 @@ public sealed class ResXtract : IResourceExtractor
                     case InterpolatedStringTextSyntax textPart:
                         formatString += textPart.TextToken.ValueText;
                         break;
-                    case InterpolationSyntax interpolationPart:
-                        formatString += "{" + placeholderIndex + "}";
-                        placeholderIndex++;
+                    case InterpolationSyntax:
+                        formatString += $"{{{placeholderIndex++}}}";
                         break;
                 }
             }
@@ -209,12 +239,72 @@ public sealed class ResXtract : IResourceExtractor
     }
 
     /// <summary>
-    ///     Generates the resource map.
-    ///     Generates a mapping of string to Resource key
+    ///     Centralized logic for executing the full extraction pipeline.
+    /// </summary>
+    /// <param name="projectPath">The project root.</param>
+    /// <param name="outputResourceFile">Optional target resource file path.</param>
+    /// <param name="appendToExisting">Append to existing file.</param>
+    /// <param name="replace">Rewrite code references.</param>
+    /// <returns>ExtractionResult with changed files and messages.</returns>
+    private static ExtractionResult RunExtraction(string? projectPath, string? outputResourceFile,
+        bool appendToExisting, bool replace)
+    {
+        if (string.IsNullOrWhiteSpace(projectPath))
+            throw new ArgumentException("Project path must not be null or empty.", nameof(projectPath));
+
+        var files = CoreHelper.GetSourceFiles(projectPath);
+
+        var allExtractedStrings = new HashSet<string>();
+        var changedFiles = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(outputResourceFile))
+        {
+            outputResourceFile = Path.Combine(projectPath, "Resources.cs");
+        }
+
+        // 1️⃣ Extract all strings first
+        foreach (var file in files)
+        {
+            var code = File.ReadAllText(file);
+            var strings = ExtractStrings(code);
+
+            foreach (var str in strings)
+                allExtractedStrings.Add(str);
+        }
+
+        // 2️⃣ Generate string-to-resource map
+        var stringToResourceMap =
+            GenerateResourceMap(allExtractedStrings, appendToExisting ? outputResourceFile : null);
+
+        // 3️⃣ Optionally rewrite source files
+        if (replace)
+        {
+            foreach (var file in files)
+            {
+                var code = File.ReadAllText(file);
+                var rewrite = new StringLiteralRewrite(stringToResourceMap);
+                var rewrittenCode = rewrite.Rewrite(code);
+
+                if (code == rewrittenCode) continue;
+
+                File.WriteAllText(file, rewrittenCode);
+                changedFiles.Add(Path.GetFullPath(file));
+            }
+        }
+
+        // 4️⃣ Generate the resource file
+        GenerateResourceFile(stringToResourceMap, outputResourceFile, appendToExisting);
+        changedFiles.Add(Path.GetFullPath(outputResourceFile));
+
+        return new ExtractionResult(changedFiles, stringToResourceMap);
+    }
+
+    /// <summary>
+    /// Generates the resource map.
     /// </summary>
     /// <param name="strings">The strings.</param>
     /// <param name="existingFile">The existing file.</param>
-    /// <returns>Extracted strings.</returns>
+    /// <returns>Resource Map</returns>
     private static Dictionary<string, string> GenerateResourceMap(IEnumerable<string> strings,
         string? existingFile = null)
     {
@@ -223,17 +313,11 @@ public sealed class ResXtract : IResourceExtractor
 
         if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
         {
-            // Parse existing keys if appending
             foreach (var line in File.ReadAllLines(existingFile))
             {
                 var trimmed = line.Trim();
-
-                if (!(trimmed.StartsWith("public static readonly string Resource") ||
-                      trimmed.StartsWith("internal static readonly string Resource") ||
-                      trimmed.StartsWith("internal const string Resource")))
-                {
+                if (!(trimmed.StartsWith("public static") || trimmed.StartsWith("internal static")))
                     continue;
-                }
 
                 var name = trimmed.Split('=')[0].Split(' ').Last();
                 var value = trimmed.Split('=')[1].Trim().Trim('"', ';');
@@ -246,20 +330,18 @@ public sealed class ResXtract : IResourceExtractor
         foreach (var str in strings.Distinct())
         {
             if (!map.ContainsKey(str))
-            {
                 map[str] = $"Resource{counter++}";
-            }
         }
 
         return map;
     }
 
     /// <summary>
-    ///     Generates the resource file.
+    /// Generates the resource file.
     /// </summary>
-    /// <param name="resourceMap">The extracted strings.</param>
+    /// <param name="resourceMap">The resource map.</param>
     /// <param name="outputFilePath">The output file path.</param>
-    /// <param name="appendToExisting">If true, appends to the existing file, otherwise overwrites it.</param>
+    /// <param name="appendToExisting">if set to <c>true</c> [append to existing].</param>
     private static void GenerateResourceFile(Dictionary<string, string> resourceMap, string? outputFilePath,
         bool appendToExisting)
     {
@@ -293,21 +375,5 @@ public sealed class ResXtract : IResourceExtractor
                            string.Join("\n", resourceEntries) + "\n}";
             File.WriteAllText(outputFilePath, classDef);
         }
-    }
-
-    /// <summary>
-    ///     Gets the files.
-    /// </summary>
-    /// <param name="projectPath">The project path.</param>
-    /// <returns>List of allowed files</returns>
-    private static IEnumerable<string> GetFiles(string? projectPath)
-    {
-        return Directory.EnumerateFiles(projectPath, "*.cs", SearchOption.AllDirectories)
-            .Where(f => !f.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) &&
-                        !f.Contains("resource", StringComparison.OrdinalIgnoreCase) &&
-                        !f.Contains("const", StringComparison.OrdinalIgnoreCase) &&
-                        !f.Contains(@"\obj\", StringComparison.OrdinalIgnoreCase) &&
-                        !f.Contains(@"\bin\", StringComparison.OrdinalIgnoreCase) &&
-                        !f.Contains(@"\.vs\", StringComparison.OrdinalIgnoreCase));
     }
 }

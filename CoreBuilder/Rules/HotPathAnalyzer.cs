@@ -1,35 +1,53 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
- * FILE:        Rules/HotPathAnalyzer.cs
+ * PROJECT:     CoreBuilder.Rules
+ * FILE:        HotPathAnalyzer.cs
  * PURPOSE:     Analyzer that detects frequently called methods and flags hot paths.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
-using System.Linq;
+// ReSharper disable UnusedType.Global
+
+using CoreBuilder.Enums;
+using CoreBuilder.Helper;
 using CoreBuilder.Interface;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Weaver;
+using Weaver.Interfaces;
+using Weaver.Messages;
 
 namespace CoreBuilder.Rules;
 
+/// <inheritdoc cref="ICodeAnalyzer" />
 /// <summary>
 /// Analyzer that detects method calls in hot paths (loops) and aggregates statistics.
 /// </summary>
-public sealed class HotPathAnalyzer : ICodeAnalyzer
+public sealed class HotPathAnalyzer : ICodeAnalyzer, ICommand
 {
-    /// <inheritdoc />
-    public string Name => nameof(HotPathAnalyzer);
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Name => "HotPath";
+
+    /// <inheritdoc cref="ICodeAnalyzer" />
+    public string Description => "Analyzer that detects frequently called methods and flags hot paths.";
 
     /// <inheritdoc />
-    public string Description => "Analyzer that detects frequently called methods and flags hot paths.";
+    public string Namespace => "Analyzer";
+
+    /// <inheritdoc />
+    public int ParameterCount => 1;
+
+    /// <inheritdoc />
+    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
     /// <summary>
     /// Project-wide aggregation: method FQN -> (call count, total risk, files seen)
     /// </summary>
-    private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats =
-        new();
+    private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
 
     // Thresholds / weights
 
@@ -53,16 +71,12 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
     {
         // 🔹 Ignore generated code and compiler artifacts
         if (CoreHelper.ShouldIgnoreFile(filePath))
-        {
             yield break;
-        }
 
         var tree = CSharpSyntaxTree.ParseText(fileContent);
         var root = tree.GetRoot();
 
-        var invocations = root.DescendantNodes().OfType<InvocationExpressionSyntax>().ToList();
-
-        foreach (var invocation in invocations)
+        foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
         {
             var symbolName = invocation.Expression.ToString();
 
@@ -86,11 +100,8 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
                 _ => 1
             };
 
-            // Update aggregation
             if (!_aggregateStats.TryGetValue(symbolName, out var stats))
-            {
                 stats = (0, 0, new HashSet<string>());
-            }
 
             stats.Count++;
             stats.TotalRisk += risk;
@@ -101,9 +112,8 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
 
             var impact = loopContext switch
             {
-                LoopContext.ConstantBounded => DiagnosticImpact.CpuBound,
-                LoopContext.VariableBounded => DiagnosticImpact.CpuBound,
-                LoopContext.Nested => DiagnosticImpact.CpuBound,
+                LoopContext.ConstantBounded or LoopContext.VariableBounded or LoopContext.Nested => DiagnosticImpact
+                    .CpuBound,
                 _ => DiagnosticImpact.Other
             };
 
@@ -118,20 +128,60 @@ public sealed class HotPathAnalyzer : ICodeAnalyzer
         }
     }
 
+    /// <inheritdoc />
+    public CommandResult Execute(params string[] args)
+    {
+        List<Diagnostic> results;
+        try
+        {
+            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: HotPath <fileOrDirectoryPath>");
+        }
+        catch (Exception ex)
+        {
+            return CommandResult.Fail(ex.Message);
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine("🔥 Hot Path Summary:");
+        sb.AppendLine(new string('-', 50));
+
+        // Add diagnostics first
+        foreach (var d in results)
+            sb.AppendLine(d.ToString());
+
+        sb.AppendLine("\nAggregated Methods:");
+        sb.AppendLine("-------------------");
+
+        foreach (var kvp in _aggregateStats.OrderByDescending(k => k.Value.TotalRisk))
+        {
+            var (method, data) = (kvp.Key, kvp.Value);
+            sb.AppendLine(
+                $"{method}: {data.Count} calls, total risk {data.TotalRisk}, files [{string.Join(", ", data.Files)}]");
+        }
+
+        return CommandResult.Ok(
+            message: sb.ToString(),
+            type: EnumTypes.Wstring
+        );
+    }
+
+
+    /// <inheritdoc />
+    public CommandResult InvokeExtension(string extensionName, params string[] args)
+        => CommandResult.Fail($"'{Name}' has no extensions.");
+
     /// <summary>
     /// Builds the message.
     /// </summary>
     /// <param name="method">The method.</param>
     /// <param name="ctx">The CTX.</param>
-    /// <returns>Message string.</returns>
-    private static string BuildMessage(string method, LoopContext ctx)
-    {
-        return ctx switch
+    /// <returns>Concated message.</returns>
+    private static string BuildMessage(string method, LoopContext ctx) =>
+        ctx switch
         {
             LoopContext.ConstantBounded => $"Method '{method}' inside constant-bounded loop.",
             LoopContext.VariableBounded => $"Method '{method}' inside variable-bounded loop.",
             LoopContext.Nested => $"Method '{method}' inside nested loops.",
             _ => $"Method '{method}' inside loop."
         };
-    }
 }
