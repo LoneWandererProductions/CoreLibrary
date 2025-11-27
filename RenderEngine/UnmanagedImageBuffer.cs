@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 
@@ -75,7 +76,7 @@ namespace RenderEngine
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns>Data at index</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <exception cref="ArgumentOutOfRangeException">index</exception>
         public byte this[int index]
         {
             get
@@ -105,11 +106,29 @@ namespace RenderEngine
             _buffer = Marshal.AllocHGlobal(width * height * BytesPerPixel);
         }
 
+
+        /// <summary>
+        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// </summary>
+        /// <param name="x">X coordinate (0-based)</param>
+        /// <param name="y">Y coordinate (0-based)</param>
+        /// <param name="color">The color to set</param>
+        public void SetPixel(int x, int y, Color color)
+        {
+            SetPixel(x, y, color.R, color.G, color.B, color.A);
+        }
+
         /// <summary>
         /// Writes a pixel at (x,y) directly into the buffer.
         /// No bounds checks for performance (caller must validate coordinates).
         /// Stored in BGRA order.
         /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
         public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height) return;
@@ -124,14 +143,19 @@ namespace RenderEngine
         }
 
         /// <summary>
-        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// Sets the pixel unsafe.
         /// </summary>
-        /// <param name="x">X coordinate (0-based)</param>
-        /// <param name="y">Y coordinate (0-based)</param>
-        /// <param name="color">The color to set</param>
-        public void SetPixel(int x, int y, Color color)
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        public void SetPixelUnsafe(int x, int y, byte r, byte g, byte b, byte a = 255)
         {
-            SetPixel(x, y, color.R, color.G, color.B, color.A);
+            var offset = (y * Width + x) * BytesPerPixel;
+            var ptr = (byte*)_buffer + offset;
+            ptr[0] = b; ptr[1] = g; ptr[2] = r; ptr[3] = a;
         }
 
         /// <summary>
@@ -355,28 +379,6 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Clears the entire buffer to the specified color.
-        /// </summary>
-        /// <param name="buf">Target image buffer.</param>
-        /// <param name="a">a.</param>
-        /// <param name="r">The r.</param>
-        /// <param name="g">The g.</param>
-        /// <param name="b">The b.</param>
-        public void Clear(UnmanagedImageBuffer buf, int a, int r, int g, int b)
-        {
-            var span = buf.BufferSpan;
-            const int bpp = UnmanagedImageBuffer.BytesPerPixel;
-            var len = span.Length;
-            for (var i = 0; i < len; i += bpp)
-            {
-                span[i + 0] = (byte)b;
-                span[i + 1] = (byte)g;
-                span[i + 2] = (byte)r;
-                span[i + 3] = (byte)a;
-            }
-        }
-
-        /// <summary>
         /// Creates a new <see cref="UnmanagedImageBuffer"/> from a <see cref="Bitmap"/>.
         /// Converts the bitmap into 32bpp ARGB format.
         /// </summary>
@@ -467,18 +469,24 @@ namespace RenderEngine
         public Bitmap ToBitmap()
         {
             var bmp = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var rect = new Rectangle(0, 0, Width, Height);
+            var data = bmp.LockBits(rect, ImageLockMode.WriteOnly, bmp.PixelFormat);
 
-            // Lock bitmap data for fast access
-            var bmpData = bmp.LockBits(
-                new Rectangle(0, 0, Width, Height),
-                System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                bmp.PixelFormat);
+            unsafe
+            {
+                int srcRowSize = Width * BytesPerPixel;
 
-            var dstPtr = (byte*)bmpData.Scan0;
-            var dstSpan = new Span<byte>(dstPtr, Width * Height * BytesPerPixel);
-            BufferSpan.CopyTo(dstSpan);
+                for (int y = 0; y < Height; y++)
+                {
+                    byte* src = (byte*)_buffer + y * srcRowSize;
+                    byte* dst = (byte*)data.Scan0 + y * data.Stride;
 
-            bmp.UnlockBits(bmpData);
+                    // Destination buffer size must match ROW copy size
+                    System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);
+                }
+            }
+
+            bmp.UnlockBits(data);
             return bmp;
         }
     }
