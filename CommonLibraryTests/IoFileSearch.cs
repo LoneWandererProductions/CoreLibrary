@@ -37,7 +37,7 @@ public sealed class IoFileSearch
     [TestMethod]
     public async Task GetFilesByExtensionWithExtensionAsync()
     {
-        var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(_path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var check = false;
@@ -71,7 +71,7 @@ public sealed class IoFileSearch
     [TestMethod]
     public async Task GetFilesByExtensionWithoutExtensionAsync()
     {
-        var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(_path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var file = Path.Combine(_path, Path.ChangeExtension(PathOperations, ResourcesGeneral.TstExt));
@@ -208,7 +208,7 @@ public sealed class IoFileSearch
     [TestMethod]
     public async Task GetFilesByExtensionFullPathAsync()
     {
-        var isDone = FileHandleDelete.DeleteCompleteFolder(_path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(_path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         //Set Amount of Repeats

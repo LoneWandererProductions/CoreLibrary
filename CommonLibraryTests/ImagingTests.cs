@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading.Tasks;
 using FileHandler;
 using ImageCompare;
 using Imaging;
@@ -87,7 +88,7 @@ public class ImagingTests
     ///     Test the custom DirectBitmap and how it works
     /// </summary>
     [TestMethod]
-    public void CutImage()
+    public async Task CutImageAsync()
     {
         var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
@@ -119,7 +120,7 @@ public class ImagingTests
         Assert.AreEqual(4, ret.Count, "done");
         Assert.AreEqual(4, lst.Count, "done");
 
-        var check = FileHandleDelete.DeleteFiles(ret);
+        var check = await FileHandleDelete.DeleteFiles(ret);
         Assert.AreEqual(true, check, "done");
 
         var col = lst[0].GetPixel(25, 25);

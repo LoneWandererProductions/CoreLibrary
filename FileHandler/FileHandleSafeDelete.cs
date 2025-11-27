@@ -12,11 +12,15 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 
 namespace FileHandler;
 
+/// <summary>
+/// Save files to Recycle Bin instead of permanent deletion.
+/// Sadly Microsoft.VisualBasic.FileIO is the only easy way to do this in .NET.
+/// </summary>
 public static class FileHandleSafeDelete
 {
     /// <summary>
@@ -25,40 +29,36 @@ public static class FileHandleSafeDelete
     /// <param name="path">The path of the file to delete.</param>
     /// <returns>True if the file was successfully deleted; otherwise, false.</returns>
     /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
-    public static bool DeleteFile(string path)
+    public static async Task<bool> DeleteFileAsync(string path)
     {
         if (string.IsNullOrEmpty(path))
-        {
             throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-        }
 
         if (!File.Exists(path))
-        {
             return false;
-        }
 
-        if (!WaitForFileUnlock(path))
+        // Wait for file unlock asynchronously
+        if (!await WaitForFileUnlockAsync(path))
         {
-            var ex = new Exception(string.Concat(FileHandlerResources.ErrorLock, path));
+            var ex = new Exception($"{FileHandlerResources.ErrorLock}{path}");
             Trace.WriteLine(ex);
-            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
             return false;
         }
 
-        // Attempt to delete the file
         try
         {
             FileSystem.DeleteFile(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
         }
         catch (UnauthorizedAccessException ex)
         {
-            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
             Trace.WriteLine(ex);
             return false;
         }
         catch (IOException ex)
         {
-            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
             Trace.WriteLine(ex);
             return false;
         }
@@ -71,15 +71,15 @@ public static class FileHandleSafeDelete
     /// </summary>
     /// <param name="path">The path of the file to check.</param>
     /// <returns>True if the file is unlocked; otherwise, false.</returns>
-    private static bool WaitForFileUnlock(string path)
+    private static async Task<bool> WaitForFileUnlockAsync(string path)
     {
         var attempts = 0;
 
         while (FileHandleDelete.IsFileLocked(path) && attempts < FileHandlerRegister.Tries)
         {
             attempts++;
-            Trace.WriteLine(string.Concat(FileHandlerResources.Tries, attempts));
-            Thread.Sleep(1000);
+            Trace.WriteLine($"{FileHandlerResources.Tries}{attempts}");
+            await Task.Delay(1000);
         }
 
         return !FileHandleDelete.IsFileLocked(path);

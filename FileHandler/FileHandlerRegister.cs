@@ -32,6 +32,11 @@ public static class FileHandlerRegister
     public static int MaxLog { get; set; } = 10000;
 
     /// <summary>
+    /// The error log lock
+    /// </summary>
+    private static readonly object _errorLogLock = new();
+
+    /// <summary>
     ///     Gets the error log.
     /// </summary>
     /// <value>
@@ -57,16 +62,20 @@ public static class FileHandlerRegister
     /// <param name="exception">The exception.</param>
     public static void AddError(string method, string path, Exception exception)
     {
-        ErrorLog ??= new List<string>();
-
-        if (ErrorLog.Count == MaxLog)
+        lock (_errorLogLock)
         {
-            ErrorLog.Clear();
-        }
+            ErrorLog ??= new List<string>();
 
-        ErrorLog.Add(string.Concat(FileHandlerResources.ErrorLogMethod, method, Environment.NewLine,
-            FileHandlerResources.ErrorLogPath, path, Environment.NewLine,
-            FileHandlerResources.ErrorLog, exception));
+            if (ErrorLog.Count >= MaxLog)
+            {
+                ErrorLog.Clear();
+            }
+
+            ErrorLog.Add(string.Concat(
+                FileHandlerResources.ErrorLogMethod, method, Environment.NewLine,
+                FileHandlerResources.ErrorLogPath, path, Environment.NewLine,
+                FileHandlerResources.ErrorLog, exception));
+        }
     }
 
     /// <summary>
@@ -74,8 +83,11 @@ public static class FileHandlerRegister
     /// </summary>
     public static void ClearLog()
     {
-        ErrorLog ??= new List<string>();
-        ErrorLog.Clear();
+        lock (_errorLogLock)
+        {
+            ErrorLog ??= new List<string>();
+            ErrorLog.Clear();
+        }
     }
 }
 

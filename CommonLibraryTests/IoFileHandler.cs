@@ -195,7 +195,7 @@ public sealed class IoFileHandler
     [TestMethod]
     public async Task RenameFileAsync()
     {
-        var isDone = FileHandleDelete.DeleteCompleteFolder(_renamePath);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(_renamePath);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         FileHandleCreate.CreateFolder(_renamePath);
@@ -217,7 +217,7 @@ public sealed class IoFileHandler
         isDone = await FileHandleRename.RenameDirectory(_renamePath, target);
         Assert.IsTrue(isDone, "Wrong return value");
         Assert.IsTrue(Directory.Exists(target), "Folder not cleaned");
-        isDone = FileHandleDelete.DeleteCompleteFolder(target);
+        isDone = await FileHandleDelete.DeleteCompleteFolder(target);
         Assert.IsTrue(isDone, "Could not cleanup");
     }
 
@@ -227,7 +227,7 @@ public sealed class IoFileHandler
     [TestMethod]
     public async Task AppendageOfFileAsync()
     {
-        var isDone = FileHandleDelete.DeleteCompleteFolder(_renamePath);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(_renamePath);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         FileHandleCreate.CreateFolder(_renamePath);
@@ -296,10 +296,10 @@ public sealed class IoFileHandler
     ///     Copy the if newer.
     /// </summary>
     [TestMethod]
-    public void CopyList()
+    public async Task CopyListAsync()
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyList");
-        var isDone = FileHandleDelete.DeleteCompleteFolder(path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var subPathOne = Path.Combine(path, @"subOne\");
@@ -404,10 +404,10 @@ public sealed class IoFileHandler
     ///     Copy the if newer.
     /// </summary>
     [TestMethod]
-    public void CopyIfNewer()
+    public async Task CopyIfNewerAsync()
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), "CopyNewer");
-        var isDone = FileHandleDelete.DeleteCompleteFolder(path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var subPathOne = Path.Combine(path, @"subOne\");
@@ -533,10 +533,10 @@ public sealed class IoFileHandler
     ///     Copy the if newer.
     /// </summary>
     [TestMethod]
-    public void CutList()
+    public async Task CutListAsync()
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), "CutList");
-        var isDone = FileHandleDelete.DeleteCompleteFolder(path);
+        var isDone = await FileHandleDelete.DeleteCompleteFolder(path);
         Assert.IsTrue(isDone, "Could not cleanup");
 
         var subPathOne = Path.Combine(path, @"subOne\");
