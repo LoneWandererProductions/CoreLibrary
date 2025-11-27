@@ -88,7 +88,6 @@ internal static class FileHandlerResources
     /// </summary>
     internal const string ErrorEqualPath = "Paths are equal Input.";
 
-
     /// <summary>
     ///     The error file already exists (const). Value: "Error File already exists:".
     /// </summary>

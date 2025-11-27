@@ -600,7 +600,7 @@ public sealed class IoFileHandler
         File.WriteAllText(sourceFilePath, "Test Content");
 
         // Act
-        var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+        var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
 
         // Assert
         Assert.IsTrue(result);
@@ -615,9 +615,9 @@ public sealed class IoFileHandler
     /// </summary>
     [TestMethod]
     [ExpectedException(typeof(FileHandlerException))]
-    public void CutFilesSourceAndTargetEqualThrowsFileHandlerException()
+    public async Task CutFilesSourceAndTargetEqualThrowsFileHandlerExceptionAsync()
     {
-        _ = FileHandleCut.CutFiles(TestSourceDir, TestSourceDir, true);
+        await FileHandleCut.CutFiles(TestSourceDir, TestSourceDir, true);
     }
 
     /// <summary>
@@ -626,7 +626,7 @@ public sealed class IoFileHandler
     [TestMethod]
     public async Task CutFilesNonExistentSourceReturnsFalseAsync()
     {
-        var result = FileHandleCut.CutFiles("NonExistentSource", TestTargetDir, true);
+        var result = await FileHandleCut.CutFiles("NonExistentSource", TestTargetDir, true);
         Assert.IsFalse(result);
     }
 
@@ -686,7 +686,7 @@ public sealed class IoFileHandler
         File.WriteAllText(targetFilePath, "Old Content");
 
         // Act
-        var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+        var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
 
         // Assert
         Assert.IsTrue(result);
@@ -708,7 +708,7 @@ public sealed class IoFileHandler
         File.WriteAllText(targetFilePath, "Old Content");
 
         // Act
-        var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, false);
+        var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, false);
 
         // Assert, show false, since we have not moved all files
         Assert.IsFalse(result);
@@ -730,7 +730,7 @@ public sealed class IoFileHandler
         File.WriteAllText(sourceFilePath, "Test Content");
 
         // Act
-        var result = FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
+        var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
 
         // Assert
         Assert.IsTrue(result);

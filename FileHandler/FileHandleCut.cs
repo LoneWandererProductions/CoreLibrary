@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileHandler;
 
@@ -31,75 +32,58 @@ public static class FileHandleCut
     /// <param name="overwrite">Is overwrite allowed</param>
     /// <returns>Status if we encountered any problems</returns>
     /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static bool CutFiles(string source, string target, bool overwrite)
+    public static async Task<bool> CutFiles(string source, string target, bool overwrite)
     {
         FileHandlerProcessing.ValidatePaths(source, target);
 
-        //if nothing exists we can return anyways
         if (!Directory.Exists(source))
-        {
             return false;
-        }
 
         var check = true;
         var dir = new DirectoryInfo(source);
         var dirs = dir.GetDirectories();
         var files = dir.GetFiles();
 
-        //Give the User Optional Infos about the Amount we Copy
-        var lstFiles = (from file in files
-            select file.Name).ToList();
+        // Inform user
+        var lstFiles = files.Select(f => f.Name).ToList();
+        FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles),
+            new FileItems { Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion });
 
-        var itm = new FileItems
+        // Move files
+        foreach (var file in files)
         {
-            Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
-        };
-
-        FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles), itm);
-
-        //do the actual work
-        if (files.Length > 0)
-        {
-            if (!Directory.Exists(target))
+            var tempPath = Path.Combine(target, file.Name);
+            try
             {
-                _ = Directory.CreateDirectory(target);
+                if (!Directory.Exists(target))
+                    _ = Directory.CreateDirectory(target);
+
+                await Task.Run(() => file.MoveTo(tempPath, overwrite)).ConfigureAwait(false);
+                FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
             }
-
-            foreach (var file in files)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                           or NotSupportedException)
             {
-                var tempPath = Path.Combine(target, file.Name);
-
-                try
-                {
-                    file.MoveTo(tempPath, overwrite);
-
-                    FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
-                }
-                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                               or NotSupportedException)
-                {
-                    FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
-                    Trace.WriteLine(ex);
-                    check = false;
-                }
+                FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
+                Trace.WriteLine(ex);
+                check = false;
             }
         }
 
+        // Recurse subdirectories
         foreach (var subDir in dirs)
         {
             var tempPath = Path.Combine(target, subDir.Name);
 
             if (!Directory.Exists(target))
-            {
                 _ = Directory.CreateDirectory(target);
-            }
 
             if (Directory.Exists(tempPath))
-            {
                 continue;
-            }
 
-            _ = CutFiles(subDir.FullName, tempPath, overwrite);
+            var subCheck = await CutFiles(subDir.FullName, tempPath, overwrite).ConfigureAwait(false);
+            if (!subCheck)
+                check = false;
         }
 
         return check;
