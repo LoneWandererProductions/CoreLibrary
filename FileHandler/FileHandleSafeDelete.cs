@@ -29,7 +29,7 @@ public static class FileHandleSafeDelete
     /// <param name="path">The path of the file to delete.</param>
     /// <returns>True if the file was successfully deleted; otherwise, false.</returns>
     /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
-    public static async Task<bool> DeleteFileAsync(string path)
+    public static async Task<bool> DeleteFile(string path)
     {
         if (string.IsNullOrEmpty(path))
             throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -42,7 +42,7 @@ public static class FileHandleSafeDelete
         {
             var ex = new Exception($"{FileHandlerResources.ErrorLock}{path}");
             Trace.WriteLine(ex);
-            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
             return false;
         }
 
@@ -52,13 +52,13 @@ public static class FileHandleSafeDelete
         }
         catch (UnauthorizedAccessException ex)
         {
-            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
             Trace.WriteLine(ex);
             return false;
         }
         catch (IOException ex)
         {
-            FileHandlerRegister.AddError(nameof(DeleteFileAsync), path, ex);
+            FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
             Trace.WriteLine(ex);
             return false;
         }
