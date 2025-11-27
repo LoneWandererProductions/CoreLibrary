@@ -593,7 +593,7 @@ public sealed class IoFileHandler
     ///     Cuts the files valid source and target cuts files.
     /// </summary>
     [TestMethod]
-    public void CutFilesValidSourceAndTargetCutsFiles()
+    public async Task CutFilesValidSourceAndTargetCutsFilesAsync()
     {
         // Arrange
         var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
@@ -624,7 +624,7 @@ public sealed class IoFileHandler
     ///     Cuts the files non existent source returns false.
     /// </summary>
     [TestMethod]
-    public void CutFilesNonExistentSourceReturnsFalse()
+    public async Task CutFilesNonExistentSourceReturnsFalseAsync()
     {
         var result = FileHandleCut.CutFiles("NonExistentSource", TestTargetDir, true);
         Assert.IsFalse(result);
@@ -634,7 +634,7 @@ public sealed class IoFileHandler
     ///     Cuts the files with file list cuts files successfully.
     /// </summary>
     [TestMethod]
-    public void CutFilesWithFileListCutsFilesSuccessfully()
+    public async Task CutFilesWithFileListCutsFilesSuccessfullyAsync()
     {
         // Arrange
         var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
@@ -666,7 +666,7 @@ public sealed class IoFileHandler
     ///     Cuts the files file list non existent file returns false.
     /// </summary>
     [TestMethod]
-    public void CutFilesFileListNonExistentFileReturnsFalse()
+    public async Task CutFilesFileListNonExistentFileReturnsFalseAsync()
     {
         var fileList = new List<string> { "NonExistentFile.txt" };
         var result = FileHandleCut.CutFiles(fileList, TestTargetDir, true);
@@ -677,7 +677,7 @@ public sealed class IoFileHandler
     ///     Cuts the files with overwrite cuts files successfully.
     /// </summary>
     [TestMethod]
-    public void CutFilesWithOverwriteCutsFilesSuccessfully()
+    public async Task CutFilesWithOverwriteCutsFilesSuccessfullyAsync()
     {
         // Arrange
         var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
@@ -699,7 +699,7 @@ public sealed class IoFileHandler
     ///     Cuts the files without overwrite existing files not overwritten.
     /// </summary>
     [TestMethod]
-    public void CutFilesWithoutOverwriteExistingFilesNotOverwritten()
+    public async Task CutFilesWithoutOverwriteExistingFilesNotOverwrittenAsync()
     {
         // Arrange
         var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
@@ -721,7 +721,7 @@ public sealed class IoFileHandler
     ///     Cuts the files handles subdirectories.
     /// </summary>
     [TestMethod]
-    public void CutFilesHandlesSubdirectories()
+    public async Task CutFilesHandlesSubdirectoriesAsync()
     {
         // Arrange
         var subDir = Path.Combine(TestSourceDir, "SubDir");

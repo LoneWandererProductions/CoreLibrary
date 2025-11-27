@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace FileHandler;
 
@@ -34,7 +35,7 @@ public static class FileHandlerRegister
     /// <summary>
     /// The error log lock
     /// </summary>
-    private static readonly object _errorLogLock = new();
+    private static readonly Lock _errorLogLock = new();
 
     /// <summary>
     ///     Gets the error log.
