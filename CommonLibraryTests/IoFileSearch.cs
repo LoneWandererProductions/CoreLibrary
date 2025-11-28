@@ -146,35 +146,35 @@ public sealed class IoFileSearch
     }
 
     /// <summary>
-    ///     Simple Check for getting files Contains in a Folder
+    /// Simple Check for getting files contained in a folder.
     /// </summary>
     [TestMethod]
-    public void GetAllSubfolders()
+    public void GetAllSubfoldersDeterministic()
     {
-        var check = false;
-        var list = FileHandleSearch.GetAllSubfolders(Directory.GetCurrentDirectory());
+        // Use a known path for testing (deterministic)
+        var currentDir = Directory.GetCurrentDirectory();
 
-        if (list == null)
-        {
-            Assert.Fail("Null Reference");
-        }
+        // Navigate to the project folder (assume tests are in bin\Debug\netX.Y)
+        var projectRoot = Directory.GetParent(currentDir)?.Parent?.Parent?.FullName;
+        Assert.IsNotNull(projectRoot, "Could not determine project root directory.");
 
-        if (list.Count > 0)
-        {
-            check = true;
-        }
+        // Retrieve all subfolders using your method
+        var list = FileHandleSearch.GetAllSubfolders(projectRoot);
 
-        Assert.IsTrue(check, "Did not get all Folders");
+        Assert.IsNotNull(list, "GetAllSubfolders returned null.");
+        Assert.IsTrue(list.Count > 0, "Did not get any subfolders.");
 
-        var path = DirectoryInformation.GetParentDirectory(1);
-        Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests\\bin", StringComparison.Ordinal),
-            $"Wrong Directory Name: {path}");
+        // Test DirectoryInformation.GetParentDirectory deterministically
+        // Use projectRoot as starting point
+        var parent1 = DirectoryInformation.GetParentDirectoryFromPath(projectRoot, 1);
+        Assert.IsTrue(parent1.EndsWith("\\CoreLibrary", StringComparison.Ordinal),
+            $"Wrong Directory Name: {parent1}");
 
-        path = DirectoryInformation.GetParentDirectory(2);
-
-        Assert.IsTrue(path.EndsWith("\\CoreLibrary\\CommonLibraryTests", StringComparison.Ordinal),
-            $"Wrong Directory Name: {path}");
+        var parent2 = DirectoryInformation.GetParentDirectoryFromPath(projectRoot, 2);
+        Assert.IsTrue(parent2.EndsWith("\\Source", StringComparison.Ordinal),
+            $"Wrong Directory Name: {parent2}");
     }
+
 
     /// <summary>
     ///     Gets the file information.

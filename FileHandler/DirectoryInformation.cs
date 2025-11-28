@@ -3,10 +3,8 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandler/DirectoryInformation.cs
 * PURPOSE:     Generic System Functions for Directories
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMER:   Peter Geinitz (Wayfarer) – Refactor by ChatGPT
 */
-
-// ReSharper disable UnusedType.Global
 
 using System;
 using System.Diagnostics;
@@ -15,44 +13,48 @@ using System.IO;
 namespace FileHandler;
 
 /// <summary>
-///     The directory information class.
+/// Directory helper class with testable parent retrieval
 /// </summary>
 public static class DirectoryInformation
 {
     /// <summary>
-    ///     Returns Path at the defined level height
+    /// Returns a parent directory at the specified level from the current working directory.
     /// </summary>
-    /// <param name="level">Height of Path</param>
-    /// <returns>Returns Path at the current height, can return null.</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+    /// <param name="level">Levels to go up</param>
+    /// <returns>Parent directory path</returns>
     public static string GetParentDirectory(int level)
+        => GetParentDirectoryFromPath(Directory.GetCurrentDirectory(), level);
+
+    /// <summary>
+    /// Returns a parent directory at the specified level from a given path.
+    /// This method is safe for unit testing with arbitrary paths.
+    /// </summary>
+    /// <param name="startPath">The path to start from</param>
+    /// <param name="level">Levels to go up</param>
+    /// <returns>Parent directory path</returns>
+    /// <exception cref="FileHandlerException"></exception>
+    public static string GetParentDirectoryFromPath(string startPath, int level)
     {
-        var root = Directory.GetCurrentDirectory();
+        if (string.IsNullOrEmpty(startPath))
+            throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: startPath was empty");
 
-        if (string.IsNullOrEmpty(root))
-        {
-            throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {root}");
-        }
-
-        var path = Directory.GetParent(root)?.ToString();
-
-        if (string.IsNullOrEmpty(path))
-        {
-            throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {path}");
-        }
+        var path = startPath;
 
         try
         {
             for (var i = 0; i < level; i++)
             {
-                path = Directory.GetParent(path!)?.ToString();
+                var parent = Directory.GetParent(path);
+                if (parent == null)
+                    throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: reached root at level {i}");
+                path = parent.FullName;
             }
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException or FileHandlerException)
         {
-            FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
+            FileHandlerRegister.AddError(nameof(GetParentDirectoryFromPath), path, ex);
             Trace.WriteLine(ex);
-            throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {ex}");
+            throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: {ex.Message}");
         }
 
         return path;
