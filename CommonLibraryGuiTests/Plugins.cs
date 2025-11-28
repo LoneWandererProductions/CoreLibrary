@@ -25,7 +25,7 @@ public sealed class Plugins
     [Apartment(ApartmentState.STA)]
     public void LoadPluginSqliIte()
     {
-        var root = DirectoryInformation.GetParentDirectory(3);
+        var root = DirectoryInformation.GetParentDirectory(4);
         var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net9.0-windows");
         var check = PluginLoad.LoadAll(target);
 

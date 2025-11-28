@@ -15,32 +15,30 @@ namespace FileHandler;
 public static class FileUtility
 {
     /// <summary>
-    ///     Gets the new name of the file, if it already exists
+    /// Returns a new file path if the given file already exists by appending a numeric suffix.
+    /// Example: file.txt → file(0).txt, file(1).txt, etc.
     /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>new Path with new FileName</returns>
+    /// <param name="path">The full file path.</param>
+    /// <returns>New unique file path, or null if path is invalid.</returns>
     public static string? GetNewFileName(string path)
     {
         if (!File.Exists(path))
-        {
             return null;
-        }
 
+        var directory = Path.GetDirectoryName(path);
         var fileNameOnly = Path.GetFileNameWithoutExtension(path);
         var extension = Path.GetExtension(path);
-        var directory = Path.GetDirectoryName(path);
+
         if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
-        {
             return null;
-        }
 
         var newPath = path;
         var count = 0;
 
         while (File.Exists(newPath))
         {
-            var cache = $"{fileNameOnly}({count++}){extension}";
-            newPath = Path.Combine(directory, cache);
+            newPath = Path.Combine(directory, fileNameOnly + "(" + count + ")" + extension);
+            count++;
         }
 
         return newPath;
