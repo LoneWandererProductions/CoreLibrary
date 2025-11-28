@@ -37,41 +37,21 @@ public static class FileHandleCopy
     {
         FileHandlerProcessing.ValidatePaths(source, target);
 
+        source = Path.GetFullPath(source);
+        target = Path.GetFullPath(target);
+
         if (!Directory.Exists(source))
-        {
             return false;
-        }
 
-        var sourceDir = new DirectoryInfo(source);
-        var targetDir = new DirectoryInfo(target);
-        if (!targetDir.Exists)
-        {
-            targetDir.Create();
-        }
+        var srcDir = new DirectoryInfo(source);
+        var tgtDir = new DirectoryInfo(target);
 
-        var files = sourceDir.GetFiles();
-        foreach (var file in files)
-        {
-            try
-            {
-                file.CopyTo(Path.Combine(target, file.Name), overwrite);
-                FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
-            }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                           or NotSupportedException)
-            {
-                FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                Trace.WriteLine(ex);
-                return false;
-            }
-        }
+        if (!tgtDir.Exists)
+            tgtDir.Create();
 
-        foreach (var subDir in sourceDir.GetDirectories())
-        {
-            CopyFiles(subDir.FullName, Path.Combine(target, subDir.Name), overwrite);
-        }
-
-        return true;
+        bool success = true;
+        CopyDirectoryRecursive(srcDir, tgtDir, overwrite, ref success);
+        return success;
     }
 
     /// <summary>
@@ -85,68 +65,41 @@ public static class FileHandleCopy
     public static bool CopyFiles(List<string> source, string target, bool overwrite = true)
     {
         if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
-        {
             throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-        }
 
+        // Normalize paths
+        target = Path.GetFullPath(target);
         if (!Directory.Exists(target))
-        {
-            _ = Directory.CreateDirectory(target);
-        }
+            Directory.CreateDirectory(target);
 
-        var check = true;
+        // Overview event
+        var overview = new FileItems { Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion };
+        FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
-        //Give the User Optional Infos about the Amount we Copy
-        var itm = new FileItems
-        {
-            Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
-        };
-
-        FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
-
-        //Do the work
+        // Determine root directory automatically
         var root = FileHandlerProcessing.SearchRoot(source);
-        var file = new FileInfo(root);
-        root = file.Directory.FullName;
+        root = Path.GetFullPath(new FileInfo(root).Directory!.FullName);
 
-        foreach (var element in source)
+        bool success = true;
+
+        foreach (var filePath in source)
         {
-            try
-            {
-                file = new FileInfo(element);
+            var file = new FileInfo(filePath);
+            var relative = Path.GetRelativePath(root, file.Directory!.FullName);
+            var destDir = Path.Combine(target, relative);
 
-                var directoryPath = file.Directory.FullName;
+            if (!Directory.Exists(destDir))
+                Directory.CreateDirectory(destDir);
 
-                //Get Sub Folder
-                var path = FileHandlerProcessing.GetSubFolder(directoryPath, root, target);
+            var dest = Path.Combine(destDir, file.Name);
 
-                if (path?.Length == 0)
-                {
-                    continue;
-                }
-
-                var tempPath = Path.Combine(path!, file.Name);
-
-                if (!Directory.Exists(path))
-                {
-                    _ = Directory.CreateDirectory(path);
-                }
-
-                _ = file.CopyTo(tempPath, overwrite);
-
-                FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
-            }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                           or NotSupportedException)
-            {
-                check = false;
-                FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
-                Trace.WriteLine(ex);
-            }
+            if (!TryCopyFile(file, dest, overwrite))
+                success = false;
         }
 
-        return check;
+        return success;
     }
+
 
     /// <summary>
     ///     Copies all Files to another Location, includes subdirectories, does not Replace the files but returns a List of
@@ -160,43 +113,29 @@ public static class FileHandleCopy
     {
         FileHandlerProcessing.ValidatePaths(source, target);
 
-        //if nothing exists we can return anyways
+        source = Path.GetFullPath(source);
+        target = Path.GetFullPath(target);
+
         if (!Directory.Exists(source))
-        {
             return null;
-        }
 
-        var sourceFiles = FileHandlerProcessing.GetFilesByExtension(source, FileHandlerResources.AllFiles,
-            FileHandlerResources.SubFolders);
-
+        var sourceFiles = FileHandlerProcessing.GetFilesByExtension(source, FileHandlerResources.AllFiles, FileHandlerResources.SubFolders);
         if (sourceFiles == null)
-        {
             return null;
-        }
 
-        var targetFiles = FileHandlerProcessing.GetFilesByExtension(target, FileHandlerResources.AllFiles,
-            FileHandlerResources.SubFolders);
-
+        var targetFiles = FileHandlerProcessing.GetFilesByExtension(target, FileHandlerResources.AllFiles, FileHandlerResources.SubFolders);
         if (targetFiles == null)
-        {
             return null;
-        }
 
-        //Handle the diff
-        var intersect = sourceFiles.Select(i => i).Intersect(targetFiles).ToList();
+        var intersect = sourceFiles.Intersect(targetFiles).ToList();
         var except = sourceFiles.Except(targetFiles).ToList();
 
         if (intersect.Count == 0)
-        {
             return except.Count == 0 ? null : except;
-        }
 
-        var check = CopyFiles(intersect, target, false);
-
-        if (!check)
-        {
+        // Perform copy without overwrite
+        if (!CopyFiles(intersect, target, false))
             return null;
-        }
 
         return except.Count == 0 ? null : except;
     }
@@ -212,76 +151,127 @@ public static class FileHandleCopy
     {
         FileHandlerProcessing.ValidatePaths(source, target);
 
-        //if nothing exists we can return anyways
-        if (!Directory.Exists(source))
-        {
-            return false;
-        }
+        source = Path.GetFullPath(source);
+        target = Path.GetFullPath(target);
 
-        var check = true;
+        if (!Directory.Exists(source))
+            return false;
+
+        bool success = true;
+
         var dir = new DirectoryInfo(source);
-        var dirs = dir.GetDirectories();
         var files = dir.GetFiles();
 
-        //Give the User Optional Infos about the Amount we Copy
-        var lstFiles = (from file in files
-            select file.Name).ToList();
-
-        var itm = new FileItems
+        // Overview callback
+        var overview = new FileItems
         {
-            Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
+            Elements = files.Select(f => f.Name).ToList(),
+            Message = FileHandlerResources.InformationFileDeletion
         };
-
-        FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), itm);
-
-        //do the actual work
-
-        if (files.Length > 0)
-        {
-            if (!Directory.Exists(target))
-            {
-                _ = Directory.CreateDirectory(target);
-            }
-
-            foreach (var file in files)
-            {
-                var tempPath = Path.Combine(target, file.Name);
-
-                try
-                {
-                    if (File.Exists(tempPath) && file.LastWriteTime > File.GetLastWriteTime(tempPath))
-                    {
-                        _ = file.CopyTo(tempPath, FileHandlerResources.FileOverwrite);
-                        FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
-                    }
-                }
-                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                               or NotSupportedException)
-                {
-                    check = false;
-                    FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
-                    Trace.WriteLine(ex);
-                }
-            }
-        }
+        FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
         if (!Directory.Exists(target))
-        {
-            _ = Directory.CreateDirectory(target);
-        }
+            Directory.CreateDirectory(target);
 
-        foreach (var subDir in dirs)
+        foreach (var file in files)
         {
-            var tempPath = Path.Combine(target, subDir.Name);
+            var dest = Path.Combine(target, file.Name);
 
-            if (File.Exists(tempPath))
+            // Replace only if newer
+            try
             {
-                continue;
-            }
+                if (File.Exists(dest))
+                {
+                    var destTime = File.GetLastWriteTime(dest);
+                    if (file.LastWriteTime <= destTime)
+                        continue;
+                }
 
-            _ = CopyFiles(subDir.FullName, tempPath, FileHandlerResources.FileOverwrite);
+                if (!TryCopyFile(file, dest, true))
+                    success = false;
+            }
+            catch (Exception ex)
+            {
+                FileHandlerRegister.AddError(nameof(CopyFilesReplaceIfNewer), file.FullName, ex);
+                Trace.WriteLine(ex);
+                success = false;
+            }
         }
 
-        return check;
+        // Recurse into subdirs
+        foreach (var sub in dir.GetDirectories())
+        {
+            var newTarget = Path.Combine(target, sub.Name);
+            if (!CopyFilesReplaceIfNewer(sub.FullName, newTarget))
+                success = false;
+        }
+
+        return success;
     }
+
+    /// <summary>
+    /// Copies the directory recursive.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="overwrite">if set to <c>true</c> [overwrite].</param>
+    /// <param name="success">if set to <c>true</c> [success].</param>
+    /// <returns>Success Status per operation.</returns>
+    private static void CopyDirectoryRecursive(
+    DirectoryInfo source,
+    DirectoryInfo target,
+    bool overwrite,
+    ref bool success)
+    {
+        // Copy files in this directory
+        foreach (var file in source.GetFiles())
+        {
+            try
+            {
+                var dest = Path.Combine(target.FullName, file.Name);
+                file.CopyTo(dest, overwrite);
+                FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+            {
+                success = false;
+                FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
+                Trace.WriteLine(ex);
+            }
+        }
+
+        // Recurse subdirectories
+        foreach (var subDir in source.GetDirectories())
+        {
+            var newTarget = new DirectoryInfo(Path.Combine(target.FullName, subDir.Name));
+            if (!newTarget.Exists)
+                newTarget.Create();
+
+            CopyDirectoryRecursive(subDir, newTarget, overwrite, ref success);
+        }
+    }
+
+    /// <summary>
+    /// Tries the copy file.
+    /// </summary>
+    /// <param name="file">The file.</param>
+    /// <param name="destination">The destination.</param>
+    /// <param name="overwrite">if set to <c>true</c> [overwrite].</param>
+    /// <returns>Status of copy process.</returns>
+    private static bool TryCopyFile(FileInfo file, string destination, bool overwrite)
+    {
+        try
+        {
+            file.CopyTo(destination, overwrite);
+            FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
+            return true;
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+        {
+            FileHandlerRegister.AddError(nameof(CopyFiles), file.FullName, ex);
+            Trace.WriteLine(ex);
+            return false;
+        }
+    }
+
 }
