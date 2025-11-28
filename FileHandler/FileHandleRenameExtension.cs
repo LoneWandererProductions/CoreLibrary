@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandler/FileHandleRenameExtension.cs
  * PURPOSE:     Unified safe rename helpers (append/remove/replace/reorder)
- * PROGRAMER:   Peter Geinitz (Wayfarer) – Refactor by ChatGPT
+ * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */
 
 using System;

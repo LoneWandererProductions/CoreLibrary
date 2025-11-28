@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandler/DirectoryInformation.cs
 * PURPOSE:     Generic System Functions for Directories
-* PROGRAMER:   Peter Geinitz (Wayfarer) – Refactor by ChatGPT
+* PROGRAMER:   Peter Geinitz (Wayfarer) 
 */
 
 using System;
