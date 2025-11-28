@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver
  * FILE:        Weave.cs
@@ -51,7 +51,7 @@ namespace Weaver
         /// <summary>
         /// The mediator
         /// </summary>
-        private readonly MessageMediator _mediator = new();
+        public readonly MessageMediator Mediator = new();
 
         /// <summary>
         /// The pending feedback
@@ -210,7 +210,7 @@ namespace Weaver
             if (_pendingFeedback?.IsPending == true)
             {
                 // Verify the command using mediator
-                var associatedCommand = _mediator.Resolve(_pendingFeedback.RequestId);
+                var associatedCommand = Mediator.Resolve(_pendingFeedback.RequestId);
                 if (associatedCommand == null)
                 {
                     // Unexpected state
@@ -222,7 +222,7 @@ namespace Weaver
 
                 if (result.RequiresConfirmation) return result;
 
-                _mediator.Clear(_pendingFeedback.RequestId);
+                Mediator.Clear(_pendingFeedback.RequestId);
                 _pendingFeedback = null;
 
                 return result;
@@ -268,7 +268,7 @@ namespace Weaver
                 _pendingFeedback = execResult.Feedback;
 
                 // Register feedback with mediator
-                _mediator.Register(cmd, _pendingFeedback);
+                Mediator.Register(cmd, _pendingFeedback);
             }
 
             return execResult;
@@ -418,7 +418,7 @@ namespace Weaver
             if (result.RequiresConfirmation && result.Feedback != null)
             {
                 _pendingFeedback = result.Feedback;
-                _mediator.Register(cmd, _pendingFeedback);
+                Mediator.Register(cmd, _pendingFeedback);
             }
 
             return result;
@@ -430,7 +430,7 @@ namespace Weaver
         public void Reset()
         {
             _pendingFeedback = null;
-            _mediator.ClearAll();
+            Mediator.ClearAll();
         }
     }
 }

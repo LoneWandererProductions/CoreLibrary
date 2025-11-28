@@ -7,79 +7,100 @@
  */
 
 // ReSharper disable UnusedMember.Global
-
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileHandler;
 
-public class FileObserver
+/// <summary>
+/// Observes a folder for changes and raises async events.
+/// Supports cancellation via <see cref="CancellationToken"/>.
+/// </summary>
+public class FileObserver : IDisposable
 {
+    private readonly FileSystemWatcher _watcher;
+
     /// <summary>
-    ///     Searches the folder asynchronous.
+    /// Triggered when a file or folder is created.
     /// </summary>
-    /// <param name="path">The path.</param>
-    public async Task SearchFolderAsync(string path)
+    public event Func<FileSystemEventArgs, Task>? Created;
+
+    /// <summary>
+    /// Triggered when a file or folder is changed.
+    /// </summary>
+    public event Func<FileSystemEventArgs, Task>? Changed;
+
+    /// <summary>
+    /// Triggered when a file or folder is deleted.
+    /// </summary>
+    public event Func<FileSystemEventArgs, Task>? Deleted;
+
+    /// <summary>
+    /// Triggered when a file or folder is renamed.
+    /// </summary>
+    public event Func<RenamedEventArgs, Task>? Renamed;
+
+    /// <summary>
+    /// Triggered on watcher errors.
+    /// </summary>
+    public event Func<ErrorEventArgs, Task>? Error;
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="FileObserver"/>.
+    /// </summary>
+    /// <param name="path">Folder to observe.</param>
+    public FileObserver(string path)
     {
-        var watcher = new FileSystemWatcher(path)
+        if (!Directory.Exists(path))
+            throw new DirectoryNotFoundException(path);
+
+        _watcher = new FileSystemWatcher(path)
         {
-            NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName,
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite,
             IncludeSubdirectories = true,
-            InternalBufferSize = 64 * 1024 // Increase buffer size to handle more events
+            InternalBufferSize = 64 * 1024
         };
 
-        watcher.Created += OnCreated;
-        watcher.Changed += OnChanged;
-        watcher.Deleted += OnDeleted;
-        watcher.Error += OnError;
-
-        watcher.EnableRaisingEvents = true;
-
-        Console.WriteLine("Monitoring folder for changes. Press any key to stop.");
-        await Task.Run(Console.ReadKey); // Run in background to avoid blocking
-
-        watcher.EnableRaisingEvents = false;
-        watcher.Dispose();
+        _watcher.Created += async (s, e) => { if (Created != null) await Created.Invoke(e); };
+        _watcher.Changed += async (s, e) => { if (Changed != null) await Changed.Invoke(e); };
+        _watcher.Deleted += async (s, e) => { if (Deleted != null) await Deleted.Invoke(e); };
+        _watcher.Renamed += async (s, e) => { if (Renamed != null) await Renamed.Invoke(e); };
+        _watcher.Error += async (s, e) => { if (Error != null) await Error.Invoke(e); };
     }
 
     /// <summary>
-    ///     Called when [created].
+    /// Starts watching the folder.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="FileSystemEventArgs" /> instance containing the event data.</param>
-    private static void OnCreated(object sender, FileSystemEventArgs e)
+    public void Start() => _watcher.EnableRaisingEvents = true;
+
+    /// <summary>
+    /// Stops watching the folder.
+    /// </summary>
+    public void Stop() => _watcher.EnableRaisingEvents = false;
+
+    /// <summary>
+    /// Runs the observer until cancelled via token.
+    /// </summary>
+    /// <param name="cancellationToken">Token to stop watching.</param>
+    /// <returns>Task that completes when cancelled.</returns>
+    public Task RunUntilCancelledAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine($"File or folder '{e.FullPath}' was created.");
+        Start();
+        var tcs = new TaskCompletionSource<object?>();
+        cancellationToken.Register(() =>
+        {
+            Stop();
+            tcs.TrySetResult(null);
+        });
+        return tcs.Task;
     }
 
     /// <summary>
-    ///     Called when [changed].
+    /// Disposes the internal watcher.
     /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="FileSystemEventArgs" /> instance containing the event data.</param>
-    private static void OnChanged(object sender, FileSystemEventArgs e)
-    {
-        Console.WriteLine($"File or folder '{e.FullPath}' was modified.");
-    }
-
-    /// <summary>
-    ///     Called when [deleted].
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="FileSystemEventArgs" /> instance containing the event data.</param>
-    private static void OnDeleted(object sender, FileSystemEventArgs e)
-    {
-        Console.WriteLine($"File or folder '{e.FullPath}' was deleted.");
-    }
-
-    /// <summary>
-    ///     Called when [error].
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="ErrorEventArgs" /> instance containing the event data.</param>
-    private static void OnError(object sender, ErrorEventArgs e)
-    {
-        Console.WriteLine("Error occurred: " + e.GetException().Message);
-    }
+    public void Dispose() => _watcher.Dispose();
 }
+
+
