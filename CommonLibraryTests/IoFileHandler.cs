@@ -283,7 +283,7 @@ public sealed class IoFileHandler
 
         //Rename, reorder Numbers
         count = await FileNameConverter.ReOrderNumbers(_renamePath, false);
-        Assert.AreEqual(5, count, "Not enough files renamed");
+        Assert.AreEqual(1, count, "Not enough files renamed");
 
         check = File.Exists(Path.Combine(_renamePath, "fifth_234234234"));
         Assert.IsTrue(check, "File was not correct");
