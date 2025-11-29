@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using CoreBuilder.FileManager;
 using CoreBuilder.Interface;
 using CoreBuilder.Rules;
 using System;
@@ -29,6 +30,8 @@ namespace CoreBuilder
             ICommand[] modules =
             {
                 new DirectorySizeAnalyzer(),
+                new DirectorySizeAnalyzer(),
+                new LogTailCommand(),
                 new HeaderExtractor(),
                 new ResXtract(),
                 new AllocationAnalyzer(),
@@ -91,7 +94,9 @@ namespace CoreBuilder
             {
                 new DirectorySizeAnalyzer(),
                 new FileLockScanner(),
-                new SmartPingPro()
+                new SmartPingPro(),
+                new DirectorySizeAnalyzer(),
+                new LogTailCommand()
             };
 
             // Filter by Namespace

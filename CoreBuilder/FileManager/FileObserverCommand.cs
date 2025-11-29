@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
+ * PROJECT:     CoreBuilder.FileManager
  * FILE:        FileObserverCommand.cs
  * PURPOSE:     Watches a folder and emits file change events as command outputs. Console based for now.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,11 +10,13 @@
 
 using System;
 using System.IO;
+using CoreBuilder.Helper;
+using CoreBuilder.Interface;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder
+namespace CoreBuilder.FileManager
 {
     /// <inheritdoc />
     /// <summary>
@@ -49,17 +51,17 @@ namespace CoreBuilder
         private FileSystemWatcher? _watcher;
 
         /// <summary>
-        /// The mediator, yet to be fully utilized.
+        /// The output
         /// </summary>
-        private readonly MessageMediator _mediator;
+        private readonly IEventOutput _output;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileObserverCommand"/> class.
         /// </summary>
-        /// <param name="mediator">The mediator.</param>
-        public FileObserverCommand(MessageMediator mediator)
+        /// <param name="output">The side channel for output.</param>
+        public FileObserverCommand(IEventOutput? output = null)
         {
-            _mediator = mediator;
+            _output = output ?? new ConsoleEventOutput();
         }
 
         /// <inheritdoc />
@@ -112,18 +114,7 @@ namespace CoreBuilder
         /// <param name="path">The path.</param>
         private void OnEvent(string type, string path)
         {
-            // Create a CommandResult for the event
-            var result = new CommandResult
-            {
-                Message = $"[{type}] {path}",
-                RequiresConfirmation = false
-            };
-
-            // For now we just push to console; mediator registration is only for interactive feedback
-            Console.WriteLine(result.Message);
-
-            // If in future you want to push messages through a mediator, you could add a dedicated pipeline method
-            //TODO e.g. _mediator.PushMessage(result);
+            _output.Write($"[{type}] {path}");
         }
 
         /// <summary>

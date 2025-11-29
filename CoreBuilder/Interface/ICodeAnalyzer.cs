@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder.Interface
  * FILE:        ICodeAnalyzer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Simple interface for code analyzers.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

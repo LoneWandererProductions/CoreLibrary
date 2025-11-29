@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
+ * PROJECT:     CoreBuilder.FileManager
  * FILE:        DirectorySizeAnalyzer.cs
  * PURPOSE:     Command to analyze and display file sizes and total percentage usage.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -20,7 +20,7 @@ using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder;
+namespace CoreBuilder.FileManager;
 
 /// <inheritdoc />
 /// <summary>

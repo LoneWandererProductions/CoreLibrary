@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
+ * PROJECT:     CoreBuilder.FileManager
  * FILE:        FileLockScanner.cs
  * PURPOSE:     Command to find locked files in a directory.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -17,13 +17,13 @@ using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder;
+namespace CoreBuilder.FileManager;
 
 /// <inheritdoc />
 /// <summary>
 /// Simple command to scan a directory for locked files and list the processes locking them.
 /// </summary>
-/// <seealso cref="Weaver.Interfaces.ICommand" />
+/// <seealso cref="ICommand" />
 public sealed class FileLockScanner : ICommand
 {
     /// <inheritdoc />
