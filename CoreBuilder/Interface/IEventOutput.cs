@@ -21,5 +21,4 @@ namespace CoreBuilder.Interface
         /// <param name="message">The message.</param>
         void Write(string message);
     }
-
 }

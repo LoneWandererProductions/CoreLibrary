@@ -10,8 +10,8 @@
 
 using System;
 using System.IO;
-using CoreBuilder.Helper;
 using CoreBuilder.Interface;
+using CoreBuilder.UI;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
@@ -61,7 +61,7 @@ namespace CoreBuilder.FileManager
         /// <param name="output">The output.</param>
         public LogTailCommand(IEventOutput? output = null)
         {
-            _output = output ?? new ConsoleEventOutput();
+            _output = output ?? new WpfEventOutput();
         }
 
         /// <inheritdoc />
