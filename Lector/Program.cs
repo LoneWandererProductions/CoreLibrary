@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Lector
  * FILE:        Program.cs
@@ -11,12 +11,16 @@ using Weaver;
 
 namespace Lector
 {
+    /// <summary>
+    /// Main entry point and basic interface for my Commands.
+    /// </summary>
     internal static class Program
     {
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
+        [STAThread]
         private static void Main(string[] args)
         {
             var weave = new Weave();
