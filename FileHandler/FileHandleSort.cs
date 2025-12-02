@@ -38,7 +38,7 @@ public static class FileHandleSort
             return new List<T>();
 
         return values
-            .OrderBy(v => new FilePathStruct(pathSelector(v)))
+            .OrderBy(v => new FilePathWrapper(pathSelector(v)))
             .ToList();
     }
 
@@ -57,9 +57,9 @@ public static class FileHandleSort
             return value ?? new List<string>();
 
         return value
-            .Select(path => new FilePathStruct(path))
+            .Select(path => new FilePathWrapper(path))
             .OrderBy(fps => fps)
-            .Select(fps => fps.Path)
+            .Select(fps => fps.FullPath)
             .ToList();
     }
 }

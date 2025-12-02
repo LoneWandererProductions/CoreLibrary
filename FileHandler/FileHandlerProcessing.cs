@@ -1,119 +1,129 @@
 ﻿/*
-* COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandlerProcessing.cs
-* PURPOSE:     Helper Methods for the FileHandler library
-* PROGRAMMER:  Peter Geinitz (Wayfarer)
-*/
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     FileHandler
+ * FILE:        FileHandler/FileHandlerProcessing.cs
+ * PURPOSE:     Helper Methods for the FileHandler library
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FileHandler;
-
-/// <summary>
-///     The file handler processing class.
-/// </summary>
-internal static class FileHandlerProcessing
+namespace FileHandler
 {
     /// <summary>
-    ///     Cleans up the file extension list by removing dots.
+    /// Provides internal helper methods for processing file paths and extensions.
     /// </summary>
-    /// <param name="fileExtList">The file extension list.</param>
-    /// <returns>The cleaned up list of file extensions.</returns>
-    internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
+    internal static class FileHandlerProcessing
     {
-        if (fileExtList == null)
+        /// <summary>
+        /// Cleans up a list of file extensions by removing any leading dots.
+        /// </summary>
+        /// <param name="fileExtList">The file extension list. Null elements are converted to empty strings.</param>
+        /// <returns>A cleaned list of file extensions without dots.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileExtList"/> is null.</exception>
+        internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
         {
-            throw new ArgumentNullException(nameof(fileExtList), FileHandlerResources.ErrorFileExtension);
+            if (fileExtList == null)
+            {
+                throw new ArgumentNullException(nameof(fileExtList), FileHandlerResources.ErrorFileExtension);
+            }
+
+            return fileExtList
+                .Select(ext => ext?.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
+                .ToList();
         }
 
-        return fileExtList.Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty)).ToList();
-    }
-
-    /// <summary>
-    ///     Gets the subfolder path relative to the root directory and combines it with the target directory.
-    /// </summary>
-    /// <param name="element">The path of the element.</param>
-    /// <param name="root">The root directory path.</param>
-    /// <param name="target">The target directory path.</param>
-    /// <returns>The combined target folder path.</returns>
-    /// <exception cref="ArgumentException">Thrown when any of the input paths are invalid.</exception>
-    internal static string GetSubFolder(string element, string root, string target)
-    {
-        var elementDir = Path.GetFullPath(element);
-        var rootDir = Path.GetFullPath(root);
-
-        if (!elementDir.StartsWith(rootDir, StringComparison.OrdinalIgnoreCase))
+        /// <summary>
+        /// Gets the path of a subfolder relative to a root directory and combines it with a target directory.
+        /// </summary>
+        /// <param name="element">The full path of the element.</param>
+        /// <param name="root">The root directory path.</param>
+        /// <param name="target">The target directory path to combine with.</param>
+        /// <returns>The combined target folder path.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="element"/> is not under <paramref name="root"/>.</exception>
+        internal static string GetSubFolder(string element, string root, string target)
         {
-            throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
+            if (string.IsNullOrEmpty(element) || string.IsNullOrEmpty(root) || string.IsNullOrEmpty(target))
+                throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
+
+            var elementDir = Path.GetFullPath(element);
+            var rootDir = Path.GetFullPath(root);
+
+            // Use Path.GetRelativePath for cross-platform correctness
+            var relativePath = Path.GetRelativePath(rootDir, elementDir);
+
+            // Ensure the element is actually under root
+            if (relativePath.StartsWith("..", StringComparison.Ordinal))
+            {
+                throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
+            }
+
+            return Path.Combine(target, relativePath);
         }
 
-        var relativePath = elementDir.Substring(rootDir.Length)
-            .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-        return Path.Combine(target, relativePath);
-    }
-
-    /// <summary>
-    ///     Collects all files with a specific extension from the target folder.
-    /// </summary>
-    /// <param name="path">The target folder path.</param>
-    /// <param name="appendix">The file extension.</param>
-    /// <param name="subdirectories">Indicates whether to include subdirectories.</param>
-    /// <returns>List of files with the specified extension.</returns>
-    /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
-    internal static List<string>? GetFilesByExtension(string path, string appendix, bool subdirectories)
-    {
-        if (string.IsNullOrEmpty(path))
+        /// <summary>
+        /// Collects all files with a specific extension from a folder.
+        /// </summary>
+        /// <param name="path">The folder path to search.</param>
+        /// <param name="appendix">The file extension to filter by, e.g., "txt". Null or empty uses "*".</param>
+        /// <param name="subdirectories">Indicates whether to include subdirectories.</param>
+        /// <returns>A list of matching files. Returns an empty list if the folder does not exist.</returns>
+        /// <exception cref="FileHandlerException">Thrown when <paramref name="path"/> is null or empty.</exception>
+        internal static List<string>? GetFilesByExtension(string path, string? appendix, bool subdirectories)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
+            if (!Directory.Exists(path))
+                return null;
+
+            appendix = string.IsNullOrEmpty(appendix)
+                ? FileHandlerResources.Star
+                : appendix.Replace(FileHandlerResources.Dot, string.Empty);
+
+            var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            return Directory
+                .EnumerateFiles(path, $"{FileHandlerResources.StarDot}{appendix}", option)
+                .ToList();
         }
 
-        if (!Directory.Exists(path))
+        /// <summary>
+        /// Returns the shortest path from a collection of paths. Useful for determining a "root" path.
+        /// </summary>
+        /// <param name="source">A collection of file or folder paths.</param>
+        /// <returns>The shortest path, or null if <paramref name="source"/> is empty.</returns>
+        internal static string? SearchRoot(IReadOnlyCollection<string> source)
         {
-            return null;
+            if (source == null || source.Count == 0)
+                return null;
+
+            return source.OrderBy(path => path.Length).First();
         }
 
-        if (string.IsNullOrEmpty(appendix))
+        /// <summary>
+        /// Validates source and target paths to ensure they are not empty and not equal.
+        /// </summary>
+        /// <param name="source">The source path.</param>
+        /// <param name="target">The target path.</param>
+        /// <exception cref="FileHandlerException">Thrown if paths are invalid.</exception>
+        internal static void ValidatePaths(string source, string target)
         {
-            appendix = FileHandlerResources.Star;
-        }
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-        appendix = appendix.Replace(FileHandlerResources.Dot, string.Empty);
+            var normalizedSource = Path.GetFullPath(source).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var normalizedTarget = Path.GetFullPath(target).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-        var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-
-        return Directory.EnumerateFiles(path, $"{FileHandlerResources.StarDot}{appendix}", option).ToList();
-    }
-
-    /// <summary>
-    ///     Search the root Path.
-    /// </summary>
-    /// <param name="source">The source.</param>
-    /// <returns>The root<see cref="string" />.</returns>
-    internal static string SearchRoot(IReadOnlyCollection<string> source)
-    {
-        return source.OrderBy(path => path.Length).First();
-    }
-
-    /// <summary>
-    ///     Validates the paths.
-    /// </summary>
-    /// <param name="source">The source.</param>
-    /// <param name="target">The target.</param>
-    internal static void ValidatePaths(string source, string target)
-    {
-        if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-        {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-        }
-
-        if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            if (string.Equals(normalizedSource, normalizedTarget, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            }
         }
     }
 }

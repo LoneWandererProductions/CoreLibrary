@@ -60,25 +60,18 @@ internal static class HelperMethods
     {
         var folder = Path.GetDirectoryName(path);
         if (folder == null)
-        {
-            return;
-        }
+            throw new ArgumentException("Path must contain a directory.", nameof(path));
 
-        if (!Directory.Exists(folder))
-        {
-            _ = Directory.CreateDirectory(folder);
-        }
+        Directory.CreateDirectory(folder); // safe even if exists
 
         if (File.Exists(path))
-        {
-            return;
-        }
+            File.Delete(path);
 
         using var fs = File.Create(path);
         for (byte i = 0; i < 100; i++)
-        {
             fs.WriteByte(i);
-        }
+
+        fs.Flush(true); // ensure fully written to disk
     }
 
     /// <summary>

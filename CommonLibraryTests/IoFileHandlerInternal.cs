@@ -53,7 +53,7 @@ public sealed class IoFileHandlerInternal
     ///     Gets the sub folder invalid element path throws argument exception.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
+    [ExpectedException(typeof(ArgumentException))]
     public void GetSubFolderInvalidElementPathThrowsArgumentException()
     {
         // Arrange
@@ -69,7 +69,7 @@ public sealed class IoFileHandlerInternal
     ///     Gets the sub folder invalid root path throws argument exception.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
+    [ExpectedException(typeof(ArgumentException))]
     public void GetSubFolderInvalidRootPathThrowsArgumentException()
     {
         // Arrange
