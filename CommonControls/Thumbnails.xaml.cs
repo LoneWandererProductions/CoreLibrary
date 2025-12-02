@@ -122,7 +122,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The refresh
     /// </summary>
-    private static bool _refresh = true;
+    private bool Refresh = true;
 
     /// <summary>
     ///     The cancellation token source
@@ -309,7 +309,12 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     The selection.
     /// </value>
-    public List<int> Selection { get; private set; }
+    public IEnumerable<int> Selection => _select.Keys;
+
+    /// <summary>
+    /// The select
+    /// </summary>
+    private ConcurrentDictionary<int, bool> _select = new();
 
     /// <summary>
     /// Gets a value indicating whether this instance is selection valid.
@@ -317,7 +322,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///   <c>true</c> if this instance is selection valid; otherwise, <c>false</c>.
     /// </value>
-    public bool IsSelectionValid => Selection is { Count: > 0 };
+    public bool IsSelectionValid => _select is { Count: > 0 };
 
     /// <inheritdoc />
     /// <summary>
@@ -346,19 +351,18 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
     private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
-        var control = sender as Thumbnails;
+        if (sender is not Thumbnails control)
+            return;
+
         if (e.NewValue == e.OldValue)
-        {
             return;
-        }
 
-        if (!_refresh)
-        {
+        if (!control.Refresh) // use instance field now
             return;
-        }
 
-        control?.OnItemsSourceChanged();
+        control.OnItemsSourceChangedAsync();
     }
+
 
     /// <summary>
     ///     Handles the blanks.
@@ -366,26 +370,41 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="id">The identifier.</param>
     public void RemoveSingleItem(int id)
     {
-        _refresh = false;
+        Refresh = false;
 
         if (!ItemsSource.ContainsKey(id))
-        {
             return;
+
+        var imageKey = string.Concat(ComCtlResources.ImageAdd, id);
+
+        if (ImageDct.TryRemove(imageKey, out var image))
+        {
+            image.MouseDown -= ImageClick_MouseDown;
+            image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
+            image.Source = null;
         }
 
-        var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
+        if (Border.TryRemove(id, out var border))
+        {
+            Thb.Children.Remove(border);
+        }
 
-        image.Source = null;
+        if (ChkBox != null && ChkBox.TryRemove(id, out var checkbox))
+        {
+            checkbox.Checked -= CheckBox_Checked;
+            checkbox.Unchecked -= CheckBox_Unchecked;
+            Thb.Children.Remove(checkbox);
+        }
 
         _ = ItemsSource.Remove(id);
 
-        _refresh = true;
+        Refresh = true;
     }
 
     /// <summary>
     ///     Called when [items source changed].
     /// </summary>
-    private void OnItemsSourceChanged()
+    private async Task OnItemsSourceChangedAsync()
     {
         ThumbWidth = _originalWidth;
         ThumbHeight = _originalHeight;
@@ -393,7 +412,7 @@ public sealed partial class Thumbnails : IDisposable
         // Clear existing images from the grid
         Thb.Children.Clear();
 
-        _ = LoadImages();
+         await LoadImages();
 
         //All Images Loaded
         ImageLoadedCommand.Execute(this);
@@ -405,256 +424,214 @@ public sealed partial class Thumbnails : IDisposable
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private async Task UserControl_LoadedAsync(object sender, RoutedEventArgs e)
     {
         _originalWidth = ThumbWidth;
         _originalHeight = ThumbHeight;
 
-        _ = LoadImages();
+        await LoadImages();
     }
 
     /// <summary>
-    ///     Loads the images.
+    /// Loads all images asynchronously with limited concurrency and updates the UI.
     /// </summary>
     private async Task LoadImages()
     {
-        if (ItemsSource.Any() != true)
-        {
+        if (ItemsSource == null || ItemsSource.Count == 0)
             return;
-        }
 
+        // Cancel any previous loading
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = new CancellationTokenSource();
         var token = _cancellationTokenSource.Token;
 
-        var timer = new Stopwatch();
-        timer.Start();
+        var timer = Stopwatch.StartNew();
 
-        // Initiate all values
-        ExtendedGrid.CellSize = ThumbCellSize;
+        // Reset UI
+        ThumbWidth = _originalWidth;
+        ThumbHeight = _originalHeight;
+        Thb.Children.Clear();
+
+        // Copy ItemsSource to avoid collection modification issues
         var pics = new Dictionary<int, string>(ItemsSource);
 
+        // Initialize dictionaries
         Keys = new ConcurrentDictionary<string, int>();
         ImageDct = new ConcurrentDictionary<string, Image>();
         Border = new ConcurrentDictionary<int, Border>();
-        Selection = new List<int>();
+        _select = new ConcurrentDictionary<int, bool>();
 
         if (SelectBox)
-        {
             ChkBox = new ConcurrentDictionary<int, CheckBox>();
-        }
 
-        // Handle special cases
-        if (ThumbCellSize == 0)
-        {
-            ThumbCellSize = 100;
-        }
+        // Default values
+        if (ThumbCellSize <= 0) ThumbCellSize = 100;
+        if (ThumbHeight <= 0) ThumbHeight = 1;
+        if (ThumbWidth <= 0) ThumbWidth = 1;
 
-        if (ThumbHeight == 0 && ThumbWidth == 0)
-        {
-            ThumbHeight = 1;
-        }
-
+        // Adjust grid size to fit all images
         if (ThumbHeight * ThumbWidth < pics.Count)
         {
-            if (ThumbWidth == 1)
-            {
-                ThumbHeight = pics.Count;
-            }
-
-            if (ThumbHeight == 1)
-            {
-                ThumbWidth = pics.Count;
-            }
-
-            if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
+            if (ThumbWidth == 1) ThumbHeight = pics.Count;
+            else if (ThumbHeight == 1) ThumbWidth = pics.Count;
+            else
             {
                 var fraction = new Fraction(pics.Count, ThumbHeight);
                 ThumbWidth = (int)Math.Ceiling(fraction.Decimal);
             }
         }
 
-        // Setup the grid layout
+        // Create extended grid
         var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
+        Thb.Children.Add(exGrid);
 
-        _ = Thb.Children.Add(exGrid);
+        // Semaphore limits concurrency
+        using var semaphore = new SemaphoreSlim(4); // max 4 concurrent image loads
 
-        var tasks = new List<Task>();
-        foreach (var (key, name) in pics)
+        var tasks = pics.Select(async kvp =>
         {
-            if (token.IsCancellationRequested)
+            await semaphore.WaitAsync(token).ConfigureAwait(false);
+            try
             {
-                return;
+                if (!token.IsCancellationRequested)
+                    await LoadImageAsync(kvp.Key, kvp.Value, exGrid, token).ConfigureAwait(false);
             }
-
-            tasks.Add(LoadImageAsync(key, name, exGrid));
-
-            // Limit the number of concurrent tasks to avoid overloading
-            if (tasks.Count < 4)
+            finally
             {
-                continue;
+                semaphore.Release();
             }
+        });
 
-            await Task.WhenAll(tasks);
-            tasks.Clear();
-        }
-
-        // Wait for all remaining tasks
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).ConfigureAwait(false);
 
         timer.Stop();
-        Trace.WriteLine(string.Concat(ComCtlResources.DebugTimer, timer.Elapsed));
+        Trace.WriteLine($"{ComCtlResources.DebugTimer} {timer.Elapsed}");
 
-        // Notify that loading is finished
-        ImageLoaded();
+        // Notify that loading is finished on UI thread
+        await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+        {
+            ImageLoadedCommand?.Execute(this);
+            ImageLoaded?.Invoke();
+        }));
     }
 
     /// <summary>
     ///     Loads the image asynchronous.
     /// </summary>
     /// <param name="key">The key.</param>
-    /// <param name="name">The name.</param>
+    /// <param name="filePath">The filepath.</param>
     /// <param name="exGrid">The ex grid.</param>
     /// <returns>Load all images async</returns>
-    private async Task LoadImageAsync(int key, string name, Panel exGrid)
+    /// <summary>
+    /// Loads a single image and adds it to the UI asynchronously.
+    /// </summary>
+    private async Task LoadImageAsync(int key, string filePath, Panel exGrid, CancellationToken token)
     {
-        var token = _cancellationTokenSource.Token;
         if (token.IsCancellationRequested)
-        {
             return;
-        }
 
-        BitmapImage? myBitmapCell = null;
-
-        // Create the image placeholder
-        var images = new Image
-        {
-            Height = ThumbCellSize, Width = ThumbCellSize, Name = string.Concat(ComCtlResources.ImageAdd, key)
-        };
-
-        // Create a border around the image
-        var border = new Border
-        {
-            Child = images, // Set the image as the child of the border
-            BorderThickness = new Thickness(0), // Initially no border
-            BorderBrush = Brushes.Transparent, // Initially transparent
-            Margin = new Thickness(1), // Optionally add some margin for spacing
-            Name = string.Concat(ComCtlResources.ImageAdd, key)
-        };
-
-        //add a reference to Border for later use
-        Border.TryAdd(key, border);
-
-        // Add image click handler (this should run on the UI thread)
-        images.MouseDown += ImageClick_MouseDown;
-
-        // Add to dictionaries and grid on the UI thread
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            Keys.TryAdd(images.Name, key);
-            ImageDct.TryAdd(images.Name, images);
-            Grid.SetRow(border, key / ThumbWidth); // Use the border instead of the image
-            Grid.SetColumn(border, key % ThumbWidth);
-            _ = exGrid.Children.Add(border); // Add the border to the grid
-        });
-
-        // Try loading the bitmap image
+        BitmapImage? bitmap = null;
         try
         {
-            myBitmapCell = await GetBitmapImageFileStreamAsync(name, ThumbCellSize, ThumbCellSize);
+            // Load bitmap off the UI thread
+            bitmap = await Task.Run(() => LoadBitmap(filePath, ThumbCellSize, ThumbCellSize), token);
         }
-        catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
-                                       or InvalidOperationException)
+        catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException)
         {
-            Trace.WriteLine(ex);
+            Trace.WriteLine($"Failed to load image {filePath}: {ex.Message}");
+        }
+        catch (OperationCanceledException)
+        {
+            return; // Task was cancelled
         }
 
-        if (myBitmapCell == null)
-        {
+        if (bitmap == null)
             return;
+
+        var imageName = $"{ComCtlResources.ImageAdd}{key}";
+        var image = new Image
+        {
+            Height = ThumbCellSize,
+            Width = ThumbCellSize,
+            Name = imageName,
+            Source = bitmap,
+            ToolTip = filePath
+        };
+
+        var border = new Border
+        {
+            Child = image,
+            BorderBrush = Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Margin = new Thickness(1),
+            Name = imageName
+        };
+
+        // Add click handler
+        image.MouseDown += ImageClick_MouseDown;
+
+        // If SelectBox is enabled, prepare checkbox
+        CheckBox? checkbox = null;
+        if (SelectBox)
+        {
+            checkbox = new CheckBox
+            {
+                Height = ComCtlResources.CheckBoxDimension,
+                Width = ComCtlResources.CheckBoxDimension,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                IsChecked = IsCheckBoxSelected,
+                Name = imageName
+            };
+            checkbox.Checked += CheckBox_Checked;
+            checkbox.Unchecked += CheckBox_Unchecked;
+            image.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
         }
 
-        // Set the image source on the UI thread
-        Application.Current.Dispatcher.Invoke(() =>
+        // Add to UI on the dispatcher
+        await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
         {
-            images.ToolTip = name;
-            images.Source = myBitmapCell;
-        });
+            Keys.TryAdd(imageName, key);
+            ImageDct.TryAdd(imageName, image);
+            Border.TryAdd(key, border);
 
-        if (SelectBox)
-            // Handle checkboxes for selection on the UI thread
-        {
-            Application.Current.Dispatcher.Invoke(() =>
+            Grid.SetRow(border, key / ThumbWidth);
+            Grid.SetColumn(border, key % ThumbWidth);
+            exGrid.Children.Add(border);
+
+            if (checkbox != null)
             {
-                images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
-
-                var checkbox = new CheckBox
-                {
-                    Height = 23,
-                    Width = 23,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    IsChecked = IsCheckBoxSelected
-                };
-
-                if (IsCheckBoxSelected)
-                {
-                    Selection.Add(key);
-                }
-
-                checkbox.Checked += CheckBox_Checked;
-                checkbox.Unchecked += CheckBox_Unchecked;
                 ChkBox.TryAdd(key, checkbox);
-
-                checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
                 Grid.SetRow(checkbox, key / ThumbWidth);
                 Grid.SetColumn(checkbox, key % ThumbWidth);
-                _ = exGrid.Children.Add(checkbox);
-            });
-        }
+                exGrid.Children.Add(checkbox);
+            }
+        }));
     }
 
     /// <summary>
-    ///     Gets the bitmap image file stream asynchronous.
+    /// Loads and resizes a bitmap from file (off UI thread).
     /// </summary>
-    /// <param name="filePath">The file path.</param>
+    /// <param name="path">The path.</param>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    /// <returns>The loaded and resized Image</returns>
-    private static async Task<BitmapImage?> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
+    /// <returns></returns>
+    private static BitmapImage LoadBitmap(string path, int width, int height)
     {
-        return string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)
-            ? null
-            : await Task.Run(() =>
-            {
-                BitmapImage? bitmapImage = null;
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            return null!;
 
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    FileStream? stream = null;
-                    try
-                    {
-                        bitmapImage = new BitmapImage();
-                        stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                        bitmapImage.BeginInit();
-                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmapImage.DecodePixelWidth = width;
-                        bitmapImage.DecodePixelHeight = height;
-                        bitmapImage.StreamSource = stream;
-                        bitmapImage.EndInit();
-                        bitmapImage.Freeze();
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
-                    }
-                    finally
-                    {
-                        stream?.Dispose();
-                    }
-                });
-
-                return bitmapImage;
-            });
+        var bitmap = new BitmapImage();
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        bitmap.BeginInit();
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        bitmap.DecodePixelWidth = width;
+        bitmap.DecodePixelHeight = height;
+        bitmap.StreamSource = stream;
+        bitmap.EndInit();
+        bitmap.Freeze();
+        return bitmap;
     }
 
     /// <summary>
@@ -796,14 +773,17 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
     private void DeselectAll_Click(object sender, RoutedEventArgs e)
     {
-        if (Selection.Count == 0)
+        if (_select.Count == 0)
         {
             return;
         }
 
-        foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
+        foreach (var id in new List<int>(Selection))
         {
-            check.IsChecked = false;
+            if (ChkBox.TryGetValue(id, out var check))
+            {
+                check.IsChecked = false;
+            }
         }
     }
 
@@ -814,18 +794,8 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
     private void CheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        //get the button that was clicked
-        if (sender is not CheckBox clickedCheckBox)
-        {
-            return;
-        }
-
-        if (!Keys.TryGetValue(clickedCheckBox.Name, out var id))
-        {
-            return;
-        }
-
-        Selection.Add(id);
+        if (sender is CheckBox cb && Keys.TryGetValue(cb.Name, out var id))
+            _select.TryAdd(id, true);
     }
 
     /// <summary>
@@ -835,18 +805,8 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-        //get the button that was clicked
-        if (sender is not CheckBox clickedCheckBox)
-        {
-            return;
-        }
-
-        if (!Keys.TryGetValue(clickedCheckBox.Name, out var id))
-        {
-            return;
-        }
-
-        _ = Selection.Remove(id);
+        if (sender is CheckBox cb && Keys.TryGetValue(cb.Name, out var id))
+            _ = _select.TryRemove(id, out _);
     }
 
     /// <summary>
@@ -917,24 +877,38 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="disposing">if set to <c>true</c> [disposing].</param>
     private void Dispose(bool disposing)
     {
-        if (_disposed)
-        {
-            return;
-        }
+        if (_disposed) return;
 
         if (disposing)
         {
-            // Dispose managed resources
-            // e.g., unsubscribe from events, dispose of Image objects, etc.
-            foreach (var image in Thb.Children.OfType<Image>())
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+
+            // Ensure UI thread for WPF elements
+            Application.Current.Dispatcher.BeginInvoke(() =>
             {
-                image.Source = null; // Release image source
-            }
+                foreach (var image in ImageDct.Values)
+                {
+                    image.MouseDown -= ImageClick_MouseDown;
+                    image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
+                    image.Source = null;
+                }
 
-            Thb.Children.Clear(); // Clear children from the UI element
+                foreach (var checkbox in ChkBox?.Values ?? Enumerable.Empty<CheckBox>())
+                {
+                    checkbox.Checked -= CheckBox_Checked;
+                    checkbox.Unchecked -= CheckBox_Unchecked;
+                }
+
+                Thb.Children.Clear();
+            });
+
+            Keys?.Clear();
+            ImageDct?.Clear();
+            Border?.Clear();
+            ChkBox?.Clear();
+            _select?.Clear();
         }
-
-        // Dispose unmanaged resources if any...
 
         _disposed = true;
     }

@@ -125,4 +125,9 @@ internal static class ComCtlResources
     ///     Separator (const). Value: " , ".
     /// </summary>
     internal const string Separator = " , ";
+
+    /// <summary>
+    /// The CheckBox dimension  (const). Value: " 23".
+    /// </summary>
+    internal const int CheckBoxDimension = 23;
 }
