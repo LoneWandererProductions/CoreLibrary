@@ -24,6 +24,7 @@ namespace CommonControls;
 /// <inheritdoc />
 /// <summary>
 ///     View for ListView
+///     Abstracts the basic Functionality for DataList
 /// </summary>
 /// <seealso cref="INotifyPropertyChanged" />
 public sealed class DataListView : INotifyPropertyChanged
