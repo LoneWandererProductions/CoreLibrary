@@ -403,17 +403,38 @@ public sealed partial class Thumbnails : IDisposable
         _refresh = true;
     }
 
-
     /// <summary>
     ///     Called when [items source changed].
     /// </summary>
     private async Task OnItemsSourceChanged()
     {
+        // Cancel any ongoing loads
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+
+        // Unsubscribe events and clear dictionaries
+        foreach (var img in ImageDct?.Values ?? Enumerable.Empty<Image>())
+        {
+            img.MouseDown -= ImageClick_MouseDown;
+            img.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
+            img.Source = null;
+        }
+
+        foreach (var cb in ChkBox?.Values ?? Enumerable.Empty<CheckBox>())
+        {
+            cb.Checked -= CheckBox_Checked;
+            cb.Unchecked -= CheckBox_Unchecked;
+        }
+
+        Thb.Children.Clear();
+        Keys?.Clear();
+        ImageDct?.Clear();
+        ChkBox?.Clear();
+        Border?.Clear();
+        Selection?.Clear();
+
         ThumbWidth = _originalWidth;
         ThumbHeight = _originalHeight;
-
-        // Clear existing images from the grid
-        Thb.Children.Clear();
 
         await LoadImages();
 
@@ -811,7 +832,7 @@ public sealed partial class Thumbnails : IDisposable
         // Take a snapshot to avoid modifying while enumerating
         var selectedIds = Selection.Keys.ToList();
 
-        Application.Current.Dispatcher.Invoke(() =>
+        Application.Current.Dispatcher.BeginInvoke(() =>
         {
             foreach (var id in selectedIds)
             {
