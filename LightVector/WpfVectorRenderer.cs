@@ -41,12 +41,6 @@ public class WpfVectorRenderer : IVectorRenderer
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Renders to container.
-    /// </summary>
-    /// <returns>
-    ///     Returns a framework-specific container
-    /// </returns>
     public object RenderToContainer()
     {
         var canvas = new Canvas();
@@ -83,12 +77,6 @@ public class WpfVectorRenderer : IVectorRenderer
 
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Renders to image.
-    /// </summary>
-    /// <returns>
-    ///     Converts to a WPF Image
-    /// </returns>
     public ImageSource RenderToImage()
     {
         var canvas = (Canvas)RenderToContainer();

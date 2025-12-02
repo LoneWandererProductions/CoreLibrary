@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleCreate.cs
+ * FILE:        FileHandleCreate.cs
  * PURPOSE:     Handles all types of file creation operations
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

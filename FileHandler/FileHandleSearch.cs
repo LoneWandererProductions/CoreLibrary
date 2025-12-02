@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleSearch.cs
+ * FILE:        FileHandleSearch.cs
  * PURPOSE:     Handles all types of file searches (refactored for clarity and safety)
  * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */

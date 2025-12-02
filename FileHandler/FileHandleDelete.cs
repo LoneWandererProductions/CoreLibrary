@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandleDelete.cs
+* FILE:        FileHandleDelete.cs
 * PURPOSE:     Handles all types of file operations, including deletion
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

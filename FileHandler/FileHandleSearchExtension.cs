@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileSearchExtension.cs
+ * FILE:        FileSearchExtension.cs
  * PURPOSE:     Extension for FileSearch
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

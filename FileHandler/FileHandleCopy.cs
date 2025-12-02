@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandleCopy.cs
+* FILE:        FileHandleCopy.cs
 * PURPOSE:     Does all types of File Operations, Copy Files
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

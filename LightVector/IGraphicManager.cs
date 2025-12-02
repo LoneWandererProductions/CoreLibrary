@@ -55,13 +55,38 @@ public interface IGraphicManager
     /// <returns></returns>
     SaveObject? GetObjectById(int id);
 
+    /// <summary>
+    /// Removes the object.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <returns>Status of operation. if failed false, if success, true.</returns>
     bool RemoveObject(int id);
 
+    /// <summary>
+    /// Updates the object layer.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="newLayer">The new layer.</param>
+    /// <returns>Status of operation. if failed false, if success, true.</returns>
     bool UpdateObjectLayer(int id, int newLayer);
 
+    /// <summary>
+    /// Updates the object attributes.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="newAttributes">The new attributes.</param>
+    /// <returns>Status of operation. if failed false, if success, true.</returns>
     bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes);
 
+    /// <summary>
+    /// Saves to file.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
     void SaveToFile(string filePath);
 
+    /// <summary>
+    /// Loads from file.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
     void LoadFromFile(string filePath);
 }

@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/DirectoryInformation.cs
+* FILE:        DirectoryInformation.cs
 * PURPOSE:     Generic System Functions for Directories
 * PROGRAMER:   Peter Geinitz (Wayfarer) 
 */

@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandleRename.cs
+* FILE:        FileHandleRename.cs
 * PURPOSE:     Utility to Rename Files and Folders
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

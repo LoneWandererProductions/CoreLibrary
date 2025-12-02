@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandleCut.cs
+* FILE:        FileHandleCut.cs
 * PURPOSE:     Does all types of File Operations, Copy Files and deletes them afterwards.
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

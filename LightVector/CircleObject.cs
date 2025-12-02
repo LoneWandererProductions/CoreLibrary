@@ -63,6 +63,12 @@ public sealed class CircleObject : GraphicObject
         }
     }
 
+    /// <summary>
+    /// Rotates the vector.
+    /// </summary>
+    /// <param name="vector">The vector.</param>
+    /// <param name="angle">The angle.</param>
+    /// <returns>New Vector.</returns>
     private static Vector2 RotateVector(Vector2 vector, double angle)
     {
         // Convert angle to radians

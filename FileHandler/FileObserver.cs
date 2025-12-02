@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileObserver.cs
+ * FILE:        FileObserver.cs
  * PURPOSE:     File Watcher, that observes changes to Folder.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

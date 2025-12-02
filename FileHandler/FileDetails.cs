@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileDetails.cs
+ * FILE:        FileDetails.cs
  * PURPOSE:     Contains more Information about certain Files
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

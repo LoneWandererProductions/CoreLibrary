@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandlerException.cs
+ * FILE:        FileHandlerException.cs
  * PURPOSE:     Exception Class
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

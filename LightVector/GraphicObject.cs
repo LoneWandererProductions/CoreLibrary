@@ -69,7 +69,13 @@ public abstract class GraphicObject
 
     [XmlIgnore] public Dictionary<string, object> OptionalAttributes { get; set; } = new();
 
-    // For XML serialization
+    /// <summary>
+    /// Gets or sets the serializable attributes.
+    ///  For XML serialization
+    /// </summary>
+    /// <value>
+    /// The serializable attributes.
+    /// </value>
     [XmlArray("OptionalAttributes")]
     [XmlArrayItem("Attribute")]
     public List<SerializableAttribute> SerializableAttributes
@@ -98,13 +104,18 @@ public abstract class GraphicObject
     }
 
     /// <summary>
-    ///     Optional
+    /// Optional
     /// </summary>
+    /// <value>
+    /// The stroke line join.
+    /// </value>
     public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
 
     /// <summary>
-    ///     Checks if this object supports the given transformation.
+    /// Checks if this object supports the given transformation.
     /// </summary>
+    /// <param name="transformation">The transformation.</param>
+    /// <returns>Checks if transformation is supported.</returns>
     public abstract bool SupportsTransformation(Transform transformation);
 
     /// <summary>

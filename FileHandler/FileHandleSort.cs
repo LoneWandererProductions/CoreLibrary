@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleSort.cs
+ * FILE:        FileHandleSort.cs
  * PURPOSE:     Extension for File Sort
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

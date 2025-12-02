@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileUtility.cs
+ * FILE:        FileUtility.cs
  * PURPOSE:     Some Basic helper Functions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

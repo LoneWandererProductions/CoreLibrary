@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/PathInformation.cs
+ * FILE:        PathInformation.cs
  * PURPOSE:     Generic System Functions for Path
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

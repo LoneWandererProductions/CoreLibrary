@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     FileHandler
-* FILE:        FileHandler/FileHandleCompress.cs
+* FILE:        FileHandleCompress.cs
 * PURPOSE:     File Compression Utilities
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 * Sources:     https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.zipfile?view=net-5.0

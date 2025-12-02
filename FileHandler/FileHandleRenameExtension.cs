@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleRenameExtension.cs
+ * FILE:        FileHandleRenameExtension.cs
  * PURPOSE:     Unified safe rename helpers (append/remove/replace/reorder)
  * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */

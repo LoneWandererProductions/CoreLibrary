@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandlerProcessing.cs
+ * FILE:        FileHandlerProcessing.cs
  * PURPOSE:     Helper Methods for the FileHandler library
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

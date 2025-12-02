@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleSafeDelete.cs
+ * FILE:        FileHandleSafeDelete.cs
  * PURPOSE:     Variation of delete files, with Progress Bar and Deletion to Recycle Bin
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

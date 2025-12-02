@@ -28,14 +28,6 @@ public class GraphicManager : IGraphicManager
     private readonly Dictionary<int, SaveObject> _objects = new();
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Adds the object.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="graphic">The graphic.</param>
-    /// <param name="layer">The layer.</param>
-    /// <param name="startCoordinates">The start coordinates.</param>
-    /// <param name="attributes">The attributes.</param>
     /// <exception cref="T:System.InvalidOperationException">An object with ID {id} already exists.</exception>
     public void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
         Dictionary<string, object>? attributes = null)
@@ -68,12 +60,6 @@ public class GraphicManager : IGraphicManager
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Applies the transformation.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="transformation">The transformation.</param>
-    /// <returns>Status of the transformation.</returns>
     /// <exception cref="KeyNotFoundException">No object found with ID {id}.</exception>
     public bool ApplyTransformation(int id, Transform transformation)
     {
@@ -93,34 +79,18 @@ public class GraphicManager : IGraphicManager
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Gets the object by identifier.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <returns></returns>
     public SaveObject? GetObjectById(int id)
     {
         return _objects.TryGetValue(id, out var obj) ? obj : null;
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Removes the object.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <returns>Status of removal.</returns>
     public bool RemoveObject(int id)
     {
         return _objects.Remove(id);
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Updates the object layer.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="newLayer">The new layer.</param>
-    /// <returns>Status of Update.</returns>
     public bool UpdateObjectLayer(int id, int newLayer)
     {
         if (!_objects.TryGetValue(id, out var obj))
@@ -133,12 +103,6 @@ public class GraphicManager : IGraphicManager
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Updates the object attributes.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="newAttributes">The new attributes.</param>
-    /// <returns>Status of Attribute updates.</returns>
     public bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes)
     {
         if (!_objects.TryGetValue(id, out var obj))
@@ -155,20 +119,12 @@ public class GraphicManager : IGraphicManager
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Saves to file.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
     public void SaveToFile(string filePath)
     {
         SaveHelper.XmlSerializerObject(new List<SaveObject>(_objects.Values), filePath);
     }
 
     /// <inheritdoc />
-    /// <summary>
-    ///     Loads from file.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
     public void LoadFromFile(string filePath)
     {
         var loadedObjects = SaveHelper.XmlDeSerializerObject<List<SaveObject>>(filePath);

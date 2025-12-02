@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandlerRegister.cs
+ * FILE:        FileHandlerRegister.cs
  * PURPOSE:     Register for basic configs and some Messages
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

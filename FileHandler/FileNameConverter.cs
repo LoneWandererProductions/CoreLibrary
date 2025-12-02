@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileNameConverter.cs
+ * FILE:        FileNameConverter.cs
  * PURPOSE:     Helps to perform some generic renaming operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
