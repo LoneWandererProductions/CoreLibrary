@@ -33,6 +33,11 @@ namespace ViewModel
         private readonly Predicate<T>? _canExecute;
 
         /// <summary>
+        /// The execute command.
+        /// </summary>
+        private readonly Action<T?> _execute;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
         /// </summary>
         /// <param name="action">The action to execute.</param>
@@ -41,9 +46,9 @@ namespace ViewModel
         ///     executable.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-        public DelegateCommand(Action<T> action, Predicate<T>? canExecute = null)
+        public DelegateCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
         {
-            _action = action ?? throw new ArgumentNullException(nameof(action));
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
 
@@ -53,9 +58,7 @@ namespace ViewModel
         /// </summary>
         /// <param name="parameter">The parameter for the action.</param>
         public void Execute(object? parameter)
-        {
-            _action((T)parameter);
-        }
+            => _execute((parameter is T t) ? t : default);
 
         /// <inheritdoc />
         /// <summary>
@@ -63,18 +66,14 @@ namespace ViewModel
         /// </summary>
         /// <param name="parameter">The parameter for the predicate.</param>
         /// <returns>True if the command can execute, otherwise false.</returns>
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute?.Invoke((T)parameter) ?? true;
-        }
+        public bool CanExecute(object? parameter)
+            => _canExecute?.Invoke((parameter is T t) ? t : default) ?? true;
 
         /// <summary>
         ///     Raises the <see cref="CanExecuteChanged"/> event to force WPF to re-query CanExecute.
         /// </summary>
         public void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
-        }
+            => CommandManager.InvalidateRequerySuggested();
 
         /// <inheritdoc />
         /// <summary>

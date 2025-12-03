@@ -68,7 +68,6 @@ public sealed class AsyncDelegateCommand<T> : ICommand
         return _canExecute?.Invoke((T)parameter) ?? true;
     }
 
-
     /// <summary>
     /// Raises the <see cref="CanExecuteChanged" /> event to force WPF to re-query CanExecute.
     /// </summary>

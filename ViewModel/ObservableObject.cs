@@ -28,7 +28,5 @@ public class ObservableObject : INotifyPropertyChanged
     /// </summary>
     /// <param name="propertyName">The name of the property that changed.</param>
     protected void RaisePropertyChangedEvent([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
