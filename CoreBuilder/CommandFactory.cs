@@ -31,7 +31,6 @@ namespace CoreBuilder
             ICommand[] modules =
             {
                 new DirectorySizeAnalyzer(),
-                new DirectorySizeAnalyzer(),
                 new LogTailCommand(),
                 new HeaderExtractor(),
                 new ResXtract(),
