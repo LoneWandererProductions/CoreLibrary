@@ -9,7 +9,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using CoreBuilder;
+using CoreBuilder.Development;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoreBuilderTests;

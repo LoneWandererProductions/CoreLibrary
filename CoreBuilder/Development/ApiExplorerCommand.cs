@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder
+ * PROJECT:     CoreBuilder.Development
  * FILE:        ApiExplorerCommand.cs
  * PURPOSE:     Command to list namespaces, classes, and members in a source directory.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -19,7 +19,7 @@ using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder
+namespace CoreBuilder.Development
 {
     /// <inheritdoc />
     /// <summary>

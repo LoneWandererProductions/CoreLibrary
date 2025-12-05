@@ -1,6 +1,6 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     CoreBuilder
+* PROJECT:     CoreBuilder.Development
 * FILE:        CoreBuilder/ResXtract.cs
 * PURPOSE:     String Resource extractor.
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -22,7 +22,7 @@ using Weaver.Interfaces;
 using Weaver.Messages;
 
 
-namespace CoreBuilder;
+namespace CoreBuilder.Development;
 
 /// <inheritdoc />
 /// <summary>

@@ -1,11 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilder
- * FILE:        AnalyzerFactory.cs
+ * FILE:        CommandFactory.cs
  * PURPOSE:     Return all available code analyzers.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using CoreBuilder.Development;
 using CoreBuilder.FileManager;
 using CoreBuilder.Interface;
 using CoreBuilder.Rules;
@@ -19,7 +20,7 @@ namespace CoreBuilder
     /// <summary>
     /// Simple factory to return all available code analyzers and commands.
     /// </summary>
-    public static class AnalyzerFactory
+    public static class CommandFactory
     {
         /// <summary>
         /// Gets the commands.
@@ -50,10 +51,53 @@ namespace CoreBuilder
                 new DeadReferenceAnalyzer(),
                 new ApiExplorerCommand(),
                 new FileLockScanner(),
-                new SmartPingPro()
+                new SmartPingPro(), 
+                new WhoAmI(),
+                new Tree()
             };
 
             return modules;
+        }
+
+        /// <summary>
+        /// Gets the commands.
+        /// </summary>
+        /// <param name="userspace">The userspace.</param>
+        /// <returns>All commands by Namespace.</returns>
+        public static IReadOnlyList<ICommand> GetCommands(string userspace)
+        {
+            ICommand[] modules =
+            {
+                new DirectorySizeAnalyzer(),
+                new DirectorySizeAnalyzer(),
+                new LogTailCommand(),
+                new HeaderExtractor(),
+                new ResXtract(),
+                new AllocationAnalyzer(),
+                new DisposableAnalyzer(),
+                new DoubleNewlineAnalyzer(),
+                new DuplicateStringLiteralAnalyzer(),
+                new EventHandlerAnalyzer(),
+                new HotPathAnalyzer(),
+                new LicenseHeaderAnalyzer(),
+                new UnusedClassAnalyzer(),
+                new UnusedConstantAnalyzer(),
+                new UnusedLocalVariableAnalyzer(),
+                new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(),
+                new DocCommentCoverageCommand(),
+                new DeadReferenceAnalyzer(),
+                new ApiExplorerCommand(),
+                new FileLockScanner(),
+                new SmartPingPro(),
+                new WhoAmI(),
+                new Tree()
+            };
+
+            // Filter by Namespace
+            return modules
+                .Where(m => string.Equals(m.Namespace, userspace, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         /// <summary>
@@ -81,28 +125,6 @@ namespace CoreBuilder
             };
 
             return modules;
-        }
-
-        /// <summary>
-        /// Gets the commands.
-        /// </summary>
-        /// <param name="userspace">The userspace.</param>
-        /// <returns>All commands by Namespace.</returns>
-        public static IReadOnlyList<ICommand> GetCommands(string userspace)
-        {
-            ICommand[] modules =
-            {
-                new DirectorySizeAnalyzer(),
-                new FileLockScanner(),
-                new SmartPingPro(),
-                new DirectorySizeAnalyzer(),
-                new LogTailCommand()
-            };
-
-            // Filter by Namespace
-            return modules
-                .Where(m => string.Equals(m.Namespace, userspace, StringComparison.OrdinalIgnoreCase))
-                .ToList();
         }
     }
 }

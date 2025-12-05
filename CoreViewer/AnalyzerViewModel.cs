@@ -124,7 +124,7 @@ namespace CoreViewer
         /// </summary>
         private void LoadAnalyzers()
         {
-            _analyzers = AnalyzerFactory.GetAllAnalyzers();
+            _analyzers = CommandFactory.GetAllAnalyzers();
         }
 
         /// <summary>
