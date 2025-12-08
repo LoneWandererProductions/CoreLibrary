@@ -123,14 +123,14 @@ public sealed class DirectBitmapImage : IDisposable
         unsafe
         {
             var buffer = (byte*)_bitmap.BackBuffer.ToPointer();
-            int stride = _bitmap.BackBufferStride;
+            var stride = _bitmap.BackBufferStride;
 
             foreach (var pixel in pixels)
             {
                 if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
                     continue;
 
-                int offset = pixel.Y * stride + pixel.X * 4;
+                var offset = pixel.Y * stride + pixel.X * 4;
                 buffer[offset + 0] = pixel.B;
                 buffer[offset + 1] = pixel.G;
                 buffer[offset + 2] = pixel.R;
@@ -139,7 +139,6 @@ public sealed class DirectBitmapImage : IDisposable
                 Bits[pixel.Y * Width + pixel.X] =
                     (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
             }
-
         }
 
         _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
@@ -152,16 +151,16 @@ public sealed class DirectBitmapImage : IDisposable
     /// <param name="color">The color to fill with.</param>
     public unsafe void FillSimd(Color color)
     {
-        uint packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
+        var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
         _bitmap.Lock();
 
-        uint* ptr = (uint*)_bitmap.BackBuffer.ToPointer();
-        int len = Bits.Length;
-        int vecSize = Vector<uint>.Count;
-        int i = 0;
+        var ptr = (uint*)_bitmap.BackBuffer.ToPointer();
+        var len = Bits.Length;
+        var vecSize = Vector<uint>.Count;
+        var i = 0;
 
         // SIMD bulk fill
-        Vector<uint> v = new Vector<uint>(packed);
+        var v = new Vector<uint>(packed);
         for (; i <= len - vecSize; i += vecSize)
             v.CopyTo(Bits, i);
 
@@ -202,9 +201,9 @@ public sealed class DirectBitmapImage : IDisposable
         // We reuse output array to avoid allocations when repeating effects
         var pixels = new (int x, int y, Color color)[Bits.Length];
 
-        for (int i = 0; i < Bits.Length; i++)
+        for (var i = 0; i < Bits.Length; i++)
         {
-            uint argb = Bits[i];
+            var argb = Bits[i];
 
             // Manual unpack (fastest + identical)
             float r = (byte)(argb >> 16);
@@ -213,16 +212,16 @@ public sealed class DirectBitmapImage : IDisposable
             float a = (byte)(argb >> 24);
 
             // Ordered multiply like WinForms (NOT SIMD parallel)
-            float rr = r * m00 + g * m01 + b * m02 + a * m03;
-            float gg = r * m10 + g * m11 + b * m12 + a * m13;
-            float bb = r * m20 + g * m21 + b * m22 + a * m23;
-            float aa = r * m30 + g * m31 + b * m32 + a * m33;
+            var rr = r * m00 + g * m01 + b * m02 + a * m03;
+            var gg = r * m10 + g * m11 + b * m12 + a * m13;
+            var bb = r * m20 + g * m21 + b * m22 + a * m23;
+            var aa = r * m30 + g * m31 + b * m32 + a * m33;
 
             // Same exact truncation as WinForms (NOT Math.Round)
-            byte R = (byte)(rr < 0f ? 0f : (rr > 255f ? 255f : rr));
-            byte G = (byte)(gg < 0f ? 0f : (gg > 255f ? 255f : gg));
-            byte B = (byte)(bb < 0f ? 0f : (bb > 255f ? 255f : bb));
-            byte A = (byte)(aa < 0f ? 0f : (aa > 255f ? 255f : aa));
+            var R = (byte)(rr < 0f ? 0f : (rr > 255f ? 255f : rr));
+            var G = (byte)(gg < 0f ? 0f : (gg > 255f ? 255f : gg));
+            var B = (byte)(bb < 0f ? 0f : (bb > 255f ? 255f : bb));
+            var A = (byte)(aa < 0f ? 0f : (aa > 255f ? 255f : aa));
 
             // Save (no packing yet)
             pixels[i] = (i % Width, i / Width, Color.FromArgb(A, R, G, B));
@@ -264,22 +263,22 @@ public sealed class DirectBitmapImage : IDisposable
         if (src == null || src.Length != Bits.Length)
             throw new ArgumentException("Source must match image size");
 
-        int len = Bits.Length;
+        var len = Bits.Length;
 
-        for (int i = 0; i < len; i++)
+        for (var i = 0; i < len; i++)
         {
-            uint s = src[i];
+            var s = src[i];
             if ((s >> 24) == 0)
                 continue; // fully transparent, skip completely
 
-            uint d = Bits[i];
+            var d = Bits[i];
 
             // Load BGRA from packed uint into float components
             var sf = new Vector4(
-                (s >> 16) & 255,  // R
-                (s >> 8) & 255,  // G
-                (s) & 255,  // B
-                (s >> 24) & 255   // A
+                (s >> 16) & 255, // R
+                (s >> 8) & 255, // G
+                (s) & 255, // B
+                (s >> 24) & 255 // A
             );
 
             var df = new Vector4(
@@ -289,12 +288,12 @@ public sealed class DirectBitmapImage : IDisposable
                 (d >> 24) & 255
             );
 
-            float a = sf.W * (1f / 255f);
+            var a = sf.W * (1f / 255f);
             if (a <= 0.0001f)
                 continue; // ignore near-transparent pixels
 
             // SIMD blend: Dst = Src * a + Dst * (1−a)
-            Vector4 r = sf * a + df * (1f - a);
+            var r = sf * a + df * (1f - a);
 
             // Clamp and repack BGRA
             Bits[i] =
@@ -319,8 +318,8 @@ public sealed class DirectBitmapImage : IDisposable
         foreach (var (x, y, c) in pixels)
         {
             if ((uint)x >= Width || (uint)y >= Height) continue;
-            uint packed = (uint)(c.A << 24 | c.R << 16 | c.G << 8 | c.B);
-            int index = x + y * Width;
+            var packed = (uint)(c.A << 24 | c.R << 16 | c.G << 8 | c.B);
+            var index = x + y * Width;
             ptr[index] = packed;
             Bits[index] = packed;
         }
@@ -368,10 +367,11 @@ public sealed class DirectBitmapImage : IDisposable
         _bitmap.Lock();
         unsafe
         {
-            void* src = (void*)_bitsHandle.AddrOfPinnedObject();
-            void* dst = (void*)_bitmap.BackBuffer;
+            var src = (void*)_bitsHandle.AddrOfPinnedObject();
+            var dst = (void*)_bitmap.BackBuffer;
             Buffer.MemoryCopy(src, dst, Bits.Length * sizeof(uint), Bits.Length * sizeof(uint));
         }
+
         _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
         _bitmap.Unlock();
     }

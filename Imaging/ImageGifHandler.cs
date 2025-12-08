@@ -70,58 +70,30 @@ public static class ImageGifHandler
     internal static async Task<List<Bitmap>> SplitGifAsync(string path)
     {
         if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            throw new IOException($"File not found: {path}");
+
+        return await Task.Run(() =>
         {
-            var innerException = path != null
-                ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                : new IOException(nameof(path));
-            throw new IOException(ImagingResources.ErrorFileNotFound, innerException);
-        }
+            var frames = new List<Bitmap>();
 
-        var lst = new List<Bitmap>();
+            // Load GIF without locking the file
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var image = Image.FromStream(fs);
 
-        try
-        {
-            using var image = Image.FromFile(path);
+            var frameCount = image.GetFrameCount(FrameDimension.Time);
 
-            var numberOfFrames = image.GetFrameCount(FrameDimension.Time);
-
-            for (var i = 0; i < numberOfFrames; i++)
+            for (var i = 0; i < frameCount; i++)
             {
                 image.SelectActiveFrame(FrameDimension.Time, i);
 
-                // Process each frame asynchronously
-                await Task.Run(() =>
-                {
-                    var bmp = new Bitmap(image);
-                    lst.Add(bmp);
-                });
+                // clone the frame immediately ON THE SAME THREAD
+                frames.Add(new Bitmap(image));
             }
-        }
-        catch (OutOfMemoryException ex)
-        {
-            var currentProcess = Process.GetCurrentProcess();
-            var memorySize = currentProcess.PrivateMemorySize64;
 
-            Trace.WriteLine(string.Concat(ex, ImagingResources.Separator, ImagingResources.ErrorMemory,
-                memorySize));
-            lst.Clear();
-            GC.Collect();
-
-            ImageRegister.Count++;
-
-            if (ImageRegister.Count < 3)
-            {
-                await SplitGifAsync(path);
-            }
-            else
-            {
-                ImageRegister.Count = 0;
-                throw;
-            }
-        }
-
-        return lst;
+            return frames;
+        });
     }
+
 
     /// <summary>
     ///     Loads the GIF.

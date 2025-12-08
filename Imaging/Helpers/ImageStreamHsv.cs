@@ -92,9 +92,9 @@ internal static class ImageStreamHsv
         var source = new DirectBitmap(image);
         var result = new DirectBitmap(source.Width, source.Height);
 
-        for (int y = 0; y < source.Height; y++)
+        for (var y = 0; y < source.Height; y++)
         {
-            for (int x = 0; x < source.Width; x++)
+            for (var x = 0; x < source.Width; x++)
             {
                 var c = source.GetPixel(x, y);
 

@@ -97,7 +97,9 @@ namespace Imaging
         /// <summary>
         /// Prevents a default instance of the <see cref="ColorHsv"/> class from being created.
         /// </summary>
-        private ColorHsv() { } // internal factory use
+        private ColorHsv()
+        {
+        } // internal factory use
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorHsv"/> class.
@@ -174,10 +176,10 @@ namespace Imaging
         /// <returns>Color HSV object.</returns>
         public static ColorHsv FromArgbInt(int argb)
         {
-            int a = (argb >> 24) & 0xFF;
-            int r = (argb >> 16) & 0xFF;
-            int g = (argb >> 8) & 0xFF;
-            int b = argb & 0xFF;
+            var a = (argb >> 24) & 0xFF;
+            var r = (argb >> 16) & 0xFF;
+            var g = (argb >> 8) & 0xFF;
+            var b = argb & 0xFF;
 
             return FromRgb(r, g, b, a);
         }
@@ -231,7 +233,7 @@ namespace Imaging
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
             => HashCode.Combine(R, G, B, A);
@@ -304,13 +306,13 @@ namespace Imaging
         /// </summary>
         private void ToHsv()
         {
-            double r = R / 255d;
-            double g = G / 255d;
-            double b = B / 255d;
+            var r = R / 255d;
+            var g = G / 255d;
+            var b = B / 255d;
 
-            double max = Math.Max(r, Math.Max(g, b));
-            double min = Math.Min(r, Math.Min(g, b));
-            double delta = max - min;
+            var max = Math.Max(r, Math.Max(g, b));
+            var min = Math.Min(r, Math.Min(g, b));
+            var delta = max - min;
 
             // Hue
             if (delta == 0)
@@ -334,9 +336,9 @@ namespace Imaging
         /// </summary>
         private void ToRgb()
         {
-            double c = V * S;
-            double x = c * (1 - Math.Abs((H / 60 % 2) - 1));
-            double m = V - c;
+            var c = V * S;
+            var x = c * (1 - Math.Abs((H / 60 % 2) - 1));
+            var m = V - c;
 
             double r = 0, g = 0, b = 0;
 
