@@ -94,6 +94,7 @@ public static class ImageStreamMedia
         {
             using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
             bmp.BeginInit();
+            bmp.Freeze();
             bmp.CacheOption = BitmapCacheOption.OnLoad;
 
             if (width > 0 && height > 0)
@@ -138,7 +139,7 @@ public static class ImageStreamMedia
         enc.Save(outStream);
         var bitmap = new Bitmap(outStream);
 
-        return new Bitmap(bitmap);
+        return bitmap;
     }
 
     /// <summary>
@@ -147,7 +148,9 @@ public static class ImageStreamMedia
     /// </summary>
     /// <param name="image">The bitmap.</param>
     /// <param name="lossless">if set to <c>true</c> [lossless].</param>
-    /// <returns>BitmpaImage from Bitmap</returns>
+    /// <returns>
+    /// BitmpaImage from Bitmap
+    /// </returns>
     /// <exception cref="ArgumentNullException">if Image is null</exception>
     /// The Image as
     /// <see cref="BitmapImage" />
@@ -198,42 +201,53 @@ public static class ImageStreamMedia
     /// Fasts the convert.
     /// </summary>
     /// <param name="bmp">The BMP.</param>
-    /// <returns>BitmapImage from Bitmap.</returns>
+    /// <returns>
+    /// BitmapImage from Bitmap.
+    /// </returns>
     private static BitmapImage FastConvert(Bitmap bmp)
     {
-        // Ensure 32bpp ARGB
+        // Ensure correct format for WPF
         if (bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
         {
             var converted = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using var g = Graphics.FromImage(converted);
-            g.DrawImage(bmp, 0, 0);
+            using (var g = Graphics.FromImage(converted))
+            {
+                g.DrawImage(bmp, 0, 0);
+            }
+
+            bmp.Dispose();   // replace original
             bmp = converted;
         }
 
         var rect = new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height);
-        var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var data = bmp.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
         try
         {
-            // WPF erwartet Int32Rect und PixelFormats.Bgra32
-            var wbRect = new Int32Rect(0, 0, bmp.Width, bmp.Height);
+            var stride = Math.Abs(data.Stride);
+            var bufferSize = stride * bmp.Height;
 
             var wb = new WriteableBitmap(
                 bmp.Width,
                 bmp.Height,
-                96, 96,
+                96,
+                96,
                 PixelFormats.Bgra32,
                 null);
 
-            // Verwende die IntPtr-Überladung: WritePixels(Int32Rect, IntPtr buffer, int bufferSize, int stride)
-            wb.WritePixels(wbRect, bmpData.Scan0, Math.Abs(bmpData.Stride) * bmp.Height, Math.Abs(bmpData.Stride));
+            wb.WritePixels(
+                new Int32Rect(0, 0, bmp.Width, bmp.Height),
+                data.Scan0,
+                bufferSize,
+                stride);
+
             wb.Freeze();
 
             return WriteableBitmapToBitmapImage(wb);
         }
         finally
         {
-            bmp.UnlockBits(bmpData);
+            bmp.UnlockBits(data);
         }
     }
 
@@ -241,23 +255,23 @@ public static class ImageStreamMedia
     /// Writeables the bitmap to bitmap image.
     /// </summary>
     /// <param name="wb">The wb.</param>
-    /// <returns>BitmapImage from Bitmap.</returns>
+    /// <returns>
+    /// BitmapImage from Bitmap.
+    /// </returns>
     private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
     {
-        var encoder = new JpegBitmapEncoder(); // MUCH faster than PNG
-        encoder.QualityLevel = 100;            // visually lossless
-
         using var ms = new MemoryStream();
-        encoder.Frames.Add(BitmapFrame.Create(wb));
-        encoder.Save(ms);
+        var enc = new BmpBitmapEncoder();
+        enc.Frames.Add(BitmapFrame.Create(wb));
+        enc.Save(ms);
         ms.Position = 0;
 
-        var bmp = new BitmapImage();
-        bmp.BeginInit();
-        bmp.CacheOption = BitmapCacheOption.OnLoad;
-        bmp.StreamSource = ms;
-        bmp.EndInit();
-        bmp.Freeze();
-        return bmp;
+        var img = new BitmapImage();
+        img.BeginInit();
+        img.CacheOption = BitmapCacheOption.OnLoad;
+        img.StreamSource = ms;
+        img.EndInit();
+        img.Freeze();
+        return img;
     }
 }
