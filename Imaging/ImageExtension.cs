@@ -22,16 +22,17 @@ namespace Imaging;
 public static class ImageExtension
 {
     /// <summary>
-    ///     Extension Method
-    ///     Converts Bitmap to BitmapImage.
+    /// Extension Method
+    /// Converts Bitmap to BitmapImage.
     /// </summary>
     /// <param name="bmp">The Bitmap.</param>
+    /// <param name="lossless">if set to <c>true</c> [lossless].</param>
     /// <returns>
-    ///     A BitmapImage
+    /// A BitmapImage
     /// </returns>
-    public static BitmapImage ToBitmapImage(this Bitmap bmp)
+    public static BitmapImage ToBitmapImage(this Bitmap bmp, bool lossless = false)
     {
-        return ImageStreamMedia.BitmapToBitmapImage(bmp);
+        return ImageStreamMedia.BitmapToBitmapImage(bmp, lossless);
     }
 
     /// <summary>

@@ -7,18 +7,20 @@
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 
+using Imaging.Helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Imaging.Helpers;
 
 namespace Imaging;
 
 /// <summary>
-///     Handle the more newer wpf Libraries
+/// Handle the more newer wpf Libraries
 /// </summary>
 public static class ImageStreamMedia
 {
@@ -140,52 +142,122 @@ public static class ImageStreamMedia
     }
 
     /// <summary>
-    ///     Converts to bitmap image.
-    ///     https://stackoverflow.com/questions/5199205/how-do-i-rotate-image-then-move-to-the-top-left-0-0-without-cutting-off-the-imag/5200280#5200280
+    /// Converts to bitmap image.
+    /// https://stackoverflow.com/questions/5199205/how-do-i-rotate-image-then-move-to-the-top-left-0-0-without-cutting-off-the-imag/5200280#5200280
     /// </summary>
     /// <param name="image">The bitmap.</param>
+    /// <param name="lossless">if set to <c>true</c> [lossless].</param>
+    /// <returns>BitmpaImage from Bitmap</returns>
+    /// <exception cref="ArgumentNullException">if Image is null</exception>
     /// The Image as
     /// <see cref="BitmapImage" />
     /// .
-    /// <exception cref="ArgumentNullException">if Image is null</exception>
-    internal static BitmapImage BitmapToBitmapImage(Bitmap image)
+    internal static BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false)
     {
+        if (!lossless)
+            return FastConvert(image);
+
         ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
 
-        Bitmap tempImage = null;
+        Bitmap processed = image;
+        Bitmap? tempImage = null;
 
-        // Convert the image to Format32bppArgb if necessary
-        if (image.PixelFormat != PixelFormat.Format32bppArgb)
+        // Normalize to 32bppArgb if needed
+        if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
         {
-            tempImage = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
-            using (var g = Graphics.FromImage(tempImage))
-            {
-                g.DrawImage(image, 0, 0);
-            }
+            tempImage = new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            image = tempImage;
+            using (var g = Graphics.FromImage(tempImage))
+                g.DrawImage(image, 0, 0);
+
+            processed = tempImage;
         }
 
         try
         {
-            // Create a memory stream and save the image in a compatible format (e.g., PNG)
-            using var memoryStream = new MemoryStream();
-            image.Save(memoryStream, ImageFormat.Png);
-            memoryStream.Position = 0;
+            using var ms = new MemoryStream();
+            processed.Save(ms, ImageFormat.Png);
+            ms.Position = 0;
 
-            // Create a BitmapImage from the memory stream
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memoryStream;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // Ensures full load and availability
-            bitmapImage.EndInit();
-            bitmapImage.Freeze(); // Makes it thread-safe and ready for WPF usage
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.StreamSource = ms;
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+            bmp.Freeze();
 
-            return bitmapImage;
+            return bmp;
         }
         finally
         {
-            tempImage?.Dispose(); // Dispose of the temporary image if created
+            tempImage?.Dispose();
         }
+    }
+
+    /// <summary>
+    /// Fasts the convert.
+    /// </summary>
+    /// <param name="bmp">The BMP.</param>
+    /// <returns>BitmapImage from Bitmap.</returns>
+    private static BitmapImage FastConvert(Bitmap bmp)
+    {
+        // Ensure 32bpp ARGB
+        if (bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+        {
+            var converted = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using var g = Graphics.FromImage(converted);
+            g.DrawImage(bmp, 0, 0);
+            bmp = converted;
+        }
+
+        var rect = new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height);
+        var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+        try
+        {
+            // WPF erwartet Int32Rect und PixelFormats.Bgra32
+            var wbRect = new Int32Rect(0, 0, bmp.Width, bmp.Height);
+
+            var wb = new WriteableBitmap(
+                bmp.Width,
+                bmp.Height,
+                96, 96,
+                PixelFormats.Bgra32,
+                null);
+
+            // Verwende die IntPtr-Überladung: WritePixels(Int32Rect, IntPtr buffer, int bufferSize, int stride)
+            wb.WritePixels(wbRect, bmpData.Scan0, Math.Abs(bmpData.Stride) * bmp.Height, Math.Abs(bmpData.Stride));
+            wb.Freeze();
+
+            return WriteableBitmapToBitmapImage(wb);
+        }
+        finally
+        {
+            bmp.UnlockBits(bmpData);
+        }
+    }
+
+    /// <summary>
+    /// Writeables the bitmap to bitmap image.
+    /// </summary>
+    /// <param name="wb">The wb.</param>
+    /// <returns>BitmapImage from Bitmap.</returns>
+    private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
+    {
+        var encoder = new JpegBitmapEncoder(); // MUCH faster than PNG
+        encoder.QualityLevel = 100;            // visually lossless
+
+        using var ms = new MemoryStream();
+        encoder.Frames.Add(BitmapFrame.Create(wb));
+        encoder.Save(ms);
+        ms.Position = 0;
+
+        var bmp = new BitmapImage();
+        bmp.BeginInit();
+        bmp.CacheOption = BitmapCacheOption.OnLoad;
+        bmp.StreamSource = ms;
+        bmp.EndInit();
+        bmp.Freeze();
+        return bmp;
     }
 }

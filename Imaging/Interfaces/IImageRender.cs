@@ -252,22 +252,24 @@ public interface IImageRender
     /// <exception cref="IOException">Error while we try to access the File</exception>
     BitmapImage GetBitmapImageFileStream(string path, int width, int height);
 
-    /// <summary>
-    ///     Converts to bitmap image.
-    /// </summary>
-    /// <param name="image">The bitmap.</param>
-    /// The Image as
-    /// <see cref="BitmapImage" />
-    /// .
-    /// <exception cref="ArgumentNullException"></exception>
-    BitmapImage BitmapToBitmapImage(Bitmap image);
 
     /// <summary>
-    ///     Bitmaps the image  bitmap.
+    /// Bitmaps to bitmap image.
+    /// </summary>
+    /// <param name="image">The image.</param>
+    /// <param name="lossless">if set to <c>true</c> [lossless].</param>
+    /// <returns>
+    /// The Image as <see cref="BitmapImage" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false);
+
+    /// <summary>
+    /// Bitmaps the image  bitmap.
     /// </summary>
     /// <param name="image">The bitmap image.</param>
     /// <returns>
-    ///     The Image as <see cref="Bitmap" />.
+    /// The Image as <see cref="Bitmap" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"></exception>
     Bitmap BitmapImageToBitmap(BitmapImage image);

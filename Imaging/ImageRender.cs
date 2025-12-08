@@ -358,16 +358,17 @@ public sealed class ImageRender : IImageRender
 
     /// <inheritdoc />
     /// <summary>
-    ///     Converts to bitmap image.
+    /// Bitmaps to bitmap image.
     /// </summary>
-    /// <param name="image">The bitmap.</param>
-    /// The Image as
-    /// <see cref="BitmapImage" />
-    /// .
+    /// <param name="image">The image.</param>
+    /// <param name="lossless">if set to <c>true</c> [lossless].</param>
+    /// <returns>
+    /// The Image as <see cref="BitmapImage" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public BitmapImage BitmapToBitmapImage(Bitmap image)
+    public BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false)
     {
-        return ImageStreamMedia.BitmapToBitmapImage(image);
+        return ImageStreamMedia.BitmapToBitmapImage(image, lossless);
     }
 
     /// <inheritdoc />
