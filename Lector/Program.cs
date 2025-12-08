@@ -7,6 +7,7 @@
  */
 
 using CoreBuilder;
+using CoreBuilder.Extensions;
 using Weaver;
 
 namespace Lector
@@ -61,10 +62,11 @@ namespace Lector
         /// <param name="weave">The weave.</param>
         private static void RegisterApps(Weave weave)
         {
-            var modules = CommandFactory.GetCommands();
-
-            foreach (var module in modules)
+            foreach (var module in CommandFactory.GetCommands())
                 weave.Register(module);
+
+            foreach (var ext in CommandFactory.GetExtensions())
+                weave.RegisterExtension(ext);
         }
     }
 }

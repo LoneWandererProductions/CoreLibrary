@@ -7,6 +7,7 @@
  */
 
 using CoreBuilder.Development;
+using CoreBuilder.Extensions;
 using CoreBuilder.FileManager;
 using CoreBuilder.Interface;
 using CoreBuilder.Rules;
@@ -97,6 +98,20 @@ namespace CoreBuilder
             return modules
                 .Where(m => string.Equals(m.Namespace, userspace, StringComparison.OrdinalIgnoreCase))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Gets the extensions.
+        /// </summary>
+        /// <returns>All Extensions</returns>
+        public static IReadOnlyList<ICommandExtension> GetExtensions()
+        {
+            ICommandExtension[] modules =
+{
+                new WhoAmIExtension()
+            };
+
+            return modules;
         }
 
         /// <summary>

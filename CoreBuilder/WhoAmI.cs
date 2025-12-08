@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedType.Global
-
 using System;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -19,7 +17,7 @@ namespace CoreBuilder
 {
     /// <inheritdoc />
     /// <summary>
-    /// Displays local machine identity (hostname, user, IP addresses).
+    /// Displays local machine identity (hostname, user, IP addresses) and allows extensions to fetch individual properties.
     /// </summary>
     public sealed class WhoAmI : ICommand
     {
