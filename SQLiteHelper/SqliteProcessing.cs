@@ -95,6 +95,7 @@ internal static class SqliteProcessing
             if (!string.IsNullOrEmpty(name))
                 return name;
         }
+
         return null;
     }
 
@@ -129,7 +130,8 @@ internal static class SqliteProcessing
 
         return convert switch
         {
-            SqLiteDataTypes.DateTime => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out _),
+            SqLiteDataTypes.DateTime => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                out _),
             SqLiteDataTypes.Decimal => decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out _),
             SqLiteDataTypes.Integer => long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
             SqLiteDataTypes.Real => double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _),

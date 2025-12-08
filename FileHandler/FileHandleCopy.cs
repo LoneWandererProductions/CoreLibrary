@@ -73,7 +73,10 @@ public static class FileHandleCopy
             Directory.CreateDirectory(target);
 
         // Overview event
-        var overview = new FileItems { Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion };
+        var overview = new FileItems
+        {
+            Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
+        };
         FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
         // Determine root directory automatically
@@ -119,11 +122,13 @@ public static class FileHandleCopy
         if (!Directory.Exists(source))
             return null;
 
-        var sourceFiles = FileHandlerProcessing.GetFilesByExtension(source, FileHandlerResources.AllFiles, FileHandlerResources.SubFolders);
+        var sourceFiles = FileHandlerProcessing.GetFilesByExtension(source, FileHandlerResources.AllFiles,
+            FileHandlerResources.SubFolders);
         if (sourceFiles == null)
             return null;
 
-        var targetFiles = FileHandlerProcessing.GetFilesByExtension(target, FileHandlerResources.AllFiles, FileHandlerResources.SubFolders);
+        var targetFiles = FileHandlerProcessing.GetFilesByExtension(target, FileHandlerResources.AllFiles,
+            FileHandlerResources.SubFolders);
         if (targetFiles == null)
             return null;
 
@@ -165,8 +170,7 @@ public static class FileHandleCopy
         // Overview callback
         var overview = new FileItems
         {
-            Elements = files.Select(f => f.Name).ToList(),
-            Message = FileHandlerResources.InformationFileDeletion
+            Elements = files.Select(f => f.Name).ToList(), Message = FileHandlerResources.InformationFileDeletion
         };
         FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
@@ -218,10 +222,10 @@ public static class FileHandleCopy
     /// <param name="success">if set to <c>true</c> [success].</param>
     /// <returns>Success Status per operation.</returns>
     private static void CopyDirectoryRecursive(
-    DirectoryInfo source,
-    DirectoryInfo target,
-    bool overwrite,
-    ref bool success)
+        DirectoryInfo source,
+        DirectoryInfo target,
+        bool overwrite,
+        ref bool success)
     {
         // Copy files in this directory
         foreach (var file in source.GetFiles())
@@ -232,7 +236,8 @@ public static class FileHandleCopy
                 file.CopyTo(dest, overwrite);
                 FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+            catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                           or NotSupportedException)
             {
                 success = false;
                 FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
@@ -266,12 +271,12 @@ public static class FileHandleCopy
             FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
             return true;
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException or NotSupportedException)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                       or NotSupportedException)
         {
             FileHandlerRegister.AddError(nameof(CopyFiles), file.FullName, ex);
             Trace.WriteLine(ex);
             return false;
         }
     }
-
 }

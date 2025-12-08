@@ -20,7 +20,6 @@ namespace ViewModel
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-
         /// <summary>
         ///     Occurs when a property value changes.
         /// </summary>

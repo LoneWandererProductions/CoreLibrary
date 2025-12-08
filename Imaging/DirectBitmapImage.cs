@@ -318,6 +318,7 @@ public sealed class DirectBitmapImage : IDisposable
         foreach (var (x, y, c) in pixels)
         {
             if ((uint)x >= Width || (uint)y >= Height) continue;
+
             var packed = (uint)(c.A << 24 | c.R << 16 | c.G << 8 | c.B);
             var index = x + y * Width;
             ptr[index] = packed;

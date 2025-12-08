@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Drawing;
 using Imaging.Enums;
 using Imaging.Helpers;

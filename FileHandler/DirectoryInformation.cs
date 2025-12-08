@@ -46,11 +46,13 @@ public static class DirectoryInformation
             {
                 var parent = Directory.GetParent(path);
                 if (parent == null)
-                    throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: reached root at level {i}");
+                    throw new FileHandlerException(
+                        $"{FileHandlerResources.ErrorGetParentDirectory}: reached root at level {i}");
                 path = parent.FullName;
             }
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException or FileHandlerException)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException
+                                       or FileHandlerException)
         {
             FileHandlerRegister.AddError(nameof(GetParentDirectoryFromPath), path, ex);
             Trace.WriteLine(ex);

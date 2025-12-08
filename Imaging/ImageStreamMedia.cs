@@ -245,7 +245,7 @@ public static class ImageStreamMedia
     private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
     {
         var encoder = new JpegBitmapEncoder(); // MUCH faster than PNG
-        encoder.QualityLevel = 100;            // visually lossless
+        encoder.QualityLevel = 100; // visually lossless
 
         using var ms = new MemoryStream();
         encoder.Frames.Add(BitmapFrame.Create(wb));

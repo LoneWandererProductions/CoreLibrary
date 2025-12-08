@@ -47,7 +47,10 @@ public static class FileHandleCut
         // Inform user
         var lstFiles = files.Select(f => f.Name).ToList();
         FileHandlerRegister.SendOverview?.Invoke(nameof(CutFiles),
-            new FileItems { Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion });
+            new FileItems
+            {
+                Elements = new List<string>(lstFiles), Message = FileHandlerResources.InformationFileDeletion
+            });
 
         // Move files
         foreach (var file in files)

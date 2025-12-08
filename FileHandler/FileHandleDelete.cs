@@ -124,7 +124,8 @@ public static class FileHandleDelete
     /// <param name="fileExtList">List of file extensions to delete.</param>
     /// <param name="subdirectories">Include subfolders if true.</param>
     /// <returns>True if deletion succeeded.</returns>
-    public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList, bool subdirectories = true)
+    public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList,
+        bool subdirectories = true)
     {
         if (string.IsNullOrEmpty(path))
             throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);

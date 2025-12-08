@@ -24,7 +24,8 @@ namespace CoreBuilder.Extensions
         public string Name => "Who";
 
         /// <inheritdoc />
-        public string Description => "Returns specific information of WhoAmI command (e.g., ip, hostname, username), you can join them or return a single one.";
+        public string Description =>
+            "Returns specific information of WhoAmI command (e.g., ip, hostname, username), you can join them or return a single one.";
 
         /// <inheritdoc />
         public string Namespace => "System";
@@ -34,7 +35,8 @@ namespace CoreBuilder.Extensions
         {
             if (args.Length == 0)
             {
-                return CommandResult.Fail("No parameter specified. Example: whoami().who(ip,hostname) or whoami().who(ip)");
+                return CommandResult.Fail(
+                    "No parameter specified. Example: whoami().who(ip,hostname) or whoami().who(ip)");
             }
 
             try
@@ -56,22 +58,22 @@ namespace CoreBuilder.Extensions
 
                 // Build a list of lines for requested fields
                 var lines = args.Select(arg => arg.ToLowerInvariant())
-                                .Select(field =>
-                                {
-                                    return field switch
-                                    {
-                                        "hostname" => $"Hostname: {hostname}",
-                                        "username" => $"Username: {username}",
-                                        "domain" => $"Domain: {domain}",
-                                        "ip" => $"IP: {ipsJoined}",
-                                        "os" => $"OS: {Environment.OSVersion}",
-                                        "64bitos" => $"64-bit OS: {Environment.Is64BitOperatingSystem}",
-                                        "64bitprocess" => $"64-bit Process: {Environment.Is64BitProcess}",
-                                        "processorcount" => $"Processor Count: {Environment.ProcessorCount}",
-                                        "clrversion" => $"CLR Version: {Environment.Version}",
-                                        _ => $"Unknown parameter: {field}"
-                                    };
-                                }).ToArray();
+                    .Select(field =>
+                    {
+                        return field switch
+                        {
+                            "hostname" => $"Hostname: {hostname}",
+                            "username" => $"Username: {username}",
+                            "domain" => $"Domain: {domain}",
+                            "ip" => $"IP: {ipsJoined}",
+                            "os" => $"OS: {Environment.OSVersion}",
+                            "64bitos" => $"64-bit OS: {Environment.Is64BitOperatingSystem}",
+                            "64bitprocess" => $"64-bit Process: {Environment.Is64BitProcess}",
+                            "processorcount" => $"Processor Count: {Environment.ProcessorCount}",
+                            "clrversion" => $"CLR Version: {Environment.Version}",
+                            _ => $"Unknown parameter: {field}"
+                        };
+                    }).ToArray();
 
                 // Join lines into a single message
                 string message = string.Join(Environment.NewLine, lines);

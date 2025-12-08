@@ -171,9 +171,7 @@ public sealed class HeaderExtractor : ICommand
                     "no" => CommandResult.Fail("Operation cancelled by user."),
                     _ => new CommandResult
                     {
-                        Message = "Please answer yes/no.",
-                        RequiresConfirmation = true,
-                        Feedback = cache
+                        Message = "Please answer yes/no.", RequiresConfirmation = true, Feedback = cache
                     }
                 };
             });

@@ -98,6 +98,7 @@ namespace CoreBuilder.FileManager
                             StopWatching();
                             return CommandResult.Ok("Watcher stopped.");
                         }
+
                         return new CommandResult
                         {
                             Message = $"Unknown input '{input}'. Type 'stop' to stop watching.",

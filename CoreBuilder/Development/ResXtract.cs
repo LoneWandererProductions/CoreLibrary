@@ -121,11 +121,7 @@ public sealed class ResXtract : ICommand
             if (string.IsNullOrWhiteSpace(result))
                 return CommandResult.Ok("No files would be changed.");
 
-            return new CommandResult
-            {
-                Success = true,
-                Message = "Files that would be affected:\n" + result
-            };
+            return new CommandResult { Success = true, Message = "Files that would be affected:\n" + result };
         }
 
         // standard mode
@@ -134,11 +130,7 @@ public sealed class ResXtract : ICommand
             ? "No files changed."
             : $"Updated {changed.Count} files:\n" + string.Join(Environment.NewLine, changed);
 
-        return new CommandResult
-        {
-            Success = true,
-            Message = msg
-        };
+        return new CommandResult { Success = true, Message = msg };
     }
 
     /// <inheritdoc />
@@ -170,9 +162,7 @@ public sealed class ResXtract : ICommand
                     "no" => CommandResult.Fail("Operation cancelled by user."),
                     _ => new CommandResult
                     {
-                        Message = "Please answer yes/no.",
-                        RequiresConfirmation = true,
-                        Feedback = cache
+                        Message = "Please answer yes/no.", RequiresConfirmation = true, Feedback = cache
                     }
                 };
             });

@@ -25,7 +25,8 @@ public static class FileHandleSearch
     /// <param name="appendix">The appendix.</param>
     /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
     /// <returns>File by criteria</returns>
-    public static List<string> GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix, bool subdirectories)
+    public static List<string> GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
+        bool subdirectories)
     {
         if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
             return new List<string>();

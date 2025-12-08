@@ -31,29 +31,13 @@ namespace CoreBuilder
         {
             ICommand[] modules =
             {
-                new DirectorySizeAnalyzer(),
-                new LogTailCommand(),
-                new HeaderExtractor(),
-                new ResXtract(),
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedClassAnalyzer(),
-                new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(),
-                new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(),
-                new FileLockScanner(),
-                new SmartPingPro(), 
-                new WhoAmI(),
-                new Tree()
+                new DirectorySizeAnalyzer(), new LogTailCommand(), new HeaderExtractor(), new ResXtract(),
+                new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
+                new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
+                new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
+                new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
+                new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
+                new FileLockScanner(), new SmartPingPro(), new WhoAmI(), new Tree()
             };
 
             return modules;
@@ -68,30 +52,13 @@ namespace CoreBuilder
         {
             ICommand[] modules =
             {
-                new DirectorySizeAnalyzer(),
-                new DirectorySizeAnalyzer(),
-                new LogTailCommand(),
-                new HeaderExtractor(),
-                new ResXtract(),
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedClassAnalyzer(),
-                new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(),
-                new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(),
-                new FileLockScanner(),
-                new SmartPingPro(),
-                new WhoAmI(),
-                new Tree()
+                new DirectorySizeAnalyzer(), new DirectorySizeAnalyzer(), new LogTailCommand(),
+                new HeaderExtractor(), new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(),
+                new DoubleNewlineAnalyzer(), new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(),
+                new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
+                new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
+                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(), new WhoAmI(), new Tree()
             };
 
             // Filter by Namespace
@@ -106,10 +73,7 @@ namespace CoreBuilder
         /// <returns>All Extensions</returns>
         public static IReadOnlyList<ICommandExtension> GetExtensions()
         {
-            ICommandExtension[] modules =
-{
-                new WhoAmIExtension()
-            };
+            ICommandExtension[] modules = { new WhoAmIExtension() };
 
             return modules;
         }
@@ -122,20 +86,11 @@ namespace CoreBuilder
         {
             ICodeAnalyzer[] modules =
             {
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedClassAnalyzer(),
-                new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(),
-                new DeadReferenceAnalyzer()
+                new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
+                new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
+                new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
+                new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
+                new DocCommentCoverageCommand(), new DeadReferenceAnalyzer()
             };
 
             return modules;

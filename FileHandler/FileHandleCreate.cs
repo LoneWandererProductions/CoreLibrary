@@ -61,9 +61,9 @@ public static class FileHandleCreate
             return true;
         }
         catch (Exception ex) when (ex is UnauthorizedAccessException
-                                   or IOException
-                                   or PathTooLongException
-                                   or NotSupportedException)
+                                       or IOException
+                                       or PathTooLongException
+                                       or NotSupportedException)
         {
             FileHandlerRegister.AddError(nameof(CreateFolder), path, ex);
             Trace.WriteLine(ex);

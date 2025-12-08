@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+
 using System;
 using System.IO;
 using System.Threading;
@@ -63,11 +64,26 @@ public class FileObserver : IDisposable
             InternalBufferSize = 64 * 1024
         };
 
-        _watcher.Created += async (s, e) => { if (Created != null) await Created.Invoke(e); };
-        _watcher.Changed += async (s, e) => { if (Changed != null) await Changed.Invoke(e); };
-        _watcher.Deleted += async (s, e) => { if (Deleted != null) await Deleted.Invoke(e); };
-        _watcher.Renamed += async (s, e) => { if (Renamed != null) await Renamed.Invoke(e); };
-        _watcher.Error += async (s, e) => { if (Error != null) await Error.Invoke(e); };
+        _watcher.Created += async (s, e) =>
+        {
+            if (Created != null) await Created.Invoke(e);
+        };
+        _watcher.Changed += async (s, e) =>
+        {
+            if (Changed != null) await Changed.Invoke(e);
+        };
+        _watcher.Deleted += async (s, e) =>
+        {
+            if (Deleted != null) await Deleted.Invoke(e);
+        };
+        _watcher.Renamed += async (s, e) =>
+        {
+            if (Renamed != null) await Renamed.Invoke(e);
+        };
+        _watcher.Error += async (s, e) =>
+        {
+            if (Error != null) await Error.Invoke(e);
+        };
     }
 
     /// <summary>
@@ -102,5 +118,3 @@ public class FileObserver : IDisposable
     /// </summary>
     public void Dispose() => _watcher.Dispose();
 }
-
-

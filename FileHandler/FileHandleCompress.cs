@@ -42,7 +42,8 @@ public static class FileHandleCompress
         try
         {
             // Ensure directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(zipPath) ?? throw new InvalidOperationException("Invalid zip path"));
+            Directory.CreateDirectory(Path.GetDirectoryName(zipPath) ??
+                                      throw new InvalidOperationException("Invalid zip path"));
 
             // Wrap in Task.Run for non-blocking large file operations
             await Task.Run(() =>
@@ -121,16 +122,17 @@ public static class FileHandleCompress
     /// <param name="compressionLevel">The compression level.</param>
     /// <returns>Operation success as <c>true</c> or <c>false</c>.</returns>
     public static async Task<bool> SaveZipTransactional(
-    string zipPath,
-    List<string> filesToAdd,
-    bool delete = true,
-    CompressionLevel compressionLevel = CompressionLevel.Optimal)
+        string zipPath,
+        List<string> filesToAdd,
+        bool delete = true,
+        CompressionLevel compressionLevel = CompressionLevel.Optimal)
     {
         var addedEntries = new List<ZipArchiveEntry>();
 
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(zipPath) ?? throw new InvalidOperationException("Invalid zip path"));
+            Directory.CreateDirectory(Path.GetDirectoryName(zipPath) ??
+                                      throw new InvalidOperationException("Invalid zip path"));
 
             using var archive = ZipFile.Open(zipPath, ZipArchiveMode.Update);
 
@@ -166,5 +168,4 @@ public static class FileHandleCompress
 
         return results.All(r => r);
     }
-
 }

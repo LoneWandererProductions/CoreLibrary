@@ -577,7 +577,8 @@ public sealed partial class Thumbnails : IDisposable
     /// <returns>
     /// Load all images async
     /// </returns>
-    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize, int thumbWidth)
+    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize,
+        int thumbWidth)
     {
         if (token.IsCancellationRequested) return;
 
@@ -589,12 +590,7 @@ public sealed partial class Thumbnails : IDisposable
         if (bitmap == null) return;
 
         // Prepare UI elements
-        var images = new Image
-        {
-            Height = cellSize,
-            Width = cellSize,
-            Name = $"{ComCtlResources.ImageAdd}{key}"
-        };
+        var images = new Image { Height = cellSize, Width = cellSize, Name = $"{ComCtlResources.ImageAdd}{key}" };
 
         var border = new Border
         {

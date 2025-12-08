@@ -76,9 +76,7 @@ namespace Lector
 
             return new CommandResult
             {
-                Message = $"Do you want to process '{target}'?",
-                RequiresConfirmation = true,
-                Feedback = feedback
+                Message = $"Do you want to process '{target}'?", RequiresConfirmation = true, Feedback = feedback
             };
         }
 
@@ -92,11 +90,7 @@ namespace Lector
                 return null;
 
             var target = args[0];
-            return new CommandResult
-            {
-                Message = $"[Preview] This would process '{target}'",
-                Success = true
-            };
+            return new CommandResult { Message = $"[Preview] This would process '{target}'", Success = true };
         }
 
         /// <inheritdoc />

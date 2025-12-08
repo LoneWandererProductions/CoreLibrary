@@ -10,22 +10,22 @@
         <!-- Menu Bar -->
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Actions">
-                <MenuItem Header="Clear Log" Click="ClearLog_Click"/>
+                <MenuItem Header="Clear Log" Click="ClearLog_Click" />
                 <Separator />
-                <MenuItem Header="Go to Top" Click="GoTop_Click"/>
-                <MenuItem Header="Go to Bottom" Click="GoBottom_Click"/>
+                <MenuItem Header="Go to Top" Click="GoTop_Click" />
+                <MenuItem Header="Go to Bottom" Click="GoBottom_Click" />
             </MenuItem>
 
             <MenuItem Header="_Options">
                 <MenuItem>
                     <CheckBox x:Name="AutoScrollCheck"
                               Content="Auto Scroll"
-                              IsChecked="True"/>
+                              IsChecked="True" />
                 </MenuItem>
                 <MenuItem>
                     <CheckBox x:Name="ShowTimestampCheck"
                               Content="Show Timestamp"
-                              IsChecked="False"/>
+                              IsChecked="False" />
                 </MenuItem>
             </MenuItem>
         </Menu>
@@ -36,7 +36,7 @@
             <TextBlock x:Name="LogText"
                        FontFamily="Consolas"
                        TextWrapping="Wrap"
-                       Margin="10"/>
+                       Margin="10" />
         </ScrollViewer>
     </DockPanel>
 </Window>

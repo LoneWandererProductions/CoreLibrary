@@ -168,7 +168,10 @@ namespace RenderEngine
         {
             var offset = (y * Width + x) * BytesPerPixel;
             var ptr = (byte*)_buffer + offset;
-            ptr[0] = b; ptr[1] = g; ptr[2] = r; ptr[3] = a;
+            ptr[0] = b;
+            ptr[1] = g;
+            ptr[2] = r;
+            ptr[3] = a;
         }
 
         /// <summary>

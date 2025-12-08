@@ -117,8 +117,10 @@ namespace FileHandler
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
             }
 
-            var normalizedSource = Path.GetFullPath(source).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var normalizedTarget = Path.GetFullPath(target).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var normalizedSource = Path.GetFullPath(source)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var normalizedTarget = Path.GetFullPath(target)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             if (string.Equals(normalizedSource, normalizedTarget, StringComparison.OrdinalIgnoreCase))
             {
