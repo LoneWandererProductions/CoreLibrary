@@ -23,9 +23,10 @@ namespace Imaging;
 internal static class CifProcessing
 {
     /// <summary>
-    ///     Converts to cif.
+    /// Converts to cif.
     /// </summary>
     /// <param name="image">The image.</param>
+    /// <returns>Get Cif from Bitmap</returns>
     internal static Dictionary<Color, SortedSet<int>> ConvertToCifFromBitmap(Bitmap image)
     {
         var imageFormat = new Dictionary<Color, SortedSet<int>>();

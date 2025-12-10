@@ -20,34 +20,35 @@ using System.Windows.Media.Imaging;
 namespace Imaging;
 
 /// <summary>
-/// Handle the more newer wpf Libraries
+/// Handle the more newer WPF Libraries.
 /// </summary>
 public static class ImageStreamMedia
 {
     /// <summary>
-    ///     Loads File one Time
-    ///     Can only used to load an Image Once
-    ///     Use this for huge amounts of image that will be resized, else we will break memory limits
+    ///     Loads File one Time.
+    ///     Can only be used to load an Image Once.
+    ///     Use this for huge amounts of images that will be resized, else we will break memory limits.
     /// </summary>
-    /// <param name="path">path to the File</param>
-    /// <param name="width">The width.</param>
-    /// <param name="height">The height.</param>
-    /// <returns>
-    ///     An Image as <see cref="BitmapImage" />.
-    /// </returns>
-    /// <exception cref="IOException">Could not find the File</exception>
+    /// <param name="path">Path to the file.</param>
+    /// <param name="width">Target width (optional).</param>
+    /// <param name="height">Target height (optional).</param>
+    /// <returns>A <see cref="BitmapImage"/>.</returns>
+    /// <exception cref="IOException">Could not find the file.</exception>
     /// <exception cref="UriFormatException"></exception>
-    /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-    /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="NotSupportedException">Unsupported file type.</exception>
     public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
     {
         ImageHelper.ValidateFilePath(path);
+
         try
         {
-            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
+            var bmp = new BitmapImage();
             bmp.BeginInit();
+            bmp.CreateOptions = BitmapCreateOptions.DelayCreation;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.UriSource = new Uri(path);
+
             if (width > 0 && height > 0)
             {
                 bmp.DecodePixelWidth = width;
@@ -55,55 +56,49 @@ public static class ImageStreamMedia
             }
 
             bmp.EndInit();
+            bmp.Freeze(); // Must freeze only AFTER EndInit()
+
             return bmp;
         }
         catch (Exception ex)
         {
             ImageHelper.HandleException(ex);
-            // Optionally, rethrow or handle further as needed
-            throw; // This will preserve the original stack trace and exception details
+            throw;
         }
     }
 
     /// <summary>
-    ///     Loads File in a Stream
-    ///     takes longer but can be changed on Runtime
+    ///     Loads file through a stream.
+    ///     Takes longer but can be changed at runtime.
     /// </summary>
-    /// <param name="path">path to the File</param>
-    /// <param name="width">The width.</param>
-    /// <param name="height">The height.</param>
-    /// <returns>
-    ///     An Image as <see cref="BitmapImage" />.
-    /// </returns>
-    /// <exception cref="IOException">
-    /// </exception>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="NotSupportedException"></exception>
-    /// <exception cref="InvalidOperationException"></exception>
-    /// <exception cref="IOException">Error while we try to access the File</exception>
-    /// <exception cref="ArgumentException">No Correct Argument were provided</exception>
-    /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-    /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-    public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
+    /// <param name="path">Path to file.</param>
+    /// <param name="width">Target width (optional).</param>
+    /// <param name="height">Target height (optional).</param>
+    /// <returns>A <see cref="BitmapImage"/> or null if the format is invalid.</returns>
+    public static BitmapImage? GetBitmapImageFileStream(string path, int width = 0, int height = 0)
     {
         ImageHelper.ValidateFilePath(path);
 
-        var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
-
         try
         {
-            using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            var bmp = new BitmapImage();
             bmp.BeginInit();
+            bmp.CreateOptions = BitmapCreateOptions.DelayCreation;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
 
-            if (width > 0 && height > 0)
+            using (var flStream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                bmp.DecodePixelWidth = width;
-                bmp.DecodePixelHeight = height;
-            }
+                bmp.StreamSource = flStream;
 
-            bmp.StreamSource = flStream;
-            bmp.EndInit();
+                if (width > 0 && height > 0)
+                {
+                    bmp.DecodePixelWidth = width;
+                    bmp.DecodePixelHeight = height;
+                }
+
+                bmp.EndInit();
+                bmp.Freeze();
+            }
 
             return bmp;
         }
@@ -115,19 +110,16 @@ public static class ImageStreamMedia
         catch (Exception ex)
         {
             ImageHelper.HandleException(ex);
-            // Optionally, rethrow or handle further as needed
-            throw; // This will preserve the original stack trace and exception details
+            throw;
         }
     }
 
     /// <summary>
-    ///     Bitmaps the image2 bitmap.
+    /// Converts a <see cref="BitmapImage"/> to a System.Drawing <see cref="Bitmap"/>.
     /// </summary>
-    /// <param name="image">The bitmap image.</param>
-    /// <returns>
-    ///     The Image as <see cref="Bitmap" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">if Image is null</exception>
+    /// <param name="image">Source image.</param>
+    /// <returns>A <see cref="Bitmap"/>.</returns>
+    /// <exception cref="ArgumentNullException">If image is null.</exception>
     internal static Bitmap BitmapImageToBitmap(BitmapImage image)
     {
         ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
@@ -136,22 +128,18 @@ public static class ImageStreamMedia
         var enc = new BmpBitmapEncoder();
         enc.Frames.Add(BitmapFrame.Create(image));
         enc.Save(outStream);
-        var bitmap = new Bitmap(outStream);
 
-        return new Bitmap(bitmap);
+        outStream.Position = 0; // REQUIRED!
+        return new Bitmap(outStream);
     }
 
     /// <summary>
-    /// Converts to bitmap image.
-    /// https://stackoverflow.com/questions/5199205/how-do-i-rotate-image-then-move-to-the-top-left-0-0-without-cutting-off-the-imag/5200280#5200280
+    /// Converts a System.Drawing <see cref="Bitmap"/> to a WPF <see cref="BitmapImage"/>.
     /// </summary>
-    /// <param name="image">The bitmap.</param>
-    /// <param name="lossless">if set to <c>true</c> [lossless].</param>
-    /// <returns>BitmpaImage from Bitmap</returns>
-    /// <exception cref="ArgumentNullException">if Image is null</exception>
-    /// The Image as
-    /// <see cref="BitmapImage" />
-    /// .
+    /// <param name="image">The source bitmap.</param>
+    /// <param name="lossless">If true, encode PNG losslessly.</param>
+    /// <returns>A <see cref="BitmapImage"/>.</returns>
+    /// <exception cref="ArgumentNullException"></exception>
     internal static BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false)
     {
         if (!lossless)
@@ -160,17 +148,14 @@ public static class ImageStreamMedia
         ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
 
         Bitmap processed = image;
-        Bitmap? tempImage = null;
+        Bitmap? temp = null;
 
-        // Normalize to 32bppArgb if needed
         if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
         {
-            tempImage = new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            using (var g = Graphics.FromImage(tempImage))
-                g.DrawImage(image, 0, 0);
-
-            processed = tempImage;
+            temp = new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using var g = Graphics.FromImage(temp);
+            g.DrawImage(image, 0, 0);
+            processed = temp;
         }
 
         try
@@ -181,27 +166,25 @@ public static class ImageStreamMedia
 
             var bmp = new BitmapImage();
             bmp.BeginInit();
-            bmp.StreamSource = ms;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.StreamSource = ms;
             bmp.EndInit();
             bmp.Freeze();
-
             return bmp;
         }
         finally
         {
-            tempImage?.Dispose();
+            temp?.Dispose();
         }
     }
 
     /// <summary>
-    /// Fasts the convert.
+    /// Fast conversion using WriteableBitmap.
     /// </summary>
     /// <param name="bmp">The BMP.</param>
-    /// <returns>BitmapImage from Bitmap.</returns>
+    /// <returns>BitmapImage from Bitmap</returns>
     private static BitmapImage FastConvert(Bitmap bmp)
     {
-        // Ensure 32bpp ARGB
         if (bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
         {
             var converted = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -215,9 +198,6 @@ public static class ImageStreamMedia
 
         try
         {
-            // WPF erwartet Int32Rect und PixelFormats.Bgra32
-            var wbRect = new Int32Rect(0, 0, bmp.Width, bmp.Height);
-
             var wb = new WriteableBitmap(
                 bmp.Width,
                 bmp.Height,
@@ -225,8 +205,12 @@ public static class ImageStreamMedia
                 PixelFormats.Bgra32,
                 null);
 
-            // Verwende die IntPtr-Überladung: WritePixels(Int32Rect, IntPtr buffer, int bufferSize, int stride)
-            wb.WritePixels(wbRect, bmpData.Scan0, Math.Abs(bmpData.Stride) * bmp.Height, Math.Abs(bmpData.Stride));
+            wb.WritePixels(
+                new Int32Rect(0, 0, bmp.Width, bmp.Height),
+                bmpData.Scan0,
+                Math.Abs(bmpData.Stride) * bmp.Height,
+                Math.Abs(bmpData.Stride));
+
             wb.Freeze();
 
             return WriteableBitmapToBitmapImage(wb);
@@ -238,26 +222,24 @@ public static class ImageStreamMedia
     }
 
     /// <summary>
-    /// Writeables the bitmap to bitmap image.
+    /// Converts a <see cref="WriteableBitmap" /> to a <see cref="BitmapImage" />.
     /// </summary>
     /// <param name="wb">The wb.</param>
-    /// <returns>BitmapImage from Bitmap.</returns>
+    /// <returns>BitmapImage from WriteableBitmap</returns>
     private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
     {
-        var encoder = new JpegBitmapEncoder(); // MUCH faster than PNG
-        encoder.QualityLevel = 100; // visually lossless
-
         using var ms = new MemoryStream();
-        encoder.Frames.Add(BitmapFrame.Create(wb));
-        encoder.Save(ms);
+        var enc = new BmpBitmapEncoder();
+        enc.Frames.Add(BitmapFrame.Create(wb));
+        enc.Save(ms);
         ms.Position = 0;
 
-        var bmp = new BitmapImage();
-        bmp.BeginInit();
-        bmp.CacheOption = BitmapCacheOption.OnLoad;
-        bmp.StreamSource = ms;
-        bmp.EndInit();
-        bmp.Freeze();
-        return bmp;
+        var img = new BitmapImage();
+        img.BeginInit();
+        img.CacheOption = BitmapCacheOption.OnLoad;
+        img.StreamSource = ms;
+        img.EndInit();
+        img.Freeze();
+        return img;
     }
 }

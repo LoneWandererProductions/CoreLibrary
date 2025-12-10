@@ -455,7 +455,7 @@ public sealed class ImageRegister
     /// <value>
     ///     The last error.
     /// </value>
-    public string LastError => ErrorLog.Values.Last();
+    public string? LastError => ErrorLog.Count > 0 ? ErrorLog.Values.Last() : null;
 
     // Public static property to get the instance
     internal static ImageRegister Instance => Settings.Value;

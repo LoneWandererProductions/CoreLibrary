@@ -75,8 +75,8 @@ public sealed class CustomImageFormat : ICustomImageFormat
     /// <param name="path">The path.</param>
     public void GenerateBitmapToCifFile(Bitmap image, string path)
     {
-        var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
-        var lst = CifProcessing.GenerateCsv(image.Height, image.Width, imageFormat);
+        var cif = GenerateCifFromBitmap(image); // reuse conversion
+        var lst = CifProcessing.GenerateCsv(cif.Height, cif.Width, cif.CifImage);
         CsvHandler.WriteCsv(path, lst);
     }
 

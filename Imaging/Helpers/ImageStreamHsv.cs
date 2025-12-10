@@ -7,6 +7,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Imaging.Helpers;
@@ -108,5 +110,26 @@ internal static class ImageStreamHsv
         }
 
         return result.Bitmap;
+    }
+
+
+    /// <summary>
+    ///     Applies the pixel changes.
+    /// </summary>
+    /// <param name="result">The result.</param>
+    /// <param name="pixelsToSet">The pixels to set.</param>
+    /// <returns>Processed Image</returns>
+    private static Bitmap ApplyPixelChanges(DirectBitmap result, List<(int x, int y, Color color)> pixelsToSet)
+    {
+        try
+        {
+            result.SetPixelsSimd(pixelsToSet);
+            return result.Bitmap;
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
+            return null;
+        }
     }
 }
