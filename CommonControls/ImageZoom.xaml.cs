@@ -11,10 +11,84 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable MissingSpace
 
+/*
+ * TODO — ImageZoom & SelectionAdorner Architecture Roadmap
+ * --------------------------------------------------------
+ *
+ * 1. INPUT / EVENT SYSTEM
+ * -----------------------
+ * [ ] Move input handling (mouse down/move/up) from SelectionAdorner into ImageZoom
+ * [ ] Add a unified input dispatcher that forwards events to the current tool
+ * [ ] Implement ToolContext to carry image transforms, image size, modifiers (Ctrl/Shift)
+ *
+ *
+ * 2. TOOL SYSTEM REFINEMENT
+ * -------------------------
+ * [ ] Introduce IToolHandler interface:
+ *       - OnMouseDown / OnMouseMove / OnMouseUp
+ *       - RenderOverlay(DrawingContext dc)
+ *       - Cancel() / Reset()
+ *
+ * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool handler classes
+ * [ ] Add ToolState / ToolSession object to store points, frame, geometry
+ * [ ] Decouple selection logic from the adorner (adorner draws only)
+ *
+ *
+ * 3. TRANSFORM PIPELINE
+ * ---------------------
+ * [ ] Replace single Transform with a TransformGroup:
+ *       - ZoomTransform
+ *       - ScrollOffsetTransform
+ *       - RotationTransform (future use)
+ *       - CropTransform (future use)
+ *
+ * [ ] Store both:
+ *       - DrawingTransform (image → screen)
+ *       - InputTransform   (screen → image/pixel space)
+ *
+ * [ ] Update SelectionFrame to always use pixel-space coordinates
+ *
+ *
+ * 4. ADORNER IMPROVEMENTS
+ * ------------------------
+ * [ ] Restrict adorner to visualization-only duties
+ * [ ] Let adorner read data from current IToolHandler instead of owning points
+ * [ ] Add double-buffering for smoother overlay drawing (optional)
+ * [ ] Support drawing tool-specific overlays (lasso, handles, marquee)
+ *
+ *
+ * 5. IMAGE OPERATIONS (FUTURE)
+ * ----------------------------
+ * [ ] Integrate DirectBitmapImage operations into tool handlers (fill, stroke, erase)
+ * [ ] Add support for brush size, brush hardness, opacity
+ * [ ] Add selection commit logic (crop, cut, fill, invert, delete, outline)
+ * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
+ *
+ *
+ * 6. EXTENDED TOOLSET (OPTIONAL NICE-TO-HAVE)
+ * -------------------------------------------
+ * [ ] Polygonal lasso tool
+ * [ ] Magic-wand / flood-fill selection using your existing flood-fill helper
+ * [ ] Text tool (typed overlay rendered to bitmap)
+ * [ ] Stamp/cloning tool
+ * [ ] Multi-layer support (background, overlay layers)
+ *
+ *
+ * 7. PERFORMANCE & ARCHITECTURE
+ * ------------------------------
+ * [ ] Add invalidate throttling (Redraw only when needed)
+ * [ ] Use DrawingVisual for overlays to reduce Adorner overhead
+ * [ ] Add high-DPI support for Zoom + PixelGrid alignment
+ * [ ] Allow async pixel operations (large flood fills, transforms)
+ *
+ *
+ * END TODO LIST
+ */
+
+
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -103,9 +177,9 @@ public sealed partial class ImageZoom : IDisposable
             new PropertyMetadata(null));
 
     /// <summary>
-    ///     The lock
+    ///     The lock object used for monitor locking (thread-safety).
     /// </summary>
-    private readonly Lock _lock = new();
+    private readonly object _lock = new();
 
     /// <summary>
     ///     The disposed
@@ -212,10 +286,10 @@ public sealed partial class ImageZoom : IDisposable
     /// <value>
     ///     The gif image path.
     /// </value>
-    public string ImageGifPath
+    public string? ImageGifPath
     {
         get => (string)GetValue(ImageGifSourceProperty);
-        set => SetValue(ImageSourceProperty, value);
+        set => SetValue(ImageGifSourceProperty, value);
     }
 
     /// <summary>
@@ -326,28 +400,16 @@ public sealed partial class ImageZoom : IDisposable
     /// </summary>
     private void OnImageSourceGifChanged()
     {
-        if (!File.Exists(ImageGifPath))
+        if (string.IsNullOrEmpty(ImageGifPath) || !File.Exists(ImageGifPath))
         {
-            BtmImage.GifSource = null;
-            BtmImage.Source = null;
             return;
         }
 
-        //reset position
-        var matrix = BtmImage.RenderTransform.Value;
-        matrix.OffsetX = 0;
-        matrix.OffsetY = 0;
-        BtmImage.RenderTransform = new MatrixTransform(matrix);
+        // reset position + scroll
+        ResetTransforms();
 
-        //reset Scrollbar
-        ScrollView.ScrollToTop();
-        ScrollView.UpdateLayout();
-
-        // Set GifSource and subscribe to the ImageLoaded event
-        BtmImage.ImageLoaded += BtmImage_ImageLoaded;
         BtmImage.GifSource = ImageGifPath;
 
-        // Ensure the adorner updates with the new zoom scale
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
     }
 
@@ -359,9 +421,6 @@ public sealed partial class ImageZoom : IDisposable
     /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
     private void BtmImage_ImageLoaded(object sender, EventArgs e)
     {
-        // Unsubscribe to prevent memory leaks
-        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
-
         // Now the source is fully loaded, you can safely access it
         MainCanvas.Height = BtmImage.Source.Height;
         MainCanvas.Width = BtmImage.Source.Width;
@@ -378,39 +437,57 @@ public sealed partial class ImageZoom : IDisposable
 
     /// <summary>
     ///     Called when [image source changed].
-    ///     TODO add an option to not reset anything
     /// </summary>
     private void OnImageSourceChanged()
     {
-        BtmImage.StopAnimation();
-        BtmImage.Source = ItemsSource;
+        //// Prevent any GIF from reasserting itself
+        //BtmImage.GifSource = null;
+        //// Force WPF to process the null assignment immediately
+        //Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
 
-        if (BtmImage.Source == null)
+        BtmImage.StopGif();
+
+        // this block aboe is absolutey necessary to avoid that WPF keeps the old GIF playing
+
+        // Load ItemsSource via stream to avoid WPF URI cache if possible
+        if (ItemsSource != null && !string.IsNullOrEmpty(ItemsSource.UriSource?.OriginalString))
         {
-            return;
+            // Best: create a new BitmapImage from a stream on demand
+            try
+            {
+                var uri = ItemsSource.UriSource;
+                var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.StreamSource = fs;
+                bmp.EndInit();
+                bmp.Freeze();
+                BtmImage.Source = bmp;
+            }
+            catch
+            {
+                // fallback to existing ItemsSource
+                BtmImage.Source = ItemsSource;
+            }
+        }
+        else
+        {
+            // ItemsSource is already a BitmapImage created in-memory
+            BtmImage.Source = ItemsSource;
         }
 
-        //reset Scaling
-        Scale.ScaleX = 1;
-        Scale.ScaleY = 1;
+        if (BtmImage.Source == null)
+            return;
 
-        //reset position
-        var matrix = BtmImage.RenderTransform.Value;
-        matrix.OffsetX = 0;
-        matrix.OffsetY = 0;
-        BtmImage.RenderTransform = new MatrixTransform(matrix);
-
-        //reset Scrollbar
-        ScrollView.ScrollToTop();
-        ScrollView.UpdateLayout();
+        // reset position + scroll
+        ResetTransforms();
 
         MainCanvas.Height = BtmImage.Source.Height;
         MainCanvas.Width = BtmImage.Source.Width;
 
-        // Update the adorner with the new image transform
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-
-        // Reattach adorner for new image (this ensures correct behavior for the new image)
         AttachAdorner(SelectionTool);
     }
 
@@ -420,19 +497,39 @@ public sealed partial class ImageZoom : IDisposable
     /// <param name="tool">The tool.</param>
     private void AttachAdorner(ImageZoomTools tool)
     {
-        if (SelectionAdorner == null)
+        var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+        if (adornerLayer == null)
+            return;
+
+        // If we already have an adorner instance, keep reusing it and update its mode
+        if (SelectionAdorner != null)
         {
-            // Get the adorner layer for the BtmImage instead of the MainCanvas
-            var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-            SelectionAdorner = new SelectionAdorner(BtmImage, tool);
-            adornerLayer?.Add(SelectionAdorner);
+            SelectionAdorner.Tool = tool;
+            SelectionAdorner.ClearFreeFormPoints();
+            SelectionAdorner.UpdateImageTransform(BtmImage.RenderTransform);
+            return;
         }
-        else
+
+        // Defensive: check whether one already exists in the layer (someone might have added it externally)
+        var adorners = adornerLayer.GetAdorners(BtmImage);
+        if (adorners != null)
         {
-            // Clear points and reset for the new selection tool
-            SelectionAdorner?.ClearFreeFormPoints();
-            SelectionAdorner.Tool = tool; // Update the tool if necessary
+            foreach (var a in adorners)
+            {
+                if (a is SelectionAdorner existing)
+                {
+                    SelectionAdorner = existing;
+                    SelectionAdorner.Tool = tool;
+                    SelectionAdorner.ClearFreeFormPoints();
+                    SelectionAdorner.UpdateImageTransform(BtmImage.RenderTransform);
+                    return;
+                }
+            }
         }
+
+        // Otherwise create and add a fresh one
+        SelectionAdorner = new SelectionAdorner(BtmImage, tool);
+        adornerLayer.Add(SelectionAdorner);
     }
 
     /// <summary>
@@ -445,8 +542,8 @@ public sealed partial class ImageZoom : IDisposable
         // Capture and track the mouse.
         _mouseDown = true;
 
-        // Get the mouse position relative to the canvas
-        var rawPoint = e.GetPosition(MainCanvas);
+        // Get the mouse position relative to the image (consistent with panning logic)
+        var rawPoint = e.GetPosition(BtmImage);
 
         //TODO problem with our DPI and multiple Monitor Setup
         _startPoint = rawPoint;
@@ -455,6 +552,14 @@ public sealed partial class ImageZoom : IDisposable
         _ = MainCanvas.CaptureMouse();
 
         AttachAdorner(SelectionTool);
+
+        // If this is a pan start, capture origin offsets (in image transform space)
+        if (SelectionTool == ImageZoomTools.Move)
+        {
+            // Capture the current image transform offset as the origin for panning
+            var matrix = BtmImage.RenderTransform.Value;
+            _originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
+        }
 
         switch (SelectionTool)
         {
@@ -500,11 +605,11 @@ public sealed partial class ImageZoom : IDisposable
 
                 var frame = SelectionAdorner.CurrentSelectionFrame;
                 SelectedFrame?.Invoke(frame);
-                SelectedFrameCommand.Execute(frame);
+                SafeExecuteCommand(SelectedFrameCommand, frame);
                 break;
             case ImageZoomTools.FreeForm:
-                // Get the mouse position relative to the canvas
-                var rawPoint = e.GetPosition(MainCanvas);
+                // Get the mouse position relative to the image
+                var rawPoint = e.GetPosition(BtmImage);
 
                 //TODO problem with our DPI and multiple Monitor Setup
 
@@ -520,10 +625,7 @@ public sealed partial class ImageZoom : IDisposable
                 if (points is { Count: > 0 })
                 {
                     // Process the collected freeform points
-                    if (SelectedFreeFormPointsCommand?.CanExecute(points) == true)
-                    {
-                        SelectedFreeFormPointsCommand.Execute(points);
-                    }
+                    SafeExecuteCommand(SelectedFreeFormPointsCommand, points);
 
                     // Optionally, log or display the points
                     Trace.WriteLine($"Trace tool completed with {points.Count} points.");
@@ -550,11 +652,21 @@ public sealed partial class ImageZoom : IDisposable
         // Get the AdornerLayer for the image
         var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
 
-        if (adornerLayer != null)
+        if (adornerLayer != null && SelectionAdorner != null)
         {
-            // Remove the SelectionAdorner
-            adornerLayer.Remove(SelectionAdorner);
-            SelectionAdorner = null; // Clear the reference
+            // Only remove the adorner for tools that represent a finished, one-shot selection
+            if (SelectionTool == ImageZoomTools.Rectangle ||
+                SelectionTool == ImageZoomTools.Ellipse ||
+                SelectionTool == ImageZoomTools.Dot)
+            {
+                adornerLayer.Remove(SelectionAdorner);
+                SelectionAdorner = null;
+            }
+            else
+            {
+                // Keep the adorner alive for Move, FreeForm, Trace so user can continue interacting
+                SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            }
         }
     }
 
@@ -577,7 +689,8 @@ public sealed partial class ImageZoom : IDisposable
         {
             case ImageZoomTools.Move:
             {
-                var position = e.GetPosition(MainCanvas);
+                // Use the image coordinate space so panning respects the current image transform/zoom
+                var position = e.GetPosition(BtmImage);
                 var matrix = BtmImage.RenderTransform.Value;
                 matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
                 matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
@@ -655,10 +768,7 @@ public sealed partial class ImageZoom : IDisposable
         var frame = SelectionAdorner.CurrentSelectionFrame;
         SelectedFrame?.Invoke(frame); // Notify listeners that selection is done
 
-        if (SelectedFrameCommand?.CanExecute(frame) == true)
-        {
-            SelectedFrameCommand.Execute(frame); // Execute any bound command
-        }
+        SafeExecuteCommand(SelectedFrameCommand, frame);
 
         SelectionAdorner.FreeFormPoints.Clear(); // Reset collected points for the next freeform drawing
     }
@@ -684,7 +794,28 @@ public sealed partial class ImageZoom : IDisposable
     {
         var endpoint = e.GetPosition(BtmImage);
         SelectedPoint?.Invoke(endpoint);
-        SelectedPointCommand.Execute(endpoint);
+        SafeExecuteCommand(SelectedPointCommand, endpoint);
+    }
+
+    /// <summary>
+    /// Resets the Transformations.
+    /// reset position + scroll
+    /// </summary>
+    private void ResetTransforms()
+    {
+        //reset Scaling
+        Scale.ScaleX = 1;
+        Scale.ScaleY = 1;
+
+        //reset position
+        var matrix = BtmImage.RenderTransform.Value;
+        matrix.OffsetX = 0;
+        matrix.OffsetY = 0;
+        BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+        //reset Scrollbar
+        ScrollView.ScrollToTop();
+        ScrollView.UpdateLayout();
     }
 
     /// <summary>
@@ -727,26 +858,51 @@ public sealed partial class ImageZoom : IDisposable
                 }
 
                 // Dispose image resources
-                BtmImage?.StopAnimation();
                 if (BtmImage != null)
                 {
                     BtmImage.Source = null;
                     BtmImage.GifSource = null;
 
                     // Remove adorner
-                    var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                    adornerLayer?.Remove(SelectionAdorner);
+                    try
+                    {
+                        var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                        adornerLayer?.Remove(SelectionAdorner);
+                    }
+                    catch
+                    {
+                        // swallow, best-effort
+                    }
                 }
 
                 SelectionAdorner = null;
 
-                if (BtmImage != null)
+                // Release UI interaction resources
+                try
                 {
-                    BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+                    MainCanvas.ReleaseMouseCapture();
+                }
+                catch
+                {
+                    // swallow
                 }
 
-                // Release UI interaction resources
-                MainCanvas.ReleaseMouseCapture();
+                // Best-effort unsubscribe of common UI events (prevents memory leaks)
+                try
+                {
+                    MainCanvas.MouseDown -= Canvas_MouseDown;
+                    MainCanvas.MouseUp -= Canvas_MouseUp;
+                    MainCanvas.MouseMove -= Canvas_MouseMove;
+                    MainCanvas.MouseWheel -= Canvas_MouseWheel;
+                    MainCanvas.MouseRightButtonUp -= Canvas_MouseRightButtonUp;
+
+                    // If BtmImage exposes ImageLoaded event, unsubscribe
+                    //BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+                }
+                catch
+                {
+                    // swallow any unsubscribe exceptions
+                }
             }
 
             // If there are unmanaged resources, clean them here
@@ -762,4 +918,29 @@ public sealed partial class ImageZoom : IDisposable
     {
         Dispose(false); // Finalizer calls Dispose(false)
     }
+
+    #region Helpers
+
+    /// <summary>
+    /// Safely executes a command if it exists and can execute.
+    /// </summary>
+    /// <param name="cmd">The command to execute.</param>
+    /// <param name="parameter">The parameter to pass.</param>
+    private static void SafeExecuteCommand(ICommand? cmd, object? parameter)
+    {
+        if (cmd == null) return;
+        try
+        {
+            if (cmd.CanExecute(parameter))
+            {
+                cmd.Execute(parameter);
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"Command execution failed: {ex}");
+        }
+    }
+
+    #endregion
 }

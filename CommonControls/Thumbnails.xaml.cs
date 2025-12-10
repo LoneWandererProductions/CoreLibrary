@@ -127,12 +127,12 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The cancellation token source
     /// </summary>
-    private CancellationTokenSource _cancellationTokenSource;
+    private CancellationTokenSource? _cancellationTokenSource;
 
     /// <summary>
     ///     The current selected border
     /// </summary>
-    private Border _currentSelectedBorder;
+    private Border? _currentSelectedBorder;
 
     /// <summary>
     ///     The disposed
@@ -143,11 +143,6 @@ public sealed partial class Thumbnails : IDisposable
     ///     The original height
     /// </summary>
     private int _originalHeight;
-
-    /// <summary>
-    /// The loaded
-    /// </summary>
-    private bool _loaded;
 
     /// <summary>
     ///     The original width
@@ -249,7 +244,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     <c>true</c> if [thumb grid]; otherwise, <c>false</c>.
     /// </value>
-    public Dictionary<int, string> ItemsSource
+    public Dictionary<int, string>? ItemsSource
     {
         get => (Dictionary<int, string>)GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
@@ -285,7 +280,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     The Id of the Key
     /// </value>
-    private ConcurrentDictionary<string, int> Keys { get; set; }
+    private ConcurrentDictionary<string, int>? Keys { get; set; }
 
     /// <summary>
     ///     Gets or sets the image Dictionary.
@@ -293,7 +288,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     The image Dictionary.
     /// </value>
-    private ConcurrentDictionary<string, Image> ImageDct { get; set; }
+    private ConcurrentDictionary<string, Image>? ImageDct { get; set; }
 
     /// <summary>
     ///     Gets or sets the CheckBox.
@@ -301,12 +296,12 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     The CheckBox.
     /// </value>
-    private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
+    private ConcurrentDictionary<int, CheckBox>? ChkBox { get; set; }
 
     /// <summary>
     ///     The border
     /// </summary>
-    private ConcurrentDictionary<int, Border> Border { get; set; }
+    private ConcurrentDictionary<int, Border>? Border { get; set; }
 
     /// <summary>
     ///     Gets or sets the selection.
@@ -322,7 +317,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///   <c>true</c> if this instance is selection valid; otherwise, <c>false</c>.
     /// </value>
-    public bool IsSelectionValid => Selection != null && Selection.Count > 0;
+    public bool IsSelectionValid => Selection is { Count: > 0 };
 
     /// <inheritdoc />
     /// <summary>
@@ -337,12 +332,12 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     An Image was clicked <see cref="DelegateImage" />.
     /// </summary>
-    public event EventHandler<ImageEventArgs> ImageClicked;
+    public event EventHandler<ImageEventArgs>? ImageClicked;
 
     /// <summary>
     ///     Occurs when [image loaded].
     /// </summary>
-    public event DelegateLoadFinished ImageLoaded;
+    public event DelegateLoadFinished? ImageLoaded;
 
     /// <summary>
     ///     Called when [items source property changed].
@@ -381,7 +376,7 @@ public sealed partial class Thumbnails : IDisposable
         var keyName = string.Concat(ComCtlResources.ImageAdd, id);
 
         // Remove Image and unsubscribe events
-        if (ImageDct.TryRemove(keyName, out var image))
+        if (ImageDct!.TryRemove(keyName, out var image))
         {
             image.MouseDown -= ImageClick_MouseDown;
             image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
@@ -390,13 +385,13 @@ public sealed partial class Thumbnails : IDisposable
         }
 
         // Remove Border
-        if (Border.TryRemove(id, out var border))
+        if (Border!.TryRemove(id, out var border))
         {
             Thb.Children.Remove(border);
         }
 
         // Remove CheckBox
-        if (SelectBox && ChkBox.TryRemove(id, out var checkbox))
+        if (SelectBox && ChkBox!.TryRemove(id, out var checkbox))
         {
             checkbox.Checked -= CheckBox_Checked;
             checkbox.Unchecked -= CheckBox_Unchecked;
@@ -457,8 +452,6 @@ public sealed partial class Thumbnails : IDisposable
     {
         try
         {
-            _loaded = true;
-
             // Capture original width/height immediately
             _originalWidth = ThumbWidth;
             _originalHeight = ThumbHeight;
@@ -485,7 +478,7 @@ public sealed partial class Thumbnails : IDisposable
     }
 
     /// <summary>
-    ///     Loads the images.
+    /// Loads the images.
     /// </summary>
     private async Task LoadImages()
     {
@@ -508,10 +501,10 @@ public sealed partial class Thumbnails : IDisposable
         if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
         // Capture initial values from dependency properties
-        int cellSize = await Application.Current.Dispatcher.InvokeAsync(() => ThumbCellSize);
-        int thumbWidth = await Application.Current.Dispatcher.InvokeAsync(() => ThumbWidth);
-        int thumbHeight = await Application.Current.Dispatcher.InvokeAsync(() => ThumbHeight);
-        bool thumbGrid = await Application.Current.Dispatcher.InvokeAsync(() => ThumbGrid);
+        var cellSize = await Application.Current.Dispatcher.InvokeAsync(() => ThumbCellSize);
+        var thumbWidth = await Application.Current.Dispatcher.InvokeAsync(() => ThumbWidth);
+        var thumbHeight = await Application.Current.Dispatcher.InvokeAsync(() => ThumbHeight);
+        var thumbGrid = await Application.Current.Dispatcher.InvokeAsync(() => ThumbGrid);
 
         // --- Handle special cases ---
         if (cellSize <= 0) cellSize = 100;
@@ -583,14 +576,19 @@ public sealed partial class Thumbnails : IDisposable
         if (token.IsCancellationRequested) return;
 
         // Capture UI-thread values safely
-        bool isCheckBoxSelected = await Application.Current.Dispatcher.InvokeAsync(() => IsCheckBoxSelected);
+        var isCheckBoxSelected = await Application.Current.Dispatcher.InvokeAsync(() => IsCheckBoxSelected);
 
         // Load the bitmap off the UI thread
-        BitmapImage bitmap = await GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
+        var bitmap = await GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
         if (bitmap == null) return;
 
         // Prepare UI elements
-        var images = new Image { Height = cellSize, Width = cellSize, Name = $"{ComCtlResources.ImageAdd}{key}" };
+        var images = new Image
+        {
+            Height = cellSize,
+            Width = cellSize,
+            Name = $"{ComCtlResources.ImageAdd}{key}"
+        };
 
         var border = new Border
         {
@@ -943,7 +941,7 @@ public sealed partial class Thumbnails : IDisposable
     ///     Updates the selected border.
     /// </summary>
     /// <param name="newSelectedBorder">The new selected border.</param>
-    private void UpdateSelectedBorder(Border newSelectedBorder)
+    private void UpdateSelectedBorder(Border? newSelectedBorder)
     {
         // Remove the "selected" style from the previously selected border
         if (_currentSelectedBorder != null)

@@ -106,7 +106,7 @@ namespace CommonControls
                 .Where(p => p.CanRead) // include init-only and read-only
                 .OrderBy(p => p.Name);
 
-            int row = 0;
+            var row = 0;
             foreach (var prop in props)
             {
                 PartContent.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -128,18 +128,18 @@ namespace CommonControls
                 PartContent.Children.Add(label);
 
                 // Determine property characteristics
-                bool isInitOnly = !prop.CanWrite;
-                bool isReadOnlyAttr = prop.GetCustomAttribute<ReadOnlyAttribute>()?.IsReadOnly ?? false;
-                bool isCollection = typeof(System.Collections.IEnumerable).IsAssignableFrom(prop.PropertyType)
-                                    && prop.PropertyType != typeof(string);
+                var isInitOnly = !prop.CanWrite;
+                var isReadOnlyAttr = prop.GetCustomAttribute<ReadOnlyAttribute>()?.IsReadOnly ?? false;
+                var isCollection = typeof(System.Collections.IEnumerable).IsAssignableFrom(prop.PropertyType)
+                                   && prop.PropertyType != typeof(string);
 
                 FrameworkElement editor;
 
                 if (isCollection)
                 {
                     var value = prop.GetValue(SelectedObject) as System.Collections.IEnumerable;
-                    int count = value?.Cast<object>().Count() ?? 0;
-                    string typeName = prop.PropertyType.IsGenericType
+                    var count = value?.Cast<object>().Count() ?? 0;
+                    var typeName = prop.PropertyType.IsGenericType
                         ? prop.PropertyType.GetGenericArguments().First().Name
                         : prop.PropertyType.Name;
 
