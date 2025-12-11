@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CoreBuilder.Helper;
+using CoreBuilder.Interface;
+using CoreBuilder.UI;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -40,8 +42,26 @@ namespace CoreBuilder.Development
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
+
         /// <inheritdoc />
-        public int ParameterCount => 1;
+        /// <summary>
+        ///  folder + optional outputMode
+        /// </summary>
+        public int ParameterCount => 2;
+
+        /// <summary>
+        /// The output
+        /// </summary>
+        private readonly IEventOutput _output;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApiExplorerCommand"/> class.
+        /// </summary>
+        /// <param name="output">The output.</param>
+        public ApiExplorerCommand(IEventOutput? output = null)
+        {
+            _output = output ?? new WpfEventOutput();
+        }
 
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
@@ -52,6 +72,8 @@ namespace CoreBuilder.Development
             var rootPath = args[0];
             if (!Directory.Exists(rootPath))
                 return CommandResult.Fail($"Folder not found: {rootPath}");
+
+            bool useWindow = args.Length > 1 && args[1].Equals("window", StringComparison.OrdinalIgnoreCase);
 
             var sb = new StringBuilder();
             var files = Directory
@@ -66,22 +88,18 @@ namespace CoreBuilder.Development
                     var tree = CSharpSyntaxTree.ParseText(code);
                     var root = tree.GetCompilationUnitRoot();
 
-                    // handle both block-style and file-scoped namespaces
                     var namespaces = root.DescendantNodes().OfType<BaseNamespaceDeclarationSyntax>();
                     if (!namespaces.Any())
-                    {
-                        // handle top-level types (no namespace)
-                        DumpTypes(root.Members.OfType<BaseTypeDeclarationSyntax>(), sb, "(global)");
-                    }
+                        DumpTypes(root.Members.OfType<BaseTypeDeclarationSyntax>(), sb, _output, "(global)");
                     else
-                    {
                         foreach (var ns in namespaces)
-                            DumpTypes(ns.Members.OfType<BaseTypeDeclarationSyntax>(), sb, ns.Name.ToString());
-                    }
+                            DumpTypes(ns.Members.OfType<BaseTypeDeclarationSyntax>(), sb, _output, ns.Name.ToString());
                 }
                 catch (Exception ex)
                 {
-                    sb.AppendLine($"// Error parsing {file}: {ex.Message}");
+                    var line = $"// Error parsing {file}: {ex.Message}";
+                    sb.AppendLine(line);
+                    _output?.Write(line);
                 }
             }
 
@@ -94,14 +112,15 @@ namespace CoreBuilder.Development
         /// <param name="types">The types.</param>
         /// <param name="sb">The sb.</param>
         /// <param name="nsName">Name of the ns.</param>
-        private static void DumpTypes(IEnumerable<BaseTypeDeclarationSyntax> types, StringBuilder sb, string nsName)
+        private static void DumpTypes(IEnumerable<BaseTypeDeclarationSyntax> types, StringBuilder sb, IEventOutput? output, string nsName)
         {
-            // Filter to only public types
             var publicTypes = types.Where(t => IsPublic(t.Modifiers)).ToList();
-            if (publicTypes.Count == 0)
-                return; // Nothing public => skip the whole namespace
+            if (publicTypes.Count == 0) return;
 
-            sb.AppendLine($"namespace {nsName}");
+            var nsLine = $"namespace {nsName}";
+            sb.AppendLine(nsLine);
+            output?.Write(nsLine);
+
             foreach (var type in publicTypes)
             {
                 var modifiers = string.Join(" ", type.Modifiers);
@@ -119,40 +138,37 @@ namespace CoreBuilder.Development
                     ? $" : {string.Join(", ", baseList.Types.Select(b => b.Type.ToString()))}"
                     : string.Empty;
 
-                sb.AppendLine($"  {modifiers} {typeKind} {type.Identifier}{bases}");
+                var typeLine = $"  {modifiers} {typeKind} {type.Identifier}{bases}";
+                sb.AppendLine(typeLine);
+                output?.Write(typeLine);
 
                 if (type is TypeDeclarationSyntax typeDecl)
                 {
                     foreach (var member in typeDecl.Members)
                     {
-                        switch (member)
+                        string? memberLine = member switch
                         {
-                            case MethodDeclarationSyntax m when IsPublic(m.Modifiers):
-                                var isExtension = m.ParameterList.Parameters.FirstOrDefault()?
-                                    .Modifiers.Any(mod => mod.IsKind(SyntaxKind.ThisKeyword)) == true;
+                            MethodDeclarationSyntax m when IsPublic(m.Modifiers) =>
+                                $"    method: {m.Identifier}({string.Join(", ", m.ParameterList.Parameters.Select(p => $"{p.Type} {p.Identifier}"))})",
+                            PropertyDeclarationSyntax p when IsPublic(p.Modifiers) =>
+                                $"    property: {p.Identifier} : {p.Type}",
+                            FieldDeclarationSyntax f when IsPublic(f.Modifiers) =>
+                                $"    field: {string.Join(", ", f.Declaration.Variables.Select(v => v.Identifier.Text))} : {f.Declaration.Type}",
+                            EventDeclarationSyntax e when IsPublic(e.Modifiers) =>
+                                $"    event: {e.Identifier} : {e.Type}",
+                            _ => null
+                        };
 
-                                var prefix = isExtension ? "extension method" : "method";
-                                sb.AppendLine(
-                                    $"    {prefix}: {m.Identifier}({string.Join(", ", m.ParameterList.Parameters.Select(p => $"{p.Type} {p.Identifier}"))})");
-                                break;
-
-                            case PropertyDeclarationSyntax p when IsPublic(p.Modifiers):
-                                sb.AppendLine($"    property: {p.Identifier} : {p.Type}");
-                                break;
-
-                            case FieldDeclarationSyntax f when IsPublic(f.Modifiers):
-                                sb.AppendLine(
-                                    $"    field: {string.Join(", ", f.Declaration.Variables.Select(v => v.Identifier.Text))} : {f.Declaration.Type}");
-                                break;
-
-                            case EventDeclarationSyntax e when IsPublic(e.Modifiers):
-                                sb.AppendLine($"    event: {e.Identifier} : {e.Type}");
-                                break;
+                        if (memberLine != null)
+                        {
+                            sb.AppendLine(memberLine);
+                            output?.Write(memberLine);
                         }
                     }
                 }
 
                 sb.AppendLine();
+                output?.Write("");
             }
         }
 

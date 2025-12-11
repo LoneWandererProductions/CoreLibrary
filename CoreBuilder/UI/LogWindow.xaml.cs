@@ -30,19 +30,32 @@ namespace CoreBuilder.UI
         /// <param name="message">The message.</param>
         public void Append(string message)
         {
-            Dispatcher.Invoke(() =>
+            if (Dispatcher.CheckAccess())
             {
-                if (ShowTimestampCheck.IsChecked == true)
-                {
-                    var ts = DateTime.Now.ToString("HH:mm:ss.fff");
-                    message = $"[{ts}] {message}";
-                }
+                AppendInternal(message);
+            }
+            else
+            {
+                Dispatcher.Invoke(() => AppendInternal(message));
+            }
+        }
 
-                LogText.Text += message + Environment.NewLine;
+        /// <summary>
+        /// Appends the internal.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private void AppendInternal(string message)
+        {
+            if (ShowTimestampCheck.IsChecked == true)
+            {
+                var ts = DateTime.Now.ToString("HH:mm:ss.fff");
+                message = $"[{ts}] {message}";
+            }
 
-                if (AutoScrollCheck.IsChecked == true)
-                    ScrollToBottom();
-            });
+            LogText.Text += message + Environment.NewLine;
+
+            if (AutoScrollCheck.IsChecked == true)
+                ScrollToBottom();
         }
 
         /// <summary>

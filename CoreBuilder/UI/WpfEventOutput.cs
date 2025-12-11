@@ -20,15 +20,18 @@ namespace CoreBuilder.UI
         /// <summary>
         /// The window
         /// </summary>
-        private readonly LogWindow _window;
+        private LogWindow? _window;
+
+        /// <summary>
+        /// The lock
+        /// </summary>
+        private readonly object _lock = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WpfEventOutput"/> class.
         /// </summary>
         public WpfEventOutput()
         {
-            _window = new LogWindow();
-            _window.Show();
         }
 
         /// <summary>
@@ -37,7 +40,39 @@ namespace CoreBuilder.UI
         /// <param name="message">The message.</param>
         public void Write(string message)
         {
-            _window.Append(message);
+            EnsureWindow();
+            _window!.Dispatcher.BeginInvoke(() => _window.Append(message));
+        }
+
+        /// <summary>
+        /// Ensures the window.
+        /// Needed in console Context.
+        /// </summary>
+        private void EnsureWindow()
+        {
+            if (_window != null) return;
+
+            lock (_lock)
+            {
+                if (_window != null) return;
+
+                var tcs = new System.Threading.Tasks.TaskCompletionSource<LogWindow>();
+
+                var thread = new System.Threading.Thread(() =>
+                {
+                    var w = new LogWindow();
+                    w.Show();
+                    _window = w;
+                    tcs.SetResult(w);
+                    System.Windows.Threading.Dispatcher.Run(); // Start message loop
+                });
+
+                thread.SetApartmentState(System.Threading.ApartmentState.STA);
+                thread.IsBackground = true;
+                thread.Start();
+
+                _window = tcs.Task.Result;
+            }
         }
     }
 }
