@@ -22,7 +22,7 @@ namespace CoreMemoryLog
     /// In-memory logger that supports structured logging similar to Microsoft.Extensions.Logging
     /// and acts as a fallback logger for any library.
     /// </summary>
-    public sealed class InMemoryLogger : ILogger, IInMemoryLogger, Microsoft.Extensions.Logging.ILogger
+    public sealed class InMemoryLogger : ILogger, IInMemoryLogger, IEngineLogger, Microsoft.Extensions.Logging.ILogger
     {
         /// <summary>
         /// The memory instance
