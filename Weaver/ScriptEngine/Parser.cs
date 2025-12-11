@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine;
  * FILE:        Parser.cs
@@ -151,6 +151,10 @@ namespace Weaver.ScriptEngine
             return new DoWhileNode(pos, body, condition);
         }
 
+        /// <summary>
+        /// Parses the block statements.
+        /// </summary>
+        /// <returns>List of script nodes.</returns>
         private List<ScriptNode> ParseBlockStatements()
         {
             var statements = new List<ScriptNode>();

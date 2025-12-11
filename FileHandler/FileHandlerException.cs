@@ -41,7 +41,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified 
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message and a reference to the inner exception that caused this exception.
         /// </summary>
         /// <param name="message">The message describing the error.</param>
@@ -52,7 +52,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified 
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message and an associated file path.
         /// </summary>
         /// <param name="message">The message describing the error.</param>
@@ -64,7 +64,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified 
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message, associated file path, and a reference to the inner exception that caused this exception.
         /// </summary>
         /// <param name="message">The message describing the error.</param>

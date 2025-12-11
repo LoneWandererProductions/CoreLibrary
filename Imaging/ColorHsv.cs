@@ -20,7 +20,7 @@ using System.Windows.Media;
 
 namespace Imaging
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IComparable" />
     /// <summary>
     ///     HSV to RGP
     ///     And other Conversions
@@ -57,7 +57,7 @@ namespace Imaging
         /// <value>
         /// a.
         /// </value>
-        public int A { get; set; }
+        public int A { get; init; }
 
         /// <summary>
         /// Red [0..255]
@@ -388,10 +388,7 @@ namespace Imaging
         /// <exception cref="System.ArgumentOutOfRangeException">RGB values must be 0–255</exception>
         private static void ValidateRgb(int r, int g, int b, int a)
         {
-            if (r < 0 || r > 255 ||
-                g < 0 || g > 255 ||
-                b < 0 || b > 255 ||
-                a < 0 || a > 255)
+            if (r is < 0 or > 255 || g is < 0 or > 255 || b is < 0 or > 255 || a is < 0 or > 255)
                 throw new ArgumentOutOfRangeException("RGB values must be 0–255");
         }
 
@@ -413,10 +410,10 @@ namespace Imaging
         /// </exception>
         private static void ValidateHsv(double h, double s, double v, int a)
         {
-            if (h < 0 || h > 360) throw new ArgumentOutOfRangeException("Hue must be 0–360");
-            if (s < 0 || s > 1) throw new ArgumentOutOfRangeException("Saturation must be 0–1");
-            if (v < 0 || v > 1) throw new ArgumentOutOfRangeException("Value must be 0–1");
-            if (a < 0 || a > 255) throw new ArgumentOutOfRangeException("Alpha must be 0–255");
+            if (h is < 0 or > 360) throw new ArgumentOutOfRangeException("Hue must be 0–360");
+            if (s is < 0 or > 1) throw new ArgumentOutOfRangeException("Saturation must be 0–1");
+            if (v is < 0 or > 1) throw new ArgumentOutOfRangeException("Value must be 0–1");
+            if (a is < 0 or > 255) throw new ArgumentOutOfRangeException("Alpha must be 0–255");
         }
     }
 }

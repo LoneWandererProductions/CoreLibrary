@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 using System;
 using System.IO;
@@ -15,9 +16,10 @@ using System.Threading.Tasks;
 
 namespace FileHandler;
 
+/// <inheritdoc />
 /// <summary>
 /// Observes a folder for changes and raises async events.
-/// Supports cancellation via <see cref="CancellationToken"/>.
+/// Supports cancellation via <see cref="T:System.Threading.CancellationToken" />.
 /// </summary>
 public class FileObserver : IDisposable
 {

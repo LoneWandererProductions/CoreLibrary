@@ -655,9 +655,7 @@ public sealed partial class ImageZoom : IDisposable
         if (adornerLayer != null && SelectionAdorner != null)
         {
             // Only remove the adorner for tools that represent a finished, one-shot selection
-            if (SelectionTool == ImageZoomTools.Rectangle ||
-                SelectionTool == ImageZoomTools.Ellipse ||
-                SelectionTool == ImageZoomTools.Dot)
+            if (SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.Dot)
             {
                 adornerLayer.Remove(SelectionAdorner);
                 SelectionAdorner = null;

@@ -59,12 +59,14 @@ namespace CommonDialogs
         /// <param name="e">The event arguments containing old and new values.</param>
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is TreeView treeView)
+            if (d is not TreeView treeView)
             {
-                // Ensure we do not double-subscribe
-                treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
-                treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
+                return;
             }
+
+            // Ensure we do not double-subscribe
+            treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
+            treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
         }
 
         /// <summary>

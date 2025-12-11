@@ -92,7 +92,6 @@
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
-    <ProjectReference Include="..\Interpreter\Interpreter.csproj" />
     <ProjectReference Include="..\LightVector\LightVector.csproj" />
     <ProjectReference Include="..\Pathfinder\Pathfinder.csproj" />
     <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />

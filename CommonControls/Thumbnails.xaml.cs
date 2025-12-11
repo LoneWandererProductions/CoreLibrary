@@ -583,12 +583,7 @@ public sealed partial class Thumbnails : IDisposable
         if (bitmap == null) return;
 
         // Prepare UI elements
-        var images = new Image
-        {
-            Height = cellSize,
-            Width = cellSize,
-            Name = $"{ComCtlResources.ImageAdd}{key}"
-        };
+        var images = new Image { Height = cellSize, Width = cellSize, Name = $"{ComCtlResources.ImageAdd}{key}" };
 
         var border = new Border
         {
