@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using Weaver.Core;
 using Weaver.Interfaces;
 using Weaver.Messages;
@@ -19,17 +21,46 @@ namespace Weaver.ScriptEngine
     /// </summary>
     public sealed class ScriptExecutor
     {
+        /// <summary>
+        /// The weave
+        /// </summary>
         private readonly Weave _weave;
+
+        /// <summary>
+        /// The evaluator
+        /// </summary>
         private readonly IEvaluator _evaluator;
+
+        /// <summary>
+        /// The statements
+        /// </summary>
         private readonly List<(string Category, string)> _statements;
 
+        /// <summary>
+        /// The label positions
+        /// </summary>
         private readonly Dictionary<string, int> _labelPositions;
+
+        /// <summary>
+        /// The position
+        /// </summary>
         private int _position;
+
+        /// <summary>
+        /// The pending feedback
+        /// </summary>
         private FeedbackRequest? _pendingFeedback;
 
-        // Only store the start index of do-while loops
+        /// <summary>
+        /// Only store the start index of do-while loops
+        /// </summary>
         private readonly Stack<int> _doWhileStack = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScriptExecutor"/> class.
+        /// </summary>
+        /// <param name="weave">The weave.</param>
+        /// <param name="statements">The statements.</param>
         public ScriptExecutor(Weave weave, List<(string Category, string)> statements)
         {
             _weave = weave;
@@ -148,7 +179,7 @@ namespace Weaver.ScriptEngine
                             while (_position < _statements.Count)
                             {
                                 var (cat, _) = _statements[_position];
-                                if (cat == "If_Condition" || cat == "Do_Condition")
+                                if (cat is "If_Condition" or "Do_Condition")
                                     depth++;
                                 else if (cat == "Else_Open" && depth == 0)
                                     break;

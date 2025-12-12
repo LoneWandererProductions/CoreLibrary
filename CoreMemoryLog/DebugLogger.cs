@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     <Your Project Name>
+ * PROJECT:     CoreMemoryLog
  * FILE:        DebugLogger.cs
  * PURPOSE:     A lightweight wrapper for debug-only logging.
  *              Provides zero-cost removal in Release builds.
@@ -9,10 +9,13 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using CoreMemoryLog;
+
+namespace CoreMemoryLog;
 
 /// <summary>
 /// Provides a static, debug-only logging wrapper that is **entirely removed**
@@ -33,7 +36,7 @@ public static class DebugLogger
     /// <summary>
     /// Gets or sets the backend logger instance used for debug logging.
     /// <para>
-    /// Must implement <see cref="IEngineLogger"/>.  
+    /// Must implement <see cref="IEngineLogger"/>.
     /// Defaults to <see cref="InMemoryLogger.Instance"/>.
     /// </para>
     /// <para>
@@ -101,7 +104,7 @@ public static class DebugLogger
     /// Writes a debug-level message including caller metadata
     /// (file name, line number and calling method).
     /// <para>
-    /// Useful for debugging the engine’s execution flow,  
+    /// Useful for debugging the engine’s execution flow,
     /// especially in hot paths where stack traces are too slow.
     /// </para>
     /// <para>

@@ -7,6 +7,9 @@
  */
 
 // ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -103,6 +106,7 @@ public sealed class DirectBitmapImage : IDisposable
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     ///     Frees memory and unmanaged resources.
     /// </summary>
@@ -317,6 +321,7 @@ public sealed class DirectBitmapImage : IDisposable
         foreach (var (x, y, c) in pixels)
         {
             if ((uint)x >= Width || (uint)y >= Height) continue;
+
             var packed = (uint)(c.A << 24 | c.R << 16 | c.G << 8 | c.B);
             var index = x + y * Width;
             ptr[index] = packed;

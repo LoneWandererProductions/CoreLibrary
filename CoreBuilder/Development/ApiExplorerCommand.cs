@@ -112,7 +112,8 @@ namespace CoreBuilder.Development
         /// <param name="types">The types.</param>
         /// <param name="sb">The sb.</param>
         /// <param name="nsName">Name of the ns.</param>
-        private static void DumpTypes(IEnumerable<BaseTypeDeclarationSyntax> types, StringBuilder sb, IEventOutput? output, string nsName)
+        private static void DumpTypes(IEnumerable<BaseTypeDeclarationSyntax> types, StringBuilder sb,
+            IEventOutput? output, string nsName)
         {
             var publicTypes = types.Where(t => IsPublic(t.Modifiers)).ToList();
             if (publicTypes.Count == 0) return;

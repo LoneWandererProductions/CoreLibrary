@@ -127,7 +127,7 @@ namespace CoreMemoryLog
             };
 
             // Capture stack trace info for Error and Trace levels if enabled
-            if ((level == LogLevel.Error || level == LogLevel.Trace) && EnableStackTrace)
+            if (level is LogLevel.Error or LogLevel.Trace && EnableStackTrace)
             {
                 var st = new StackTrace(true);
                 var frame = st.GetFrame(2); // skip logger itself

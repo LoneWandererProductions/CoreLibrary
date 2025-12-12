@@ -20,7 +20,7 @@ public struct PixelData
     /// <value>
     ///     The x.
     /// </value>
-    public int X { get; set; }
+    public int X { get; init; }
 
     /// <summary>
     ///     Gets or sets the y.
@@ -29,7 +29,7 @@ public struct PixelData
     /// <value>
     ///     The y.
     /// </value>
-    public int Y { get; set; }
+    public int Y { get; init; }
 
     /// <summary>
     ///     Gets or sets the r.
@@ -38,7 +38,7 @@ public struct PixelData
     /// <value>
     ///     The r.
     /// </value>
-    public byte R { get; set; }
+    public byte R { get; init; }
 
     /// <summary>
     ///     Gets or sets the g.
@@ -47,7 +47,7 @@ public struct PixelData
     /// <value>
     ///     The g.
     /// </value>
-    public byte G { get; set; }
+    public byte G { get; init; }
 
     /// <summary>
     ///     Gets or sets the b.
@@ -56,7 +56,7 @@ public struct PixelData
     /// <value>
     ///     The b.
     /// </value>
-    public byte B { get; set; }
+    public byte B { get; init; }
 
     /// <summary>
     ///     Gets or sets a.
@@ -65,7 +65,7 @@ public struct PixelData
     /// <value>
     ///     a.
     /// </value>
-    public byte A { get; set; }
+    public byte A { get; init; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PixelData" /> struct.
