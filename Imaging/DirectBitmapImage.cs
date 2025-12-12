@@ -154,7 +154,6 @@ public sealed class DirectBitmapImage : IDisposable
         var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
         _bitmap.Lock();
 
-        var ptr = (uint*)_bitmap.BackBuffer.ToPointer();
         var len = Bits.Length;
         var vecSize = Vector<uint>.Count;
         var i = 0;
