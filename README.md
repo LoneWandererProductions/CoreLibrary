@@ -134,7 +134,8 @@ foreach (var entry in logger.GetLogs())
 | `LightVector`               | Lightweight vector math tools                   |
 | `Serializer`                | XML serialization of data and structures        |
 | `DataFormatter`             | CSV reading/writing and formatting              |
-| `Communication`             | Networking and web service helpers              |
+| `Communication`             | Networking and web service helpers,Port stuff   |
+| `CommunicationTests`        | Tests for the Network stuff                     |
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
 | `PluginLoader`              | Plugin management and loading system            |
 | `CommonFilter`              | WPF control to filter data tables               |

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
- * FILE:        Communication/HttpClientManager.cs
+ * FILE:        HttpClientManager.cs
  * PURPOSE:     Handle Http Requests
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

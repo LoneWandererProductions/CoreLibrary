@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Pathfinder
- * FILE:        Pathfinder/PathfinderResults.cs
+ * FILE:        PathfinderResults.cs
  * PURPOSE:     Abstraction of the Pathfinder result set. We can calculate more stuff and provide more informations without changing the core algorithm.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

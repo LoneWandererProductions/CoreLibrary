@@ -86,6 +86,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weaver", "Weaver\Weaver.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lector", "Lector\Lector.csproj", "{11DD9D7C-260C-1315-1FD7-3DB508FBA352}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationTests", "CommunicationTests\CommunicationTests.csproj", "{FB76055D-EC25-41E2-9377-474BA132E75D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -232,6 +234,10 @@ Global
 		{11DD9D7C-260C-1315-1FD7-3DB508FBA352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11DD9D7C-260C-1315-1FD7-3DB508FBA352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11DD9D7C-260C-1315-1FD7-3DB508FBA352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB76055D-EC25-41E2-9377-474BA132E75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB76055D-EC25-41E2-9377-474BA132E75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB76055D-EC25-41E2-9377-474BA132E75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB76055D-EC25-41E2-9377-474BA132E75D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
