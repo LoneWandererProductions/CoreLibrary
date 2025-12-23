@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Box.cs
+ * FILE:        Box.cs
  * PURPOSE:     Helper Object to handle the drawing and processing Process
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -22,7 +22,7 @@ internal sealed class Box
     /// <value>
     ///     The image.
     /// </value>
-    internal Bitmap Image { get; init; }
+    internal Bitmap? Image { get; init; }
 
     /// <summary>
     ///     Gets the x.

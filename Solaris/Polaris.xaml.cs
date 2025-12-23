@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Polaris.cs
+ * FILE:        Polaris.cs
  * PURPOSE:     Editor Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -161,10 +161,10 @@ public sealed partial class Polaris
     internal Bitmap? BitmapLayerOne { get; private set; }
 
     /// <summary>
-    ///     Gets or sets the height of the polaris.
+    ///     Gets or sets the height of the Polaris.
     /// </summary>
     /// <value>
-    ///     The height of the polaris.
+    ///     The height of the Polaris.
     /// </value>
     public int PolarisHeight
     {
@@ -173,10 +173,10 @@ public sealed partial class Polaris
     }
 
     /// <summary>
-    ///     Gets or sets the width of the polaris.
+    ///     Gets or sets the width of the Polaris.
     /// </summary>
     /// <value>
-    ///     The width of the polaris.
+    ///     The width of the Polaris.
     /// </value>
     public int PolarisWidth
     {
@@ -185,10 +185,10 @@ public sealed partial class Polaris
     }
 
     /// <summary>
-    ///     Gets or sets the size of the polaris texture.
+    ///     Gets or sets the size of the Polaris texture.
     /// </summary>
     /// <value>
-    ///     The size of the polaris texture.
+    ///     The size of the Polaris texture.
     /// </value>
     public int PolarisTextureSize
     {
@@ -197,10 +197,10 @@ public sealed partial class Polaris
     }
 
     /// <summary>
-    ///     Gets or sets the polaris map.
+    ///     Gets or sets the Polaris map.
     /// </summary>
     /// <value>
-    ///     The polaris map.
+    ///     The Polaris map.
     /// </value>
     public Dictionary<int, List<int>>? PolarisMap
     {

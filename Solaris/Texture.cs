@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Aurora.cs
+ * FILE:        Aurora.cs
  * PURPOSE:     Texture object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -25,7 +25,7 @@ public sealed class Texture
     /// <value>
     ///     The path.
     /// </value>
-    public string Path { get; init; }
+    public string? Path { get; init; }
 
     /// <summary>
     ///     Gets the layer.

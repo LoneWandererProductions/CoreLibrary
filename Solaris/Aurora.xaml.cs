@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Aurora.cs
+ * FILE:        Aurora.cs
  * PURPOSE:     Game Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

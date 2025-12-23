@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Resources.cs
+ * FILE:        Resources.cs
  * PURPOSE:     Some basic string Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

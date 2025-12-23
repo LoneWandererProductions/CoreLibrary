@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
- * FILE:        Solaris/Helper.cs
+ * FILE:        Helper.cs
  * PURPOSE:     Helper class for image processing and map rendering.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -21,7 +21,7 @@ namespace Solaris;
 /// <summary>
 ///     Helper class that manages image generation tasks.
 /// </summary>
-internal static class Helper
+internal static partial class Helper
 {
     /// <summary>
     ///     The render
@@ -41,7 +41,7 @@ internal static class Helper
     /// <param name="textureSize">Size of the texture.</param>
     /// <param name="textures">The textures.</param>
     /// <param name="map">The map.</param>
-    /// <returns></returns>
+    /// <returns>Generated Board as Imaage</returns>
     internal static Bitmap GenerateImage(
         int width, int height, int textureSize,
         Dictionary<int, Texture> textures,
@@ -117,7 +117,7 @@ internal static class Helper
     /// <param name="height">The height.</param>
     /// <param name="textureSize">Size of the texture.</param>
     /// <param name="padding">The padding.</param>
-    /// <returns></returns>
+    /// <returns>Image with Numbers overlayed.</returns>
     internal static ImageSource GenerateNumbers(int width, int height, int textureSize, int padding = 2)
     {
         using var bitmap = new Bitmap(width * textureSize, height * textureSize);
@@ -147,7 +147,7 @@ internal static class Helper
     /// </summary>
     /// <param name="map">The map.</param>
     /// <param name="idTexture">The identifier texture.</param>
-    /// <returns></returns>
+    /// <returns>Generate a new Bitmap for the new Map</returns>
     internal static MapChangeResult AddTile(
         Dictionary<int, List<int>>? map, KeyValuePair<int, int> idTexture)
     {
@@ -163,7 +163,7 @@ internal static class Helper
     /// <param name="map">The map.</param>
     /// <param name="textures">The textures.</param>
     /// <param name="idLayer">The identifier layer.</param>
-    /// <returns></returns>
+    /// <returns>Remove a Tile from the map.</returns>
     internal static MapChangeResult RemoveTile(
         Dictionary<int, List<int>>? map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
     {
@@ -201,7 +201,7 @@ internal static class Helper
     /// <param name="textures">The textures.</param>
     /// <param name="layer">The layer.</param>
     /// <param name="idTile">The identifier tile.</param>
-    /// <returns></returns>
+    /// <returns>Add an Image to the image Layer</returns>
     public static Bitmap? AddDisplay(
         int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
         KeyValuePair<int, int> idTile)
@@ -215,8 +215,13 @@ internal static class Helper
     }
 
     /// <summary>
-    ///     Removes a tile image from the display layer.
+    /// Removes a tile image from the display layer.
     /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <param name="layer">The layer.</param>
+    /// <param name="position">The position.</param>
+    /// <returns>Remove areal from Image</returns>
     public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
     {
         var x = position % width * textureSize;
@@ -226,8 +231,15 @@ internal static class Helper
     }
 
     /// <summary>
-    ///     Displays movement animation.
+    /// Displays movement animation.
     /// </summary>
+    /// <param name="aurora">The aurora.</param>
+    /// <param name="steps">The steps.</param>
+    /// <param name="avatar">The avatar.</param>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    /// <param name="textureSize">Size of the texture.</param>
+    /// <returns>Status of the animation.</returns>
     internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
         int width, int height, int textureSize)
     {
@@ -247,18 +259,18 @@ internal static class Helper
     }
 
     /// <summary>
-    ///     Moves the avatar to a new position with animation.
+    /// Moves the avatar to a new position with animation.
     /// </summary>
+    /// <param name="x">The x.</param>
+    /// <param name="y">The y.</param>
+    /// <param name="background">The background.</param>
+    /// <param name="avatar">The avatar.</param>
+    /// <param name="sleep">The sleep.</param>
+    /// <returns>Status of the animation.</returns>
     private static async Task<bool> MoveAvatar(int x, int y, Bitmap? background, Bitmap? avatar, int sleep)
     {
         Render.CombineBitmap(background, avatar, x, y);
         await Task.Delay(sleep);
         return true;
     }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Return type for map manipulation methods.
-    /// </summary>
-    internal readonly record struct MapChangeResult(bool Changed, Dictionary<int, List<int>>? Map);
 }
