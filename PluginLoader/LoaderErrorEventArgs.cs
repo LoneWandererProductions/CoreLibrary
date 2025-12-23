@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Plugin
- * FILE:        PluginLoader/LoaderErrorEventArgs.cs
+ * PROJECT:     PluginLoader
+ * FILE:        LoaderErrorEventArgs.cs
  * PURPOSE:     Basic error Logging Class, can and will be used for further external Communication
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

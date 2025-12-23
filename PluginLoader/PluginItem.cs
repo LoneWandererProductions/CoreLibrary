@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     PluginLoader
- * FILE:        PluginLoader/PluginItem.cs
+ * FILE:        PluginItem.cs
  * PURPOSE:     Container for the collected Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
