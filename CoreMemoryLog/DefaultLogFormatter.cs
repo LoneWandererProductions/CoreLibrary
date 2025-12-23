@@ -12,6 +12,7 @@ using System.Linq;
 
 namespace CoreMemoryLog
 {
+    /// <inheritdoc />
     /// <summary>
     /// Debug message Formatter.
     /// </summary>
@@ -34,14 +35,15 @@ namespace CoreMemoryLog
         {
             _order = order?.ToList() ?? new List<string>
             {
-                "Timestamp",
-                "LibraryName",
-                "Level",
-                "CallerMethod",
-                "Message"
+                LogResources.TimeStamp,
+                LogResources.LibraryName,
+                LogResources.Level,
+                LogResources.CallerMethod,
+                LogResources.Message
             };
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Formats the specified entry.
         /// </summary>
@@ -55,11 +57,11 @@ namespace CoreMemoryLog
             {
                 parts.Add(field switch
                 {
-                    "Timestamp" => $"[{entry.Timestamp:O}]",
-                    "LibraryName" => $"[{entry.LibraryName}]",
-                    "Level" => $"[{entry.Level}]",
-                    "CallerMethod" => $"{entry.CallerMethod}:",
-                    "Message" => entry.Args is { Length: > 0 }
+                    LogResources.TimeStamp => $"[{entry.Timestamp:O}]",
+                    LogResources.LibraryName => $"[{entry.LibraryName}]",
+                    LogResources.Level => $"[{entry.Level}]",
+                    LogResources.CallerMethod => $"{entry.CallerMethod}:",
+                    LogResources.Message => entry.Args is { Length: > 0 }
                         ? SafeFormat(entry.Message, entry.Args)
                         : entry.Message ?? string.Empty,
                     _ => string.Empty

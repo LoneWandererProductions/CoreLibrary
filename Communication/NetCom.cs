@@ -27,8 +27,6 @@ public sealed class NetCom : INetCom
     /// </summary>
     /// <param name="filePath">The file path.</param>
     /// <param name="url">The URL.</param>
-    /// <param name="progress"></param>
-    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     Success Status
     /// </returns>
@@ -43,9 +41,6 @@ public sealed class NetCom : INetCom
     ///     Saves the file.
     /// </summary>
     /// <param name="filePath">The file path.</param>
-    /// <param name="urls"></param>
-    /// <param name="progress"></param>
-    /// <param name="cancellationToken"></param>
     public Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
         CancellationToken cancellationToken = default)
     {

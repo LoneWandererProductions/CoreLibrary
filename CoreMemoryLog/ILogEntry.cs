@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
  * FILE:        ILogEntry.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Interface defining a log entry
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

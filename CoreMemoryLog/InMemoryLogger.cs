@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CoreMemoryLog
 {
+    /// <inheritdoc />
     /// <summary>
     /// In-memory logger that supports structured logging similar to Microsoft.Extensions.Logging
     /// and acts as a fallback logger for any library.
@@ -50,6 +51,7 @@ namespace CoreMemoryLog
         /// </summary>
         public static InMemoryLogger Instance => MemoryInstance.Value;
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets or sets the minimum log level for this logger.
         /// Messages below this level will be ignored.
@@ -98,6 +100,7 @@ namespace CoreMemoryLog
             LogAdded?.Invoke(this, entry);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Core structured logging method.
         /// Stores the original template and args without formatting.
@@ -142,14 +145,16 @@ namespace CoreMemoryLog
             Trace.WriteLine(Formatter.Format(entry));
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Default ILogger log (uses "ILogger" as library).
         /// </summary>
         public void Log(LogLevel level, string? message, Exception? exception = null, params object[] args)
-            => Log(level, message, "ILogger", exception, GetCaller(), args);
+            => Log(level, message, LogResources.InterfaceName, exception, GetCaller(), args);
 
         #region Convenience methods
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the debug.
         /// </summary>
@@ -158,6 +163,7 @@ namespace CoreMemoryLog
         /// <returns>Debug message</returns>
         public void LogDebug(string? message, params object[] args) => Log(LogLevel.Debug, message, null, args);
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the trace.
         /// </summary>
@@ -166,6 +172,7 @@ namespace CoreMemoryLog
         /// <returns>Trace Message</returns>
         public void LogTrace(string? message, params object[] args) => Log(LogLevel.Trace, message, null, args);
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the information.
         /// </summary>
@@ -175,6 +182,7 @@ namespace CoreMemoryLog
         public void LogInformation(string? message, params object[] args) =>
             Log(LogLevel.Information, message, null, args);
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the warning.
         /// </summary>
@@ -183,6 +191,7 @@ namespace CoreMemoryLog
         /// <returns>Warning Mssage</returns>
         public void LogWarning(string? message, params object[] args) => Log(LogLevel.Warning, message, null, args);
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the error.
         /// </summary>
@@ -195,12 +204,14 @@ namespace CoreMemoryLog
 
         #region Query logs
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the log.
         /// </summary>
-        /// <returns></returns>
-        public List<LogEntry> GetLog() => GetLogsByLibrary("ILogger").ToList();
+        /// <returns>Get the log as List.</returns>
+        public List<LogEntry> GetLog() => GetLogsByLibrary(LogResources.InterfaceName).ToList();
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets logs for a specific library.
         /// </summary>
@@ -211,6 +222,7 @@ namespace CoreMemoryLog
         public IEnumerable<LogEntry> GetLogsByLibrary(string libraryName)
             => _libraryLogs.TryGetValue(libraryName, out var q) ? q.ToList() : Enumerable.Empty<LogEntry>();
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets all logs from the memory.
         /// </summary>
@@ -220,6 +232,7 @@ namespace CoreMemoryLog
         public IEnumerable<LogEntry> GetLogs()
             => _libraryLogs.Values.SelectMany(q => q).OrderByDescending(l => l.Timestamp);
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the latest log entries from a specific library.
         /// </summary>
@@ -231,6 +244,7 @@ namespace CoreMemoryLog
         public IEnumerable<LogEntry> GetLatestLogs(string libraryName, int count)
             => GetLogsByLibrary(libraryName).TakeLast(count);
 
+        /// <inheritdoc />
         /// <summary>
         /// Determines whether there are logs with the specified log level for a specific library.
         /// </summary>
@@ -242,6 +256,7 @@ namespace CoreMemoryLog
         public bool HasLogsWithLevel(string libraryName, LogLevel logLevel)
             => _libraryLogs.ContainsKey(libraryName) && _libraryLogs[libraryName].Any(l => l.Level == logLevel);
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets logs by log level for a specific library.
         /// </summary>
@@ -255,6 +270,7 @@ namespace CoreMemoryLog
                 ? value.Where(l => l.Level == logLevel)
                 : Enumerable.Empty<LogEntry>();
 
+        /// <inheritdoc />
         /// <summary>
         /// Clears log entries from a specific library.
         /// </summary>
@@ -265,6 +281,7 @@ namespace CoreMemoryLog
                 value.Clear();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Clears all logs for all libraries.
         /// </summary>
@@ -276,6 +293,7 @@ namespace CoreMemoryLog
 
         #endregion
 
+        /// <inheritdoc />
         /// <summary>
         /// Dumps all logs to a file, formatting template with args.
         /// </summary>
@@ -313,6 +331,7 @@ namespace CoreMemoryLog
 
         #region Microsoft.Extensions.Logging compatibility
 
+        /// <inheritdoc />
         /// <summary>
         /// Begins a logical operation scope.
         /// </summary>
@@ -333,6 +352,7 @@ namespace CoreMemoryLog
         public bool IsEnabled(LogLevel logLevel) =>
             logLevel >= LogLevel;
 
+        /// <inheritdoc />
         /// <summary>
         /// Checks if the given <paramref name="logLevel" /> is enabled.
         /// </summary>
@@ -360,6 +380,7 @@ namespace CoreMemoryLog
             Log(logLevel, msg, exception);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Logs the specified log level.
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
- * FILE:        CoreMemoryLog/LogLevel.cs
+ * FILE:        LogLevel.cs
  * PURPOSE:     Debug Levels and Log levels.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

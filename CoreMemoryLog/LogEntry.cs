@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
- * FILE:        CoreMemoryLog/LogEntry.cs
+ * FILE:        LogEntry.cs
  * PURPOSE:     All possible log information
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreMemoryLog
  * FILE:        ILogFormatter.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Interface defining log entry formatting
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -17,7 +17,7 @@ namespace CoreMemoryLog
         /// Formats the specified entry.
         /// </summary>
         /// <param name="entry">The entry.</param>
-        /// <returns>Formattted Debug message.</returns>
+        /// <returns>Formatted Debug message.</returns>
         string Format(ILogEntry entry);
     }
 }
