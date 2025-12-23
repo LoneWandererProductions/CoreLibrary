@@ -24,7 +24,6 @@ using Mathematics;
 
 namespace Solaris
 {
-
     /// <inheritdoc cref="UserControl" />
     /// <summary>
     ///     Generate a playing field for the editor

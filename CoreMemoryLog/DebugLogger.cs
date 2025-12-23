@@ -17,7 +17,6 @@ using System.Runtime.CompilerServices;
 
 namespace CoreMemoryLog
 {
-
     /// <summary>
     /// Provides a static, debug-only logging wrapper that is **entirely removed**
     /// from Release builds using <see cref="ConditionalAttribute"/>.

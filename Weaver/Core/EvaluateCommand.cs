@@ -116,7 +116,7 @@ namespace Weaver.Core
                     );
                 }
 
-                _registry.Set(targetVar, result!, type);
+                _registry.Set(targetVar, result, type);
                 return CommandResult.Ok(
                     $"Stored '{result}' in '{targetVar}'.",
                     result,

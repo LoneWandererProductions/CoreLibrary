@@ -21,7 +21,7 @@ namespace CoreMemoryLog
         /// <summary>
         /// The TimeStamp (const). Value:  "Timestamp"
         /// </summary>
-        internal const string TimeStamp= "Timestamp";
+        internal const string TimeStamp = "Timestamp";
 
         /// <summary>
         /// The LibraryName (const). Value:  "LibraryName"

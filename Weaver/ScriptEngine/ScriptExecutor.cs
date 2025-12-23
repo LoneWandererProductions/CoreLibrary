@@ -133,7 +133,7 @@ namespace Weaver.ScriptEngine
                 switch (category)
                 {
                     case "Goto":
-                        if (_labelPositions.TryGetValue(stmt!, out var pos))
+                        if (_labelPositions.TryGetValue(stmt, out var pos))
                             _position = pos + 1;
                         else
                         {
@@ -160,7 +160,7 @@ namespace Weaver.ScriptEngine
                         }
 
                         var loopStart = _doWhileStack.Pop();
-                        var condResult = _evaluator.Evaluate(stmt!);
+                        var condResult = _evaluator.Evaluate(stmt);
 
                         if (condResult)
                             _position = loopStart + 1; // loop again
@@ -169,7 +169,7 @@ namespace Weaver.ScriptEngine
                         continue;
 
                     case "If_Condition":
-                        var cond = _evaluator.Evaluate(stmt!);
+                        var cond = _evaluator.Evaluate(stmt);
                         _position++; // move past the condition node
 
                         if (!cond)
@@ -194,7 +194,7 @@ namespace Weaver.ScriptEngine
 
 
                     default: // "Command", "Assignment", etc.
-                        var result = _weave.ProcessInput(stmt!);
+                        var result = _weave.ProcessInput(stmt);
                         if (result.Feedback != null)
                         {
                             _pendingFeedback = result.Feedback;

@@ -86,19 +86,17 @@ public static class ImageStreamMedia
             bmp.CreateOptions = BitmapCreateOptions.DelayCreation;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
 
-            using (var flStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            bmp.StreamSource = flStream;
+
+            if (width > 0 && height > 0)
             {
-                bmp.StreamSource = flStream;
-
-                if (width > 0 && height > 0)
-                {
-                    bmp.DecodePixelWidth = width;
-                    bmp.DecodePixelHeight = height;
-                }
-
-                bmp.EndInit();
-                bmp.Freeze();
+                bmp.DecodePixelWidth = width;
+                bmp.DecodePixelHeight = height;
             }
+
+            bmp.EndInit();
+            bmp.Freeze();
 
             return bmp;
         }
@@ -193,7 +191,7 @@ public static class ImageStreamMedia
             bmp = converted;
         }
 
-        var rect = new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height);
+        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
         var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
         try

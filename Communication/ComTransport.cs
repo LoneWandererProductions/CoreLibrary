@@ -89,7 +89,7 @@ namespace Communication
             DataReceived += Handler;
 
             var timer = new Timer(_ =>
-                tcs.TrySetException(new TimeoutException()),
+                    tcs.TrySetException(new TimeoutException()),
                 null,
                 timeout,
                 Timeout.InfiniteTimeSpan);

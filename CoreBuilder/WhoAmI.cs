@@ -55,8 +55,8 @@ namespace CoreBuilder
                     .ToList();
 
                 var info =
-                    $"WhoAmI System Report\n" +
-                    $"------------------------\n" +
+                    "WhoAmI System Report\n" +
+                    "------------------------\n" +
                     $"Hostname: {hostname}\n" +
                     $"Username: {username}\n" +
                     $"Domain: {domain}\n" +

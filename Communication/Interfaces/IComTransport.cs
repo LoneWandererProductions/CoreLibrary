@@ -27,5 +27,4 @@ namespace Communication.Interfaces
         /// </summary>
         event Action<string> DataReceived;
     }
-
 }

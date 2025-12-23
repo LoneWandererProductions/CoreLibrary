@@ -157,8 +157,7 @@ namespace Imaging
 
             const int delay = 80;
 
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(delay);
+            _dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(delay) };
             _dispatcherTimer.Tick += (s, e) =>
             {
                 if (_decoder == null)

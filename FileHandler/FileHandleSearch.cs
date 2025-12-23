@@ -124,12 +124,12 @@ public static class FileHandleSearch
     /// </summary>
     /// <param name="files">The files.</param>
     /// <returns>File Details</returns>
-    public static List<FileDetails> GetFilesDetails(List<string> files)
+    public static List<FileDetails> GetFilesDetails(List<string>? files)
     {
         if (files == null || files.Count == 0)
             return new List<FileDetails>();
 
-        return files.Select(GetFileDetails).Where(f => f != null)!.ToList()!;
+        return files.Select(GetFileDetails).Where(f => f != null).ToList()!;
     }
 
     /// <summary>

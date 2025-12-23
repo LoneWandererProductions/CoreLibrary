@@ -25,8 +25,8 @@ namespace ExtendedSystemObjects
         /// <param name="action">The action to execute on each element.</param>
         public static void ForEachFast<T>(this ReadOnlySpan<T> span, Action<T> action)
         {
-            for (int i = 0; i < span.Length; i++)
-                action(span[i]);
+            foreach (var t in span)
+                action(t);
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace ExtendedSystemObjects
         /// <param name="action">The action to execute on each element.</param>
         public static void ForEachFast<T>(this Span<T> span, Action<T> action)
         {
-            for (int i = 0; i < span.Length; i++)
-                action(span[i]);
+            foreach (var t in span)
+                action(t);
         }
 
         /// <summary>
@@ -78,9 +78,10 @@ namespace ExtendedSystemObjects
             Func<T, bool> predicate)
         {
             int count = 0;
-            for (int i = 0; i < span.Length; i++)
-                if (predicate(span[i]))
-                    destination[count++] = span[i];
+            foreach (var t in span)
+                if (predicate(t))
+                    destination[count++] = t;
+
             return count;
         }
 
@@ -99,8 +100,9 @@ namespace ExtendedSystemObjects
             Func<TResult, T, TResult> func)
         {
             var acc = seed;
-            for (int i = 0; i < span.Length; i++)
-                acc = func(acc, span[i]);
+            foreach (var t in span)
+                acc = func(acc, t);
+
             return acc;
         }
 
@@ -126,9 +128,10 @@ namespace ExtendedSystemObjects
         /// <returns>True if all elements satisfy the predicate; otherwise false.</returns>
         public static bool AllFast<T>(this ReadOnlySpan<T> span, Func<T, bool> predicate)
         {
-            for (int i = 0; i < span.Length; i++)
-                if (!predicate(span[i]))
+            foreach (var t in span)
+                if (!predicate(t))
                     return false;
+
             return true;
         }
 

@@ -10,7 +10,6 @@ using System.Collections.Generic;
 
 namespace Solaris
 {
-
     /// <inheritdoc />
     /// <summary>
     ///     Return type for map manipulation methods.

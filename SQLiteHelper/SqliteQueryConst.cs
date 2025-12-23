@@ -516,7 +516,7 @@ internal static class SqliteQueryConst
     {
         IList<string> workingHeaders = headers != null ? headers.ToList() : headerTable.ToList();
 
-        if (!workingHeaders.All(h => headerTable.Contains(h)))
+        if (!workingHeaders.All(headerTable.Contains))
             return SqliteHelperResources.ErrorCheck;
 
         return queryStart + string.Join(SqliteHelperResources.Comma, workingHeaders) + SqliteHelperResources.Spacing;

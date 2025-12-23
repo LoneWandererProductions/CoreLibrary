@@ -73,7 +73,7 @@ public static class FileHandleCompress
         if (!delete)
             return true;
 
-        var deleteTasks = fileToAdd.Select(file => FileHandleDelete.DeleteFile(file));
+        var deleteTasks = fileToAdd.Select(FileHandleDelete.DeleteFile);
         var results = await Task.WhenAll(deleteTasks);
 
         return results.All(r => r);
@@ -163,7 +163,7 @@ public static class FileHandleCompress
 
         if (!delete) return true;
 
-        var deleteTasks = filesToAdd.Select(file => FileHandleDelete.DeleteFile(file));
+        var deleteTasks = filesToAdd.Select(FileHandleDelete.DeleteFile);
         var results = await Task.WhenAll(deleteTasks);
 
         return results.All(r => r);

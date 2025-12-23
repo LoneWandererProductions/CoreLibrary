@@ -126,7 +126,7 @@ namespace RenderEngine
         /// <param name="x">X coordinate (0-based)</param>
         /// <param name="y">Y coordinate (0-based)</param>
         /// <param name="color">The color to set</param>
-        public void SetPixel(int x, int y, System.Drawing.Color color)
+        public void SetPixel(int x, int y, Color color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
@@ -408,36 +408,33 @@ namespace RenderEngine
 
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bmp.LockBits(rect,
-                System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
 
             try
             {
-                unsafe
+                var srcPtr = (byte*)bmpData.Scan0;
+                var dstSpan = buffer.BufferSpan;
+
+                for (var y = 0; y < height; y++)
                 {
-                    var srcPtr = (byte*)bmpData.Scan0;
-                    var dstSpan = buffer.BufferSpan;
+                    var rowOffset = y * width * BytesPerPixel;
+                    var rowSrc = srcPtr + y * bmpData.Stride;
 
-                    for (var y = 0; y < height; y++)
+                    for (var x = 0; x < width; x++)
                     {
-                        var rowOffset = y * width * UnmanagedImageBuffer.BytesPerPixel;
-                        var rowSrc = srcPtr + y * bmpData.Stride;
+                        var colOffset = x * BytesPerPixel;
 
-                        for (var x = 0; x < width; x++)
-                        {
-                            var colOffset = x * UnmanagedImageBuffer.BytesPerPixel;
+                        var b = rowSrc[colOffset + 0];
+                        var g = rowSrc[colOffset + 1];
+                        var r = rowSrc[colOffset + 2];
+                        var a = rowSrc[colOffset + 3];
 
-                            var b = rowSrc[colOffset + 0];
-                            var g = rowSrc[colOffset + 1];
-                            var r = rowSrc[colOffset + 2];
-                            var a = rowSrc[colOffset + 3];
-
-                            var dstIndex = rowOffset + colOffset;
-                            dstSpan[dstIndex + 0] = b;
-                            dstSpan[dstIndex + 1] = g;
-                            dstSpan[dstIndex + 2] = r;
-                            dstSpan[dstIndex + 3] = a;
-                        }
+                        var dstIndex = rowOffset + colOffset;
+                        dstSpan[dstIndex + 0] = b;
+                        dstSpan[dstIndex + 1] = g;
+                        dstSpan[dstIndex + 2] = r;
+                        dstSpan[dstIndex + 3] = a;
                     }
                 }
             }
@@ -480,7 +477,7 @@ namespace RenderEngine
         /// Clears the entire buffer to the given color.
         /// Fast implementation using Span iteration.
         /// </summary>
-        public void Clear(System.Drawing.Color color)
+        public void Clear(Color color)
         {
             var span = BufferSpan;
             for (var i = 0; i < span.Length; i += BytesPerPixel)
@@ -505,22 +502,19 @@ namespace RenderEngine
         /// </summary>
         public Bitmap ToBitmap()
         {
-            var bmp = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, Width, Height);
             var data = bmp.LockBits(rect, ImageLockMode.WriteOnly, bmp.PixelFormat);
 
-            unsafe
+            int srcRowSize = Width * BytesPerPixel;
+
+            for (int y = 0; y < Height; y++)
             {
-                int srcRowSize = Width * BytesPerPixel;
+                byte* src = (byte*)_buffer + y * srcRowSize;
+                byte* dst = (byte*)data.Scan0 + y * data.Stride;
 
-                for (int y = 0; y < Height; y++)
-                {
-                    byte* src = (byte*)_buffer + y * srcRowSize;
-                    byte* dst = (byte*)data.Scan0 + y * data.Stride;
-
-                    // Destination buffer size must match ROW copy size
-                    System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);
-                }
+                // Destination buffer size must match ROW copy size
+                System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);
             }
 
             bmp.UnlockBits(data);
