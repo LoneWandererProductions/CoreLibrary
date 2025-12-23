@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Pathfinder
- * FILE:        Pathfinder/Node.cs
+ * FILE:        Node.cs
  * PURPOSE:     Node Object for Pathfinder Algorithm
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

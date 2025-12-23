@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Communication
- * FILE:        Communication/INetCom.cs
+ * PROJECT:     Communication.Interfaces;
+ * FILE:        INetCom.cs
  * PURPOSE:     Entry Point for File Downloads, defined as Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Communication;
+namespace Communication.Interfaces;
 
 /// <summary>
 ///     The ICom interface.

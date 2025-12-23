@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
- * FILE:        Communication/FileTransfer.cs
+ * FILE:        FileTransfer.cs
  * PURPOSE:     Does the heavy lifting for File Transfers
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

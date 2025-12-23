@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Pathfinder
- * FILE:        Pathfinder/IPathfinding.cs
+ * FILE:        IPathfinding.cs
  * PURPOSE:     Interface for the Pathfinder
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

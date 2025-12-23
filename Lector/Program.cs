@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Lector
  * FILE:        Program.cs
@@ -7,7 +7,6 @@
  */
 
 using CoreBuilder;
-using CoreBuilder.Extensions;
 using Weaver;
 
 namespace Lector

@@ -15,17 +15,30 @@ namespace Pathfinder;
 /// <summary>
 ///     Implementation of the A* pathfinder algorithm.
 /// </summary>
-public sealed class Pathfinding : IPathfinding
+public sealed partial class Pathfinding : IPathfinding
 {
+    /// <summary>
+    /// The diagonal cost
+    /// </summary>
     private readonly int _diagonalCost;
 
+    /// <summary>
+    /// The directions
+    /// </summary>
     private readonly int[,] _directions =
     {
         { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }, // Right, Down, Left, Up
         { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 } // Diagonals
     };
 
+    /// <summary>
+    /// The grid
+    /// </summary>
     private readonly int[,] _grid;
+
+    /// <summary>
+    /// The straight cost
+    /// </summary>
     private readonly int _straightCost;
 
     /// <summary>
@@ -40,7 +53,6 @@ public sealed class Pathfinding : IPathfinding
         _straightCost = straightCost;
         _diagonalCost = diagonalCost;
     }
-
 
     /// <inheritdoc />
     /// <summary>
@@ -185,32 +197,5 @@ public sealed class Pathfinding : IPathfinding
         }
 
         return neighbors;
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Compares two nodes for ordering in the open list.
-    /// </summary>
-    /// <seealso cref="T:System.Collections.Generic.IComparer`1" />
-    public sealed class NodeComparer : IComparer<Node>
-    {
-        public int Compare(Node x, Node y)
-        {
-            var result = (x.G + x.H).CompareTo(y.G + y.H);
-            if (result == 0)
-            {
-                result = x.G.CompareTo(y.G);
-                if (result == 0)
-                {
-                    result = x.X.CompareTo(y.X);
-                    if (result == 0)
-                    {
-                        result = x.Y.CompareTo(y.Y);
-                    }
-                }
-            }
-
-            return result;
-        }
     }
 }
