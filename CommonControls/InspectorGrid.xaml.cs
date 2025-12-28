@@ -1,8 +1,8 @@
 ﻿/*
-* COPYRIGHT:   Your Company / Project Name
-* PROJECT:     CommonControls
-* FILE:        InspectorGrid.cs
-* PURPOSE:     Reflection-based property editor control for WPF.
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls
+ * FILE:        InspectorGrid.cs
+ * PURPOSE:     Reflection-based property editor control for WPF.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 

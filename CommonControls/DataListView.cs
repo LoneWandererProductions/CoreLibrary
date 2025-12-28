@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/DataListView.cs
+ * FILE:        DataListView.cs
  * PURPOSE:     Basic View for ListView
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

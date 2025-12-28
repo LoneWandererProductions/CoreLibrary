@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/Thumbnails.xaml.cs
+ * FILE:        Thumbnails.xaml.cs
  * PURPOSE:     Custom Thumbnail Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

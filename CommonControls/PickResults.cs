@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/PickResults.cs
+ * FILE:        PickResults.cs
  * PURPOSE:     Results of the Color Wheel Click
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

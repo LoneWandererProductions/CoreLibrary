@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/ColorPickerHelper.cs
+ * FILE:        ColorPickerHelper.cs
  * PURPOSE:     Helper functions for  ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -20,7 +20,7 @@ internal static class ColorPickerHelper
     /// <summary>
     ///     Gets the color preview.
     /// </summary>
-    /// <param name="colorHsv"></param>
+    /// <param name="colorHsv">Color Converter class, ColorHsv.</param>
     /// <returns>A Rectangle</returns>
     internal static Rectangle GetColorPreview(ColorHsv colorHsv)
     {

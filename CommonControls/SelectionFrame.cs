@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/SelectionFrame.cs
+ * FILE:        SelectionFrame.cs
  * PURPOSE:     Selection Frame
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
