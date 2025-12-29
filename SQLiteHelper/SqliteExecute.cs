@@ -845,13 +845,17 @@ namespace SqliteHelper
                     return null;
                 }
 
-                using var command = new SQLiteCommand(sqlQuery, conn) { CommandTimeout = SqliteConnectionConfig.TimeOut };
+                using var command =
+                    new SQLiteCommand(sqlQuery, conn) { CommandTimeout = SqliteConnectionConfig.TimeOut };
 
                 using var reader = command.ExecuteReader();
 
                 dt.Load(reader); // Fills the DataTable
 
-                _message = new MessageItem { Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2 };
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                };
                 OnError(_message);
             }
             catch (SQLiteException ex)
@@ -980,7 +984,10 @@ namespace SqliteHelper
 
                 tr.Commit();
 
-                _message = new MessageItem { Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2 };
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                };
                 OnError(_message);
 
                 return true;
@@ -1046,7 +1053,10 @@ namespace SqliteHelper
                 affectedRows = cmd.ExecuteNonQuery();
                 tr.Commit();
 
-                _message = new MessageItem { Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2 };
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                };
                 OnError(_message);
             }
             catch (SQLiteException ex)
@@ -1089,7 +1099,10 @@ namespace SqliteHelper
                 affectedRows = cmd.ExecuteNonQuery();
                 tr.Commit();
 
-                _message = new MessageItem { Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2 };
+                _message = new MessageItem
+                {
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                };
                 OnError(_message);
             }
             catch (SQLiteException ex)

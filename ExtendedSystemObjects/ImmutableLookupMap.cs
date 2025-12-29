@@ -73,7 +73,8 @@ namespace ExtendedSystemObjects
 
                     if (_keys[hash].Equals(key))
                     {
-                        throw new InvalidOperationException(message: string.Format(SharedResources.ErrorDuplicateKey, key));
+                        throw new InvalidOperationException(message: string.Format(SharedResources.ErrorDuplicateKey,
+                            key));
                     }
                 }
             }

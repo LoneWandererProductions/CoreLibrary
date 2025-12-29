@@ -108,7 +108,10 @@ namespace Imaging
                 return null;
             }
 
-            var cif = new Cif { Height = meta.Height, Width = meta.Width, Compressed = meta.Compressed, CifImage =  [] };
+            var cif = new Cif
+            {
+                Height = meta.Height, Width = meta.Width, Compressed = meta.Compressed, CifImage =  []
+            };
 
             foreach (var data in imageData)
             {

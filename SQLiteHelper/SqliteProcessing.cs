@@ -132,8 +132,10 @@ namespace SqliteHelper
             {
                 SqLiteDataTypes.DateTime => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out _),
-                SqLiteDataTypes.Decimal => decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out _),
-                SqLiteDataTypes.Integer => long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
+                SqLiteDataTypes.Decimal => decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                    out _),
+                SqLiteDataTypes.Integer => long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                    out _),
                 SqLiteDataTypes.Real => double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _),
                 SqLiteDataTypes.Text => true,
                 _ => false

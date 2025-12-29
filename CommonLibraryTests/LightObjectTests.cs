@@ -164,7 +164,10 @@ namespace CommonLibraryTests
         [TestMethod]
         public void PolygonObjectShouldInitializeWithVertices()
         {
-            var polygon = new PolygonObject { Vertices = new List<Vector2> { new(0, 0), new(1, 0), new(1, 1), new(0, 1) } };
+            var polygon = new PolygonObject
+            {
+                Vertices = new List<Vector2> { new(0, 0), new(1, 0), new(1, 1), new(0, 1) }
+            };
 
             Assert.AreEqual(4, polygon.Vertices.Count);
             Assert.AreEqual(new Vector2(0, 0), polygon.Vertices[0]);
@@ -201,7 +204,10 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ApplyTransformationShouldScalePolygonCorrectly()
         {
-            var polygon = new PolygonObject { Vertices = new List<Vector2> { new(1, 1), new(2, 1), new(2, 2), new(1, 2) } };
+            var polygon = new PolygonObject
+            {
+                Vertices = new List<Vector2> { new(1, 1), new(2, 1), new(2, 2), new(1, 2) }
+            };
 
             var scaleTransform = new ScaleTransform(2, 2);
             polygon.ApplyTransformation(scaleTransform);

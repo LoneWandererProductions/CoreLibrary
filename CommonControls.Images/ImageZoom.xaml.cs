@@ -926,6 +926,7 @@ namespace CommonControls.Images
         private static void SafeExecuteCommand(ICommand? cmd, object? parameter)
         {
             if (cmd == null) return;
+
             try
             {
                 if (cmd.CanExecute(parameter))

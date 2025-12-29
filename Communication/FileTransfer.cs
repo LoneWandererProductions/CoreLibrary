@@ -59,7 +59,8 @@ namespace Communication
                 var buffer = new byte[8192];
                 long totalRead = 0;
                 int bytesRead;
-                while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) >
+                while ((bytesRead =
+                           await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) >
                        0)
                 {
                     await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);

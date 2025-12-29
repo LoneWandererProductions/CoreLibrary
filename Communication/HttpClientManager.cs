@@ -37,7 +37,10 @@ namespace Communication
             var soapRequest = CreateSoapRequest();
             var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                Headers = { { ComResource.UserAgent, ComResource.InsomniaAgent }, { ComResource.SoapAction, soapAction } },
+                Headers =
+                {
+                    { ComResource.UserAgent, ComResource.InsomniaAgent }, { ComResource.SoapAction, soapAction }
+                },
                 Content = new StringContent(soapRequest)
                 {
                     // Set the correct Content-Type to 'text/xml; charset=utf-8'

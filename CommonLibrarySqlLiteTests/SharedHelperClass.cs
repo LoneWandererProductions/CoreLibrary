@@ -118,9 +118,15 @@ namespace CommonLibrarySqlLiteTests
             var columns = new DictionaryTableColumns();
 
             columns.DColumns.Add("First",
-                new TableColumns { DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false });
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Text, PrimaryKey = false, Unique = true, NotNull = false
+                });
             columns.DColumns.Add("Second",
-                new TableColumns { DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false });
+                new TableColumns
+                {
+                    DataType = SqLiteDataTypes.Integer, PrimaryKey = true, Unique = true, NotNull = false
+                });
             columns.DColumns.Add("Third",
                 new TableColumns
                 {

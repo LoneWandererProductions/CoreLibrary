@@ -128,7 +128,8 @@ namespace CoreBuilder.Development
                 return CommandResult.Fail("Missing argument: directory path.");
 
             var directoryPath = args[0];
-            var includeSubdirs = args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
+            var includeSubdirs =
+                args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
 
             var resultMessage = ProcessFiles(directoryPath, includeSubdirs);
             return CommandResult.Ok(resultMessage);
@@ -148,7 +149,8 @@ namespace CoreBuilder.Development
                 return CommandResult.Fail("Missing argument: directory path.");
 
             var directoryPath = args[0];
-            var includeSubDirs = args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
+            var includeSubDirs =
+                args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
 
             var previewList = DetectFilesNeedingHeaders(directoryPath, includeSubDirs);
             if (string.IsNullOrWhiteSpace(previewList) || previewList.StartsWith("All files"))

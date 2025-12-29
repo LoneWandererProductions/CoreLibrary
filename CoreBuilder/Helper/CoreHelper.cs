@@ -62,7 +62,8 @@ namespace CoreBuilder.Helper
         internal static LoopContext GetLoopContext(SyntaxNode node)
         {
             var loops = node.Ancestors().Where(a =>
-                a is ForStatementSyntax or ForEachStatementSyntax or WhileStatementSyntax or DoStatementSyntax).ToList();
+                    a is ForStatementSyntax or ForEachStatementSyntax or WhileStatementSyntax or DoStatementSyntax)
+                .ToList();
 
             if (!loops.Any())
                 return LoopContext.None;

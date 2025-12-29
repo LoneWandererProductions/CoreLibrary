@@ -519,7 +519,8 @@ namespace SqliteHelper
             if (!workingHeaders.All(headerTable.Contains))
                 return SqliteHelperResources.ErrorCheck;
 
-            return queryStart + string.Join(SqliteHelperResources.Comma, workingHeaders) + SqliteHelperResources.Spacing;
+            return queryStart + string.Join(SqliteHelperResources.Comma, workingHeaders) +
+                   SqliteHelperResources.Spacing;
         }
 
         /// <summary>

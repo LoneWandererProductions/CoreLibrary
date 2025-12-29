@@ -104,7 +104,10 @@ namespace FileHandler
                     return false;
 
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteAllContents),
-                    new FileItems { Elements = files.ToList(), Message = FileHandlerResources.InformationFileDeletion });
+                    new FileItems
+                    {
+                        Elements = files.ToList(), Message = FileHandlerResources.InformationFileDeletion
+                    });
 
                 var results = await Task.WhenAll(files.Select(DeleteFile));
                 return results.All(r => r);

@@ -423,7 +423,9 @@ namespace SQLiteGui
                     item =>
                         new UpdateItem
                         {
-                            DataType = item.Value.DataType, HeaderName = item.Key, Value = SqLiteGuiResource.ParamDummy
+                            DataType = item.Value.DataType,
+                            HeaderName = item.Key,
+                            Value = SqLiteGuiResource.ParamDummy
                         })
                 .ToList();
         }

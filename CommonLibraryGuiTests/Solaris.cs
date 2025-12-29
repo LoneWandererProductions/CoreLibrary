@@ -74,7 +74,10 @@ namespace CommonLibraryGuiTests
                 {
                     {
                         0,
-                        new Texture { Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png") }
+                        new Texture
+                        {
+                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
+                        }
                     },
                     {
                         1,
@@ -159,7 +162,10 @@ namespace CommonLibraryGuiTests
                 {
                     {
                         0,
-                        new Texture { Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png") }
+                        new Texture
+                        {
+                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
+                        }
                     },
                     {
                         1,

@@ -125,7 +125,8 @@ namespace CoreBuilder.Rules
             List<Diagnostic> results;
             try
             {
-                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedConstantAnalyzer <fileOrDirectoryPath>");
+                results = AnalyzerExecutor.ExecutePath(this, args,
+                    "Usage: UnusedConstantAnalyzer <fileOrDirectoryPath>");
             }
             catch (Exception ex)
             {

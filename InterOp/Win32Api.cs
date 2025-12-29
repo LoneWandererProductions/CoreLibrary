@@ -58,7 +58,8 @@ namespace InterOp
         /// <returns>
         ///     A handle to the library
         /// </returns>
-        [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionCallNextHookEx, SetLastError = true)]
+        [LibraryImport(InterOpResources.UserDll, EntryPoint = InterOpResources.FunctionCallNextHookEx,
+            SetLastError = true)]
         internal static partial IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
 
         /// <summary>

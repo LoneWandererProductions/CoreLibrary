@@ -32,7 +32,8 @@ namespace Mathematics
             double[,] translation =
             {
                 { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 }, { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
+                { 0, 0, Projection3DRegister.Q, 1 },
+                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
             };
 
             //now lacks /w, has to be done at the end!
@@ -85,8 +86,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { 1, 0, 0, 0 }, { 0, Math.Cos(angle), Math.Sin(angle), 0 }, { 0, -Math.Sin(angle), Math.Cos(angle), 0 },
-                { 0, 0, 0, 1 }
+                { 1, 0, 0, 0 }, { 0, Math.Cos(angle), Math.Sin(angle), 0 },
+                { 0, -Math.Sin(angle), Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
             return new BaseMatrix { Matrix = rotation };
@@ -104,8 +105,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, -Math.Sin(angle), 0 }, { 0, 1, 0, 0 }, { Math.Sin(angle), 0, Math.Cos(angle), 0 },
-                { 0, 0, 0, 1 }
+                { Math.Cos(angle), 0, -Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { Math.Sin(angle), 0, Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
             return new BaseMatrix { Matrix = rotation };
@@ -123,8 +124,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { Math.Cos(angle), Math.Sin(angle), 0, 0 }, { -Math.Sin(angle), Math.Cos(angle), 0, 0 }, { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 }
+                { Math.Cos(angle), Math.Sin(angle), 0, 0 }, { -Math.Sin(angle), Math.Cos(angle), 0, 0 },
+                { 0, 0, 1, 0 }, { 0, 0, 0, 1 }
             };
 
             return new BaseMatrix { Matrix = rotation };
@@ -175,7 +176,10 @@ namespace Mathematics
         /// <returns>Translation Matrix</returns>
         public static BaseMatrix Translate(Vector3D vector)
         {
-            double[,] translate = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { vector.X, vector.Y, vector.Z, 1 } };
+            double[,] translate =
+            {
+                { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { vector.X, vector.Y, vector.Z, 1 }
+            };
 
             return new BaseMatrix { Matrix = translate };
         }

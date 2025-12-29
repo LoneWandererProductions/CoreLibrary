@@ -38,14 +38,25 @@ namespace Imaging
         /// </summary>
         private readonly Dictionary<FiltersType, HashSet<string>> _filterPropertyMap = new()
         {
-            { FiltersType.GaussianBlur, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
+            {
+                FiltersType.GaussianBlur,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
+            },
             { FiltersType.BoxBlur, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
-            { FiltersType.MotionBlur, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
+            {
+                FiltersType.MotionBlur, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
+            },
             { FiltersType.Sharpen, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
             { FiltersType.Emboss, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
             { FiltersType.Laplacian, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
-            { FiltersType.EdgeEnhance, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
-            { FiltersType.UnsharpMask, new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) } },
+            {
+                FiltersType.EdgeEnhance,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
+            },
+            {
+                FiltersType.UnsharpMask,
+                new HashSet<string> { nameof(FiltersConfig.Factor), nameof(FiltersConfig.Bias) }
+            },
             { FiltersType.AnisotropicKuwahara, new HashSet<string> { nameof(FiltersConfig.BaseWindowSize) } },
             { FiltersType.SupersamplingAntialiasing, new HashSet<string> { nameof(FiltersConfig.Scale) } },
             { FiltersType.PostProcessingAntialiasing, new HashSet<string> { nameof(FiltersConfig.Sigma) } },
@@ -291,7 +302,8 @@ namespace Imaging
         internal readonly ColorMatrix Polaroid = new(new[]
         {
             new[] { 1.438f, -0.062f, -0.062f, 0, 0 }, new[] { -0.122f, 1.378f, -0.122f, 0, 0 },
-            new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new[] { 0.03f, 0.05f, -0.02f, 0, 1 }
+            new[] { 0.016f, -0.016f, 1.483f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 },
+            new[] { 0.03f, 0.05f, -0.02f, 0, 1 }
         });
 
         /// <summary>
@@ -613,7 +625,9 @@ namespace Imaging
         {
             var container = new SettingsContainer
             {
-                FilterProperties = _filterPropertyMap, FilterSettings = FilterSettings, TextureSettings = TextureSetting
+                FilterProperties = _filterPropertyMap,
+                FilterSettings = FilterSettings,
+                TextureSettings = TextureSetting
             };
 
             return JsonSerializer.Serialize(container, new JsonSerializerOptions { WriteIndented = true });

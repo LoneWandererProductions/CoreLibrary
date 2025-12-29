@@ -170,7 +170,8 @@ namespace FileHandler
             // Overview callback
             var overview = new FileItems
             {
-                Elements = files.Select(f => f.Name).ToList(), Message = FileHandlerResources.InformationFileDeletion
+                Elements = files.Select(f => f.Name).ToList(),
+                Message = FileHandlerResources.InformationFileDeletion
             };
             FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
