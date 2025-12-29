@@ -10,43 +10,44 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests;
-
-/// <summary>
-///     The sql lite helper db pragma table info unit test class.
-/// </summary>
-[TestClass]
-public sealed class SqlLiteHelperDbPragmaTableInfo
+namespace CommonLibrarySqlLiteTests
 {
     /// <summary>
-    ///     The target (readonly). Value: new SqlLiteDatabase().
+    ///     The sql lite helper db pragma table info unit test class.
     /// </summary>
-    private readonly SqliteDatabase _target = new();
-
-    /// <summary>
-    ///     Test if we can Select a Database
-    /// </summary>
-    [TestMethod]
-    public void TestDatabasePragmaTableInfo()
+    [TestClass]
+    public sealed class SqlLiteHelperDbPragmaTableInfo
     {
-        _target.SendMessage += SharedHelperClass.DebugPrints;
+        /// <summary>
+        ///     The target (readonly). Value: new SqlLiteDatabase().
+        /// </summary>
+        private readonly SqliteDatabase _target = new();
 
-        //cleanup
-        SharedHelperClass.CleanUp(ResourcesSqlLite.PathPragmaTableInfo);
+        /// <summary>
+        ///     Test if we can Select a Database
+        /// </summary>
+        [TestMethod]
+        public void TestDatabasePragmaTableInfo()
+        {
+            _target.SendMessage += SharedHelperClass.DebugPrints;
 
-        //Check if file was created
-        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbPragmaIndexList, true);
-        Assert.IsTrue(File.Exists(ResourcesSqlLite.PathPragmaTableInfo),
-            "Test passed Create " + _target.LastErrors);
+            //cleanup
+            SharedHelperClass.CleanUp(ResourcesSqlLite.PathPragmaTableInfo);
 
-        var header = SharedHelperClass.CreateTableHeadersMultiple();
-        //create the Table
-        var check = _target.CreateTable("newOne", header);
-        Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
+            //Check if file was created
+            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbPragmaIndexList, true);
+            Assert.IsTrue(File.Exists(ResourcesSqlLite.PathPragmaTableInfo),
+                "Test passed Create " + _target.LastErrors);
 
-        var cache = _target.Pragma_TableInfo("newOne");
+            var header = SharedHelperClass.CreateTableHeadersMultiple();
+            //create the Table
+            var check = _target.CreateTable("newOne", header);
+            Assert.IsTrue(check, "Test failed Create Table" + _target.LastErrors);
 
-        check = SharedHelperClass.CheckPragmaTableInfo(cache, header);
-        Assert.IsTrue(check, "Test failed Compare Results" + _target.LastErrors);
+            var cache = _target.Pragma_TableInfo("newOne");
+
+            check = SharedHelperClass.CheckPragmaTableInfo(cache, header);
+            Assert.IsTrue(check, "Test failed Compare Results" + _target.LastErrors);
+        }
     }
 }

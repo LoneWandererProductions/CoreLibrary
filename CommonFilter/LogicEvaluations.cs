@@ -9,71 +9,72 @@
 using System;
 using System.Collections.Generic;
 
-namespace CommonFilter;
-
-/// <inheritdoc />
-/// <summary>
-///     Will be packed into an Interface and be an optional Interface for Filter
-/// </summary>
-public sealed class LogicEvaluations : ILogicEvaluations
+namespace CommonFilter
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Evaluates the specified input string.
+    ///     Will be packed into an Interface and be an optional Interface for Filter
     /// </summary>
-    /// <param name="inputString">The input string.</param>
-    /// <param name="conditions">The conditions.</param>
-    /// <returns>If conditions are met</returns>
-    /// <exception cref="T:System.ArgumentException">Unsupported operator: {Operator}</exception>
-    public bool Evaluate(string inputString, List<FilterOption> conditions)
+    public sealed class LogicEvaluations : ILogicEvaluations
     {
-        var result = true;
-
-        foreach (var term in conditions)
+        /// <inheritdoc />
+        /// <summary>
+        ///     Evaluates the specified input string.
+        /// </summary>
+        /// <param name="inputString">The input string.</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <returns>If conditions are met</returns>
+        /// <exception cref="T:System.ArgumentException">Unsupported operator: {Operator}</exception>
+        public bool Evaluate(string inputString, List<FilterOption> conditions)
         {
-            bool conditionResult;
+            var result = true;
 
-            switch (term.SelectedCompareOperator)
+            foreach (var term in conditions)
             {
-                case CompareOperator.Like:
-                    conditionResult = inputString.Contains(term.EntryText);
-                    break;
-                case CompareOperator.NotLike:
-                    conditionResult = !inputString.Contains(term.EntryText);
-                    break;
-                case CompareOperator.Equal:
-                    conditionResult = string.Equals(inputString, term.EntryText);
-                    break;
-                case CompareOperator.NotEqual:
-                    conditionResult = !string.Equals(inputString, term.EntryText);
-                    break;
-                // Handle additional operators if needed
-                default:
-                    throw new ArgumentException(string.Concat(FilterResources.ErrorCompareOperator,
-                        term.SelectedCompareOperator));
+                bool conditionResult;
+
+                switch (term.SelectedCompareOperator)
+                {
+                    case CompareOperator.Like:
+                        conditionResult = inputString.Contains(term.EntryText);
+                        break;
+                    case CompareOperator.NotLike:
+                        conditionResult = !inputString.Contains(term.EntryText);
+                        break;
+                    case CompareOperator.Equal:
+                        conditionResult = string.Equals(inputString, term.EntryText);
+                        break;
+                    case CompareOperator.NotEqual:
+                        conditionResult = !string.Equals(inputString, term.EntryText);
+                        break;
+                    // Handle additional operators if needed
+                    default:
+                        throw new ArgumentException(string.Concat(FilterResources.ErrorCompareOperator,
+                            term.SelectedCompareOperator));
+                }
+
+                switch (term.SelectedLogicalOperator)
+                {
+                    case LogicOperator.And:
+                        result = result && conditionResult;
+                        break;
+                    case LogicOperator.Or:
+                        result = result || conditionResult;
+                        break;
+                    case LogicOperator.AndNot:
+                        result = result && !conditionResult;
+                        break;
+                    case LogicOperator.OrNot:
+                        result = result || !conditionResult;
+                        break;
+                    // Handle additional operators if needed
+                    default:
+                        throw new ArgumentException(string.Concat(FilterResources.ErrorLogicalOperator,
+                            term.SelectedLogicalOperator));
+                }
             }
 
-            switch (term.SelectedLogicalOperator)
-            {
-                case LogicOperator.And:
-                    result = result && conditionResult;
-                    break;
-                case LogicOperator.Or:
-                    result = result || conditionResult;
-                    break;
-                case LogicOperator.AndNot:
-                    result = result && !conditionResult;
-                    break;
-                case LogicOperator.OrNot:
-                    result = result || !conditionResult;
-                    break;
-                // Handle additional operators if needed
-                default:
-                    throw new ArgumentException(string.Concat(FilterResources.ErrorLogicalOperator,
-                        term.SelectedLogicalOperator));
-            }
+            return result;
         }
-
-        return result;
     }
 }

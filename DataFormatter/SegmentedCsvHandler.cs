@@ -9,82 +9,83 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataFormatter;
-
-/// <summary>
-///     Separate multible csv files via keywords.
-/// </summary>
-public static class SegmentedCsvHandler
+namespace DataFormatter
 {
     /// <summary>
-    ///     Writes the CSV with layer keywords.
+    ///     Separate multible csv files via keywords.
     /// </summary>
-    /// <param name="filepath">The filepath.</param>
-    /// <param name="separator">The separator.</param>
-    /// <param name="csvLayers">The CSV layers.</param>
-    /// <param name="layerKeyword">The layer keyword.</param>
-    public static void WriteCsvWithLayerKeywords(string filepath, char separator, List<List<string>> csvLayers,
-        string layerKeyword)
+    public static class SegmentedCsvHandler
     {
-        var file = new StringBuilder();
-
-        for (var layerIndex = 0; layerIndex < csvLayers.Count; layerIndex++)
+        /// <summary>
+        ///     Writes the CSV with layer keywords.
+        /// </summary>
+        /// <param name="filepath">The filepath.</param>
+        /// <param name="separator">The separator.</param>
+        /// <param name="csvLayers">The CSV layers.</param>
+        /// <param name="layerKeyword">The layer keyword.</param>
+        public static void WriteCsvWithLayerKeywords(string filepath, char separator, List<List<string>> csvLayers,
+            string layerKeyword)
         {
-            foreach (var row in csvLayers[layerIndex])
+            var file = new StringBuilder();
+
+            for (var layerIndex = 0; layerIndex < csvLayers.Count; layerIndex++)
             {
-                var line = string.Join(separator, row);
-                file.AppendLine(line);
-            }
-
-            // Add the layer keyword at the end
-            file.AppendLine($"{layerKeyword}{layerIndex}");
-        }
-
-        CsvHelper.WriteContentToFile(filepath, file);
-    }
-
-    /// <summary>
-    ///     Reads the CSV with layer keywords.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <param name="layerKeyword">The layer keyword.</param>
-    /// <returns>Content of our special format file</returns>
-    public static List<string> ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
-    {
-        var lst = CsvHelper.ReadFileContent(filePath);
-        if (lst == null)
-        {
-            return null;
-        }
-
-        var layers = new List<string>();
-        var currentLayer = new StringBuilder(); // Use StringBuilder to accumulate lines for each layer
-
-        foreach (var line in lst)
-            // When the layer keyword is encountered, store the current layer
-        {
-            if (line.StartsWith(layerKeyword))
-            {
-                if (currentLayer.Length > 0)
+                foreach (var row in csvLayers[layerIndex])
                 {
-                    layers.Add(currentLayer.ToString()
-                        .TrimEnd()); // Add the current layer string and trim the last newline
+                    var line = string.Join(separator, row);
+                    file.AppendLine(line);
                 }
 
-                currentLayer = new StringBuilder(); // Start a new layer
+                // Add the layer keyword at the end
+                file.AppendLine($"{layerKeyword}{layerIndex}");
             }
-            else
-            {
-                currentLayer.AppendLine(line); // Append the line to the current layer with a newline
-            }
+
+            CsvHelper.WriteContentToFile(filepath, file);
         }
 
-        // Add the last layer if there are any remaining lines
-        if (currentLayer.Length > 0)
+        /// <summary>
+        ///     Reads the CSV with layer keywords.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="layerKeyword">The layer keyword.</param>
+        /// <returns>Content of our special format file</returns>
+        public static List<string> ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
         {
-            layers.Add(currentLayer.ToString().TrimEnd()); // Trim the trailing newline
-        }
+            var lst = CsvHelper.ReadFileContent(filePath);
+            if (lst == null)
+            {
+                return null;
+            }
 
-        return layers;
+            var layers = new List<string>();
+            var currentLayer = new StringBuilder(); // Use StringBuilder to accumulate lines for each layer
+
+            foreach (var line in lst)
+                // When the layer keyword is encountered, store the current layer
+            {
+                if (line.StartsWith(layerKeyword))
+                {
+                    if (currentLayer.Length > 0)
+                    {
+                        layers.Add(currentLayer.ToString()
+                            .TrimEnd()); // Add the current layer string and trim the last newline
+                    }
+
+                    currentLayer = new StringBuilder(); // Start a new layer
+                }
+                else
+                {
+                    currentLayer.AppendLine(line); // Append the line to the current layer with a newline
+                }
+            }
+
+            // Add the last layer if there are any remaining lines
+            if (currentLayer.Length > 0)
+            {
+                layers.Add(currentLayer.ToString().TrimEnd()); // Trim the trailing newline
+            }
+
+            return layers;
+        }
     }
 }

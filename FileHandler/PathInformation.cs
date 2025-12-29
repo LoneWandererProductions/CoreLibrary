@@ -8,30 +8,31 @@
 
 using System.IO;
 
-namespace FileHandler;
-
-/// <summary>
-///     The path information class.
-/// </summary>
-public static class PathInformation
+namespace FileHandler
 {
     /// <summary>
-    ///     Returns full Path with file and no File Extension
+    ///     The path information class.
     /// </summary>
-    /// <param name="path">Path</param>
-    /// <returns>Path with File and without File Extension</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static string GetPathWithoutExtension(string path)
+    public static class PathInformation
     {
-        if (string.IsNullOrEmpty(path))
+        /// <summary>
+        ///     Returns full Path with file and no File Extension
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <returns>Path with File and without File Extension</returns>
+        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        public static string GetPathWithoutExtension(string path)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
+
+            var root = Path.GetDirectoryName(path);
+
+            return string.IsNullOrEmpty(root)
+                ? string.Empty
+                : Path.Combine(root, Path.GetFileNameWithoutExtension(path));
         }
-
-        var root = Path.GetDirectoryName(path);
-
-        return string.IsNullOrEmpty(root)
-            ? string.Empty
-            : Path.Combine(root, Path.GetFileNameWithoutExtension(path));
     }
 }

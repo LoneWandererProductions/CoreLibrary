@@ -14,75 +14,76 @@ using System.Threading;
 using System.Threading.Tasks;
 using Communication.Interfaces;
 
-namespace Communication;
-
-/// <inheritdoc />
-/// <summary>
-///     The com class.
-/// </summary>
-public sealed class NetCom : INetCom
+namespace Communication
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Saves the file.
+    ///     The com class.
     /// </summary>
-    /// <param name="filePath">The file path.</param>
-    /// <param name="url">The URL.</param>
-    /// <returns>
-    ///     Success Status
-    /// </returns>
-    public Task<bool> SaveFile(string filePath, string url, IProgress<int>? progress = null,
-        CancellationToken cancellationToken = default)
+    public sealed class NetCom : INetCom
     {
-        return FileTransfer.SaveFileAsync(filePath, url, progress, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Saves the file.
-    /// </summary>
-    /// <param name="filePath">The file path.</param>
-    public Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
-        CancellationToken cancellationToken = default)
-    {
-        return FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Sends an HTTP request using the HttpClientManager.
-    /// </summary>
-    /// <param name="url">The URL to send the request to.</param>
-    /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
-    /// <param name="body">The request body (optional).</param>
-    /// <param name="contentType">The content type (default: application/json).</param>
-    /// <returns>An HttpResponseMessage containing the response details.</returns>
-    public async Task<string> SendMessageAsync(string url, string method, string? body = null,
-        string contentType = ComResource.JsonHeader)
-    {
-        try
+        /// <inheritdoc />
+        /// <summary>
+        ///     Saves the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns>
+        ///     Success Status
+        /// </returns>
+        public Task<bool> SaveFile(string filePath, string url, IProgress<int>? progress = null,
+            CancellationToken cancellationToken = default)
         {
-            // Call the static SendMessageAsync from HttpClientManager
-            // You can handle specific processing here if needed (e.g., logging, deserialization)
-            return await HttpClientManager.SendMessageAsync(url, method, body, contentType);
+            return FileTransfer.SaveFileAsync(filePath, url, progress, cancellationToken);
         }
-        catch (Exception ex)
-        {
-            // Handle or log the error as needed
-            throw new Exception(ComResource.ErrorSendingRequest, ex);
-        }
-    }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Listeners the specified port.
-    /// </summary>
-    /// <param name="port">The port.</param>
-    /// <returns>
-    ///     Reference to the listener
-    /// </returns>
-    public Listener Listener(int port)
-    {
-        return new Listener(port);
+        /// <inheritdoc />
+        /// <summary>
+        ///     Saves the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        public Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            return FileTransfer.SaveFilesAsync(filePath, urls, progress, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Sends an HTTP request using the HttpClientManager.
+        /// </summary>
+        /// <param name="url">The URL to send the request to.</param>
+        /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
+        /// <param name="body">The request body (optional).</param>
+        /// <param name="contentType">The content type (default: application/json).</param>
+        /// <returns>An HttpResponseMessage containing the response details.</returns>
+        public async Task<string> SendMessageAsync(string url, string method, string? body = null,
+            string contentType = ComResource.JsonHeader)
+        {
+            try
+            {
+                // Call the static SendMessageAsync from HttpClientManager
+                // You can handle specific processing here if needed (e.g., logging, deserialization)
+                return await HttpClientManager.SendMessageAsync(url, method, body, contentType);
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the error as needed
+                throw new Exception(ComResource.ErrorSendingRequest, ex);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Listeners the specified port.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        /// <returns>
+        ///     Reference to the listener
+        /// </returns>
+        public Listener Listener(int port)
+        {
+            return new Listener(port);
+        }
     }
 }

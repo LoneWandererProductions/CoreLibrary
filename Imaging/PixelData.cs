@@ -6,83 +6,84 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging;
-
-/// <summary>
-///     Pixel Data Container
-/// </summary>
-public struct PixelData
+namespace Imaging
 {
     /// <summary>
-    ///     Gets or sets the x.
-    ///     X-coordinate
+    ///     Pixel Data Container
     /// </summary>
-    /// <value>
-    ///     The x.
-    /// </value>
-    public int X { get; init; }
-
-    /// <summary>
-    ///     Gets or sets the y.
-    ///     Y-coordinate
-    /// </summary>
-    /// <value>
-    ///     The y.
-    /// </value>
-    public int Y { get; init; }
-
-    /// <summary>
-    ///     Gets or sets the r.
-    ///     Red component
-    /// </summary>
-    /// <value>
-    ///     The r.
-    /// </value>
-    public byte R { get; init; }
-
-    /// <summary>
-    ///     Gets or sets the g.
-    ///     Green component
-    /// </summary>
-    /// <value>
-    ///     The g.
-    /// </value>
-    public byte G { get; init; }
-
-    /// <summary>
-    ///     Gets or sets the b.
-    ///     Blue component
-    /// </summary>
-    /// <value>
-    ///     The b.
-    /// </value>
-    public byte B { get; init; }
-
-    /// <summary>
-    ///     Gets or sets a.
-    ///     Alpha component
-    /// </summary>
-    /// <value>
-    ///     a.
-    /// </value>
-    public byte A { get; init; }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="PixelData" /> struct.
-    /// </summary>
-    /// <param name="x">The x.</param>
-    /// <param name="y">The y.</param>
-    /// <param name="r">The r.</param>
-    /// <param name="g">The g.</param>
-    /// <param name="b">The b.</param>
-    /// <param name="a">a.</param>
-    public PixelData(int x, int y, byte r, byte g, byte b, byte a = 255)
+    public struct PixelData
     {
-        X = x;
-        Y = y;
-        R = r;
-        G = g;
-        B = b;
-        A = a;
+        /// <summary>
+        ///     Gets or sets the x.
+        ///     X-coordinate
+        /// </summary>
+        /// <value>
+        ///     The x.
+        /// </value>
+        public int X { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the y.
+        ///     Y-coordinate
+        /// </summary>
+        /// <value>
+        ///     The y.
+        /// </value>
+        public int Y { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the r.
+        ///     Red component
+        /// </summary>
+        /// <value>
+        ///     The r.
+        /// </value>
+        public byte R { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the g.
+        ///     Green component
+        /// </summary>
+        /// <value>
+        ///     The g.
+        /// </value>
+        public byte G { get; init; }
+
+        /// <summary>
+        ///     Gets or sets the b.
+        ///     Blue component
+        /// </summary>
+        /// <value>
+        ///     The b.
+        /// </value>
+        public byte B { get; init; }
+
+        /// <summary>
+        ///     Gets or sets a.
+        ///     Alpha component
+        /// </summary>
+        /// <value>
+        ///     a.
+        /// </value>
+        public byte A { get; init; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="PixelData" /> struct.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        public PixelData(int x, int y, byte r, byte g, byte b, byte a = 255)
+        {
+            X = x;
+            Y = y;
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
     }
 }

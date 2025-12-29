@@ -8,31 +8,32 @@
 
 using System;
 
-namespace Plugin;
-
-/// <summary>
-///     Interface for Event Aggregator
-/// </summary>
-public interface IEventAggregator
+namespace Plugin
 {
     /// <summary>
-    ///     Publishes the specified event to publish.
+    ///     Interface for Event Aggregator
     /// </summary>
-    /// <typeparam name="TEvent">The type of the event.</typeparam>
-    /// <param name="eventToPublish">The event to publish.</param>
-    void Publish<TEvent>(TEvent eventToPublish);
+    public interface IEventAggregator
+    {
+        /// <summary>
+        ///     Publishes the specified event to publish.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the event.</typeparam>
+        /// <param name="eventToPublish">The event to publish.</param>
+        void Publish<TEvent>(TEvent eventToPublish);
 
-    /// <summary>
-    ///     Subscribes the specified event handler.
-    /// </summary>
-    /// <typeparam name="TEvent">The type of the event.</typeparam>
-    /// <param name="eventHandler">The event handler.</param>
-    void Subscribe<TEvent>(Action<TEvent> eventHandler);
+        /// <summary>
+        ///     Subscribes the specified event handler.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the event.</typeparam>
+        /// <param name="eventHandler">The event handler.</param>
+        void Subscribe<TEvent>(Action<TEvent> eventHandler);
 
-    /// <summary>
-    ///     Unsubscribes the specified event handler.
-    /// </summary>
-    /// <typeparam name="TEvent">The type of the event.</typeparam>
-    /// <param name="eventHandler">The event handler.</param>
-    void Unsubscribe<TEvent>(Action<TEvent> eventHandler);
+        /// <summary>
+        ///     Unsubscribes the specified event handler.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the event.</typeparam>
+        /// <param name="eventHandler">The event handler.</param>
+        void Unsubscribe<TEvent>(Action<TEvent> eventHandler);
+    }
 }

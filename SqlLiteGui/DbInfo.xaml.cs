@@ -10,46 +10,47 @@
 
 using System.Windows.Controls;
 
-namespace SQLiteGui;
-
-/// <inheritdoc cref="UserControl" />
-/// <summary>
-///     The data base info class.
-/// </summary>
-internal sealed partial class DbInfo
+namespace SQLiteGui
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="T:SQLiteGui.DbInfo" /> class.
+    ///     The data base info class.
     /// </summary>
-    public DbInfo()
+    internal sealed partial class DbInfo
     {
-        InitializeComponent();
-        ViewModel = new DbInfoViewModel();
-        DataContext = ViewModel; // Set DataContext to ViewModel
-    }
-
-    /// <summary>
-    ///     Gets the view model.
-    /// </summary>
-    /// <value>
-    ///     The view model.
-    /// </value>
-    private DbInfoViewModel ViewModel { get; }
-
-    /// <summary>
-    ///     Called when [text box text changed].
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The <see cref="TextChangedEventArgs" /> instance containing the event data.</param>
-    private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (sender is not TextBox textBox)
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:SQLiteGui.DbInfo" /> class.
+        /// </summary>
+        public DbInfo()
         {
-            return;
+            InitializeComponent();
+            ViewModel = new DbInfoViewModel();
+            DataContext = ViewModel; // Set DataContext to ViewModel
         }
 
-        textBox.CaretIndex = textBox.Text.Length; // Move caret to the end
-        textBox.ScrollToEnd(); // Scroll to the end
+        /// <summary>
+        ///     Gets the view model.
+        /// </summary>
+        /// <value>
+        ///     The view model.
+        /// </value>
+        private DbInfoViewModel ViewModel { get; }
+
+        /// <summary>
+        ///     Called when [text box text changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="TextChangedEventArgs" /> instance containing the event data.</param>
+        private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is not TextBox textBox)
+            {
+                return;
+            }
+
+            textBox.CaretIndex = textBox.Text.Length; // Move caret to the end
+            textBox.ScrollToEnd(); // Scroll to the end
+        }
     }
 }

@@ -13,88 +13,89 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace FileHandler;
-
-/// <summary>
-///     The file handle create class.
-/// </summary>
-public static class FileHandleRename
+namespace FileHandler
 {
     /// <summary>
-    ///     Rename a Directory.
+    ///     The file handle create class.
     /// </summary>
-    /// <param name="source">Full qualified location Path</param>
-    /// <param name="target">Full qualified target Path</param>
-    /// <returns>The <see cref="bool" />Was the Folder Renamed and all contents moved.</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static async Task<bool> RenameDirectory(string source, string target)
+    public static class FileHandleRename
     {
-        if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+        /// <summary>
+        ///     Rename a Directory.
+        /// </summary>
+        /// <param name="source">Full qualified location Path</param>
+        /// <param name="target">Full qualified target Path</param>
+        /// <returns>The <see cref="bool" />Was the Folder Renamed and all contents moved.</returns>
+        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        public static async Task<bool> RenameDirectory(string source, string target)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
+
+            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            }
+
+            //if nothing exists we can return anyways
+            if (!Directory.Exists(source))
+            {
+                return false;
+            }
+
+            try
+            {
+                await Task.Run(() => Directory.Move(source, target));
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            {
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                Trace.WriteLine(ex);
+                return false;
+            }
+
+            return true;
         }
 
-        if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
+        /// <summary>
+        ///     Rename a file.
+        /// </summary>
+        /// <param name="source">Full qualified location File Name</param>
+        /// <param name="target">Full qualified target File Name</param>
+        /// <returns>The <see cref="bool" />Was the File Renamed.</returns>
+        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        public static async Task<bool> RenameFile(string source, string target)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-        }
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-        //if nothing exists we can return anyways
-        if (!Directory.Exists(source))
-        {
-            return false;
-        }
+            if (source.Equals(target, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+            }
 
-        try
-        {
-            await Task.Run(() => Directory.Move(source, target));
-        }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
-        {
-            FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-            Trace.WriteLine(ex);
-            return false;
-        }
+            //if nothing exists we can return anyways
+            if (!File.Exists(source))
+            {
+                return false;
+            }
 
-        return true;
-    }
+            try
+            {
+                await Task.Run(() => File.Move(source, target));
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
+            {
+                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                Trace.WriteLine(ex);
+                return false;
+            }
 
-    /// <summary>
-    ///     Rename a file.
-    /// </summary>
-    /// <param name="source">Full qualified location File Name</param>
-    /// <param name="target">Full qualified target File Name</param>
-    /// <returns>The <see cref="bool" />Was the File Renamed.</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static async Task<bool> RenameFile(string source, string target)
-    {
-        if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-        {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            return true;
         }
-
-        if (source.Equals(target, StringComparison.InvariantCultureIgnoreCase))
-        {
-            throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-        }
-
-        //if nothing exists we can return anyways
-        if (!File.Exists(source))
-        {
-            return false;
-        }
-
-        try
-        {
-            await Task.Run(() => File.Move(source, target));
-        }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
-        {
-            FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-            Trace.WriteLine(ex);
-            return false;
-        }
-
-        return true;
     }
 }

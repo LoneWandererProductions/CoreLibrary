@@ -10,20 +10,21 @@
 
 using System.Windows;
 
-namespace SQLiteGui;
-
-/// <inheritdoc cref="Window" />
-/// <summary>
-///     General Overview Window of the Tables inside the Database
-/// </summary>
-public sealed partial class TableOverview
+namespace SQLiteGui
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Initiate Table Overview
+    ///     General Overview Window of the Tables inside the Database
     /// </summary>
-    public TableOverview()
+    public sealed partial class TableOverview
     {
-        InitializeComponent();
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initiate Table Overview
+        /// </summary>
+        public TableOverview()
+        {
+            InitializeComponent();
+        }
     }
 }

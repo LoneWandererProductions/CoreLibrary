@@ -6,35 +6,36 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace SqliteHelper;
-
-/// <summary>
-///     Compare Operators
-/// </summary>
-public enum CompareOperator
+namespace SqliteHelper
 {
     /// <summary>
-    ///     None = 0.
+    ///     Compare Operators
     /// </summary>
-    None = 0,
+    public enum CompareOperator
+    {
+        /// <summary>
+        ///     None = 0.
+        /// </summary>
+        None = 0,
 
-    /// <summary>
-    ///     The Equal Operator = 1.
-    /// </summary>
-    Equal = 1,
+        /// <summary>
+        ///     The Equal Operator = 1.
+        /// </summary>
+        Equal = 1,
 
-    /// <summary>
-    ///     The Not equal Operator= 2.
-    /// </summary>
-    NotEqual = 2,
+        /// <summary>
+        ///     The Not equal Operator= 2.
+        /// </summary>
+        NotEqual = 2,
 
-    /// <summary>
-    ///     The Like Operator = 3.
-    /// </summary>
-    Like = 3,
+        /// <summary>
+        ///     The Like Operator = 3.
+        /// </summary>
+        Like = 3,
 
-    /// <summary>
-    ///     The Not like Operator = 4.
-    /// </summary>
-    NotLike = 4
+        /// <summary>
+        ///     The Not like Operator = 4.
+        /// </summary>
+        NotLike = 4
+    }
 }

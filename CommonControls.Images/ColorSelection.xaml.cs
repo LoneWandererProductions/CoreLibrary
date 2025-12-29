@@ -6,9 +6,6 @@
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,7 +16,7 @@ using System.Windows.Media;
 // ReSharper disable UnusedAutoPropertyAccessor.Global, we use it
 // ReSharper disable MemberCanBePrivate.Global, we will use it
 
-namespace CommonControls
+namespace CommonControls.Images
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
@@ -196,7 +193,7 @@ namespace CommonControls
         /// Called when [start color changed].
         /// </summary>
         /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnStartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorSelection picker && e.NewValue is string newColor)

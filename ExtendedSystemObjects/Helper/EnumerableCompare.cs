@@ -6,25 +6,26 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects.Helper;
-
-/// <summary>
-///     Compare conditions for lists
-/// </summary>
-public enum EnumerableCompare
+namespace ExtendedSystemObjects.Helper
 {
     /// <summary>
-    ///     Ignore order and count
+    ///     Compare conditions for lists
     /// </summary>
-    IgnoreOrderCount = 0,
+    public enum EnumerableCompare
+    {
+        /// <summary>
+        ///     Ignore order and count
+        /// </summary>
+        IgnoreOrderCount = 0,
 
-    /// <summary>
-    ///     Ignore order, but not count
-    /// </summary>
-    IgnoreOrder = 1,
+        /// <summary>
+        ///     Ignore order, but not count
+        /// </summary>
+        IgnoreOrder = 1,
 
-    /// <summary>
-    ///     List must be identical in order and count
-    /// </summary>
-    AllEqual = 2
+        /// <summary>
+        ///     List must be identical in order and count
+        /// </summary>
+        AllEqual = 2
+    }
 }

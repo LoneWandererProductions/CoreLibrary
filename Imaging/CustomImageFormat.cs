@@ -16,81 +16,82 @@ using Imaging.Interfaces;
 
 //TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?
-namespace Imaging;
-
-/// <inheritdoc />
-/// <summary>
-///     The Custom Image Format
-/// </summary>
-/// <seealso cref="T:Imaging.ICustomImageFormat" />
-public sealed class CustomImageFormat : ICustomImageFormat
+namespace Imaging
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Load a cif file.
+    ///     The Custom Image Format
     /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>Image in pure Cif format</returns>
-    public Cif? GetCif(string path)
+    /// <seealso cref="T:Imaging.ICustomImageFormat" />
+    public sealed class CustomImageFormat : ICustomImageFormat
     {
-        return CifProcessing.CifFromFile(path);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Generates Image from Cif.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>Image</returns>
-    public Bitmap? GetImageFromCif(string path)
-    {
-        return CifProcessing.CifFileToImage(path);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Generate Cif from Bitmap
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <returns>Cif Object</returns>
-    public Cif GenerateCifFromBitmap(Bitmap image)
-    {
-        var format = CifProcessing.ConvertToCifFromBitmap(image);
-
-        return new Cif
+        /// <inheritdoc />
+        /// <summary>
+        ///     Load a cif file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Image in pure Cif format</returns>
+        public Cif? GetCif(string path)
         {
-            Compressed = false,
-            Height = image.Height,
-            Width = image.Width,
-            CifImage = format,
-            NumberOfColors = format.Count
-        };
-    }
+            return CifProcessing.CifFromFile(path);
+        }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Saves Bitmap to cif file.
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <param name="path">The path.</param>
-    public void GenerateBitmapToCifFile(Bitmap image, string path)
-    {
-        var cif = GenerateCifFromBitmap(image); // reuse conversion
-        var lst = CifProcessing.GenerateCsv(cif.Height, cif.Width, cif.CifImage);
-        CsvHandler.WriteCsv(path, lst);
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Generates Image from Cif.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Image</returns>
+        public Bitmap? GetImageFromCif(string path)
+        {
+            return CifProcessing.CifFileToImage(path);
+        }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Compresses the cif file.
-    ///     Uses sequences to minimize the size of the file.
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <param name="path">The path.</param>
-    public void GenerateCifCompressedFromBitmap(Bitmap image, string path)
-    {
-        var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
-        var lst = CifProcessing.GenerateCsvCompressed(image.Height, image.Width, imageFormat);
-        CsvHandler.WriteCsv(path, lst);
+        /// <inheritdoc />
+        /// <summary>
+        ///     Generate Cif from Bitmap
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Cif Object</returns>
+        public Cif GenerateCifFromBitmap(Bitmap image)
+        {
+            var format = CifProcessing.ConvertToCifFromBitmap(image);
+
+            return new Cif
+            {
+                Compressed = false,
+                Height = image.Height,
+                Width = image.Width,
+                CifImage = format,
+                NumberOfColors = format.Count
+            };
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Saves Bitmap to cif file.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="path">The path.</param>
+        public void GenerateBitmapToCifFile(Bitmap image, string path)
+        {
+            var cif = GenerateCifFromBitmap(image); // reuse conversion
+            var lst = CifProcessing.GenerateCsv(cif.Height, cif.Width, cif.CifImage);
+            CsvHandler.WriteCsv(path, lst);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Compresses the cif file.
+        ///     Uses sequences to minimize the size of the file.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="path">The path.</param>
+        public void GenerateCifCompressedFromBitmap(Bitmap image, string path)
+        {
+            var imageFormat = CifProcessing.ConvertToCifFromBitmap(image);
+            var lst = CifProcessing.GenerateCsvCompressed(image.Height, image.Width, imageFormat);
+            CsvHandler.WriteCsv(path, lst);
+        }
     }
 }

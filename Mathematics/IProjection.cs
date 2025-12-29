@@ -13,21 +13,22 @@
 
 using System.Collections.Generic;
 
-namespace Mathematics;
-
-/// <summary>
-///     The Projection Interface.
-///     Template for all external 3D operations.
-/// </summary>
-public interface IProjection
+namespace Mathematics
 {
     /// <summary>
-    ///     Generates the specified triangles.
+    ///     The Projection Interface.
+    ///     Template for all external 3D operations.
     /// </summary>
-    /// <param name="triangles">The triangles.</param>
-    /// <param name="transform">The world transform.</param>
-    /// <returns>
-    ///     Converted 3d View
-    /// </returns>
-    List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
+    public interface IProjection
+    {
+        /// <summary>
+        ///     Generates the specified triangles.
+        /// </summary>
+        /// <param name="triangles">The triangles.</param>
+        /// <param name="transform">The world transform.</param>
+        /// <returns>
+        ///     Converted 3d View
+        /// </returns>
+        List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
+    }
 }

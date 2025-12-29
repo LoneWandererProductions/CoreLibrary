@@ -13,32 +13,33 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace InterOp;
-
-/// <summary>
-///     The screen coordinate class.
-/// </summary>
-public static class WinScreenCoordinate
+namespace InterOp
 {
     /// <summary>
-    ///     Get internal System Point to c# Struct
+    ///     The screen coordinate class.
     /// </summary>
-    /// <value>
-    ///     The mouse position.
-    /// </value>
-    /// <exception cref="PlatformNotSupportedException"></exception>
-    public static Point MousePosition
+    public static class WinScreenCoordinate
     {
-        get
+        /// <summary>
+        ///     Get internal System Point to c# Struct
+        /// </summary>
+        /// <value>
+        ///     The mouse position.
+        /// </value>
+        /// <exception cref="PlatformNotSupportedException"></exception>
+        public static Point MousePosition
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            get
             {
-                throw new PlatformNotSupportedException();
-            }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    throw new PlatformNotSupportedException();
+                }
 
-            var w32Mouse = new Win32Points();
-            _ = Win32Api.GetPhysicalCursorPos(ref w32Mouse);
-            return new Point(w32Mouse.X, w32Mouse.Y);
+                var w32Mouse = new Win32Points();
+                _ = Win32Api.GetPhysicalCursorPos(ref w32Mouse);
+                return new Point(w32Mouse.X, w32Mouse.Y);
+            }
         }
     }
 }

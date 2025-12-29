@@ -8,25 +8,26 @@
 
 // ReSharper disable UnusedMember.Local
 
-namespace Imaging.Enums;
-
-/// <summary>
-///     Texture Shapes
-/// </summary>
-public enum MaskShape
+namespace Imaging.Enums
 {
     /// <summary>
-    ///     The rectangle
+    ///     Texture Shapes
     /// </summary>
-    Rectangle = 0,
+    public enum MaskShape
+    {
+        /// <summary>
+        ///     The rectangle
+        /// </summary>
+        Rectangle = 0,
 
-    /// <summary>
-    ///     The circle
-    /// </summary>
-    Circle = 1,
+        /// <summary>
+        ///     The circle
+        /// </summary>
+        Circle = 1,
 
-    /// <summary>
-    ///     The polygon
-    /// </summary>
-    Polygon = 2
+        /// <summary>
+        ///     The polygon
+        /// </summary>
+        Polygon = 2
+    }
 }

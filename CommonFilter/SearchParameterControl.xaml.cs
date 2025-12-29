@@ -11,54 +11,55 @@
 using System;
 using System.Windows.Controls;
 
-namespace CommonFilter;
-
-/// <inheritdoc cref="UserControl" />
-/// <summary>
-///     Search Parameter
-/// </summary>
-internal sealed partial class SearchParameterControl
+namespace CommonFilter
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.
+    ///     Search Parameter
     /// </summary>
-    public SearchParameterControl()
+    internal sealed partial class SearchParameterControl
     {
-        InitializeComponent();
-        View.Reference = this;
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.
+        /// </summary>
+        public SearchParameterControl()
+        {
+            InitializeComponent();
+            View.Reference = this;
+        }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    public SearchParameterControl(int id)
-    {
-        InitializeComponent();
-        Id = id;
-        View.Reference = this;
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        public SearchParameterControl(int id)
+        {
+            InitializeComponent();
+            Id = id;
+            View.Reference = this;
+        }
 
-    /// <summary>
-    ///     Gets or sets the identifier.
-    /// </summary>
-    /// <value>
-    ///     The identifier.
-    /// </value>
-    private int Id { get; }
+        /// <summary>
+        ///     Gets or sets the identifier.
+        /// </summary>
+        /// <value>
+        ///     The identifier.
+        /// </value>
+        private int Id { get; }
 
-    /// <summary>
-    ///     Occurs when [delete logic].
-    /// </summary>
-    public event EventHandler<int> DeleteLogic;
+        /// <summary>
+        ///     Occurs when [delete logic].
+        /// </summary>
+        public event EventHandler<int> DeleteLogic;
 
-    /// <summary>
-    ///     Deletes the clicked.
-    /// </summary>
-    internal void DeleteClicked()
-    {
-        DeleteLogic(this, Id);
+        /// <summary>
+        ///     Deletes the clicked.
+        /// </summary>
+        internal void DeleteClicked()
+        {
+            DeleteLogic(this, Id);
+        }
     }
 }

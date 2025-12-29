@@ -11,45 +11,46 @@
 
 using System.Drawing;
 
-namespace Imaging.Interfaces;
-
-/// <summary>
-///     Interface for Custom Image Format
-/// </summary>
-public interface ICustomImageFormat
+namespace Imaging.Interfaces
 {
     /// <summary>
-    ///     Get a cif file from defined path.
+    ///     Interface for Custom Image Format
     /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>Image as pure Cif format</returns>
-    Cif GetCif(string path);
+    public interface ICustomImageFormat
+    {
+        /// <summary>
+        ///     Get a cif file from defined path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Image as pure Cif format</returns>
+        Cif GetCif(string path);
 
-    /// <summary>
-    ///     Generates Image from Cif.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>A bitmap Image</returns>
-    Bitmap GetImageFromCif(string path);
+        /// <summary>
+        ///     Generates Image from Cif.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>A bitmap Image</returns>
+        Bitmap GetImageFromCif(string path);
 
-    /// <summary>
-    ///     Generate Cif from Bitmap
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <returns>Custom Image Format of the Image</returns>
-    Cif GenerateCifFromBitmap(Bitmap image);
+        /// <summary>
+        ///     Generate Cif from Bitmap
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Custom Image Format of the Image</returns>
+        Cif GenerateCifFromBitmap(Bitmap image);
 
-    /// <summary>
-    ///     Saves Bitmap to cif file.
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <param name="path">The path.</param>
-    void GenerateBitmapToCifFile(Bitmap image, string path);
+        /// <summary>
+        ///     Saves Bitmap to cif file.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="path">The path.</param>
+        void GenerateBitmapToCifFile(Bitmap image, string path);
 
-    /// <summary>
-    ///     Compressed cif file.
-    /// </summary>
-    /// <param name="image">The image.</param>
-    /// <param name="path">The path.</param>
-    void GenerateCifCompressedFromBitmap(Bitmap image, string path);
+        /// <summary>
+        ///     Compressed cif file.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="path">The path.</param>
+        void GenerateCifCompressedFromBitmap(Bitmap image, string path);
+    }
 }

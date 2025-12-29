@@ -21,94 +21,95 @@ using Weaver.Interfaces;
 using Weaver.Messages;
 using DiagnosticSeverity = CoreBuilder.Enums.DiagnosticSeverity;
 
-namespace CoreBuilder.Rules;
-
-/// <inheritdoc cref="ICodeAnalyzer" />
-/// <summary>
-/// Analyzer that finds unused method parameters.
-/// </summary>
-public sealed class UnusedParameterAnalyzer : ICodeAnalyzer, ICommand
+namespace CoreBuilder.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Name => "UnusedParameter";
-
-    /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Description => "Analyzer that finds unused method parameters.";
-
-    /// <inheritdoc />
-    public string Namespace => "Analyzer";
-
-    /// <inheritdoc />
-    public int ParameterCount => 1;
-
-    /// <inheritdoc />
-    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
-
-    /// <inheritdoc />
-    public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+    /// <summary>
+    /// Analyzer that finds unused method parameters.
+    /// </summary>
+    public sealed class UnusedParameterAnalyzer : ICodeAnalyzer, ICommand
     {
-        // 🔹 Ignore generated code and compiler artifacts
-        if (CoreHelper.ShouldIgnoreFile(filePath))
-            yield break;
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Name => "UnusedParameter";
 
-        var tree = CSharpSyntaxTree.ParseText(fileContent);
-        var compilation = CSharpCompilation.Create("Analysis")
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddSyntaxTrees(tree);
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Description => "Analyzer that finds unused method parameters.";
 
-        var model = compilation.GetSemanticModel(tree);
-        var root = tree.GetRoot();
+        /// <inheritdoc />
+        public string Namespace => "Analyzer";
 
-        foreach (var methodDecl in root.DescendantNodes().OfType<MethodDeclarationSyntax>())
+        /// <inheritdoc />
+        public int ParameterCount => 1;
+
+        /// <inheritdoc />
+        public CommandSignature Signature => new(Namespace, Name, ParameterCount);
+
+        /// <inheritdoc />
+        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
-            // Skip abstract/interface methods (no body to analyze)
-            if (methodDecl.Body == null && methodDecl.ExpressionBody == null)
-                continue;
+            // 🔹 Ignore generated code and compiler artifacts
+            if (CoreHelper.ShouldIgnoreFile(filePath))
+                yield break;
 
-            foreach (var parameter in methodDecl.ParameterList.Parameters)
+            var tree = CSharpSyntaxTree.ParseText(fileContent);
+            var compilation = CSharpCompilation.Create("Analysis")
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddSyntaxTrees(tree);
+
+            var model = compilation.GetSemanticModel(tree);
+            var root = tree.GetRoot();
+
+            foreach (var methodDecl in root.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
-                var symbol = model.GetDeclaredSymbol(parameter);
-                if (symbol is not { } paramSymbol)
+                // Skip abstract/interface methods (no body to analyze)
+                if (methodDecl.Body == null && methodDecl.ExpressionBody == null)
                     continue;
 
-                var references = methodDecl.DescendantNodes()
-                    .OfType<IdentifierNameSyntax>()
-                    .Where(id =>
-                        SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, paramSymbol));
+                foreach (var parameter in methodDecl.ParameterList.Parameters)
+                {
+                    var symbol = model.GetDeclaredSymbol(parameter);
+                    if (symbol is not { } paramSymbol)
+                        continue;
 
-                if (references.Any())
-                    continue;
+                    var references = methodDecl.DescendantNodes()
+                        .OfType<IdentifierNameSyntax>()
+                        .Where(id =>
+                            SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, paramSymbol));
 
-                var line = parameter.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                yield return new Diagnostic(Name, DiagnosticSeverity.Warning, filePath, line,
-                    $"Unused parameter '{parameter.Identifier.Text}' in method '{methodDecl.Identifier.Text}'.");
+                    if (references.Any())
+                        continue;
+
+                    var line = parameter.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                    yield return new Diagnostic(Name, DiagnosticSeverity.Warning, filePath, line,
+                        $"Unused parameter '{parameter.Identifier.Text}' in method '{methodDecl.Identifier.Text}'.");
+                }
             }
         }
-    }
 
-    /// <inheritdoc />
-    public CommandResult Execute(params string[] args)
-    {
-        List<Diagnostic> results;
-        try
+        /// <inheritdoc />
+        public CommandResult Execute(params string[] args)
         {
-            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedParameter <fileOrDirectoryPath>");
+            List<Diagnostic> results;
+            try
+            {
+                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedParameter <fileOrDirectoryPath>");
+            }
+            catch (Exception ex)
+            {
+                return CommandResult.Fail(ex.Message);
+            }
+
+            var output = string.Join("\n", results.Select(d =>
+                             $"{d.FilePath}({d.LineNumber}): {d.Message}")) +
+                         $"\nTotal: {results.Count} unused parameters.";
+
+            return CommandResult.Ok(output);
         }
-        catch (Exception ex)
+
+        /// <inheritdoc />
+        public CommandResult InvokeExtension(string extensionName, params string[] args)
         {
-            return CommandResult.Fail(ex.Message);
+            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
-
-        var output = string.Join("\n", results.Select(d =>
-                         $"{d.FilePath}({d.LineNumber}): {d.Message}")) +
-                     $"\nTotal: {results.Count} unused parameters.";
-
-        return CommandResult.Ok(output);
-    }
-
-    /// <inheritdoc />
-    public CommandResult InvokeExtension(string extensionName, params string[] args)
-    {
-        return CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

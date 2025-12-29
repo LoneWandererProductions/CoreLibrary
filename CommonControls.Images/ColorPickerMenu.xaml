@@ -1,5 +1,5 @@
-﻿<UserControl xmlns:commonControls="clr-namespace:CommonControls"
-             x:Class="CommonControls.ColorPickerMenu"
+﻿<UserControl xmlns:commonImages="clr-namespace:CommonControls.Images"
+             x:Class="CommonControls.Images.ColorPickerMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +17,7 @@
         <Popup Name="Pop" StaysOpen="False" PlacementTarget="{Binding ElementName=Button}" Grid.ColumnSpan="3"
                Grid.Column="0">
             <Grid Name="GridPicker" Background="AliceBlue">
-                <commonControls:ColorPicker ColorChanged="ColorPickerMenu_ColorChanged" />
+                <commonImages:ColorPicker ColorChanged="ColorPickerMenu_ColorChanged" />
             </Grid>
         </Popup>
         <Canvas Grid.Column="1" Name="CanvasPreview" />

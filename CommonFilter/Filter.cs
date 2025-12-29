@@ -9,86 +9,87 @@
 using System;
 using System.Collections.Generic;
 
-namespace CommonFilter;
-
-/// <inheritdoc />
-/// <summary>
-///     Filter Interface implementation
-/// </summary>
-/// <seealso cref="T:CommonFilter.IFilter" />
-public sealed class Filter : IFilter
+namespace CommonFilter
 {
-    /// <summary>
-    ///     The evaluate
-    /// </summary>
-    private ILogicEvaluations _evaluate = null!;
-
-    /// Gets or sets the options.
-    /// <summary>
-    ///     The filter
-    /// </summary>
-    private FilterWindow _filter = null!;
-
-    /// <summary>
-    ///     Gets or sets the conditions.
-    /// </summary>
-    /// <value>
-    ///     The options.
-    /// </value>
-    internal List<FilterOption> Conditions { get; set; } = null!;
-
     /// <inheritdoc />
     /// <summary>
-    ///     Occurs when [filter changed].
+    ///     Filter Interface implementation
     /// </summary>
-    public event EventHandler FilterChanged;
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Starts this instance.
-    /// </summary>
-    public void Start()
+    /// <seealso cref="T:CommonFilter.IFilter" />
+    public sealed class Filter : IFilter
     {
-        _evaluate = new LogicEvaluations();
-        _filter = new FilterWindow(this);
-        _filter.ShowDialog();
-    }
+        /// <summary>
+        ///     The evaluate
+        /// </summary>
+        private ILogicEvaluations _evaluate = null!;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Starts the specified evaluate.
-    ///     So we can use custom Evaluations
-    /// </summary>
-    /// <param name="evaluate">The evaluate.</param>
-    public void Start(ILogicEvaluations evaluate)
-    {
-        _evaluate = evaluate;
-        _filter = new FilterWindow(this);
-        _filter.ShowDialog();
-    }
+        /// Gets or sets the options.
+        /// <summary>
+        ///     The filter
+        /// </summary>
+        private FilterWindow _filter = null!;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Checks the filter.
-    /// </summary>
-    /// <param name="input">The input.</param>
-    /// <returns>Condition fulfilled?</returns>
-    public bool CheckFilter(string input)
-    {
-        if (Conditions.Count == 0 || string.IsNullOrEmpty(input))
+        /// <summary>
+        ///     Gets or sets the conditions.
+        /// </summary>
+        /// <value>
+        ///     The options.
+        /// </value>
+        internal List<FilterOption> Conditions { get; set; } = null!;
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Occurs when [filter changed].
+        /// </summary>
+        public event EventHandler FilterChanged;
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Starts this instance.
+        /// </summary>
+        public void Start()
         {
-            return false;
+            _evaluate = new LogicEvaluations();
+            _filter = new FilterWindow(this);
+            _filter.ShowDialog();
         }
 
-        return _evaluate.Evaluate(input, Conditions);
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Starts the specified evaluate.
+        ///     So we can use custom Evaluations
+        /// </summary>
+        /// <param name="evaluate">The evaluate.</param>
+        public void Start(ILogicEvaluations evaluate)
+        {
+            _evaluate = evaluate;
+            _filter = new FilterWindow(this);
+            _filter.ShowDialog();
+        }
 
-    /// <summary>
-    ///     Done.
-    /// </summary>
-    internal void Done()
-    {
-        FilterChanged(this, EventArgs.Empty);
-        _filter.Close();
+        /// <inheritdoc />
+        /// <summary>
+        ///     Checks the filter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>Condition fulfilled?</returns>
+        public bool CheckFilter(string input)
+        {
+            if (Conditions.Count == 0 || string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            return _evaluate.Evaluate(input, Conditions);
+        }
+
+        /// <summary>
+        ///     Done.
+        /// </summary>
+        internal void Done()
+        {
+            FilterChanged(this, EventArgs.Empty);
+            _filter.Close();
+        }
     }
 }

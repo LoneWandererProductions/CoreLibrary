@@ -6,26 +6,27 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Debugger;
-
-/// <summary>
-///     Container that will hold the text and the corresponding color
-/// </summary>
-public sealed class ColorOption
+namespace Debugger
 {
     /// <summary>
-    ///     Gets the name of the color.
+    ///     Container that will hold the text and the corresponding color
     /// </summary>
-    /// <value>
-    ///     The name of the color.
-    /// </value>
-    public string ColorName { get; init; }
+    public sealed class ColorOption
+    {
+        /// <summary>
+        ///     Gets the name of the color.
+        /// </summary>
+        /// <value>
+        ///     The name of the color.
+        /// </value>
+        public string ColorName { get; init; }
 
-    /// <summary>
-    ///     Gets or sets the entry text.
-    /// </summary>
-    /// <value>
-    ///     The entry text.
-    /// </value>
-    public string EntryText { get; init; }
+        /// <summary>
+        ///     Gets or sets the entry text.
+        /// </summary>
+        /// <value>
+        ///     The entry text.
+        /// </value>
+        public string EntryText { get; init; }
+    }
 }

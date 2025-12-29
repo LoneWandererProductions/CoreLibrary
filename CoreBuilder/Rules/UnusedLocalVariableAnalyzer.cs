@@ -21,93 +21,94 @@ using Weaver.Interfaces;
 using Weaver.Messages;
 using DiagnosticSeverity = CoreBuilder.Enums.DiagnosticSeverity;
 
-namespace CoreBuilder.Rules;
-
-/// <inheritdoc cref="ICodeAnalyzer" />
-/// <summary>
-/// Analyzer that finds unused local variables.
-/// </summary>
-public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer, ICommand
+namespace CoreBuilder.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Name => "UnusedLocalVariable";
-
-    /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Description => "Unused local variable Analyzer.";
-
-    /// <inheritdoc />
-    public string Namespace => "Analyzer";
-
-    /// <inheritdoc />
-    public int ParameterCount => 1;
-
-    /// <inheritdoc />
-    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
-
-    /// <inheritdoc />
-    public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+    /// <summary>
+    /// Analyzer that finds unused local variables.
+    /// </summary>
+    public sealed class UnusedLocalVariableAnalyzer : ICodeAnalyzer, ICommand
     {
-        // 🔹 Ignore generated code and compiler artifacts
-        if (CoreHelper.ShouldIgnoreFile(filePath))
-            yield break;
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Name => "UnusedLocalVariable";
 
-        var tree = CSharpSyntaxTree.ParseText(fileContent);
-        var compilation = CSharpCompilation.Create("Analysis")
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddSyntaxTrees(tree);
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Description => "Unused local variable Analyzer.";
 
-        var model = compilation.GetSemanticModel(tree);
-        var root = tree.GetRoot();
+        /// <inheritdoc />
+        public string Namespace => "Analyzer";
 
-        foreach (var localDecl in root.DescendantNodes().OfType<LocalDeclarationStatementSyntax>())
+        /// <inheritdoc />
+        public int ParameterCount => 1;
+
+        /// <inheritdoc />
+        public CommandSignature Signature => new(Namespace, Name, ParameterCount);
+
+        /// <inheritdoc />
+        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
-            foreach (var variable in localDecl.Declaration.Variables)
+            // 🔹 Ignore generated code and compiler artifacts
+            if (CoreHelper.ShouldIgnoreFile(filePath))
+                yield break;
+
+            var tree = CSharpSyntaxTree.ParseText(fileContent);
+            var compilation = CSharpCompilation.Create("Analysis")
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddSyntaxTrees(tree);
+
+            var model = compilation.GetSemanticModel(tree);
+            var root = tree.GetRoot();
+
+            foreach (var localDecl in root.DescendantNodes().OfType<LocalDeclarationStatementSyntax>())
             {
-                if (variable.Identifier.Text == "_")
-                    continue; // discard, don’t flag
+                foreach (var variable in localDecl.Declaration.Variables)
+                {
+                    if (variable.Identifier.Text == "_")
+                        continue; // discard, don’t flag
 
-                var symbol = model.GetDeclaredSymbol(variable);
-                if (symbol is not ILocalSymbol localSymbol)
-                    continue;
+                    var symbol = model.GetDeclaredSymbol(variable);
+                    if (symbol is not ILocalSymbol localSymbol)
+                        continue;
 
-                var references = root.DescendantNodes()
-                    .OfType<IdentifierNameSyntax>()
-                    .Where(id =>
-                        SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, localSymbol));
+                    var references = root.DescendantNodes()
+                        .OfType<IdentifierNameSyntax>()
+                        .Where(id =>
+                            SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, localSymbol));
 
-                if (references.Any())
-                    continue;
+                    if (references.Any())
+                        continue;
 
-                var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, line,
-                    $"Unused local variable '{variable.Identifier.Text}'.");
+                    var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                    yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, line,
+                        $"Unused local variable '{variable.Identifier.Text}'.");
+                }
             }
         }
-    }
 
-    /// <inheritdoc />
-    public CommandResult Execute(params string[] args)
-    {
-        List<Diagnostic> results;
-        try
+        /// <inheritdoc />
+        public CommandResult Execute(params string[] args)
         {
-            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedLocalVariable <fileOrDirectoryPath>");
+            List<Diagnostic> results;
+            try
+            {
+                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedLocalVariable <fileOrDirectoryPath>");
+            }
+            catch (Exception ex)
+            {
+                return CommandResult.Fail(ex.Message);
+            }
+
+            var msg = string.Join(Environment.NewLine,
+                results.Select(d => $"{d.FilePath}:{d.LineNumber} -> {d.Message}")
+            );
+
+            return CommandResult.Ok(msg);
         }
-        catch (Exception ex)
+
+        /// <inheritdoc />
+        public CommandResult InvokeExtension(string extensionName, params string[] args)
         {
-            return CommandResult.Fail(ex.Message);
+            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
-
-        var msg = string.Join(Environment.NewLine,
-            results.Select(d => $"{d.FilePath}:{d.LineNumber} -> {d.Message}")
-        );
-
-        return CommandResult.Ok(msg);
-    }
-
-    /// <inheritdoc />
-    public CommandResult InvokeExtension(string extensionName, params string[] args)
-    {
-        return CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

@@ -9,37 +9,38 @@
 using System;
 using System.Numerics;
 
-namespace Mathematics;
-
-/// <summary>
-///     Some faster if less accurate calculations
-/// </summary>
-public static class FastMath
+namespace Mathematics
 {
     /// <summary>
-    ///     The pi constant
+    ///     Some faster if less accurate calculations
     /// </summary>
-    private const float Pi = (float)Math.PI;
-
-    /// <summary>
-    ///     The two pi constant
-    /// </summary>
-    private const float TwoPi = 2 * Pi;
-
-    /// <summary>
-    ///     Fast approximation of sin(x) using a cubic polynomial.
-    /// </summary>
-    public static float FastSin(float x)
+    public static class FastMath
     {
-        x -= (int)(x / TwoPi) * TwoPi; // Faster modulo operation
-        return x * (1.27323954f - (0.405284735f * x * x));
-    }
+        /// <summary>
+        ///     The pi constant
+        /// </summary>
+        private const float Pi = (float)Math.PI;
 
-    /// <summary>
-    ///     Fast log base 2.
-    /// </summary>
-    public static int FastLog2(int x)
-    {
-        return x > 0 ? 31 - BitOperations.LeadingZeroCount((uint)x) : -1;
+        /// <summary>
+        ///     The two pi constant
+        /// </summary>
+        private const float TwoPi = 2 * Pi;
+
+        /// <summary>
+        ///     Fast approximation of sin(x) using a cubic polynomial.
+        /// </summary>
+        public static float FastSin(float x)
+        {
+            x -= (int)(x / TwoPi) * TwoPi; // Faster modulo operation
+            return x * (1.27323954f - (0.405284735f * x * x));
+        }
+
+        /// <summary>
+        ///     Fast log base 2.
+        /// </summary>
+        public static int FastLog2(int x)
+        {
+            return x > 0 ? 31 - BitOperations.LeadingZeroCount((uint)x) : -1;
+        }
     }
 }

@@ -9,47 +9,48 @@
 using System;
 using ViewModel;
 
-namespace SQLiteGui;
-
-/// <inheritdoc />
-/// <summary>
-///     View Model for DbInfo
-/// </summary>
-/// <seealso cref="T:ViewModel.ViewModelBase" />
-public sealed class DbInfoViewModel : ViewModelBase
+namespace SQLiteGui
 {
+    /// <inheritdoc />
     /// <summary>
-    /// The information text
+    ///     View Model for DbInfo
     /// </summary>
-    private string? _infoText;
-
-    /// <summary>
-    ///     Gets or sets the information text.
-    /// </summary>
-    /// <value>
-    ///     The information text.
-    /// </value>
-    public string? InfoText
+    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    public sealed class DbInfoViewModel : ViewModelBase
     {
-        get => _infoText;
-        set
+        /// <summary>
+        /// The information text
+        /// </summary>
+        private string? _infoText;
+
+        /// <summary>
+        ///     Gets or sets the information text.
+        /// </summary>
+        /// <value>
+        ///     The information text.
+        /// </value>
+        public string? InfoText
         {
-            if (_infoText == value)
+            get => _infoText;
+            set
             {
-                return;
+                if (_infoText == value)
+                {
+                    return;
+                }
+
+                _infoText = value;
+                OnPropertyChanged(nameof(InfoText));
             }
-
-            _infoText = value;
-            OnPropertyChanged(nameof(InfoText));
         }
-    }
 
-    /// <summary>
-    ///     Appends the information.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    internal void AppendInfo(string message)
-    {
-        InfoText += message + Environment.NewLine;
+        /// <summary>
+        ///     Appends the information.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        internal void AppendInfo(string message)
+        {
+            InfoText += message + Environment.NewLine;
+        }
     }
 }

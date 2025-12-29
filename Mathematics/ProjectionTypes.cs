@@ -6,36 +6,37 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Mathematics;
-
-/// <summary>
-///     How to convert 2d to 3d
-/// </summary>
-public enum Display
+namespace Mathematics
 {
     /// <summary>
-    ///     The normal Projection
+    ///     How to convert 2d to 3d
     /// </summary>
-    Normal = 0,
+    public enum Display
+    {
+        /// <summary>
+        ///     The normal Projection
+        /// </summary>
+        Normal = 0,
+
+        /// <summary>
+        ///     The orthographic Projection
+        /// </summary>
+        Orthographic = 1
+    }
 
     /// <summary>
-    ///     The orthographic Projection
+    ///     Type of Camera
     /// </summary>
-    Orthographic = 1
-}
+    public enum Cameras
+    {
+        /// <summary>
+        ///     The orbit camera
+        /// </summary>
+        Orbit = 0,
 
-/// <summary>
-///     Type of Camera
-/// </summary>
-public enum Cameras
-{
-    /// <summary>
-    ///     The orbit camera
-    /// </summary>
-    Orbit = 0,
-
-    /// <summary>
-    ///     The point at camera
-    /// </summary>
-    PointAt = 1
+        /// <summary>
+        ///     The point at camera
+        /// </summary>
+        PointAt = 1
+    }
 }

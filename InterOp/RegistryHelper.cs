@@ -14,70 +14,71 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Win32;
 
-namespace InterOp;
-
-/// <summary>
-///     Description of RegistryUtility.
-/// </summary>
-internal static class RegistryHelper
+namespace InterOp
 {
     /// <summary>
-    ///     Read registry from Custom Path
+    ///     Description of RegistryUtility.
     /// </summary>
-    /// <param name="registryPath">User specified Path</param>
-    /// <returns>Dictionary of RegistryObjects</returns>
-    internal static Dictionary<string, object> GetRegistryObjects(string registryPath)
+    internal static class RegistryHelper
     {
-        var registry = new Dictionary<string, object>();
-
-        try
+        /// <summary>
+        ///     Read registry from Custom Path
+        /// </summary>
+        /// <param name="registryPath">User specified Path</param>
+        /// <returns>Dictionary of RegistryObjects</returns>
+        internal static Dictionary<string, object> GetRegistryObjects(string registryPath)
         {
-            using var key = Registry.LocalMachine.OpenSubKey(registryPath);
-            if (key != null)
+            var registry = new Dictionary<string, object>();
+
+            try
             {
-                foreach (var subKeyName in key.GetSubKeyNames())
+                using var key = Registry.LocalMachine.OpenSubKey(registryPath);
+                if (key != null)
                 {
-                    using var subKey = key.OpenSubKey(subKeyName);
-                    if (subKey != null)
+                    foreach (var subKeyName in key.GetSubKeyNames())
                     {
-                        registry.Add(subKeyName, subKey);
-                    }
-                    else
-                    {
-                        Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} , {nameof(subKeyName)} {subKeyName}");
+                        using var subKey = key.OpenSubKey(subKeyName);
+                        if (subKey != null)
+                        {
+                            registry.Add(subKeyName, subKey);
+                        }
+                        else
+                        {
+                            Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} , {nameof(subKeyName)} {subKeyName}");
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} {registryPath} , {nameof(Exception)}: {ex}");
+                throw; // Re-throw or handle accordingly
+            }
+
+            return registry;
         }
-        catch (Exception ex)
+
+
+        /// <summary>
+        ///     Sets the registry objects.
+        /// </summary>
+        /// <param name="registryPath">The registry path.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>Success Status</returns>
+        internal static bool SetRegistryObjects(string registryPath, KeyValuePair<string, string> value)
         {
-            Trace.WriteLine($"{InterOpResources.ErrorRegistryKey} {registryPath} , {nameof(Exception)}: {ex}");
-            throw; // Re-throw or handle accordingly
+            try
+            {
+                using var key = Registry.CurrentUser.CreateSubKey(registryPath);
+                key?.SetValue(value.Key, value.Value);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+                return false;
+            }
+
+            return true;
         }
-
-        return registry;
-    }
-
-
-    /// <summary>
-    ///     Sets the registry objects.
-    /// </summary>
-    /// <param name="registryPath">The registry path.</param>
-    /// <param name="value">The value.</param>
-    /// <returns>Success Status</returns>
-    internal static bool SetRegistryObjects(string registryPath, KeyValuePair<string, string> value)
-    {
-        try
-        {
-            using var key = Registry.CurrentUser.CreateSubKey(registryPath);
-            key?.SetValue(value.Key, value.Value);
-        }
-        catch (Exception e)
-        {
-            Trace.WriteLine(e);
-            return false;
-        }
-
-        return true;
     }
 }

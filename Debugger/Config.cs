@@ -13,218 +13,219 @@
 using System.Collections.Generic;
 using ViewModel;
 
-namespace Debugger;
-
-/// <inheritdoc />
-/// <summary>
-///     The config class.
-///     Only used for Data that is permanent and saved
-/// </summary>
-public class Config : ObservableObject
+namespace Debugger
 {
+    /// <inheritdoc />
     /// <summary>
-    ///     Gets or sets the debug path.
+    ///     The config class.
+    ///     Only used for Data that is permanent and saved
     /// </summary>
-    public string DebugPath
+    public class Config : ObservableObject
     {
-        get => DebugRegister.DebugPath;
-        set
+        /// <summary>
+        ///     Gets or sets the debug path.
+        /// </summary>
+        public string DebugPath
         {
-            DebugRegister.DebugPath = value;
-            RaisePropertyChangedEvent(nameof(DebugPath));
+            get => DebugRegister.DebugPath;
+            set
+            {
+                DebugRegister.DebugPath = value;
+                RaisePropertyChangedEvent(nameof(DebugPath));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the seconds tick.
+        /// </summary>
+        public int SecondsTick
+        {
+            get => DebugRegister.SecondsTick;
+            set
+            {
+                DebugRegister.SecondsTick = value;
+                RaisePropertyChangedEvent(nameof(SecondsTick));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the minutes tick.
+        /// </summary>
+        public int MinutesTick
+        {
+            get => DebugRegister.MinutesTick;
+            set
+            {
+                DebugRegister.MinutesTick = value;
+                RaisePropertyChangedEvent(nameof(MinutesTick));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the hour tick.
+        /// </summary>
+        public int HourTick
+        {
+            get => DebugRegister.HourTick;
+            set
+            {
+                DebugRegister.HourTick = value;
+                RaisePropertyChangedEvent(nameof(HourTick));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether Dump is Active
+        /// </summary>
+        public bool IsDumpActive
+        {
+            get => DebugRegister.IsDumpActive;
+            set
+            {
+                DebugRegister.IsDumpActive = value;
+                RaisePropertyChangedEvent(nameof(IsDumpActive));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is verbose.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is verbose; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVerbose
+        {
+            get => DebugRegister.IsVerbose;
+            set
+            {
+                DebugRegister.IsVerbose = value;
+                RaisePropertyChangedEvent(nameof(IsVerbose));
+            }
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
-    ///     Gets or sets the seconds tick.
+    ///     The config extended class.
+    ///     Only shows and saves Data that is changed at Runtime
     /// </summary>
-    public int SecondsTick
+    public sealed class ConfigExtended : Config
     {
-        get => DebugRegister.SecondsTick;
-        set
+        /// <summary>
+        ///     Gets or sets a value indicating whether the Window is displayed or not
+        /// </summary>
+        public bool SuppressWindow
         {
-            DebugRegister.SecondsTick = value;
-            RaisePropertyChangedEvent(nameof(SecondsTick));
+            get => DebugRegister.SuppressWindow;
+            set
+            {
+                DebugRegister.SuppressWindow = value;
+                RaisePropertyChangedEvent(nameof(SuppressWindow));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets the minutes tick.
-    /// </summary>
-    public int MinutesTick
-    {
-        get => DebugRegister.MinutesTick;
-        set
+        /// <summary>
+        ///     Gets or sets a value indicating whether Debugger Is Running
+        /// </summary>
+        public bool IsRunning
         {
-            DebugRegister.MinutesTick = value;
-            RaisePropertyChangedEvent(nameof(MinutesTick));
+            get => DebugRegister.IsRunning;
+            init
+            {
+                DebugRegister.IsRunning = value;
+                RaisePropertyChangedEvent(nameof(IsRunning));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets the hour tick.
-    /// </summary>
-    public int HourTick
-    {
-        get => DebugRegister.HourTick;
-        set
+        /// <summary>
+        ///     Gets or sets the error color.
+        /// </summary>
+        public string ErrorColor
         {
-            DebugRegister.HourTick = value;
-            RaisePropertyChangedEvent(nameof(HourTick));
+            get => DebugRegister.ErrorColor;
+            set
+            {
+                DebugRegister.ErrorColor = value;
+                RaisePropertyChangedEvent(nameof(ErrorColor));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets a value indicating whether Dump is Active
-    /// </summary>
-    public bool IsDumpActive
-    {
-        get => DebugRegister.IsDumpActive;
-        set
+        /// <summary>
+        ///     Gets or sets the warning color.
+        /// </summary>
+        public string WarningColor
         {
-            DebugRegister.IsDumpActive = value;
-            RaisePropertyChangedEvent(nameof(IsDumpActive));
+            get => DebugRegister.WarningColor;
+            set
+            {
+                DebugRegister.WarningColor = value;
+                RaisePropertyChangedEvent(nameof(WarningColor));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets a value indicating whether this instance is verbose.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if this instance is verbose; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsVerbose
-    {
-        get => DebugRegister.IsVerbose;
-        set
+        /// <summary>
+        ///     Gets or sets the information color.
+        /// </summary>
+        public string InformationColor
         {
-            DebugRegister.IsVerbose = value;
-            RaisePropertyChangedEvent(nameof(IsVerbose));
+            get => DebugRegister.InformationColor;
+            set
+            {
+                DebugRegister.InformationColor = value;
+                RaisePropertyChangedEvent(nameof(InformationColor));
+            }
         }
-    }
-}
 
-/// <inheritdoc />
-/// <summary>
-///     The config extended class.
-///     Only shows and saves Data that is changed at Runtime
-/// </summary>
-public sealed class ConfigExtended : Config
-{
-    /// <summary>
-    ///     Gets or sets a value indicating whether the Window is displayed or not
-    /// </summary>
-    public bool SuppressWindow
-    {
-        get => DebugRegister.SuppressWindow;
-        set
+        /// <summary>
+        ///     Gets or sets the external color.
+        /// </summary>
+        public string ExternalColor
         {
-            DebugRegister.SuppressWindow = value;
-            RaisePropertyChangedEvent(nameof(SuppressWindow));
+            get => DebugRegister.ExternalColor;
+            set
+            {
+                DebugRegister.ExternalColor = value;
+                RaisePropertyChangedEvent(nameof(ExternalColor));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets a value indicating whether Debugger Is Running
-    /// </summary>
-    public bool IsRunning
-    {
-        get => DebugRegister.IsRunning;
-        init
+        /// <summary>
+        ///     Gets or sets the standard color.
+        /// </summary>
+        public string StandardColor
         {
-            DebugRegister.IsRunning = value;
-            RaisePropertyChangedEvent(nameof(IsRunning));
+            get => DebugRegister.StandardColor;
+            set
+            {
+                DebugRegister.StandardColor = value;
+                RaisePropertyChangedEvent(nameof(StandardColor));
+            }
         }
-    }
 
-    /// <summary>
-    ///     Gets or sets the error color.
-    /// </summary>
-    public string ErrorColor
-    {
-        get => DebugRegister.ErrorColor;
-        set
+        /// <summary>
+        ///     Gets or sets the color options.
+        /// </summary>
+        /// <value>
+        ///     The color options.
+        /// </value>
+        public List<ColorOption> ColorOptions
         {
-            DebugRegister.ErrorColor = value;
-            RaisePropertyChangedEvent(nameof(ErrorColor));
+            get => DebugRegister.ColorOptions;
+            set
+            {
+                DebugRegister.ColorOptions = value;
+                RaisePropertyChangedEvent(nameof(ColorOptions));
+            }
         }
+
+        /// <summary>
+        ///     Maximum size for each log file in bytes.
+        /// </summary>
+        public long MaxFileSize { get; set; } = 5 * 1024 * 1024; // Default: 5 MB
+
+        /// <summary>
+        ///     Maximum number of log files to retain.
+        /// </summary>
+        public int MaxFileCount { get; set; } = 10; // Default: 10
     }
-
-    /// <summary>
-    ///     Gets or sets the warning color.
-    /// </summary>
-    public string WarningColor
-    {
-        get => DebugRegister.WarningColor;
-        set
-        {
-            DebugRegister.WarningColor = value;
-            RaisePropertyChangedEvent(nameof(WarningColor));
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the information color.
-    /// </summary>
-    public string InformationColor
-    {
-        get => DebugRegister.InformationColor;
-        set
-        {
-            DebugRegister.InformationColor = value;
-            RaisePropertyChangedEvent(nameof(InformationColor));
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the external color.
-    /// </summary>
-    public string ExternalColor
-    {
-        get => DebugRegister.ExternalColor;
-        set
-        {
-            DebugRegister.ExternalColor = value;
-            RaisePropertyChangedEvent(nameof(ExternalColor));
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the standard color.
-    /// </summary>
-    public string StandardColor
-    {
-        get => DebugRegister.StandardColor;
-        set
-        {
-            DebugRegister.StandardColor = value;
-            RaisePropertyChangedEvent(nameof(StandardColor));
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the color options.
-    /// </summary>
-    /// <value>
-    ///     The color options.
-    /// </value>
-    public List<ColorOption> ColorOptions
-    {
-        get => DebugRegister.ColorOptions;
-        set
-        {
-            DebugRegister.ColorOptions = value;
-            RaisePropertyChangedEvent(nameof(ColorOptions));
-        }
-    }
-
-    /// <summary>
-    ///     Maximum size for each log file in bytes.
-    /// </summary>
-    public long MaxFileSize { get; set; } = 5 * 1024 * 1024; // Default: 5 MB
-
-    /// <summary>
-    ///     Maximum number of log files to retain.
-    /// </summary>
-    public int MaxFileCount { get; set; } = 10; // Default: 10
 }

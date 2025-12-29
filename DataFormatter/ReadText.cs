@@ -15,62 +15,63 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DataFormatter;
-
-/// <summary>
-///     Read and write a File
-/// </summary>
-public static class ReadText
+namespace DataFormatter
 {
     /// <summary>
-    ///     Reads a file line for line
+    ///     Read and write a File
     /// </summary>
-    /// <param name="filePath">path of the file</param>
-    /// <returns>the values as String[]. Can return null.</returns>
-    public static List<string>? ReadFile(string filePath)
+    public static class ReadText
     {
-        var parts = new List<string>();
-        try
+        /// <summary>
+        ///     Reads a file line for line
+        /// </summary>
+        /// <param name="filePath">path of the file</param>
+        /// <returns>the values as String[]. Can return null.</returns>
+        public static List<string>? ReadFile(string filePath)
         {
-            var encoding = DataHelper.GetFileEncoding(filePath);
-            using var reader = new StreamReader(filePath, encoding);
-            while (reader.ReadLine() is { } line)
+            var parts = new List<string>();
+            try
             {
-                parts.Add(line);
+                var encoding = DataHelper.GetFileEncoding(filePath);
+                using var reader = new StreamReader(filePath, encoding);
+                while (reader.ReadLine() is { } line)
+                {
+                    parts.Add(line);
+                }
             }
-        }
-        catch (IOException ex)
-        {
-            Trace.WriteLine(ex.Message);
-        }
-        catch (ArgumentException ex)
-        {
-            Trace.WriteLine(ex.Message);
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+
+            return parts;
         }
 
-        return parts;
-    }
-
-    /// <summary>
-    ///     Write a File async
-    /// </summary>
-    /// <param name="filepath">path of the File, the method doesn't care about the extension</param>
-    /// <param name="content">The contents we want to write</param>
-    public static async Task WriteFile(string filepath, IEnumerable<string> content)
-    {
-        try
+        /// <summary>
+        ///     Write a File async
+        /// </summary>
+        /// <param name="filepath">path of the File, the method doesn't care about the extension</param>
+        /// <param name="content">The contents we want to write</param>
+        public static async Task WriteFile(string filepath, IEnumerable<string> content)
         {
-            await File.WriteAllLinesAsync(filepath, content).ConfigureAwait(false);
-        }
-        catch (IOException ex)
-        {
-            Trace.WriteLine(ex.Message);
-            throw new IOException(string.Empty, ex);
-        }
-        catch (ArgumentException ex)
-        {
-            Trace.WriteLine(ex.Message);
-            throw new ArgumentException(string.Empty, ex);
+            try
+            {
+                await File.WriteAllLinesAsync(filepath, content).ConfigureAwait(false);
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex.Message);
+                throw new IOException(string.Empty, ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex.Message);
+                throw new ArgumentException(string.Empty, ex);
+            }
         }
     }
 }

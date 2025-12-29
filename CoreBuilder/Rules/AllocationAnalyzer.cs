@@ -20,131 +20,132 @@ using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder.Rules;
-
-/// <inheritdoc cref="ICodeAnalyzer" />
-/// <summary>
-/// Analyzer that detects allocations in hot paths.
-/// </summary>
-/// <seealso cref="T:CoreBuilder.Interface.ICodeAnalyzer" />
-public sealed class AllocationAnalyzer : ICodeAnalyzer, ICommand
+namespace CoreBuilder.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Name => "Allocation";
-
-    /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Description => "Analyzer that detects allocations in hot paths.";
-
-    /// <inheritdoc />
-    public string Namespace => "Analyzer";
-
-    /// <inheritdoc />
-    public int ParameterCount => 1;
-
-    /// <inheritdoc />
-    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
-
     /// <summary>
-    /// The aggregate stats
+    /// Analyzer that detects allocations in hot paths.
     /// </summary>
-    private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
-
-    /// <summary>
-    /// The constant loop weight
-    /// </summary>
-    private const int ConstantLoopWeight = 10;
-
-    /// <summary>
-    /// The variable loop weight
-    /// </summary>
-    private const int VariableLoopWeight = 20;
-
-    /// <summary>
-    /// The nested loop weight
-    /// </summary>
-    private const int NestedLoopWeight = 50;
-
-    /// <inheritdoc />
-    public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+    /// <seealso cref="T:CoreBuilder.Interface.ICodeAnalyzer" />
+    public sealed class AllocationAnalyzer : ICodeAnalyzer, ICommand
     {
-        var tree = CSharpSyntaxTree.ParseText(fileContent);
-        var root = tree.GetRoot();
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Name => "Allocation";
 
-        foreach (var alloc in root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>())
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Description => "Analyzer that detects allocations in hot paths.";
+
+        /// <inheritdoc />
+        public string Namespace => "Analyzer";
+
+        /// <inheritdoc />
+        public int ParameterCount => 1;
+
+        /// <inheritdoc />
+        public CommandSignature Signature => new(Namespace, Name, ParameterCount);
+
+        /// <summary>
+        /// The aggregate stats
+        /// </summary>
+        private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
+
+        /// <summary>
+        /// The constant loop weight
+        /// </summary>
+        private const int ConstantLoopWeight = 10;
+
+        /// <summary>
+        /// The variable loop weight
+        /// </summary>
+        private const int VariableLoopWeight = 20;
+
+        /// <summary>
+        /// The nested loop weight
+        /// </summary>
+        private const int NestedLoopWeight = 50;
+
+        /// <inheritdoc />
+        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
-            // Ignore trivial .NET classes like string
-            var typeName = alloc.Type.ToString();
-            if (typeName == "string") continue;
+            var tree = CSharpSyntaxTree.ParseText(fileContent);
+            var root = tree.GetRoot();
 
-            var loopContext = CoreHelper.GetLoopContext(alloc);
-            if (loopContext == LoopContext.None) continue;
-
-            var risk = loopContext switch
+            foreach (var alloc in root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>())
             {
-                LoopContext.ConstantBounded => ConstantLoopWeight,
-                LoopContext.VariableBounded => VariableLoopWeight,
-                LoopContext.Nested => NestedLoopWeight,
-                _ => 1
-            };
+                // Ignore trivial .NET classes like string
+                var typeName = alloc.Type.ToString();
+                if (typeName == "string") continue;
 
-            if (!_aggregateStats.TryGetValue(typeName, out var stats))
-                stats = (0, 0, new HashSet<string>());
+                var loopContext = CoreHelper.GetLoopContext(alloc);
+                if (loopContext == LoopContext.None) continue;
 
-            stats.Count++;
-            stats.TotalRisk += risk;
-            stats.Files.Add(filePath);
-            _aggregateStats[typeName] = stats;
+                var risk = loopContext switch
+                {
+                    LoopContext.ConstantBounded => ConstantLoopWeight,
+                    LoopContext.VariableBounded => VariableLoopWeight,
+                    LoopContext.Nested => NestedLoopWeight,
+                    _ => 1
+                };
 
-            var line = alloc.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                if (!_aggregateStats.TryGetValue(typeName, out var stats))
+                    stats = (0, 0, new HashSet<string>());
 
-            yield return new Diagnostic(
-                Name,
-                DiagnosticSeverity.Info,
-                filePath,
-                line,
-                $"Allocation of '{typeName}' inside loop. Called {stats.Count} times, current risk {risk}, total risk {stats.TotalRisk}.",
-                DiagnosticImpact.CpuBound
-            );
+                stats.Count++;
+                stats.TotalRisk += risk;
+                stats.Files.Add(filePath);
+                _aggregateStats[typeName] = stats;
+
+                var line = alloc.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+
+                yield return new Diagnostic(
+                    Name,
+                    DiagnosticSeverity.Info,
+                    filePath,
+                    line,
+                    $"Allocation of '{typeName}' inside loop. Called {stats.Count} times, current risk {risk}, total risk {stats.TotalRisk}.",
+                    DiagnosticImpact.CpuBound
+                );
+            }
         }
-    }
 
-    /// <inheritdoc />
-    public CommandResult Execute(params string[] args)
-    {
-        if (args.Length == 0)
-            return CommandResult.Fail("Usage: Allocation <fileOrDirectoryPath>");
-
-        var path = args[0];
-
-        // If a single file was passed, analyze that file only
-        IEnumerable<Diagnostic> diagnosticsEnumerable;
-        if (File.Exists(path))
+        /// <inheritdoc />
+        public CommandResult Execute(params string[] args)
         {
-            diagnosticsEnumerable = RunAnalyze.RunAnalyzerForFile(path, this);
+            if (args.Length == 0)
+                return CommandResult.Fail("Usage: Allocation <fileOrDirectoryPath>");
+
+            var path = args[0];
+
+            // If a single file was passed, analyze that file only
+            IEnumerable<Diagnostic> diagnosticsEnumerable;
+            if (File.Exists(path))
+            {
+                diagnosticsEnumerable = RunAnalyze.RunAnalyzerForFile(path, this);
+            }
+            else if (Directory.Exists(path))
+            {
+                // Analyze all .cs files under the directory (RunAnalyzer handles ignore rules)
+                diagnosticsEnumerable = RunAnalyze.RunAnalyzer(path, this);
+            }
+            else
+            {
+                return CommandResult.Fail($"Path not found: {path}");
+            }
+
+            var diagnostics = diagnosticsEnumerable.ToList();
+
+
+            if (diagnostics.Count == 0)
+                return CommandResult.Ok("No Allocations found.");
+
+            var output = string.Join("\n", diagnostics.Select(d => d.ToString()));
+            return CommandResult.Ok(output, diagnostics);
         }
-        else if (Directory.Exists(path))
+
+        /// <inheritdoc />
+        public CommandResult InvokeExtension(string extensionName, params string[] args)
         {
-            // Analyze all .cs files under the directory (RunAnalyzer handles ignore rules)
-            diagnosticsEnumerable = RunAnalyze.RunAnalyzer(path, this);
+            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
-        else
-        {
-            return CommandResult.Fail($"Path not found: {path}");
-        }
-
-        var diagnostics = diagnosticsEnumerable.ToList();
-
-
-        if (diagnostics.Count == 0)
-            return CommandResult.Ok("No Allocations found.");
-
-        var output = string.Join("\n", diagnostics.Select(d => d.ToString()));
-        return CommandResult.Ok(output, diagnostics);
-    }
-
-    /// <inheritdoc />
-    public CommandResult InvokeExtension(string extensionName, params string[] args)
-    {
-        return CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

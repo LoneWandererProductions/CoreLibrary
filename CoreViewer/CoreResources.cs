@@ -6,15 +6,16 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace CoreViewer;
-
-/// <summary>
-///     Resource File
-/// </summary>
-internal static class CoreResources
+namespace CoreViewer
 {
     /// <summary>
-    /// The cs extension
+    ///     Resource File
     /// </summary>
-    internal const string ResourceCsExtension = "*.cs";
+    internal static class CoreResources
+    {
+        /// <summary>
+        /// The cs extension
+        /// </summary>
+        internal const string ResourceCsExtension = "*.cs";
+    }
 }

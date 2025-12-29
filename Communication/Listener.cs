@@ -12,94 +12,95 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Communication;
-
-/// <summary>
-///     Simple Port Listener
-/// </summary>
-public sealed class Listener
+namespace Communication
 {
     /// <summary>
-    ///     The port
+    ///     Simple Port Listener
     /// </summary>
-    private readonly int _port;
-
-    /// <summary>
-    ///     The TCP listener
-    /// </summary>
-    private readonly TcpListener _tcpListener;
-
-    /// <summary>
-    ///     The is running
-    /// </summary>
-    private bool _isRunning;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="Listener" /> class.
-    /// </summary>
-    /// <param name="port">The port.</param>
-    public Listener(int port)
+    public sealed class Listener
     {
-        _port = port;
-        _tcpListener = new TcpListener(IPAddress.Any, port);
-    }
+        /// <summary>
+        ///     The port
+        /// </summary>
+        private readonly int _port;
 
-    /// <summary>
-    ///     Starts the listening.
-    /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    public void StartListening(CancellationToken cancellationToken)
-    {
-        _isRunning = true;
-        _tcpListener.Start();
-        Console.WriteLine(ComResource.MessageListening, _port);
-        while (_isRunning)
+        /// <summary>
+        ///     The TCP listener
+        /// </summary>
+        private readonly TcpListener _tcpListener;
+
+        /// <summary>
+        ///     The is running
+        /// </summary>
+        private bool _isRunning;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Listener" /> class.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        public Listener(int port)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                StopListening();
-                return;
-            }
+            _port = port;
+            _tcpListener = new TcpListener(IPAddress.Any, port);
+        }
 
-            try
+        /// <summary>
+        ///     Starts the listening.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public void StartListening(CancellationToken cancellationToken)
+        {
+            _isRunning = true;
+            _tcpListener.Start();
+            Console.WriteLine(ComResource.MessageListening, _port);
+            while (_isRunning)
             {
-                if (_tcpListener.Pending()) // Non-blocking accept
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    var client = _tcpListener.AcceptTcpClient();
-                    ThreadPool.QueueUserWorkItem(HandleClient, client);
+                    StopListening();
+                    return;
+                }
+
+                try
+                {
+                    if (_tcpListener.Pending()) // Non-blocking accept
+                    {
+                        var client = _tcpListener.AcceptTcpClient();
+                        ThreadPool.QueueUserWorkItem(HandleClient, client);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
-            }
         }
-    }
 
-    /// <summary>
-    ///     Stops the listening.
-    /// </summary>
-    public void StopListening()
-    {
-        _isRunning = false;
-        _tcpListener.Stop();
-        Console.WriteLine(ComResource.ServerStatusStop);
-    }
+        /// <summary>
+        ///     Stops the listening.
+        /// </summary>
+        public void StopListening()
+        {
+            _isRunning = false;
+            _tcpListener.Stop();
+            Console.WriteLine(ComResource.ServerStatusStop);
+        }
 
-    /// <summary>
-    ///     Handles the client.
-    /// </summary>
-    /// <param name="obj">The object.</param>
-    private static void HandleClient(object obj)
-    {
-        var client = (TcpClient)obj;
-        var stream = client.GetStream();
-        // Respond with a simple message (acting as the "ping response")
-        const string response = ComResource.AnswerMessage;
-        var buffer = Encoding.ASCII.GetBytes(response);
-        stream.Write(buffer, 0, buffer.Length);
-        // Close the connection
-        client.Close();
-        Console.WriteLine(ComResource.MessageAnswer);
+        /// <summary>
+        ///     Handles the client.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private static void HandleClient(object obj)
+        {
+            var client = (TcpClient)obj;
+            var stream = client.GetStream();
+            // Respond with a simple message (acting as the "ping response")
+            const string response = ComResource.AnswerMessage;
+            var buffer = Encoding.ASCII.GetBytes(response);
+            stream.Write(buffer, 0, buffer.Length);
+            // Close the connection
+            client.Close();
+            Console.WriteLine(ComResource.MessageAnswer);
+        }
     }
 }

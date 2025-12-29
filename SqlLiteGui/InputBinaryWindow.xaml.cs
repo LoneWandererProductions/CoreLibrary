@@ -8,131 +8,132 @@
 
 using System.Windows;
 
-namespace SQLiteGui;
-
-/// <inheritdoc cref="Window" />
-/// <summary>
-///     The input binary window class.
-/// </summary>
-internal sealed partial class InputBinaryWindow
+namespace SQLiteGui
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     The description (readonly).
+    ///     The input binary window class.
     /// </summary>
-    private readonly string _description;
-
-    /// <summary>
-    ///     The first (readonly).
-    /// </summary>
-    private readonly string _first;
-
-    /// <summary>
-    ///     The first value (readonly).
-    /// </summary>
-    private readonly string _firstValue;
-
-    /// <summary>
-    ///     The second (readonly).
-    /// </summary>
-    private readonly string _second;
-
-    /// <summary>
-    ///     The title (readonly).
-    /// </summary>
-    private readonly string _title;
-
-    /// <summary>
-    ///     The binary.
-    /// </summary>
-    private Binary _binary;
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputBinaryWindow" /> class.
-    /// </summary>
-    internal InputBinaryWindow()
+    internal sealed partial class InputBinaryWindow
     {
-        InitializeComponent();
-    }
+        /// <summary>
+        ///     The description (readonly).
+        /// </summary>
+        private readonly string _description;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Custom Input Window
-    /// </summary>
-    /// <param name="title">Title of Window</param>
-    /// <param name="description">Description Label</param>
-    /// <param name="first">First Input Label</param>
-    /// <param name="second">Second Input Label</param>
-    internal InputBinaryWindow(string title, string description, string first, string second)
-    {
-        InitializeComponent();
+        /// <summary>
+        ///     The first (readonly).
+        /// </summary>
+        private readonly string _first;
 
-        _title = title;
-        _description = description;
-        _first = first;
-        _second = second;
-    }
+        /// <summary>
+        ///     The first value (readonly).
+        /// </summary>
+        private readonly string _firstValue;
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Custom Input Window, in this case first Value is already set
-    /// </summary>
-    /// <param name="title">Title of Window</param>
-    /// <param name="description">Description Label</param>
-    /// <param name="first">First Input Label</param>
-    /// <param name="second">Second Input Label</param>
-    /// <param name="firstValue">Set First Value</param>
-    internal InputBinaryWindow(string title, string description, string first, string second, string firstValue)
-    {
-        InitializeComponent();
+        /// <summary>
+        ///     The second (readonly).
+        /// </summary>
+        private readonly string _second;
 
-        _title = title;
-        _description = description;
-        _first = first;
-        _second = second;
-        _firstValue = firstValue;
-    }
+        /// <summary>
+        ///     The title (readonly).
+        /// </summary>
+        private readonly string _title;
 
-    /// <summary>
-    ///     Gets the Parameter clause.
-    /// </summary>
-    internal static Binary ParamsClause { get; private set; }
+        /// <summary>
+        ///     The binary.
+        /// </summary>
+        private Binary _binary;
 
-    /// <summary>
-    ///     Get the basics in Place
-    /// </summary>
-    /// <param name="sender">Control Sender</param>
-    /// <param name="e">Type of Event</param>
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-        Title = _title;
-        LblDescription.Content = _description;
-        LblFirst.Content = _first;
-        LblSecond.Content = _second;
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputBinaryWindow" /> class.
+        /// </summary>
+        internal InputBinaryWindow()
+        {
+            InitializeComponent();
+        }
 
-        _binary = new Binary { Where = _firstValue };
-        DataContext = _binary;
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Custom Input Window
+        /// </summary>
+        /// <param name="title">Title of Window</param>
+        /// <param name="description">Description Label</param>
+        /// <param name="first">First Input Label</param>
+        /// <param name="second">Second Input Label</param>
+        internal InputBinaryWindow(string title, string description, string first, string second)
+        {
+            InitializeComponent();
 
-    /// <summary>
-    ///     Okay and Save
-    /// </summary>
-    /// <param name="sender">Control Sender</param>
-    /// <param name="e">Type of Event</param>
-    private void BtnOkay_Click(object sender, RoutedEventArgs e)
-    {
-        ParamsClause = _binary;
-        Close();
-    }
+            _title = title;
+            _description = description;
+            _first = first;
+            _second = second;
+        }
 
-    /// <summary>
-    ///     Cancel without Save
-    /// </summary>
-    /// <param name="sender">Control Sender</param>
-    /// <param name="e">Type of Event</param>
-    private void BtnCancel_Click(object sender, RoutedEventArgs e)
-    {
-        ParamsClause = null;
-        Close();
+        /// <inheritdoc />
+        /// <summary>
+        ///     Custom Input Window, in this case first Value is already set
+        /// </summary>
+        /// <param name="title">Title of Window</param>
+        /// <param name="description">Description Label</param>
+        /// <param name="first">First Input Label</param>
+        /// <param name="second">Second Input Label</param>
+        /// <param name="firstValue">Set First Value</param>
+        internal InputBinaryWindow(string title, string description, string first, string second, string firstValue)
+        {
+            InitializeComponent();
+
+            _title = title;
+            _description = description;
+            _first = first;
+            _second = second;
+            _firstValue = firstValue;
+        }
+
+        /// <summary>
+        ///     Gets the Parameter clause.
+        /// </summary>
+        internal static Binary ParamsClause { get; private set; }
+
+        /// <summary>
+        ///     Get the basics in Place
+        /// </summary>
+        /// <param name="sender">Control Sender</param>
+        /// <param name="e">Type of Event</param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Title = _title;
+            LblDescription.Content = _description;
+            LblFirst.Content = _first;
+            LblSecond.Content = _second;
+
+            _binary = new Binary { Where = _firstValue };
+            DataContext = _binary;
+        }
+
+        /// <summary>
+        ///     Okay and Save
+        /// </summary>
+        /// <param name="sender">Control Sender</param>
+        /// <param name="e">Type of Event</param>
+        private void BtnOkay_Click(object sender, RoutedEventArgs e)
+        {
+            ParamsClause = _binary;
+            Close();
+        }
+
+        /// <summary>
+        ///     Cancel without Save
+        /// </summary>
+        /// <param name="sender">Control Sender</param>
+        /// <param name="e">Type of Event</param>
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            ParamsClause = null;
+            Close();
+        }
     }
 }

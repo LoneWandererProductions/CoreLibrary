@@ -10,50 +10,51 @@ using System.Collections.Generic;
 using CommonFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests;
-
-/// <summary>
-///     test class for our logic engine
-/// </summary>
-[TestClass]
-public class LogicEvaluate
+namespace CommonLibraryTests
 {
     /// <summary>
-    ///     Test the logic Evaluation.
+    ///     test class for our logic engine
     /// </summary>
-    [TestMethod]
-    public void EvaluateTest()
+    [TestClass]
+    public class LogicEvaluate
     {
-        var evaluate = new LogicEvaluations();
-
-        // Example list of conditions
-        var conditions = new List<FilterOption>();
-
-        var con = new FilterOption
+        /// <summary>
+        ///     Test the logic Evaluation.
+        /// </summary>
+        [TestMethod]
+        public void EvaluateTest()
         {
-            SelectedCompareOperator = CompareOperator.Like,
-            SelectedLogicalOperator = LogicOperator.And,
-            EntryText = "hello"
-        };
+            var evaluate = new LogicEvaluations();
 
-        conditions.Add(con);
+            // Example list of conditions
+            var conditions = new List<FilterOption>();
 
-        con = new FilterOption
-        {
-            SelectedCompareOperator = CompareOperator.NotLike,
-            SelectedLogicalOperator = LogicOperator.Or,
-            EntryText = "world"
-        };
+            var con = new FilterOption
+            {
+                SelectedCompareOperator = CompareOperator.Like,
+                SelectedLogicalOperator = LogicOperator.And,
+                EntryText = "hello"
+            };
 
-        conditions.Add(con);
-        // Add more conditions as needed
+            conditions.Add(con);
 
-        // Input string to test against the conditions
-        const string inputString = "hello";
+            con = new FilterOption
+            {
+                SelectedCompareOperator = CompareOperator.NotLike,
+                SelectedLogicalOperator = LogicOperator.Or,
+                EntryText = "world"
+            };
 
-        // Evaluate the conditions against the input string
-        var result = evaluate.Evaluate(inputString, conditions);
+            conditions.Add(con);
+            // Add more conditions as needed
 
-        Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
+            // Input string to test against the conditions
+            const string inputString = "hello";
+
+            // Evaluate the conditions against the input string
+            var result = evaluate.Evaluate(inputString, conditions);
+
+            Assert.IsTrue(result, $"Input string '{inputString}' fulfills the conditions: {result}");
+        }
     }
 }

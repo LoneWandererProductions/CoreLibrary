@@ -14,59 +14,60 @@
 using System;
 using System.Numerics;
 
-namespace LightVector;
-
-/// <inheritdoc />
-/// <summary>
-///     The line object class.
-/// </summary>
-[System.Serializable]
-public sealed class LineObject : GraphicObject
+namespace LightVector
 {
-    /// <summary>
-    ///     The direction vector from the start point to the end point.
-    /// </summary>
-    public Vector2 Direction { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the tension.
-    ///     See BezierCurveFactory for the use
-    /// </summary>
-    /// <value>
-    ///     The tension.
-    /// </value>
-    public double Tension { get; set; }
-
     /// <inheritdoc />
     /// <summary>
-    ///     Checks if this object supports the given transformation.
+    ///     The line object class.
     /// </summary>
-    /// <param name="transformation"></param>
-    /// <returns>If specific transformation is supported</returns>
-    public override bool SupportsTransformation(Transform transformation)
+    [System.Serializable]
+    public sealed class LineObject : GraphicObject
     {
-        return transformation is ScaleTransform or RotateTransform;
-    }
+        /// <summary>
+        ///     The direction vector from the start point to the end point.
+        /// </summary>
+        public Vector2 Direction { get; set; }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Apply transformation method (scaling, rotation, etc.)
-    ///     Each subclass will override this method to implement specific transformation logic
-    /// </summary>
-    /// <param name="transformation">The transformation.</param>
-    public override void ApplyTransformation(Transform transformation)
-    {
-        switch (transformation)
+        /// <summary>
+        ///     Gets or sets the tension.
+        ///     See BezierCurveFactory for the use
+        /// </summary>
+        /// <value>
+        ///     The tension.
+        /// </value>
+        public double Tension { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Checks if this object supports the given transformation.
+        /// </summary>
+        /// <param name="transformation"></param>
+        /// <returns>If specific transformation is supported</returns>
+        public override bool SupportsTransformation(Transform transformation)
         {
-            case ScaleTransform scale:
-                // Scale the direction vector
-                Direction *= new Vector2(scale.ScaleX, scale.ScaleY);
-                break;
-            case RotateTransform rotate:
-                // Rotate the direction vector
-                var angleRad = (float)(rotate.Angle * (Math.PI / 180));
-                Direction = Vector2.Transform(Direction, Matrix3x2.CreateRotation(angleRad));
-                break;
+            return transformation is ScaleTransform or RotateTransform;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Apply transformation method (scaling, rotation, etc.)
+        ///     Each subclass will override this method to implement specific transformation logic
+        /// </summary>
+        /// <param name="transformation">The transformation.</param>
+        public override void ApplyTransformation(Transform transformation)
+        {
+            switch (transformation)
+            {
+                case ScaleTransform scale:
+                    // Scale the direction vector
+                    Direction *= new Vector2(scale.ScaleX, scale.ScaleY);
+                    break;
+                case RotateTransform rotate:
+                    // Rotate the direction vector
+                    var angleRad = (float)(rotate.Angle * (Math.PI / 180));
+                    Direction = Vector2.Transform(Direction, Matrix3x2.CreateRotation(angleRad));
+                    break;
+            }
         }
     }
 }

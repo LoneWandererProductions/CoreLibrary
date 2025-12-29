@@ -10,47 +10,48 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqliteHelper;
 
-namespace CommonLibrarySqlLiteTests;
-
-/// <summary>
-///     The sql lite helper table status unique unit test class.
-/// </summary>
-[TestClass]
-public sealed class SqlLiteHelperTableStatusUnique
+namespace CommonLibrarySqlLiteTests
 {
     /// <summary>
-    ///     The target (readonly). Value: new SqlLiteDatabase().
+    ///     The sql lite helper table status unique unit test class.
     /// </summary>
-    private readonly SqliteDatabase _target = new();
-
-    /// <summary>
-    ///     Expand!
-    ///     Check Status of Table
-    /// </summary>
-    [TestMethod]
-    public void TestTableUniqueStatus()
+    [TestClass]
+    public sealed class SqlLiteHelperTableStatusUnique
     {
-        _target.SendMessage += SharedHelperClass.DebugPrints;
-        //cleanup
-        SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbTableUniqueStatus);
+        /// <summary>
+        ///     The target (readonly). Value: new SqlLiteDatabase().
+        /// </summary>
+        private readonly SqliteDatabase _target = new();
 
-        //Check if file was created
-        _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbUniqueStatus, true);
-
-        var tableHeaders = SharedHelperClass.CreateTableHeadersSimple();
-
-        var check = _target.CreateTable("TableStatusTestUnique", tableHeaders);
-        Assert.IsTrue(check, "Test failed Add" + _target.LastErrors);
-        //add values
-        var cache = _target.Pragma_index_list("TableStatusTestUnique");
-
-        foreach (var element in cache)
+        /// <summary>
+        ///     Expand!
+        ///     Check Status of Table
+        /// </summary>
+        [TestMethod]
+        public void TestTableUniqueStatus()
         {
-            Trace.WriteLine(element);
-        }
+            _target.SendMessage += SharedHelperClass.DebugPrints;
+            //cleanup
+            SharedHelperClass.CleanUp(ResourcesSqlLite.PathDbTableUniqueStatus);
 
-        Assert.AreEqual(2, cache.Count, "Test failed Unique Count " + _target.LastErrors);
-        Assert.IsTrue(cache.Contains("Third"), "Test failed Unique Third " + _target.LastErrors);
-        Assert.IsTrue(cache.Contains("Fourth"), "Test failed Unique Fourth " + _target.LastErrors);
+            //Check if file was created
+            _target.CreateDatabase(ResourcesSqlLite.Root, ResourcesSqlLite.DbUniqueStatus, true);
+
+            var tableHeaders = SharedHelperClass.CreateTableHeadersSimple();
+
+            var check = _target.CreateTable("TableStatusTestUnique", tableHeaders);
+            Assert.IsTrue(check, "Test failed Add" + _target.LastErrors);
+            //add values
+            var cache = _target.Pragma_index_list("TableStatusTestUnique");
+
+            foreach (var element in cache)
+            {
+                Trace.WriteLine(element);
+            }
+
+            Assert.AreEqual(2, cache.Count, "Test failed Unique Count " + _target.LastErrors);
+            Assert.IsTrue(cache.Contains("Third"), "Test failed Unique Third " + _target.LastErrors);
+            Assert.IsTrue(cache.Contains("Fourth"), "Test failed Unique Fourth " + _target.LastErrors);
+        }
     }
 }

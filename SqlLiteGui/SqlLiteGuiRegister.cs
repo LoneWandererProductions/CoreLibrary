@@ -11,193 +11,194 @@
 
 using SqliteHelper;
 
-namespace SQLiteGui;
-
-/// <summary>
-///     All Items we use for Data-binding
-/// </summary>
-public sealed class TableDetails
+namespace SQLiteGui
 {
     /// <summary>
-    ///     Name of the Table
-    ///     Public although Class is internal, don't ask
+    ///     All Items we use for Data-binding
     /// </summary>
-    public string TableAlias { get; internal set; }
-}
-
-/// <inheritdoc />
-/// <summary>
-///     Here we collect a custom where Clause, for example right now it processes all Binary Input
-/// </summary>
-internal sealed class Binary : ObservableObject
-{
-    /// <summary>
-    ///     The value.
-    /// </summary>
-    private string _value;
-
-    /// <summary>
-    ///     The where.
-    /// </summary>
-    private string _where;
-
-    /// <summary>
-    ///     Gets or sets the where.
-    /// </summary>
-    public string Where
+    public sealed class TableDetails
     {
-        get => _where;
-        set
+        /// <summary>
+        ///     Name of the Table
+        ///     Public although Class is internal, don't ask
+        /// </summary>
+        public string TableAlias { get; internal set; }
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Here we collect a custom where Clause, for example right now it processes all Binary Input
+    /// </summary>
+    internal sealed class Binary : ObservableObject
+    {
+        /// <summary>
+        ///     The value.
+        /// </summary>
+        private string _value;
+
+        /// <summary>
+        ///     The where.
+        /// </summary>
+        private string _where;
+
+        /// <summary>
+        ///     Gets or sets the where.
+        /// </summary>
+        public string Where
         {
-            _where = value;
-            RaisePropertyChangedEvent(SqLiteGuiResource.ObsColumn);
+            get => _where;
+            set
+            {
+                _where = value;
+                RaisePropertyChangedEvent(SqLiteGuiResource.ObsColumn);
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the value.
+        /// </summary>
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                RaisePropertyChangedEvent(nameof(Value));
+            }
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
-    ///     Gets or sets the value.
+    ///     Generated Update Item that will be loaded into the Database
     /// </summary>
-    public string Value
+    internal sealed class UpdateItem : ObservableObject
     {
-        get => _value;
-        set
+        /// <summary>
+        ///     The value.
+        /// </summary>
+        private string _value;
+
+        /// <summary>
+        ///     Gets or sets the header name.
+        /// </summary>
+        public string HeaderName { get; internal init; }
+
+        /// <summary>
+        ///     Gets or sets the data type.
+        /// </summary>
+        public SqLiteDataTypes DataType { get; internal init; }
+
+        /// <summary>
+        ///     Gets or sets the value.
+        /// </summary>
+        public string Value
         {
-            _value = value;
-            RaisePropertyChangedEvent(nameof(Value));
-        }
-    }
-}
-
-/// <inheritdoc />
-/// <summary>
-///     Generated Update Item that will be loaded into the Database
-/// </summary>
-internal sealed class UpdateItem : ObservableObject
-{
-    /// <summary>
-    ///     The value.
-    /// </summary>
-    private string _value;
-
-    /// <summary>
-    ///     Gets or sets the header name.
-    /// </summary>
-    public string HeaderName { get; internal init; }
-
-    /// <summary>
-    ///     Gets or sets the data type.
-    /// </summary>
-    public SqLiteDataTypes DataType { get; internal init; }
-
-    /// <summary>
-    ///     Gets or sets the value.
-    /// </summary>
-    public string Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            RaisePropertyChangedEvent(nameof(DataType));
-        }
-    }
-}
-
-/// <inheritdoc />
-/// <summary>
-///     Used for adding new Tables
-///     Collects Data from Data Grid
-/// </summary>
-internal sealed class TableColumnsExtended : ObservableObject
-{
-    /// <summary>
-    ///     The data type.
-    /// </summary>
-    private SqLiteDataTypes _dataType;
-
-    /// <summary>
-    ///     The header.
-    /// </summary>
-    private string _header;
-
-    /// <summary>
-    ///     Is it not null.
-    /// </summary>
-    private bool _notNull;
-
-    /// <summary>
-    ///     The primary key.
-    /// </summary>
-    private bool _primaryKey;
-
-    /// <summary>
-    ///     The unique identifier.
-    /// </summary>
-    private bool _unique;
-
-    /// <summary>
-    ///     Must be Unique, will be checked at Runtime
-    /// </summary>
-    public string Header
-    {
-        get => _header;
-        set
-        {
-            _header = value;
-            RaisePropertyChangedEvent(nameof(DataType));
+            get => _value;
+            set
+            {
+                _value = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
-    ///     DataType
+    ///     Used for adding new Tables
+    ///     Collects Data from Data Grid
     /// </summary>
-    public SqLiteDataTypes DataType
+    internal sealed class TableColumnsExtended : ObservableObject
     {
-        get => _dataType;
-        set
-        {
-            _dataType = value;
-            RaisePropertyChangedEvent(nameof(DataType));
-        }
-    }
+        /// <summary>
+        ///     The data type.
+        /// </summary>
+        private SqLiteDataTypes _dataType;
 
-    /// <summary>
-    ///     Optional
-    /// </summary>
-    public bool Unique
-    {
-        get => _unique;
-        set
-        {
-            _unique = value;
-            RaisePropertyChangedEvent(nameof(DataType));
-        }
-    }
+        /// <summary>
+        ///     The header.
+        /// </summary>
+        private string _header;
 
-    /// <summary>
-    ///     Optional
-    /// </summary>
-    public bool PrimaryKey
-    {
-        get => _primaryKey;
-        set
-        {
-            _primaryKey = value;
-            RaisePropertyChangedEvent(nameof(DataType));
-        }
-    }
+        /// <summary>
+        ///     Is it not null.
+        /// </summary>
+        private bool _notNull;
 
-    /// <summary>
-    ///     Optional
-    ///     false is standard
-    /// </summary>
-    public bool NotNull
-    {
-        get => _notNull;
-        set
+        /// <summary>
+        ///     The primary key.
+        /// </summary>
+        private bool _primaryKey;
+
+        /// <summary>
+        ///     The unique identifier.
+        /// </summary>
+        private bool _unique;
+
+        /// <summary>
+        ///     Must be Unique, will be checked at Runtime
+        /// </summary>
+        public string Header
         {
-            _notNull = value;
-            RaisePropertyChangedEvent(nameof(DataType));
+            get => _header;
+            set
+            {
+                _header = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
+        }
+
+        /// <summary>
+        ///     DataType
+        /// </summary>
+        public SqLiteDataTypes DataType
+        {
+            get => _dataType;
+            set
+            {
+                _dataType = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
+        }
+
+        /// <summary>
+        ///     Optional
+        /// </summary>
+        public bool Unique
+        {
+            get => _unique;
+            set
+            {
+                _unique = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
+        }
+
+        /// <summary>
+        ///     Optional
+        /// </summary>
+        public bool PrimaryKey
+        {
+            get => _primaryKey;
+            set
+            {
+                _primaryKey = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
+        }
+
+        /// <summary>
+        ///     Optional
+        ///     false is standard
+        /// </summary>
+        public bool NotNull
+        {
+            get => _notNull;
+            set
+            {
+                _notNull = value;
+                RaisePropertyChangedEvent(nameof(DataType));
+            }
         }
     }
 }

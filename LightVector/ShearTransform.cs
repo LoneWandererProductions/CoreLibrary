@@ -8,38 +8,39 @@
 
 // ReSharper disable MemberCanBeInternal
 
-namespace LightVector;
-
-/// <summary>
-///     Sheer Transform for Curve
-/// </summary>
-/// <seealso cref="Transform" />
-public abstract class ShearTransform : Transform
+namespace LightVector
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ShearTransform" /> class.
+    ///     Sheer Transform for Curve
     /// </summary>
-    /// <param name="shearX">The shear x.</param>
-    /// <param name="shearY">The shear y.</param>
-    protected ShearTransform(double shearX, double shearY)
+    /// <seealso cref="Transform" />
+    public abstract class ShearTransform : Transform
     {
-        ShearX = shearX;
-        ShearY = shearY;
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ShearTransform" /> class.
+        /// </summary>
+        /// <param name="shearX">The shear x.</param>
+        /// <param name="shearY">The shear y.</param>
+        protected ShearTransform(double shearX, double shearY)
+        {
+            ShearX = shearX;
+            ShearY = shearY;
+        }
+
+        /// <summary>
+        ///     Gets the shear x.
+        /// </summary>
+        /// <value>
+        ///     The shear x.
+        /// </value>
+        public double ShearX { get; }
+
+        /// <summary>
+        ///     Gets the shear y.
+        /// </summary>
+        /// <value>
+        ///     The shear y.
+        /// </value>
+        public double ShearY { get; }
     }
-
-    /// <summary>
-    ///     Gets the shear x.
-    /// </summary>
-    /// <value>
-    ///     The shear x.
-    /// </value>
-    public double ShearX { get; }
-
-    /// <summary>
-    ///     Gets the shear y.
-    /// </summary>
-    /// <value>
-    ///     The shear y.
-    /// </value>
-    public double ShearY { get; }
 }

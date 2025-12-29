@@ -6,19 +6,20 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects.Interfaces;
-
-/// <summary>
-///     Interface Id handling, for better handling of Dictionaries and list elements
-/// </summary>
-/// <typeparam name="TId">The type of the identifier.</typeparam>
-public interface IIdHandling<TId>
+namespace ExtendedSystemObjects.Interfaces
 {
     /// <summary>
-    ///     Gets or sets the identifier.
+    ///     Interface Id handling, for better handling of Dictionaries and list elements
     /// </summary>
-    /// <value>
-    ///     The identifier.
-    /// </value>
-    TId Id { get; set; }
+    /// <typeparam name="TId">The type of the identifier.</typeparam>
+    public interface IIdHandling<TId>
+    {
+        /// <summary>
+        ///     Gets or sets the identifier.
+        /// </summary>
+        /// <value>
+        ///     The identifier.
+        /// </value>
+        TId Id { get; set; }
+    }
 }

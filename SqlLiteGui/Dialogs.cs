@@ -8,45 +8,46 @@
 
 using Microsoft.Win32;
 
-namespace SQLiteGui;
-
-/// <summary>
-///     The dialogs class.
-/// </summary>
-internal static class Dialogs
+namespace SQLiteGui
 {
     /// <summary>
-    ///     Looks up a file, optional Ask if we want to overwrite
-    ///     Returns the FilePath
-    ///     No Start Folder
+    ///     The dialogs class.
     /// </summary>
-    /// <param name="appendage">The appendage.</param>
-    /// <param name="loader">If True we search a file if not we just ask if we want to overwrite a file, optional.</param>
-    /// <returns>
-    ///     String of target File
-    /// </returns>
-    public static string HandleFile(string appendage, bool loader = true)
+    internal static class Dialogs
     {
-        var root = string.Empty;
-
-        if (loader)
+        /// <summary>
+        ///     Looks up a file, optional Ask if we want to overwrite
+        ///     Returns the FilePath
+        ///     No Start Folder
+        /// </summary>
+        /// <param name="appendage">The appendage.</param>
+        /// <param name="loader">If True we search a file if not we just ask if we want to overwrite a file, optional.</param>
+        /// <returns>
+        ///     String of target File
+        /// </returns>
+        public static string HandleFile(string appendage, bool loader = true)
         {
-            var openFile = new OpenFileDialog { Filter = appendage };
-            if (openFile.ShowDialog() == true)
+            var root = string.Empty;
+
+            if (loader)
             {
-                root = openFile.FileName;
+                var openFile = new OpenFileDialog { Filter = appendage };
+                if (openFile.ShowDialog() == true)
+                {
+                    root = openFile.FileName;
+                }
+
+                return root;
+            }
+
+            var saveFile = new SaveFileDialog { Filter = appendage };
+
+            if (saveFile.ShowDialog() == true)
+            {
+                root = saveFile.FileName;
             }
 
             return root;
         }
-
-        var saveFile = new SaveFileDialog { Filter = appendage };
-
-        if (saveFile.ShowDialog() == true)
-        {
-            root = saveFile.FileName;
-        }
-
-        return root;
     }
 }

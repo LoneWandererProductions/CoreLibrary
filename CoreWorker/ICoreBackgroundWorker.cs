@@ -6,20 +6,21 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CoreWorker;
-
-/// <summary>
-///     Interface what we expect
-/// </summary>
-public interface ICoreBackgroundWorker
+namespace CoreWorker
 {
     /// <summary>
-    ///     Starts this instance.
+    ///     Interface what we expect
     /// </summary>
-    void Start();
+    public interface ICoreBackgroundWorker
+    {
+        /// <summary>
+        ///     Starts this instance.
+        /// </summary>
+        void Start();
 
-    /// <summary>
-    ///     Stops this instance.
-    /// </summary>
-    void Stop();
+        /// <summary>
+        ///     Stops this instance.
+        /// </summary>
+        void Stop();
+    }
 }

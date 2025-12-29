@@ -11,30 +11,31 @@
 
 using System;
 
-namespace ExtendedSystemObjects.Helper;
-
-/// <inheritdoc />
-/// <summary>
-///     Event arguments for the memory threshold exceeded event.
-/// </summary>
-public sealed class VaultMemoryThresholdExceededEventArgs : EventArgs
+namespace ExtendedSystemObjects.Helper
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="T:ExtendedSystemObjects.VaultMemoryThresholdExceededEventArgs" />
-    ///     class.
+    ///     Event arguments for the memory threshold exceeded event.
     /// </summary>
-    /// <param name="currentMemoryUsage">The current memory usage.</param>
-    public VaultMemoryThresholdExceededEventArgs(long currentMemoryUsage)
+    public sealed class VaultMemoryThresholdExceededEventArgs : EventArgs
     {
-        CurrentMemoryUsage = currentMemoryUsage;
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:ExtendedSystemObjects.VaultMemoryThresholdExceededEventArgs" />
+        ///     class.
+        /// </summary>
+        /// <param name="currentMemoryUsage">The current memory usage.</param>
+        public VaultMemoryThresholdExceededEventArgs(long currentMemoryUsage)
+        {
+            CurrentMemoryUsage = currentMemoryUsage;
+        }
 
-    /// <summary>
-    ///     Gets the current memory usage.
-    /// </summary>
-    /// <value>
-    ///     The current memory usage.
-    /// </value>
-    public long CurrentMemoryUsage { get; }
+        /// <summary>
+        ///     Gets the current memory usage.
+        /// </summary>
+        /// <value>
+        ///     The current memory usage.
+        /// </value>
+        public long CurrentMemoryUsage { get; }
+    }
 }

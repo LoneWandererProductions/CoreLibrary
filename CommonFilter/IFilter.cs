@@ -8,34 +8,35 @@
 
 using System;
 
-namespace CommonFilter;
-
-/// <summary>
-///     Interface Filter
-/// </summary>
-public interface IFilter
+namespace CommonFilter
 {
     /// <summary>
-    ///     Starts this instance.
+    ///     Interface Filter
     /// </summary>
-    void Start();
+    public interface IFilter
+    {
+        /// <summary>
+        ///     Starts this instance.
+        /// </summary>
+        void Start();
 
-    /// <summary>
-    ///     Starts the specified evaluate.
-    ///     So we can use custom Evaluations
-    /// </summary>
-    /// <param name="evaluate">The evaluate.</param>
-    void Start(ILogicEvaluations evaluate);
+        /// <summary>
+        ///     Starts the specified evaluate.
+        ///     So we can use custom Evaluations
+        /// </summary>
+        /// <param name="evaluate">The evaluate.</param>
+        void Start(ILogicEvaluations evaluate);
 
-    /// <summary>
-    ///     Checks the filter.
-    /// </summary>
-    /// <param name="input">The input.</param>
-    /// <returns></returns>
-    bool CheckFilter(string input);
+        /// <summary>
+        ///     Checks the filter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        bool CheckFilter(string input);
 
-    /// <summary>
-    ///     Occurs when [filter changed].
-    /// </summary>
-    event EventHandler FilterChanged;
+        /// <summary>
+        ///     Occurs when [filter changed].
+        /// </summary>
+        event EventHandler FilterChanged;
+    }
 }

@@ -18,155 +18,156 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace CommonDialogs;
-
-/// <summary>
-///     The Sql connection string class
-/// </summary>
-public sealed class SqlConnect
+namespace CommonDialogs
 {
     /// <summary>
-    ///     The persist security information, for Security reasons always deactivated
-    ///     Until I know of a case where it is necessary it stays that way.
+    ///     The Sql connection string class
     /// </summary>
-    internal const bool PersistSecurityInfo = false;
-
-    /// <summary>
-    ///     The persist information string configuration for the connection string.
-    /// </summary>
-    private readonly string _persistInfo = string.Concat(ComDlgResources.DbPersistSecurityInfo, PersistSecurityInfo,
-        ComDlgResources.DbFin);
-
-    /// <summary>
-    ///     The IntegratedSecurity string for the connection string
-    /// </summary>
-    private string? _security;
-
-    /// <summary>
-    ///     The TrustServerCertificate string for the connection string
-    /// </summary>
-    private string? _trust;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SqlConnect" /> class.
-    /// </summary>
-    /// <param name="database">The database.</param>
-    /// <param name="server">The server.</param>
-    /// <param name="isActive">if set to <c>true</c> [is active].</param>
-    internal SqlConnect(string database, string server, bool isActive)
+    public sealed class SqlConnect
     {
-        Server = server;
-        Database = database;
-        TrustServerCertificate = isActive;
-    }
+        /// <summary>
+        ///     The persist security information, for Security reasons always deactivated
+        ///     Until I know of a case where it is necessary it stays that way.
+        /// </summary>
+        internal const bool PersistSecurityInfo = false;
 
-    /// <summary>
-    ///     Gets or sets the server.
-    ///     Set to be changed External
-    /// </summary>
-    /// <value>
-    ///     The server.
-    /// </value>
-    public string Server { get; set; }
+        /// <summary>
+        ///     The persist information string configuration for the connection string.
+        /// </summary>
+        private readonly string _persistInfo = string.Concat(ComDlgResources.DbPersistSecurityInfo, PersistSecurityInfo,
+            ComDlgResources.DbFin);
 
-    /// <summary>
-    ///     Gets or sets the database.
-    ///     Set to be changed External
-    /// </summary>
-    /// <value>
-    ///     The database.
-    /// </value>
-    public string Database { get; set; }
+        /// <summary>
+        ///     The IntegratedSecurity string for the connection string
+        /// </summary>
+        private string? _security;
 
-    /// <summary>
-    ///     Gets or sets a value indicating whether [trust server certificate].
-    ///     Set to be changed External, sometimes this can cause Problems, if it is not supported by the server.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
-    /// </value>
-    public bool TrustServerCertificate { get; set; }
+        /// <summary>
+        ///     The TrustServerCertificate string for the connection string
+        /// </summary>
+        private string? _trust;
 
-    /// <summary>
-    ///     Gets the connection string.
-    /// </summary>
-    /// <param name="includeDatabaseName">if set to <c>true</c> [include database name].</param>
-    /// <returns>Connection String</returns>
-    public string GetConnectionString(bool includeDatabaseName)
-    {
-        _security = ComDlgResources.DbIntegratedTrue;
-        _trust = TrustServerCertificate
-            ? ComDlgResources.DbTrustServerCertificateTrue
-            : ComDlgResources.DbTrustServerCertificateFalse;
-
-        if (string.IsNullOrEmpty(Server))
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SqlConnect" /> class.
+        /// </summary>
+        /// <param name="database">The database.</param>
+        /// <param name="server">The server.</param>
+        /// <param name="isActive">if set to <c>true</c> [is active].</param>
+        internal SqlConnect(string database, string server, bool isActive)
         {
-            Trace.WriteLine(ComDlgResources.DbServerError);
-            return ComDlgResources.DbServerError;
+            Server = server;
+            Database = database;
+            TrustServerCertificate = isActive;
         }
 
-        if (includeDatabaseName && string.IsNullOrEmpty(Database))
-        {
-            Trace.WriteLine(ComDlgResources.DbNameError);
-            return ComDlgResources.DbServerError;
-        }
+        /// <summary>
+        ///     Gets or sets the server.
+        ///     Set to be changed External
+        /// </summary>
+        /// <value>
+        ///     The server.
+        /// </value>
+        public string Server { get; set; }
 
-        var connectionStringBuilder = new StringBuilder();
-        connectionStringBuilder.Append(_persistInfo);
-        connectionStringBuilder.Append(_trust);
-        connectionStringBuilder.Append(_security);
-        connectionStringBuilder.Append(ComDlgResources.DbServer);
-        connectionStringBuilder.Append(Server);
-        connectionStringBuilder.Append(ComDlgResources.DbFin);
+        /// <summary>
+        ///     Gets or sets the database.
+        ///     Set to be changed External
+        /// </summary>
+        /// <value>
+        ///     The database.
+        /// </value>
+        public string Database { get; set; }
 
-        if (includeDatabaseName)
+        /// <summary>
+        ///     Gets or sets a value indicating whether [trust server certificate].
+        ///     Set to be changed External, sometimes this can cause Problems, if it is not supported by the server.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
+        /// </value>
+        public bool TrustServerCertificate { get; set; }
+
+        /// <summary>
+        ///     Gets the connection string.
+        /// </summary>
+        /// <param name="includeDatabaseName">if set to <c>true</c> [include database name].</param>
+        /// <returns>Connection String</returns>
+        public string GetConnectionString(bool includeDatabaseName)
         {
-            connectionStringBuilder.Append(ComDlgResources.DbDatabase);
-            connectionStringBuilder.Append(Database);
+            _security = ComDlgResources.DbIntegratedTrue;
+            _trust = TrustServerCertificate
+                ? ComDlgResources.DbTrustServerCertificateTrue
+                : ComDlgResources.DbTrustServerCertificateFalse;
+
+            if (string.IsNullOrEmpty(Server))
+            {
+                Trace.WriteLine(ComDlgResources.DbServerError);
+                return ComDlgResources.DbServerError;
+            }
+
+            if (includeDatabaseName && string.IsNullOrEmpty(Database))
+            {
+                Trace.WriteLine(ComDlgResources.DbNameError);
+                return ComDlgResources.DbServerError;
+            }
+
+            var connectionStringBuilder = new StringBuilder();
+            connectionStringBuilder.Append(_persistInfo);
+            connectionStringBuilder.Append(_trust);
+            connectionStringBuilder.Append(_security);
+            connectionStringBuilder.Append(ComDlgResources.DbServer);
+            connectionStringBuilder.Append(Server);
             connectionStringBuilder.Append(ComDlgResources.DbFin);
+
+            if (includeDatabaseName)
+            {
+                connectionStringBuilder.Append(ComDlgResources.DbDatabase);
+                connectionStringBuilder.Append(Database);
+                connectionStringBuilder.Append(ComDlgResources.DbFin);
+            }
+
+            return connectionStringBuilder.ToString();
         }
 
-        return connectionStringBuilder.ToString();
+        ///// <summary>
+        ///// Gets or sets a value indicating whether [integrated security].
+        ///// </summary>
+        ///// <value>
+        /////   <c>true</c> if [integrated security]; otherwise, <c>false</c>.
+        ///// </value>
+        //public bool IntegratedSecurity { get; set; } = true;
+
+        ///// <summary>
+        ///// Gets or sets the user identifier.
+        ///// </summary>
+        ///// <value>
+        ///// The user identifier.
+        ///// </value>
+        //public string UserId { get; set; }
+
+        ///// <summary>
+        ///// Gets or sets the password.
+        ///// </summary>
+        ///// <value>
+        ///// The password.
+        ///// </value>
+        //public string Password { get; set; }
+
+        ///// <summary>
+        ///// Authentication with SqlClient and Password.
+        ///// </summary>
+        ///// <returns>Connection string</returns>
+        //private string SqlAuthentication()
+        //{
+        //    if (string.IsNullOrEmpty(UserId)) return "Error: UserId";
+        //    if (string.IsNullOrEmpty(Password)) return "Error: Password";
+        //    if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
+        //    if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+
+        //    string user = string.Concat("User ID = ", UserId, ");");
+        //    string password = string.Concat("Password =", Password, ");");
+
+        //    return string.Concat(_persistInfo, _trust, _security, user, password, Server, ";", Database);
+        //}
     }
-
-    ///// <summary>
-    ///// Gets or sets a value indicating whether [integrated security].
-    ///// </summary>
-    ///// <value>
-    /////   <c>true</c> if [integrated security]; otherwise, <c>false</c>.
-    ///// </value>
-    //public bool IntegratedSecurity { get; set; } = true;
-
-    ///// <summary>
-    ///// Gets or sets the user identifier.
-    ///// </summary>
-    ///// <value>
-    ///// The user identifier.
-    ///// </value>
-    //public string UserId { get; set; }
-
-    ///// <summary>
-    ///// Gets or sets the password.
-    ///// </summary>
-    ///// <value>
-    ///// The password.
-    ///// </value>
-    //public string Password { get; set; }
-
-    ///// <summary>
-    ///// Authentication with SqlClient and Password.
-    ///// </summary>
-    ///// <returns>Connection string</returns>
-    //private string SqlAuthentication()
-    //{
-    //    if (string.IsNullOrEmpty(UserId)) return "Error: UserId";
-    //    if (string.IsNullOrEmpty(Password)) return "Error: Password";
-    //    if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
-    //    if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
-
-    //    string user = string.Concat("User ID = ", UserId, ");");
-    //    string password = string.Concat("Password =", Password, ");");
-
-    //    return string.Concat(_persistInfo, _trust, _security, user, password, Server, ";", Database);
-    //}
 }

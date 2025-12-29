@@ -13,39 +13,40 @@ using FileHandler;
 using NUnit.Framework;
 using PluginLoader;
 
-namespace CommonLibraryGuiTests;
-
-public sealed class Plugins
+namespace CommonLibraryGuiTests
 {
-    /// <summary>
-    ///     Test the  Loads Plugin.
-    ///     with my custom SqlLite Frontend
-    /// </summary>
-    [Test]
-    [Apartment(ApartmentState.STA)]
-    public void LoadPluginSqliIte()
+    public sealed class Plugins
     {
-        var root = DirectoryInformation.GetParentDirectory(4);
-        var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net9.0-windows");
-        var check = PluginLoad.LoadAll(target);
-
-        Assert.AreEqual(1, PluginLoad.PluginContainer.Count, "done");
-        Assert.IsTrue(check, "done");
-
-        var command = PluginLoad.PluginContainer.FirstOrDefault();
-
-        if (command == null)
+        /// <summary>
+        ///     Test the  Loads Plugin.
+        ///     with my custom SqlLite Frontend
+        /// </summary>
+        [Test]
+        [Apartment(ApartmentState.STA)]
+        public void LoadPluginSqliIte()
         {
-            Assert.Fail("Value was null");
-            return;
+            var root = DirectoryInformation.GetParentDirectory(4);
+            var target = Path.Combine(root, @"SqlLiteGui\bin\Debug\net9.0-windows");
+            var check = PluginLoad.LoadAll(target);
+
+            Assert.AreEqual(1, PluginLoad.PluginContainer.Count, "done");
+            Assert.IsTrue(check, "done");
+
+            var command = PluginLoad.PluginContainer.FirstOrDefault();
+
+            if (command == null)
+            {
+                Assert.Fail("Value was null");
+                return;
+            }
+
+            var code = command.Execute();
+
+            Assert.AreEqual(0, code, "done");
+
+            code = command.Close();
+
+            Assert.AreEqual(0, code, "done");
         }
-
-        var code = command.Execute();
-
-        Assert.AreEqual(0, code, "done");
-
-        code = command.Close();
-
-        Assert.AreEqual(0, code, "done");
     }
 }

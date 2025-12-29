@@ -8,27 +8,28 @@
 
 using System.ComponentModel;
 
-namespace SQLiteGui;
-
-/// <inheritdoc />
-/// <summary>
-///     The observable object class.
-/// </summary>
-public class ObservableObject : INotifyPropertyChanged
+namespace SQLiteGui
 {
     /// <inheritdoc />
     /// <summary>
-    ///     The property changed event of the <see cref="PropertyChangedEventHandler" />.
+    ///     The observable object class.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    ///     The raise property changed event.
-    /// </summary>
-    /// <param name="propertyName">The propertyName.</param>
-    protected void RaisePropertyChangedEvent(string propertyName)
+    public class ObservableObject : INotifyPropertyChanged
     {
-        var handler = PropertyChanged;
-        handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        /// <inheritdoc />
+        /// <summary>
+        ///     The property changed event of the <see cref="PropertyChangedEventHandler" />.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     The raise property changed event.
+        /// </summary>
+        /// <param name="propertyName">The propertyName.</param>
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

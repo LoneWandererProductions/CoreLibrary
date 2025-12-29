@@ -12,30 +12,31 @@
 
 using System;
 
-namespace PluginLoader;
-
-/// <inheritdoc />
-/// <summary>
-///     Error Message Class for the Plugin Loader
-/// </summary>
-/// <seealso cref="T:System.EventArgs" />
-public sealed class LoaderErrorEventArgs : EventArgs
+namespace PluginLoader
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="T:PluginLoader.LoaderErrorEventArgs" /> class.
+    ///     Error Message Class for the Plugin Loader
     /// </summary>
-    /// <param name="error">The error message.</param>
-    public LoaderErrorEventArgs(string error)
+    /// <seealso cref="T:System.EventArgs" />
+    public sealed class LoaderErrorEventArgs : EventArgs
     {
-        Error = error;
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:PluginLoader.LoaderErrorEventArgs" /> class.
+        /// </summary>
+        /// <param name="error">The error message.</param>
+        public LoaderErrorEventArgs(string error)
+        {
+            Error = error;
+        }
 
-    /// <summary>
-    ///     Gets the error.
-    /// </summary>
-    /// <value>
-    ///     The error.
-    /// </value>
-    public string Error { get; }
+        /// <summary>
+        ///     Gets the error.
+        /// </summary>
+        /// <value>
+        ///     The error.
+        /// </value>
+        public string Error { get; }
+    }
 }

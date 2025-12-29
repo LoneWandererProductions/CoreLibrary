@@ -21,91 +21,92 @@ using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace CoreBuilder.Rules;
-
-/// <inheritdoc cref="ICodeAnalyzer" />
-/// <summary>
-/// Check if Event is unsubscribed.
-/// </summary>
-/// <seealso cref="ICodeAnalyzer" />
-public sealed class EventHandlerAnalyzer : ICodeAnalyzer, ICommand
+namespace CoreBuilder.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Name => "EventHandler";
-
-    /// <inheritdoc cref="ICodeAnalyzer" />
-    public string Description => "Analyzer that detects potential event handler leaks.";
-
-    /// <inheritdoc />
-    public string Namespace => "Analyzer";
-
-    /// <inheritdoc />
-    public int ParameterCount => 1;
-
-    /// <inheritdoc />
-    public CommandSignature Signature => new(Namespace, Name, ParameterCount);
-
     /// <summary>
-    /// The event stats
+    /// Check if Event is unsubscribed.
     /// </summary>
-    private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
-
-    /// <inheritdoc />
-    public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+    /// <seealso cref="ICodeAnalyzer" />
+    public sealed class EventHandlerAnalyzer : ICodeAnalyzer, ICommand
     {
-        // 🔹 Ignore generated code and compiler artifacts
-        if (CoreHelper.ShouldIgnoreFile(filePath))
-            yield break;
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Name => "EventHandler";
 
-        var tree = CSharpSyntaxTree.ParseText(fileContent);
-        var root = tree.GetRoot();
+        /// <inheritdoc cref="ICodeAnalyzer" />
+        public string Description => "Analyzer that detects potential event handler leaks.";
 
-        foreach (var sub in root.DescendantNodes()
-                     .OfType<AssignmentExpressionSyntax>()
-                     .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
+        /// <inheritdoc />
+        public string Namespace => "Analyzer";
+
+        /// <inheritdoc />
+        public int ParameterCount => 1;
+
+        /// <inheritdoc />
+        public CommandSignature Signature => new(Namespace, Name, ParameterCount);
+
+        /// <summary>
+        /// The event stats
+        /// </summary>
+        private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
+
+        /// <inheritdoc />
+        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
         {
-            if (sub.Left is not IdentifierNameSyntax eventName)
-                continue;
+            // 🔹 Ignore generated code and compiler artifacts
+            if (CoreHelper.ShouldIgnoreFile(filePath))
+                yield break;
 
-            var key = eventName.Identifier.Text;
-            if (!_eventStats.TryGetValue(key, out var stats))
-                stats = (0, new HashSet<string>());
+            var tree = CSharpSyntaxTree.ParseText(fileContent);
+            var root = tree.GetRoot();
 
-            stats.Count++;
-            stats.Files.Add(filePath);
-            _eventStats[key] = stats;
+            foreach (var sub in root.DescendantNodes()
+                         .OfType<AssignmentExpressionSyntax>()
+                         .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
+            {
+                if (sub.Left is not IdentifierNameSyntax eventName)
+                    continue;
 
-            var line = sub.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                var key = eventName.Identifier.Text;
+                if (!_eventStats.TryGetValue(key, out var stats))
+                    stats = (0, new HashSet<string>());
 
-            yield return new Diagnostic(
-                Name,
-                Enums.DiagnosticSeverity.Warning,
-                filePath,
-                line,
-                $"Event '{key}' subscribed {stats.Count} times so far. Check for corresponding unsubscribes.",
-                DiagnosticImpact.IoBound
-            );
+                stats.Count++;
+                stats.Files.Add(filePath);
+                _eventStats[key] = stats;
+
+                var line = sub.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+
+                yield return new Diagnostic(
+                    Name,
+                    Enums.DiagnosticSeverity.Warning,
+                    filePath,
+                    line,
+                    $"Event '{key}' subscribed {stats.Count} times so far. Check for corresponding unsubscribes.",
+                    DiagnosticImpact.IoBound
+                );
+            }
         }
+
+        /// <inheritdoc />
+        public CommandResult Execute(params string[] args)
+        {
+            List<Diagnostic> results;
+            try
+            {
+                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: EventHandler <fileOrDirectoryPath>");
+            }
+            catch (Exception ex)
+            {
+                return CommandResult.Fail(ex.Message);
+            }
+
+            var output = string.Join(Environment.NewLine, results.Select(d => d.ToString()));
+            return CommandResult.Ok(output, results);
+        }
+
+        /// <inheritdoc />
+        public CommandResult InvokeExtension(string extensionName, params string[] args)
+            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
-
-    /// <inheritdoc />
-    public CommandResult Execute(params string[] args)
-    {
-        List<Diagnostic> results;
-        try
-        {
-            results = AnalyzerExecutor.ExecutePath(this, args, "Usage: EventHandler <fileOrDirectoryPath>");
-        }
-        catch (Exception ex)
-        {
-            return CommandResult.Fail(ex.Message);
-        }
-
-        var output = string.Join(Environment.NewLine, results.Select(d => d.ToString()));
-        return CommandResult.Ok(output, results);
-    }
-
-    /// <inheritdoc />
-    public CommandResult InvokeExtension(string extensionName, params string[] args)
-        => CommandResult.Fail($"'{Name}' has no extensions.");
 }

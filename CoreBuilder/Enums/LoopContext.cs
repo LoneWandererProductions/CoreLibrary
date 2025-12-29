@@ -6,30 +6,31 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace CoreBuilder.Enums;
-
-/// <summary>
-/// The loop types.
-/// </summary>
-public enum LoopContext
+namespace CoreBuilder.Enums
 {
     /// <summary>
-    /// The none
+    /// The loop types.
     /// </summary>
-    None = 0,
+    public enum LoopContext
+    {
+        /// <summary>
+        /// The none
+        /// </summary>
+        None = 0,
 
-    /// <summary>
-    /// The constant bounded
-    /// </summary>
-    ConstantBounded = 1,
+        /// <summary>
+        /// The constant bounded
+        /// </summary>
+        ConstantBounded = 1,
 
-    /// <summary>
-    /// The variable bounded
-    /// </summary>
-    VariableBounded = 2,
+        /// <summary>
+        /// The variable bounded
+        /// </summary>
+        VariableBounded = 2,
 
-    /// <summary>
-    /// The nested
-    /// </summary>
-    Nested = 3
+        /// <summary>
+        /// The nested
+        /// </summary>
+        Nested = 3
+    }
 }

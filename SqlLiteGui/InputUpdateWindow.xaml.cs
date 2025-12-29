@@ -11,84 +11,85 @@ using System.Linq;
 using System.Windows;
 using SqliteHelper;
 
-namespace SQLiteGui;
-
-/// <inheritdoc cref="Window" />
-/// <summary>
-///     The input update window class.
-/// </summary>
-internal sealed partial class InputUpdateWindow
+namespace SQLiteGui
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputUpdateWindow" /> class.
+    ///     The input update window class.
     /// </summary>
-    internal InputUpdateWindow()
+    internal sealed partial class InputUpdateWindow
     {
-        InitializeComponent();
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputUpdateWindow" /> class.
-    /// </summary>
-    /// <param name="items">Table Data</param>
-    internal InputUpdateWindow(IEnumerable<UpdateItem> items)
-    {
-        InitializeComponent();
-        SetData(items);
-    }
-
-    /// <summary>
-    ///     Gets the table row.
-    /// </summary>
-    internal static TableSet TableRow { get; private set; }
-
-    /// <summary>
-    ///     Set the data.
-    /// </summary>
-    /// <param name="items">The items.</param>
-    private void SetData(IEnumerable<UpdateItem> items)
-    {
-        DtGrdUpdate.ItemsSource = items;
-    }
-
-    /// <summary>
-    ///     Close the mess and set values if possible
-    /// </summary>
-    /// <param name="sender">Control Sender</param>
-    /// <param name="e">Type of Event</param>
-    private void BtnOkay_Click(object sender, RoutedEventArgs e)
-    {
-        TableRow = DtGrdUpdate.ItemsSource == null ? null : ConvertItems();
-
-        Close();
-    }
-
-    /// <summary>
-    ///     Close the mess and set values to null
-    /// </summary>
-    /// <param name="sender">Control Sender</param>
-    /// <param name="e">Type of Event</param>
-    private void BtnCancel_Click(object sender, RoutedEventArgs e)
-    {
-        TableRow = null;
-        Close();
-    }
-
-    /// <summary>
-    ///     Convert the Update Item into an usable Object for the Update
-    /// </summary>
-    /// <returns>Converted Item as TableSet</returns>
-    private TableSet ConvertItems()
-    {
-        var tbl = new TableSet();
-        if (DtGrdUpdate.ItemsSource is not IEnumerable<UpdateItem> data)
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputUpdateWindow" /> class.
+        /// </summary>
+        internal InputUpdateWindow()
         {
-            return tbl;
+            InitializeComponent();
         }
 
-        tbl.Row.AddRange(from item in data select item.Value);
-        return tbl;
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:SQLiteGui.InputUpdateWindow" /> class.
+        /// </summary>
+        /// <param name="items">Table Data</param>
+        internal InputUpdateWindow(IEnumerable<UpdateItem> items)
+        {
+            InitializeComponent();
+            SetData(items);
+        }
+
+        /// <summary>
+        ///     Gets the table row.
+        /// </summary>
+        internal static TableSet TableRow { get; private set; }
+
+        /// <summary>
+        ///     Set the data.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        private void SetData(IEnumerable<UpdateItem> items)
+        {
+            DtGrdUpdate.ItemsSource = items;
+        }
+
+        /// <summary>
+        ///     Close the mess and set values if possible
+        /// </summary>
+        /// <param name="sender">Control Sender</param>
+        /// <param name="e">Type of Event</param>
+        private void BtnOkay_Click(object sender, RoutedEventArgs e)
+        {
+            TableRow = DtGrdUpdate.ItemsSource == null ? null : ConvertItems();
+
+            Close();
+        }
+
+        /// <summary>
+        ///     Close the mess and set values to null
+        /// </summary>
+        /// <param name="sender">Control Sender</param>
+        /// <param name="e">Type of Event</param>
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            TableRow = null;
+            Close();
+        }
+
+        /// <summary>
+        ///     Convert the Update Item into an usable Object for the Update
+        /// </summary>
+        /// <returns>Converted Item as TableSet</returns>
+        private TableSet ConvertItems()
+        {
+            var tbl = new TableSet();
+            if (DtGrdUpdate.ItemsSource is not IEnumerable<UpdateItem> data)
+            {
+                return tbl;
+            }
+
+            tbl.Row.AddRange(from item in data select item.Value);
+            return tbl;
+        }
     }
 }

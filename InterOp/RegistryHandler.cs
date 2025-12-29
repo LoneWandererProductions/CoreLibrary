@@ -12,49 +12,50 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace InterOp;
-
-/// <inheritdoc />
-/// <summary>
-///     Registry Reader
-/// </summary>
-/// <seealso cref="RegistryHandler" />
-public sealed class RegistryHandler : IRegistryHandler
+namespace InterOp
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Gets the registry objects.
+    ///     Registry Reader
     /// </summary>
-    /// <param name="registryPath">The registry path.</param>
-    /// <returns>
-    ///     All Registry Objects in a certain Path
-    /// </returns>
-    /// <exception cref="PlatformNotSupportedException"></exception>
-    public Dictionary<string, object> GetRegistryObjects(string registryPath)
+    /// <seealso cref="RegistryHandler" />
+    public sealed class RegistryHandler : IRegistryHandler
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets the registry objects.
+        /// </summary>
+        /// <param name="registryPath">The registry path.</param>
+        /// <returns>
+        ///     All Registry Objects in a certain Path
+        /// </returns>
+        /// <exception cref="PlatformNotSupportedException"></exception>
+        public Dictionary<string, object> GetRegistryObjects(string registryPath)
         {
-            throw new PlatformNotSupportedException();
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new PlatformNotSupportedException();
+            }
+
+            return RegistryHelper.GetRegistryObjects(registryPath);
         }
 
-        return RegistryHelper.GetRegistryObjects(registryPath);
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Writes the registry.
-    /// </summary>
-    /// <param name="registryPath">The registry path.</param>
-    /// <param name="value">The value.</param>
-    /// <returns>Success Status</returns>
-    /// <exception cref="PlatformNotSupportedException"></exception>
-    public bool WriteRegistry(string registryPath, KeyValuePair<string, string> value)
-    {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        /// <inheritdoc />
+        /// <summary>
+        ///     Writes the registry.
+        /// </summary>
+        /// <param name="registryPath">The registry path.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>Success Status</returns>
+        /// <exception cref="PlatformNotSupportedException"></exception>
+        public bool WriteRegistry(string registryPath, KeyValuePair<string, string> value)
         {
-            throw new PlatformNotSupportedException();
-        }
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new PlatformNotSupportedException();
+            }
 
-        return RegistryHelper.SetRegistryObjects(registryPath, value);
+            return RegistryHelper.SetRegistryObjects(registryPath, value);
+        }
     }
 }
