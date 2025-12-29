@@ -24,7 +24,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
-using FileHandler;
 using Imaging.Helpers;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -120,9 +119,9 @@ namespace Imaging
         internal static void CreateGif(string path, string target)
         {
             //get all allowed files from target folder
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
+            var lst = FileHelper.GetFilesByExtensionFullPath(path, ImagingResources.Appendix);
 
-            lst = lst.PathSort();
+            lst = lst.SortNaturally();
 
             //collect and convert all images
             var btm = lst.ConvertAll(ImageStream.GetOriginalBitmap);

@@ -15,24 +15,6 @@
     <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}" />
     <SolidColorBrush x:Key="TextBrush" Color="{DynamicResource TextColor}" />
 
-    <!-- Style for Thumbnails -->
-    <Style TargetType="{x:Type local:Thumbnails}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Thumbnails}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <TextBlock Text="{TemplateBinding Content}"
-                                   Foreground="{DynamicResource TextBrush}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!-- Style for Buttons -->
     <Style TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />

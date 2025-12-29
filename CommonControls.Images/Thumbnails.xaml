@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CommonControls.Thumbnails"
+﻿<UserControl x:Class="CommonControls.Images.Thumbnails"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

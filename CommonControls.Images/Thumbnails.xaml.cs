@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        Thumbnails.xaml.cs
  * PURPOSE:     Custom Thumbnail Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -14,14 +14,9 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,7 +24,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Mathematics;
 
-namespace CommonControls
+namespace CommonControls.Images
 {
     /// <summary>
     ///     Basic Image Thumbnails
