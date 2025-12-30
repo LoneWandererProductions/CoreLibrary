@@ -94,6 +94,7 @@ namespace ExtendedSystemObjects
                 try
                 {
                     if (_data.TryGetValue(key, out var entry)) return entry.Value;
+
                     throw new KeyNotFoundException($"Key '{key}' not found.");
                 }
                 finally { _lock.ExitReadLock(); }
@@ -255,6 +256,7 @@ namespace ExtendedSystemObjects
             try
             {
                 if (_data.TryGetValue(key, out var entry)) return entry.Category;
+
                 throw new KeyNotFoundException();
             }
             finally { _lock.ExitReadLock(); }
@@ -318,6 +320,7 @@ namespace ExtendedSystemObjects
             {
                 if (_categories.TryGetValue(category, out var set))
                     return set;
+
                 return Array.Empty<TK>();
             }
             finally { _lock.ExitReadLock(); }
@@ -351,6 +354,7 @@ namespace ExtendedSystemObjects
             {
                 if (_data.TryGetValue(key, out var entry))
                     return entry;
+
                 return null;
             }
             finally { _lock.ExitReadLock(); }

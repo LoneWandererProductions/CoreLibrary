@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorProcessing.cs
  * PURPOSE:     Some internal Processing for the clicked Point
  * PROGRAMER:   Peter Geinitz (Wayfarer)

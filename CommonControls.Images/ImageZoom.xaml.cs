@@ -1,9 +1,9 @@
 ﻿/*
-* COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     CommonControls
-* FILE:        ImageZoom.xaml.cs
-* PURPOSE:     Image View Control, that can handle some tools
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls.Images
+ * FILE:        ImageZoom.xaml.cs
+ * PURPOSE:     Image View Control, that can handle some tools
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable EventNeverSubscribedTo.Global, only used outside of the dll

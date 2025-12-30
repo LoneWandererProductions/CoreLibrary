@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorPicker.xaml.cs
  * PURPOSE:     Base UserControl for the ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)

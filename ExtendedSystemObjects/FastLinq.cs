@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
+
 using System;
 
 namespace ExtendedSystemObjects

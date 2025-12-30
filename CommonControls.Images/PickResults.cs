@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        PickResults.cs
  * PURPOSE:     Results of the Color Wheel Click
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        PickResults.cs
  * PURPOSE:     Results of the Color Wheel Click
  * PROGRAMER:   Peter Geinitz (Wayfarer)

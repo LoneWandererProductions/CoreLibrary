@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorPickerRegister.cs
  * PURPOSE:     Central Register
  * PROGRAMER:   Peter Geinitz (Wayfarer)

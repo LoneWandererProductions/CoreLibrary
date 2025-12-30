@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        SelectionAdorner.cs
  * PURPOSE:     Extensions for ImageZoom, handle all the selection Tools.
  * PROGRAMER:   Peter Geinitz (Wayfarer)

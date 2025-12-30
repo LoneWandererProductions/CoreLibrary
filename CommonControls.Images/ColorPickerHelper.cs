@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorPickerHelper.cs
  * PURPOSE:     Helper functions for  ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ImageZoomTools.xaml.cs
  * PURPOSE:     Image View Control Tools, that are exposed to the Outside
  * PROGRAMER:   Peter Geinitz (Wayfarer)

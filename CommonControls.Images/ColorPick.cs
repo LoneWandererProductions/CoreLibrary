@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorPick.cs
  * PURPOSE:     Color Palette Control, much like Color Picker but for a finer selection of Colors
  * PROGRAMER:   Peter Geinitz (Wayfarer)

@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable EventNeverSubscribedTo.Global
 
 using System;
 using System.Collections.Concurrent;

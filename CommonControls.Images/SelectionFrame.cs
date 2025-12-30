@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        SelectionFrame.cs
  * PURPOSE:     Selection Frame
  * PROGRAMER:   Peter Geinitz (Wayfarer)

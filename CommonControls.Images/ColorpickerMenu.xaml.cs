@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     CommonControls.Images
  * FILE:        ColorPickerMenu.xaml.cs
  * PURPOSE:     Menu Item for the ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
