@@ -46,16 +46,6 @@ namespace CommonControls
         internal const string GlobalKeyCommandBindings = "CommandBindings";
 
         /// <summary>
-        ///     The error could not load image (const). Value: "Error could not load Image:".
-        /// </summary>
-        internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
-
-        /// <summary>
-        ///     Image add, needed for the Image Name (const). Value: "T".
-        /// </summary>
-        internal const string ImageAdd = "T";
-
-        /// <summary>
         ///     The unique Caption Text (const). Value: "Name was not unique".
         /// </summary>
         internal const string CaptionUnique = "Name was not unique";
@@ -76,24 +66,9 @@ namespace CommonControls
         internal const string DataListEntry = "Empty";
 
         /// <summary>
-        ///     The Context Menu Deselect (const). Value: "Deselect".
-        /// </summary>
-        internal const string ContextDeselect = "Deselect";
-
-        /// <summary>
-        ///     The Context Menu Deselect all (const). Value: "Deselect All".
-        /// </summary>
-        internal const string ContextDeselectAll = "Deselect All";
-
-        /// <summary>
         ///     New Item (const). Value: "NewItem".
         /// </summary>
         internal const string NewItem = "New Item";
-
-        /// <summary>
-        ///     The debug timer (const). Value: "Time Tracked end: ".
-        /// </summary>
-        internal const string DebugTimer = "Time Tracked end: ";
 
         /// <summary>
         ///     Separator (const). Value: " , ".

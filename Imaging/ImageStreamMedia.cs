@@ -83,7 +83,7 @@ namespace Imaging
             {
                 var bmp = new BitmapImage();
                 bmp.BeginInit();
-                bmp.CreateOptions = BitmapCreateOptions.DelayCreation;
+                // bmp.CreateOptions = BitmapCreateOptions.DelayCreation; is bad it does not load all data immediately.
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
 
                 using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -122,13 +122,15 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
 
-            using var outStream = new MemoryStream();
+            using var ms = new MemoryStream();
             var enc = new BmpBitmapEncoder();
             enc.Frames.Add(BitmapFrame.Create(image));
-            enc.Save(outStream);
+            enc.Save(ms);
 
-            outStream.Position = 0; // REQUIRED!
-            return new Bitmap(outStream);
+            ms.Position = 0;
+
+            using var tmp = new Bitmap(ms);
+            return new Bitmap(tmp); // deep copy, no stream dependency
         }
 
         /// <summary>
