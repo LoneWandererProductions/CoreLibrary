@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/ItemColor.xaml.cs
+ * FILE:        ItemColor.xaml.cs
  * PURPOSE:     UserControl ItemColor, that holds the Info about Color and Text
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -70,7 +70,7 @@ namespace Debugger
         /// <summary>
         ///     Occurs when [delete logic].
         /// </summary>
-        public event EventHandler<int> DeleteLogic;
+        public event EventHandler<int>? DeleteLogic;
 
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/ConfigWindow.xaml.cs
+ * FILE:        ConfigWindow.xaml.cs
  * PURPOSE:     Configuration Window for Debugger
  * AUTHOR:      Peter Geinitz (Wayfarer)
  */

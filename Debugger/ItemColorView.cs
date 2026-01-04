@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/ItemColorView.cs
+ * FILE:        ItemColorView.cs
  * PURPOSE:     View for ItemColor Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

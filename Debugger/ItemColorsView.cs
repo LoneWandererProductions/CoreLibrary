@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/ItemColors.xaml.cs
+ * FILE:        ItemColors.xaml.cs
  * PURPOSE:     UserControl, that holds the ItemColor controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -26,7 +26,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Style for Thumbnails -->
     <Style TargetType="{x:Type local:Thumbnails}">
         <Setter Property="Template">

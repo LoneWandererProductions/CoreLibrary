@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/FileLogSource.xaml.cs
+ * FILE:        FileLogSource.xaml.cs
  * PURPOSE:     Sample file-backed log source
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/App.xaml.cs
+ * FILE:        App.xaml.cs
  * PURPOSE:     Entry Point
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ILogSource
- * FILE:        Debugger/ILogSource.xaml.cs
+ * FILE:        ILogSource.xaml.cs
  * PURPOSE:     Interface to make my log sources interchangeable
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

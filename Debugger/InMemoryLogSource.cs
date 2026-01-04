@@ -1,10 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/InMemoryLogSource.cs
+ * FILE:        InMemoryLogSource.cs
  * PURPOSE:     Interface to InMemoryLogger to show logs in the Debugger.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedType.Global
 
 using System;
 using System.Collections.Generic;

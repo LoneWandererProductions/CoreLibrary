@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/DebuggerResources.cs
+ * FILE:        DebuggerResources.cs
  * PURPOSE:     Resource String
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

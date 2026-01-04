@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/Config.cs
+ * FILE:        Config.cs
  * PURPOSE:     Config Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

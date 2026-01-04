@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Debugger
-* FILE:        Debugger/DebugRegister.cs
+* FILE:        DebugRegister.cs
 * PURPOSE:     Handle the internal Config files
 * PROGRAMMER:   Peter Geinitz (Wayfarer)
 */

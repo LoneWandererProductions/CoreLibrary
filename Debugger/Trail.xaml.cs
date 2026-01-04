@@ -1,10 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/Trail.xaml.cs
+ * FILE:        Trail.xaml.cs
  * PURPOSE:     Output Window (Log Viewer)
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Diagnostics;
@@ -47,9 +49,10 @@ namespace Debugger
         /// </summary>
         private int _lastLineCount;
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Trail"/> class
-        /// with a default <see cref="FileLogSource"/> ("default.log").
+        /// Initializes a new instance of the <see cref="T:Debugger.Trail" /> class
+        /// with a default <see cref="T:Debugger.FileLogSource" /> ("default.log").
         /// This constructor is required for XAML/WPF designer support.
         /// </summary>
         public Trail() : this(new FileLogSource("default.log"))
@@ -57,13 +60,14 @@ namespace Debugger
             InitializeComponent();
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Trail" /> class
+        /// Initializes a new instance of the <see cref="T:Debugger.Trail" /> class
         /// with a specific <paramref name="logSource" />.
         /// </summary>
         /// <param name="logSource">The initial log source (must not be null).</param>
-        /// <exception cref="System.ArgumentNullException">logSource</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="logSource" /> is null.</exception>
+        /// <exception cref="T:System.ArgumentNullException">logSource</exception>
+        /// <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="logSource" /> is null.</exception>
         public Trail(ILogSource logSource)
         {
             InitializeComponent();
@@ -294,7 +298,7 @@ namespace Debugger
         /// </summary>
         private async Task LoadFileAsync()
         {
-            _dispatcherTimer?.Stop();
+            _dispatcherTimer.Stop();
             _logSource.Stop();
 
             Log.Document.Blocks.Clear();

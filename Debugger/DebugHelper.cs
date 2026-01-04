@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/DebugHelper.cs
+ * FILE:        DebugHelper.cs
  * PURPOSE:     Helper Class
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

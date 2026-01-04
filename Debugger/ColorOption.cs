@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Debugger
- * FILE:        Debugger/ColorOption.cs
+ * FILE:        ColorOption.cs
  * PURPOSE:     Config Object that handles the colors of the Text of the Debugger
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

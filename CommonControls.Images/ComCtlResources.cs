@@ -69,6 +69,5 @@ namespace CommonControls.Images
         ///     The error could not load image (const). Value: "Error could not load Image:".
         /// </summary>
         internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
-
     }
 }
