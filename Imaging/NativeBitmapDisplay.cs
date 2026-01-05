@@ -9,7 +9,6 @@
 // ReSharper disable MissingSpace
 // ReSharper disable UnusedMember.Global
 
-#nullable enable
 using System.Drawing;
 using System.Reflection;
 using System.Windows;

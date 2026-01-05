@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Drawing;

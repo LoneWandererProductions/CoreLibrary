@@ -7,7 +7,6 @@
  * SOURCE:      https://github.com/opentk/GLWpfControl
  */
 
-#nullable enable
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Wpf;
 using System;

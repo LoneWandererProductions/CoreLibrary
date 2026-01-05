@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +13,9 @@ using System.Linq;
 
 namespace Imaging
 {
+    /// <summary>
+    /// Image Data Parser Object.
+    /// </summary>
     internal sealed class CifImageData
     {
         /// <summary>

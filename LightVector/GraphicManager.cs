@@ -8,7 +8,6 @@
 
 // ReSharper disable UnusedType.Global
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Windows;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Lector
  * FILE:        SampleExtension.cs
@@ -8,7 +8,6 @@
 
 // ReSharper disable UnusedType.Global
 
-#nullable enable
 using Weaver.Interfaces;
 using Weaver.Messages;
 

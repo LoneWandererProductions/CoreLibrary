@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using System;
 using System.Drawing;
 using Imaging.Enums;

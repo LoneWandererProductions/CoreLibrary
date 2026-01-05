@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
 using System;
