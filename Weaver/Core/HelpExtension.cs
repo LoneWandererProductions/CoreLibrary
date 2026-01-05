@@ -29,7 +29,7 @@ namespace Weaver.Core
         public int ExtensionParameterCount => 0;
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] args, Func<string[], CommandResult> executor)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
         {
             // Return description; executor not needed
             return CommandResult.Ok(command.Description);

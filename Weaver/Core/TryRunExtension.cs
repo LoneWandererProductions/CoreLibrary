@@ -36,15 +36,19 @@ namespace Weaver.Core
         /// 3. Uses the provided executor to run the command if confirmed.
         /// 4. Handles invalid feedback input by prompting the user again.
         /// </remarks>
-        public CommandResult Invoke(ICommand command, string[] args, Func<string[], CommandResult> executor)
+        public CommandResult Invoke(
+             ICommand command,
+             string[] extensionArgs,
+             Func<string[], CommandResult> executor,
+             string[] commandArgs)
         {
-            // Step 1: Preview execution
-            var preview = command.TryRun(args) ?? executor(args);
+            // Step 1: Preview execution using commandArgs
+            var preview = command.TryRun(commandArgs) ?? executor(commandArgs);
 
-            // Step 2: Declare feedback reference first (required for recursion in onRespond)
+            // Step 2: Declare feedback reference (needed for recursive retry)
             FeedbackRequest? feedback = null;
 
-            // Step 3: Create feedback to confirm execution
+            // Step 3: Create feedback request for user confirmation
             var cache = feedback;
             feedback = new FeedbackRequest(
                 prompt: $"Preview:\n{preview.Message}\nProceed with execution? (yes/no)",
@@ -54,7 +58,7 @@ namespace Weaver.Core
                     input = input.Trim().ToLowerInvariant();
                     return input switch
                     {
-                        "yes" => executor(args), // Execute command
+                        "yes" => executor(commandArgs), // Execute command with proper args
                         "no" => CommandResult.Fail("Execution cancelled by user."),
                         _ => new CommandResult
                         {
@@ -65,7 +69,7 @@ namespace Weaver.Core
                     };
                 });
 
-            // Step 4: Return preview result (not considered a final success)
+            // Step 4: Return preview result (not final success yet)
             return new CommandResult
             {
                 Message = $"{preview.Message}\n{feedback.Prompt}",

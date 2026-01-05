@@ -47,12 +47,18 @@ namespace Weaver.Interfaces
         /// Executes the extension logic for the given command.
         /// </summary>
         /// <param name="command">The command that this extension applies to.</param>
-        /// <param name="args">The arguments passed to the command.</param>
+        /// <param name="extensionArgs">The extension arguments.</param>
         /// <param name="executor">The executor.</param>
+        /// <param name="commandArgs">The command arguments.</param>
         /// <returns>
         /// A <see cref="CommandResult" /> representing the outcome of the extension execution.
         /// </returns>
-        CommandResult Invoke(ICommand command, string[] args, Func<string[], CommandResult> executor);
+        CommandResult Invoke(
+            ICommand command,
+            string[] extensionArgs,  // now clearly only for the extension
+            Func<string[], CommandResult> executor,
+            string[] commandArgs     // original command args
+        );
 
         /// <summary>
         /// Optional: can run pre/post hooks around command execution.

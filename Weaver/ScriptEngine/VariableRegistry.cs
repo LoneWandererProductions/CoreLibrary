@@ -18,7 +18,24 @@ namespace Weaver.ScriptEngine
     /// </summary>
     public sealed class VariableRegistry : IVariableRegistry
     {
-        /// <inheritdoc />>
+
+
+        /// <summary>
+        /// The registry itself
+        /// for future Reference:
+        /// public readonly struct VMValue
+        /// {
+        ///     public readonly EnumTypes Type;
+        ///     public readonly long Int64;
+        ///     public readonly double Double;
+        ///     public readonly bool Bool;
+        ///     public readonly string? String;
+        /// }
+        /// Dictionary<string, VMValue>
+        /// </summary>
+        /// <returns>
+        /// The registry itself
+        /// </returns>
         public IReadOnlyDictionary<string, (object Value, EnumTypes Type)> GetAll() => _registry;
 
         /// <summary>

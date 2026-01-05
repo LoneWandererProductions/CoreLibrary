@@ -6,9 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedType.Global
-
-using Weaver.Core;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
@@ -21,9 +18,6 @@ namespace Weaver.ScriptEngine
     /// </summary>
     public sealed class ScriptExecutor
     {
-        /// <summary>
-        /// The weave
-        /// </summary>
         private readonly Weave _weave;
 
         /// <summary>
@@ -63,29 +57,18 @@ namespace Weaver.ScriptEngine
         /// <param name="statements">The statements.</param>
         public ScriptExecutor(Weave weave, List<(string Category, string)> statements)
         {
+            //now weave also holds all the variables and evaluator commands we need.
             _weave = weave;
-            var registry = new VariableRegistry();
-            _evaluator = new ExpressionEvaluator(registry);
-
-            // Register internal commands
-            weave.Register(new SetValueCommand(registry));
-            weave.Register(new GetValueCommand(registry));
-            weave.Register(new DeleteValueCommand(registry));
-            weave.Register(new MemoryCommand(registry));
-            //the evaluate command needs the evaluator and registry
-            weave.Register(new EvaluateCommand(_evaluator, registry));
-
+            _evaluator = new ExpressionEvaluator(_weave.Runtime.Variables);
             _statements = statements ?? new List<(string Category, string)>();
             _position = 0;
 
             _labelPositions = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-            // Pre-scan labels
             for (var i = 0; i < _statements.Count; i++)
             {
-                var (category, stmt) = _statements[i];
-                if (category == "Label" && !string.IsNullOrEmpty(stmt))
-                    _labelPositions[stmt] = i;
+                if (_statements[i].Category == "Label")
+                    _labelPositions[_statements[i].Item2] = i;
             }
         }
 
@@ -133,7 +116,7 @@ namespace Weaver.ScriptEngine
                 switch (category)
                 {
                     case "Goto":
-                        if (_labelPositions.TryGetValue(stmt, out var pos))
+                        if (_labelPositions.TryGetValue(stmt!, out var pos))
                             _position = pos + 1;
                         else
                         {
@@ -160,7 +143,7 @@ namespace Weaver.ScriptEngine
                         }
 
                         var loopStart = _doWhileStack.Pop();
-                        var condResult = _evaluator.Evaluate(stmt);
+                        var condResult = _evaluator.Evaluate(stmt!);
 
                         if (condResult)
                             _position = loopStart + 1; // loop again
@@ -169,7 +152,7 @@ namespace Weaver.ScriptEngine
                         continue;
 
                     case "If_Condition":
-                        var cond = _evaluator.Evaluate(stmt);
+                        var cond = _evaluator.Evaluate(stmt!);
                         _position++; // move past the condition node
 
                         if (!cond)
@@ -179,7 +162,7 @@ namespace Weaver.ScriptEngine
                             while (_position < _statements.Count)
                             {
                                 var (cat, _) = _statements[_position];
-                                if (cat is "If_Condition" or "Do_Condition")
+                                if (cat == "If_Condition" || cat == "Do_Condition")
                                     depth++;
                                 else if (cat == "Else_Open" && depth == 0)
                                     break;
@@ -194,7 +177,7 @@ namespace Weaver.ScriptEngine
 
 
                     default: // "Command", "Assignment", etc.
-                        var result = _weave.ProcessInput(stmt);
+                        var result = _weave.ProcessInput(stmt!);
                         if (result.Feedback != null)
                         {
                             _pendingFeedback = result.Feedback;
@@ -206,7 +189,12 @@ namespace Weaver.ScriptEngine
                 }
             }
 
-            return new CommandResult { Success = true, Message = "Script finished.", Feedback = null };
+            return new CommandResult
+            {
+                Success = true,
+                Message = "Script finished.",
+                Feedback = null
+            };
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Weaver.Core
         public string Namespace => WeaverResources.GlobalNamespace;
 
         /// <inheritdoc />
-        public int ParameterCount => 1;
+        public int ParameterCount => -1;
 
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
@@ -58,13 +58,17 @@ namespace Weaver.Core
         /// <inheritdoc />
         public CommandResult Execute(string[] args)
         {
-            if (args.Length < 1)
-                return CommandResult.Fail("evaluate() requires at least 1 argument: the expression to evaluate.");
+            string? expression = args.Length > 0 ? args[0] : null;
+            string? targetVar = args.Length > 1 ? args[1] : null;
 
-            var expression = args[0];
-            var targetVar = args.Length > 1 ? args[1] : null;
+            // If no expression, maybe store previous pipeline value or return null
+            if (string.IsNullOrWhiteSpace(expression))
+            {
+                // Allow empty input if .store() will handle it
+                return CommandResult.Ok(null);
+            }
 
-            // Resolve variables from registry
+            // Resolve variables from registry as before
             if (_registry != null)
             {
                 foreach (var variable in _registry.GetAll())
@@ -81,7 +85,6 @@ namespace Weaver.Core
             object? result;
             EnumTypes type;
 
-            // Detect if expression looks like boolean
             var isBooleanExpr = _evaluator.IsBooleanExpression(expression);
 
             try
@@ -105,7 +108,7 @@ namespace Weaver.Core
                 );
             }
 
-            // Optional target variable storage
+            // Store in registry if requested
             if (!string.IsNullOrWhiteSpace(targetVar))
             {
                 if (_registry == null)
@@ -116,7 +119,7 @@ namespace Weaver.Core
                     );
                 }
 
-                _registry.Set(targetVar, result, type);
+                _registry.Set(targetVar, result!, type);
                 return CommandResult.Ok(
                     $"Stored '{result}' in '{targetVar}'.",
                     result,
@@ -124,7 +127,7 @@ namespace Weaver.Core
                 );
             }
 
-            // Return result
+            // Return computed result
             var message = type switch
             {
                 EnumTypes.Wbool => result?.ToString() ?? "false",

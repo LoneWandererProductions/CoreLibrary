@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine
  * FILE:        ExpressionEvaluator.cs
@@ -48,7 +48,7 @@ namespace Weaver.ScriptEngine
                 var right = GetValue(tokens[2]);
 
                 // Convert to bool if logical operator
-                if (op is ScriptConstants.LogicalAnd or ScriptConstants.LogicalOr)
+                if (op == ScriptConstants.LogicalAnd || op == ScriptConstants.LogicalOr)
                 {
                     var leftBool = Convert.ToBoolean(left);
                     var rightBool = Convert.ToBoolean(right);

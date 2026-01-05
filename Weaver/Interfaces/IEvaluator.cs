@@ -2,14 +2,14 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.Interfaces
  * FILE:        ICommandExtension.cs
- * PURPOSE:     Interface for evaluators used in the Scriptengine.
+ * PURPOSE:     Interface for evaluators used in the Script Engine.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Weaver.Interfaces
 {
     /// <summary>
-    /// Interface for expression evaluators used in the Scriptengine.
+    /// Interface for expression evaluators used in the Script Engine.
     /// </summary>
     public interface IEvaluator
     {

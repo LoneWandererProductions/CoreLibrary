@@ -24,6 +24,11 @@ namespace Weaver
         internal const string GlobalCommandHelp = "help";
 
         /// <summary>
+        /// The global extension store
+        /// </summary>
+        internal const string GlobalExtensionStore = "store";
+
+        /// <summary>
         /// The global extension help
         /// </summary>
         internal static string GlobalExtensionHelp => GlobalCommandHelp;

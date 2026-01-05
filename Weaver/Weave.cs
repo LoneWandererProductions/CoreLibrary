@@ -39,15 +39,17 @@ namespace Weaver
         private static readonly Dictionary<string, CommandExtension> GlobalExtensions
             = new(StringComparer.OrdinalIgnoreCase)
             {
-                [WeaverResources.GlobalExtensionHelp] =
-                    new CommandExtension
-                    {
-                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
-                    },
+                [WeaverResources.GlobalExtensionHelp] = new CommandExtension
+                    { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
                 [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
                 {
-                    Name = WeaverResources.GlobalExtensionTryRun,
-                    ParameterCount = 0,
+                    Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true,
+                    IsPreview = true
+                },
+                [WeaverResources.GlobalExtensionStore] = new CommandExtension
+                {
+                    Name = WeaverResources.GlobalExtensionStore,
+                    ParameterCount = -1,
                     IsInternal = true,
                     IsPreview = true
                 }
@@ -74,6 +76,14 @@ namespace Weaver
         private readonly List<ICommandExtension> _extensions = new();
 
         /// <summary>
+        /// Gets the IVariableRegistry runtime.
+        /// </summary>
+        /// <value>
+        /// The runtime.
+        /// </value>
+        public WeaveRuntime Runtime { get; } = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Weave"/> class.
         /// </summary>
         public Weave()
@@ -89,12 +99,18 @@ namespace Weaver
             Register(print);
 
             //our custom calculator command, needs the evaluator.
-            _evaluator = new ExpressionEvaluator();
-            var evaluate = new EvaluateCommand(_evaluator);
-            Register(evaluate);
+            _evaluator = new ExpressionEvaluator(Runtime.Variables);
+            Register(new EvaluateCommand(_evaluator, Runtime.Variables));
+
+            //register all variable commands with the runtime registry
+            Register(new SetValueCommand(Runtime.Variables));
+            Register(new GetValueCommand(Runtime.Variables));
+            Register(new DeleteValueCommand(Runtime.Variables));
+            Register(new MemoryCommand(Runtime.Variables));
 
             _extensions.Add(new HelpExtension());
             _extensions.Add(new TryRunExtension());
+            _extensions.Add(new StoreExtension(Runtime.Variables));
         }
 
         /// <summary>
@@ -254,15 +270,12 @@ namespace Weaver
                 // Find the extension associated with this command
                 var (ext, error) = FindExtension(cmd, parsed.Extension, parsed.ExtensionArgs.Length);
                 if (error != null)
-                    return error; // Namespace mismatch or not found
+                    return error;
 
-                // Delegate execution completely to the extension
-                // The extension may choose whether and how to invoke the command via 'executor'
-                var result = ext?.Invoke(cmd, parsed.ExtensionArgs.Length > 0 ? parsed.ExtensionArgs : parsed.Args,
-                                 cmd.Execute)
+                // Pass **command args** to the executor, **extension args** to the extension
+                var result = ext?.Invoke(cmd, parsed.ExtensionArgs, cmd.Execute, parsed.Args)
                              ?? cmd.InvokeExtension(parsed.Extension, parsed.Args);
 
-                // Centralized feedback registration
                 return HandleFeedback(result, cmd);
             }
 
@@ -297,61 +310,52 @@ namespace Weaver
 
             name = name.ToLowerInvariant();
 
-            // 1️⃣ If a namespace is specified, prefer a direct lookup first
+            IEnumerable<ICommand> candidates;
+
+            // 1️⃣ Namespace filtering
             if (!string.IsNullOrWhiteSpace(ns))
             {
                 ns = ns.ToLowerInvariant();
-
-                // Try exact match first
-                if (_commands.TryGetValue((ns, name, argCount), out var exact))
-                    return (exact, null);
-
-                // Try variable-parameter match
-                if (_commands.TryGetValue((ns, name, 0), out var varargs))
-                    return (varargs, null);
-
-                return (null, CommandResult.Fail($"Command '{ns}:{name}' not found with {argCount} parameters."));
+                candidates = _commands.Values
+                    .Where(c => c.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase) &&
+                                c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             }
-
-            // 2️⃣ Otherwise, search all namespaces for a match
-            var candidates = _commands.Values
-                .Where(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            if (candidates.Count == 0)
-                return (null, CommandResult.Fail($"Command '{name}' not found."));
-
-            // Prefer exact arg count first
-            var exactMatches = candidates
-                .Where(c => c.ParameterCount == argCount)
-                .ToList();
-
-            if (exactMatches.Count == 1)
-                return (exactMatches[0], null);
-
-            if (exactMatches.Count > 1)
+            else
             {
-                // TODO: Handle ambiguous overloads (e.g., different namespaces or ambiguous signatures)
-                return (exactMatches[0], null);
+                candidates = _commands.Values
+                    .Where(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Then fallback to variable-parameter match
-            var variableMatches = candidates
-                .Where(c => c.ParameterCount == 0)
-                .ToList();
+            var list = candidates.ToList();
+            if (list.Count == 0)
+                return (null, CommandResult.Fail(
+                    ns == null ? $"Command '{name}' not found." : $"Command '{ns}:{name}' not found."));
 
-            if (variableMatches.Count == 1)
-                return (variableMatches[0], null);
+            // 2️⃣ Exact match always wins
+            var exact = list.FirstOrDefault(c => c.ParameterCount > 0 && c.ParameterCount == argCount);
+            if (exact != null)
+                return (exact, null);
 
-            if (variableMatches.Count > 1)
+            // 3️⃣ Optional (0 or 1)
+            if (argCount <= 1)
             {
-                // TODO: Handle ambiguous wildcard matches
-                return (variableMatches[0], null);
+                var optional = list.FirstOrDefault(c => c.ParameterCount == -1);
+                if (optional != null)
+                    return (optional, null);
             }
 
-            return (null,
-                CommandResult.Fail($"No suitable overload found for command '{name}' with {argCount} parameters."));
+            // 4️⃣ Fully variadic
+            var variadic = list.FirstOrDefault(c => c.ParameterCount == 0);
+            if (variadic != null)
+                return (variadic, null);
+
+            // 5️⃣ Error
+            return (null, CommandResult.Fail(
+                ns == null
+                    ? $"No suitable overload found for command '{name}' with {argCount} parameters."
+                    : $"No suitable overload found for command '{ns}:{name}' with {argCount} parameters."));
         }
+
 
         /// <summary>
         /// Finds a matching extension for a given command.
@@ -376,16 +380,20 @@ namespace Weaver
             // 1️⃣ Check Global Extensions first
             if (GlobalExtensions.TryGetValue(extensionName, out var globalExt))
             {
-                // Parameter check: 0 = variable
-                if (globalExt.ParameterCount != 0 && globalExt.ParameterCount != argCount)
-                    return (null, CommandResult.Fail(
-                        $"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
+                switch (globalExt.ParameterCount)
+                {
+                    case 0: break; // variadic: always OK
+                    case -1: break; // optional 0..1 args: always OK
+                    default:
+                        if (globalExt.ParameterCount != argCount)
+                            return (null, CommandResult.Fail(
+                                $"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
+                        break;
+                }
 
-                // Find corresponding runtime extension implementation if available
                 var wrapper = _extensions.FirstOrDefault(e =>
                     e.Name.Equals(extensionName, StringComparison.OrdinalIgnoreCase));
 
-                // If none registered, allow global extension to be handled internally by the command
                 return (wrapper, null);
             }
 
@@ -406,10 +414,22 @@ namespace Weaver
             }
 
             // 4️⃣ Parameter count check (0 = variable)
-            if (found.ExtensionParameterCount != 0 && found.ExtensionParameterCount != argCount)
+            switch (found.ExtensionParameterCount)
             {
-                return (null, CommandResult.Fail(
-                    $"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
+                case 0: // fully variadic
+                    break;
+
+                case -1: // optional 1
+                    if (argCount > 1)
+                        return (null, CommandResult.Fail(
+                            $"Extension '{found.Name}' expects zero or one parameter, but got {argCount}."));
+                    break;
+
+                default: // exact
+                    if (found.ExtensionParameterCount != argCount)
+                        return (null, CommandResult.Fail(
+                            $"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
+                    break;
             }
 
             return (found, null);
