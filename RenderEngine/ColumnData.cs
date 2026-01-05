@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ColumnData.cs
@@ -8,21 +8,20 @@
 
 using System.Numerics;
 
-namespace RenderEngine
+namespace RenderEngine;
+
+/// <summary>
+/// Basic idea was to use it for voxel and raycasting rendering.
+/// </summary>
+public struct ColumnData
 {
     /// <summary>
-    /// Basic idea was to use it for voxel and raycasting rendering.
+    /// The height
     /// </summary>
-    public struct ColumnData
-    {
-        /// <summary>
-        /// The height
-        /// </summary>
-        public float Height; // Height of the slice
+    public float Height; // Height of the slice
 
-        /// <summary>
-        /// The color
-        /// </summary>
-        public Vector3 Color; // RGB color of the slice
-    }
+    /// <summary>
+    /// The color
+    /// </summary>
+    public Vector3 Color; // RGB color of the slice
 }

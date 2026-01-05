@@ -4,6 +4,7 @@
  * FILE:        Imaging/OpenTkControlWpf.cs
  * PURPOSE:     OpenGL Viewer for WPF applications using OpenTKDrawHelper.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * SOURCE:      https://github.com/opentk/GLWpfControl
  */
 
 #nullable enable
@@ -36,6 +37,8 @@ namespace RenderEngine
         // VBO reuse for dynamic rendering
         private int _vbo;
         private int _vao;
+
+        private Batched2DRenderer? _renderer;
 
         // Shader/resource manager
         private readonly GlResourceManager _resourceManager = new();
@@ -78,8 +81,7 @@ namespace RenderEngine
             GL.ClearColor(0.1f, 0.2f, 0.3f, 1f);
             GL.Enable(EnableCap.DepthTest);
 
-            OpenTkDrawHelper.Initialize();
-
+            _renderer = new Batched2DRenderer((int)ActualWidth, (int)ActualHeight); //, _resourceManager);
             _backgroundTexture = OpenTkHelper.LoadTextureFromFile("background.jpg");
 
             InitializeSkybox();
@@ -139,12 +141,12 @@ namespace RenderEngine
 
             if (_backgroundTexture != -1)
             {
-                OpenTkDrawHelper.DrawTexturedQuad(
-                    _backgroundTexture,
+                _renderer?.DrawTexturedQuad(
                     new System.Drawing.Point(0, 0),
                     new System.Drawing.Point((int)ActualWidth, 0),
                     new System.Drawing.Point((int)ActualWidth, (int)ActualHeight),
-                    new System.Drawing.Point(0, (int)ActualHeight));
+                    new System.Drawing.Point(0, (int)ActualHeight),
+                    _backgroundTexture);
             }
 
             if (_enableSkybox && _skyboxTexture != -1)

@@ -88,20 +88,7 @@ namespace RenderEngine
             }
         }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
-        /// </returns>
         public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)BufferSpan.ToArray()).GetEnumerator();
-
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
@@ -117,18 +104,6 @@ namespace RenderEngine
 
             // Allocate unmanaged memory (Width × Height × 4 bytes)
             _buffer = Marshal.AllocHGlobal(width * height * BytesPerPixel);
-        }
-
-
-        /// <summary>
-        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
-        /// </summary>
-        /// <param name="x">X coordinate (0-based)</param>
-        /// <param name="y">Y coordinate (0-based)</param>
-        /// <param name="color">The color to set</param>
-        public void SetPixel(int x, int y, Color color)
-        {
-            SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
         /// <summary>
@@ -172,6 +147,17 @@ namespace RenderEngine
             ptr[1] = g;
             ptr[2] = r;
             ptr[3] = a;
+        }
+
+        /// <summary>
+        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// </summary>
+        /// <param name="x">X coordinate (0-based)</param>
+        /// <param name="y">Y coordinate (0-based)</param>
+        /// <param name="color">The color to set</param>
+        public void SetPixel(int x, int y, Color color)
+        {
+            SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
         /// <summary>
@@ -451,27 +437,6 @@ namespace RenderEngine
         /// Ensures unmanaged memory is released if Dispose() wasn’t called.
         /// </summary>
         ~UnmanagedImageBuffer() => Dispose();
-
-
-        /// <summary>
-        /// Clears the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer.</param>
-        /// <param name="b">The b.</param>
-        /// <param name="g">The g.</param>
-        /// <param name="r">The r.</param>
-        /// <param name="a">a.</param>
-        public void Clear(UnmanagedImageBuffer buffer, int a, int r, int g, int b)
-        {
-            var span = BufferSpan;
-            for (var i = 0; i < span.Length; i += BytesPerPixel)
-            {
-                span[i + 0] = (byte)b;
-                span[i + 1] = (byte)g;
-                span[i + 2] = (byte)r;
-                span[i + 3] = (byte)a;
-            }
-        }
 
         /// <summary>
         /// Clears the entire buffer to the given color.

@@ -38,6 +38,8 @@ namespace RenderEngine
         private int _skyboxTexture;
         private int _skyboxVao, _skyboxVbo;
 
+        private Batched2DRenderer? _renderer;
+
         // VBO reuse for dynamic rendering
         private int _vbo;
         private int _vao;
@@ -81,8 +83,8 @@ namespace RenderEngine
                 GL.ClearColor(0.1f, 0.2f, 0.3f, 1f);
                 GL.Enable(EnableCap.DepthTest);
 
-                // Initialize helper static state if required
-                OpenTkDrawHelper.Initialize();
+                // Initialize helper
+                _renderer = new Batched2DRenderer(_glControl.Width, _glControl.Height); //, _resourceManager);
 
                 // Load a default background texture
                 _backgroundTexture = OpenTkHelper.LoadTextureFromFile("background.jpg");
@@ -155,12 +157,12 @@ namespace RenderEngine
             // Draw background
             if (_backgroundTexture != -1)
             {
-                OpenTkDrawHelper.DrawTexturedQuad(
-                    _backgroundTexture,
+                _renderer?.DrawTexturedQuad(
                     new Point(0, 0),
                     new Point(_glControl.Width, 0),
                     new Point(_glControl.Width, _glControl.Height),
-                    new Point(0, _glControl.Height));
+                    new Point(0, _glControl.Height),
+                    _backgroundTexture);
             }
 
             // Draw skybox if enabled
@@ -232,12 +234,12 @@ namespace RenderEngine
             // Draw background first
             if (_backgroundTexture != -1)
             {
-                OpenTkDrawHelper.DrawTexturedQuad(
-                    _backgroundTexture,
+                _renderer?.DrawTexturedQuad(
                     new Point(0, 0),
                     new Point(screenWidth, 0),
                     new Point(screenWidth, screenHeight),
-                    new Point(0, screenHeight));
+                    new Point(0, screenHeight),
+                    _backgroundTexture);
             }
 
             foreach (var pixel in pixels)
@@ -245,7 +247,7 @@ namespace RenderEngine
                 var px = pixel.X;
                 var py = screenHeight - pixel.Y;
 
-                OpenTkDrawHelper.DrawSolidQuad(
+                _renderer?.DrawSolidQuad(
                     new Point(px, py),
                     new Point(px + 1, py),
                     new Point(px + 1, py + 1),
@@ -333,12 +335,11 @@ namespace RenderEngine
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            OpenTkDrawHelper.DrawTexturedQuad(
-                textureId,
+            _renderer?.DrawTexturedQuad(
                 new Point(0, 0),
                 new Point((int)Width, 0),
                 new Point((int)Width, (int)Height),
-                new Point(0, (int)Height));
+                new Point(0, (int)Height), textureId);
         }
 
         /// <summary>

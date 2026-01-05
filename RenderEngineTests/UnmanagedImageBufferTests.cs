@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RenderEngine;
 
@@ -56,12 +57,13 @@ namespace RenderEngineTests
         {
             using var buffer = new UnmanagedImageBuffer(2, 2);
 
-            buffer.Clear(buffer, 128, 10, 20, 30); // A,R,G,B
+            var col = Color.FromArgb(128, 10, 20, 33);
+            buffer.Clear(col); // A,R,G,B
 
             var span = buffer.BufferSpan;
             for (var i = 0; i < span.Length; i += 4)
             {
-                Assert.AreEqual(30, span[i]); // B
+                Assert.AreEqual(33, span[i]); // B
                 Assert.AreEqual(20, span[i + 1]); // G
                 Assert.AreEqual(10, span[i + 2]); // R
                 Assert.AreEqual(128, span[i + 3]); // A
@@ -75,7 +77,8 @@ namespace RenderEngineTests
         public void ApplyChangesUpdatesOnlyTargetedPixels()
         {
             using var buffer = new UnmanagedImageBuffer(2, 2);
-            buffer.Clear(buffer, 0, 0, 0, 0);
+            var col = Color.FromArgb(0, 0, 0, 0);
+            buffer.Clear(col);
 
             var changes = new (int x, int y, uint bgra)[]
             {
@@ -128,7 +131,8 @@ namespace RenderEngineTests
         public void GetPixelSpanReturnsCorrectSpan()
         {
             using var buffer = new UnmanagedImageBuffer(4, 1);
-            buffer.Clear(buffer, 255, 1, 2, 3);
+            var col = Color.FromArgb(255, 1, 2, 3);
+            buffer.Clear(col);
 
             var span = buffer.GetPixelSpan(1, 0, 2);
             Assert.AreEqual(8, span.Length);

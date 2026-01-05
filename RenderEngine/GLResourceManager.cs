@@ -16,19 +16,36 @@ using System.IO;
 
 namespace RenderEngine
 {
+    /// <summary>
+    /// Texute and Shader manager for OpenGL.
+    /// </summary>
+    /// <seealso cref="IDisposable" />
     public sealed class GlResourceManager : IDisposable
     {
+        /// <summary>
+        /// The texture cache
+        /// </summary>
         private readonly Dictionary<string, int> _textureCache = new();
+
+        /// <summary>
+        /// The program cache
+        /// </summary>
         private readonly Dictionary<ShaderTypeApp, int> _programCache = new();
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
 
         // --- Textures ---
 
         /// <summary>
         /// Gets the texture.
+        /// Be carefull, this can overwrite existing textures.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Id of Texture</returns>
-        /// <exception cref="System.IO.FileNotFoundException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
         public int GetTexture(string filePath)
         {
             if (_textureCache.TryGetValue(filePath, out var texId))
@@ -38,6 +55,7 @@ namespace RenderEngine
                 throw new FileNotFoundException(filePath);
 
             texId = OpenTkHelper.LoadTextureFromFile(filePath);
+
             _textureCache[filePath] = texId;
             return texId;
         }
@@ -47,15 +65,15 @@ namespace RenderEngine
         /// </summary>
         /// <param name="textures">The textures.</param>
         /// <returns>Dictionary of Input id and Id of texture</returns>
-        /// <exception cref="System.ArgumentNullException">Texture {id} is null.</exception>
-        public Dictionary<int, int> CreateMasterTextures(Dictionary<int, UnmanagedImageBuffer?> textures)
+        /// <exception cref="ArgumentNullException">Texture {id} is null.</exception>
+        public static Dictionary<int, int> CreateMasterTextures(Dictionary<int, UnmanagedImageBuffer?> textures)
         {
             var result = new Dictionary<int, int>();
 
             foreach (var (id, tex) in textures)
             {
                 if (tex == null)
-                    throw new ArgumentNullException($"Texture {id} is null.");
+                    throw new ArgumentNullException(nameof(textures), $"Texture {id} is null.");
 
                 // Create GL texture from Bitmap
                 var texId = OpenTkHelper.CreateTexture(tex, opaqueFastPath: false);
@@ -85,7 +103,7 @@ namespace RenderEngine
         /// </summary>
         /// <param name="appType">Type of the application.</param>
         /// <returns>Id of Shader</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">appType</exception>
+        /// <exception cref="ArgumentOutOfRangeException">appType</exception>
         public int GetShaderProgram(ShaderTypeApp appType)
         {
             if (_programCache.TryGetValue(appType, out var programId))
@@ -106,14 +124,54 @@ namespace RenderEngine
                     vertexSrc = ShaderResource.VertexColorVertexShader;
                     fragmentSrc = ShaderResource.VertexColorFragmentShader;
                     break;
-                case ShaderTypeApp.Wireframe:
-                    vertexSrc = ShaderResource.WireframeVertexShader;
-                    fragmentSrc = ShaderResource.WireframeFragmentShader;
+
+                    bool useMatrices = true;
+                    vertexSrc = useMatrices
+                        ? ShaderResource.WireframeVertexShader
+                        : ShaderResource.WireframeVertexShaderPassThrough;
+                    fragmentSrc = useMatrices
+                        ? ShaderResource.WireframeFragmentShader
+                        : ShaderResource.WireframeFragmentShaderPassThrough;
                     break;
                 case ShaderTypeApp.TextureArrayTilemap:
                     vertexSrc = ShaderResource.TextureArrayTilemapVertexShader;
                     fragmentSrc = ShaderResource.TextureArrayTilemapFragmentShader;
                     break;
+                // ----- 2D shaders -----
+                case ShaderTypeApp.SolidColor2D:
+                    vertexSrc = ShaderResource.SolidColor2DVertexShader;
+                    fragmentSrc = ShaderResource.SolidColor2DFragmentShader;
+                    break;
+                case ShaderTypeApp.VertexColor2D:
+                    vertexSrc = ShaderResource.VertexColor2DVertexShader;
+                    fragmentSrc = ShaderResource.VertexColor2DFragmentShader;
+                    break;
+                case ShaderTypeApp.TexturedQuad2D:
+                    vertexSrc = ShaderResource.TexturedQuad2DVertexShader;
+                    fragmentSrc = ShaderResource.TexturedQuad2DFragmentShader;
+                    break;
+                case ShaderTypeApp.PhongLighting: // UNUSED for now
+                    vertexSrc = ShaderResource.PhongLightingVertexShader;
+                    fragmentSrc = ShaderResource.PhongLightingFragmentShader;
+                    break;
+                case ShaderTypeApp.Instancing: // UNUSED for now
+                    vertexSrc = ShaderResource.InstancingVertexShader;
+                    fragmentSrc = ShaderResource.InstancingFragmentShader;
+                    break;
+                case ShaderTypeApp.PostProcessing: // UNUSED for now
+                    vertexSrc = ShaderResource.PostProcessingVertexShader;
+                    fragmentSrc = ShaderResource.PostProcessingFragmentShader;
+                    break;
+                case ShaderTypeApp.WaterRipple: // UNUSED for now
+                    vertexSrc = ShaderResource.WaterRippleVertexShader;
+                    fragmentSrc = ShaderResource.WaterRippleFragmentShader;
+                    break;
+
+                case ShaderTypeApp.VolumetricFog: // UNUSED for now
+                    vertexSrc = ShaderResource.VolumetricFogVertexShader;
+                    fragmentSrc = ShaderResource.VolumetricFogFragmentShader;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(appType));
             }
@@ -122,6 +180,7 @@ namespace RenderEngine
             _programCache[appType] = programId;
             return programId;
         }
+
 
         /// <summary>
         /// Uses the shader.
@@ -140,7 +199,7 @@ namespace RenderEngine
         /// <param name="vertexSource">The vertex source.</param>
         /// <param name="fragmentSource">The fragment source.</param>
         /// <returns>Id of Shader</returns>
-        /// <exception cref="System.Exception">Shader program link failed: " + info</exception>
+        /// <exception cref="Exception">Shader program link failed: " + info</exception>
         private static int CompileAndLinkShader(string vertexSource, string fragmentSource)
         {
             var vertex = CompileSingleShader(ShaderType.VertexShader, vertexSource);
@@ -174,7 +233,7 @@ namespace RenderEngine
         /// <param name="type">The type.</param>
         /// <param name="source">The source.</param>
         /// <returns>Id of Shader</returns>
-        /// <exception cref="System.Exception">Error compiling {type}: {info}</exception>
+        /// <exception cref="Exception">Error compiling {type}: {info}</exception>
         private static int CompileSingleShader(ShaderType type, string source)
         {
             var shader = GL.CreateShader(type);
@@ -195,6 +254,9 @@ namespace RenderEngine
         /// </summary>
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
+
             foreach (var texId in _textureCache.Values)
                 GL.DeleteTexture(texId);
 
@@ -203,6 +265,8 @@ namespace RenderEngine
 
             _textureCache.Clear();
             _programCache.Clear();
+
+            GC.SuppressFinalize(this);
         }
     }
 }
