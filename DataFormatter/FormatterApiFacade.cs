@@ -2,14 +2,22 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
  * FILE:        FormatterApiFacade.cs
- * PURPOSE:     Api Facade for the DataFormatter library
+ * PURPOSE:     Api Façade for the DataFormatter library
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 
 namespace DataFormatter
 {
+    /// <summary>
+    /// Central API Façade for the DataFormatter library
+    /// </summary>
     public static class FormatterApiFacade
     {
         /// <summary>
@@ -26,7 +34,8 @@ namespace DataFormatter
         /// <param name="file">The file.</param>
         /// <param name="data">The data.</param>
         /// <param name="sep">The sep.</param>
-        public static void WriteCsv(string file, IEnumerable<List<string>> data, string sep) => CsvHandler.WriteCsv(file, data, sep);
+        public static void WriteCsv(string file, IEnumerable<List<string>> data, string sep) =>
+            CsvHandler.WriteCsv(file, data, sep);
 
         /// <summary>
         /// Reads the CSV with layers.
@@ -52,20 +61,20 @@ namespace DataFormatter
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>the values as String[]. Can return null.</returns>
-        public static IEnumerable<string> ReadFile(string path) => ReadText.ReadFile(path);
+        public static IEnumerable<string>? ReadFile(string path) => ReadText.ReadFile(path);
 
         /// <summary>
         /// Writes the file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="content">The content.</param>
-        public static void WriteFile(string path, IEnumerable<string> content) => ReadText.WriteFile(path, content);
+        public static async Task WriteFile(string path, IEnumerable<string> content) => await ReadText.WriteFile(path, content);
 
         /// <summary>
         /// Reads the object.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Readable Obj File</returns>
-        public static ObjFile ReadObj(string path) => ReaderObj.ReadObj(path);
+        public static ObjFile? ReadObj(string path) => ReaderObj.ReadObj(path);
     }
 }

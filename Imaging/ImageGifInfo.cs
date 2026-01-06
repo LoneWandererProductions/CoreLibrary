@@ -145,7 +145,7 @@ namespace Imaging
         /// <value>
         ///     The delay time.
         /// </value>
-        public double DelayTime { get; set; } // Delay time in seconds
+        public double DelayTime { get; init; } // Delay time in seconds
 
 
         /// <summary>

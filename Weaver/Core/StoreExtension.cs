@@ -25,7 +25,8 @@ namespace Weaver.Core
         public string Name => WeaverResources.GlobalExtensionStore;
 
         /// <inheritdoc />
-        public string Description => "Stores result of a command using the .store extension. Usual store is 'result', you can provide your own key via overload.";
+        public string Description =>
+            "Stores result of a command using the .store extension. Usual store is 'result', you can provide your own key via overload.";
 
         /// <inheritdoc />
         public string Namespace => WeaverResources.GlobalNamespace;
@@ -39,7 +40,8 @@ namespace Weaver.Core
         }
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
+            string[] commandArgs)
         {
             // Determine key from extension args
             var key = extensionArgs.Length > 0 && !string.IsNullOrWhiteSpace(extensionArgs[0])

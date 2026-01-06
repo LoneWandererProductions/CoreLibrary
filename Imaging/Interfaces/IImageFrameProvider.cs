@@ -6,15 +6,19 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Windows.Media;
 
 namespace Imaging.Interfaces
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interface wrapper for animated image formats
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="T:System.IDisposable" />
     public interface IImageFrameProvider : IDisposable
     {
         /// <summary>

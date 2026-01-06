@@ -330,7 +330,6 @@ namespace Imaging.Helpers
                     {
                         for (var i = -1; i <= 1; i++)
                         {
-                            var pixel = sourceBuffer.GetPixel(x + i, y + j);
                             var (r, g, b, a) = sourceBuffer.GetPixel(x + i, y + j);
 
                             int grayValue = r; // grayscale

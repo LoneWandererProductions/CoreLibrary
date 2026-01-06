@@ -22,7 +22,11 @@ namespace Weaver.ScriptEngine
         /// </summary>
         private static readonly HashSet<string> Keywords = new(StringComparer.OrdinalIgnoreCase)
         {
-            ScriptConstants.If, ScriptConstants.Else, ScriptConstants.Label, ScriptConstants.Goto, ScriptConstants.Do,
+            ScriptConstants.If,
+            ScriptConstants.Else,
+            ScriptConstants.Label,
+            ScriptConstants.Goto,
+            ScriptConstants.Do,
             ScriptConstants.While
         };
 
@@ -96,20 +100,14 @@ namespace Weaver.ScriptEngine
                         Advance(); // Skip closing quote
                         tokens.Add(new Token
                         {
-                            Type = TokenType.String,
-                            Lexeme = stringBuilder.ToString(),
-                            Line = line,
-                            Column = col
+                            Type = TokenType.String, Lexeme = stringBuilder.ToString(), Line = line, Column = col
                         });
                     }
                     else
                     {
                         tokens.Add(new Token
                         {
-                            Type = TokenType.Unknown,
-                            Lexeme = "\"" + stringBuilder,
-                            Line = line,
-                            Column = col
+                            Type = TokenType.Unknown, Lexeme = "\"" + stringBuilder, Line = line, Column = col
                         });
                     }
                 }
@@ -254,10 +252,7 @@ namespace Weaver.ScriptEngine
                         var comment = ReadWhile(ch => ch != '\n' && ch != '\r');
                         tokens.Add(new Token
                         {
-                            Type = TokenType.Comment,
-                            Lexeme = comment.Trim(),
-                            Line = line,
-                            Column = col
+                            Type = TokenType.Comment, Lexeme = comment.Trim(), Line = line, Column = col
                         });
                     }
                     else

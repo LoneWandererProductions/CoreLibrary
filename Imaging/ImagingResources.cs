@@ -189,11 +189,6 @@ namespace Imaging
         internal const string ErrorWrongParameters = "Wrong Arguments provided: ";
 
         /// <summary>
-        ///     Memory Error (const). Value: " used Memory: ".
-        /// </summary>
-        internal const string ErrorMemory = " used Memory: ";
-
-        /// <summary>
         ///     The Spacing (const). Value:  " : ".
         /// </summary>
         internal const string Spacing = " : ";

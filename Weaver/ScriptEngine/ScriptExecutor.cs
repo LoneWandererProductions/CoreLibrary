@@ -192,12 +192,7 @@ namespace Weaver.ScriptEngine
                 }
             }
 
-            return new CommandResult
-            {
-                Success = true,
-                Message = "Script finished.",
-                Feedback = null
-            };
+            return new CommandResult { Success = true, Message = "Script finished.", Feedback = null };
         }
     }
 }

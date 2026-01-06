@@ -133,9 +133,7 @@ public sealed class Batched2DRenderer : IDisposable
             1f, 1f, // top-right
             1f, -1f, // bottom-right
 
-            1f, -1f,
-            -1f, -1f,
-            -1f, 1f
+            1f, -1f, -1f, -1f, -1f, 1f
         };
 
         var vao = GL.GenVertexArray();
@@ -249,10 +247,29 @@ public sealed class Batched2DRenderer : IDisposable
     }
 
     private void AddSolidVertex(float x, float y, float r, float g, float b, float a)
-        => _solidVertices.Add(new Vertex { X = x, Y = y, R = r, G = g, B = b, A = a });
+        => _solidVertices.Add(new Vertex
+        {
+            X = x,
+            Y = y,
+            R = r,
+            G = g,
+            B = b,
+            A = a
+        });
 
     private void AddTexVertex(float x, float y, float r, float g, float b, float a, float u, float v, float texId)
-        => _texVertices.Add(new Vertex { X = x, Y = y, R = r, G = g, B = b, A = a, U = u, V = v, TexIndex = texId });
+        => _texVertices.Add(new Vertex
+        {
+            X = x,
+            Y = y,
+            R = r,
+            G = g,
+            B = b,
+            A = a,
+            U = u,
+            V = v,
+            TexIndex = texId
+        });
 
     #region Public Draw API
 

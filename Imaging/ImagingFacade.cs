@@ -6,10 +6,14 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Imaging.Enums;
@@ -17,7 +21,7 @@ using Imaging.Enums;
 namespace Imaging
 {
     /// <summary>
-    ///     Unified facade for the Imaging engine.
+    ///     Unified façade for the Imaging engine.
     ///     This class provides a stable public API for common image processing tasks,
     ///     including loading, saving, conversion, resizing, filtering, pixel manipulation,
     ///     GIF handling, blending, and texture generation.
@@ -26,8 +30,8 @@ namespace Imaging
     /// </summary>
     public static class ImagingFacade
     {
-
         #region Register
+
         /// <summary>
         /// Gets the singleton instance of the <see cref="ImageRegister"/>.
         /// Allows querying and modifying filter and texture settings globally.
@@ -46,7 +50,8 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter type.</param>
         /// <param name="config">The new filter configuration.</param>
-        public static void SetFilterSettings(FiltersType filter, FiltersConfig config) => Register.SetSettings(filter, config);
+        public static void SetFilterSettings(FiltersType filter, FiltersConfig config) =>
+            Register.SetSettings(filter, config);
 
         /// <summary>
         /// Retrieves all available filters.
@@ -73,7 +78,8 @@ namespace Imaging
         /// </summary>
         /// <param name="texture">The texture type.</param>
         /// <param name="config">The new texture configuration.</param>
-        public static void SetTextureSettings(TextureType texture, TextureConfiguration config) => Register.SetSettings(texture, config);
+        public static void SetTextureSettings(TextureType texture, TextureConfiguration config) =>
+            Register.SetSettings(texture, config);
 
         /// <summary>
         /// Gets the property names used by a specific texture type.
@@ -104,6 +110,7 @@ namespace Imaging
         /// Gets the last error message recorded by the Imaging engine.
         /// </summary>
         public static string? LastError => Register.LastError;
+
         #endregion
 
         #region Load / Save
@@ -191,7 +198,7 @@ namespace Imaging
         /// <param name="image">The source bitmap.</param>
         /// <param name="filter">The filter type to apply.</param>
         /// <returns>The filtered <see cref="Bitmap"/>.</returns>
-        public static Bitmap ApplyFilter(Bitmap image, FiltersType filter)
+        public static Bitmap? ApplyFilter(Bitmap image, FiltersType filter)
             => new ImageRender().FilterImage(image, filter);
 
         /// <summary>
@@ -203,7 +210,8 @@ namespace Imaging
         /// <param name="shapeParams">Optional parameters for the mask shape.</param>
         /// <param name="startPoint">Optional start point for the filter.</param>
         /// <returns>The filtered <see cref="Bitmap"/>.</returns>
-        public static Bitmap ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object shapeParams, System.Drawing.Point? startPoint = null)
+        public static Bitmap ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object shapeParams,
+            Point? startPoint = null)
             => new ImageRender().FilterImageArea(image, null, null, filter, shape, shapeParams, startPoint);
 
         #endregion
@@ -216,7 +224,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <returns>The <see cref="Color"/> of the pixel.</returns>
-        public static Color GetPixel(Bitmap image, System.Drawing.Point p)
+        public static Color GetPixel(Bitmap image, Point p)
             => new ImageRender().GetPixel(image, p);
 
         /// <summary>
@@ -225,7 +233,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <param name="color">The color to set.</param>
-        public static void SetPixel(Bitmap image, System.Drawing.Point p, Color color)
+        public static void SetPixel(Bitmap image, Point p, Color color)
             => new ImageRender().SetPixel(image, p, color);
 
         /// <summary>
@@ -250,7 +258,7 @@ namespace Imaging
         /// <param name="x">X-coordinate for overlay placement.</param>
         /// <param name="y">Y-coordinate for overlay placement.</param>
         /// <returns>The combined <see cref="Bitmap"/>.</returns>
-        public static Bitmap Combine(Bitmap baseImage, Bitmap overlay, int x, int y)
+        public static Bitmap? Combine(Bitmap baseImage, Bitmap overlay, int x, int y)
             => new ImageRender().CombineBitmap(baseImage, overlay, x, y);
 
         /// <summary>
@@ -316,8 +324,7 @@ namespace Imaging
             var sources = await new ImageRender().LoadGifAsync(path);
 
             var frames = new List<Bitmap>(sources.Count);
-            foreach (var src in sources)
-                frames.Add(ImageExtension.ToBitmap((BitmapImage)src));
+            frames.AddRange(sources.Select(src => ((BitmapImage)src).ToBitmap()));
 
             return frames;
         }
@@ -344,7 +351,8 @@ namespace Imaging
         /// <param name="shapeParams">Optional parameters for the shape.</param>
         /// <param name="startPoint">Optional starting point.</param>
         /// <returns>The generated texture as a <see cref="Bitmap"/>.</returns>
-        public static Bitmap GenerateTexture(int width, int height, TextureType type, MaskShape shape, object shapeParams, System.Drawing.Point? startPoint = null)
+        public static Bitmap? GenerateTexture(int width, int height, TextureType type, MaskShape shape,
+            object shapeParams, Point? startPoint = null)
             => new TextureGenerator().GenerateTexture(width, height, type, shape, startPoint, shapeParams);
 
         #endregion

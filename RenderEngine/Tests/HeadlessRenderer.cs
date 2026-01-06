@@ -70,13 +70,7 @@ namespace RenderEngine.Tests
             _vao = GL.GenVertexArray();
             GL.BindVertexArray(_vao);
 
-            float[] vertices =
-            {
-                -0.5f, -0.5f,
-                0.5f, -0.5f,
-                0.5f, 0.5f,
-                -0.5f, 0.5f
-            };
+            float[] vertices = { -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f };
 
             _vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);

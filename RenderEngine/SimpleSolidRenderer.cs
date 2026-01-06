@@ -83,13 +83,7 @@ void main()
             if (_shaderProgram == 0)
                 return;
 
-            float[] vertices =
-            {
-                p0.X, p0.Y,
-                p1.X, p1.Y,
-                p2.X, p2.Y,
-                p3.X, p3.Y
-            };
+            float[] vertices = { p0.X, p0.Y, p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y };
 
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vao);

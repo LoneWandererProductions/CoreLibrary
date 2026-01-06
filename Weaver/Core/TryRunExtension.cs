@@ -37,10 +37,10 @@ namespace Weaver.Core
         /// 4. Handles invalid feedback input by prompting the user again.
         /// </remarks>
         public CommandResult Invoke(
-             ICommand command,
-             string[] extensionArgs,
-             Func<string[], CommandResult> executor,
-             string[] commandArgs)
+            ICommand command,
+            string[] extensionArgs,
+            Func<string[], CommandResult> executor,
+            string[] commandArgs)
         {
             // Step 1: Preview execution using commandArgs
             var preview = command.TryRun(commandArgs) ?? executor(commandArgs);

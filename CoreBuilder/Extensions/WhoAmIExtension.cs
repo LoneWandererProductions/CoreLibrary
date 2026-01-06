@@ -31,7 +31,8 @@ namespace CoreBuilder.Extensions
         public string Namespace => "System";
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
+            string[] commandArgs)
         {
             if (extensionArgs.Length == 0)
             {

@@ -23,7 +23,7 @@ namespace Imaging.Helpers
         /// <summary>
         /// The number regex
         /// </summary>
-        private static readonly Regex _numberRegex = new Regex(@"\d+", RegexOptions.Compiled);
+        private static readonly Regex NumberRegex = new(@"\d+", RegexOptions.Compiled);
 
         /// <summary>
         /// Gets the files by extension full path.
@@ -103,7 +103,7 @@ namespace Imaging.Helpers
         /// <returns>Extracted numbers.</returns>
         private static int ExtractNumber(string name)
         {
-            var match = _numberRegex.Match(name);
+            var match = NumberRegex.Match(name);
             return match.Success ? int.Parse(match.Value) : int.MaxValue;
         }
     }
