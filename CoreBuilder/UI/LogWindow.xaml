@@ -16,23 +16,26 @@
             </MenuItem>
 
             <MenuItem Header="_Options">
-                <MenuItem>
+                <Menu>
                     <CheckBox x:Name="AutoScrollCheck"
                               Content="Auto Scroll"
                               IsChecked="True" />
-                </MenuItem>
-                <MenuItem>
+                </Menu>
+                <Menu>
                     <CheckBox x:Name="ShowTimestampCheck"
                               Content="Show Timestamp"
                               IsChecked="False" />
-                </MenuItem>
+                </Menu>
             </MenuItem>
         </Menu>
 
         <!-- Log Area -->
         <ScrollViewer x:Name="ScrollViewer"
                       VerticalScrollBarVisibility="Auto">
-            <TextBlock x:Name="LogText"
+            <TextBox  x:Name="LogText"
+                       Cursor="Arrow" 
+                       IsReadOnly="True"
+                       Focusable="True"
                        FontFamily="Consolas"
                        TextWrapping="Wrap"
                        Margin="10" />

@@ -12,14 +12,14 @@ using System.Text;
 namespace DataFormatter
 {
     /// <summary>
-    ///     Separate multible csv files via keywords.
+    ///     Separate multiple csv files via keywords.
     /// </summary>
     public static class SegmentedCsvHandler
     {
         /// <summary>
         ///     Writes the CSV with layer keywords.
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
+        /// <param name="filepath">The file path.</param>
         /// <param name="separator">The separator.</param>
         /// <param name="csvLayers">The CSV layers.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
