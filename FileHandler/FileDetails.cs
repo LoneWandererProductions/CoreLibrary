@@ -9,11 +9,14 @@
 // ReSharper disable MemberCanBeInternal, no it will be used externally
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using System.Diagnostics;
+
 namespace FileHandler
 {
     /// <summary>
     ///     The file details class.
     /// </summary>
+    [DebuggerDisplay("{ToString(),nq}")]
     public sealed class FileDetails
     {
         /// <summary>
@@ -65,5 +68,20 @@ namespace FileHandler
         ///     Gets or sets the product version.
         /// </summary>
         public string ProductVersion { get; internal init; }
+
+        /// <summary>
+        /// Returns a string representation of the file details.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return $"{FileName}{(string.IsNullOrEmpty(Extension) ? "" : "." + Extension)} " +
+                   $"[{Size} bytes]" +
+                   $"{(!string.IsNullOrEmpty(ProductName) ? $" - {ProductName}" : "")}" +
+                   $"{(!string.IsNullOrEmpty(FileVersion) ? $" v{FileVersion}" : "")}" +
+                   $"{(!string.IsNullOrEmpty(CompanyName) ? $" by {CompanyName}" : "")}";
+        }
     }
 }
