@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/SegmentedCsvHandler.cs
+ * FILE:        SegmentedCsvHandler.cs
  * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

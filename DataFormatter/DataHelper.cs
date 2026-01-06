@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/DataHelper.cs
+ * FILE:        DataHelper.cs
  * PURPOSE:     Basic stuff shared over all operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

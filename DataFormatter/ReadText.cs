@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/ReadTxtFile.cs
+ * FILE:        ReadTxtFile.cs
  * PURPOSE:     Read txt Files
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

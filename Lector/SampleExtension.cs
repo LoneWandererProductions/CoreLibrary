@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Lector
  * FILE:        SampleExtension.cs
@@ -8,6 +8,7 @@
 
 // ReSharper disable UnusedType.Global
 
+#nullable enable
 using Weaver.Interfaces;
 using Weaver.Messages;
 
@@ -33,13 +34,13 @@ namespace Lector
         /// <summary>
         /// Wraps the execution of the command. Can run before/after logic or inject feedback.
         /// </summary>
-        public CommandResult Invoke(ICommand command, string[] args, Func<string[], CommandResult> executor)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
         {
             // Before hook
-            BeforeExecute(command, args);
+            BeforeExecute(command, commandArgs);
 
             // Optionally, preview or manipulate the execution
-            var result = executor(args);
+            var result = executor(commandArgs);
 
             // After hook
             AfterExecute(command, result);

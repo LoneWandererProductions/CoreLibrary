@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/CsvHelper.cs
+ * FILE:        CsvHelper.cs
  * PURPOSE:     Shared Helper functions that will be inlined anyways
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

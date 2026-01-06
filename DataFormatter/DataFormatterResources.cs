@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/DataFormatterResources.cs
+ * FILE:        DataFormatterResources.cs
  * PURPOSE:     Basic string Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

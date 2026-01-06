@@ -31,9 +31,9 @@ namespace CoreBuilder.Extensions
         public string Namespace => "System";
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] args, Func<string[], CommandResult> executor)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
         {
-            if (args.Length == 0)
+            if (extensionArgs.Length == 0)
             {
                 return CommandResult.Fail(
                     "No parameter specified. Example: whoami().who(ip,hostname) or whoami().who(ip)");
@@ -57,7 +57,7 @@ namespace CoreBuilder.Extensions
                 string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
                 // Build a list of lines for requested fields
-                var lines = args.Select(arg => arg.ToLowerInvariant())
+                var lines = extensionArgs.Select(arg => arg.ToLowerInvariant())
                     .Select(field =>
                     {
                         return field switch

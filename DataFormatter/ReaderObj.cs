@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/ReaderObj.cs
+ * FILE:        ReaderObj.cs
  * PURPOSE:     A really basic obj File reader, does the basic stuff nothing more!
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

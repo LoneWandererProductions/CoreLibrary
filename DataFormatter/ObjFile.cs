@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/ObjFile.cs
+ * FILE:        ObjFile.cs
  * PURPOSE:     Basic Object for Blender File
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * NOTE:        Blender Files don't start counting at 0! So add +1 offset.

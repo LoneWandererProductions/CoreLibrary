@@ -18,6 +18,9 @@ namespace Weaver.ScriptEngine
     /// </summary>
     public sealed class ScriptExecutor
     {
+        /// <summary>
+        /// The weave
+        /// </summary>
         private readonly Weave _weave;
 
         /// <summary>

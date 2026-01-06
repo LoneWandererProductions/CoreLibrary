@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/TertiaryVector.cs
+ * FILE:        TertiaryVector.cs
  * PURPOSE:     A really basic obj that holds three double values, needed for obj Files
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

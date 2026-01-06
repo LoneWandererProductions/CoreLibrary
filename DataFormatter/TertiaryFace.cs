@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/TertiaryFace.cs
+ * FILE:        TertiaryFace.cs
  * PURPOSE:     Basic Object that holds three int values, used for obj File
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

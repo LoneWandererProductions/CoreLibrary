@@ -18,8 +18,6 @@ namespace Weaver.ScriptEngine
     /// </summary>
     public sealed class VariableRegistry : IVariableRegistry
     {
-
-
         /// <summary>
         /// The registry itself
         /// for future Reference:

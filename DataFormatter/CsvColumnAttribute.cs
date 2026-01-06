@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/CsvColumnAttribute.cs
+ * FILE:        CsvColumnAttribute.cs
  * PURPOSE:     Helper for csv, Helps converter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/CsvHandler.cs
+ * FILE:        CsvHandler.cs
  * PURPOSE:     Simple Csv reader/writer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

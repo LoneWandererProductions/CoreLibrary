@@ -10,11 +10,25 @@ using System.Text;
 
 namespace Weaver.ScriptEngine
 {
+    /// <summary>
+    /// parser for script tokens into ScriptNode tree
+    /// </summary>
     internal sealed class Parser
     {
+        /// <summary>
+        /// The tokens
+        /// </summary>
         private readonly List<Token> _tokens;
+
+        /// <summary>
+        /// The position
+        /// </summary>
         private int _position;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser"/> class.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
         public Parser(List<Token> tokens)
         {
             _tokens = tokens;
@@ -72,6 +86,11 @@ namespace Weaver.ScriptEngine
 
         // --- Node Parsers ---
 
+        /// <summary>
+        /// Parses the label node.
+        /// </summary>
+        /// <returns>Label Node record.</returns>
+        /// <exception cref="System.ArgumentException">Expected identifier after 'label'</exception>
         private LabelNode ParseLabelNode()
         {
             var pos = _position;
@@ -85,6 +104,11 @@ namespace Weaver.ScriptEngine
             return new LabelNode(pos, nameToken.Lexeme);
         }
 
+        /// <summary>
+        /// Parses the goto node.
+        /// </summary>
+        /// <returns>Goto Node record.</returns>
+        /// <exception cref="System.ArgumentException">Expected identifier after 'goto'</exception>
         private GotoNode ParseGotoNode()
         {
             var pos = _position;
@@ -98,6 +122,10 @@ namespace Weaver.ScriptEngine
             return new GotoNode(pos, targetToken.Lexeme);
         }
 
+        /// <summary>
+        /// Parses the assignment node.
+        /// </summary>
+        /// <returns>Assignment Node record.</returns>
         private AssignmentNode ParseAssignmentNode()
         {
             var pos = _position;
@@ -107,6 +135,10 @@ namespace Weaver.ScriptEngine
             return new AssignmentNode(pos, variable, expr);
         }
 
+        /// <summary>
+        /// Parses the command node.
+        /// </summary>
+        /// <returns>Command Node record.</returns>
         private CommandNode ParseCommandNode()
         {
             var pos = _position;
@@ -114,6 +146,10 @@ namespace Weaver.ScriptEngine
             return new CommandNode(pos, command);
         }
 
+        /// <summary>
+        /// Parses if node.
+        /// </summary>
+        /// <returns>If Node record.</returns>
         private IfNode ParseIfNode()
         {
             var pos = _position;
@@ -134,6 +170,11 @@ namespace Weaver.ScriptEngine
             return new IfNode(pos, condition, trueBranch, falseBranch);
         }
 
+        /// <summary>
+        /// Parses the do while node.
+        /// </summary>
+        /// <returns>Do7While Node record.</returns>
+        /// <exception cref="System.ArgumentException">Expected 'while' after 'do' block</exception>
         private DoWhileNode ParseDoWhileNode()
         {
             var pos = _position;
@@ -151,6 +192,10 @@ namespace Weaver.ScriptEngine
             return new DoWhileNode(pos, body, condition);
         }
 
+        /// <summary>
+        /// Parses the block statements.
+        /// </summary>
+        /// <returns>The complete Script Node.</returns>
         private List<ScriptNode> ParseBlockStatements()
         {
             var statements = new List<ScriptNode>();
@@ -194,6 +239,10 @@ namespace Weaver.ScriptEngine
 
         // --- Helpers ---
 
+        /// <summary>
+        /// Reads the statement as string.
+        /// </summary>
+        /// <returns>Statement as string</returns>
         private string ReadStatementAsString()
         {
             var sb = new StringBuilder();
@@ -223,6 +272,10 @@ namespace Weaver.ScriptEngine
             return sb.ToString().Trim();
         }
 
+        /// <summary>
+        /// Reads the condition.
+        /// </summary>
+        /// <returns>Condition as string</returns>
         private string ReadCondition()
         {
             Expect(TokenType.OpenParen);
@@ -248,9 +301,18 @@ namespace Weaver.ScriptEngine
             return sb.ToString().Trim();
         }
 
+        /// <summary>
+        /// Looks the ahead is assignment.
+        /// </summary>
+        /// <returns></returns>
         private bool LookAheadIsAssignment() =>
             _position + 1 < _tokens.Count && _tokens[_position + 1].Type == TokenType.Equal;
 
+        /// <summary>
+        /// Expects the specified expected.
+        /// </summary>
+        /// <param name="expected">The expected.</param>
+        /// <exception cref="System.ArgumentException">Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'</exception>
         private void Expect(TokenType expected)
         {
             if (IsAtEnd() || Peek().Type != expected)
@@ -260,6 +322,11 @@ namespace Weaver.ScriptEngine
             Advance();
         }
 
+        /// <summary>
+        /// Matches the specified type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         private bool Match(TokenType type)
         {
             if (IsAtEnd() || Peek().Type != type) return false;
@@ -268,11 +335,34 @@ namespace Weaver.ScriptEngine
             return true;
         }
 
+        /// <summary>
+        /// Determines whether the specified type is alphanumeric.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified type is alphanumeric; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsAlphanumeric(TokenType type) =>
             type is TokenType.Identifier or TokenType.Number or TokenType.KeywordIf or TokenType.KeywordElse;
 
+        /// <summary>
+        /// Peeks this instance.
+        /// </summary>
+        /// <returns>Token at current position</returns>
         private Token Peek() => _tokens[_position];
+
+        /// <summary>
+        /// Advances this instance.
+        /// </summary>
+        /// <returns>Token at next position.</returns>
         private Token Advance() => _tokens[_position++];
+
+        /// <summary>
+        /// Determines whether [is at end].
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if [is at end]; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsAtEnd() => _position >= _tokens.Count;
     }
 }

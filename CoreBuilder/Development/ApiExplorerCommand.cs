@@ -47,7 +47,7 @@ namespace CoreBuilder.Development
         /// <summary>
         ///  folder + optional outputMode
         /// </summary>
-        public int ParameterCount => 2;
+        public int ParameterCount => 1;
 
         /// <summary>
         /// The output
