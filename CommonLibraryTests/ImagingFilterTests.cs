@@ -1,15 +1,15 @@
-﻿using System.Drawing;
-using Imaging;
-using Imaging.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
  * FILE:        CommonLibraryTests/ImagingFilterTests.cs
  * PURPOSE:     Tests for Image Tools, here mostly filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+using System.Drawing;
+using Imaging;
+using Imaging.Interfaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests
 {
