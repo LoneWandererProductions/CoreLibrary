@@ -34,7 +34,8 @@ namespace Lector
         /// <summary>
         /// Wraps the execution of the command. Can run before/after logic or inject feedback.
         /// </summary>
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
+            string[] commandArgs)
         {
             // Before hook
             BeforeExecute(command, commandArgs);

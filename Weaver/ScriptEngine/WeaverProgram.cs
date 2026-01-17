@@ -80,7 +80,8 @@ namespace Weaver.ScriptEngine
             while (!executor.IsFinished)
             {
                 if (iteration++ > maxIterations)
-                    throw new InvalidOperationException("Script execution exceeded maximum iterations. Possible infinite loop.");
+                    throw new InvalidOperationException(
+                        "Script execution exceeded maximum iterations. Possible infinite loop.");
 
                 executor.ExecuteNext();
             }
@@ -106,5 +107,4 @@ namespace Weaver.ScriptEngine
         /// <returns>The Converted insructions</returns>
         internal IEnumerable<(string Category, string? Statement)> GetInstructions() => _instructions;
     }
-
 }

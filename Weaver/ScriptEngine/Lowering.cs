@@ -53,38 +53,39 @@ namespace Weaver.ScriptEngine
                         break;
 
                     case AssignmentNode an:
+                    {
+                        var expr = an.Expression?.Trim() ?? "";
+                        var varName = an.Variable?.Trim() ?? "";
+
+                        if (rewrite ?? true)
                         {
-                            var expr = an.Expression?.Trim() ?? "";
-                            var varName = an.Variable?.Trim() ?? "";
+                            string rewrittenExpr = expr;
 
-                            if (rewrite ?? true)
+                            // Replace registry variables if possible
+                            if (registry != null)
+                                rewrittenExpr = ReplaceRegistryVariables(expr, registry);
+
+                            if (IsCommandCall(expr))
                             {
-                                string rewrittenExpr = expr;
-
-                                // Replace registry variables if possible
-                                if (registry != null)
-                                    rewrittenExpr = ReplaceRegistryVariables(expr, registry);
-
-                                if (IsCommandCall(expr))
-                                {
-                                    yield return (ScriptConstants.CommandRewriteToken, $"{expr}.Store({varName})");
-                                }
-                                else if (IsSimpleExpression(expr))
-                                {
-                                    yield return (ScriptConstants.CommandRewriteToken, $"EvaluateCommand({rewrittenExpr}, {varName})");
-                                }
-                                else
-                                {
-                                    throw new Exception($"Unsupported assignment expression: '{expr}'");
-                                }
+                                yield return (ScriptConstants.CommandRewriteToken, $"{expr}.Store({varName})");
+                            }
+                            else if (IsSimpleExpression(expr))
+                            {
+                                yield return (ScriptConstants.CommandRewriteToken,
+                                    $"EvaluateCommand({rewrittenExpr}, {varName})");
                             }
                             else
                             {
-                                yield return (ScriptConstants.AssignmentToken, $"{varName} = {expr}");
+                                throw new Exception($"Unsupported assignment expression: '{expr}'");
                             }
-
-                            break;
                         }
+                        else
+                        {
+                            yield return (ScriptConstants.AssignmentToken, $"{varName} = {expr}");
+                        }
+
+                        break;
+                    }
 
                     case IfNode ifn:
                         // Emit condition
@@ -118,7 +119,6 @@ namespace Weaver.ScriptEngine
                         yield return (ScriptConstants.DoEndToken, null);
                         yield return (ScriptConstants.WhileConditionToken, dw.Condition);
                         break;
-
                 }
             }
         }

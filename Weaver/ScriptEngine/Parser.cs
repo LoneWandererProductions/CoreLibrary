@@ -251,8 +251,8 @@ namespace Weaver.ScriptEngine
 
             //while (!IsAtEnd() && Peek().Type != TokenType.Semicolon)
             while (!IsAtEnd() &&
-       Peek().Type != TokenType.Semicolon &&
-       Peek().Type != TokenType.CloseBrace)
+                   Peek().Type != TokenType.Semicolon &&
+                   Peek().Type != TokenType.CloseBrace)
             {
                 var token = Advance();
 

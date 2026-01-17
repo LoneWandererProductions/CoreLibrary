@@ -75,6 +75,7 @@ namespace Weaver.ScriptEngine
                 value = vm.Int64;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -89,6 +90,7 @@ namespace Weaver.ScriptEngine
                 value = vm.Double;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -103,6 +105,7 @@ namespace Weaver.ScriptEngine
                 value = vm.Bool;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -117,6 +120,7 @@ namespace Weaver.ScriptEngine
                 value = vm.String;
                 return true;
             }
+
             value = null;
             return false;
         }
@@ -171,6 +175,5 @@ namespace Weaver.ScriptEngine
             type = EnumTypes.Wstring;
             return false;
         }
-
     }
 }
