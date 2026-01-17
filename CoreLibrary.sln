@@ -77,7 +77,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonExtendedObjectsTests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		License.txt = License.txt
+		README.md = README.md
+		Todo.txt = Todo.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreViewer", "CoreViewer\CoreViewer.csproj", "{B17F7012-EB24-4A3A-9A97-9779E5116D66}"

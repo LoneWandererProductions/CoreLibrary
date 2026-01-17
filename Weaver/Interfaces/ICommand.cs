@@ -62,11 +62,6 @@ namespace Weaver.Interfaces
         CommandResult Execute(params string[] args);
 
         /// <summary>
-        /// Optional extension calls like .help(), .save(), .tryrun()
-        /// </summary>
-        CommandResult InvokeExtension(string extensionName, params string[] args);
-
-        /// <summary>
         /// Optional: expose available extensions with parameter counts
         /// </summary>
         IReadOnlyDictionary<string, int>? Extensions => null;
@@ -75,9 +70,11 @@ namespace Weaver.Interfaces
         /// Optional preview mode: called by .tryrun().
         /// Returns a preview result without committing side effects.
         /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>A preview or null, if not implemented</returns>
         CommandResult? TryRun(params string[] args)
         {
-            return InvokeExtension("tryrun", args);
+            return null; // default: no preview available
         }
     }
 }

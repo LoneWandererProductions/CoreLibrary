@@ -7,6 +7,7 @@
  */
 
 using Weaver.Messages;
+using Weaver.ScriptEngine;
 
 namespace Weaver.Interfaces
 {
@@ -19,22 +20,43 @@ namespace Weaver.Interfaces
         /// Gets all.
         /// </summary>
         /// <returns>The registry itself</returns>
-        IReadOnlyDictionary<string, (object Value, EnumTypes Type)> GetAll();
+        IReadOnlyDictionary<string, VMValue> GetAll();
+
+        /// <summary>
+        /// Getets the specified key as string for Debug Purposes.
+        /// </summary>
+        /// <param name="key">The key as string.</param>
+        string Get(string key);
 
         /// <summary>
         /// Sets a value in the registry.
         /// </summary>
         /// <param name="key">Variable key.</param>
         /// <param name="value">Value to store.</param>
-        /// <param name="type">Type of value.</param>
-        void Set(string key, object value, EnumTypes type);
+        void Set(string key, VMValue value);
 
         /// <summary>
         /// Attempts to get a value from the registry.
         /// </summary>
         /// <param name="key">Variable key.</param>
         /// <param name="value">Output value.</param>
-        /// <param name="type">Output type.</param>
+        /// <returns><c>true</c> if the key exists; otherwise, <c>false</c>.</returns>
+        bool TryGet(string key, out VMValue value);
+
+        /// <summary>
+        /// Sets the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        void Set(string key, object value, EnumTypes type);
+
+        /// <summary>
+        /// Tries the get.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
         /// <returns><c>true</c> if the key exists; otherwise, <c>false</c>.</returns>
         bool TryGet(string key, out object? value, out EnumTypes type);
 

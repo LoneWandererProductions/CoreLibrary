@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Weaver.Core
+ * PROJECT:     Weaver.Core.Commands
  * FILE:        HelpCommand.cs
  * PURPOSE:     Basic internal help command. Works also for external commands.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,13 +9,13 @@
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace Weaver.Core
+namespace Weaver.Core.Commands
 {
     /// <inheritdoc />
     /// <summary>
     ///     Internal command, shows basic information about available commands and about Weaver itself.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="ICommand" />
     public sealed class HelpCommand : ICommand
     {
         /// <summary>
@@ -56,7 +56,22 @@ namespace Weaver.Core
             // 1️⃣ No arguments → simple static help
             if (args.Length == 0)
             {
-                return CommandResult.Ok("Weaver Cmd version 0.5 — made by Peter Geinitz (Wayfarer).");
+                var allCommands = _getCommands();
+
+                var grouped = allCommands
+                    .GroupBy(c => c.Namespace)
+                    .OrderBy(g => g.Key)
+                    .Select(g =>
+                    {
+                        var entries = string.Join("\n", g.Select(c => $"  {c.Name} — {c.Description}"));
+                        return $"{g.Key}:\n{entries}";
+                    });
+
+                var text = string.Join("\n\n", grouped);
+
+                return CommandResult.Ok(
+                    "Weaver Cmd version 0.5 — made by Peter Geinitz (Wayfarer).\n\n" + text
+                );
             }
 
             // 2️⃣ One argument → look up command description
@@ -74,12 +89,6 @@ namespace Weaver.Core
 
             // 3️⃣ More than one argument → optional, you could return syntax hint
             return CommandResult.Fail("Usage: help [commandName]");
-        }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
     }
 }

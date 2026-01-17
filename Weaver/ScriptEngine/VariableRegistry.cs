@@ -34,32 +34,29 @@ namespace Weaver.ScriptEngine
         /// <returns>
         /// The registry itself
         /// </returns>
-        public IReadOnlyDictionary<string, (object Value, EnumTypes Type)> GetAll() => _registry;
+        public IReadOnlyDictionary<string, VMValue> GetAll() => _registry;
 
         /// <summary>
         /// The registry
         /// </summary>
-        private readonly Dictionary<string, (object Value, EnumTypes Type)> _registry = new();
+        private readonly Dictionary<string, VMValue> _registry = new();
 
-        /// <inheritdoc />>
-        public void Set(string key, object value, EnumTypes type)
+        /// <inheritdoc />
+        public string Get(string key)
         {
-            _registry[key] = (value, type);
+            return _registry[key].ToString();
         }
 
         /// <inheritdoc />
-        public bool TryGet(string key, out object? value, out EnumTypes type)
+        public void Set(string key, VMValue value)
         {
-            if (_registry.TryGetValue(key, out var entry))
-            {
-                value = entry.Value;
-                type = entry.Type;
-                return true;
-            }
+            _registry[key] = value;
+        }
 
-            value = null;
-            type = EnumTypes.Wstring;
-            return false;
+        /// <inheritdoc />
+        public bool TryGet(string key, out VMValue value)
+        {
+            return _registry.TryGetValue(key, out value);
         }
 
         /// <inheritdoc />
@@ -67,6 +64,62 @@ namespace Weaver.ScriptEngine
 
         /// <inheritdoc />
         public void Clear() => _registry.Clear();
+
+        /// <summary>
+        /// Typed getter for Int64 values
+        /// </summary>
+        public bool TryGetInt(string key, out long value)
+        {
+            if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wint)
+            {
+                value = vm.Int64;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Typed getter for Double values
+        /// </summary>
+        public bool TryGetDouble(string key, out double value)
+        {
+            if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wdouble)
+            {
+                value = vm.Double;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Typed getter for Bool values
+        /// </summary>
+        public bool TryGetBool(string key, out bool value)
+        {
+            if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wbool)
+            {
+                value = vm.Bool;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Typed getter for String values
+        /// </summary>
+        public bool TryGetString(string key, out string? value)
+        {
+            if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wstring)
+            {
+                value = vm.String;
+                return true;
+            }
+            value = null;
+            return false;
+        }
 
         /// <inheritdoc cref="IVariableRegistry" />
         public override string ToString()
@@ -76,10 +129,48 @@ namespace Weaver.ScriptEngine
             var sb = new StringBuilder();
             foreach (var kvp in _registry)
             {
-                sb.AppendLine($"{kvp.Key} = {kvp.Value.Value} ({kvp.Value.Type})");
+                sb.AppendLine($"{kvp.Key} = {kvp.Value} ({kvp.Value.Type})");
             }
 
             return sb.ToString();
         }
+
+        /// <inheritdoc />
+        public void Set(string key, object value, EnumTypes type)
+        {
+            VMValue vm = type switch
+            {
+                EnumTypes.Wint => VMValue.FromInt(Convert.ToInt64(value)),
+                EnumTypes.Wdouble => VMValue.FromDouble(Convert.ToDouble(value)),
+                EnumTypes.Wbool => VMValue.FromBool(Convert.ToBoolean(value)),
+                EnumTypes.Wstring => VMValue.FromString(value?.ToString()),
+                _ => VMValue.FromString(value?.ToString())
+            };
+
+            _registry[key] = vm;
+        }
+
+        /// <inheritdoc />
+        public bool TryGet(string key, out object? value, out EnumTypes type)
+        {
+            if (_registry.TryGetValue(key, out var vm))
+            {
+                type = vm.Type;
+                value = vm.Type switch
+                {
+                    EnumTypes.Wint => vm.Int64,
+                    EnumTypes.Wdouble => vm.Double,
+                    EnumTypes.Wbool => vm.Bool,
+                    EnumTypes.Wstring => vm.String,
+                    _ => null
+                };
+                return true;
+            }
+
+            value = null;
+            type = EnumTypes.Wstring;
+            return false;
+        }
+
     }
 }

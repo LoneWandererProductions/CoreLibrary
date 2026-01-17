@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Weaver.Core
+ * PROJECT:     Weaver.Core.Commands
  * FILE:        PrintCommand.cs
  * PURPOSE:     Basic message Print command. Moslty used for script Engine.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,13 +9,13 @@
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace Weaver.Core
+namespace Weaver.Core.Commands
 {
     /// <inheritdoc />
     /// <summary>
     ///     Internal command, prints a message.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="ICommand" />
     public sealed class PrintCommand : ICommand
     {
         /// <summary>
@@ -66,12 +66,6 @@ namespace Weaver.Core
 
             // 3️⃣ More than one argument → optional, you could return syntax hint
             return CommandResult.Fail("Usage: print([message])");
-        }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
     }
 }

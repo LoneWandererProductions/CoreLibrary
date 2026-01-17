@@ -7,10 +7,12 @@
  */
 
 using Weaver.Core;
+using Weaver.Core.Commands;
+using Weaver.Core.Extensions;
+using Weaver.Evaluate;
 using Weaver.Interfaces;
 using Weaver.Messages;
 using Weaver.ParseEngine;
-using Weaver.ScriptEngine;
 
 namespace Weaver
 {
@@ -39,16 +41,11 @@ namespace Weaver
         private static readonly Dictionary<string, CommandExtension> GlobalExtensions
             = new(StringComparer.OrdinalIgnoreCase)
             {
-                [WeaverResources.GlobalExtensionHelp] =
-                    new CommandExtension
-                    {
-                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
-                    },
+                [WeaverResources.GlobalExtensionHelp] = new CommandExtension
+                    { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
                 [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
                 {
-                    Name = WeaverResources.GlobalExtensionTryRun,
-                    ParameterCount = 0,
-                    IsInternal = true,
+                    Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true,
                     IsPreview = true
                 },
                 [WeaverResources.GlobalExtensionStore] = new CommandExtension
@@ -103,20 +100,24 @@ namespace Weaver
             var print = new PrintCommand();
             Register(print);
 
-            //our custom calculator command, needs the evaluator.
+            // Our custom calculator command, needs the evaluator.
             _evaluator = new ExpressionEvaluator(Runtime.Variables);
             Register(new EvaluateCommand(_evaluator, Runtime.Variables));
 
-            //register all variable commands with the runtime registry
-            Register(new SetValueCommand(Runtime.Variables));
+            // Register all variable commands with the runtime registry
+            Register(new SetValueCommand(Runtime.Variables, _evaluator));
             Register(new GetValueCommand(Runtime.Variables));
             Register(new DeleteValueCommand(Runtime.Variables));
             Register(new MemoryCommand(Runtime.Variables));
+            Register(new ScriptCommand(Runtime.Variables));
 
-            _extensions.Add(new HelpExtension());
-            _extensions.Add(new TryRunExtension());
-            _extensions.Add(new StoreExtension(Runtime.Variables));
+            // Register built-in extensions using RegisterExtension (unifies code path & enforces duplicate checks)
+            RegisterExtension(new HelpExtension());
+            RegisterExtension(new TryRunExtension());
+            RegisterExtension(new StoreExtension(Runtime.Variables));
+            RegisterExtension(new ScriptStepperExtension(Runtime.Variables));
         }
+
 
         /// <summary>
         /// Registers a command in the engine.
@@ -277,12 +278,23 @@ namespace Weaver
                 if (error != null)
                     return error;
 
-                // Pass **command args** to the executor, **extension args** to the extension
-                var result = ext?.Invoke(cmd, parsed.ExtensionArgs, cmd.Execute, parsed.Args)
-                             ?? cmd.InvokeExtension(parsed.Extension, parsed.Args);
+                CommandResult result;
+
+                if (ext != null)
+                {
+                    // Pass **command args** to the executor, **extension args** to the extension
+                    result = ext.Invoke(cmd, parsed.ExtensionArgs, cmd.Execute, parsed.Args);
+                }
+                else
+                {
+                    // In the past we would call an obsolete InvokeExtension method here.
+                    // No extension found — return error (instead of calling obsolete InvokeExtension)
+                    return CommandResult.Fail($"Unknown extension '{parsed.Extension}' for command '{cmd.Name}'.");
+                }
 
                 return HandleFeedback(result, cmd);
             }
+
 
             // 4️⃣ Normal execution
             var execResult = cmd.Execute(parsed.Args);

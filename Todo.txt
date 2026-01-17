@@ -9,12 +9,6 @@ CommonControls
 - Improve ImageZoom, especial zooming and start Position of scrollbars on screen and positioning, overwork generation of the circle
 - rework color picker
 
-Lightvector
-- Add save function for curves, etc
-- finish and add more features
-
-Make a separate Interpreter Project with Mathmatics as an example
-
 Enum at RunTime
 
 https://stackoverflow.com/questions/857414/dynamically-create-an-enum
@@ -43,15 +37,3 @@ eb.DefineLiteral("High", 1);
 // Create the type and save the assembly.
 Type finished = eb.CreateType();
 ab.Save(aName.Name + ".dll");
-
-
-
-Using:
-
-System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom("TempAssembly.dll");
-System.Type enumTest = ass.GetType("Elevation");
-string[] values = enumTest .GetEnumNames();
-
-
-TODO Debugger
-Add search lines with like, not like!

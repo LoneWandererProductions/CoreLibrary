@@ -21,6 +21,71 @@ namespace Weaver.ScriptEngine
         internal const string Do = "do";
         internal const string While = "while";
 
+        /// <summary>
+        /// If open token
+        /// </summary>
+        internal const string IfOpenToken = "If_Open";
+
+        /// <summary>
+        /// If end token
+        /// </summary>
+        internal const string IfEndToken = "If_End";
+
+        /// <summary>
+        /// The goto token
+        /// </summary>
+        internal const string GotoToken = "Goto";
+
+        /// <summary>
+        /// The label token
+        /// </summary>
+        internal const string LabelToken = "Label";
+
+        /// <summary>
+        /// The do open token
+        /// </summary>
+        internal const string DoOpenToken = "Do_Open";
+
+        /// <summary>
+        /// The do end token
+        /// </summary>
+        internal const string DoEndToken = "Do_End";
+
+        /// <summary>
+        /// If condition token
+        /// </summary>
+        internal const string IfConditionToken = "If_Condition";
+
+        /// <summary>
+        /// The while condition token
+        /// </summary>
+        internal const string WhileConditionToken = "While_Condition";
+
+        /// <summary>
+        /// The command token
+        /// </summary>
+        internal const string CommandToken = "Command";
+
+        /// <summary>
+        /// The command rewrite token
+        /// </summary>
+        internal const string CommandRewriteToken = "Command_Rewrite";
+
+        /// <summary>
+        /// Else open token
+        /// </summary>
+        internal const string ElseOpenToken = "Else_Open";
+
+        /// <summary>
+        /// Else end token
+        /// </summary>
+        internal const string ElseEndToken = "Else_End";
+
+        /// <summary>
+        /// The assignment token
+        /// </summary>
+        internal const string AssignmentToken = "Assignment";
+
         // Operators / punctuation
         internal const string Semicolon = ";";
         internal const string Dot = ".";

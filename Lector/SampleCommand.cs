@@ -92,14 +92,5 @@ namespace Lector
             var target = args[0];
             return new CommandResult { Message = $"[Preview] This would process '{target}'", Success = true };
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// No extension handling required: all feedback handled via IFeedback.
-        /// </summary>
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"Unknown extension '{extensionName}'.");
-        }
     }
 }

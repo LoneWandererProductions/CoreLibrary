@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Weaver.Core
+ * PROJECT:     Weaver.Core.Commands
  * FILE:        ListCommand.cs
  * PURPOSE:     Basic message Print command.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,13 +9,13 @@
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace Weaver.Core
+namespace Weaver.Core.Commands
 {
     /// <inheritdoc />
     /// <summary>
     /// Internal command, Prints a message.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="ICommand" />
     public sealed class ListCommand : ICommand
     {
         /// <inheritdoc />
@@ -62,12 +62,6 @@ namespace Weaver.Core
                 });
 
             return CommandResult.Ok("Available commands:\n\n" + string.Join("\n\n", grouped));
-        }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
         }
     }
 }

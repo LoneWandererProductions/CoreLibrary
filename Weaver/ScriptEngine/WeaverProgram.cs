@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Weaver.Interfaces;
+
 namespace Weaver.ScriptEngine
 {
     /// <summary>
@@ -19,7 +21,12 @@ namespace Weaver.ScriptEngine
         private readonly IEnumerable<(string Category, string? Statement)> _instructions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WeaverProgram"/> class.
+        /// The registry
+        /// </summary>
+        private static IVariableRegistry _registry;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeaverProgram" /> class.
         /// </summary>
         /// <param name="instructions">The instructions.</param>
         /// <exception cref="System.ArgumentNullException">instructions</exception>
@@ -32,17 +39,23 @@ namespace Weaver.ScriptEngine
         /// Compiles the specified script.
         /// </summary>
         /// <param name="script">The script.</param>
-        /// <returns>The Script converted and ready for execution.</returns>
+        /// <param name="registry">The registry.</param>
+        /// <returns>
+        /// The Script converted and ready for execution.
+        /// </returns>
+        /// <exception cref="ArgumentException">Script cannot be null or empty., nameof(script)</exception>
         /// <exception cref="System.ArgumentException">Script cannot be null or empty. - script</exception>
-        public static WeaverProgram Compile(string script)
+        public static WeaverProgram Compile(string script, IVariableRegistry registry)
         {
             if (string.IsNullOrWhiteSpace(script))
                 throw new ArgumentException("Script cannot be null or empty.", nameof(script));
 
+            _registry = registry;
+
             var lexer = new Lexer(script);
             var parser = new Parser(lexer.Tokenize());
             var nodes = parser.ParseIntoNodes();
-            var instructions = Lowering.ScriptLowerer(nodes);
+            var instructions = Lowering.ScriptLowerer(nodes, _registry);
 
             return new WeaverProgram(instructions);
         }
@@ -59,7 +72,6 @@ namespace Weaver.ScriptEngine
             if (weave == null) throw new ArgumentNullException(nameof(weave));
 
             var executor = new ScriptExecutor(weave, _instructions
-                .Where(line => line.Statement != null)
                 .Select(line => (line.Category, line.Statement!))
                 .ToList());
 
@@ -68,8 +80,7 @@ namespace Weaver.ScriptEngine
             while (!executor.IsFinished)
             {
                 if (iteration++ > maxIterations)
-                    throw new InvalidOperationException(
-                        "Script execution exceeded maximum iterations. Possible infinite loop.");
+                    throw new InvalidOperationException("Script execution exceeded maximum iterations. Possible infinite loop.");
 
                 executor.ExecuteNext();
             }
@@ -85,7 +96,6 @@ namespace Weaver.ScriptEngine
         {
             if (weave == null) throw new ArgumentNullException(nameof(weave));
             return new ScriptExecutor(weave, _instructions
-                .Where(line => line.Statement != null)
                 .Select(line => (line.Category, line.Statement!))
                 .ToList());
         }
@@ -96,4 +106,5 @@ namespace Weaver.ScriptEngine
         /// <returns>The Converted insructions</returns>
         internal IEnumerable<(string Category, string? Statement)> GetInstructions() => _instructions;
     }
+
 }

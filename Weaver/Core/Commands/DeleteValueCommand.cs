@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Weaver.Core
- * FILE:        MemoryCommand.cs
- * PURPOSE:     Internal Command, for scripting Engine, lists all stored variables.
+ * PROJECT:     Weaver.Core.Commands
+ * FILE:        DeleteValueCommand.cs
+ * PURPOSE:     Deletes a stored value from the Scripter Engine.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,10 +13,10 @@ namespace Weaver.Core
 {
     /// <inheritdoc />
     /// <summary>
-    /// Internal Command, for scripting Engine, lists all stored variables.
+    /// Mostly internal command, deletes a value from the Scripter registry.
     /// </summary>
     /// <seealso cref="Weaver.Interfaces.ICommand" />
-    public sealed class MemoryCommand : ICommand
+    public sealed class DeleteValueCommand : ICommand
     {
         /// <summary>
         /// The registry
@@ -24,10 +24,10 @@ namespace Weaver.Core
         private readonly IVariableRegistry _registry;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryCommand"/> class.
+        /// Initializes a new instance of the <see cref="DeleteValueCommand"/> class.
         /// </summary>
         /// <param name="registry">The registry.</param>
-        public MemoryCommand(IVariableRegistry registry)
+        public DeleteValueCommand(IVariableRegistry registry)
         {
             _registry = registry;
         }
@@ -36,13 +36,13 @@ namespace Weaver.Core
         public string Namespace => WeaverResources.GlobalNamespace;
 
         /// <inheritdoc />
-        public string Name => "memory";
+        public string Name => "deleteValue";
 
         /// <inheritdoc />
-        public string Description => "Lists all stored variables with values and types.";
+        public string Description => "Deletes a variable from the registry.";
 
         /// <inheritdoc />
-        public int ParameterCount => 0;
+        public int ParameterCount => 1;
 
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
@@ -53,14 +53,13 @@ namespace Weaver.Core
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
-            var content = _registry.ToString();
-            return CommandResult.Ok(content);
-        }
+            if (args.Length != 1)
+                return CommandResult.Fail("Usage: deleteValue(key)");
 
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
+            var key = args[0];
+            return _registry.Remove(key)
+                ? CommandResult.Ok($"Deleted variable '{key}'.")
+                : CommandResult.Fail($"Variable '{key}' not found.");
         }
     }
 }

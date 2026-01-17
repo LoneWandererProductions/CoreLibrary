@@ -167,7 +167,6 @@ namespace CommonLibraryTests
             Assert.IsFalse(check, "File not deleted");
         }
 
-
         /// <summary>
         ///     Simple Check for getting files Contained in a Folder
         ///     Check Lock Status

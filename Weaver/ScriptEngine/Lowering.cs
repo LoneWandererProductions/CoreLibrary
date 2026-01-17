@@ -1,10 +1,18 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine
  * FILE:        Lowering.cs
- * PURPOSE:     Converts the ScriptNode tree into a linear sequence for execution
+ * PURPOSE:     Converts the ScriptNode tree into a linear sequence for execution.
+ *              Optional but recommended it replaces some syntax sugar into correctly executable commands.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+//TODO the node exit for DoWhile is currently not implemented in the ScriptExecutor
+
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using Weaver.Interfaces;
+using Weaver.Messages;
 
 namespace Weaver.ScriptEngine
 {
@@ -17,65 +25,160 @@ namespace Weaver.ScriptEngine
         /// Flattens the ScriptNode tree into a linear sequence with debug categories.
         /// Includes pseudo-categories like Do_Open, Do_End, If_Open, If_End, Else_Open, Else_End.
         /// </summary>
-        public static IEnumerable<(string Category, string? Statement)> ScriptLowerer(IEnumerable<ScriptNode> nodes)
+        /// <param name="nodes">The nodes.</param>
+        /// <param name="registry">Optional variable registry for early substitution.</param>
+        /// <param name="rewrite">A debug switch for rewrite.</param>
+        /// <param name="branchPath">Branch path for tracking nested structures.</param>
+        /// <returns>Execution blocks.</returns>
+        public static IEnumerable<(string Category, string? Statement)> ScriptLowerer(
+            IEnumerable<ScriptNode> nodes,
+            IVariableRegistry? registry = null,
+            bool? rewrite = true,
+            string branchPath = "")
         {
             foreach (var node in nodes)
             {
                 switch (node)
                 {
                     case LabelNode ln:
-                        yield return ("Label", ln.Name);
-
+                        yield return (ScriptConstants.LabelToken, ln.Name);
                         break;
 
                     case GotoNode gn:
-                        yield return ("Goto", gn.Target);
-
+                        yield return (ScriptConstants.GotoToken, gn.Target);
                         break;
 
                     case CommandNode cn:
-                        yield return ("Command", cn.Command);
-
+                        yield return (ScriptConstants.CommandToken, cn.Command);
                         break;
 
                     case AssignmentNode an:
-                        yield return ("Assignment", $"{an.Variable} = {an.Expression}");
+                        {
+                            var expr = an.Expression?.Trim() ?? "";
+                            var varName = an.Variable?.Trim() ?? "";
 
-                        break;
+                            if (rewrite ?? true)
+                            {
+                                string rewrittenExpr = expr;
+
+                                // Replace registry variables if possible
+                                if (registry != null)
+                                    rewrittenExpr = ReplaceRegistryVariables(expr, registry);
+
+                                if (IsCommandCall(expr))
+                                {
+                                    yield return (ScriptConstants.CommandRewriteToken, $"{expr}.Store({varName})");
+                                }
+                                else if (IsSimpleExpression(expr))
+                                {
+                                    yield return (ScriptConstants.CommandRewriteToken, $"EvaluateCommand({rewrittenExpr}, {varName})");
+                                }
+                                else
+                                {
+                                    throw new Exception($"Unsupported assignment expression: '{expr}'");
+                                }
+                            }
+                            else
+                            {
+                                yield return (ScriptConstants.AssignmentToken, $"{varName} = {expr}");
+                            }
+
+                            break;
+                        }
 
                     case IfNode ifn:
-                        yield return ("If_Condition", ifn.Condition);
-                        yield return ("If_Open", null); // debug open
+                        // Emit condition
+                        yield return (ScriptConstants.IfConditionToken, ifn.Condition);
 
-                        foreach (var child in ScriptLowerer(ifn.TrueBranch))
+                        // Open true branch
+                        yield return (ScriptConstants.IfOpenToken, branchPath + "T");
+
+                        foreach (var child in ScriptLowerer(ifn.TrueBranch, registry, rewrite, branchPath + "T"))
                             yield return child;
 
-                        yield return ("If_End", null); // debug end
+                        yield return (ScriptConstants.IfEndToken, branchPath + "T");
 
                         if (ifn.FalseBranch != null)
                         {
-                            yield return ("Else_Open", null);
+                            yield return (ScriptConstants.ElseOpenToken, branchPath + "F");
 
-                            foreach (var child in ScriptLowerer(ifn.FalseBranch))
+                            foreach (var child in ScriptLowerer(ifn.FalseBranch, registry, rewrite, branchPath + "F"))
                                 yield return child;
 
-                            yield return ("Else_End", null);
+                            yield return (ScriptConstants.ElseEndToken, branchPath + "F");
                         }
 
                         break;
 
                     case DoWhileNode dw:
-                        yield return ("Do_Open", null);
 
-                        foreach (var child in ScriptLowerer(dw.Body))
+                        yield return (ScriptConstants.DoOpenToken, null);
+                        foreach (var child in ScriptLowerer(dw.Body, registry, rewrite, branchPath))
                             yield return child;
-
-                        yield return ("Do_End", null);
-                        yield return ("While_Condition", dw.Condition);
-
+                        yield return (ScriptConstants.DoEndToken, null);
+                        yield return (ScriptConstants.WhileConditionToken, dw.Condition);
                         break;
+
                 }
             }
+        }
+
+        /// <summary>
+        /// Replaces known registry variables in a simple expression with their literal values.
+        /// </summary>
+        private static string ReplaceRegistryVariables(string expr, IVariableRegistry registry)
+        {
+            foreach (var kv in registry.GetAll())
+            {
+                var name = kv.Key;
+                var vm = kv.Value;
+
+                string replacement = vm.Type switch
+                {
+                    EnumTypes.Wint => vm.Int64.ToString(),
+                    EnumTypes.Wdouble => vm.Double.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    EnumTypes.Wbool => vm.Bool ? "1" : "0",
+                    EnumTypes.Wstring => $"\"{vm.String}\"",
+                    _ => throw new InvalidOperationException($"Unsupported EnumType {vm.Type}")
+                };
+
+                // Replace whole-word occurrences only to avoid partial matches
+                expr = Regex.Replace(expr, $@"\b{name}\b", replacement);
+            }
+
+            return expr;
+        }
+
+        /// <summary>
+        /// Determines whether [is command call] [the specified expr].
+        /// </summary>
+        /// <param name="expr">The expr.</param>
+        /// <returns>
+        ///   <c>true</c> if [is command call] [the specified expr]; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsCommandCall(string expr)
+        {
+            int paren = expr.IndexOf('(');
+            return paren > 0 && expr.EndsWith(")");
+        }
+
+        /// <summary>
+        /// Determines whether [is simple expression] [the specified expr].
+        /// </summary>
+        /// <param name="expr">The expr.</param>
+        /// <returns>
+        ///   <c>true</c> if [is simple expression] [the specified expr]; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsSimpleExpression(string expr)
+        {
+            if (expr.Contains("(") || expr.Contains(")"))
+                return false;
+
+            foreach (char c in expr)
+                if (!char.IsLetterOrDigit(c) && "+-*/<>=!&| ".IndexOf(c) < 0)
+                    return false;
+
+            return true;
         }
     }
 }

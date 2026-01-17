@@ -45,6 +45,10 @@ namespace Weaver.ScriptEngine
         Bang = 29,
         BangEqual = 30,
         KeywordDo = 31,
-        KeywordWhile = 32
+        KeywordWhile = 32,
+        LogicalAnd = 33,
+        BitAnd = 34,
+        LogicalOr = 35,
+        BitOr = 36
     }
 }
