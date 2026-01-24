@@ -10,8 +10,4 @@
   </PropertyGroup>
 
 
-  <ItemGroup>
-    <ProjectReference Include="..\Imaging\Imaging.csproj" />
-  </ItemGroup>
-
 </Project>

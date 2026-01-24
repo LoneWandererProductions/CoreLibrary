@@ -9,13 +9,13 @@
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace Weaver.Core
+namespace Weaver.Core.Commands
 {
     /// <inheritdoc />
     /// <summary>
     /// Mostly internal command, deletes a value from the Scripter registry.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="ICommand" />
     public sealed class DeleteValueCommand : ICommand
     {
         /// <summary>
