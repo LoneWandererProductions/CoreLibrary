@@ -28,10 +28,7 @@ namespace Weaver.Evaluate
         /// </summary>
         private readonly IVariableRegistry? _registry;
 
-        private static readonly string[] MultiOps =
-        {
-            "==", "!=", ">=", "<="
-        };
+        private static readonly string[] MultiOps = { "==", "!=", ">=", "<=" };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionEvaluator"/> class.
@@ -41,6 +38,7 @@ namespace Weaver.Evaluate
         {
             _registry = registry;
         }
+
         /// <inheritdoc />
         /// <exception cref="ArgumentException">Invalid or unsupported expression.</exception>
         public bool Evaluate(string expression)
@@ -149,6 +147,7 @@ namespace Weaver.Evaluate
             var rpn = ToRpn(tokens);
             return EvaluateRpn(rpn);
         }
+
         private IEnumerable<string> Tokenize(string expr)
         {
             var token = new StringBuilder();
@@ -191,6 +190,7 @@ namespace Weaver.Evaluate
                         break;
                     }
                 }
+
                 if (matchedMulti)
                     continue;
 

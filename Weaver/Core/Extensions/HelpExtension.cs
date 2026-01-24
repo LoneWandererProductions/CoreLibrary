@@ -21,7 +21,8 @@ namespace Weaver.Core.Extensions
         public string Name => WeaverResources.GlobalExtensionHelp;
 
         /// <inheritdoc />
-        public string Description => "Provides help information for a command using the .help extension, Example: command.help().";
+        public string Description =>
+            "Provides help information for a command using the .help extension, Example: command.help().";
 
         /// <inheritdoc />
         public string Namespace => WeaverResources.GlobalNamespace;

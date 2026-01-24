@@ -147,6 +147,5 @@ namespace Weaver.Core.Commands
 
             return CommandResult.Ok(message, result, type);
         }
-
     }
 }
