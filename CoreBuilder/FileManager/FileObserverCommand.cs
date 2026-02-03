@@ -130,11 +130,5 @@ namespace CoreBuilder.FileManager
                 _watcher = null;
             }
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
     }
 }

@@ -55,7 +55,7 @@ namespace CoreBuilder.Extensions
                     .Distinct()
                     .ToList();
 
-                string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
+                var ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
                 // Build a list of lines for requested fields
                 var lines = extensionArgs.Select(arg => arg.ToLowerInvariant())
@@ -77,7 +77,7 @@ namespace CoreBuilder.Extensions
                     }).ToArray();
 
                 // Join lines into a single message
-                string message = string.Join(Environment.NewLine, lines);
+                var message = string.Join(Environment.NewLine, lines);
 
                 return CommandResult.Ok(message: message);
             }

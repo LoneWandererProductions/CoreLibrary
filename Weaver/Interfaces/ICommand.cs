@@ -59,6 +59,10 @@ namespace Weaver.Interfaces
         /// Executes the command with given arguments.
         /// Returns a result that can include text, status, or further options.
         /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>
+        /// Result of the command. Contains execution status, a message and the if available the data of the operation.
+        /// </returns>
         CommandResult Execute(params string[] args);
 
         /// <summary>

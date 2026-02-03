@@ -93,12 +93,6 @@ namespace CoreBuilder.Rules
             return FormatResult(diagnostics, Path.GetFileName(args[0]));
         }
 
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
-
         /// <summary>
         /// Formats diagnostic results into a CommandResult.
         /// </summary>

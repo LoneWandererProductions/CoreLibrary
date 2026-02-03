@@ -144,13 +144,6 @@ namespace CoreBuilder.Rules
             return CommandResult.Ok(sb.ToString(), diagnostics);
         }
 
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
-
         /// <summary>
         /// Builds a dictionary of all duplicate string literals in the project.
         /// </summary>

@@ -39,7 +39,7 @@ namespace Weaver.Core.Commands
         public string Name => "memory";
 
         /// <inheritdoc />
-        public string Description => "Lists all stored variables with values and types.";
+        public string Description => "Lists all stored variables with values and types.  Usage: memory()";
 
         /// <inheritdoc />
         public int ParameterCount => 0;

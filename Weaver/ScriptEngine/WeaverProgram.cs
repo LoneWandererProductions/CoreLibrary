@@ -23,7 +23,7 @@ namespace Weaver.ScriptEngine
         /// <summary>
         /// The registry
         /// </summary>
-        private static IVariableRegistry _registry;
+        private static IVariableRegistry? _registry;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WeaverProgram" /> class.
@@ -75,12 +75,13 @@ namespace Weaver.ScriptEngine
                 .Select(line => (line.Category, line.Statement!))
                 .ToList());
 
-            int iteration = 0;
+            var iteration = 0;
 
             while (!executor.IsFinished)
             {
                 if (iteration++ > maxIterations)
-                    throw new InvalidOperationException("Script execution exceeded maximum iterations. Possible infinite loop.");
+                    throw new InvalidOperationException(
+                        "Script execution exceeded maximum iterations. Possible infinite loop.");
 
                 executor.ExecuteNext();
             }
@@ -95,6 +96,7 @@ namespace Weaver.ScriptEngine
         public ScriptExecutor GetStepper(Weave weave)
         {
             if (weave == null) throw new ArgumentNullException(nameof(weave));
+
             return new ScriptExecutor(weave, _instructions
                 .Select(line => (line.Category, line.Statement!))
                 .ToList());
@@ -106,5 +108,4 @@ namespace Weaver.ScriptEngine
         /// <returns>The Converted insructions</returns>
         internal IEnumerable<(string Category, string? Statement)> GetInstructions() => _instructions;
     }
-
 }

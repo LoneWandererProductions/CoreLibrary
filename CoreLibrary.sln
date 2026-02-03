@@ -97,6 +97,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonControls.Images", "Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonControls.Converter", "CommonControls.Converter\CommonControls.Converter.csproj", "{A2C8D860-41F8-40B8-B939-BCA253AC2729}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loader", "Loader\Loader.csproj", "{8E2E0942-069D-22E9-2D3B-A2F10E15697B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,10 @@ Global
 		{A2C8D860-41F8-40B8-B939-BCA253AC2729}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2C8D860-41F8-40B8-B939-BCA253AC2729}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2C8D860-41F8-40B8-B939-BCA253AC2729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E2E0942-069D-22E9-2D3B-A2F10E15697B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E2E0942-069D-22E9-2D3B-A2F10E15697B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E2E0942-069D-22E9-2D3B-A2F10E15697B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E2E0942-069D-22E9-2D3B-A2F10E15697B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

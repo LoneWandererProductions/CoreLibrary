@@ -14,7 +14,7 @@ namespace Weaver.ScriptEngine
     /// A lexical analyzer that splits a script into its smallest meaningful components (tokens).
     /// Supports identifiers, keywords, numbers, strings, operators, and comments.
     /// </summary>
-    internal sealed class Lexer
+    public sealed class Lexer
     {
         /// <summary>
         /// Keywords recognized by the script engine.
@@ -56,6 +56,20 @@ namespace Weaver.ScriptEngine
         }
 
         /// <summary>
+        /// Static version: Tokenizes the input script and returns only the lexemes as a List of strings.
+        /// </summary>
+        /// <param name="input">The script source text to tokenize.</param>
+        /// <returns>List of lexemes in order of appearance.</returns>
+        public static List<string> Tokenize(string input)
+        {
+            var lexer = new Lexer(input);
+            // Rufe die private Instanzmethode auf, die List<Token> zurückgibt
+            return lexer.Tokenize()
+                .Select(t => t.Lexeme!)
+                .ToList();
+        }
+
+        /// <summary>
         /// Tokenizes the input script into a list of <see cref="Token"/> objects.
         /// </summary>
         /// <returns>A <see cref="List{Token}"/> containing all tokens found in the script.</returns>
@@ -84,22 +98,55 @@ namespace Weaver.ScriptEngine
 
                 var c = Peek();
 
+                // Numbers (integer or float)
+                if (char.IsDigit(c))
+                {
+                    var start = _pos;
+                    var hasDot = false;
+
+                    while (!IsAtEnd() && (char.IsDigit(Peek()) || (!hasDot && Peek() == '.')))
+                    {
+                        if (Peek() == '.')
+                            hasDot = true;
+                        Advance();
+                    }
+
+                    var number = _input.Substring(start, _pos - start);
+                    tokens.Add(new Token { Type = TokenType.Number, Lexeme = number, Line = line, Column = col });
+                    continue;
+                }
+
                 // Identifiers / keywords
-                if (char.IsLetter(c) || char.IsDigit(c) || c == '_')
+                if (char.IsLetter(c) || c == '_')
                 {
                     var ident = ReadWhile(ch => char.IsLetterOrDigit(ch) || ch == '_');
-                    var type = Keywords.Contains(ident) ? GetKeywordTokenType(ident) : TokenType.Identifier;
+
+                    TokenType type;
+
+                    // Convert logical keywords to operator tokens
+                    switch (ident.ToLowerInvariant())
+                    {
+                        case "and":
+                            type = TokenType.LogicalAnd;
+                            ident = "&&";
+                            break;
+                        case "or":
+                            type = TokenType.LogicalOr;
+                            ident = "||";
+                            break;
+                        case "not":
+                            type = TokenType.Bang;
+                            ident = "!";
+                            break;
+                        default:
+                            type = Keywords.Contains(ident) ? GetKeywordTokenType(ident) : TokenType.Identifier;
+                            break;
+                    }
+
                     tokens.Add(new Token { Type = type, Lexeme = ident, Line = line, Column = col });
                     continue;
                 }
 
-                // Numbers
-                if (char.IsDigit(c))
-                {
-                    var number = ReadWhile(char.IsDigit);
-                    tokens.Add(new Token { Type = TokenType.Number, Lexeme = number, Line = line, Column = col });
-                    continue;
-                }
 
                 // Strings
                 if (c == '"')
@@ -113,9 +160,14 @@ namespace Weaver.ScriptEngine
                     }
 
                     if (!IsAtEnd()) Advance(); // skip closing "
-                    tokens.Add(new Token { Type = TokenType.String, Lexeme = sb.ToString(), Line = line, Column = col });
+                    tokens.Add(new Token
+                        { Type = TokenType.String, Lexeme = sb.ToString(), Line = line, Column = col });
                     continue;
                 }
+
+                // Try multi-char operators first
+                if (TryHandleDoubleCharOperator(tokens, line, col))
+                    continue;
 
                 // Operators, braces, punctuation
                 HandleSingleOrDoubleCharToken(c, tokens, line, col);
@@ -125,8 +177,13 @@ namespace Weaver.ScriptEngine
         }
 
         /// <summary>
-        /// Helper to generate a new <see cref="Token"/> with specified type and lexeme.
+        /// Helper to generate a new <see cref="Token" /> with specified type and lexeme.
         /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="lexeme">The lexeme.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="col">The col.</param>
+        /// <returns>The token.</returns>
         private Token Token(TokenType type, string lexeme, int line, int col)
         {
             return new Token { Type = type, Lexeme = lexeme, Line = line, Column = col };
@@ -198,19 +255,56 @@ namespace Weaver.ScriptEngine
         /// Maps a keyword string to the corresponding <see cref="TokenType" />.
         /// </summary>
         /// <param name="keyword">The keyword.</param>
-        /// <returns></returns>
-        private TokenType GetKeywordTokenType(string keyword)
+        /// <returns>Type of the token.</returns>
+        private static TokenType GetKeywordTokenType(string keyword) => keyword.ToLowerInvariant() switch
         {
-            return keyword.ToLowerInvariant() switch
+            ScriptConstants.If => TokenType.KeywordIf,
+            ScriptConstants.Else => TokenType.KeywordElse,
+            ScriptConstants.Label => TokenType.Label,
+            ScriptConstants.Goto => TokenType.KeywordGoto,
+            ScriptConstants.Do => TokenType.KeywordDo,
+            ScriptConstants.While => TokenType.KeywordWhile,
+            _ => TokenType.Keyword
+        };
+
+        /// <summary>
+        /// Tries the handle double character operator.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="col">The col.</param>
+        /// <returns>Convert operators to Enum Token.</returns>
+        private bool TryHandleDoubleCharOperator(List<Token> tokens, int line, int col)
+        {
+            if (_pos + 1 >= _input.Length)
+                return false;
+
+            var two = _input.Substring(_pos, 2);
+            TokenType? type = two switch
             {
-                ScriptConstants.If => TokenType.KeywordIf,
-                ScriptConstants.Else => TokenType.KeywordElse,
-                ScriptConstants.Label => TokenType.Label,
-                ScriptConstants.Goto => TokenType.KeywordGoto,
-                ScriptConstants.Do => TokenType.KeywordDo,
-                ScriptConstants.While => TokenType.KeywordWhile,
-                _ => TokenType.Keyword
+                "==" => TokenType.EqualEqual,
+                "!=" => TokenType.BangEqual,
+                ">=" => TokenType.GreaterEqual,
+                "<=" => TokenType.LessEqual,
+                "&&" => TokenType.LogicalAnd,
+                "||" => TokenType.LogicalOr,
+                _ => null
             };
+
+            if (type != null)
+            {
+                tokens.Add(new Token
+                {
+                    Type = type.Value,
+                    Lexeme = two,
+                    Line = line,
+                    Column = col
+                });
+                Advance(2);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -336,26 +430,28 @@ namespace Weaver.ScriptEngine
                     if (Peek(1) == '&')
                     {
                         Advance(2);
-                        tokens.Add(Token(TokenType.LogicalAnd, ScriptConstants.LogicalAnd, line, col));
+                        tokens.Add(Token(TokenType.LogicalAnd, ScriptConstants.LogicalAndSymbol, line, col));
                     }
                     else
                     {
                         Advance();
                         tokens.Add(Token(TokenType.BitAnd, "&", line, col));
                     }
+
                     break;
 
                 case '|':
                     if (Peek(1) == '|')
                     {
                         Advance(2);
-                        tokens.Add(Token(TokenType.LogicalOr, ScriptConstants.LogicalOr, line, col));
+                        tokens.Add(Token(TokenType.LogicalOr, ScriptConstants.LogicalOrSymbol, line, col));
                     }
                     else
                     {
                         Advance();
                         tokens.Add(Token(TokenType.BitOr, "|", line, col));
                     }
+
                     break;
 
                 default:

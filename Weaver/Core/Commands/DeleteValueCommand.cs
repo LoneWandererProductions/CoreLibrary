@@ -3,6 +3,7 @@
  * PROJECT:     Weaver.Core.Commands
  * FILE:        DeleteValueCommand.cs
  * PURPOSE:     Deletes a stored value from the Scripter Engine.
+ *              MemClearCommand supports a similar function but this is intended.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -15,7 +16,7 @@ namespace Weaver.Core.Commands
     /// <summary>
     /// Mostly internal command, deletes a value from the Scripter registry.
     /// </summary>
-    /// <seealso cref="ICommand" />
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
     public sealed class DeleteValueCommand : ICommand
     {
         /// <summary>
@@ -39,7 +40,7 @@ namespace Weaver.Core.Commands
         public string Name => "deleteValue";
 
         /// <inheritdoc />
-        public string Description => "Deletes a variable from the registry.";
+        public string Description => "Deletes a variable from the registry. Usage: deleteValue([key]).";
 
         /// <inheritdoc />
         public int ParameterCount => 1;
@@ -54,7 +55,7 @@ namespace Weaver.Core.Commands
         public CommandResult Execute(params string[] args)
         {
             if (args.Length != 1)
-                return CommandResult.Fail("Usage: deleteValue(key)");
+                return CommandResult.Fail("Usage: deleteValue([key]).");
 
             var key = args[0];
             return _registry.Remove(key)

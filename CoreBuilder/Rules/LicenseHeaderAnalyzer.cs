@@ -89,15 +89,6 @@ namespace CoreBuilder.Rules
             return CommandResult.Ok(output, results);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// This analyzer has no extensions or interactive feedback.
-        /// </summary>
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
-
         /// <summary>
         /// Extracts the first comment block (/* ... */) or contiguous line comments (// ...).
         /// </summary>

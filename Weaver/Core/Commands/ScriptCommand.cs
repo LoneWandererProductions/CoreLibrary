@@ -21,7 +21,7 @@ namespace Weaver.Core.Commands
         /// <summary>
         /// The registry
         /// </summary>
-        private IVariableRegistry _registry;
+        private readonly IVariableRegistry _registry;
 
         /// <inheritdoc />
         public string Name => "RunScript";
@@ -56,8 +56,8 @@ namespace Weaver.Core.Commands
                 return CommandResult.Fail("Missing script text. Usage: RunScript(<script> [, <maxIterations>])");
             }
 
-            string script = args[0];
-            int maxIterations = 1000;
+            var script = args[0];
+            var maxIterations = 1000;
 
             if (args.Length > 1 && int.TryParse(args[1], out var parsed))
                 maxIterations = parsed;

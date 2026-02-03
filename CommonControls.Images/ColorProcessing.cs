@@ -7,6 +7,7 @@
  * SOURCE:      https://stackoverflow.com/questions/42531608/hsv-triangle-in-c-sharp
  */
 
+using System;
 using ExtendedSystemObjects;
 
 namespace CommonControls.Images

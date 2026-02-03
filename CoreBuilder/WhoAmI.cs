@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using Weaver;
@@ -25,13 +26,20 @@ namespace CoreBuilder
         public string Name => "WhoAmI";
 
         /// <inheritdoc />
-        public string Description => "Displays hostname, user and IP information.";
+        public string Description =>
+            "Displays hostname, user and IP information. Supports the Who extension, Example: whoami().who(ip,hostname) or whoami().who(ip)";
 
         /// <inheritdoc />
         public string Namespace => "System";
 
         /// <inheritdoc />
         public int ParameterCount => 0;
+
+        /// <inheritdoc />
+        public IReadOnlyDictionary<string, int>? Extensions => new Dictionary<string, int>
+        {
+            { "who", 1 } // "who" extension expects at least 1 parameter (or variable)
+        };
 
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
@@ -74,9 +82,5 @@ namespace CoreBuilder
                 return CommandResult.Fail($"WhoAmI failed: {ex.Message}");
             }
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

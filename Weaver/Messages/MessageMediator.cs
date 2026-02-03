@@ -10,6 +10,9 @@ using Weaver.Interfaces;
 
 namespace Weaver.Messages
 {
+    /// <summary>
+    /// Mediator between User and Script Executor for commands and feedback requests.
+    /// </summary>
     public sealed class MessageMediator
     {
         /// <summary>

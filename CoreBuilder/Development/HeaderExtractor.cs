@@ -24,8 +24,7 @@ namespace CoreBuilder.Development
     /// <inheritdoc />
     /// <summary>
     ///     Tool for detecting and inserting standardized license headers
-    ///     into C# source files. Integrates with Weaver’s command and
-    ///     extension infrastructure.
+    ///     into C# source files. Integrates with Weaver’s command infrastructure.
     /// </summary>
     public sealed class HeaderExtractor : ICommand
     {
@@ -57,11 +56,11 @@ namespace CoreBuilder.Development
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <summary>
-        /// Processes the files.
+        /// Processes the files, inserting headers where missing.
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>
-        /// <returns>Files with added Headers</returns>
+        /// <returns>Files with added headers</returns>
         public string ProcessFiles(string? directoryPath, bool includeSubdirectories)
         {
             if (string.IsNullOrWhiteSpace(directoryPath) || !Directory.Exists(directoryPath))
@@ -129,7 +128,7 @@ namespace CoreBuilder.Development
 
             var directoryPath = args[0];
             var includeSubdirs =
-                args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
+                args.Length <= 1 || (args.Length > 1 && bool.TryParse(args[1], out var result) && result);
 
             var resultMessage = ProcessFiles(directoryPath, includeSubdirs);
             return CommandResult.Ok(resultMessage);
@@ -137,28 +136,24 @@ namespace CoreBuilder.Development
 
         /// <inheritdoc />
         /// <summary>
-        ///     Provides a preview execution mode when invoked via "tryrun".
-        ///     This allows users to see which files would be modified before confirming.
+        ///     Preview mode for "tryrun". Shows files that would be affected and
+        ///     requests confirmation before executing.
         /// </summary>
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
+        public CommandResult TryRun(params string[] args)
         {
-            if (!string.Equals(extensionName, "tryrun", StringComparison.OrdinalIgnoreCase))
-                return CommandResult.Fail($"Extension '{extensionName}' not supported by '{Name}'.");
-
             if (args.Length == 0)
                 return CommandResult.Fail("Missing argument: directory path.");
 
             var directoryPath = args[0];
-            var includeSubDirs =
-                args.Length <= 1 || args.Length > 1 && bool.TryParse(args[1], out var result) && result;
+            var includeSubdirs =
+                args.Length <= 1 || (args.Length > 1 && bool.TryParse(args[1], out var result) && result);
 
-            var previewList = DetectFilesNeedingHeaders(directoryPath, includeSubDirs);
+            var previewList = DetectFilesNeedingHeaders(directoryPath, includeSubdirs);
+
             if (string.IsNullOrWhiteSpace(previewList) || previewList.StartsWith("All files"))
                 return CommandResult.Ok("All files already contain headers. Nothing to insert.");
 
-            // 🔹 Create feedback request for confirmation
             FeedbackRequest? feedback = null;
-            var cache = feedback;
 
             feedback = new FeedbackRequest(
                 prompt:
@@ -173,7 +168,9 @@ namespace CoreBuilder.Development
                         "no" => CommandResult.Fail("Operation cancelled by user."),
                         _ => new CommandResult
                         {
-                            Message = "Please answer yes/no.", RequiresConfirmation = true, Feedback = cache
+                            Message = "Please answer yes/no.",
+                            RequiresConfirmation = true,
+                            Feedback = feedback
                         }
                     };
                 });

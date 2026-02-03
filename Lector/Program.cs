@@ -27,9 +27,6 @@ namespace Lector
             var result = weave.ProcessInput("help()");
             Console.WriteLine(result.Message);
 
-            result = weave.ProcessInput("list()");
-            Console.WriteLine(result.Message);
-
             var exit = false;
 
             do

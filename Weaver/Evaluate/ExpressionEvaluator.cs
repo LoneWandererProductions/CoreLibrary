@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.Evaluate
  * FILE:        ExpressionEvaluator.cs
@@ -6,10 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Text;
-using System.Text.RegularExpressions;
 using Weaver.Interfaces;
-using Weaver.Messages;
+using Weaver.Registry;
 using Weaver.ScriptEngine;
 
 //TODO needs rework to support more complex expressions, parentheses, operator precedence, etc.
@@ -28,9 +26,30 @@ namespace Weaver.Evaluate
         /// </summary>
         private readonly IVariableRegistry? _registry;
 
-        private static readonly string[] MultiOps =
+        private readonly RpnEngine _rpn;
+
+        /// <summary>
+        /// The operators
+        /// </summary>
+        private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators = new()
         {
-            "==", "!=", ">=", "<="
+            ["!"] = (5, true, 1),
+
+            ["*"] = (4, false, 2),
+            ["/"] = (4, false, 2),
+
+            ["+"] = (3, false, 2),
+            ["-"] = (3, false, 2),
+
+            [">"] = (2, false, 2),
+            ["<"] = (2, false, 2),
+            [">="] = (2, false, 2),
+            ["<="] = (2, false, 2),
+            ["=="] = (2, false, 2),
+            ["!="] = (2, false, 2),
+
+            ["&&"] = (1, false, 2),
+            ["||"] = (0, false, 2),
         };
 
         /// <summary>
@@ -40,7 +59,9 @@ namespace Weaver.Evaluate
         public ExpressionEvaluator(IVariableRegistry? registry = null)
         {
             _registry = registry;
+            _rpn = new RpnEngine(registry);
         }
+
         /// <inheritdoc />
         /// <exception cref="ArgumentException">Invalid or unsupported expression.</exception>
         public bool Evaluate(string expression)
@@ -57,65 +78,27 @@ namespace Weaver.Evaluate
             if (expression.Equals("false", StringComparison.OrdinalIgnoreCase))
                 return false;
 
+            // single-variable evaluation
+            if (_registry != null && _registry.TryEvaluateAsBool(expression, out var single))
+                return single;
+
             // try to interpret as a variable
-            if (_registry != null && _registry.TryGet(expression, out var vm))
-            {
-                return vm.Type switch
-                {
-                    EnumTypes.Wbool => vm.Bool,
-                    EnumTypes.Wint => vm.Int64 != 0,
-                    EnumTypes.Wdouble => vm.Double != 0.0,
-                    EnumTypes.Wstring => !string.IsNullOrEmpty(vm.String),
-                    _ => throw new ArgumentException($"Unsupported variable type: {vm.Type}")
-                };
-            }
-
-            // Unary NOT (handle both "not x" and "not(x)")
-            if (expression.StartsWith("not", StringComparison.OrdinalIgnoreCase))
-            {
-                var remainder = expression.Substring(3).TrimStart();
-                if (remainder.StartsWith("(") && remainder.EndsWith(")"))
-                    remainder = remainder.Substring(1, remainder.Length - 2);
-
-                return !Evaluate(remainder);
-            }
-
-            // --- NEW FIX: detect boolean operators safely ---
-            var boolRegex = new Regex(@"\b(and|or)\b|&&|\|\|", RegexOptions.IgnoreCase);
-
-            if (boolRegex.IsMatch(expression))
-            {
-                // split but KEEP operators
-                var tokens = boolRegex.Split(expression)
-                    .Select(x => x.Trim())
-                    .Where(x => x.Length > 0)
-                    .ToArray();
-
-                if (tokens.Length == 3)
-                {
-                    var left = Evaluate(tokens[0]);
-                    var op = tokens[1].ToLowerInvariant();
-                    var right = Evaluate(tokens[2]);
-
-                    return op switch
-                    {
-                        "and" => left && right,
-                        "or" => left || right,
-                        "&&" => left && right,
-                        "||" => left || right,
-                        _ => throw new ArgumentException($"Unsupported logical operator: {op}")
-                    };
-                }
-            }
+            if (_registry != null) expression = _registry.ReplaceVariablesInExpression(expression);
 
             // --- comparison operators ---
-            var parts = Tokenize(expression).ToArray();
+            var tokens = Lexer.Tokenize(expression).ToArray();
 
-            if (parts.Length == 3)
+            if (tokens.Length == 2 && tokens[0] == ScriptConstants.LogicalNotSymbol) // "!"
             {
-                var left = GetValue(parts[0]);
-                var op = parts[1];
-                var right = GetValue(parts[2]);
+                var val = GetValue(tokens[1]);
+                return !Convert.ToBoolean(val);
+            }
+
+            if (tokens.Length == 3)
+            {
+                var left = GetValue(tokens[0]);
+                var op = tokens[1];
+                var right = GetValue(tokens[2]);
 
                 return op switch
                 {
@@ -125,18 +108,20 @@ namespace Weaver.Evaluate
                     ScriptConstants.Less => Compare(left, right) < 0,
                     ScriptConstants.GreaterEqual => Compare(left, right) >= 0,
                     ScriptConstants.LessEqual => Compare(left, right) <= 0,
-                    ScriptConstants.LogicalAnd => Convert.ToBoolean(left) && Convert.ToBoolean(right),
-                    ScriptConstants.LogicalOr => Convert.ToBoolean(left) || Convert.ToBoolean(right),
+                    ScriptConstants.LogicalAndSymbol => Convert.ToBoolean(left) && Convert.ToBoolean(right),
+                    ScriptConstants.LogicalOrSymbol => Convert.ToBoolean(left) || Convert.ToBoolean(right),
                     _ => throw new ArgumentException($"Unsupported operator: {op}")
                 };
             }
 
             // unary NOT with tokens
-            if (parts.Length == 2 && parts[0].Equals("not", StringComparison.OrdinalIgnoreCase))
+            if (tokens.Length == 2 && tokens[0].Equals("not", StringComparison.OrdinalIgnoreCase))
             {
-                var val = GetValue(parts[1]);
+                var val = GetValue(tokens[1]);
                 return !Convert.ToBoolean(val);
             }
+
+            //TODO cache Tokens -> RPN conversion for performance
 
             // fallback numeric
             return EvaluateNumeric(expression) != 0;
@@ -145,167 +130,13 @@ namespace Weaver.Evaluate
         /// <inheritdoc />
         public double EvaluateNumeric(string expression)
         {
-            var tokens = Tokenize(expression);
-            var rpn = ToRpn(tokens);
-            return EvaluateRpn(rpn);
-        }
-        private IEnumerable<string> Tokenize(string expr)
-        {
-            var token = new StringBuilder();
-            int i = 0;
+            //var tokens = Tokenizer.Tokenize(expression);
 
-            while (i < expr.Length)
-            {
-                char c = expr[i];
+            var tokens = Lexer.Tokenize(expression);
+            //var rpn = ToRpn(tokens);
+            //return EvaluateRpn(rpn);
 
-                if (char.IsWhiteSpace(c))
-                {
-                    i++;
-                    continue;
-                }
-
-                // numeric or identifier
-                if (char.IsLetterOrDigit(c) || c == '.')
-                {
-                    token.Append(c);
-                    i++;
-                    continue;
-                }
-
-                // Flush current token
-                if (token.Length > 0)
-                {
-                    yield return token.ToString();
-                    token.Clear();
-                }
-
-                // Multi-char operator detection
-                bool matchedMulti = false;
-                foreach (var op in MultiOps)
-                {
-                    if (expr.AsSpan(i).StartsWith(op))
-                    {
-                        yield return op;
-                        i += op.Length;
-                        matchedMulti = true;
-                        break;
-                    }
-                }
-                if (matchedMulti)
-                    continue;
-
-                // Single char operator
-                yield return c.ToString();
-                i++;
-            }
-
-            if (token.Length > 0)
-                yield return token.ToString();
-        }
-
-        private List<string> ToRpn(IEnumerable<string> tokens)
-        {
-            var output = new List<string>();
-            var ops = new Stack<string>();
-
-            int Precedence(string op) => op switch
-            {
-                "+" or "-" => 1,
-                "*" or "/" => 2,
-                _ => 0
-            };
-
-            foreach (var token in tokens)
-            {
-                if (double.TryParse(token, out _) || IsNumericVariable(token))
-                {
-                    output.Add(token);
-                }
-                else if ("+-*/".Contains(token))
-                {
-                    while (ops.Count > 0 && Precedence(ops.Peek()) >= Precedence(token))
-                        output.Add(ops.Pop());
-                    ops.Push(token);
-                }
-                else if (token == "(")
-                {
-                    ops.Push(token);
-                }
-                else if (token == ")")
-                {
-                    while (ops.Peek() != "(")
-                        output.Add(ops.Pop());
-                    ops.Pop();
-                }
-            }
-
-            while (ops.Count > 0)
-                output.Add(ops.Pop());
-
-            return output;
-        }
-
-        private double EvaluateRpn(List<string> rpn)
-        {
-            var stack = new Stack<double>();
-
-            foreach (var token in rpn)
-            {
-                if (double.TryParse(token, out var num))
-                {
-                    stack.Push(num);
-                }
-                else if (IsNumericVariable(token))
-                {
-                    stack.Push(GetNumericValue(token)); // lookup registry
-                }
-                else
-                {
-                    var b = stack.Pop();
-                    var a = stack.Pop();
-
-                    stack.Push(token switch
-                    {
-                        "+" => a + b,
-                        "-" => a - b,
-                        "*" => a * b,
-                        "/" => a / b,
-                        _ => throw new Exception("Unknown operator")
-                    });
-                }
-            }
-
-            return stack.Pop();
-        }
-
-        private bool IsNumericVariable(string token)
-        {
-            if (_registry == null)
-                return false;
-
-            return _registry.TryGet(token, out var val, out var type)
-                   && (type == EnumTypes.Wint || type == EnumTypes.Wdouble || type == EnumTypes.Wbool);
-        }
-
-        private double GetNumericValue(string token)
-        {
-            if (_registry != null && _registry.TryGet(token, out var val, out var type))
-            {
-                return val switch
-                {
-                    int i => i,
-                    long l => l,
-                    double d => d,
-                    float f => f,
-                    bool b => b ? 1 : 0,
-                    _ => throw new InvalidOperationException($"Cannot convert value of type {val.GetType()} to number")
-                };
-            }
-
-            if (double.TryParse(token, out var num))
-                return num;
-
-            throw new InvalidOperationException($"Invalid numeric token: {token}");
+            return _rpn.EvaluateRpn(tokens);
         }
 
         /// <summary>
@@ -341,9 +172,12 @@ namespace Weaver.Evaluate
         /// <inheritdoc />
         public bool IsBooleanExpression(string expression)
         {
-            return expression.Contains(ScriptConstants.LogicalAnd, StringComparison.OrdinalIgnoreCase)
-                   || expression.Contains(ScriptConstants.LogicalOr, StringComparison.OrdinalIgnoreCase)
-                   || expression.Contains(ScriptConstants.LogicalNot, StringComparison.OrdinalIgnoreCase)
+            return expression.Contains(ScriptConstants.LogicalAndSymbol, StringComparison.OrdinalIgnoreCase)
+                   || expression.Contains(ScriptConstants.LogicalOrSymbol, StringComparison.OrdinalIgnoreCase)
+                   || expression.Contains(ScriptConstants.LogicalNotSymbol, StringComparison.OrdinalIgnoreCase)
+                   || expression.Contains(ScriptConstants.LogicalAndWord, StringComparison.OrdinalIgnoreCase)
+                   || expression.Contains(ScriptConstants.LogicalOrWord, StringComparison.OrdinalIgnoreCase)
+                   || expression.Contains(ScriptConstants.LogicalNotWord, StringComparison.OrdinalIgnoreCase)
                    || expression.Contains(ScriptConstants.EqualEqual)
                    || expression.Contains(ScriptConstants.BangEqual)
                    || expression.Contains(ScriptConstants.GreaterEqual)

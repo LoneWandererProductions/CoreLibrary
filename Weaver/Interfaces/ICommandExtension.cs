@@ -55,9 +55,9 @@ namespace Weaver.Interfaces
         /// </returns>
         CommandResult Invoke(
             ICommand command,
-            string[] extensionArgs,  // now clearly only for the extension
+            string[] extensionArgs, // now clearly only for the extension
             Func<string[], CommandResult> executor,
-            string[] commandArgs     // original command args
+            string[] commandArgs // original command args
         );
 
         /// <summary>

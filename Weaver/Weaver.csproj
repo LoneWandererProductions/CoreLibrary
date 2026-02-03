@@ -13,4 +13,8 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Loader\Loader.csproj" />
+	</ItemGroup>
+
 </Project>

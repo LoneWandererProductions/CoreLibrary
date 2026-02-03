@@ -14,7 +14,7 @@ namespace Weaver.ScriptEngine
     /// Represents a lexical token produced by the script engine.
     /// </summary>
     [DebuggerDisplay("{ToString(),nq}")]
-    internal sealed class Token
+    public sealed class Token
     {
         /// <summary>
         /// Gets the type of the token.

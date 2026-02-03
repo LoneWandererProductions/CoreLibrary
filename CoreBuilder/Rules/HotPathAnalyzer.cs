@@ -165,11 +165,6 @@ namespace CoreBuilder.Rules
             );
         }
 
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
-
         /// <summary>
         /// Builds the message.
         /// </summary>

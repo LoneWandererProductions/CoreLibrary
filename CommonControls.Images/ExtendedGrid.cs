@@ -11,6 +11,8 @@
 // ReSharper disable ArrangeBraces_for
 // ReSharper disable UnusedMember.Global, basic Dummy for later use
 
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;

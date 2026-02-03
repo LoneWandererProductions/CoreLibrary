@@ -26,7 +26,7 @@ namespace CoreBuilder.Rules
     public sealed class DeadReferenceAnalyzer : ICommand, ICodeAnalyzer
     {
         /// <inheritdoc cref="ICodeAnalyzer" />
-        public string Namespace => "analysis";
+        public string Namespace => "Analyzer";
 
         /// <inheritdoc cref="ICodeAnalyzer" />
         public string Name => "deadrefs";
@@ -83,9 +83,5 @@ namespace CoreBuilder.Rules
             var output = string.Join("\n", results.Select(d => $"{Path.GetFileName(d.FilePath)} -> {d.Message}"));
             return CommandResult.Ok($"Unused references detected:\n{output}", results);
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

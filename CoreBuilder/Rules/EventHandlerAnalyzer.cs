@@ -104,9 +104,5 @@ namespace CoreBuilder.Rules
             var output = string.Join(Environment.NewLine, results.Select(d => d.ToString()));
             return CommandResult.Ok(output, results);
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

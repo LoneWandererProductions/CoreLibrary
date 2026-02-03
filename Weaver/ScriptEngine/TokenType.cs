@@ -11,7 +11,7 @@ namespace Weaver.ScriptEngine
     /// <summary>
     /// Collection of all possible token types in the script engine.
     /// </summary>
-    internal enum TokenType
+    public enum TokenType
     {
         Identifier = 0, // com, ext, Label, etc.
         Number = 1, // 123, 45.6 (optional)
@@ -49,6 +49,6 @@ namespace Weaver.ScriptEngine
         LogicalAnd = 33,
         BitAnd = 34,
         LogicalOr = 35,
-        BitOr = 36
+        BitOr = 36,
     }
 }

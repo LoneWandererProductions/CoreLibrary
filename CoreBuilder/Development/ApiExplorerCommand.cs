@@ -73,7 +73,7 @@ namespace CoreBuilder.Development
             if (!Directory.Exists(rootPath))
                 return CommandResult.Fail($"Folder not found: {rootPath}");
 
-            bool useWindow = args.Length > 1 && args[1].Equals("window", StringComparison.OrdinalIgnoreCase);
+            var useWindow = args.Length > 1 && args[1].Equals("window", StringComparison.OrdinalIgnoreCase);
 
             var sb = new StringBuilder();
             var files = Directory
@@ -111,6 +111,7 @@ namespace CoreBuilder.Development
         /// </summary>
         /// <param name="types">The types.</param>
         /// <param name="sb">The sb.</param>
+        /// <param name="output">The output.</param>
         /// <param name="nsName">Name of the ns.</param>
         private static void DumpTypes(IEnumerable<BaseTypeDeclarationSyntax> types, StringBuilder sb,
             IEventOutput? output, string nsName)
@@ -147,7 +148,7 @@ namespace CoreBuilder.Development
                 {
                     foreach (var member in typeDecl.Members)
                     {
-                        string? memberLine = member switch
+                        var memberLine = member switch
                         {
                             MethodDeclarationSyntax m when IsPublic(m.Modifiers) =>
                                 $"    method: {m.Identifier}({string.Join(", ", m.ParameterList.Parameters.Select(p => $"{p.Type} {p.Identifier}"))})",
@@ -184,9 +185,5 @@ namespace CoreBuilder.Development
         {
             return modifiers.Any(m => m.Text == "public");
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

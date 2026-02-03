@@ -127,12 +127,5 @@ namespace CoreBuilder.Rules
 
             return CommandResult.Ok($"Unused Classes Report:\n{report}");
         }
-
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
     }
 }

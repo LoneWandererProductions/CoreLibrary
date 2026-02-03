@@ -9,7 +9,7 @@
 namespace CoreBuilder.Enums
 {
     /// <summary>
-    /// Serverity of the diagnostic message.
+    /// Severity of the diagnostic message.
     /// </summary>
     public enum DiagnosticSeverity
     {

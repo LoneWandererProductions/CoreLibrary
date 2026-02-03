@@ -88,9 +88,5 @@ namespace CoreBuilder.FileManager
                 BuildTree(dirs[d], sb, indent, isLastDir);
             }
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

@@ -141,11 +141,5 @@ namespace CoreBuilder.Rules
             var output = string.Join("\n", diagnostics.Select(d => d.ToString()));
             return CommandResult.Ok(output, diagnostics);
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
     }
 }

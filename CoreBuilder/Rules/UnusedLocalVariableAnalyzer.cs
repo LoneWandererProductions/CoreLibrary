@@ -104,11 +104,5 @@ namespace CoreBuilder.Rules
 
             return CommandResult.Ok(msg);
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
     }
 }

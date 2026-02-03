@@ -109,9 +109,5 @@ namespace CoreBuilder.FileManager
                 return new[] { "Unknown" };
             }
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

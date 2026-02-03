@@ -10,6 +10,7 @@
  *              https://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
  */
 
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Imaging;

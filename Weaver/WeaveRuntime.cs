@@ -7,7 +7,7 @@
  */
 
 using Weaver.Interfaces;
-using Weaver.ScriptEngine;
+using Weaver.Registry;
 
 namespace Weaver
 {

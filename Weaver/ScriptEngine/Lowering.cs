@@ -41,49 +41,53 @@ namespace Weaver.ScriptEngine
                 {
                     case LabelNode ln:
                         yield return (ScriptConstants.LabelToken, ln.Name);
+
                         break;
 
                     case GotoNode gn:
                         yield return (ScriptConstants.GotoToken, gn.Target);
+
                         break;
 
                     case CommandNode cn:
                         yield return (ScriptConstants.CommandToken, cn.Command);
+
                         break;
 
                     case AssignmentNode an:
+                    {
+                        var expr = an.Expression?.Trim() ?? "";
+                        var varName = an.Variable?.Trim() ?? "";
+
+                        if (rewrite ?? true)
                         {
-                            var expr = an.Expression?.Trim() ?? "";
-                            var varName = an.Variable?.Trim() ?? "";
+                            var rewrittenExpr = expr;
 
-                            if (rewrite ?? true)
+                            // Replace registry variables if possible
+                            if (registry != null)
+                                rewrittenExpr = ReplaceRegistryVariables(expr, registry);
+
+                            if (IsCommandCall(expr))
                             {
-                                string rewrittenExpr = expr;
-
-                                // Replace registry variables if possible
-                                if (registry != null)
-                                    rewrittenExpr = ReplaceRegistryVariables(expr, registry);
-
-                                if (IsCommandCall(expr))
-                                {
-                                    yield return (ScriptConstants.CommandRewriteToken, $"{expr}.Store({varName})");
-                                }
-                                else if (IsSimpleExpression(expr))
-                                {
-                                    yield return (ScriptConstants.CommandRewriteToken, $"EvaluateCommand({rewrittenExpr}, {varName})");
-                                }
-                                else
-                                {
-                                    throw new Exception($"Unsupported assignment expression: '{expr}'");
-                                }
+                                yield return (ScriptConstants.CommandRewriteToken, $"{expr}.Store({varName})");
+                            }
+                            else if (IsSimpleExpression(expr))
+                            {
+                                yield return (ScriptConstants.CommandRewriteToken,
+                                    $"EvaluateCommand({rewrittenExpr}, {varName})");
                             }
                             else
                             {
-                                yield return (ScriptConstants.AssignmentToken, $"{varName} = {expr}");
+                                throw new Exception($"Unsupported assignment expression: '{expr}'");
                             }
-
-                            break;
                         }
+                        else
+                        {
+                            yield return (ScriptConstants.AssignmentToken, $"{varName} = {expr}");
+                        }
+
+                        break;
+                    }
 
                     case IfNode ifn:
                         // Emit condition
@@ -112,12 +116,14 @@ namespace Weaver.ScriptEngine
                     case DoWhileNode dw:
 
                         yield return (ScriptConstants.DoOpenToken, null);
+
                         foreach (var child in ScriptLowerer(dw.Body, registry, rewrite, branchPath))
                             yield return child;
+
                         yield return (ScriptConstants.DoEndToken, null);
                         yield return (ScriptConstants.WhileConditionToken, dw.Condition);
-                        break;
 
+                        break;
                 }
             }
         }
@@ -132,7 +138,7 @@ namespace Weaver.ScriptEngine
                 var name = kv.Key;
                 var vm = kv.Value;
 
-                string replacement = vm.Type switch
+                var replacement = vm.Type switch
                 {
                     EnumTypes.Wint => vm.Int64.ToString(),
                     EnumTypes.Wdouble => vm.Double.ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -157,7 +163,7 @@ namespace Weaver.ScriptEngine
         /// </returns>
         private static bool IsCommandCall(string expr)
         {
-            int paren = expr.IndexOf('(');
+            var paren = expr.IndexOf('(');
             return paren > 0 && expr.EndsWith(")");
         }
 
@@ -173,7 +179,7 @@ namespace Weaver.ScriptEngine
             if (expr.Contains("(") || expr.Contains(")"))
                 return false;
 
-            foreach (char c in expr)
+            foreach (var c in expr)
                 if (!char.IsLetterOrDigit(c) && "+-*/<>=!&| ".IndexOf(c) < 0)
                     return false;
 

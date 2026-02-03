@@ -9,6 +9,7 @@
 using System.Globalization;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using Weaver.Registry;
 
 namespace Weaver.Core.Commands
 {
@@ -58,8 +59,9 @@ namespace Weaver.Core.Commands
         /// <inheritdoc />
         public CommandResult Execute(string[] args)
         {
-            string? expression = args.Length > 0 ? args[0] : null;
-            string? targetVar = args.Length > 1 ? args[1] : null;
+            var expression = args.Length > 0 ? args[0] : null;
+            var targetVar = args.Length > 1 ? args[1] : null;
+
 
             // If no expression, maybe store previous pipeline value or return null
             if (string.IsNullOrWhiteSpace(expression))
@@ -67,34 +69,13 @@ namespace Weaver.Core.Commands
                 return CommandResult.Ok(null);
             }
 
-            // Resolve variables from registry as before
-            if (_registry != null)
-            {
-                foreach (var variable in _registry.GetAll())
-                {
-                    var key = variable.Key;
-                    var (valueObj, valueType) = variable.Value;
-
-                    if (valueObj == null)
-                        continue;
-
-                    string replacement = valueType switch
-                    {
-                        EnumTypes.Wint => Convert.ToInt64(valueObj).ToString(),
-                        EnumTypes.Wdouble => Convert.ToDouble(valueObj).ToString(CultureInfo.InvariantCulture),
-                        EnumTypes.Wbool => Convert.ToBoolean(valueObj) ? "1" : "0",
-                        EnumTypes.Wstring => valueObj.ToString() ?? "",
-                        _ => valueObj.ToString() ?? ""
-                    };
-
-                    expression = expression.Replace(key, replacement, StringComparison.OrdinalIgnoreCase);
-                }
-            }
+            // Resolve variables from registry as before, if registry is provided
+            if (_registry != null) expression = _registry.ReplaceVariablesInExpression(expression);
 
             object? result;
             EnumTypes type;
 
-            bool isBooleanExpr = _evaluator.IsBooleanExpression(expression);
+            var isBooleanExpr = _evaluator.IsBooleanExpression(expression);
 
             try
             {
@@ -138,7 +119,7 @@ namespace Weaver.Core.Commands
             }
 
             // Return computed result
-            string message = type switch
+            var message = type switch
             {
                 EnumTypes.Wbool => result?.ToString() ?? "false",
                 EnumTypes.Wdouble => Convert.ToDouble(result).ToString(CultureInfo.InvariantCulture),
@@ -147,6 +128,5 @@ namespace Weaver.Core.Commands
 
             return CommandResult.Ok(message, result, type);
         }
-
     }
 }

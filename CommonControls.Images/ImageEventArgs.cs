@@ -6,6 +6,8 @@
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
+using System;
+
 namespace CommonControls.Images
 {
     /// <inheritdoc />

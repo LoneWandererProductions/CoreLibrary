@@ -168,11 +168,5 @@ namespace CoreBuilder.FileManager
                 return CommandResult.Fail($"DirectorySize execution failed: {ex.Message}", ex, EnumTypes.Wstring);
             }
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-        {
-            return CommandResult.Fail($"'{Name}' has no extensions.");
-        }
     }
 }

@@ -133,9 +133,5 @@ namespace CoreBuilder
                 _ => null
             };
         }
-
-        /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
-            => CommandResult.Fail($"'{Name}' has no extensions.");
     }
 }

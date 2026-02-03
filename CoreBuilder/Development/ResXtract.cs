@@ -134,26 +134,25 @@ namespace CoreBuilder.Development
         }
 
         /// <inheritdoc />
-        public CommandResult InvokeExtension(string extensionName, params string[] args)
+        public CommandResult TryRun(params string[] args)
         {
-            if (!string.Equals(extensionName, "tryrun", StringComparison.OrdinalIgnoreCase))
-                return CommandResult.Fail($"Extension '{extensionName}' not supported by '{Name}'.");
-
             if (args.Length == 0)
-                return CommandResult.Fail("Missing argument: project path.");
+                return CommandResult.Fail("Usage:\n  ResXtract <projectPath>\n  ResXtract --detect <projectPath>");
 
             var projectPath = args[0];
             var preview = DetectAffectedFiles(projectPath);
+
             if (string.IsNullOrWhiteSpace(preview))
                 return CommandResult.Ok("No files would be changed.");
 
+            // Step 1: create a feedback request for user confirmation
             FeedbackRequest? feedback = null;
             var cache = feedback;
 
             feedback = new FeedbackRequest(
-                $"The following files would be updated:\n\n{preview}\n\nProceed? (yes/no)",
-                new[] { "yes", "no" },
-                input =>
+                prompt: $"The following files would be updated:\n\n{preview}\n\nProceed? (yes/no)",
+                options: new[] { "yes", "no" },
+                onRespond: input =>
                 {
                     input = input.Trim().ToLowerInvariant();
                     return input switch
@@ -162,15 +161,17 @@ namespace CoreBuilder.Development
                         "no" => CommandResult.Fail("Operation cancelled by user."),
                         _ => new CommandResult
                         {
-                            Message = "Please answer yes/no.", RequiresConfirmation = true, Feedback = cache
+                            Message = "Please answer yes/no.",
+                            RequiresConfirmation = true,
+                            Feedback = cache // allow retry
                         }
                     };
                 });
 
+            // Step 2: return preview + feedback object
             return new CommandResult
             {
-                Message =
-                    $"Preview complete. The following files would be updated:\n\n{preview}\n\nAwaiting user confirmation.",
+                Message = $"[Preview-WithTry] {preview}\nAwaiting user confirmation.",
                 Feedback = feedback,
                 RequiresConfirmation = true,
                 Success = false
