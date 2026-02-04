@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/TableOverviewViewModel.cs
+ * FILE:        TableOverviewViewModel.cs
  * PURPOSE:     View Model for TableOverview
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/Dialogs.cs
+ * FILE:        Dialogs.cs
  * PURPOSE:     Reused for SQLiteGui Project only
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

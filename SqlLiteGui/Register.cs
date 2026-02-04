@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/Register.cs
+ * FILE:        Register.cs
  * PURPOSE:     A basic Selection Object to clean up the Controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

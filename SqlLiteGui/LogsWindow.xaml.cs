@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/InputBinaryWindow.xaml.cs
+ * FILE:        InputBinaryWindow.xaml.cs
  * PURPOSE:     Show all Logs from the current Connection
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

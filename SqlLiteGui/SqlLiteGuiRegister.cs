@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/SQLiteGuiRegister.cs
+ * FILE:        SQLiteGuiRegister.cs
  * PURPOSE:     Some basic Objects we need for Data-binding and message stuff, here lie all Data-Binding Objects and Shared Objects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

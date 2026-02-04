@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/DbInfo.xaml.cs
+ * FILE:        DbInfo.xaml.cs
  * PURPOSE:     Display Database Infos
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

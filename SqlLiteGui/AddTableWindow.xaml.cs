@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/AddTableWindow.xaml.cs
+ * FILE:        AddTableWindow.xaml.cs
  * PURPOSE:     Add new Tables
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -91,7 +91,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Gets the table info.
         /// </summary>
-        internal static TableObject TableInfos { get; private set; }
+        internal static TableObject? TableInfos { get; private set; }
 
         /// <summary>
         ///     Get the basics in Place
@@ -131,7 +131,7 @@ namespace SQLiteGui
                 return;
             }
 
-            var tbl = new TableObject { Header = TxtBoxTableName.Text };
+            var tbl = new TableObject(TxtBoxTableName.Text, default);
             var dct = new DictionaryTableColumns();
 
             foreach (var table in TableElements)
@@ -194,21 +194,5 @@ namespace SQLiteGui
 
             _ = TableElements.Remove(selectedItem);
         }
-    }
-
-    /// <summary>
-    ///     Helper Object to feed into Sqlite Helper
-    /// </summary>
-    internal sealed class TableObject
-    {
-        /// <summary>
-        ///     Gets or sets the header.
-        /// </summary>
-        public string Header { get; init; }
-
-        /// <summary>
-        ///     Gets or sets the columns.
-        /// </summary>
-        public DictionaryTableColumns Columns { get; set; }
     }
 }

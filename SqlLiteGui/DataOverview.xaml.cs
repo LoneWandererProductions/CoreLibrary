@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/DataOverview.xaml.cs
+ * FILE:        DataOverview.xaml.cs
  * PURPOSE:     SqlLite graphical Front-end, User-control for the Display Part
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

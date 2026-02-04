@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     SQLiteGui
-* FILE:        SQLiteGui/SQLiteGuiResource.cs
+* FILE:        SQLiteGuiResource.cs
 * PURPOSE:     String Resources of SQLiteGui
 * PROGRAMER:   Wayfarer
 */

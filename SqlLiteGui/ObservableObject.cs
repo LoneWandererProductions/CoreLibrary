@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/ObservableObject.cs
+ * FILE:        ObservableObject.cs
  * PURPOSE:     Reused for SQLiteGui Project only
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

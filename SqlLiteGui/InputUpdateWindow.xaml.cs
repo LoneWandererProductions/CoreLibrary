@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/InputUpdateWindow.xaml.cs
+ * FILE:        InputUpdateWindow.xaml.cs
  * PURPOSE:     Update Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -42,7 +42,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Gets the table row.
         /// </summary>
-        internal static TableSet TableRow { get; private set; }
+        internal static TableSet? TableRow { get; private set; }
 
         /// <summary>
         ///     Set the data.

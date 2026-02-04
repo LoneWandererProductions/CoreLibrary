@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/DbInfoViewModel.cs
+ * FILE:        DbInfoViewModel.cs
  * PURPOSE:     DbInfo View Model
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

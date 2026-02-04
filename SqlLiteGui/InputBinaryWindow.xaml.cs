@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/InputBinaryWindow.xaml.cs
+ * FILE:        InputBinaryWindow.xaml.cs
  * PURPOSE:     Set custom Input, right now: where Clause,Copy Table
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -94,9 +94,12 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Gets the Parameter clause.
+        /// Gets the Parameter clause.
         /// </summary>
-        internal static Binary ParamsClause { get; private set; }
+        /// <value>
+        /// The parameters clause.
+        /// </value>
+        internal static Binary? ParamsClause { get; private set; }
 
         /// <summary>
         ///     Get the basics in Place

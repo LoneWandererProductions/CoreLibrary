@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/SQLiteGuiWindow.xaml.cs
+ * FILE:        SQLiteGuiWindow.xaml.cs
  * PURPOSE:     SqlLite graphical Front-end, not yet completely cleared out into a View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/DataOverviewViewModel.cs
+ * FILE:        DataOverviewViewModel.cs
  * PURPOSE:     DataOverview View Model
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -24,6 +24,9 @@ namespace SQLiteGui
         /// </summary>
         private string _currentTable;
 
+        /// <summary>
+        /// The raw
+        /// </summary>
         private DataView _raw;
 
         /// <summary>

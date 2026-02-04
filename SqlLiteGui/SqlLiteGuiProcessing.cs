@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SQLiteGui
- * FILE:        SQLiteGui/SQLiteGuiProcessing.cs
+ * FILE:        SQLiteGuiProcessing.cs
  * PURPOSE:     Basic View Model
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
