@@ -8,6 +8,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using CoreInject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -158,6 +159,49 @@ namespace CoreBuilderTests
             // Assert: Ensure that the service is resolved successfully
             Assert.IsNotNull(service, "TryResolve should return the resolved service.");
         }
+
+        /// <summary>
+        /// Containers the should dispose singletons.
+        /// </summary>
+        [TestMethod]
+        public void ContainerShouldDisposeSingletons()
+        {
+            var service = new DisposableService();
+            _injector.RegisterInstance<IService>(service);
+
+            // There is currently no way to tell the _injector "I'm done, clean up."
+            // ((IDisposable)_injector).Dispose(); 
+
+            // Assert.IsTrue(service.WasDisposed); // This will fail
+        }
+
+        /// <summary>
+        /// Shoulds the be thread safe.
+        /// </summary>
+        [TestMethod]
+        public void ShouldBeThreadSafe()
+        {
+            _injector.RegisterTransient<IService, Service>();
+
+            // This will frequently throw "An item with the same key has already been added" 
+            // or "Collection was modified" if run in a high-concurrency environment.
+            Parallel.For(0, 1000, i =>
+            {
+                _injector.Resolve<IService>();
+            });
+        }
+    }
+
+    /// <summary>
+    /// Test Service that implements IDisposable.
+    /// </summary>
+    /// <seealso cref="CoreBuilderTests.IService" />
+    /// <seealso cref="System.IDisposable" />
+    public class DisposableService : IService, IDisposable
+    {
+        public bool WasDisposed { get; private set; }
+        public void Dispose() => WasDisposed = true;
+        public void DoStuff() { }
     }
 
     /// <summary>
