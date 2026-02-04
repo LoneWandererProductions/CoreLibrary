@@ -138,7 +138,7 @@ foreach (var entry in logger.GetLogs())
 | `Communication`             | Networking and web service helpers,Port stuff   |
 | `CommunicationTests`        | Tests for the Network stuff                     |
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
-| `PluginLoader`              | Plugin management and loading system            |
+| `Loader`                    | Generic Plugin loading, via Interface           |
 | `CommonFilter`              | WPF control to filter data tables               |
 | `CoreBuilder`               | Utilities for image/vector creation             |
 | `Pathfinder`                | A* pathfinding for grid-based maps              |
@@ -146,7 +146,6 @@ foreach (var entry in logger.GetLogs())
 | `CoreInject`                | Minimal DI/injection support                    |
 | `CoreConsole`               | Quick console runner for apps                   |
 | `CoreMemoryLog`             | In-memory logger, structured, UI-ready          |
-| `Plugin`                    | Base classes/interfaces for plugin system       |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
-| `CoreWorker`                | Worker service abstraction                      |
+| `Contracts`                 | Holds all shared Interfaces                      |
 

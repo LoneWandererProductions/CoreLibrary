@@ -93,7 +93,6 @@
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\LightVector\LightVector.csproj" />
     <ProjectReference Include="..\Pathfinder\Pathfinder.csproj" />
-    <ProjectReference Include="..\PluginLoader\PluginLoader.csproj" />
     <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
     <ProjectReference Include="..\Serializer\Serializer.csproj" />
   </ItemGroup>

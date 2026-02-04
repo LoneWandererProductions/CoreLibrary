@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/CoreInjectorTests.cs
+ * FILE:        CoreInjectorTests.cs
  * PURPOSE:     Some basic tests for our Injector
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -22,7 +22,7 @@ namespace CoreBuilderTests
         /// <summary>
         ///     The injector
         /// </summary>
-        private CoreInjector _injector;
+        private CoreInjector? _injector;
 
         /// <summary>
         ///     Setups this instance.

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilderTests
- * FILE:        CoreBuilderTests/ResXtract.cs
+ * FILE:        ResXtract.cs
  * PURPOSE:     Tests for ResXtract Tool.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBackgroundWorkerTests
- * FILE:        CoreBackgroundWorkerTests/CoreBackgroundWorkerTests.cs
+ * FILE:        CoreBackgroundWorkerTests.cs
  * PURPOSE:     Test for our Background Worker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,9 +10,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Contracts;
 using CoreInject;
 using CoreMemoryLog;
-using CoreWorker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoreBuilderTests
@@ -26,7 +26,7 @@ namespace CoreBuilderTests
         /// <summary>
         ///     The injector
         /// </summary>
-        private CoreInjector _injector;
+        private CoreInjector? _injector;
 
         /// <summary>
         ///     Setup: Initialize CoreInjector container for dependency injection

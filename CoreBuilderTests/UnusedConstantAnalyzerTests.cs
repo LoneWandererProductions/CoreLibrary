@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreBuilderTests
- * FILE:        CoreBuilderTests/UnusedConstantAnalyzerTests.cs
+ * FILE:        UnusedConstantAnalyzerTests.cs
  * PURPOSE:     Unit tests for UnusedConstantAnalyzer.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

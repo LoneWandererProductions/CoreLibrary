@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreWorker
- * FILE:        CoreWorker/CoreBackgroundWorker.cs
+ * PROJECT:     Contracts
+ * FILE:        CoreBackgroundWorker.cs
  * PURPOSE:     Interface of CoreBackgroundWorker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CoreWorker
+namespace Contracts
 {
     /// <summary>
     ///     Interface what we expect

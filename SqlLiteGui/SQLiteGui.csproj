@@ -10,11 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\DataFormatter\DataFormatter.csproj" />
-    <ProjectReference Include="..\Plugin\Plugin.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
     <ProjectReference Include="..\SqliteHelper\SqliteHelper.csproj" />
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
   </ItemGroup>

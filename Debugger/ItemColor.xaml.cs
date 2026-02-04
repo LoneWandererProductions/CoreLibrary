@@ -8,7 +8,6 @@
 
 using System;
 using System.Windows.Controls;
-using CommonControls.Images;
 
 namespace Debugger
 {
