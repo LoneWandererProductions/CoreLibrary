@@ -276,6 +276,23 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Pushes the range.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        public void PushRange(ReadOnlySpan<int> values)
+        {
+            if (values.IsEmpty) return;
+
+            int count = values.Length;
+            EnsureCapacity(Length + count);
+
+            // Copy the entire span directly into the unmanaged buffer
+            values.CopyTo(new Span<int>(_ptr + Length, count));
+            Length += count;
+        }
+
+
+        /// <summary>
         ///     Adds an integer value to the end of the list, resizing if necessary.
         /// </summary>
         /// <param name="value">The integer value to add.</param>

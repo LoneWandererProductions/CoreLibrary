@@ -176,7 +176,7 @@ namespace CoreBuilderTests
         }
 
         /// <summary>
-        /// Shoulds the be thread safe.
+        /// Should be thread safe.
         /// </summary>
         [TestMethod]
         public void ShouldBeThreadSafe()
