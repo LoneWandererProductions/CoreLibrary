@@ -6,17 +6,19 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Imaging
 {
     /// <summary>
-    /// Hopefully this will be the last time we need to duplicate code between DirectBitmap and DirectBitmapImage. 
+    /// Hopefully this will be the last time we need to duplicate code between DirectBitmap and DirectBitmapImage.
     /// This class contains shared logic for both to set and get pixels from the underlying Pixel32 array, as well as an optimized method to set multiple pixels efficiently using contiguous runs per row.
     /// It works on a Pixel32 array only and does not touch any bitmap object, allowing both DirectBitmap and DirectBitmapImage to use it without duplication.
     /// </summary>
-    public static class DirectBitmapCore
+    internal static class DirectBitmapCore
     {
         /// <summary>
         /// Sets the pixel.
@@ -27,7 +29,7 @@ namespace Imaging
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="color">The color.</param>
-        public static void SetPixel(Pixel32[] bits, int width, int height, int x, int y, Pixel32 color)
+        internal static void SetPixel(Pixel32[] bits, int width, int height, int x, int y, Pixel32 color)
         {
             if ((uint)x >= width || (uint)y >= height) return;
 
@@ -44,7 +46,7 @@ namespace Imaging
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <returns>Pixel32 Struct for the Coordinate.</returns>
-        public static Pixel32 GetPixel(Pixel32[] bits, int width, int height, int x, int y)
+        internal static Pixel32 GetPixel(Pixel32[] bits, int width, int height, int x, int y)
         {
             int index = x + y * width;
             return bits[index];
@@ -57,7 +59,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="pixels">The pixels.</param>
-        public static void SetPixels(Pixel32[] bits, int width, int height, IEnumerable<PixelData> pixels)
+        internal static void SetPixels(Pixel32[] bits, int width, int height, IEnumerable<PixelData> pixels)
         {
             foreach (var pixel in pixels)
             {
@@ -76,7 +78,7 @@ namespace Imaging
         /// <param name="width">The width of the image.</param>
         /// <param name="height">The height of the image.</param>
         /// <param name="pixels">Enumerable of (x, y, Pixel32) tuples to set.</param>
-        public static void SetPixelsSimd(Pixel32[] bits, int width, int height, IEnumerable<(int x, int y, Pixel32 color)> pixels)
+        internal static void SetPixelsSimd(Pixel32[] bits, int width, int height, IEnumerable<(int x, int y, Pixel32 color)> pixels)
         {
             if (bits == null || pixels == null) return;
 
@@ -110,6 +112,71 @@ namespace Imaging
                         bits[startIndex + offset] = color;
 
                     i += runLength;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Alpha blends another pixel buffer onto this image using SIMD.
+        /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
+        /// </summary>
+        /// <param name="dstBits">The DST bits.</param>
+        /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// dstBits
+        /// or
+        /// src
+        /// </exception>
+        /// <exception cref="System.ArgumentException">Source must match image size</exception>
+        internal static unsafe void BlendInt(Pixel32[] dstBits, uint[] src)
+        {
+            if (dstBits == null) throw new ArgumentNullException(nameof(dstBits));
+            if (src == null) throw new ArgumentNullException(nameof(src));
+            if (dstBits.Length != src.Length)
+                throw new ArgumentException("Source must match destination size");
+
+            var dstSpan = MemoryMarshal.Cast<Pixel32, uint>(dstBits.AsSpan());
+            var srcSpan = src.AsSpan();
+
+            int len = dstSpan.Length;
+
+            fixed (uint* pDst = dstSpan)
+            fixed (uint* pSrc = srcSpan)
+            {
+                uint* dPtr = pDst;
+                uint* sPtr = pSrc;
+
+                for (int i = 0; i < len; i++)
+                {
+                    uint s = *sPtr;
+
+                    uint sa = s >> 24;
+                    if (sa == 0) { dPtr++; sPtr++; continue; }
+                    if (sa == 255) { *dPtr = s; dPtr++; sPtr++; continue; }
+
+                    uint d = *dPtr;
+
+                    uint da = d >> 24;
+                    uint dr = (d >> 16) & 0xFF;
+                    uint dg = (d >> 8) & 0xFF;
+                    uint db = d & 0xFF;
+
+                    uint sr = (s >> 16) & 0xFF;
+                    uint sg = (s >> 8) & 0xFF;
+                    uint sb = s & 0xFF;
+
+                    uint invA = 255 - sa;
+
+                    uint r = (sr * sa + dr * invA) / 255;
+                    uint g = (sg * sa + dg * invA) / 255;
+                    uint b = (sb * sa + db * invA) / 255;
+
+                    uint a = sa + ((da * invA) / 255);
+
+                    *dPtr = (a << 24) | (r << 16) | (g << 8) | b;
+
+                    dPtr++;
+                    sPtr++;
                 }
             }
         }

@@ -266,93 +266,6 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Alpha blends another pixel buffer onto this image using SIMD.
-        /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
-        /// </summary>
-        /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
-        /// <exception cref="System.ArgumentException">Source must match image size</exception>
-        public unsafe void BlendInt(uint[] src)
-        {
-            if (src == null || src.Length != Bits.Length)
-                throw new ArgumentException("Source must match image size");
-
-            // Get spans for safe bounds check elimination (optional but good practice)
-            // Casting Pixel32[] to uint[] for easier bitwise ops
-            var dstSpan = System.Runtime.InteropServices.MemoryMarshal.Cast<Pixel32, uint>(Bits.AsSpan());
-            var srcSpan = src.AsSpan();
-
-            int len = dstSpan.Length;
-
-            // Use unsafe pointers for maximum speed in the loop
-            fixed (uint* pDst = dstSpan)
-            fixed (uint* pSrc = srcSpan)
-            {
-                uint* dPtr = pDst;
-                uint* sPtr = pSrc;
-
-                for (int i = 0; i < len; i++)
-                {
-                    uint s = *sPtr;
-
-                    // Fast check: if source is fully transparent, skip
-                    uint sa = s >> 24;
-                    if (sa == 0)
-                    {
-                        dPtr++;
-                        sPtr++;
-                        continue;
-                    }
-
-                    // Fast check: if source is fully opaque, just overwrite
-                    if (sa == 255)
-                    {
-                        *dPtr = s;
-                        dPtr++;
-                        sPtr++;
-                        continue;
-                    }
-
-                    uint d = *dPtr;
-
-                    // Extract components (0xAARRGGBB format)
-                    // Destination
-                    uint da = d >> 24;
-                    uint dr = (d >> 16) & 0xFF;
-                    uint dg = (d >> 8) & 0xFF;
-                    uint db = d & 0xFF;
-
-                    // Source
-                    uint sr = (s >> 16) & 0xFF;
-                    uint sg = (s >> 8) & 0xFF;
-                    uint sb = s & 0xFF;
-
-                    // Standard Alpha Blending Formula: Out = (Src * Alpha + Dst * (255 - Alpha)) / 255
-                    // We approximate division by 255 using: (x + 128) / 255  ~=  (x * 257 + 128) >> 16
-                    // Or simpler fast approximation: (v + (v >> 8)) >> 8
-
-                    uint invA = 255 - sa;
-
-                    // Blend Color Channels
-                    uint r = (sr * sa + dr * invA) / 255;
-                    uint g = (sg * sa + dg * invA) / 255;
-                    uint b = (sb * sa + db * invA) / 255;
-
-                    // Blend Alpha Channel (Standard "Over" operator)
-                    // ResultAlpha = SrcAlpha + DstAlpha * (1 - SrcAlpha)
-                    uint a = sa + ((da * invA) / 255);
-
-                    // Re-pack and write
-                    *dPtr = (a << 24) | (r << 16) | (g << 8) | b;
-
-                    dPtr++;
-                    sPtr++;
-                }
-            }
-
-            UpdateBitmapFromBits();
-        }
-
-        /// <summary>
         /// Sets multiple pixels efficiently using SIMD or run-length optimization.
         /// </summary>
         /// <param name="pixels">The pixels to set, as (x, y, Color) tuples.</param>
@@ -367,6 +280,18 @@ namespace Imaging
                 DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelData);
             }
 
+            UpdateBitmapFromBits();
+        }
+
+        /// <summary>
+        /// Alpha blends another pixel buffer onto this image using SIMD.
+        /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
+        /// </summary>
+        /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
+        /// <exception cref="System.ArgumentException">Source must match image size</exception>
+        public unsafe void BlendInt(uint[] src)
+        {
+            DirectBitmapCore.BlendInt(Bits, src);
             UpdateBitmapFromBits();
         }
 

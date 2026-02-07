@@ -400,6 +400,15 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Blends the int.
+        /// </summary>
+        /// <param name="src">The source.</param>
+        public void BlendInt(uint[] src)
+        {
+            DirectBitmapCore.BlendInt(Bits, src);
+        }
+
+        /// <summary>
         ///     Draws the vertical lines.
         /// </summary>
         /// <param name="verticalLines">The vertical lines.</param>
@@ -535,7 +544,6 @@ namespace Imaging
 
             return bitmapImage;
         }
-
 
         /// <summary>
         ///     Converts to string.
