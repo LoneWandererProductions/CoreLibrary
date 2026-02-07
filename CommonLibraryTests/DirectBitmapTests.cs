@@ -18,34 +18,34 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommonLibraryTests
 {
     /// <summary>
-    ///     Unit tests for DirectBitmap functionality.
+    /// Some basic tests to validate some functions in DirectBitmap, including color matching and performance comparisons with System.Drawing. These tests ensure that DirectBitmap correctly manipulates pixel data and performs efficiently for common drawing operations.
     /// </summary>
     [TestClass]
     public class DirectBitmapTests
     {
         /// <summary>
-        ///     The codebase
+        /// The codebase
         /// </summary>
         private static readonly string Codebase = Directory.GetCurrentDirectory();
 
         /// <summary>
-        ///     The executable folder
+        /// The executable folder
         /// </summary>
         private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
 
         /// <summary>
-        ///     The project folder
+        /// The project folder
         /// </summary>
         private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
 
         /// <summary>
-        ///     The sample images folder
+        /// The sample images folder
         /// </summary>
         private static readonly DirectoryInfo SampleImagesFolder =
             new(Path.Combine(ProjectFolder?.FullName ?? string.Empty, "Images"));
 
         /// <summary>
-        ///     Directs the bitmap operations should match colors correctly.
+        /// Directs the bitmap operations should match colors correctly.
         /// </summary>
         [TestMethod]
         public void DirectBitmapOperationsShouldMatchColorsCorrectly()
@@ -80,7 +80,90 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Performances the comparison system drawing vs direct bitmap.
+        /// Verticals the line drawing performance comparison.
+        /// </summary>
+        [TestMethod]
+        public void VerticalLineDrawingPerformanceComparison()
+        {
+            const int width = 1000, height = 1000;
+            const int lineWidth = 8;
+
+            using var bitmap = new Bitmap(width, height);
+            using var brush = new SolidBrush(Color.Black);
+            var directBitmap = DirectBitmap.GetInstance(bitmap);
+
+            Array.Clear(directBitmap.Bits, 0, directBitmap.Bits.Length);
+
+            var systemTime = MeasurePerformance(100, () =>
+            {
+                using var graphics = Graphics.FromImage(bitmap);
+                graphics.FillRectangle(brush, 0, 0, lineWidth, height);
+            });
+
+            var directBitmapTime =
+                MeasurePerformance(100, () => directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
+
+            Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
+
+            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 3 : 2.0; // allow 2x
+            AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
+        }
+
+        /// <summary>
+        /// Asserts the performance results.
+        /// </summary>
+        /// <param name="testName">Name of the test.</param>
+        /// <param name="systemTime">The system time.</param>
+        /// <param name="directBitmapTime">The direct bitmap time.</param>
+        /// <param name="timeFactor">The time factor.</param>
+        private static void AssertPerformanceResults(string testName, double systemTime, double directBitmapTime,
+            double timeFactor)
+        {
+            var threshold = systemTime * timeFactor;
+            Assert.IsTrue(directBitmapTime <= threshold,
+                $"{testName}: DirectBitmap time ({directBitmapTime} ms) exceeded acceptable threshold ({threshold} ms).");
+        }
+
+        /// <summary>
+        /// Draws the single vertical line should modify bits correctly.
+        /// </summary>
+        [TestMethod]
+        public void DrawSingleVerticalLineShouldModifyBitsCorrectly()
+        {
+            const int width = 1, height = 10;
+            var target = new DirectBitmap(width, height);
+            var color = Color.Red;
+
+            var lines = new List<(int x, int y, int finalY, Color color)> { (0, 2, 8, color) };
+            target.DrawVerticalLines(lines);
+
+            for (var y = 2; y <= 8; y++)
+            {
+                Assert.AreEqual(PixelToUintC(color), PixelToUint(target.Bits[y * width]));
+            }
+        }
+
+        /// <summary>
+        /// Draws the single vertical line within bounds should modify bits correctly.
+        /// </summary>
+        [TestMethod]
+        public void DrawSingleVerticalLineWithinBoundsShouldModifyBitsCorrectly()
+        {
+            const int width = 10, height = 10;
+            var target = new DirectBitmap(width + 1, height + 1);
+            var color = Color.Red;
+
+            var lines = new List<(int x, int y, int finalY, Color color)> { (5, 2, 8, color) };
+            target.DrawVerticalLines(lines);
+
+            for (var y = 2; y <= 8; y++)
+            {
+                Assert.AreEqual(PixelToUintC(color), PixelToUint(target.Bits[5 + (y * (width + 1))]));
+            }
+        }
+
+        /// <summary>
+        /// Performances the comparison system drawing vs direct bitmap.
         /// </summary>
         [TestMethod]
         public void PerformanceComparisonSystemDrawingVsDirectBitmap()
@@ -105,97 +188,6 @@ namespace CommonLibraryTests
                 $"DirectBitmap slower: {directBitmapTime}ms vs {graphicsTime}ms");
         }
 
-        /// <summary>
-        ///     Verticals the line drawing performance comparison.
-        /// </summary>
-        [TestMethod]
-        public void VerticalLineDrawingPerformanceComparison()
-        {
-            const int width = 1000, height = 1000;
-            const int lineWidth = 8;
-
-            // Initialize resources once
-            using var bitmap = new Bitmap(width, height);
-            using var brush = new SolidBrush(Color.Black);
-            var directBitmap = DirectBitmap.GetInstance(bitmap);
-
-            // Clear bits to avoid memory effects from previous data
-            Array.Clear(directBitmap.Bits, 0, directBitmap.Bits.Length);
-
-            // Benchmark System.Drawing
-            var systemTime = MeasurePerformance(100, () =>
-            {
-                using var graphics = Graphics.FromImage(bitmap);
-                graphics.FillRectangle(brush, 0, 0, lineWidth, height);
-            });
-
-            // Benchmark your DirectBitmap
-            var directBitmapTime =
-                MeasurePerformance(100, () => directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black));
-
-            Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
-
-            // Allow a little slack if in CI
-            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 3 : 1.0;
-            AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
-        }
-
-        /// <summary>
-        ///     Asserts the performance results.
-        /// </summary>
-        /// <param name="testName">Name of the test.</param>
-        /// <param name="systemTime">The system time.</param>
-        /// <param name="directBitmapTime">The direct bitmap time.</param>
-        /// <param name="timeFactor">The time factor.</param>
-        private static void AssertPerformanceResults(string testName, double systemTime, double directBitmapTime,
-            double timeFactor)
-        {
-            var threshold = systemTime * timeFactor;
-            Assert.IsTrue(directBitmapTime <= threshold,
-                $"{testName}: DirectBitmap time ({directBitmapTime} ms) exceeded acceptable threshold ({threshold} ms).");
-        }
-
-        /// <summary>
-        ///     Draws the single vertical line should modify bits correctly.
-        /// </summary>
-        [TestMethod]
-        public void DrawSingleVerticalLineShouldModifyBitsCorrectly()
-        {
-            const int width = 1, height = 10;
-            var target = new DirectBitmap(width, height);
-            var color = Color.Red;
-
-            var lines = new List<(int x, int y, int finalY, Color color)> { (0, 2, 8, color) };
-            target.DrawVerticalLines(lines);
-
-            for (var y = 2; y <= 8; y++)
-            {
-                Assert.AreEqual(color.ToArgb(), target.Bits[y * width]);
-            }
-        }
-
-        /// <summary>
-        ///     Draws the single vertical line within bounds should modify bits correctly.
-        /// </summary>
-        [TestMethod]
-        public void DrawSingleVerticalLineWithinBoundsShouldModifyBitsCorrectly()
-        {
-            const int width = 10, height = 10;
-            var target = new DirectBitmap(width + 1, height + 1);
-            var color = Color.Red;
-
-            var lines = new List<(int x, int y, int finalY, Color color)> { (5, 2, 8, color) };
-            target.DrawVerticalLines(lines);
-
-            for (var y = 2; y <= 8; y++)
-            {
-                Assert.AreEqual(color.ToArgb(), target.Bits[5 + (y * (width + 1))]);
-            }
-        }
-
-        /// <summary>
-        ///     Tests the bytes conversion.
-        /// </summary>
         [TestMethod]
         public void TestBytesConversion()
         {
@@ -220,7 +212,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Warms up drawing.
+        /// Warms up drawing.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="blackPen">The black pen.</param>
@@ -236,7 +228,7 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Measures the performance.
+        /// Measures the performance.
         /// </summary>
         /// <param name="iterations">The iterations.</param>
         /// <param name="action">The action.</param>
@@ -248,13 +240,12 @@ namespace CommonLibraryTests
             {
                 action();
             }
-
             stopwatch.Stop();
             return stopwatch.Elapsed.TotalMilliseconds;
         }
 
         /// <summary>
-        ///     Verifies the colors match.
+        /// Verifies the colors match.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="target">The target.</param>
@@ -263,40 +254,63 @@ namespace CommonLibraryTests
         {
             foreach (var (x, y) in coordinates)
             {
-                Assert.AreEqual(source.GetPixel(x, y).ToArgb(), target.Bits[(y * source.Width) + x]);
+                uint expected = PixelToUintC(source.GetPixel(x, y));
+                uint actual = PixelToUint(target.Bits[(y * source.Width) + x]);
+                Assert.AreEqual(expected, actual, $"Pixel mismatch at ({x},{y})");
             }
         }
 
         /// <summary>
-        ///     Applies the replacement colors.
+        /// Applies the replacement colors.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color,
-            params (int x, int y)[] coordinates)
+        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color, params (int x, int y)[] coordinates)
         {
+            var pixel = new Pixel32(color.R, color.G, color.B, color.A);
             foreach (var (x, y) in coordinates)
             {
-                bitmap.Bits[(y * bitmap.Width) + x] = color.ToArgb();
+                bitmap.Bits[(y * bitmap.Width) + x] = pixel;
             }
         }
 
         /// <summary>
-        ///     Verifies the replacement colors.
+        /// Verifies the replacement colors.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="target">The target.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color,
-            params (int x, int y)[] coordinates)
+        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color, params (int x, int y)[] coordinates)
         {
+            uint expected = PixelToUintC(color);
             foreach (var (x, y) in coordinates)
             {
-                Assert.AreEqual(color.ToArgb(), bitmap.GetPixel(x, y).ToArgb());
-                Assert.AreEqual(color.ToArgb(), target.Bits[(y * bitmap.Width) + x]);
+                Assert.AreEqual(expected, PixelToUintC(bitmap.GetPixel(x, y)), $"Bitmap pixel mismatch at ({x},{y})");
+                Assert.AreEqual(expected, PixelToUint(target.Bits[(y * bitmap.Width) + x]), $"DirectBitmap pixel mismatch at ({x},{y})");
             }
+        }
+
+        /// <summary>
+        /// Pixels to uint.
+        /// </summary>
+        /// <param name="p">The p.</param>
+        /// <returns></returns>
+        private static uint PixelToUint(Pixel32 p)
+        {
+            return ((uint)p.A << 24) | ((uint)p.R << 16) | ((uint)p.G << 8) | p.B;
+        }
+
+        /// <summary>
+        /// Pixels to uint c.
+        /// </summary>
+        /// <param name="c">The c.</param>
+        /// <returns></returns>
+        private static uint PixelToUintC(Color c)
+        {
+            return ((uint)c.A << 24) | ((uint)c.R << 16) | ((uint)c.G << 8) | c.B;
         }
     }
 }
+

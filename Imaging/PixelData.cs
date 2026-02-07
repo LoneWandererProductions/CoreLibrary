@@ -11,7 +11,7 @@ namespace Imaging
     /// <summary>
     ///     Pixel Data Container
     /// </summary>
-    public struct PixelData
+    public readonly struct PixelData
     {
         /// <summary>
         ///     Gets or sets the x.

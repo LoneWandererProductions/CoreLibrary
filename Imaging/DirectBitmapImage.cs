@@ -68,7 +68,7 @@ namespace Imaging
             Width = width;
             Height = height;
 
-            Bits = new uint[width * height];
+            Bits = new Pixel32[width * height];
             _bitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
             _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
@@ -86,7 +86,7 @@ namespace Imaging
         /// <summary>
         ///     Gets the raw pixel buffer.
         /// </summary>
-        public uint[] Bits { get; }
+        public Pixel32[] Bits { get; }
 
         /// <summary>
         ///     Gets the cached converted BitmapImage.
@@ -141,7 +141,7 @@ namespace Imaging
                     buffer[offset + 3] = pixel.A;
 
                     Bits[pixel.Y * Width + pixel.X] =
-                        (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
+                        new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
                 }
             }
 
@@ -156,83 +156,52 @@ namespace Imaging
         public unsafe void FillSimd(Color color)
         {
             var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
-            _bitmap.Lock();
 
-            var len = Bits.Length;
+            var span = MemoryMarshal.Cast<Pixel32, uint>(Bits.AsSpan());
+
+            var len = span.Length;
             var vecSize = Vector<uint>.Count;
             var i = 0;
 
-            // SIMD bulk fill
             var v = new Vector<uint>(packed);
+
             for (; i <= len - vecSize; i += vecSize)
-                v.CopyTo(Bits, i);
+                v.CopyTo(span.Slice(i, vecSize));
 
-            // Write tail (scalar)
             for (; i < len; i++)
-                Bits[i] = packed;
+                span[i] = packed;
 
-            // Copy to WPF Bitmap in one block, fast
-            Buffer.MemoryCopy(
-                source: (void*)_bitsHandle.AddrOfPinnedObject(),
-                destination: (void*)_bitmap.BackBuffer,
-                destinationSizeInBytes: len * sizeof(uint),
-                sourceBytesToCopy: len * sizeof(uint)
-            );
-
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-            _bitmap.Unlock();
+            UpdateBitmapFromBits();
         }
 
         /// <summary>
-        ///     Applies a 4x4 color matrix to all pixels.
+        /// Applies a 4x4 color matrix to all pixels.
         /// </summary>
-        /// <param name="matrix">Color transformation matrix.</param>
+        /// <param name="matrix">Color transformation matrix (4x4).</param>
         public void ApplyColorMatrix(float[][] matrix)
         {
-            // Same validation as before (optional but safe)
-            if (matrix == null || matrix.Length < 4 ||
-                matrix[0].Length < 4 || matrix[1].Length < 4 ||
-                matrix[2].Length < 4 || matrix[3].Length < 4)
+            if (matrix == null || matrix.Length < 4)
                 throw new ArgumentException("Matrix must be 4x4");
 
-            // Cached locals for faster access (matrix[][] is slow)
-            float m00 = matrix[0][0], m01 = matrix[0][1], m02 = matrix[0][2], m03 = matrix[0][3];
-            float m10 = matrix[1][0], m11 = matrix[1][1], m12 = matrix[1][2], m13 = matrix[1][3];
-            float m20 = matrix[2][0], m21 = matrix[2][1], m22 = matrix[2][2], m23 = matrix[2][3];
-            float m30 = matrix[3][0], m31 = matrix[3][1], m32 = matrix[3][2], m33 = matrix[3][3];
+            var span = Bits.AsSpan();
 
-            // We reuse output array to avoid allocations when repeating effects
-            var pixels = new (int x, int y, Color color)[Bits.Length];
-
-            for (var i = 0; i < Bits.Length; i++)
+            for (int i = 0; i < span.Length; i++)
             {
-                var argb = Bits[i];
+                var p = span[i];
 
-                // Manual unpack (fastest + identical)
-                float r = (byte)(argb >> 16);
-                float g = (byte)(argb >> 8);
-                float b = (byte)argb;
-                float a = (byte)(argb >> 24);
+                // preserve original alpha
+                var a = p.A;
 
-                // Ordered multiply like WinForms (NOT SIMD parallel)
-                var rr = r * m00 + g * m01 + b * m02 + a * m03;
-                var gg = r * m10 + g * m11 + b * m12 + a * m13;
-                var bb = r * m20 + g * m21 + b * m22 + a * m23;
-                var aa = r * m30 + g * m31 + b * m32 + a * m33;
+                // compute R,G,B using 4x4 matrix
+                var r = (byte)Math.Clamp(p.R * matrix[0][0] + p.G * matrix[0][1] + p.B * matrix[0][2], 0, 255);
+                var g = (byte)Math.Clamp(p.R * matrix[1][0] + p.G * matrix[1][1] + p.B * matrix[1][2], 0, 255);
+                var b = (byte)Math.Clamp(p.R * matrix[2][0] + p.G * matrix[2][1] + p.B * matrix[2][2], 0, 255);
 
-                // Same exact truncation as WinForms (NOT Math.Round)
-                var R = (byte)(rr < 0f ? 0f : (rr > 255f ? 255f : rr));
-                var G = (byte)(gg < 0f ? 0f : (gg > 255f ? 255f : gg));
-                var B = (byte)(bb < 0f ? 0f : (bb > 255f ? 255f : bb));
-                var A = (byte)(aa < 0f ? 0f : (aa > 255f ? 255f : aa));
-
-                // Save (no packing yet)
-                pixels[i] = (i % Width, i / Width, Color.FromArgb(A, R, G, B));
+                span[i] = new Pixel32(r, g, b, a);
             }
 
-            SetPixelsSimd(pixels); // Your fast final batch copy
+            UpdateBitmapFromBits();
         }
-
 
         /// <summary>
         ///     Sets individual pixels in the image using a collection of <see cref="PixelData" />.
@@ -245,11 +214,14 @@ namespace Imaging
             {
                 if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
                 {
-                    continue;
+                    // Throwing a detailed exception makes debugging much easier
+                    throw new ArgumentOutOfRangeException(
+                        nameof(pixels),
+                        $"Pixel coordinate ({pixel.X}, {pixel.Y}) is outside the image bounds of {Width}x{Height}.");
                 }
 
                 var index = pixel.Y * Width + pixel.X;
-                Bits[index] = (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
+                Bits[index] = new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
             }
 
             UpdateBitmapFromBits();
@@ -266,22 +238,23 @@ namespace Imaging
             if (src == null || src.Length != Bits.Length)
                 throw new ArgumentException("Source must match image size");
 
-            var len = Bits.Length;
+            var dst = MemoryMarshal.Cast<Pixel32, uint>(Bits);
+
+            var len = dst.Length;
 
             for (var i = 0; i < len; i++)
             {
                 var s = src[i];
                 if ((s >> 24) == 0)
-                    continue; // fully transparent, skip completely
+                    continue;
 
-                var d = Bits[i];
+                var d = dst[i];
 
-                // Load BGRA from packed uint into float components
                 var sf = new Vector4(
-                    (s >> 16) & 255, // R
-                    (s >> 8) & 255, // G
-                    (s) & 255, // B
-                    (s >> 24) & 255 // A
+                    (s >> 16) & 255,
+                    (s >> 8) & 255,
+                    (s) & 255,
+                    (s >> 24) & 255
                 );
 
                 var df = new Vector4(
@@ -293,13 +266,11 @@ namespace Imaging
 
                 var a = sf.W * (1f / 255f);
                 if (a <= 0.0001f)
-                    continue; // ignore near-transparent pixels
+                    continue;
 
-                // SIMD blend: Dst = Src * a + Dst * (1−a)
                 var r = sf * a + df * (1f - a);
 
-                // Clamp and repack BGRA
-                Bits[i] =
+                dst[i] =
                     ((uint)Math.Clamp(r.W, 0, 255) << 24) |
                     ((uint)Math.Clamp(r.X, 0, 255) << 16) |
                     ((uint)Math.Clamp(r.Y, 0, 255) << 8) |
@@ -309,27 +280,23 @@ namespace Imaging
             UpdateBitmapFromBits();
         }
 
+
         /// <summary>
         ///     SIMD-based batch pixel update from (x,y,color) triplets.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
-        public unsafe void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
+        public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
         {
-            _bitmap?.Lock();
-            var ptr = (uint*)_bitmap.BackBuffer.ToPointer();
-
             foreach (var (x, y, c) in pixels)
             {
-                if ((uint)x >= Width || (uint)y >= Height) continue;
+                if ((uint)x >= Width || (uint)y >= Height)
+                    continue;
 
-                var packed = (uint)(c.A << 24 | c.R << 16 | c.G << 8 | c.B);
                 var index = x + y * Width;
-                ptr[index] = packed;
-                Bits[index] = packed;
+                Bits[index] = new Pixel32(c.R, c.G, c.B, c.A);
             }
 
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-            _bitmap.Unlock();
+            UpdateBitmapFromBits();
         }
 
         /// <summary>
@@ -371,9 +338,13 @@ namespace Imaging
             _bitmap.Lock();
             unsafe
             {
-                var src = (void*)_bitsHandle.AddrOfPinnedObject();
-                var dst = (void*)_bitmap.BackBuffer;
-                Buffer.MemoryCopy(src, dst, Bits.Length * sizeof(uint), Bits.Length * sizeof(uint));
+                var dst = (Pixel32*)_bitmap.BackBuffer; // treat back buffer as Pixel32[]
+                var span = Bits.AsSpan();               // Pixel32[]
+
+                for (int i = 0; i < span.Length; i++)
+                {
+                    dst[i] = span[i];                   // direct struct copy
+                }
             }
 
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
