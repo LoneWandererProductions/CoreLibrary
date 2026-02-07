@@ -53,24 +53,6 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the pixels.
-        /// </summary>
-        /// <param name="bits">The bits.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="pixels">The pixels.</param>
-        internal static void SetPixels(Pixel32[] bits, int width, int height, IEnumerable<PixelData> pixels)
-        {
-            foreach (var pixel in pixels)
-            {
-                if ((uint)pixel.X >= width || (uint)pixel.Y >= height) continue;
-
-                bits[pixel.Y * width + pixel.X] =
-                    new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
-            }
-        }
-
-        /// <summary>
         /// Sets multiple pixels efficiently using contiguous runs per row.
         /// Works on a Pixel32 array only; does not touch any bitmap object.
         /// </summary>
