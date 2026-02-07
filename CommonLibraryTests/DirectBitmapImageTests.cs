@@ -107,7 +107,7 @@ namespace CommonLibraryTests
             };
 
             // Act
-            _bitmapImage.SetPixelsSimd(pixels);
+            _bitmapImage.SetPixelsBulk(pixels);
 
             // Assert using Pixel32 channels
             var p0 = _bitmapImage.Bits[0];
@@ -319,7 +319,7 @@ namespace CommonLibraryTests
                 (2, 2, Color.FromArgb(255, 0, 0, 255))  // Blue
             };
 
-            _bitmapImage.SetPixelsSimd(pixels);
+            _bitmapImage.SetPixelsBulk(pixels);
 
             // Check Red at (0,0)
             var p0 = _bitmapImage.Bits[0];

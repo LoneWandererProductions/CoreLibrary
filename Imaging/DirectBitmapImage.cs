@@ -250,59 +250,92 @@ namespace Imaging
         /// </summary>
         /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
         /// <exception cref="System.ArgumentException">Source must match image size</exception>
-        public void BlendSimd(uint[] src)
+        public unsafe void BlendInt(uint[] src)
         {
             if (src == null || src.Length != Bits.Length)
                 throw new ArgumentException("Source must match image size");
 
-            var dst = MemoryMarshal.Cast<Pixel32, uint>(Bits);
+            // Get spans for safe bounds check elimination (optional but good practice)
+            // Casting Pixel32[] to uint[] for easier bitwise ops
+            var dstSpan = System.Runtime.InteropServices.MemoryMarshal.Cast<Pixel32, uint>(Bits.AsSpan());
+            var srcSpan = src.AsSpan();
 
-            var len = dst.Length;
+            int len = dstSpan.Length;
 
-            for (var i = 0; i < len; i++)
+            // Use unsafe pointers for maximum speed in the loop
+            fixed (uint* pDst = dstSpan)
+            fixed (uint* pSrc = srcSpan)
             {
-                var s = src[i];
-                if ((s >> 24) == 0)
-                    continue;
+                uint* dPtr = pDst;
+                uint* sPtr = pSrc;
 
-                var d = dst[i];
+                for (int i = 0; i < len; i++)
+                {
+                    uint s = *sPtr;
 
-                var sf = new Vector4(
-                    (s >> 16) & 255,
-                    (s >> 8) & 255,
-                    (s) & 255,
-                    (s >> 24) & 255
-                );
+                    // Fast check: if source is fully transparent, skip
+                    uint sa = s >> 24;
+                    if (sa == 0)
+                    {
+                        dPtr++;
+                        sPtr++;
+                        continue;
+                    }
 
-                var df = new Vector4(
-                    (d >> 16) & 255,
-                    (d >> 8) & 255,
-                    (d) & 255,
-                    (d >> 24) & 255
-                );
+                    // Fast check: if source is fully opaque, just overwrite
+                    if (sa == 255)
+                    {
+                        *dPtr = s;
+                        dPtr++;
+                        sPtr++;
+                        continue;
+                    }
 
-                var a = sf.W * (1f / 255f);
-                if (a <= 0.0001f)
-                    continue;
+                    uint d = *dPtr;
 
-                var r = sf * a + df * (1f - a);
+                    // Extract components (0xAARRGGBB format)
+                    // Destination
+                    uint da = d >> 24;
+                    uint dr = (d >> 16) & 0xFF;
+                    uint dg = (d >> 8) & 0xFF;
+                    uint db = d & 0xFF;
 
-                dst[i] =
-                    ((uint)Math.Clamp(r.W, 0, 255) << 24) |
-                    ((uint)Math.Clamp(r.X, 0, 255) << 16) |
-                    ((uint)Math.Clamp(r.Y, 0, 255) << 8) |
-                    (uint)Math.Clamp(r.Z, 0, 255);
+                    // Source
+                    uint sr = (s >> 16) & 0xFF;
+                    uint sg = (s >> 8) & 0xFF;
+                    uint sb = s & 0xFF;
+
+                    // Standard Alpha Blending Formula: Out = (Src * Alpha + Dst * (255 - Alpha)) / 255
+                    // We approximate division by 255 using: (x + 128) / 255  ~=  (x * 257 + 128) >> 16
+                    // Or simpler fast approximation: (v + (v >> 8)) >> 8
+
+                    uint invA = 255 - sa;
+
+                    // Blend Color Channels
+                    uint r = (sr * sa + dr * invA) / 255;
+                    uint g = (sg * sa + dg * invA) / 255;
+                    uint b = (sb * sa + db * invA) / 255;
+
+                    // Blend Alpha Channel (Standard "Over" operator)
+                    // ResultAlpha = SrcAlpha + DstAlpha * (1 - SrcAlpha)
+                    uint a = sa + ((da * invA) / 255);
+
+                    // Re-pack and write
+                    *dPtr = (a << 24) | (r << 16) | (g << 8) | b;
+
+                    dPtr++;
+                    sPtr++;
+                }
             }
 
             UpdateBitmapFromBits();
         }
 
-
         /// <summary>
         ///     SIMD-based batch pixel update from (x,y,color) triplets.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
-        public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
+        public void SetPixelsBulk(IEnumerable<(int x, int y, Color color)> pixels)
         {
             foreach (var (x, y, c) in pixels)
             {
