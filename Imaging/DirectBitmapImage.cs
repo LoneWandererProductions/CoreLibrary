@@ -85,9 +85,13 @@ namespace Imaging
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
             if (bits.Length % width != 0) throw new ArgumentException("Pixel array length must be divisible by width.");
 
+            _cachedImage = null;
+
             int height = bits.Length / width;
             Bits = bits;
+            _bitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
             _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            UpdateBitmapFromBits();
         }
 
         /// <summary>
