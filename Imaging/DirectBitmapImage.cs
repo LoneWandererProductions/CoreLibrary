@@ -74,6 +74,23 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Constructs a DirectBitmapImage from a pixel array and width.
+        /// Assumes BGRA32 format and calculates height automatically.
+        /// </summary>
+        /// <param name="bits">The pixel array (BGRA32).</param>
+        /// <param name="width">The width of the image.</param>
+        public DirectBitmapImage(Pixel32[] bits, int width)
+        {
+            if (bits == null) throw new ArgumentNullException(nameof(bits));
+            if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+            if (bits.Length % width != 0) throw new ArgumentException("Pixel array length must be divisible by width.");
+
+            int height = bits.Length / width;
+            Bits = bits;
+            _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+        }
+
+        /// <summary>
         ///     The height of the image.
         /// </summary>
         public int Height { get; }
@@ -153,7 +170,7 @@ namespace Imaging
         ///     Fills the bitmap with a uniform color using SIMD.
         /// </summary>
         /// <param name="color">The color to fill with.</param>
-        public unsafe void FillSimd(Color color)
+        public unsafe void FillSimd(System.Drawing.Color color)
         {
             var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 

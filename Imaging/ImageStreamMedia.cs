@@ -179,6 +179,28 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Converts a System.Drawing <see cref="Bitmap"/> to a WPF <see cref="BitmapImage"/>.
+        /// </summary>
+        /// <param name="image">The source bitmap.</param>
+        /// <returns>A <see cref="BitmapImage"/>.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        //internal static BitmapImage BitmapToBitmapImage(Bitmap image)
+        //{
+        //    ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
+
+        //    // 1. Create the GDI+ wrapper. 
+        //    // This constructor draws the source into a NEW Pixel32[] array automatically.
+        //    using var gdiBackend = new DirectBitmap(image);
+
+        //    // 2. Wrap the SAME array in the WPF class.
+        //    // Use the constructor you just showed me.
+        //    var wpfFrontend = new DirectBitmapImage(gdiBackend.Bits, gdiBackend.Width);
+
+        //    // 3. Prepare for WPF UI
+        //    return wpfFrontend.BitmapImage;
+        //}
+
+        /// <summary>
         /// Fast conversion using WriteableBitmap.
         /// </summary>
         /// <param name="bmp">The BMP.</param>
