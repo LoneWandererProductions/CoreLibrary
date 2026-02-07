@@ -117,6 +117,49 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Sets pixels directly using unsafe pointer arithmetic for speed.
+        /// Updates both the WPF back buffer and the Pixel32 array.
+        /// </summary>
+        /// <param name="bits">The Pixel32 array.</param>
+        /// <param name="width">Width of the image.</param>
+        /// <param name="height">Height of the image.</param>
+        /// <param name="pixels">Pixels to set.</param>
+        /// <param name="backBuffer">Pointer to the back buffer (optional, for WPF WriteableBitmap).</param>
+        /// <param name="stride">Stride of the back buffer (required if backBuffer is not null).</param>
+        internal static unsafe void SetPixelsUnsafe(
+            Pixel32[] bits,
+            int width,
+            int height,
+            IEnumerable<PixelData> pixels,
+            byte* backBuffer = null,
+            int stride = 0)
+        {
+            if (bits == null || pixels == null) return;
+
+            if (backBuffer != null && stride <= 0)
+                throw new ArgumentException("Stride must be positive when backBuffer is provided.");
+
+            foreach (var pixel in pixels)
+            {
+                if ((uint)pixel.X >= width || (uint)pixel.Y >= height)
+                    continue;
+
+                // Update Pixel32 array
+                bits[pixel.Y * width + pixel.X] = new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
+
+                // Update back buffer if provided
+                if (backBuffer != null)
+                {
+                    var offset = pixel.Y * stride + pixel.X * 4;
+                    backBuffer[offset + 0] = pixel.B;
+                    backBuffer[offset + 1] = pixel.G;
+                    backBuffer[offset + 2] = pixel.R;
+                    backBuffer[offset + 3] = pixel.A;
+                }
+            }
+        }
+
+        /// <summary>
         /// Alpha blends another pixel buffer onto this image using SIMD.
         /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
         /// </summary>

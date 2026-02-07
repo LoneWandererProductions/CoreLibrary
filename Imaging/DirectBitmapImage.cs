@@ -162,38 +162,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Sets pixels from a collection of <see cref="PixelData" />.
-        ///     Uses unsafe pointer arithmetic for speed.
-        /// </summary>
-        /// <param name="pixels">The pixels to set.</param>
-        public void SetPixelsUnsafe(IEnumerable<PixelData> pixels)
-        {
-            _bitmap.Lock();
-            unsafe
-            {
-                var buffer = (byte*)_bitmap.BackBuffer.ToPointer();
-                var stride = _bitmap.BackBufferStride;
-
-                foreach (var pixel in pixels)
-                {
-                    if ((uint)pixel.X >= Width || (uint)pixel.Y >= Height)
-                        continue;
-
-                    var offset = pixel.Y * stride + pixel.X * 4;
-                    buffer[offset + 0] = pixel.B;
-                    buffer[offset + 1] = pixel.G;
-                    buffer[offset + 2] = pixel.R;
-                    buffer[offset + 3] = pixel.A;
-
-                    // still update the shared Bits array
-                    DirectBitmapCore.SetPixels(Bits, Width, Height, new[] { pixel });
-                }
-            }
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-            _bitmap.Unlock();
-        }
-
-        /// <summary>
         ///     Fills the bitmap with a uniform color using SIMD.
         /// </summary>
         /// <param name="color">The color to fill with.</param>
@@ -251,14 +219,54 @@ namespace Imaging
         /// Sets pixels from PixelData collection efficiently.
         /// </summary>
         /// <param name="pixels">Collection of PixelData (x, y, RGBA).</param>
-        public void SetPixels(IEnumerable<PixelData> pixels)
+        public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 16)
         {
+            if (pixels == null) return;
+
+            IEnumerable<PixelData> pixelCollection = pixels;
+
+            // Materialize if not ICollection to count
+            int count;
+            if (pixels is ICollection<PixelData> col)
+            {
+                count = col.Count;
+            }
+            else
+            {
+                var list = pixels.ToList();
+                count = list.Count;
+                pixelCollection = list;
+            }
+
+            // Small batch -> unsafe direct write
+            if (count <= threshold)
+            {
+                if (_bitmap != null)
+                {
+                    _bitmap.Lock();
+                    unsafe
+                    {
+                        var buffer = (byte*)_bitmap.BackBuffer.ToPointer();
+                        var stride = _bitmap.BackBufferStride;
+                        DirectBitmapCore.SetPixelsUnsafe(Bits, Width, Height, pixelCollection, buffer, stride);
+                    }
+                    _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
+                    _bitmap.Unlock();
+                }
+                else
+                {
+                    unsafe
+                    {
+                        DirectBitmapCore.SetPixelsUnsafe(Bits, Width, Height, pixelCollection);
+                    }
+                }
+                return;
+            }
+
+            // Large batch -> SIMD batch
             lock (_syncLock)
             {
-                // Convert PixelData to (x, y, Pixel32)
-                var pixelData = pixels.Select(p => (p.X, p.Y, new Pixel32(p.R, p.G, p.B, p.A)));
-
-                // SIMD batch update
+                var pixelData = pixelCollection.Select(p => (p.X, p.Y, new Pixel32(p.R, p.G, p.B, p.A)));
                 DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelData);
             }
 
