@@ -14,8 +14,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -57,6 +60,11 @@ namespace Imaging
         /// The source.
         /// </value>
         public ImageSource Source => _bitmap;
+
+        /// <summary>
+        ///     The synchronize lock
+        /// </summary>
+        private readonly Lock _syncLock = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmapImage" /> class.
@@ -138,6 +146,22 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Sets the pixel.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="color">The color.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetPixel(int x, int y, Color color)
+        {
+            var px = new Pixel32(color.R, color.G, color.B, color.A);
+            lock (_syncLock)
+            {
+                DirectBitmapCore.SetPixel(Bits, Width, Height, x, y, px);
+            }
+        }
+
+        /// <summary>
         ///     Sets pixels from a collection of <see cref="PixelData" />.
         ///     Uses unsafe pointer arithmetic for speed.
         /// </summary>
@@ -152,7 +176,7 @@ namespace Imaging
 
                 foreach (var pixel in pixels)
                 {
-                    if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
+                    if ((uint)pixel.X >= Width || (uint)pixel.Y >= Height)
                         continue;
 
                     var offset = pixel.Y * stride + pixel.X * 4;
@@ -161,11 +185,10 @@ namespace Imaging
                     buffer[offset + 2] = pixel.R;
                     buffer[offset + 3] = pixel.A;
 
-                    Bits[pixel.Y * Width + pixel.X] =
-                        new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
+                    // still update the shared Bits array
+                    DirectBitmapCore.SetPixels(Bits, Width, Height, new[] { pixel });
                 }
             }
-
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             _bitmap.Unlock();
         }
@@ -174,7 +197,7 @@ namespace Imaging
         ///     Fills the bitmap with a uniform color using SIMD.
         /// </summary>
         /// <param name="color">The color to fill with.</param>
-        public unsafe void FillSimd(System.Drawing.Color color)
+        public unsafe void FillSimd(Color color)
         {
             var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 
@@ -225,24 +248,18 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Sets individual pixels in the image using a collection of <see cref="PixelData" />.
-        ///     Each entry defines the X/Y position and RGBA components.
+        /// Sets pixels from PixelData collection efficiently.
         /// </summary>
-        /// <param name="pixels">A collection of <see cref="PixelData" /> describing the pixels to set.</param>
+        /// <param name="pixels">Collection of PixelData (x, y, RGBA).</param>
         public void SetPixels(IEnumerable<PixelData> pixels)
         {
-            foreach (var pixel in pixels)
+            lock (_syncLock)
             {
-                if (pixel.X < 0 || pixel.X >= Width || pixel.Y < 0 || pixel.Y >= Height)
-                {
-                    // Throwing a detailed exception makes debugging much easier
-                    throw new ArgumentOutOfRangeException(
-                        nameof(pixels),
-                        $"Pixel coordinate ({pixel.X}, {pixel.Y}) is outside the image bounds of {Width}x{Height}.");
-                }
+                // Convert PixelData to (x, y, Pixel32)
+                var pixelData = pixels.Select(p => (p.X, p.Y, new Pixel32(p.R, p.G, p.B, p.A)));
 
-                var index = pixel.Y * Width + pixel.X;
-                Bits[index] = new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
+                // SIMD batch update
+                DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelData);
             }
 
             UpdateBitmapFromBits();
@@ -336,18 +353,18 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     SIMD-based batch pixel update from (x,y,color) triplets.
+        /// Sets multiple pixels efficiently using SIMD or run-length optimization.
         /// </summary>
-        /// <param name="pixels">The pixels.</param>
+        /// <param name="pixels">The pixels to set, as (x, y, Color) tuples.</param>
         public void SetPixelsBulk(IEnumerable<(int x, int y, Color color)> pixels)
         {
-            foreach (var (x, y, c) in pixels)
+            lock (_syncLock)
             {
-                if ((uint)x >= Width || (uint)y >= Height)
-                    continue;
+                // Convert Colors to Pixel32
+                var pixelData = pixels.Select(p => (p.x, p.y, new Pixel32(p.color.R, p.color.G, p.color.B, p.color.A)));
 
-                var index = x + y * Width;
-                Bits[index] = new Pixel32(c.R, c.G, c.B, c.A);
+                // Use the shared SIMD-optimized core method
+                DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelData);
             }
 
             UpdateBitmapFromBits();

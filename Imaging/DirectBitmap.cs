@@ -362,13 +362,10 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
-            if ((uint)x >= Width || (uint)y >= Height)
-                return;
-
+            var px = new Pixel32(color.R, color.G, color.B, color.A);
             lock (_syncLock)
             {
-                var index = x + (y * Width);
-                Bits[index] = new Pixel32(color.R, color.G, color.B, color.A);
+                DirectBitmapCore.SetPixel(Bits, Width, Height, x, y, px);
             }
         }
 
@@ -392,41 +389,12 @@ namespace Imaging
                     throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
                 }
 
-                // Group pixels by row and color for cache efficiency
-                var grouped = pixels
-                    .GroupBy(p => (p.y, p.color))
-                    .ToList();
+                // Convert your original (x,y,Color) collection to Pixel32 tuples
+                var pixelTuples = pixels.Select(p => (p.x, p.y, new Pixel32(p.color.R, p.color.G, p.color.B, p.color.A)));
 
-                foreach (var group in grouped)
+                lock (_syncLock)
                 {
-                    var y = group.Key.y;
-                    var color = group.Key.color;
-                    var px = new Pixel32(color.R, color.G, color.B, color.A);
-
-                    var xs = group.Select(p => p.x).Order().ToArray();
-
-                    int i = 0;
-                    while (i < xs.Length)
-                    {
-                        int runStart = xs[i];
-                        int runLength = 1;
-
-                        // Detect contiguous run of Xs
-                        while (i + runLength < xs.Length && xs[i + runLength] == runStart + runLength)
-                        {
-                            runLength++;
-                        }
-
-                        int startIndex = runStart + (y * Width);
-
-                        // Scalar write for the run
-                        for (int offset = 0; offset < runLength; offset++)
-                        {
-                            Bits[startIndex + offset] = px;
-                        }
-
-                        i += runLength;
-                    }
+                    DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelTuples);
                 }
             }
         }
@@ -464,8 +432,7 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
-            var p = Bits[index];
+            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
 
