@@ -297,7 +297,7 @@ namespace Imaging
         /// </summary>
         /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
         /// <exception cref="System.ArgumentException">Source must match image size</exception>
-        public unsafe void BlendInt(uint[] src)
+        public void BlendInt(uint[] src)
         {
             DirectBitmapCore.BlendInt(Bits, src);
             UpdateBitmapFromBits();

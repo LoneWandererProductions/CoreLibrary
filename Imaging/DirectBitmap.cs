@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Interfaces;
 using Color = System.Drawing.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -37,7 +38,7 @@ namespace Imaging
     ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>
+    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>, IPixelSurface
     {
         /// <summary>
         ///     The synchronize lock
@@ -444,6 +445,12 @@ namespace Imaging
             var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
+
+        public Pixel32 GetPixel32(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         ///     Gets the column of pixels at a given x-coordinate.
