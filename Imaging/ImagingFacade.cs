@@ -140,10 +140,9 @@ namespace Imaging
         ///     Converts a <see cref="Bitmap"/> to a WPF <see cref="BitmapImage"/>.
         /// </summary>
         /// <param name="bitmap">The source bitmap.</param>
-        /// <param name="lossless">Whether to preserve lossless conversion (default true).</param>
         /// <returns>The converted <see cref="BitmapImage"/>.</returns>
-        public static BitmapImage ToBitmapImage(Bitmap bitmap, bool lossless = true)
-            => new ImageRender().BitmapToBitmapImage(bitmap, lossless);
+        public static BitmapImage ToBitmapImage(Bitmap bitmap)
+            => new ImageRender().BitmapToBitmapImage(bitmap);
 
         /// <summary>
         ///     Converts a WPF <see cref="BitmapImage"/> to a <see cref="Bitmap"/>.

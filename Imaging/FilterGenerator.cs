@@ -52,7 +52,7 @@ namespace Imaging
             object? shapeParams = null)
         {
             return FiltersAreas.GenerateFilter(
-                null,
+                image: null,
                 width,
                 height,
                 filter,

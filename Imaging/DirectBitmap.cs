@@ -19,13 +19,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Interfaces;
 using Color = System.Drawing.Color;
@@ -69,16 +66,31 @@ namespace Imaging
         ///     AddrOfPinnedObject, reference to address of pinned object
         ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
         /// </summary>
-        /// <param name="btm">The in question.</param>
-        public DirectBitmap(Image btm)
+        /// <param name="image">The image in question.</param>
+        public DirectBitmap(Image image)
         {
-            Width = btm.Width;
-            Height = btm.Height;
-            Initiate();
+            Width = image.Width;
+            Height = image.Height;
+            Bits = new Pixel32[Width * Height];
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
-            using var graph = Graphics.FromImage(Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            using var bmp = new Bitmap(image);
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+                    Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);
+                }
+            }
+
+            Bitmap = new Bitmap(
+                Width,
+                Height,
+                Width * Marshal.SizeOf<Pixel32>(),
+                PixelFormat.Format32bppArgb, // REMOVE THE 'P' HERE
+                BitsHandle.AddrOfPinnedObject()
+            );
         }
 
         /// <summary>
@@ -117,12 +129,7 @@ namespace Imaging
             }
         }
 
-        /// <summary>
-        ///     Gets the bits.
-        /// </summary>
-        /// <value>
-        ///     The bits.
-        /// </value>
+        /// <inheritdoc />
         public Pixel32[] Bits { get; private set; }
 
         /// <summary>
@@ -141,36 +148,16 @@ namespace Imaging
         /// </value>
         private bool Disposed { get; set; }
 
-        /// <summary>
-        ///     Gets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
+        /// <inheritdoc />
         public int Height { get; }
 
-        /// <summary>
-        ///     Gets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
+        /// <inheritdoc />
         public int Width { get; }
 
-        /// <summary>
-        ///     Gets the bits handle.
-        /// </summary>
-        /// <value>
-        ///     The bits handle.
-        /// </value>
+        /// <inheritdoc />
         private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Free up all the Memory.
-        ///     See:
-        ///     https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1063?view=vs-2019
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -223,7 +210,7 @@ namespace Imaging
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(), // stride in bytes
-                PixelFormat.Format32bppPArgb,
+                PixelFormat.Format32bppArgb,
                 BitsHandle.AddrOfPinnedObject()
             );
 
@@ -241,10 +228,25 @@ namespace Imaging
         {
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
-            using var graph = Graphics.FromImage(dbm.Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            // Lock source bits
+            var rect = new Rectangle(0, 0, btm.Width, btm.Height);
+            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
+            // We can copy directly into our Bits array since it's pinned
+            unsafe
+            {
+                fixed (Pixel32* pDest = dbm.Bits)
+                {
+                    Buffer.MemoryCopy(
+                        (void*)srcData.Scan0,
+                        (void*)pDest,
+                        dbm.Bits.Length * 4,
+                        dbm.Bits.Length * 4
+                    );
+                }
+            }
+
+            btm.UnlockBits(srcData);
             return dbm;
         }
 
@@ -354,12 +356,7 @@ namespace Imaging
             }
         }
 
-        /// <summary>
-        ///     Sets the pixel.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <param name="color">The color.</param>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
@@ -370,40 +367,28 @@ namespace Imaging
             }
         }
 
-        /// <summary>
-        ///     Sets the pixels using SIMD for performance improvement.
-        ///     Be careful when to return values. The Bitmap might be premature disposed.
-        /// </summary>
-        /// <param name="pixels">
-        ///     An IEnumerable of pixels, each defined by x, y coordinates and a Color.
-        /// </param>
-        /// <summary>
-        ///     Sets the pixels using SIMD for performance improvement.
-        ///     Be careful when to return values. The Bitmap might be premature disposed.
-        /// </summary>
-        public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
+        /// <inheritdoc />
+        public void SetPixels(IEnumerable<(int x, int y, Color color)> pixels)
         {
-            lock (_syncLock)
-            {
-                if (Bits == null || Bits.Length < Width * Height)
-                {
-                    throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
-                }
+            if (pixels == null) return;
 
-                // Convert your original (x,y,Color) collection to Pixel32 tuples
-                var pixelTuples = pixels.Select(p => (p.x, p.y, new Pixel32(p.color.R, p.color.G, p.color.B, p.color.A)));
-
-                lock (_syncLock)
-                {
-                    DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelTuples);
-                }
-            }
+            SetPixels(Convert(pixels));
         }
 
         /// <summary>
-        /// Blends the int.
+        /// Sets the pixels.
         /// </summary>
-        /// <param name="src">The source.</param>
+        /// <param name="pixels">The pixels.</param>
+        /// <param name="threshold">The threshold.</param>
+        public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 64)
+        {
+            lock (_syncLock)
+            {
+                DirectBitmapCore.SetPixelsAdaptive(Bits, Width, Height, pixels, threshold);
+            }
+        }
+
+        /// <inheritdoc />
         public void BlendInt(uint[] src)
         {
             DirectBitmapCore.BlendInt(Bits, src);
@@ -446,11 +431,12 @@ namespace Imaging
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
 
+        /// <inheritdoc />
         public Pixel32 GetPixel32(int x, int y)
         {
-            throw new NotImplementedException();
+            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            return new Pixel32(p.R, p.G, p.B, p.A);
         }
-
 
         /// <summary>
         ///     Gets the column of pixels at a given x-coordinate.
@@ -519,37 +505,7 @@ namespace Imaging
         /// <returns>BitmapImage image data</returns>
         public BitmapImage ToBitmapImage()
         {
-            // Ensure this method runs on the UI thread.
-            BitmapImage? bitmapImage = null;
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Create a WriteableBitmap with the same dimensions as the DirectBitmap
-                var writeableBitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
-
-                // Write the pixel data (from DirectBitmap's Bits) into the WriteableBitmap
-                writeableBitmap.WritePixels(
-                    new Int32Rect(0, 0, Width, Height),
-                    Bits,
-                    Width * 4, // Each pixel has 4 bytes (BGRA)
-                    0);
-
-                // Create a BitmapImage and set the WriteableBitmap's pixel data
-                bitmapImage = new BitmapImage();
-                using var stream = new MemoryStream();
-                // Encode the WriteableBitmap to a MemoryStream
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
-                encoder.Save(stream);
-
-                // Set the stream as the source for the BitmapImage
-                stream.Seek(0, SeekOrigin.Begin);
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = stream;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            });
-
-            return bitmapImage;
+            return Bitmap.ToBitmapImage();
         }
 
         /// <summary>
@@ -606,6 +562,17 @@ namespace Imaging
         ///   <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.
         /// </returns>
         public override bool Equals(object? obj) => Equals(obj as DirectBitmap);
+
+        /// <summary>
+        /// Converts the specified pixels.
+        /// </summary>
+        /// <param name="pixels">The pixels.</param>
+        /// <returns>Conveteed Coordinates into Pixel32</returns>
+        private static IEnumerable<PixelData> Convert(IEnumerable<(int x, int y, Color color)> pixels)
+        {
+            foreach (var p in pixels)
+                yield return new PixelData(p.x, p.y, p.color.R, p.color.G, p.color.B, p.color.A);
+        }
 
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.

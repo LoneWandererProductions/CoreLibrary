@@ -117,6 +117,7 @@ foreach (var entry in logger.GetLogs())
 | `CommonLibraryTests`        | Unit tests for common libraries                 |
 | `CommonExtendedObjectsTests`| Unit tests for ExtendedSystemObjects            |
 | `Imaging`                   | Image manipulation tools                        |
+| `ImagingTests`              | Tests for imaging llibrary                       |
 | `CommonControls`            | WPF custom controls                             |
 | `CommonControls.Images`     | WPF custom controls, mostly related to images   |
 | `SQLiteHelper`              | SQLite DB interaction & abstraction             |

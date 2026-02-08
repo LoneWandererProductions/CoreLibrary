@@ -32,7 +32,7 @@ namespace Imaging
         /// </returns>
         public static BitmapImage ToBitmapImage(this Bitmap bmp, bool lossless = false)
         {
-            return ImageStreamMedia.BitmapToBitmapImage(bmp, lossless);
+            return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
 
         /// <summary>

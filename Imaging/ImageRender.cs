@@ -361,14 +361,13 @@ namespace Imaging
         /// Bitmaps to bitmap image.
         /// </summary>
         /// <param name="image">The image.</param>
-        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
         /// <returns>
         /// The Image as <see cref="BitmapImage" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false)
+        public BitmapImage BitmapToBitmapImage(Bitmap image)
         {
-            return ImageStreamMedia.BitmapToBitmapImage(image, lossless);
+            return ImageStreamMedia.BitmapToBitmapImage(image);
         }
 
         /// <inheritdoc />

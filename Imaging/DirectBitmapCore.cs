@@ -53,6 +53,61 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Sets the pixels adaptive.
+        /// </summary>
+        /// <param name="bits">The bits.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="pixels">The pixels.</param>
+        /// <param name="threshold">The threshold.</param>
+        internal static unsafe void SetPixelsAdaptive(
+            Pixel32[] bits,
+            int width,
+            int height,
+            IEnumerable<PixelData> pixels,
+            int threshold)
+        {
+            if (pixels == null) return;
+
+            IEnumerable<PixelData> pixelCollection = pixels;
+
+            int count;
+            if (pixels is ICollection<PixelData> col)
+            {
+                count = col.Count;
+            }
+            else
+            {
+                var list = pixels.ToList();
+                count = list.Count;
+                pixelCollection = list;
+            }
+
+            // Small batch → stackalloc
+            if (count <= threshold)
+            {
+                Span<PixelData> span = stackalloc PixelData[count];
+
+                int i = 0;
+                foreach (var p in pixelCollection)
+                    span[i++] = p;
+
+                SetPixelsUnsafeSpan(bits, width, height, span);
+                return;
+            }
+
+            // Large batch → linear write (NOT GroupBy)
+            foreach (var p in pixelCollection)
+            {
+                if ((uint)p.X >= width || (uint)p.Y >= height)
+                    continue;
+
+                bits[p.Y * width + p.X] =
+                    new Pixel32(p.R, p.G, p.B, p.A);
+            }
+        }
+
+        /// <summary>
         /// Sets multiple pixels efficiently using contiguous runs per row.
         /// Works on a Pixel32 array only; does not touch any bitmap object.
         /// </summary>
@@ -137,6 +192,37 @@ namespace Imaging
                     backBuffer[offset + 1] = pixel.G;
                     backBuffer[offset + 2] = pixel.R;
                     backBuffer[offset + 3] = pixel.A;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the pixels unsafe span.
+        /// </summary>
+        /// <param name="bits">The bits.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="pixels">The pixels.</param>
+        /// <exception cref="System.ArgumentException">Stride must be positive when backBuffer is provided.</exception>
+        internal static unsafe void SetPixelsUnsafeSpan(
+            Pixel32[] bits,
+            int width,
+            int height,
+            ReadOnlySpan<PixelData> pixels)
+        {
+            if (bits == null) return;
+
+            fixed (Pixel32* pBits = bits)
+            {
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    var pixel = pixels[i];
+
+                    if ((uint)pixel.X >= width || (uint)pixel.Y >= height)
+                        continue;
+
+                    pBits[pixel.Y * width + pixel.X] =
+                        new Pixel32(pixel.R, pixel.G, pixel.B, pixel.A);
                 }
             }
         }

@@ -94,11 +94,11 @@ namespace Imaging
             if (bits.Length % width != 0) throw new ArgumentException("Pixel array length must be divisible by width.");
 
             _cachedImage = null;
-
-            int height = bits.Length / width;
+            Width = width;
+            Height = bits.Length / width;
             Bits = bits;
             _bitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-            _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            _bitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
             UpdateBitmapFromBits();
         }
 
@@ -219,55 +219,11 @@ namespace Imaging
         /// Sets pixels from PixelData collection efficiently.
         /// </summary>
         /// <param name="pixels">Collection of PixelData (x, y, RGBA).</param>
-        public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 16)
+        public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 64)
         {
-            if (pixels == null) return;
-
-            IEnumerable<PixelData> pixelCollection = pixels;
-
-            // Materialize if not ICollection to count
-            int count;
-            if (pixels is ICollection<PixelData> col)
-            {
-                count = col.Count;
-            }
-            else
-            {
-                var list = pixels.ToList();
-                count = list.Count;
-                pixelCollection = list;
-            }
-
-            // Small batch -> unsafe direct write
-            if (count <= threshold)
-            {
-                if (_bitmap != null)
-                {
-                    _bitmap.Lock();
-                    unsafe
-                    {
-                        var buffer = (byte*)_bitmap.BackBuffer.ToPointer();
-                        var stride = _bitmap.BackBufferStride;
-                        DirectBitmapCore.SetPixelsUnsafe(Bits, Width, Height, pixelCollection, buffer, stride);
-                    }
-                    _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-                    _bitmap.Unlock();
-                }
-                else
-                {
-                    unsafe
-                    {
-                        DirectBitmapCore.SetPixelsUnsafe(Bits, Width, Height, pixelCollection);
-                    }
-                }
-                return;
-            }
-
-            // Large batch -> SIMD batch
             lock (_syncLock)
             {
-                var pixelData = pixelCollection.Select(p => (p.X, p.Y, new Pixel32(p.R, p.G, p.B, p.A)));
-                DirectBitmapCore.SetPixelsSimd(Bits, Width, Height, pixelData);
+                DirectBitmapCore.SetPixelsAdaptive(Bits, Width, Height, pixels, threshold);
             }
 
             UpdateBitmapFromBits();
@@ -304,37 +260,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Converts the internal bitmap to a <see cref="BitmapImage" />.
-        /// </summary>
-        private BitmapImage ConvertImage()
-        {
-            var tempBitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
-            var byteArray = new byte[Bits.Length * sizeof(uint)];
-
-            Buffer.BlockCopy(Bits, 0, byteArray, 0, byteArray.Length);
-
-            tempBitmap.Lock();
-            Marshal.Copy(byteArray, 0, tempBitmap.BackBuffer, byteArray.Length);
-            tempBitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-            tempBitmap.Unlock();
-
-            var bitmapImage = new BitmapImage();
-            using var stream = new MemoryStream();
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(tempBitmap));
-            encoder.Save(stream);
-            stream.Seek(0, SeekOrigin.Begin);
-
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-
-            return bitmapImage;
-        }
-
-        /// <summary>
         ///     Updates the WPF bitmap from the Bits buffer.
         /// </summary>
         public void UpdateBitmapFromBits()
@@ -353,6 +278,44 @@ namespace Imaging
 
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             _bitmap.Unlock();
+        }
+
+        /// <summary>
+        /// Converts the image.
+        /// </summary>
+        /// <returns>A BitmapImage.</returns>
+        private BitmapImage? ConvertImage()
+        {
+            if (_cachedImage != null) return _cachedImage;
+
+            // 1. Ensure the WriteableBitmap is ready
+            // (Assuming _bitmap is your WriteableBitmap instance)
+
+            using (var stream = new MemoryStream())
+            {
+                // 2. Use PngBitmapEncoder to preserve the alpha channel accurately
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(_bitmap));
+                encoder.Save(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                var bi = new BitmapImage();
+                bi.BeginInit();
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+
+                // 3. THIS IS THE KEY: Tell WPF not to "optimize" your colors
+                bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+
+                bi.StreamSource = stream;
+                bi.EndInit();
+
+                // 4. Freeze it so it's thread-safe and performs better in UI
+                bi.Freeze();
+
+                _cachedImage = bi;
+            }
+
+            return _cachedImage;
         }
 
         /// <summary>

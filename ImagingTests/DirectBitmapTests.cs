@@ -1,21 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/DirectBitmapTests.cs
+ * PROJECT:     ImagingTests
+ * FILE:        DirectBitmapTests.cs
  * PURPOSE:     Validate some functions in DirectBitmap
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using ImageCompare;
 using Imaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace ImagingTests
 {
     /// <summary>
     /// Some basic tests to validate some functions in DirectBitmap, including color matching and performance comparisons with System.Drawing. These tests ensure that DirectBitmap correctly manipulates pixel data and performs efficiently for common drawing operations.
@@ -158,7 +154,7 @@ namespace CommonLibraryTests
 
             for (var y = 2; y <= 8; y++)
             {
-                Assert.AreEqual(PixelToUintC(color), PixelToUint(target.Bits[5 + (y * (width + 1))]));
+                Assert.AreEqual(PixelToUintC(color), PixelToUint(target.Bits[5 + y * (width + 1)]));
             }
         }
 
@@ -212,6 +208,60 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
+        /// Converts to bitmapimage_preservestransparencyandcolor.
+        /// </summary>
+        [TestMethod]
+        public void TestConversion()
+        {
+            // Arrange: create a small image with transparency
+            using var bmp = new Bitmap(2, 2);
+            bmp.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0));   // fully transparent red
+            bmp.SetPixel(1, 0, Color.FromArgb(128, 0, 255, 0)); // 50% green
+            bmp.SetPixel(0, 1, Color.FromArgb(255, 0, 0, 255)); // opaque blue
+            bmp.SetPixel(1, 1, Color.FromArgb(64, 255, 255, 0)); // 25% yellow
+
+            // Act
+            var dbm = new DirectBitmap(bmp);
+            // Note: We trigger the conversion to ensure the internal state is consistent,
+            // though dbm.GetPixel likely reads from your raw Bits array.
+            var bitmapImage = dbm.ToBitmapImage();
+
+            // Assert: verify dimensions
+            Assert.AreEqual(2, dbm.Width);
+            Assert.AreEqual(2, dbm.Height);
+
+            // --- VERIFICATION USING GetPixel ---
+
+            // Top-left: fully transparent red
+            var topLeft = dbm.GetPixel(0, 0);
+            Assert.AreEqual(0, topLeft.A);
+            Assert.AreEqual(0, topLeft.R); //wpf treats fully transparent pixels as black
+            Assert.AreEqual(0, topLeft.G);
+            Assert.AreEqual(0, topLeft.B);
+
+            // Top-right: 50% green
+            var topRight = dbm.GetPixel(1, 0);
+            Assert.AreEqual(128, topRight.A);
+            Assert.AreEqual(0, topRight.R);
+            Assert.AreEqual(255, topRight.G);
+            Assert.AreEqual(0, topRight.B);
+
+            // Bottom-left: opaque blue
+            var bottomLeft = dbm.GetPixel(0, 1);
+            Assert.AreEqual(255, bottomLeft.A);
+            Assert.AreEqual(0, bottomLeft.R);
+            Assert.AreEqual(0, bottomLeft.G);
+            Assert.AreEqual(255, bottomLeft.B);
+
+            // Bottom-right: 25% yellow
+            var bottomRight = dbm.GetPixel(1, 1);
+            Assert.AreEqual(64, bottomRight.A);
+            Assert.AreEqual(255, bottomRight.R);
+            Assert.AreEqual(255, bottomRight.G);
+            Assert.AreEqual(0, bottomRight.B);
+        }
+
+        /// <summary>
         /// Warms up drawing.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
@@ -254,8 +304,8 @@ namespace CommonLibraryTests
         {
             foreach (var (x, y) in coordinates)
             {
-                uint expected = PixelToUintC(source.GetPixel(x, y));
-                uint actual = PixelToUint(target.Bits[(y * source.Width) + x]);
+                var expected = PixelToUintC(source.GetPixel(x, y));
+                var actual = PixelToUint(target.Bits[y * source.Width + x]);
                 Assert.AreEqual(expected, actual, $"Pixel mismatch at ({x},{y})");
             }
         }
@@ -271,7 +321,7 @@ namespace CommonLibraryTests
             var pixel = new Pixel32(color.R, color.G, color.B, color.A);
             foreach (var (x, y) in coordinates)
             {
-                bitmap.Bits[(y * bitmap.Width) + x] = pixel;
+                bitmap.Bits[y * bitmap.Width + x] = pixel;
             }
         }
 
@@ -284,11 +334,11 @@ namespace CommonLibraryTests
         /// <param name="coordinates">The coordinates.</param>
         private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color, params (int x, int y)[] coordinates)
         {
-            uint expected = PixelToUintC(color);
+            var expected = PixelToUintC(color);
             foreach (var (x, y) in coordinates)
             {
                 Assert.AreEqual(expected, PixelToUintC(bitmap.GetPixel(x, y)), $"Bitmap pixel mismatch at ({x},{y})");
-                Assert.AreEqual(expected, PixelToUint(target.Bits[(y * bitmap.Width) + x]), $"DirectBitmap pixel mismatch at ({x},{y})");
+                Assert.AreEqual(expected, PixelToUint(target.Bits[y * bitmap.Width + x]), $"DirectBitmap pixel mismatch at ({x},{y})");
             }
         }
 
@@ -299,7 +349,7 @@ namespace CommonLibraryTests
         /// <returns></returns>
         private static uint PixelToUint(Pixel32 p)
         {
-            return ((uint)p.A << 24) | ((uint)p.R << 16) | ((uint)p.G << 8) | p.B;
+            return (uint)p.A << 24 | (uint)p.R << 16 | (uint)p.G << 8 | p.B;
         }
 
         /// <summary>
@@ -309,7 +359,7 @@ namespace CommonLibraryTests
         /// <returns></returns>
         private static uint PixelToUintC(Color c)
         {
-            return ((uint)c.A << 24) | ((uint)c.R << 16) | ((uint)c.G << 8) | c.B;
+            return (uint)c.A << 24 | (uint)c.R << 16 | (uint)c.G << 8 | c.B;
         }
     }
 }

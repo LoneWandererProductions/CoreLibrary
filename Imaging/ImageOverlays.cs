@@ -195,7 +195,7 @@ namespace Imaging
 
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
                 return result.Bitmap;
             }
             catch (Exception ex)

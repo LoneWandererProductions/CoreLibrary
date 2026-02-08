@@ -1,20 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/DirectBitmapImageTests.cs
- * PURPOSE:     Custom Image Class´, some tests for validations
+ * PROJECT:     ImagingTests
+ * FILE:        DirectBitmapImageTests.cs
+ * PURPOSE:     Custom Image Class, some tests for validations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Media;
 using Imaging;
 using Mathematics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace ImagingTests
 {
     /// <summary>
     ///     DirectBitmapImage test cases
@@ -24,6 +20,10 @@ namespace CommonLibraryTests
     {
         private const int Width = 10;
         private const int Height = 10;
+
+        /// <summary>
+        /// The bitmap image
+        /// </summary>
         private DirectBitmapImage _bitmapImage;
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(0, p1.B);
 
             // Check Blue at (2,2)
-            var p2 = _bitmapImage.Bits[(_bitmapImage.Width * 2) + 2];
+            var p2 = _bitmapImage.Bits[_bitmapImage.Width * 2 + 2];
             Assert.AreEqual(255, p2.A);
             Assert.AreEqual(0, p2.R);
             Assert.AreEqual(0, p2.G);
@@ -230,7 +230,7 @@ namespace CommonLibraryTests
         {
             _bitmapImage = new DirectBitmapImage(1, 1);
             // Define the expected packed color
-            const uint expectedPackedColor = unchecked((uint)((255 << 24) | (76 << 16) | (150 << 8) | 28));
+            const uint expectedPackedColor = unchecked((uint)(255 << 24 | 76 << 16 | 150 << 8 | 28));
 
             // Define the color transformation matrix for grayscale
             double[,] colorMatrix =
@@ -265,7 +265,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(28, blue, "Blue value should be 28.");
 
             // Convert individual components to packed uint
-            var packedColor = unchecked((uint)((alpha << 24) | (red << 16) | (green << 8) | blue));
+            var packedColor = unchecked((uint)(alpha << 24 | red << 16 | green << 8 | blue));
 
             Assert.AreEqual(packedColor, expectedPackedColor);
         }
@@ -336,7 +336,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(0, p1.B);
 
             // Check Blue at (2,2)
-            var p2 = _bitmapImage.Bits[(_bitmapImage.Width * 2) + 2];
+            var p2 = _bitmapImage.Bits[_bitmapImage.Width * 2 + 2];
             Assert.AreEqual(255, p2.A);
             Assert.AreEqual(0, p2.R);
             Assert.AreEqual(0, p2.G);
@@ -388,6 +388,55 @@ namespace CommonLibraryTests
             Assert.AreEqual(0, p3.B);
         }
 
+        /// <summary>
+        /// Directs the color of the bitmap image to bitmap image preserves transparency and.
+        /// </summary>
+        [TestMethod]
+        public void DirectBitmapImage_ToBitmapImage_PreservesTransparencyAndColor()
+        {
+            // Arrange: Create a 2x2 image
+            var width = 2;
+            var height = 2;
+            using var dbi = new DirectBitmapImage(width, height);
+
+            // Act
+            // Top-left: fully transparent red
+            dbi.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0));
+
+            // Top-right: 50% green
+            dbi.SetPixel(1, 0, Color.FromArgb(128, 0, 255, 0));
+
+            // Bottom-right: 25% yellow (R:255, G:255, B:0)
+            dbi.SetPixel(1, 1, Color.FromArgb(64, 255, 255, 0));
+
+            // We MUST call this to push the Bits array into the internal WriteableBitmap 
+            // before the ConvertImage() method is called by the property.
+            dbi.UpdateBitmapFromBits();
+
+            var resultImage = dbi.BitmapImage;
+
+            // Assert
+            var stride = resultImage.PixelWidth * 4;
+            var pixels = new byte[stride * resultImage.PixelHeight];
+            resultImage.CopyPixels(pixels, stride, 0);
+
+            // Channel indices for Bgra32: B=0, G=1, R=2, A=3
+            // Top-left (Transparent Red)
+            Assert.AreEqual(0, pixels[3], "Alpha should be 0");
+            Assert.AreEqual(255, pixels[2], "Red should be 255");
+            Assert.AreEqual(0, pixels[1], "Green should be 0");
+
+            // Top-right (50% Green)
+            // Pixel index = (y * width + x) * 4 => (0 * 2 + 1) * 4 = 4
+            Assert.AreEqual(128, pixels[4 + 3], "Alpha should be 128");
+            Assert.AreEqual(255, pixels[4 + 1], "Green should be 255");
+
+            // Bottom-right (25% Yellow)
+            // Pixel index = (1 * 2 + 1) * 4 = 12
+            Assert.AreEqual(64, pixels[12 + 3], "Alpha should be 64");
+            Assert.AreEqual(255, pixels[12 + 2], "Red should be 255");
+            Assert.AreEqual(255, pixels[12 + 1], "Green should be 255");
+        }
 
         /// <summary>
         ///     Constructors the with zero dimensions should throw.

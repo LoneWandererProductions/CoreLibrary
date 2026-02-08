@@ -7,7 +7,6 @@
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 
-using Imaging.Helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -16,6 +15,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Helpers;
 
 namespace Imaging
 {
@@ -136,134 +136,57 @@ namespace Imaging
         /// <summary>
         /// Converts a System.Drawing <see cref="Bitmap"/> to a WPF <see cref="BitmapImage"/>.
         /// </summary>
-        /// <param name="image">The source bitmap.</param>
-        /// <param name="lossless">If true, encode PNG losslessly.</param>
+        /// <param name="bitmap">The source bitmap.</param>
         /// <returns>A <see cref="BitmapImage"/>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap image, bool lossless = false)
+        internal static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
-            if (!lossless)
-                return FastConvert(image);
+            ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
-            ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
+            // 1. Get the raw data into a WriteableBitmap first. 
+            // We use Bgra32 because it matches GDI+ 32bpp format exactly.
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+            var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
 
-            Bitmap processed = image;
-            Bitmap? temp = null;
+            // 2. Lock the Bitmap and the WriteableBitmap to copy bytes directly.
+            // This avoids all the 'for' loops and manual math that causes errors.
+            var rect = new System.Drawing.Rectangle(0, 0, width, height);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+            wbmp.Lock();
+            // Direct memory copy: No math, no pre-multiplication, no data loss.
+            unsafe
             {
-                temp = new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                using var g = Graphics.FromImage(temp);
-                g.DrawImage(image, 0, 0);
-                processed = temp;
+                Buffer.MemoryCopy(
+                    (void*)bmpData.Scan0,
+                    (void*)wbmp.BackBuffer,
+                    width * height * 4,
+                    width * height * 4);
+            }
+            wbmp.AddDirtyRect(new Int32Rect(0, 0, width, height));
+            wbmp.Unlock();
+            bitmap.UnlockBits(bmpData);
+
+            // 3. Convert to BitmapImage via PNG stream
+            var bitmapImage = new BitmapImage();
+            using (var stream = new MemoryStream())
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(wbmp));
+                encoder.Save(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                // CRITICAL: This prevents WPF from converting it to Premultiplied Alpha
+                bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
             }
 
-            try
-            {
-                using var ms = new MemoryStream();
-                processed.Save(ms, ImageFormat.Png);
-                ms.Position = 0;
-
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.StreamSource = ms;
-                bmp.EndInit();
-                bmp.Freeze();
-                return bmp;
-            }
-            finally
-            {
-                temp?.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Converts a System.Drawing <see cref="Bitmap"/> to a WPF <see cref="BitmapImage"/>.
-        /// </summary>
-        /// <param name="image">The source bitmap.</param>
-        /// <returns>A <see cref="BitmapImage"/>.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        //internal static BitmapImage BitmapToBitmapImage(Bitmap image)
-        //{
-        //    ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
-
-        //    // 1. Create the GDI+ wrapper. 
-        //    // This constructor draws the source into a NEW Pixel32[] array automatically.
-        //    using var gdiBackend = new DirectBitmap(image);
-
-        //    // 2. Wrap the SAME array in the WPF class.
-        //    // Use the constructor you just showed me.
-        //    var wpfFrontend = new DirectBitmapImage(gdiBackend.Bits, gdiBackend.Width);
-
-        //    // 3. Prepare for WPF UI
-        //    return wpfFrontend.BitmapImage;
-        //}
-
-        /// <summary>
-        /// Fast conversion using WriteableBitmap.
-        /// </summary>
-        /// <param name="bmp">The BMP.</param>
-        /// <returns>BitmapImage from Bitmap</returns>
-        private static BitmapImage FastConvert(Bitmap bmp)
-        {
-            if (bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
-            {
-                var converted = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                using var g = Graphics.FromImage(converted);
-                g.DrawImage(bmp, 0, 0);
-                bmp = converted;
-            }
-
-            var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            try
-            {
-                var wb = new WriteableBitmap(
-                    bmp.Width,
-                    bmp.Height,
-                    96, 96,
-                    PixelFormats.Bgra32,
-                    null);
-
-                wb.WritePixels(
-                    new Int32Rect(0, 0, bmp.Width, bmp.Height),
-                    bmpData.Scan0,
-                    Math.Abs(bmpData.Stride) * bmp.Height,
-                    Math.Abs(bmpData.Stride));
-
-                wb.Freeze();
-
-                return WriteableBitmapToBitmapImage(wb);
-            }
-            finally
-            {
-                bmp.UnlockBits(bmpData);
-            }
-        }
-
-        /// <summary>
-        /// Converts a <see cref="WriteableBitmap" /> to a <see cref="BitmapImage" />.
-        /// </summary>
-        /// <param name="wb">The wb.</param>
-        /// <returns>BitmapImage from WriteableBitmap</returns>
-        private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
-        {
-            using var ms = new MemoryStream();
-            var enc = new BmpBitmapEncoder();
-            enc.Frames.Add(BitmapFrame.Create(wb));
-            enc.Save(ms);
-            ms.Position = 0;
-
-            var img = new BitmapImage();
-            img.BeginInit();
-            img.CacheOption = BitmapCacheOption.OnLoad;
-            img.StreamSource = ms;
-            img.EndInit();
-            img.Freeze();
-            return img;
+            bitmapImage.Freeze(); // Make it cross-thread compatible
+            return bitmapImage;
         }
     }
 }

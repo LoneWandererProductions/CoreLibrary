@@ -77,7 +77,7 @@ namespace Imaging.Helpers
             }
 
             // Use SIMD-based bulk pixel setting
-            noiseBitmap.SetPixelsSimd(pixelData.ToArray());
+            noiseBitmap.SetPixels(pixelData.ToArray());
             pixelData.Clear();
 
             return noiseBitmap.Bitmap;
@@ -129,7 +129,7 @@ namespace Imaging.Helpers
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
-            cloudsBitmap.SetPixelsSimd(pixelArray);
+            cloudsBitmap.SetPixels(pixelArray);
             pixelData.Clear();
 
             return cloudsBitmap.Bitmap;
@@ -183,7 +183,7 @@ namespace Imaging.Helpers
             }
 
             // Use SIMD-based bulk pixel setting
-            marbleBitmap.SetPixelsSimd(pixelData.ToArray());
+            marbleBitmap.SetPixels(pixelData.ToArray());
             pixelData.Clear();
 
             return marbleBitmap.Bitmap;
@@ -236,7 +236,7 @@ namespace Imaging.Helpers
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
-            woodBitmap.SetPixelsSimd(pixelArray);
+            woodBitmap.SetPixels(pixelArray);
             pixelData.Clear();
 
             return woodBitmap.Bitmap;
@@ -290,7 +290,7 @@ namespace Imaging.Helpers
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
-            waveBitmap.SetPixelsSimd(pixelArray);
+            waveBitmap.SetPixels(pixelArray);
             pixelData.Clear();
 
             return waveBitmap.Bitmap;

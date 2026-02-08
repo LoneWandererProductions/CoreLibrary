@@ -567,7 +567,7 @@ namespace Imaging.Helpers
 
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
 
                 //get the Bitmap
                 var btm = new Bitmap(result.Bitmap);
@@ -867,7 +867,7 @@ namespace Imaging.Helpers
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
-            result.SetPixelsSimd(pixelArray);
+            result.SetPixels(pixelArray);
             pixelData.Clear();
 
             // Return the modified image as a Bitmap

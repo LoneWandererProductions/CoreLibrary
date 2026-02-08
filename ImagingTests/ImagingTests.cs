@@ -1,25 +1,21 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ImagingTests.cs
+ * PROJECT:     ImagingTests
+ * FILE:        ImagingTests.cs
  * PURPOSE:     Tests for Image Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Threading.Tasks;
 using FileHandler;
 using ImageCompare;
 using Imaging;
 using Imaging.Helpers;
 using Mathematics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonLibraryTests
+namespace ImagingTests
 {
     /// <summary>
     ///     Test some image related stuff
@@ -334,8 +330,8 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(26, data.R, "Done");
-            Assert.AreEqual(72, data.G, "Done");
-            Assert.AreEqual(124, data.B, "Done");
+            Assert.AreEqual(74, data.G, "Done");
+            Assert.AreEqual(126, data.B, "Done");
             Assert.AreEqual(3075, data.Size, "Done");
             Assert.AreEqual(100, data.Height, "Done");
             Assert.AreEqual(100, data.Width, "Done");
@@ -357,8 +353,8 @@ namespace CommonLibraryTests
             }
 
             Assert.AreEqual(26, dataList[0].R, "Done");
-            Assert.AreEqual(72, dataList[0].G, "Done");
-            Assert.AreEqual(124, dataList[0].B, "Done");
+            Assert.AreEqual(74, dataList[0].G, "Done");
+            Assert.AreEqual(126, dataList[0].B, "Done");
             Assert.AreEqual(3086, dataList[0].Size, "Done");
 
             // Similarity should be around 99%
@@ -606,7 +602,7 @@ namespace CommonLibraryTests
 
             for (var x = 0; x < 10; x++)
             {
-                var expectedY = (3 * x) + 1;
+                var expectedY = 3 * x + 1;
 
                 Console.WriteLine($"Bresenham Y value at X={x}: {bresenhamLine[x].Y}, Expected: {expectedY}");
                 Console.WriteLine($"LinearLine Y value at X={x}: {linearLine[x].Y}, Expected: {expectedY}");

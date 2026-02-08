@@ -425,7 +425,7 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
                 dbmBase.Dispose();
 
                 return result.Bitmap;
@@ -882,7 +882,7 @@ namespace Imaging.Helpers
 
             try
             {
-                dbmBase.SetPixelsSimd(pixelsToSet);
+                dbmBase.SetPixels(pixelsToSet);
             }
             catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
@@ -923,7 +923,7 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
 
                 return result.Bitmap;
             }

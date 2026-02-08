@@ -113,33 +113,6 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Bresenham Algorithm to plot a line.
-        ///     Implementation based on Wikipedia. So the implementation is considered to be correct
-        /// </summary>
-        /// <param name="from">From.</param>
-        /// <param name="to">To.</param>
-        /// <returns>Line between two points.</returns>
-        internal static List<Coordinate2D> BresenhamPlotLine(Coordinate2D from, Coordinate2D to)
-        {
-            if (from.Equals(to))
-            {
-                return null;
-            }
-
-            if (to.X == from.X)
-            {
-                return null;
-            }
-
-            if (Math.Abs(to.Y - from.Y) < Math.Abs(to.X - from.X))
-            {
-                return from.X > to.X ? PlotLineLow(to, from) : PlotLineLow(from, to);
-            }
-
-            return from.Y > to.Y ? PlotLineHigh(to, from) : PlotLineHigh(from, to);
-        }
-
-        /// <summary>
         ///     Tests the two.
         /// </summary>
         /// <param name="m1">The m1.</param>
