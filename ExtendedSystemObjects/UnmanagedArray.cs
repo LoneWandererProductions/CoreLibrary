@@ -13,6 +13,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
@@ -41,6 +42,12 @@ namespace ExtendedSystemObjects
         ///     The pointer
         /// </summary>
         private T* _ptr;
+
+        /// <summary>
+        ///     Provides direct access to the underlying unmanaged pointer.
+        ///     Use with caution.
+        /// </summary>
+        public T* Pointer => _ptr;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnmanagedArray{T}" /> class.
@@ -133,6 +140,26 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        ///     Attempts to get the value at the specified index without throwing an exception.
+        /// </summary>
+        /// <param name="index">The zero-based index.</param>
+        /// <param name="value">When this method returns, contains the value at the index, if found.</param>
+        /// <returns>True if the index was valid and the list is not disposed; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGet(int index, out T value)
+        {
+            // Check disposed and bounds in one go for speed
+            if (_disposed || (uint)index >= (uint)Length)
+            {
+                value = default;
+                return false;
+            }
+
+            value = _ptr[index];
+            return true;
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Removes elements starting at the given index.
@@ -142,17 +169,18 @@ namespace ExtendedSystemObjects
         /// <exception cref="ArgumentOutOfRangeException">index or count is invalid.</exception>
         public void RemoveAt(int index, int count = 1)
         {
-            if (index < 0 || index >= Length)
+            if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 1 || index + count > Length) throw new ArgumentOutOfRangeException(nameof(count));
+
+            int moveCount = Length - (index + count);
+            if (moveCount > 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index));
+                // Use Spans to perform a high-speed memmove
+                var source = new ReadOnlySpan<T>(_ptr + index + count, moveCount);
+                var destination = new Span<T>(_ptr + index, moveCount);
+                source.CopyTo(destination);
             }
 
-            if (count < 1 || index + count > Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
-            UnmanagedMemoryHelper.ShiftLeft(_ptr, index, count, Length);
             Length -= count;
         }
 
@@ -164,6 +192,7 @@ namespace ExtendedSystemObjects
         /// <param name="newSize">The new size of the array.</param>
         public void Resize(int newSize)
         {
+            EnsureNotDisposed();
             ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 
             if (newSize == Capacity)
@@ -222,28 +251,21 @@ namespace ExtendedSystemObjects
         /// </exception>
         public void InsertAt(int index, T value, int count = 1)
         {
-            if (index < 0 || index > Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            ArgumentOutOfRangeException.ThrowIfNegative(count);
-
-            if (count == 0)
-            {
-                return;
-            }
+            if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+            if (count <= 0) return;
 
             EnsureCapacity(Length + count);
 
-            // Shift elements to the right
-            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length, Capacity);
-
-            // Fill inserted region with 'value'
-            for (var i = 0; i < count; i++)
+            int moveCount = Length - index;
+            if (moveCount > 0)
             {
-                _ptr[index + i] = value;
+                var source = new ReadOnlySpan<T>(_ptr + index, moveCount);
+                var destination = new Span<T>(_ptr + index + count, moveCount);
+                source.CopyTo(destination);
             }
+
+            // Optimization: Use Span.Fill instead of a for-loop
+            new Span<T>(_ptr + index, count).Fill(value);
 
             Length += count;
         }
@@ -274,7 +296,18 @@ namespace ExtendedSystemObjects
         /// <returns>Return all Values as Span</returns>
         public Span<T> AsSpan()
         {
+            EnsureNotDisposed();
             return new Span<T>(_ptr, Length);
+        }
+
+        /// <summary>
+        /// Ensures the not disposed.
+        /// </summary>
+        /// <exception cref="System.ObjectDisposedException">T</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureNotDisposed()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(UnmanagedArray<T>));
         }
 
         /// <summary>
@@ -294,25 +327,15 @@ namespace ExtendedSystemObjects
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return;
-            }
+            if (_disposed) return;
 
-            // Only unmanaged cleanup here.
             if (_buffer != IntPtr.Zero)
             {
                 Marshal.FreeHGlobal(_buffer);
                 _buffer = IntPtr.Zero;
-                _ptr = null;
-                Length = 0;
-                Capacity = 0;
+                _ptr = null; // EnsureNotDisposed checks often rely on this being null
             }
-
             _disposed = true;
-
-            // 'disposing' parameter unused but required by pattern.
-            _ = disposing;
         }
     }
 }

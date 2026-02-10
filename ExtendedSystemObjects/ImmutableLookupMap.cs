@@ -12,6 +12,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects.Helper;
 
@@ -41,41 +42,62 @@ namespace ExtendedSystemObjects
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImmutableLookupMap{TKey, TValue}" /> class.
+        ///     Uses Power-of-2 sizing and Linear Probing for O(1) lookups and high cache locality.
         /// </summary>
         /// <param name="data">A dictionary containing the key-value pairs to initialize the map.</param>
-        /// <exception cref="ArgumentNullException">data</exception>
+        /// <exception cref="ArgumentNullException">data is null.</exception>
+        /// <exception cref="InvalidOperationException">Duplicate key detected.</exception>
         public ImmutableLookupMap(IDictionary<TKey, TValue> data)
         {
             ArgumentNullException.ThrowIfNull(data);
 
-            // Double the capacity and find the next prime number
-            var capacity = FindNextPrime(data.Count * 2);
+            // 1. Calculate capacity as a Power of 2 (at least double the count to keep load factor < 50%)
+            int capacity = (int)BitOperations.RoundUpToPowerOf2((uint)data.Count * 2);
+            if (capacity < 16) capacity = 16;
 
-            // Initialize the internal arrays
+            // 2. The mask replaces the modulo operator: (hash % capacity) becomes (hash & mask)
+            int mask = capacity - 1;
+
+            // 3. Initialize the internal arrays (Struct of Arrays approach)
             _keys = new TKey[capacity];
             _values = new TValue[capacity];
             _keyPresence = new bool[capacity];
 
-            // Populate the arrays with a brute-force quadratic approach
-            foreach (var (key, value) in data)
+            // 4. Populate the arrays using Linear Probing
+            foreach (var kvp in data)
             {
-                for (var i = 0; i < capacity; i++)
-                {
-                    var hash = (GetHash(key, capacity) + (i * i)) % capacity; // Quadratic probing formula
+                TKey key = kvp.Key;
+                TValue value = kvp.Value;
 
-                    if (!_keyPresence[hash])
+                // Get initial hash index
+                int hash = GetHash(key) & mask;
+                bool placed = false;
+
+                for (int i = 0; i < capacity; i++)
+                {
+                    // Linear probe: check the next slot
+                    int index = (hash + i) & mask;
+
+                    if (!_keyPresence[index])
                     {
-                        _keys[hash] = key;
-                        _values[hash] = value;
-                        _keyPresence[hash] = true;
+                        _keys[index] = key;
+                        _values[index] = value;
+                        _keyPresence[index] = true;
+                        placed = true;
                         break;
                     }
 
-                    if (_keys[hash].Equals(key))
+                    // Safety check for duplicate keys (since Dictionary allows them via different refs sometimes)
+                    if (_keys[index].Equals(key))
                     {
-                        throw new InvalidOperationException(message: string.Format(SharedResources.ErrorDuplicateKey,
-                            key));
+                        throw new InvalidOperationException(string.Format(SharedResources.ErrorDuplicateKey, key));
                     }
+                }
+
+                if (!placed)
+                {
+                    // This should be mathematically impossible with Linear Probing and Load Factor < 100%
+                    throw new InvalidOperationException("Internal map overflow.");
                 }
             }
         }
@@ -116,20 +138,20 @@ namespace ExtendedSystemObjects
         /// <exception cref="KeyNotFoundException">Thrown if the key is not found in the map.</exception>
         public TValue Get(TKey key)
         {
-            var hash = GetHash(key, _keys.Length);
-            var originalHash = hash;
+            var capacity = _keys.Length;
+            var mask = capacity - 1;
+            var hash = GetHash(key);
 
-            while (_keyPresence[hash])
+            for (var i = 0; i < capacity; i++)
             {
-                if (_keys[hash].Equals(key))
-                {
-                    return _values[hash];
-                }
+                var index = (hash + i) & mask;
 
-                hash = (hash + 1) % _keys.Length; // Linear probing
-                if (hash == originalHash)
+                // If we hit an empty slot, the key definitely isn't here
+                if (!_keyPresence[index]) break;
+
+                if (_keys[index].Equals(key))
                 {
-                    break; // Full cycle, key not found
+                    return _values[index];
                 }
             }
 
@@ -147,21 +169,20 @@ namespace ExtendedSystemObjects
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            var hash = GetHash(key, _keys.Length);
-            var originalHash = hash;
+            var capacity = _keys.Length;
+            var mask = capacity - 1;
+            var hash = GetHash(key);
 
-            while (_keyPresence[hash])
+            for (var i = 0; i < capacity; i++)
             {
-                if (_keys[hash].Equals(key))
-                {
-                    value = _values[hash];
-                    return true;
-                }
+                var index = (hash + i) & mask;
 
-                hash = (hash + 1) % _keys.Length; // Linear probing
-                if (hash == originalHash)
+                if (!_keyPresence[index]) break; // Hit an empty slot; key doesn't exist
+
+                if (_keys[index].Equals(key))
                 {
-                    break; // Full cycle, key not found
+                    value = _values[index];
+                    return true;
                 }
             }
 
@@ -178,63 +199,10 @@ namespace ExtendedSystemObjects
         /// <param name="capacity">The capacity.</param>
         /// <returns>Hash Value</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetHash(TKey key, int capacity)
+        private static int GetHash(TKey key)
         {
-            return Math.Abs(key.GetHashCode() % capacity);
-        }
-
-        /// <summary>
-        ///     Finds the next prime.
-        /// </summary>
-        /// <param name="number">The number.</param>
-        /// <returns>Next prime number</returns>
-        private static int FindNextPrime(int number)
-        {
-            while (!IsPrime(number))
-            {
-                number++;
-            }
-
-            return number;
-        }
-
-        /// <summary>
-        ///     Determines whether the specified number is prime.
-        ///     Uses an internal dictionary for smaller Primes, to speed up the process.
-        /// </summary>
-        /// <param name="number">The number.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified number is prime; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsPrime(int number)
-        {
-            if (number < 2)
-            {
-                return false;
-            }
-
-            foreach (var prime in SharedResources.SmallPrimes)
-            {
-                if (number == prime)
-                {
-                    return true;
-                }
-
-                if (number % prime == 0)
-                {
-                    return false;
-                }
-            }
-
-            for (var i = 49; i * i <= number; i += 2)
-            {
-                if (number % i == 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            // Math.Abs is good to ensure we don't get negative indices before masking
+            return Math.Abs(key.GetHashCode());
         }
     }
 }

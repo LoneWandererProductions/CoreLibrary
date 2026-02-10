@@ -253,11 +253,20 @@ namespace ExtendedSystemObjects
         /// <returns>List split into chunks</returns>
         public static List<List<TValue>> ChunkBy<TValue>(this IEnumerable<TValue> source, int chunkSize)
         {
-            return source
-                .Select((x, i) => new { Index = i, Value = x })
-                .GroupBy(x => x.Index / chunkSize)
-                .Select(x => x.Select(v => v.Value).ToList())
-                .ToList();
+            var result = new List<List<TValue>>();
+            var subList = new List<TValue>(chunkSize);
+
+            foreach (var item in source)
+            {
+                subList.Add(item);
+                if (subList.Count == chunkSize)
+                {
+                    result.Add(subList);
+                    subList = new List<TValue>(chunkSize);
+                }
+            }
+            if (subList.Count > 0) result.Add(subList);
+            return result;
         }
 
         /// <summary>

@@ -119,6 +119,7 @@ namespace ExtendedSystemObjects
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
+                EnsureNotDisposed();
 #if DEBUG
                 if (i < 0 || i >= Length)
                 {
@@ -130,6 +131,7 @@ namespace ExtendedSystemObjects
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
+                EnsureNotDisposed();
 #if DEBUG
                 if (i < 0 || i >= Length)
                 {
@@ -160,7 +162,7 @@ namespace ExtendedSystemObjects
             // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
-                UnmanagedMemoryHelper.Clear<int>(_buffer + (Capacity * sizeof(int)), newSize - Capacity);
+                UnmanagedMemoryHelper.Clear<int>((IntPtr)(_ptr + Capacity), newSize - Capacity);
             }
 
             Capacity = newSize;
@@ -189,16 +191,22 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index, int count = 1)
         {
+            EnsureNotDisposed();
 #if DEBUG
-            if (index < 0 || index >= Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
+            if (index < 0 || index + count > Length) throw new IndexOutOfRangeException();
 #endif
-            // Shift elements left by 'count' starting at 'index'
-            for (var i = index; i < Length - count; i++)
+
+            int moveCount = Length - (index + count);
+            if (moveCount > 0)
             {
-                _ptr[i] = _ptr[i + count];
+                // Source: Everything after the chunk we are removing
+                var source = new ReadOnlySpan<int>(_ptr + index + count, moveCount);
+
+                // Destination: Starting at the index where we want to "collapse" the gap
+                var destination = new Span<int>(_ptr + index, moveCount);
+
+                // CopyTo handles overlapping memory safely (like memmove)
+                source.CopyTo(destination);
             }
 
             Length -= count;
@@ -222,6 +230,7 @@ namespace ExtendedSystemObjects
         /// <returns>Value at the index.</returns>
         public int IndexOf(int value)
         {
+            EnsureNotDisposed();
             var span = AsSpan();
             var vectorSize = Vector<int>.Count;
 
@@ -302,6 +311,8 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void RemoveMultiple(ReadOnlySpan<int> indices)
         {
+            EnsureNotDisposed();
+
             if (indices.Length == 0)
             {
                 return;
@@ -358,6 +369,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public Span<int> AsSpan()
         {
+            EnsureNotDisposed();
             return new Span<int>(_ptr, Length);
         }
 
@@ -388,6 +400,16 @@ namespace ExtendedSystemObjects
         ~UnmanagedIntArray()
         {
             Dispose(false);
+        }
+
+        /// <summary>
+        /// Ensures the not disposed.
+        /// </summary>
+        /// <exception cref="System.ObjectDisposedException">T</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureNotDisposed()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(UnmanagedIntArray));
         }
 
         /// <inheritdoc cref="IDisposable" />
