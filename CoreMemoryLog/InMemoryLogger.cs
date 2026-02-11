@@ -354,13 +354,18 @@ namespace CoreMemoryLog
 
         /// <inheritdoc />
         /// <summary>
-        /// Checks if the given <paramref name="logLevel" /> is enabled.
+        /// Checks if the given Microsoft log level is enabled based on the current internal LogLevel.
         /// </summary>
-        /// <param name="logLevel">Level to be checked.</param>
+        /// <param name="logLevel">The log level.</param>
         /// <returns>
-        ///   <see langword="true" /> if enabled.
+        ///   <c>true</c> if the specified log level is enabled; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => true;
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+        {
+            // Convert MS LogLevel to your internal LogLevel (assuming they align)
+            // and check against your set threshold.
+            return (LogLevel)logLevel >= LogLevel;
+        }
 
         /// <summary>
         /// Logs the specified log level.
