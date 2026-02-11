@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Projections.cs
+ * FILE:        Projections.cs
  * PURPOSE:     Test single parts of the 3D Engine
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

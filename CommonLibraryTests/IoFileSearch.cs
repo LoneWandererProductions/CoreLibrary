@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonLibraryTests
-* FILE:        CommonLibraryTests/IoFileSearch.cs
+* FILE:        IoFileSearch.cs
 * PURPOSE:     Tests for IoFileHandler and mostly the search part
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

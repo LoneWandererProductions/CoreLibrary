@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/VectorTests.cs
+ * FILE:        VectorTests.cs
  * PURPOSE:     2D and 3d Vector Tests
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

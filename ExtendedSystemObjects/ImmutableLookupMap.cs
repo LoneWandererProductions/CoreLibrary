@@ -14,7 +14,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
@@ -70,13 +69,13 @@ namespace ExtendedSystemObjects
                 TKey key = kvp.Key;
                 TValue value = kvp.Value;
 
-                // Get initial hash index
-                int hash = GetHash(key) & mask;
+                // Get initial raw hash
+                int hash = GetHash(key);
                 bool placed = false;
 
                 for (int i = 0; i < capacity; i++)
                 {
-                    // Linear probe: check the next slot
+                    // The mask here handles everything (sign bit, wrapping, and range)
                     int index = (int)((uint)(hash + i) & (uint)mask);
 
                     if (!_keyPresence[index])

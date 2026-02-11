@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonLibraryTests
-* FILE:        CommonLibraryTests/LightVectorSaveTests.cs
+* FILE:        LightVectorSaveTests.cs
 * PURPOSE:     Tests for IoFileHandler and mostly the save part
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

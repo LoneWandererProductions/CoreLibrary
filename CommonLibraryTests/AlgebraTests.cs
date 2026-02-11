@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/AlgebraTests.cs
+ * FILE:        AlgebraTests.cs
  * PURPOSE:     Some simple Algebra Tes
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

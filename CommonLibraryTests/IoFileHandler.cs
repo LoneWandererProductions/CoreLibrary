@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonLibraryTests
-* FILE:        CommonLibraryTests/IoFileHandler.cs
+* FILE:        IoFileHandler.cs
 * PURPOSE:     Tests for IoFileHandler
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

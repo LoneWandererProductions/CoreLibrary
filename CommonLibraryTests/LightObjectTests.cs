@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonLibraryTests
-* FILE:        CommonLibraryTests/LightObjectTests.cs
+* FILE:        LightObjectTests.cs
 * PURPOSE:     Tests for my Light Vector Library
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/XmlToolsTests.cs
+ * FILE:        XmlToolsTests.cs
  * PURPOSE:     Test for XML tools
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

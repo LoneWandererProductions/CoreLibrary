@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/Statistics.cs
+ * FILE:        Statistics.cs
  * PURPOSE:     Tests for the Math Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ResourcesGeneral.cs
+ * FILE:        ResourcesGeneral.cs
  * PURPOSE:     String Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

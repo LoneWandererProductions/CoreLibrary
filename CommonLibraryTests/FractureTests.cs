@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/FractureTests.cs
+ * FILE:        FractureTests.cs
  * PURPOSE:     Tests for the Fracture Class
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

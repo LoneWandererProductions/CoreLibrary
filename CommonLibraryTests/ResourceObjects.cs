@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/ResourceObjects.cs
+ * FILE:        ResourceObjects.cs
  * PURPOSE:     3D Objects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

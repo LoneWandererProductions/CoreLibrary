@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/InterOps.cs
+ * FILE:        InterOps.cs
  * PURPOSE:     We try to test basic Interop functions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/DataFormatterTests.cs
+ * FILE:        DataFormatterTests.cs
  * PURPOSE:     Some basic tests for DataFormatter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/SerializeTests.cs
+ * FILE:        SerializeTests.cs
  * PURPOSE:     Test for Serializer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

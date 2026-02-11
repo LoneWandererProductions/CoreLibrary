@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using ExtendedSystemObjects;
 using Mathematics;
 
 namespace ImagingTests

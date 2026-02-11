@@ -13,8 +13,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using ExtendedSystemObjects.Helper;
@@ -26,6 +26,7 @@ namespace ExtendedSystemObjects
     ///     A thread-safe memory vault for managing data with expiration and metadata enrichment.
     /// </summary>
     /// <typeparam name="TU">Generic type of the data being stored.</typeparam>
+    [DebuggerDisplay("Count = {Count}, UsedMemory = {UsedMemory} bytes, Threshold = {MemoryThreshold}")]
     public sealed class MemoryVault<TU> : IDisposable
     {
         /// <summary>
@@ -59,12 +60,48 @@ namespace ExtendedSystemObjects
         private bool _disposed;
 
         /// <summary>
+        /// The total bytes
+        /// </summary>
+        private long _totalBytes;
+
+        /// <summary>
+        /// The cleanup interval
+        /// </summary>
+        private TimeSpan _cleanupInterval = TimeSpan.FromMinutes(5);
+
+        /// <summary>
+        /// Gets the approximate total memory used by all items in the vault in bytes.
+        /// </summary>
+        /// <value>
+        /// The used memory.
+        /// </value>
+        public long UsedMemory => Interlocked.Read(ref _totalBytes);
+
+        /// <summary>
+        /// Gets the number of items currently in the vault.
+        /// </summary>
+        /// <value>
+        /// The count.
+        /// </value>
+        public int Count => _vault.Count;
+
+        /// <summary>
         /// Interval at which expired items are cleaned up.
+        /// Changing this value reschedules the background timer immediately.
         /// </summary>
         /// <value>
         /// The cleanup interval.
         /// </value>
-        public TimeSpan CleanupInterval { get; set; } = TimeSpan.FromMinutes(5);
+        public TimeSpan CleanupInterval
+        {
+            get => _cleanupInterval;
+            set
+            {
+                _cleanupInterval = value;
+                // Reschedule the timer to use the new interval
+                _cleanupTimer?.Change(value, value);
+            }
+        }
 
         /// <summary>
         ///     Public static property to access the Singleton instance.
@@ -123,13 +160,14 @@ namespace ExtendedSystemObjects
 
             _vault[identifier] = vaultItem;
 
-            // Calculate memory usage after adding
-            var currentMemoryUsage = CalculateMemoryUsage();
-            if (currentMemoryUsage > MemoryThreshold)
-            {
-                MemoryThresholdExceeded?.Invoke(this, new VaultMemoryThresholdExceededEventArgs(currentMemoryUsage));
-            }
+            // Increment total bytes atomically
+            long itemSize = vaultItem.DataSize + (description?.Length * 2 ?? 0);
+            Interlocked.Add(ref _totalBytes, itemSize);
 
+            if (Interlocked.Read(ref _totalBytes) > MemoryThreshold)
+            {
+                MemoryThresholdExceeded?.Invoke(this, new VaultMemoryThresholdExceededEventArgs(_totalBytes));
+            }
             return identifier;
         }
 
@@ -162,7 +200,22 @@ namespace ExtendedSystemObjects
         public bool Remove(long identifier)
         {
             EnsureNotDisposed();
-            return _vault.TryRemove(identifier, out _);
+            if (_vault.TryRemove(identifier, out var item))
+            {
+                DecrementMemory(item);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///  Clears all items from the vault and resets the memory counter.
+        /// </summary>
+        public void Clear()
+        {
+            EnsureNotDisposed();
+            _vault.Clear();
+            Interlocked.Exchange(ref _totalBytes, 0);
         }
 
         /// <summary>
@@ -190,7 +243,11 @@ namespace ExtendedSystemObjects
 
             foreach (var key in expiredKeys)
             {
-                _vault.TryRemove(key, out _);
+                // Use the same pattern to keep _totalBytes accurate
+                if (_vault.TryRemove(key, out var item))
+                {
+                    DecrementMemory(item);
+                }
             }
 
             return results;
@@ -311,38 +368,19 @@ namespace ExtendedSystemObjects
         /// <param name="state">The state.</param>
         private void CleanupExpiredItems(object? state)
         {
-            foreach (var kvp in _vault.Where(kvp => kvp.Value.HasExpireTime && kvp.Value.HasExpired))
+            foreach (var kvp in _vault)
             {
-                _vault.TryRemove(kvp.Key, out _);
+                if (kvp.Value.HasExpireTime && kvp.Value.HasExpired)
+                {
+                    if (!_vault.TryRemove(kvp.Key, out var item))
+                    {
+                        continue;
+                    }
+
+                    DecrementMemory(item);
+                }
             }
         }
-
-        /// <summary>
-        /// Calculates approximate memory usage of the vault including metadata.
-        /// </summary>
-        /// <returns>Used memory.</returns>
-        private long CalculateMemoryUsage()
-        {
-            long total = 0;
-
-            foreach (var item in _vault.Values)
-            {
-                total += item.DataSize;
-
-                // Rough estimate of metadata size
-                if (!string.IsNullOrEmpty(item.Description))
-                    total += item.Description.Length * sizeof(char);
-
-                if (item.AdditionalMetadata != null)
-                    total += item.AdditionalMetadata.Count * 64; // rough estimate per entry
-            }
-
-            // Include dictionary overhead (approximation)
-            total += _vault.Count * 32;
-
-            return total;
-        }
-
         /// <summary>
         /// Ensures the vault has not been disposed.
         /// </summary>
@@ -357,14 +395,42 @@ namespace ExtendedSystemObjects
             throw new ObjectDisposedException(nameof(MemoryVault<TU>));
         }
 
+        /// <summary>
+        /// Decrements the memory.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        private void DecrementMemory(VaultItem<TU> item)
+        {
+            long size = item.DataSize + (item.Description?.Length * 2 ?? 0);
+            // Add additional metadata estimate if it exists
+            if (item.AdditionalMetadata != null) size += item.AdditionalMetadata.Count * 64;
+
+            Interlocked.Add(ref _totalBytes, -size);
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return $"MemoryVault<{typeof(TU).Name}>: {Count} items, {UsedMemory / 1024.0:F2} KB used (Threshold: {MemoryThreshold / 1024.0:F2} KB)";
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
             if (_disposed) return;
-
-            _cleanupTimer.Dispose();
-            _vault.Clear();
-            _disposed = true;
+            lock (InstanceLock)
+            {
+                _cleanupTimer.Dispose();
+                _vault.Clear();
+                _totalBytes = 0;
+                _instance = null;
+                _disposed = true;
+            }
         }
     }
 }

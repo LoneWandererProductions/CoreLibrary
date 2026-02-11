@@ -75,16 +75,25 @@ namespace ExtendedSystemObjects
         /// <param name="destination">The destination span to receive filtered elements.</param>
         /// <param name="predicate">A function to test each element for inclusion.</param>
         /// <returns>The number of elements written to the destination span.</returns>
-        public static int WhereFast<T>(
-            this ReadOnlySpan<T> span,
-            Span<T> destination,
-            Func<T, bool> predicate)
+        public static int WhereFast<T>(this ReadOnlySpan<T> span, Span<T> destination, Func<T, bool> predicate)
         {
             int count = 0;
-            foreach (var t in span)
-                if (predicate(t))
-                    destination[count++] = t;
+            int destLength = destination.Length; // Cache length to help JIT
 
+            foreach (var t in span)
+            {
+                if (predicate(t))
+                {
+                    if ((uint)count < (uint)destLength) // Use uint cast for faster bounds check
+                    {
+                        destination[count++] = t;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Destination span is too small.");
+                    }
+                }
+            }
             return count;
         }
 
