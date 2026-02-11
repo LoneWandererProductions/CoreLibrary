@@ -35,21 +35,29 @@ namespace ExtendedSystemObjects
         {
             ArgumentNullException.ThrowIfNull(lst);
 
-            lock (lst) // Ensure exclusive access to the list
+            lock (lst)
             {
-                // Materialize the IEnumerable to avoid multiple enumerations
-                var snapshot = new HashSet<int>(lst.ToList());
+                if (lst.Count == 0) return 0;
 
-                for (var i = 0; i < int.MaxValue; i++)
+                // Sort a copy to find the gap efficiently
+                var sorted = lst.ToList();
+                sorted.Sort();
+
+                // If the first element isn't 0, 0 is the first gap
+                if (sorted[0] > 0) return 0;
+
+                for (var i = 0; i < sorted.Count - 1; i++)
                 {
-                    if (!snapshot.Contains(i))
+                    // If there is a gap between two consecutive numbers, return the gap
+                    if (sorted[i + 1] > sorted[i] + 1)
                     {
-                        return i;
+                        return sorted[i] + 1;
                     }
                 }
-            }
 
-            throw new InvalidOperationException("No available index found.");
+                // No gaps found, return the next number after the max
+                return sorted[^1] + 1;
+            }
         }
 
         /// <summary>
@@ -64,23 +72,30 @@ namespace ExtendedSystemObjects
         {
             ArgumentNullException.ThrowIfNull(lst);
 
-            lock (lst) // Ensure exclusive access to the list
+            lock (lst)
             {
-                // Materialize the IEnumerable to avoid multiple enumerations
-                var snapshot = new HashSet<long>(lst.ToList());
+                if (lst.Count == 0) return 0;
 
-                for (long i = 0; i < long.MaxValue; i++)
+                // Sort a copy to find the gap efficiently
+                var sorted = lst.ToList();
+                sorted.Sort();
+
+                // If the first element isn't 0, 0 is the first gap
+                if (sorted[0] > 0) return 0;
+
+                for (var i = 0; i < sorted.Count - 1; i++)
                 {
-                    if (!snapshot.Contains(i))
+                    // If there is a gap between two consecutive numbers, return the gap
+                    if (sorted[i + 1] > sorted[i] + 1)
                     {
-                        return i;
+                        return sorted[i] + 1;
                     }
                 }
+
+                // No gaps found, return the next number after the max
+                return sorted[^1] + 1;
             }
-
-            throw new InvalidOperationException("No available index found.");
         }
-
         /// <summary>
         ///     Performs binary search on a sorted span of integers.
         /// </summary>
@@ -94,6 +109,8 @@ namespace ExtendedSystemObjects
         {
             return BinarySearch(sortedKeys, sortedKeys.Length, target);
         }
+
+
 
         /// <summary>
         ///     Internal binary search method using a specified count of elements.
@@ -114,19 +131,10 @@ namespace ExtendedSystemObjects
                 var mid = left + ((right - left) >> 1);
                 var midKey = sortedKeys[mid];
 
-                if (midKey == target)
-                {
-                    return mid;
-                }
+                if (midKey == target) return mid;
 
-                if (midKey < target)
-                {
-                    left = mid + 1;
-                }
-                else
-                {
-                    right = mid - 1;
-                }
+                if (midKey < target) left = mid + 1;
+                else right = mid - 1;
             }
 
             return ~left;
@@ -140,14 +148,14 @@ namespace ExtendedSystemObjects
         /// <returns>Next Element</returns>
         public static int GetNextElement(int position, List<int> lst)
         {
-            if (position == lst.Max())
+            if (lst == null || lst.Count == 0) return -1;
+
+            lock (lst)
             {
-                return lst.Min();
+                var index = lst.IndexOf(position);
+                if (index == -1 || index == lst.Count - 1) return lst[0];
+                return lst[index + 1];
             }
-
-            var index = lst.IndexOf(position);
-
-            return index == -1 ? lst.Min() : lst[index + 1];
         }
 
         /// <summary>
@@ -158,14 +166,14 @@ namespace ExtendedSystemObjects
         /// <returns>Previous Element</returns>
         public static int GetPreviousElement(int position, List<int> lst)
         {
-            if (position == lst.Min())
+            if (lst == null || lst.Count == 0) return -1;
+
+            lock (lst)
             {
-                return lst.Max();
+                var index = lst.IndexOf(position);
+                if (index == -1 || index == 0) return lst[^1];
+                return lst[index - 1];
             }
-
-            var index = lst.IndexOf(position);
-
-            return index == -1 ? lst.Max() : lst[index - 1];
         }
 
         /// <summary>
@@ -251,42 +259,42 @@ namespace ExtendedSystemObjects
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
         public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int sequenceLength)
         {
-            var sequenceGroups = new List<List<int>>();
-            var currentSequence = new List<int>();
+            if (numbers == null || numbers.Count < sequenceLength || sequenceLength <= 1)
+            {
+                return null;
+            }
 
+            var results = new List<KeyValuePair<int, int>>();
+            int startValue = numbers[0];
+            int count = 1;
+
+            // Logic uses a single pass O(N) approach
             for (var i = 1; i < numbers.Count; i++)
             {
-                var cache = Math.Abs(numbers[i]);
-
-                if (Math.Abs(numbers[i - 1] + 1) == cache)
+                // We use Math.Abs to mirror your original logic for negative handling
+                if (Math.Abs(numbers[i - 1] + 1) == Math.Abs(numbers[i]))
                 {
-                    //should be only the first case
-                    if (!currentSequence.Contains(i - 1))
-                    {
-                        currentSequence.Add(i - 1);
-                    }
-
-                    currentSequence.Add(i);
+                    count++;
                 }
                 else
                 {
-                    if (currentSequence.Count == 0)
+                    if (count >= sequenceLength)
                     {
-                        continue;
+                        results.Add(new KeyValuePair<int, int>(startValue, numbers[i - 1]));
                     }
 
-                    sequenceGroups.Add(currentSequence);
-                    currentSequence = new List<int>();
+                    startValue = numbers[i];
+                    count = 1;
                 }
             }
 
-            return sequenceGroups.Count == 0
-                ? null
-                : (from stack in sequenceGroups
-                    where stack.Count >= sequenceLength
-                    let start = stack[0]
-                    let end = stack[^1]
-                    select new KeyValuePair<int, int>(start, end)).ToList();
+            // Catch the trailing sequence
+            if (count >= sequenceLength)
+            {
+                results.Add(new KeyValuePair<int, int>(startValue, numbers[^1]));
+            }
+
+            return results.Count == 0 ? null : results;
         }
 
         /// <summary>
@@ -296,30 +304,28 @@ namespace ExtendedSystemObjects
         /// <param name="stepWidth">The step width.</param>
         /// <param name="sequenceLength">The sequence.</param>
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-        public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
+        public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
         {
-            if (numbers == null || numbers.Count == 0 || sequenceLength <= 1)
+            if (numbers == null || numbers.Count < sequenceLength || sequenceLength <= 1)
             {
                 return null;
             }
 
-            numbers.Sort();
-            var numberSet = new HashSet<int>(numbers);
+            // We work on a sorted copy to ensure linear building
+            var sorted = new List<int>(numbers);
+            sorted.Sort();
 
+            var numberSet = new HashSet<int>(sorted);
             var result = new List<KeyValuePair<int, int>>();
             var visited = new HashSet<int>();
 
-            foreach (var num in numbers)
+            foreach (var num in sorted)
             {
-                if (visited.Contains(num))
-                {
-                    continue;
-                }
+                if (visited.Contains(num)) continue;
 
                 var current = num;
                 var streak = 1;
 
-                // Try to build sequence by jumping stepWidth repeatedly
                 while (numberSet.Contains(current + stepWidth))
                 {
                     current += stepWidth;
@@ -330,7 +336,6 @@ namespace ExtendedSystemObjects
                 {
                     result.Add(new KeyValuePair<int, int>(num, current));
 
-                    // Mark all in this sequence as visited to avoid duplicates
                     for (var val = num; val <= current; val += stepWidth)
                     {
                         visited.Add(val);
@@ -350,25 +355,16 @@ namespace ExtendedSystemObjects
         public static List<(int start, int end, int value)> FindSequences(List<int> numbers)
         {
             var result = new List<(int start, int end, int value)>();
-
-            if (numbers == null || numbers.Count == 0)
+            if (numbers == null || numbers.Count == 0) return result;
+            int start = 0;
+            for (int i = 1; i <= numbers.Count; i++)
             {
-                return result;
-            }
-
-            var start = 0;
-            for (var i = 1; i <= numbers.Count; i++)
-            {
-                // Check if we're at the end of a sequence or at the end of the list
-                if (i != numbers.Count && numbers[i] == numbers[start])
+                if (i == numbers.Count || numbers[i] != numbers[start])
                 {
-                    continue;
+                    result.Add((start, i - 1, numbers[start]));
+                    start = i;
                 }
-
-                result.Add((start, i - 1, numbers[start]));
-                start = i;
             }
-
             return result;
         }
     }
