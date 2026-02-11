@@ -229,9 +229,10 @@ namespace ExtendedSystemObjects
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
         public static TKey GetFirstKeyByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {
-            foreach (var pair in dic.Where(pair => value.Equals(pair.Value)))
+            foreach (var pair in dic)
             {
-                return pair.Key;
+                if (EqualityComparer<TValue>.Default.Equals(pair.Value, value))
+                    return pair.Key;
             }
 
             throw new ValueNotFoundException(SharedResources.ErrorValueNotFound);

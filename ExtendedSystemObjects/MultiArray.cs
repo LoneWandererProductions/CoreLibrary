@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using ExtendedSystemObjects.Helper;
 
@@ -103,20 +104,15 @@ namespace ExtendedSystemObjects
         /// <returns>Copy of the called array</returns>
         public static unsafe TValue[,] Duplicate<TValue>(this TValue[,] array) where TValue : unmanaged
         {
-            // allocates/creates a duplicate of a matrix.
-            var result = new TValue[array.GetLength(0), array.GetLength(1)];
+            var rows = array.GetLength(0);
+            var cols = array.GetLength(1);
+            var result = new TValue[rows, cols];
 
-            fixed (TValue* one = result, two = array)
+            fixed (TValue* src = array, dest = result)
             {
-                for (var i = 0; i < array.GetLength(0); i++)
-                for (var j = 0; j < array.GetLength(1); j++)
-                {
-                    var cursor = i + (j * array.GetLength(1));
-
-                    one[cursor] = two[cursor];
-                }
+                long bytes = (long)rows * cols * sizeof(TValue);
+                Buffer.MemoryCopy(src, dest, bytes, bytes);
             }
-
             return result;
         }
 
@@ -127,32 +123,12 @@ namespace ExtendedSystemObjects
         /// <param name="array">The array.</param>
         /// <param name="compare">The compare target.</param>
         /// <returns>Equal or not</returns>
-        public static unsafe bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
+        public static bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
         {
-            if (array.GetLength(0) != compare.GetLength(0))
-            {
-                return false;
-            }
+            if (array.GetLength(0) != compare.GetLength(0) ||
+                array.GetLength(1) != compare.GetLength(1)) return false;
 
-            if (array.GetLength(1) != compare.GetLength(1))
-            {
-                return false;
-            }
-
-            var length = array.GetLength(0) * array.GetLength(1);
-
-            fixed (TValue* one = array, two = compare)
-            {
-                for (var i = 0; i < length; ++i)
-                {
-                    if (!one[i].Equals(two[i]))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return array.ToSpan().SequenceEqual(compare.ToSpan());
         }
 
         /// <summary>
@@ -161,17 +137,9 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="array">The array.</param>
         /// <returns>A Multi array as span Type.</returns>
-        public static unsafe Span<TValue> ToSpan<TValue>(this TValue[,] array) where TValue : unmanaged
+        public static Span<TValue> ToSpan<TValue>(this TValue[,] array) where TValue : unmanaged
         {
-            var length = array.GetLength(0) * array.GetLength(1);
-            Span<TValue> result;
-
-            fixed (TValue* a = array)
-            {
-                result = new Span<TValue>(a, length);
-            }
-
-            return result;
+            return MemoryMarshal.CreateSpan(ref array[0, 0], array.Length);
         }
 
         /// <summary>
