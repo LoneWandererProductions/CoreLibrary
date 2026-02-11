@@ -139,8 +139,6 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"ReadOnlyDictionary Lookup Time: {stopwatch.ElapsedMilliseconds} ms");
         }
 
-        // ------------ UNMANAGED MAP TESTS ----------------
-
         /// <summary>
         ///     Tests the unmanaged map initialization.
         /// </summary>
@@ -276,6 +274,94 @@ namespace CommonExtendedObjectsTests
             // Basic sanity assertions
             Assert.AreEqual(iterations, stringMap.ToList().Count);
             Assert.AreEqual(iterations, readOnlyMap.Count);
+        }
+
+        /// <summary>
+        /// Tests the collision robustness.
+        /// </summary>
+        [TestMethod]
+        public void TestCollisionRobustness()
+        {
+            var data = new Dictionary<int, string>();
+            // Using multiples of large numbers often creates hash clusters
+            for (int i = 0; i < 100; i++)
+            {
+                data[i * 1024] = $"CollisionValue_{i}";
+            }
+
+            var map = new ImmutableLookupMap<int, string>(data);
+
+            foreach (var key in data.Keys)
+            {
+                Assert.AreEqual(data[key], map.Get(key), $"Failed to find key {key} after potential collision.");
+            }
+        }
+
+        /// <summary>
+        /// Tests the minimum capacity.
+        /// </summary>
+        [TestMethod]
+        public void TestMinimumCapacity()
+        {
+            var data = new Dictionary<int, int> { { 1, 100 } };
+            var map = new ImmutableLookupMap<int, int>(data);
+
+            Assert.AreEqual(100, map.Get(1));
+            Assert.IsFalse(map.TryGetValue(2, out _));
+        }
+
+        /// <summary>
+        /// Tests the key not found throws correctly.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
+        public void TestKeyNotFoundThrowsCorrectly()
+        {
+            var data = new Dictionary<int, string> { { 10, "Ten" }, { 20, "Twenty" } };
+            var map = new ImmutableLookupMap<int, string>(data);
+
+            // This should trigger the break in the probe loop and throw
+            map.Get(99);
+        }
+
+        /// <summary>
+        /// Tests the negative keys.
+        /// </summary>
+        [TestMethod]
+        public void TestNegativeKeys()
+        {
+            var data = new Dictionary<int, float>
+            {
+                { -1, 1.1f },
+                { -500, 5.5f },
+                { int.MinValue, 0.0f }
+            };
+
+            using var map = new ImmutableLookupMapUnmanaged<int, float>(data);
+
+            foreach (var kvp in data)
+            {
+                Assert.AreEqual(kvp.Value, map.Get(kvp.Key), $"Failed for negative key: {kvp.Key}");
+            }
+        }
+
+        /// <summary>
+        /// Tests the sparse key spread.
+        /// </summary>
+        [TestMethod]
+        public void TestSparseKeySpread()
+        {
+            var data = new Dictionary<int, string>
+            {
+                { 1, "First" },
+                { 1_000_000, "Million" },
+                { int.MaxValue, "Max" }
+            };
+
+            var map = new ImmutableLookupMap<int, string>(data);
+
+            Assert.AreEqual("Million", map.Get(1_000_000));
+            Assert.AreEqual("Max", map.Get(int.MaxValue));
         }
     }
 }

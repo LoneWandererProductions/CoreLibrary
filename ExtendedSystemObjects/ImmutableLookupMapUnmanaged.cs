@@ -83,7 +83,7 @@ namespace ExtendedSystemObjects
                 // 2. Linear Probing for cache line efficiency
                 for (var i = 0; i < _capacity; i++)
                 {
-                    int index = (hash + i) & _mask;
+                    int index = (int)((uint)(hash + i) & (uint)_mask);
                     Entry* entry = entriesPtr + index;
 
                     if (entry->IsPresent == 0)
@@ -221,7 +221,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHash(TKey key)
         {
-            return Math.Abs(key.GetHashCode());
+            return key.GetHashCode();
         }
     }
 }

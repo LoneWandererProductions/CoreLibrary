@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
@@ -76,7 +77,7 @@ namespace ExtendedSystemObjects
                 for (int i = 0; i < capacity; i++)
                 {
                     // Linear probe: check the next slot
-                    int index = (hash + i) & mask;
+                    int index = (int)((uint)(hash + i) & (uint)mask);
 
                     if (!_keyPresence[index])
                     {
@@ -193,16 +194,17 @@ namespace ExtendedSystemObjects
         // Helper Methods
 
         /// <summary>
-        ///     Gets the hash.
+        /// Gets the hash.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <param name="capacity">The capacity.</param>
-        /// <returns>Hash Value</returns>
+        /// <returns>
+        /// Hash Value
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHash(TKey key)
         {
-            // Math.Abs is good to ensure we don't get negative indices before masking
-            return Math.Abs(key.GetHashCode());
+            // Return the raw hash code. Do NOT use Math.Abs.
+            return key.GetHashCode();
         }
     }
 }
