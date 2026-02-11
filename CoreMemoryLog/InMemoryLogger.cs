@@ -113,7 +113,7 @@ namespace CoreMemoryLog
             params object[] args)
         {
             // Skip if filtered
-            if (!IsEnabled(LogLevel))
+            if (!IsEnabled(level))
                 return;
 
             libraryName ??= GetDefaultLibraryName(); // auto-resolve if not set
