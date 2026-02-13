@@ -917,10 +917,10 @@ namespace SqliteHelper
         /// <param name="checking">Shall we check the input</param>
         /// <returns>Success Status</returns>
         private bool ExecuteInsertQuery(
-            string sqlQuery,
-            IReadOnlyCollection<TableSet> table,
-            Dictionary<string, TableColumns> tableInfo,
-            bool checking)
+                    string sqlQuery,
+                    IReadOnlyCollection<TableSet> table,
+                    Dictionary<string, TableColumns> tableInfo,
+                    bool checking)
         {
             // Establish connection
             using var conn = GetConn();
@@ -932,7 +932,6 @@ namespace SqliteHelper
             // Begin transaction
             using var tr = conn.BeginTransaction();
 
-
             try
             {
                 using var cmd = conn.CreateCommand();
@@ -940,42 +939,42 @@ namespace SqliteHelper
                 cmd.CommandTimeout = SqliteConnectionConfig.TimeOut;
                 cmd.CommandText = sqlQuery;
 
-                var checkCount = 0;
-                var paramCache = new Dictionary<int, SQLiteParameter>();
-
+                // Syntax Checker initialization
                 var syntax = new SqliteSyntax(SetMessage);
+
+                // Cache parameters to reuse objects (Optimization)
+                var paramCache = new Dictionary<int, SQLiteParameter>();
 
                 foreach (var row in table)
                 {
+                    // Syntax Check Logic
                     if (checking)
                     {
-                        if (checkCount >= tableInfo.Count)
-                        {
-                            checkCount = 0;
-                        }
-
-                        var convert = tableInfo.ElementAt(checkCount).Value;
-                        if (!syntax.AdvancedSyntaxCheck(tableInfo, table, row, convert))
+                        // Pass the full schema (tableInfo) and the full batch (table)
+                        // The Syntax class now handles the column iteration internally.
+                        if (!syntax.AdvancedSyntaxCheck(tableInfo, row, table))
                         {
                             return false;
                         }
-
-                        checkCount++;
                     }
 
-                    cmd.Parameters.Clear(); // Ensure no leftover parameters
+                    // Clear parameters for the new row
+                    cmd.Parameters.Clear();
 
                     for (var i = 0; i < row.Row.Count; i++)
                     {
                         if (!paramCache.TryGetValue(i, out var param))
                         {
+                            // Create parameter if it doesn't exist
                             param = new SQLiteParameter($"{SqliteHelperResources.Param}{i}", row.Row[i]);
                             cmd.Parameters.Add(param);
                             paramCache[i] = param;
                         }
                         else
                         {
+                            // Reuse parameter object, just update value and re-add to command
                             param.Value = row.Row[i];
+                            cmd.Parameters.Add(param);
                         }
                     }
 
@@ -986,7 +985,8 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
+                    Level = 2
                 };
                 OnError(_message);
 
@@ -1002,7 +1002,6 @@ namespace SqliteHelper
 
             return false;
         }
-
 
         /// <summary>
         ///     Update Table
