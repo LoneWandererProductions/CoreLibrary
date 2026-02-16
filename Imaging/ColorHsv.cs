@@ -117,7 +117,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Froms the RGB.
+        /// Convert from RGB to HSV.
         /// </summary>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
@@ -126,16 +126,20 @@ namespace Imaging
         /// <returns>Color HSV object.</returns>
         public static ColorHsv FromRgb(int r, int g, int b, int a = 255)
         {
-            ValidateRgb(r, g, b, a);
+            // Robustness: Clamp instead of throwing
+            r = Math.Max(0, Math.Min(255, r));
+            g = Math.Max(0, Math.Min(255, g));
+            b = Math.Max(0, Math.Min(255, b));
+            a = Math.Max(0, Math.Min(255, a));
 
             var hsv = new ColorHsv { R = r, G = g, B = b, A = a };
-
             hsv.ToHsv();
             return hsv;
         }
 
         /// <summary>
-        /// Froms the HSV.
+        /// Creates a ColorHsv from HSV values.
+        /// Automatically wraps Hue and clamps S/V/A.
         /// </summary>
         /// <param name="h">The h.</param>
         /// <param name="s">The s.</param>
@@ -144,10 +148,22 @@ namespace Imaging
         /// <returns>Color HSV object.</returns>
         public static ColorHsv FromHsv(double h, double s, double v, int a = 255)
         {
-            ValidateHsv(h, s, v, a);
+            // Robustness: Handle "fuzzy" floating point math
+
+            // 1. Wrap Hue (e.g. 361 becomes 1, -10 becomes 350)
+            // This handles cases where the mouse rotation calc goes slightly over 360
+            h = h % 360.0;
+            if (h < 0) h += 360.0;
+
+            // 2. Clamp Saturation and Value to 0.0 - 1.0
+            // Barycentric triangle math often returns -0.00001 or 1.00001 at the edges
+            s = Math.Max(0.0, Math.Min(1.0, s));
+            v = Math.Max(0.0, Math.Min(1.0, v));
+
+            // 3. Clamp Alpha
+            a = Math.Max(0, Math.Min(255, a));
 
             var hsv = new ColorHsv { H = h, S = s, V = v, A = a };
-
             hsv.ToRgb();
             return hsv;
         }
@@ -390,30 +406,6 @@ namespace Imaging
         {
             if (r is < 0 or > 255 || g is < 0 or > 255 || b is < 0 or > 255 || a is < 0 or > 255)
                 throw new ArgumentOutOfRangeException("RGB values must be 0–255");
-        }
-
-        /// <summary>
-        /// Validates the HSV.
-        /// </summary>
-        /// <param name="h">The h.</param>
-        /// <param name="s">The s.</param>
-        /// <param name="v">The v.</param>
-        /// <param name="a">a.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Hue must be 0–360
-        /// or
-        /// Saturation must be 0–1
-        /// or
-        /// Value must be 0–1
-        /// or
-        /// Alpha must be 0–255
-        /// </exception>
-        private static void ValidateHsv(double h, double s, double v, int a)
-        {
-            if (h is < 0 or > 360) throw new ArgumentOutOfRangeException("Hue must be 0–360");
-            if (s is < 0 or > 1) throw new ArgumentOutOfRangeException("Saturation must be 0–1");
-            if (v is < 0 or > 1) throw new ArgumentOutOfRangeException("Value must be 0–1");
-            if (a is < 0 or > 255) throw new ArgumentOutOfRangeException("Alpha must be 0–255");
         }
     }
 }
