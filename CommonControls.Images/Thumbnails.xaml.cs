@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable EventNeverSubscribedTo.Global
-// ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -656,41 +655,33 @@ namespace CommonControls.Images
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>The loaded and resized Image</returns>
-        private static async Task<BitmapImage> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
+        private static async Task<BitmapImage?> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
         {
-            return string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)
-                ? null
-                : await Task.Run(() =>
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)) return null;
+
+            return await Task.Run(() =>
+            {
+                try
                 {
-                    BitmapImage bitmapImage = null;
-
-                    Application.Current.Dispatcher.Invoke(() =>
+                    var bitmapImage = new BitmapImage();
+                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
-                        FileStream stream = null;
-                        try
-                        {
-                            bitmapImage = new BitmapImage();
-                            stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                            bitmapImage.BeginInit();
-                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                            bitmapImage.DecodePixelWidth = width;
-                            bitmapImage.DecodePixelHeight = height;
-                            bitmapImage.StreamSource = stream;
-                            bitmapImage.EndInit();
-                            bitmapImage.Freeze();
-                        }
-                        catch (Exception ex)
-                        {
-                            Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
-                        }
-                        finally
-                        {
-                            stream?.Dispose();
-                        }
-                    });
-
+                        bitmapImage.BeginInit();
+                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmapImage.DecodePixelWidth = width;
+                        // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
+                        bitmapImage.StreamSource = stream;
+                        bitmapImage.EndInit();
+                        bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
+                    }
                     return bitmapImage;
-                });
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
+                    return null;
+                }
+            });
         }
 
         /// <summary>
@@ -989,7 +980,6 @@ namespace CommonControls.Images
 
             _disposed = true;
         }
-
 
         /// <summary>
         ///     Finalizes this instance.
