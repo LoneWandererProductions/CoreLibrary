@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,15 +27,13 @@ namespace CommonControls
                 ComCtlResources.GlobalKeyAttach, typeof(bool), typeof(GlobalKeyHandler),
                 new PropertyMetadata(false, OnAttachChanged));
 
-
         /// <summary>
-        ///     DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+        ///     DependencyProperty to store a dictionary of modifier/key-command pairs for a UIElement.
         /// </summary>
         public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
-                ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Key, ICommand>), typeof(GlobalKeyHandler),
+                ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Tuple<ModifierKeys, Key>, ICommand>), typeof(GlobalKeyHandler),
                 new PropertyMetadata(null));
-
 
         /// <summary>
         ///     Skip text controls property
@@ -82,11 +81,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Sets the dictionary of key-command bindings for the specified UIElement.
-        ///     This dictionary maps specific keys to ICommand instances, allowing the element to handle
-        ///     those keys by executing the associated commands.
+        ///     Sets the dictionary of modifier/key-command bindings for the specified UIElement.
+        ///     This dictionary maps specific keys combinations to ICommand instances.
         /// </summary>
-        public static void SetCommandBindings(UIElement element, Dictionary<Key, ICommand> value)
+        public static void SetCommandBindings(UIElement element, Dictionary<Tuple<ModifierKeys, Key>, ICommand> value)
         {
             element.SetValue(CommandBindingsProperty, value);
         }
@@ -94,9 +92,9 @@ namespace CommonControls
         /// <summary>
         ///     Gets the dictionary of key-command bindings associated with the specified UIElement.
         /// </summary>
-        public static Dictionary<Key, ICommand> GetCommandBindings(UIElement element)
+        public static Dictionary<Tuple<ModifierKeys, Key>, ICommand> GetCommandBindings(UIElement element)
         {
-            return (Dictionary<Key, ICommand>)element.GetValue(CommandBindingsProperty);
+            return (Dictionary<Tuple<ModifierKeys, Key>, ICommand>)element.GetValue(CommandBindingsProperty);
         }
 
         /// <summary>
@@ -121,7 +119,7 @@ namespace CommonControls
 
         /// <summary>
         ///     Handles the PreviewKeyDown event on the attached UIElement.
-        ///     This method checks if there is a command bound to the pressed key and executes it if allowed.
+        ///     This method checks if there is a command bound to the pressed key/modifier combination and executes it if allowed.
         /// </summary>
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -147,8 +145,19 @@ namespace CommonControls
             // Retrieve the dictionary of key-command bindings for this element
             var bindings = GetCommandBindings(element);
 
-            // Check if a command is bound to the pressed key and if it can execute
-            if (bindings == null || !bindings.TryGetValue(e.Key, out var command) || !command.CanExecute(null))
+            if (bindings == null)
+            {
+                return;
+            }
+
+            // 1. Capture the currently pressed modifier keys (Ctrl, Alt, Shift, or None)
+            ModifierKeys currentModifiers = Keyboard.Modifiers;
+
+            // 2. Create the lookup tuple based on the current modifiers and the pressed key
+            var keyCombination = new Tuple<ModifierKeys, Key>(currentModifiers, e.Key);
+
+            // 3. Check if a command is bound to this combination and if it can execute
+            if (!bindings.TryGetValue(keyCombination, out var command) || !command.CanExecute(null))
             {
                 return;
             }
