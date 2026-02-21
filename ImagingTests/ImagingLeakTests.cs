@@ -1,11 +1,28 @@
-﻿using System.Drawing;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ImagingTests
+ * FILE:        ImagingLeakTests.cs
+ * PURPOSE:     Search for leaks in the ImagingFacade methods by running them multiple times and monitoring memory usage. This is a very basic test and should be used as a starting point for more comprehensive leak detection.
+ *              Should be run in a loop or with a profiler for best results, as small leaks might not be detected in a single run.
+ *              More calls will amplify the leak if it exists, but be mindful of test execution time.
+ *              Should be extended in the future to cover more methods and scenarios, especially those involving unmanaged resources.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Drawing;
 using Imaging;
 
 namespace ImagingTests
 {
+    /// <summary>
+    /// Simple Memory checker for the ImagingFacade methods. It runs the method multiple times and checks if the memory usage increased significantly, which would indicate a leak.
+    /// </summary>
     [TestClass]
     public class ImagingLeakTests
     {
+        /// <summary>
+        /// Tests the pixelate for memory leaks.
+        /// </summary>
         [TestMethod]
         public void TestPixelateForMemoryLeaks()
         {
@@ -28,6 +45,9 @@ namespace ImagingTests
             }, "Facade Resize and Convert Leak Test");
         }
 
+        /// <summary>
+        /// Tests the filter leak.
+        /// </summary>
         [TestMethod]
         public void TestFilterLeak()
         {
