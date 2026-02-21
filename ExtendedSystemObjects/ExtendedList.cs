@@ -265,6 +265,7 @@ namespace ExtendedSystemObjects
                     subList = new List<TValue>(chunkSize);
                 }
             }
+
             if (subList.Count > 0) result.Add(subList);
             return result;
         }

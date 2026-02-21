@@ -176,6 +176,7 @@ namespace CommonExtendedObjectsTests
             {
                 dict[i] = i;
             }
+
             swDict.Stop();
 
             // Benchmark UnmanagedMap
@@ -184,6 +185,7 @@ namespace CommonExtendedObjectsTests
             {
                 map.Set(i, i);
             }
+
             swMap.Stop();
 
             map.Dispose();
@@ -238,6 +240,7 @@ namespace CommonExtendedObjectsTests
                 swDict.Stop();
                 totalDictMs += swDict.Elapsed.TotalMilliseconds;
             }
+
             double avgDictMs = totalDictMs / loops;
 
             // Benchmark UnmanagedMap
@@ -249,6 +252,7 @@ namespace CommonExtendedObjectsTests
                 swMap.Stop();
                 totalMapMs += swMap.Elapsed.TotalMilliseconds;
             }
+
             double avgMapMs = totalMapMs / loops;
 
             map.Dispose();

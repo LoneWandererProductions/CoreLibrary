@@ -165,7 +165,7 @@ namespace Imaging
         ///     Fills the bitmap with a uniform color using SIMD.
         /// </summary>
         /// <param name="color">The color to fill with.</param>
-        public unsafe void FillSimd(Color color)
+        public void FillSimd(Color color)
         {
             var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 
@@ -268,11 +268,11 @@ namespace Imaging
             unsafe
             {
                 var dst = (Pixel32*)_bitmap.BackBuffer; // treat back buffer as Pixel32[]
-                var span = Bits.AsSpan();               // Pixel32[]
+                var span = Bits.AsSpan(); // Pixel32[]
 
                 for (int i = 0; i < span.Length; i++)
                 {
-                    dst[i] = span[i];                   // direct struct copy
+                    dst[i] = span[i]; // direct struct copy
                 }
             }
 

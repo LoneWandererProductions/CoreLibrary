@@ -68,7 +68,8 @@ namespace DataFormatter
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="content">The content.</param>
-        public static async Task WriteFile(string path, IEnumerable<string> content) => await ReadText.WriteFile(path, content);
+        public static async Task WriteFile(string path, IEnumerable<string> content) =>
+            await ReadText.WriteFile(path, content);
 
         /// <summary>
         /// Reads the object.

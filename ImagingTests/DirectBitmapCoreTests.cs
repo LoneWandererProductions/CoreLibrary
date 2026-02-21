@@ -10,8 +10,11 @@ using Imaging;
 
 namespace ImagingTests
 {
+    /// <summary>
+    /// Core tests for DirectBitmapCore, especially the BlendInt method which is critical for correct blending behavior in DirectBitmap and DirectBitmapImage.
+    /// </summary>
     [TestClass]
-    public unsafe class DirectBitmapCoreTests
+    public class DirectBitmapCoreTests
     {
         /// <summary>
         /// Blends the int null DST throws.

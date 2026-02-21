@@ -19,22 +19,22 @@ namespace Imaging
         /// <summary>
         /// The Blue component of the pixel. 0 is no blue, 255 is full blue.
         /// </summary>
-        public byte B;
+        public readonly byte B;
 
         /// <summary>
         /// The Green component of the pixel. 0 is no green, 255 is full green.
         /// </summary>
-        public byte G;
+        public readonly byte G;
 
         /// <summary>
         /// The Red component of the pixel. 0 is no red, 255 is full red.
         /// </summary>
-        public byte R;
+        public readonly byte R;
 
         /// <summary>
         /// Transparency component. 0 is fully transparent, 255 is fully opaque.
         /// </summary>
-        public byte A;
+        public readonly byte A;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pixel32"/> struct.
@@ -89,5 +89,4 @@ namespace Imaging
         /// <returns></returns>
         public bool Equals(Pixel32 other) => AreEqual(this, other);
     }
-
 }

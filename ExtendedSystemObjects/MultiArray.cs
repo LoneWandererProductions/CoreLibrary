@@ -113,6 +113,7 @@ namespace ExtendedSystemObjects
                 long bytes = (long)rows * cols * sizeof(TValue);
                 Buffer.MemoryCopy(src, dest, bytes, bytes);
             }
+
             return result;
         }
 

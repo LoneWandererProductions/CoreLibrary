@@ -374,6 +374,7 @@ namespace SqliteHelper
                 if (col.PrimaryKey)
                 {
                     if (primaryKeyUsed) return SqliteHelperResources.ErrorCheck;
+
                     primaryKeyUsed = true;
                     line += " PRIMARY KEY";
                 }

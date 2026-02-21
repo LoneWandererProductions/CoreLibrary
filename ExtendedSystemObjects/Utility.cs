@@ -96,6 +96,7 @@ namespace ExtendedSystemObjects
                 return sorted[^1] + 1;
             }
         }
+
         /// <summary>
         ///     Performs binary search on a sorted span of integers.
         /// </summary>
@@ -109,7 +110,6 @@ namespace ExtendedSystemObjects
         {
             return BinarySearch(sortedKeys, sortedKeys.Length, target);
         }
-
 
 
         /// <summary>
@@ -154,6 +154,7 @@ namespace ExtendedSystemObjects
             {
                 var index = lst.IndexOf(position);
                 if (index == -1 || index == lst.Count - 1) return lst[0];
+
                 return lst[index + 1];
             }
         }
@@ -172,6 +173,7 @@ namespace ExtendedSystemObjects
             {
                 var index = lst.IndexOf(position);
                 if (index == -1 || index == 0) return lst[^1];
+
                 return lst[index - 1];
             }
         }
@@ -356,6 +358,7 @@ namespace ExtendedSystemObjects
         {
             var result = new List<(int start, int end, int value)>();
             if (numbers == null || numbers.Count == 0) return result;
+
             int start = 0;
             for (int i = 1; i <= numbers.Count; i++)
             {
@@ -365,6 +368,7 @@ namespace ExtendedSystemObjects
                     start = i;
                 }
             }
+
             return result;
         }
     }

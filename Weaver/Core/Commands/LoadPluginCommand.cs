@@ -10,8 +10,9 @@ using Loader;
 using Weaver.Interfaces;
 using Weaver.Messages;
 
-namespace Weaver.Commands
+namespace Weaver.Core.Commands
 {
+    /// <inheritdoc />
     /// <summary>
     /// Command that loads external command plugins from assemblies.
     /// </summary>
@@ -86,8 +87,8 @@ namespace Weaver.Commands
             var dir = Path.GetDirectoryName(file)!;
 
             var commands = _loader.Load<ICommand>(dir)
-                                  .Where(c => c.GetType().Assembly.Location == file)
-                                  .ToList();
+                .Where(c => c.GetType().Assembly.Location == file)
+                .ToList();
 
             if (commands.Count == 0)
                 return CommandResult.Fail("No ICommand implementations found.");

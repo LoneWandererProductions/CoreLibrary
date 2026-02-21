@@ -181,6 +181,7 @@ namespace ExtendedSystemObjects
         {
             var idx = FindIndex(key);
             if (idx >= 0) return _entries[idx].Value;
+
             throw new KeyNotFoundException($"Key {key} not found.");
         }
 
@@ -198,6 +199,7 @@ namespace ExtendedSystemObjects
                 value = _entries[idx].Value;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -219,6 +221,7 @@ namespace ExtendedSystemObjects
                 Count--;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -254,6 +257,7 @@ namespace ExtendedSystemObjects
                     return idx;
                 }
             }
+
             return -1;
         }
 
@@ -263,6 +267,7 @@ namespace ExtendedSystemObjects
         public void Resize()
         {
             if (_capacityPowerOf2 >= MaxPowerOf2) return;
+
             Rehash(_capacityPowerOf2 + 1);
         }
 
@@ -336,6 +341,7 @@ namespace ExtendedSystemObjects
                 Marshal.FreeHGlobal((IntPtr)_entries);
                 _entries = null;
             }
+
             Capacity = 0;
             Count = 0;
             _usedCount = 0;
@@ -369,7 +375,8 @@ namespace ExtendedSystemObjects
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public override string ToString() => $"Count = {Count}, Capacity = {Capacity}, LoadFactor = {Count / (float)Capacity:P1}";
+        public override string ToString() =>
+            $"Count = {Count}, Capacity = {Capacity}, LoadFactor = {Count / (float)Capacity:P1}";
 
         /// <summary>
         /// Gets the keys snapshot.
@@ -382,6 +389,7 @@ namespace ExtendedSystemObjects
             {
                 if (_entries[i].Used == SharedResources.Occupied) keys.Add(_entries[i].Key);
             }
+
             return keys;
         }
 

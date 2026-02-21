@@ -395,7 +395,7 @@ namespace ExtendedSystemObjects
         public Span<int> AsSpan()
         {
             EnsureNotDisposed();
-            // Fix: Use 'Length' instead of 'Capacity' 
+            // Fix: Use 'Length' instead of 'Capacity'
             // to prevent access to uninitialized memory.
             return new Span<int>(_ptr, Length);
         }
@@ -413,6 +413,7 @@ namespace ExtendedSystemObjects
                 copy.Length = Length; // Set length before sorting so AsSpan() works
                 copy.Sort();
             }
+
             return copy;
         }
 

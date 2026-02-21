@@ -48,6 +48,7 @@ namespace FileHandler
                     if (parent == null)
                         throw new FileHandlerException(
                             $"{FileHandlerResources.ErrorGetParentDirectory}: reached root at level {i}");
+
                     path = parent.FullName;
                 }
             }

@@ -277,7 +277,7 @@ namespace Imaging
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator ==(ColorHsv a, ColorHsv b) => Equals(a, b);
+        public static bool operator ==(ColorHsv? a, ColorHsv b) => Equals(a, b);
 
         /// <summary>
         /// Implements the operator !=.

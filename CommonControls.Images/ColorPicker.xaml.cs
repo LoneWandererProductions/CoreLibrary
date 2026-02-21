@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls.Images
+ * FILE:        ColorPicker.xaml.cs
+ * PURPOSE:     ColorPicker control with a hue ring and saturation/value triangle, supporting RGB/Hex input and output.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -10,7 +18,14 @@ using Imaging;
 
 namespace CommonControls.Images
 {
-    public sealed partial class ColorPicker : UserControl, INotifyPropertyChanged
+    /// <inheritdoc cref="INotifyPropertyChanged" />
+    /// <summary>
+    /// ColorPicker is a WPF UserControl that provides an interactive color selection interface using a hue ring and saturation/value triangle. It supports RGB and Hex input/output, and raises events when the color changes. The control is designed to be visually intuitive and responsive, allowing users to easily select colors while providing real-time feedback through property bindings and events.
+    /// </summary>
+    /// <seealso cref="T:System.Windows.Controls.UserControl" />
+    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+    /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
+    public sealed partial class ColorPicker : INotifyPropertyChanged
     {
         private WriteableBitmap _bitmap;
         private bool _isDragging;
@@ -24,22 +39,35 @@ namespace CommonControls.Images
         // To prevent infinite loops when updating properties
         private bool _ignoreUpdates;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public delegate void DelegateColor(ColorHsv colorHsv);
-
-        public event DelegateColor ColorChanged;
+        /// <inheritdoc />
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorPicker"/> class.
+        /// 
+        /// </summary>
+        /// <param name="colorHsv">The color HSV.</param>
+        public delegate void DelegateColor(ColorHsv colorHsv);
+
+        /// <summary>
+        /// Occurs when [color changed].
+        /// </summary>
+        public event DelegateColor ColorChanged;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:CommonControls.Images.ColorPicker" /> class.
         /// </summary>
         public ColorPicker()
         {
             InitializeComponent();
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorPicker"/> class.
+        /// Initializes a new instance of the <see cref="T:CommonControls.Images.ColorPicker" /> class.
         /// </summary>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
@@ -53,7 +81,8 @@ namespace CommonControls.Images
             Alpha = alpha;
 
             // This is the trigger that will finally make it draw
-            this.SizeChanged += (s, e) => {
+            this.SizeChanged += (s, e) =>
+            {
                 if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
                 {
                     RedrawAsync();
@@ -62,6 +91,7 @@ namespace CommonControls.Images
             };
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.
         /// </summary>
@@ -78,7 +108,9 @@ namespace CommonControls.Images
 
         // --- DEPENDENCY PROPERTIES (For Bindings) ---
 
-        // Show/Hide inputs
+        /// <summary>
+        /// Show/Hide inputs
+        /// </summary>
         public static readonly DependencyProperty ShowTextBoxesProperty =
             DependencyProperty.Register(nameof(ShowTextBoxes), typeof(bool), typeof(ColorPicker),
                 new PropertyMetadata(true));
@@ -276,14 +308,16 @@ namespace CommonControls.Images
                 // Try exact math first
                 if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out double s, out double v))
                 {
-                    _s = s; _v = v;
+                    _s = s;
+                    _v = v;
                 }
                 else
                 {
                     // MAGNET FIX: We are inside the circle, but outside the triangle.
                     // Snap to the closest edge (Clamp).
                     GetSvFromPointClamped(dx, dy, layout.InnerRadius, _h, out s, out v);
-                    _s = s; _v = v;
+                    _s = s;
+                    _v = v;
                 }
 
                 OnPropertyChanged(nameof(Sat));
@@ -340,7 +374,11 @@ namespace CommonControls.Images
         // This is the "Magic" pixel drawer (Same as before)
         private void RedrawAsync()
         {
-            if (!CheckAccess()) { Dispatcher.BeginInvoke(new Action(RedrawAsync)); return; }
+            if (!CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(RedrawAsync));
+                return;
+            }
 
             // 1. Get the AVAILABLE space from the parent container (The Grid in Column 0)
             // We cast Parent to FrameworkElement to get its ActualWidth/Height
@@ -352,7 +390,7 @@ namespace CommonControls.Images
             int size = (int)Math.Min(parent.ActualWidth, parent.ActualHeight);
 
             // 3. FORCE the Container to be this square size.
-            // Because we set Horizontal/VerticalAlignment="Center" in XAML, 
+            // Because we set Horizontal/VerticalAlignment="Center" in XAML,
             // it will float perfectly in the middle.
             PickerContainer.Width = size;
             PickerContainer.Height = size;
@@ -404,6 +442,7 @@ namespace CommonControls.Images
                     }
                 }
             }
+
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, size, size));
             _bitmap.Unlock();
         }
@@ -509,8 +548,8 @@ namespace CommonControls.Images
             double c = size / 2.0;
 
             return (
-                CenterX: c,      // Defined X
-                CenterY: c,      // Defined Y (Same as X for a square)
+                CenterX: c, // Defined X
+                CenterY: c, // Defined Y (Same as X for a square)
                 Size: size,
                 Radius: c,
                 InnerRadius: c * 0.85
@@ -555,10 +594,10 @@ namespace CommonControls.Images
         }
 
 
-
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
             if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(field, value)) return false;
+
             field = value;
             OnPropertyChanged(propertyName);
             return true;

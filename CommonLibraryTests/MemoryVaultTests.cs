@@ -16,7 +16,7 @@ namespace CommonLibraryTests
     /// Memory Tests for the MemoryVault class. We want to ensure that memory tracking is accurate and that items are properly added and removed from the vault.
     /// </summary>
     [TestClass]
-    public  class MemoryVaultTests
+    public class MemoryVaultTests
     {
         /// <summary>
         /// Vaults the memory tracking stays in synchronize.
@@ -36,6 +36,5 @@ namespace CommonLibraryTests
             vault.Remove(id);
             Assert.AreEqual(0, vault.UsedMemory, "Memory should return to zero after removal.");
         }
-
     }
 }

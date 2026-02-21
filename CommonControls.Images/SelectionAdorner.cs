@@ -369,6 +369,7 @@ namespace CommonControls.Images
             foreach (var points in _committedFreeForms)
             {
                 if (points.Count <= 1) continue;
+
                 var geometry = new StreamGeometry();
                 using (var ctx = geometry.Open())
                 {
@@ -415,7 +416,7 @@ namespace CommonControls.Images
                 using (var ctx = geometry.Open())
                 {
                     // Current FreeFormPoints are already in View Coordinates (handled in OnMouseMove or AddFreeFormPoint logic)
-                    // Note: Check if your AddFreeFormPoint stores Transformed or View points. 
+                    // Note: Check if your AddFreeFormPoint stores Transformed or View points.
                     // Based on your original code: AddFreeFormPoint stores transformed (Logic Coordinates).
                     // So we must Inverse Transform them for display.
 

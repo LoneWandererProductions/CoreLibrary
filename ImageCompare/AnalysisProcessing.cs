@@ -241,8 +241,8 @@ namespace ImageCompare
             using var dbmCanvas = new DirectBitmap(canvas);
             using var dbmCompare = new DirectBitmap(second);
 
-            var canvasPixels = dbmCanvas.Bits;       // Pixel32[]
-            var comparePixels = dbmCompare.Bits;     // Pixel32[]
+            var canvasPixels = dbmCanvas.Bits; // Pixel32[]
+            var comparePixels = dbmCompare.Bits; // Pixel32[]
             var highlightPixel = new Pixel32(highlight.R, highlight.G, highlight.B, highlight.A);
 
             Parallel.For(0, height, y =>

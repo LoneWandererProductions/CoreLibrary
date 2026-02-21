@@ -16,17 +16,26 @@ namespace CommonControls
         public BitmapSource ImageSource
         {
             get => _imageSource;
-            set { _imageSource = value; OnPropertyChanged(); }
+            set
+            {
+                _imageSource = value;
+                OnPropertyChanged();
+            }
         }
 
         // Two-way binding for the CheckBox
         public bool IsSelected
         {
             get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(); }
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

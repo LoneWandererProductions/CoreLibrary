@@ -252,6 +252,7 @@ namespace ExtendedSystemObjects
         public void InsertAt(int index, T value, int count = 1)
         {
             if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+
             if (count <= 0) return;
 
             EnsureCapacity(Length + count);
@@ -335,6 +336,7 @@ namespace ExtendedSystemObjects
                 _buffer = IntPtr.Zero;
                 _ptr = null; // EnsureNotDisposed checks often rely on this being null
             }
+
             _disposed = true;
         }
     }

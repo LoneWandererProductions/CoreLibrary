@@ -27,13 +27,13 @@
                   Background="Transparent"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  MouseDown="OnMouseDown" 
-                  MouseMove="OnMouseMove" 
+                  MouseDown="OnMouseDown"
+                  MouseMove="OnMouseMove"
                   MouseUp="OnMouseUp">
 
-                <Image x:Name="PickerImage" 
+                <Image x:Name="PickerImage"
                        RenderOptions.BitmapScalingMode="HighQuality"
-                       IsHitTestVisible="False"/>
+                       IsHitTestVisible="False" />
 
                 <Canvas x:Name="CursorCanvas" IsHitTestVisible="False">
                     <Ellipse x:Name="HueCursor" Width="10" Height="10"
@@ -65,10 +65,10 @@
                     Value="{Binding Alpha, ElementName=ColorPickerControl, Mode=TwoWay}"
                     HorizontalAlignment="Center" />
 
-            <TextBlock Grid.Row="1" 
-                       Text="{Binding Alpha, ElementName=ColorPickerControl}" 
-                       HorizontalAlignment="Center" 
-                       Width="30" 
+            <TextBlock Grid.Row="1"
+                       Text="{Binding Alpha, ElementName=ColorPickerControl}"
+                       HorizontalAlignment="Center"
+                       Width="30"
                        TextAlignment="Center"
                        Margin="0,5,0,0" />
         </Grid>
@@ -93,27 +93,27 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="Hue" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="0" 
+            <TextBox Grid.Row="1" Grid.Column="0"
                      Text="{Binding Hue, ElementName=ColorPickerControl, StringFormat=N1, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
 
             <Label Grid.Row="0" Grid.Column="2" Content="Sat" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="2" 
+            <TextBox Grid.Row="1" Grid.Column="2"
                      Text="{Binding Sat, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
 
             <Label Grid.Row="0" Grid.Column="4" Content="Val" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="4" 
+            <TextBox Grid.Row="1" Grid.Column="4"
                      Text="{Binding Val, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
 
             <Label Grid.Row="3" Grid.Column="0" Content="R" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="0" 
+            <TextBox Grid.Row="4" Grid.Column="0"
                      Text="{Binding R, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3" Grid.Column="2" Content="G" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="2" 
+            <TextBox Grid.Row="4" Grid.Column="2"
                      Text="{Binding G, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3" Grid.Column="4" Content="B" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="4" 
+            <TextBox Grid.Row="4" Grid.Column="4"
                      Text="{Binding B, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5"

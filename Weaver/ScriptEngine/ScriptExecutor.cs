@@ -320,12 +320,7 @@ namespace Weaver.ScriptEngine
             if (_debug)
                 Trace.WriteLine("[Internal] Script finished successfully.");
 
-            return new CommandResult
-            {
-                Success = true,
-                Message = "Script finished.",
-                Feedback = null
-            };
+            return new CommandResult { Success = true, Message = "Script finished.", Feedback = null };
         }
 
         /// <summary>

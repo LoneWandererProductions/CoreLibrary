@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CoreMemoryLog
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IInMemoryLogger" />
     /// <summary>
     /// In-memory logger that supports structured logging similar to Microsoft.Extensions.Logging
     /// and acts as a fallback logger for any library.
@@ -51,13 +51,14 @@ namespace CoreMemoryLog
         /// </summary>
         public static InMemoryLogger Instance => MemoryInstance.Value;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Gets or sets the minimum log level for this logger.
         /// Messages below this level will be ignored.
         /// </summary>
         public LogLevel LogLevel { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets or sets a value indicating whether [enable stack trace].
         /// </summary>
@@ -66,6 +67,7 @@ namespace CoreMemoryLog
         /// </value>
         public bool EnableStackTrace { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Occurs when [log added].
         /// </summary>
@@ -154,7 +156,7 @@ namespace CoreMemoryLog
 
         #region Convenience methods
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the debug.
         /// </summary>
@@ -163,7 +165,7 @@ namespace CoreMemoryLog
         /// <returns>Debug message</returns>
         public void LogDebug(string? message, params object[] args) => Log(LogLevel.Debug, message, null, args);
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the trace.
         /// </summary>
@@ -172,7 +174,7 @@ namespace CoreMemoryLog
         /// <returns>Trace Message</returns>
         public void LogTrace(string? message, params object[] args) => Log(LogLevel.Trace, message, null, args);
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the information.
         /// </summary>
@@ -182,16 +184,16 @@ namespace CoreMemoryLog
         public void LogInformation(string? message, params object[] args) =>
             Log(LogLevel.Information, message, null, args);
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the warning.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="args">The arguments.</param>
-        /// <returns>Warning Mssage</returns>
+        /// <returns>Warning Message</returns>
         public void LogWarning(string? message, params object[] args) => Log(LogLevel.Warning, message, null, args);
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the error.
         /// </summary>
@@ -293,7 +295,7 @@ namespace CoreMemoryLog
 
         #endregion
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Dumps all logs to a file, formatting template with args.
         /// </summary>
@@ -385,7 +387,7 @@ namespace CoreMemoryLog
             Log(logLevel, msg, exception);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Logs the specified log level.
         /// </summary>

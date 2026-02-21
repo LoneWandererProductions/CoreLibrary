@@ -215,7 +215,7 @@ namespace ImagingTests
         {
             // Arrange: create a small image with transparency
             using var bmp = new Bitmap(2, 2);
-            bmp.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0));   // fully transparent red
+            bmp.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0)); // fully transparent red
             bmp.SetPixel(1, 0, Color.FromArgb(128, 0, 255, 0)); // 50% green
             bmp.SetPixel(0, 1, Color.FromArgb(255, 0, 0, 255)); // opaque blue
             bmp.SetPixel(1, 1, Color.FromArgb(64, 255, 255, 0)); // 25% yellow
@@ -290,6 +290,7 @@ namespace ImagingTests
             {
                 action();
             }
+
             stopwatch.Stop();
             return stopwatch.Elapsed.TotalMilliseconds;
         }
@@ -316,7 +317,8 @@ namespace ImagingTests
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color, params (int x, int y)[] coordinates)
+        private static void ApplyReplacementColors(DirectBitmap bitmap, Color color,
+            params (int x, int y)[] coordinates)
         {
             var pixel = new Pixel32(color.R, color.G, color.B, color.A);
             foreach (var (x, y) in coordinates)
@@ -332,13 +334,15 @@ namespace ImagingTests
         /// <param name="target">The target.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color, params (int x, int y)[] coordinates)
+        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color,
+            params (int x, int y)[] coordinates)
         {
             var expected = PixelToUintC(color);
             foreach (var (x, y) in coordinates)
             {
                 Assert.AreEqual(expected, PixelToUintC(bitmap.GetPixel(x, y)), $"Bitmap pixel mismatch at ({x},{y})");
-                Assert.AreEqual(expected, PixelToUint(target.Bits[y * bitmap.Width + x]), $"DirectBitmap pixel mismatch at ({x},{y})");
+                Assert.AreEqual(expected, PixelToUint(target.Bits[y * bitmap.Width + x]),
+                    $"DirectBitmap pixel mismatch at ({x},{y})");
             }
         }
 
@@ -363,4 +367,3 @@ namespace ImagingTests
         }
     }
 }
-

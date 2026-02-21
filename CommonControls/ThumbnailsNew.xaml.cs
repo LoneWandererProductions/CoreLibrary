@@ -10,13 +10,14 @@ using System.Windows.Media.Imaging;
 
 namespace CommonControls
 {
-    public partial class ThumbnailsNew : UserControl
+    public partial class ThumbnailsNew
     {
         // ObservableCollection automatically notifies the UI when items are added/removed
         public ObservableCollection<ThumbnailItem> ThumbCollection { get; set; } = new();
 
         public static readonly DependencyProperty ThumbCellSizeProperty =
-            DependencyProperty.Register(nameof(ThumbCellSize), typeof(double), typeof(ThumbnailsNew), new PropertyMetadata(100.0));
+            DependencyProperty.Register(nameof(ThumbCellSize), typeof(double), typeof(ThumbnailsNew),
+                new PropertyMetadata(100.0));
 
         public double ThumbCellSize
         {
@@ -46,12 +47,7 @@ namespace CommonControls
                     if (img != null)
                     {
                         // Create the Data Item
-                        var item = new ThumbnailItem
-                        {
-                            Id = kvp.Key,
-                            FilePath = kvp.Value,
-                            ImageSource = img
-                        };
+                        var item = new ThumbnailItem { Id = kvp.Key, FilePath = kvp.Value, ImageSource = img };
 
                         // Thread-safe add to collection
                         Application.Current.Dispatcher.Invoke(() => ThumbCollection.Add(item));
@@ -73,6 +69,7 @@ namespace CommonControls
                 try
                 {
                     if (!File.Exists(path)) return null;
+
                     var bi = new BitmapImage();
                     using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                     bi.BeginInit();

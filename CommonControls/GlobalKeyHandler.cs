@@ -32,7 +32,8 @@ namespace CommonControls
         /// </summary>
         public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
-                ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Tuple<ModifierKeys, Key>, ICommand>), typeof(GlobalKeyHandler),
+                ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Tuple<ModifierKeys, Key>, ICommand>),
+                typeof(GlobalKeyHandler),
                 new PropertyMetadata(null));
 
         /// <summary>

@@ -674,6 +674,7 @@ namespace CommonControls.Images
                         bitmapImage.EndInit();
                         bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
                     }
+
                     return bitmapImage;
                 }
                 catch (Exception ex)

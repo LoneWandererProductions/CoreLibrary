@@ -132,6 +132,7 @@ namespace FileHandler
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
             if (!Directory.Exists(path) || fileExtList == null || fileExtList.Count == 0)
                 return false;
 

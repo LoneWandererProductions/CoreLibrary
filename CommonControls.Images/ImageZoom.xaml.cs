@@ -625,7 +625,7 @@ namespace CommonControls.Images
 
                 // 3. Validation: Ensure we actually drew something substantial
                 bool isValid = (frame.Width > 0 && frame.Height > 0) ||
-                               (frame.Points != null && frame.Points.Count > 0);
+                               frame.Points is { Count: > 0 };
 
                 if (isValid)
                 {
@@ -732,7 +732,7 @@ namespace CommonControls.Images
                 _mouseDown = false;
                 MainCanvas.ReleaseMouseCapture();
                 // Optional: reset current points in Adorner without committing
-                // SelectionAdorner.ResetCurrent(); 
+                // SelectionAdorner.ResetCurrent();
                 return;
             }
 

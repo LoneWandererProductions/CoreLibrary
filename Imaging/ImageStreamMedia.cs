@@ -143,7 +143,7 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
-            // 1. Get the raw data into a WriteableBitmap first. 
+            // 1. Get the raw data into a WriteableBitmap first.
             // We use Bgra32 because it matches GDI+ 32bpp format exactly.
             var width = bitmap.Width;
             var height = bitmap.Height;
@@ -152,7 +152,8 @@ namespace Imaging
             // 2. Lock the Bitmap and the WriteableBitmap to copy bytes directly.
             // This avoids all the 'for' loops and manual math that causes errors.
             var rect = new System.Drawing.Rectangle(0, 0, width, height);
-            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             wbmp.Lock();
             // Direct memory copy: No math, no pre-multiplication, no data loss.
@@ -164,6 +165,7 @@ namespace Imaging
                     width * height * 4,
                     width * height * 4);
             }
+
             wbmp.AddDirtyRect(new Int32Rect(0, 0, width, height));
             wbmp.Unlock();
             bitmap.UnlockBits(bmpData);
