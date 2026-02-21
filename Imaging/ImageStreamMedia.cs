@@ -143,51 +143,41 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
-            // 1. Get the raw data into a WriteableBitmap first.
-            // We use Bgra32 because it matches GDI+ 32bpp format exactly.
             var width = bitmap.Width;
             var height = bitmap.Height;
-            var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
 
-            // 2. Lock the Bitmap and the WriteableBitmap to copy bytes directly.
-            // This avoids all the 'for' loops and manual math that causes errors.
+            // 1. Memory Copy to WriteableBitmap (Your efficient logic)
+            var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var rect = new System.Drawing.Rectangle(0, 0, width, height);
-            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             wbmp.Lock();
-            // Direct memory copy: No math, no pre-multiplication, no data loss.
             unsafe
             {
-                Buffer.MemoryCopy(
-                    (void*)bmpData.Scan0,
-                    (void*)wbmp.BackBuffer,
-                    width * height * 4,
-                    width * height * 4);
+                Buffer.MemoryCopy((void*)bmpData.Scan0, (void*)wbmp.BackBuffer, width * height * 4, width * height * 4);
             }
-
             wbmp.AddDirtyRect(new Int32Rect(0, 0, width, height));
             wbmp.Unlock();
             bitmap.UnlockBits(bmpData);
 
-            // 3. Convert to BitmapImage via PNG stream
+            // 2. The Bridge to BitmapImage
             var bitmapImage = new BitmapImage();
             using (var stream = new MemoryStream())
             {
-                var encoder = new PngBitmapEncoder();
+                // BMP Encoder is leaner and faster than PNG for internal memory swaps
+                var encoder = new BmpBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(wbmp));
                 encoder.Save(stream);
-                stream.Seek(0, SeekOrigin.Begin);
+                stream.Position = 0;
 
                 bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                // CRITICAL: This prevents WPF from converting it to Premultiplied Alpha
                 bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.StreamSource = stream;
                 bitmapImage.EndInit();
             }
 
-            bitmapImage.Freeze(); // Make it cross-thread compatible
+            bitmapImage.Freeze();
             return bitmapImage;
         }
     }
