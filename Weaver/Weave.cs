@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Weaver.Commands;
 using Weaver.Core;
 using Weaver.Core.Commands;
 using Weaver.Core.Extensions;
@@ -42,11 +41,16 @@ namespace Weaver
         private static readonly Dictionary<string, CommandExtension> GlobalExtensions
             = new(StringComparer.OrdinalIgnoreCase)
             {
-                [WeaverResources.GlobalExtensionHelp] = new CommandExtension
-                    { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
+                [WeaverResources.GlobalExtensionHelp] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
+                    },
                 [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
                 {
-                    Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true,
+                    Name = WeaverResources.GlobalExtensionTryRun,
+                    ParameterCount = 0,
+                    IsInternal = true,
                     IsPreview = true
                 },
                 [WeaverResources.GlobalExtensionStore] = new CommandExtension

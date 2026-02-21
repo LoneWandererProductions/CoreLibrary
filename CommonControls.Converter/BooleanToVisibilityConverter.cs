@@ -41,6 +41,7 @@ namespace CommonControls.Converter
         {
             if (value is bool b)
                 return b ? Visibility.Visible : (Collapse ? Visibility.Collapsed : Visibility.Hidden);
+
             return Visibility.Hidden;
         }
 
@@ -55,6 +56,6 @@ namespace CommonControls.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => value is Visibility v && v == Visibility.Visible;
+            => value is Visibility and Visibility.Visible;
     }
 }

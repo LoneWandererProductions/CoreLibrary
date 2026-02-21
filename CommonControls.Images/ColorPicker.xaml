@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+             x:Name="ColorPickerControl"
+             d:DesignHeight="450" d:DesignWidth="450">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -12,71 +13,111 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="60" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="200" />
-            <RowDefinition Height="10" />
+            <RowDefinition Height="*" MinHeight="200" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Images and other controls -->
-        <Image x:Name="ImageOne" Grid.ColumnSpan="7" Grid.Column="0" />
-        <Image x:Name="ImageTwo" Grid.Row="0" Grid.ColumnSpan="7" Grid.Column="0"
-               MouseDown="ImageTwo_MouseDown" />
+        <Grid Grid.Row="0" Grid.Column="0" SizeChanged="OnSizeChanged">
 
-        <!-- Nested Grid for TextBoxes, with dynamic visibility -->
-        <Grid Grid.Row="2" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="7"
-              Visibility="{Binding ShowTextBoxes, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="30" />
-            </Grid.RowDefinitions>
+            <Grid x:Name="PickerContainer"
+                  Background="Transparent"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  MouseDown="OnMouseDown"
+                  MouseMove="OnMouseMove"
+                  MouseUp="OnMouseUp">
 
-            <TextBox Grid.Column="0" Grid.Row="0" TextWrapping="Wrap"
-                     Text="{Binding Path=Hue, Mode=TwoWay, StringFormat={}{0:F2}}" />
-            <TextBox Grid.Column="2" Grid.Row="0"
-                     Text="{Binding Path=Sat , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:F2}}" />
-            <TextBox Grid.Column="4" Grid.Row="0"
-                     Text="{Binding Path=Val, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:F2}}" />
-            <TextBox Grid.Column="0" Grid.Row="2"
-                     Text="{Binding Path=R, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Grid.Column="2" Grid.Row="2"
-                     Text="{Binding Path=G, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Grid.Column="4" Grid.Row="2"
-                     Text="{Binding Path=B, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="6"
-                     Text="{Binding Path=Hex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Image x:Name="PickerImage"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       IsHitTestVisible="False" />
+
+                <Canvas x:Name="CursorCanvas" IsHitTestVisible="False">
+                    <Ellipse x:Name="HueCursor" Width="10" Height="10"
+                             Stroke="Black" StrokeThickness="2" Fill="Transparent"
+                             Visibility="Collapsed">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" Opacity="1" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+
+                    <Ellipse x:Name="SvCursor" Width="10" Height="10"
+                             Stroke="White" StrokeThickness="2" Fill="Transparent"
+                             Visibility="Collapsed">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="1" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                </Canvas>
+            </Grid>
         </Grid>
 
-        <!-- Slider and other elements, unchanged -->
-        <Slider Grid.Column="7" Grid.Row="0" Maximum="255" Orientation="Vertical"
-                Value="{Binding Alpha, Mode=TwoWay}" />
-        <Label Content="{Binding Path=AlphaPercentage}" Grid.Column="7" Grid.Row="4" />
-        <Canvas Name="CanvasPreview" Grid.Column="7" Grid.Row="6" />
+        <Grid Grid.Row="0" Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Slider Grid.Row="0" Orientation="Vertical" Maximum="255" Minimum="0"
+                    Value="{Binding Alpha, ElementName=ColorPickerControl, Mode=TwoWay}"
+                    HorizontalAlignment="Center" />
+
+            <TextBlock Grid.Row="1"
+                       Text="{Binding Alpha, ElementName=ColorPickerControl}"
+                       HorizontalAlignment="Center"
+                       Width="30"
+                       TextAlignment="Center"
+                       Margin="0,5,0,0" />
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0"
+              Visibility="{Binding ShowTextBoxes, ElementName=ColorPickerControl, Converter={StaticResource BoolToVisibilityConverter}}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Hue" Padding="0" />
+            <TextBox Grid.Row="1" Grid.Column="0"
+                     Text="{Binding Hue, ElementName=ColorPickerControl, StringFormat=N1, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Sat" Padding="0" />
+            <TextBox Grid.Row="1" Grid.Column="2"
+                     Text="{Binding Sat, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
+
+            <Label Grid.Row="0" Grid.Column="4" Content="Val" Padding="0" />
+            <TextBox Grid.Row="1" Grid.Column="4"
+                     Text="{Binding Val, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
+
+            <Label Grid.Row="3" Grid.Column="0" Content="R" Padding="0" />
+            <TextBox Grid.Row="4" Grid.Column="0"
+                     Text="{Binding R, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label Grid.Row="3" Grid.Column="2" Content="G" Padding="0" />
+            <TextBox Grid.Row="4" Grid.Column="2"
+                     Text="{Binding G, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label Grid.Row="3" Grid.Column="4" Content="B" Padding="0" />
+            <TextBox Grid.Row="4" Grid.Column="4"
+                     Text="{Binding B, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5"
+                     Text="{Binding Hex, ElementName=ColorPickerControl, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
     </Grid>
 </UserControl>

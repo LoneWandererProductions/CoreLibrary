@@ -56,7 +56,7 @@ namespace SqliteHelper
                 return false;
             }
 
-            // Convert dictionary values to a list to access by index 
+            // Convert dictionary values to a list to access by index
             // (Assuming order matches Insert logic)
             var schemaColumns = tableInfo.Values.ToList();
 
@@ -135,7 +135,8 @@ namespace SqliteHelper
         /// <param name="convert">The column definition.</param>
         /// <param name="batch">The full batch of rows.</param>
         /// <returns>True if unique in batch</returns>
-        private bool CheckBatchUniqueness(string value, int columnIndex, TableColumns convert, IEnumerable<TableSet> batch)
+        private bool CheckBatchUniqueness(string value, int columnIndex, TableColumns convert,
+            IEnumerable<TableSet> batch)
         {
             // Only check if it is a Primary Key or explicitly Unique
             if (!convert.PrimaryKey && !convert.Unique)

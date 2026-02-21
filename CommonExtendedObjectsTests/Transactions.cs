@@ -43,7 +43,7 @@ namespace CommonExtendedObjectsTests
             var addedData = new DataItem { Id = 101, Name = "added" };
             log.Add(101, addedData, false);
 
-            // 3. First Change for ID 101 -> Key 3 
+            // 3. First Change for ID 101 -> Key 3
             // (Because no Change entry existed yet, only an Add entry)
             var change1 = new DataItem { Id = 101, Name = "added Change" };
             log.Change(101, change1);
@@ -108,7 +108,7 @@ namespace CommonExtendedObjectsTests
             transactionLogs.Change(1, "Item1_Changed");
 
             Assert.IsTrue(transactionLogs.Changed);
-            // Change overwrites existing Change entry if found, 
+            // Change overwrites existing Change entry if found,
             // but here we only have an Add, so it creates a new Change entry.
             Assert.AreEqual(2, transactionLogs.Changelog.Count);
             Assert.AreEqual("Item1_Changed", transactionLogs.Changelog[2].Data);
@@ -122,7 +122,7 @@ namespace CommonExtendedObjectsTests
         {
             var transactionLogs = new TransactionLogs();
             transactionLogs.Add(1, "Item1", false); // Key 1
-            transactionLogs.Change(1, "Changed");  // Key 2
+            transactionLogs.Change(1, "Changed"); // Key 2
 
             // Looking for the Add predecessor of the Change (Key 2)
             var predecessor = transactionLogs.GetPredecessor(2);
@@ -137,9 +137,9 @@ namespace CommonExtendedObjectsTests
         public void GetNewItemsSuccess()
         {
             var transactionLogs = new TransactionLogs();
-            transactionLogs.Add(1, "Item1", true);   // StartData
-            transactionLogs.Add(2, "Item2", false);  // New
-            transactionLogs.Change(1, "Changed");    // New
+            transactionLogs.Add(1, "Item1", true); // StartData
+            transactionLogs.Add(2, "Item2", false); // New
+            transactionLogs.Change(1, "Changed"); // New
 
             var newItems = transactionLogs.GetNewItems();
 

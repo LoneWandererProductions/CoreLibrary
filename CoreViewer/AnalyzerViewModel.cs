@@ -239,7 +239,9 @@ namespace CoreViewer
                 DiagnosticsView.Add(new DiagnosticItemViewModel(d,
                     openFile: _ => HandleOpen(d.Name),
                     ignore: _ => HandleIgnore(d.Name),
-                    fix: FixableAnalyzers.Contains(d.Name) ? _ => global::CoreViewer.AnalyzerViewModel.HandleFix(d.Name) : null));
+                    fix: FixableAnalyzers.Contains(d.Name)
+                        ? _ => global::CoreViewer.AnalyzerViewModel.HandleFix(d.Name)
+                        : null));
             }
         }
 

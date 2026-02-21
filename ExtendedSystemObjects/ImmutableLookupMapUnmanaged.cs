@@ -22,7 +22,8 @@ namespace ExtendedSystemObjects
     ///      A high-performance, immutable lookup map using unmanaged arrays.
     ///      Suitable for value types only. Keys must be unique.
     /// </summary>
-    public sealed unsafe class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey, TValue>>
+    public sealed unsafe class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable,
+        IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : unmanaged, IEquatable<TKey>
         where TValue : unmanaged
     {
@@ -124,14 +125,14 @@ namespace ExtendedSystemObjects
         ///      Returns an enumerator for iterating over the key-value pairs in the map.
         /// </summary>
         /// <remarks>
-        ///      Note: We avoid pointers here because yield return cannot exist in an unsafe context 
+        ///      Note: We avoid pointers here because yield return cannot exist in an unsafe context
         ///      that captures pointers. We use the array indexer instead.
         /// </remarks>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             for (var i = 0; i < _capacity; i++)
             {
-                // We use the safe indexer of UnmanagedArray. 
+                // We use the safe indexer of UnmanagedArray.
                 // This causes a value-copy of the Entry struct, but it's yield-compatible.
                 var entry = _entries[i];
 

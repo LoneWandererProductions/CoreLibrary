@@ -917,10 +917,10 @@ namespace SqliteHelper
         /// <param name="checking">Shall we check the input</param>
         /// <returns>Success Status</returns>
         private bool ExecuteInsertQuery(
-                    string sqlQuery,
-                    IReadOnlyCollection<TableSet> table,
-                    Dictionary<string, TableColumns> tableInfo,
-                    bool checking)
+            string sqlQuery,
+            IReadOnlyCollection<TableSet> table,
+            Dictionary<string, TableColumns> tableInfo,
+            bool checking)
         {
             // Establish connection
             using var conn = GetConn();
@@ -985,8 +985,7 @@ namespace SqliteHelper
 
                 _message = new MessageItem
                 {
-                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}",
-                    Level = 2
+                    Message = $"{SqliteHelperResources.SuccessExecutedLog}{sqlQuery}", Level = 2
                 };
                 OnError(_message);
 

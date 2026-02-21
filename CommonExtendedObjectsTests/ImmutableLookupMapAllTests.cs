@@ -330,12 +330,7 @@ namespace CommonExtendedObjectsTests
         [TestMethod]
         public void TestNegativeKeys()
         {
-            var data = new Dictionary<int, float>
-            {
-                { -1, 1.1f },
-                { -500, 5.5f },
-                { int.MinValue, 0.0f }
-            };
+            var data = new Dictionary<int, float> { { -1, 1.1f }, { -500, 5.5f }, { int.MinValue, 0.0f } };
 
             using var map = new ImmutableLookupMapUnmanaged<int, float>(data);
 
@@ -353,9 +348,7 @@ namespace CommonExtendedObjectsTests
         {
             var data = new Dictionary<int, string>
             {
-                { 1, "First" },
-                { 1_000_000, "Million" },
-                { int.MaxValue, "Max" }
+                { 1, "First" }, { 1_000_000, "Million" }, { int.MaxValue, "Max" }
             };
 
             var map = new ImmutableLookupMap<int, string>(data);

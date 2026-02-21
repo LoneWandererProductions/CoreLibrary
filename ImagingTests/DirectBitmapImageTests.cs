@@ -52,9 +52,33 @@ namespace ImagingTests
         {
             var pixels = new List<PixelData>
             {
-                new() { X = 0, Y = 0, R = 255, G = 0, B = 0, A = 255 }, // Red
-                new() { X = 1, Y = 1, R = 0, G = 255, B = 0, A = 255 }, // Green
-                new() { X = 2, Y = 2, R = 0, G = 0, B = 255, A = 255 }  // Blue
+                new()
+                {
+                    X = 0,
+                    Y = 0,
+                    R = 255,
+                    G = 0,
+                    B = 0,
+                    A = 255
+                }, // Red
+                new()
+                {
+                    X = 1,
+                    Y = 1,
+                    R = 0,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                }, // Green
+                new()
+                {
+                    X = 2,
+                    Y = 2,
+                    R = 0,
+                    G = 0,
+                    B = 255,
+                    A = 255
+                } // Blue
             };
 
             _bitmapImage.SetPixels(pixels);
@@ -103,7 +127,7 @@ namespace ImagingTests
             var pixels = new List<(int x, int y, Color color)>
             {
                 (0, 0, new Color { A = 255, R = 255, G = 0, B = 0 }), // Red pixel
-                (1, 0, new Color { A = 255, R = 0, G = 255, B = 0 })  // Green pixel
+                (1, 0, new Color { A = 255, R = 0, G = 255, B = 0 }) // Green pixel
             };
 
             // Act
@@ -134,8 +158,24 @@ namespace ImagingTests
             // Set initial pixel colors
             var initialPixels = new List<PixelData>
             {
-                new() { X = 0, Y = 0, R = 255, G = 0, B = 0, A = 255 }, // Red
-                new() { X = 1, Y = 0, R = 0, G = 255, B = 0, A = 255 }  // Green
+                new()
+                {
+                    X = 0,
+                    Y = 0,
+                    R = 255,
+                    G = 0,
+                    B = 0,
+                    A = 255
+                }, // Red
+                new()
+                {
+                    X = 1,
+                    Y = 0,
+                    R = 0,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                } // Green
             };
             _bitmapImage.SetPixels(initialPixels);
 
@@ -145,7 +185,7 @@ namespace ImagingTests
                 new[] { 0.3f, 0.59f, 0.11f, 0f }, // R
                 new[] { 0.3f, 0.59f, 0.11f, 0f }, // G
                 new[] { 0.3f, 0.59f, 0.11f, 0f }, // B
-                new[] { 0f,   0f,   0f,   1f }    // A (alpha preserved)
+                new[] { 0f, 0f, 0f, 1f } // A (alpha preserved)
             };
 
 
@@ -166,8 +206,8 @@ namespace ImagingTests
             Assert.AreEqual(pixel1.R, pixel1.B);
 
             // Optional: assert exact grayscale value
-            var expected0 = (byte)Math.Round(0.3 * 255 + 0.59 * 0 + 0.11 * 0);   // Red pixel → 76
-            var expected1 = (byte)Math.Round(0.3 * 0 + 0.59 * 255 + 0.11 * 0);   // Green pixel → 150
+            var expected0 = (byte)Math.Round(0.3 * 255 + 0.59 * 0 + 0.11 * 0); // Red pixel → 76
+            var expected1 = (byte)Math.Round(0.3 * 0 + 0.59 * 255 + 0.11 * 0); // Green pixel → 150
 
             Assert.AreEqual(expected0, pixel0.R);
             Assert.AreEqual(expected1, pixel1.R);
@@ -194,11 +234,8 @@ namespace ImagingTests
 
             var matrix = new[]
             {
-                new[] { 0.3f, 0.59f, 0.11f, 0, 0 },
-                new[] { 0.3f, 0.59f, 0.11f, 0, 0 },
-                new[] { 0.3f, 0.59f, 0.11f, 0, 0 },
-                new float[] { 0, 0, 0, 1, 0 },
-                new float[] { 0, 0, 0, 0, 0 }
+                new[] { 0.3f, 0.59f, 0.11f, 0, 0 }, new[] { 0.3f, 0.59f, 0.11f, 0, 0 },
+                new[] { 0.3f, 0.59f, 0.11f, 0, 0 }, new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 0 }
             };
 
             _bitmapImage.ApplyColorMatrix(matrix);
@@ -279,18 +316,16 @@ namespace ImagingTests
             var bmp = new DirectBitmapImage(2, 2);
             bmp.SetPixels(new[]
             {
-                new PixelData(0, 0, 255, 0, 0),   // red
-                new PixelData(1, 0, 0, 255, 0),   // green
-                new PixelData(0, 1, 0, 0, 255),   // blue
-                new PixelData(1, 1, 255, 255, 0)  // yellow
+                new PixelData(0, 0, 255, 0, 0), // red
+                new PixelData(1, 0, 0, 255, 0), // green
+                new PixelData(0, 1, 0, 0, 255), // blue
+                new PixelData(1, 1, 255, 255, 0) // yellow
             });
 
             float[][] grayscaleMatrix =
             {
-                new[] { 0.299f, 0.587f, 0.114f, 0 },
-                new[] { 0.299f, 0.587f, 0.114f, 0 },
-                new[] { 0.299f, 0.587f, 0.114f, 0 },
-                new float[] { 0, 0, 0, 1 }
+                new[] { 0.299f, 0.587f, 0.114f, 0 }, new[] { 0.299f, 0.587f, 0.114f, 0 },
+                new[] { 0.299f, 0.587f, 0.114f, 0 }, new float[] { 0, 0, 0, 1 }
             };
 
             bmp.ApplyColorMatrix(grayscaleMatrix);
@@ -316,7 +351,7 @@ namespace ImagingTests
             {
                 (0, 0, Color.FromArgb(255, 255, 0, 0)), // Red
                 (1, 1, Color.FromArgb(255, 0, 255, 0)), // Green
-                (2, 2, Color.FromArgb(255, 0, 0, 255))  // Blue
+                (2, 2, Color.FromArgb(255, 0, 0, 255)) // Blue
             };
 
             _bitmapImage.SetPixelsBulk(pixels);
@@ -353,10 +388,42 @@ namespace ImagingTests
             var bitmapImage = new DirectBitmapImage(2, 2);
             var pixels = new List<PixelData>
             {
-                new() { X = 0, Y = 0, R = 255, G = 0,   B = 0,   A = 255 }, // Red
-                new() { X = 1, Y = 0, R = 0,   G = 255, B = 0,   A = 255 }, // Green
-                new() { X = 0, Y = 1, R = 0,   G = 0,   B = 255, A = 255 }, // Blue
-                new() { X = 1, Y = 1, R = 255, G = 255, B = 0,   A = 255 }  // Yellow
+                new()
+                {
+                    X = 0,
+                    Y = 0,
+                    R = 255,
+                    G = 0,
+                    B = 0,
+                    A = 255
+                }, // Red
+                new()
+                {
+                    X = 1,
+                    Y = 0,
+                    R = 0,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                }, // Green
+                new()
+                {
+                    X = 0,
+                    Y = 1,
+                    R = 0,
+                    G = 0,
+                    B = 255,
+                    A = 255
+                }, // Blue
+                new()
+                {
+                    X = 1,
+                    Y = 1,
+                    R = 255,
+                    G = 255,
+                    B = 0,
+                    A = 255
+                } // Yellow
             };
 
             // Act
@@ -409,7 +476,7 @@ namespace ImagingTests
             // Bottom-right: 25% yellow (R:255, G:255, B:0)
             dbi.SetPixel(1, 1, Color.FromArgb(64, 255, 255, 0));
 
-            // We MUST call this to push the Bits array into the internal WriteableBitmap 
+            // We MUST call this to push the Bits array into the internal WriteableBitmap
             // before the ConvertImage() method is called by the property.
             dbi.UpdateBitmapFromBits();
 

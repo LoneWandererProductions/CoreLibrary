@@ -170,7 +170,7 @@ namespace CoreBuilderTests
             _injector.RegisterInstance<IService>(service);
 
             // There is currently no way to tell the _injector "I'm done, clean up."
-            // ((IDisposable)_injector).Dispose(); 
+            // ((IDisposable)_injector).Dispose();
 
             // Assert.IsTrue(service.WasDisposed); // This will fail
         }
@@ -183,7 +183,7 @@ namespace CoreBuilderTests
         {
             _injector.RegisterTransient<IService, Service>();
 
-            // This will frequently throw "An item with the same key has already been added" 
+            // This will frequently throw "An item with the same key has already been added"
             // or "Collection was modified" if run in a high-concurrency environment.
             Parallel.For(0, 1000, i =>
             {

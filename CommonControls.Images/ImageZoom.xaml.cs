@@ -14,61 +14,62 @@
 /*
  * TODO — ImageZoom & SelectionAdorner Architecture Roadmap
  * --------------------------------------------------------
+ * CURRENT STATUS: Functional "Monolithic" Pattern.
+ * NEXT STEP: Refactor to "State/Strategy" Pattern (IToolHandler).
  *
  * 1. INPUT / EVENT SYSTEM
  * -----------------------
- * [ ] Move input handling (mouse down/move/up) from SelectionAdorner into ImageZoom
+ * [ ] Move input handling (mouse down/move/up) completely into ImageZoom
+ * (currently shared/delegated to Adorner)
  * [ ] Add a unified input dispatcher that forwards events to the current tool
  * [ ] Implement ToolContext to carry image transforms, image size, modifiers (Ctrl/Shift)
  *
  *
- * 2. TOOL SYSTEM REFINEMENT
- * -------------------------
+ * 2. TOOL SYSTEM REFINEMENT (The "Switch Statement" Refactor)
+ * -----------------------------------------------------------
  * [ ] Introduce IToolHandler interface:
- *       - OnMouseDown / OnMouseMove / OnMouseUp
- *       - RenderOverlay(DrawingContext dc)
- *       - Cancel() / Reset()
+ * - OnMouseDown / OnMouseMove / OnMouseUp
+ * - RenderOverlay(DrawingContext dc)
+ * - GetFrame() / Reset()
  *
- * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool handler classes
+ * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool classes
+ * (e.g., RectangleTool.cs, FreeFormTool.cs) to remove the massive switch statements.
  * [ ] Add ToolState / ToolSession object to store points, frame, geometry
- * [ ] Decouple selection logic from the adorner (adorner draws only)
+ * [ ] Decouple selection logic from the adorner (Adorner should only DRAW, not hold data)
  *
  *
  * 3. TRANSFORM PIPELINE
  * ---------------------
- * [ ] Replace single Transform with a TransformGroup:
- *       - ZoomTransform
- *       - ScrollOffsetTransform
- *       - RotationTransform (future use)
- *       - CropTransform (future use)
- *
+ * [ ] Replace manual Matrix math with a TransformGroup:
+ * - ZoomTransform
+ * - ScrollOffsetTransform
  * [ ] Store both:
- *       - DrawingTransform (image → screen)
- *       - InputTransform   (screen → image/pixel space)
- *
- * [ ] Update SelectionFrame to always use pixel-space coordinates
+ * - DrawingTransform (image → screen)
+ * - InputTransform   (screen → image/pixel space)
+ * [-] Update SelectionFrame to always use pixel-space coordinates
+ * (Currently handled via conversion in ImageProcessor.FillArea, but Frame itself stores WPF Points)
  *
  *
  * 4. ADORNER IMPROVEMENTS
  * ------------------------
- * [ ] Restrict adorner to visualization-only duties
- * [ ] Let adorner read data from current IToolHandler instead of owning points
- * [ ] Add double-buffering for smoother overlay drawing (optional)
- * [ ] Support drawing tool-specific overlays (lasso, handles, marquee)
+ * [ ] Restrict adorner to visualization-only duties (View)
+ * [ ] Let adorner read data from current IToolHandler instead of owning the Point Lists
+ * [ ] Add double-buffering or DrawingVisual for smoother overlay drawing (optional)
  *
  *
- * 5. IMAGE OPERATIONS (FUTURE)
- * ----------------------------
- * [ ] Integrate DirectBitmapImage operations into tool handlers (fill, stroke, erase)
- * [ ] Add support for brush size, brush hardness, opacity
- * [ ] Add selection commit logic (crop, cut, fill, invert, delete, outline)
+ * 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
+ * --------------------------------------------
+ * [x] Integrate DirectBitmapImage operations (Done via ImageProcessor & ImageView)
+ * [x] Add selection commit logic (Done via SelectionAdorner.CaptureAndClear & Canvas_MouseUp)
+ * [x] Support FreeForm Polygon filling (Done via auto-close logic in CaptureAndClear)
+ * [ ] Add support for brush size/hardness visualization in the Adorner
  * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
  *
  *
- * 6. EXTENDED TOOLSET (OPTIONAL NICE-TO-HAVE)
- * -------------------------------------------
- * [ ] Polygonal lasso tool
- * [ ] Magic-wand / flood-fill selection using your existing flood-fill helper
+ * 6. EXTENDED TOOLSET (FUTURE)
+ * ----------------------------
+ * [ ] Polygonal lasso tool (Click-to-add-point)
+ * [ ] Magic-wand / flood-fill selection (using existing flood-fill helper)
  * [ ] Text tool (typed overlay rendered to bitmap)
  * [ ] Stamp/cloning tool
  * [ ] Multi-layer support (background, overlay layers)
@@ -77,16 +78,16 @@
  * 7. PERFORMANCE & ARCHITECTURE
  * ------------------------------
  * [ ] Add invalidate throttling (Redraw only when needed)
- * [ ] Use DrawingVisual for overlays to reduce Adorner overhead
+ * [x] Clear "Ghost Frames" immediately after drawing (Done via CaptureAndClear)
  * [ ] Add high-DPI support for Zoom + PixelGrid alignment
- * [ ] Allow async pixel operations (large flood fills, transforms)
- *
+ * [ ] Allow async pixel operations for large fills
  *
  * END TODO LIST
  */
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -114,6 +115,10 @@ namespace CommonControls.Images
         /// </summary>
         /// <param name="point">The point.</param>
         public delegate void DelegatePoint(Point point);
+
+        public delegate void DelegateMultiFrame(List<SelectionFrame> frames);
+
+        public event DelegateMultiFrame SelectedMultiFrames;
 
         /// <summary>
         ///     The image source property
@@ -155,6 +160,22 @@ namespace CommonControls.Images
             typeof(double),
             typeof(ImageZoom),
             new PropertyMetadata(1.0, OnZoomScaleChanged));
+
+        /// <summary>
+        ///      The selected multi-frames command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedMultiFramesCommandProperty =
+            DependencyProperty.Register(nameof(SelectedMultiFramesCommand), typeof(ICommand), typeof(ImageZoom),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        ///      Gets or sets the selected multi-frames command.
+        /// </summary>
+        public ICommand SelectedMultiFramesCommand
+        {
+            get => (ICommand)GetValue(SelectedMultiFramesCommandProperty);
+            set => SetValue(SelectedMultiFramesCommandProperty, value);
+        }
 
         /// <summary>
         ///     The image clicked command property
@@ -578,93 +599,46 @@ namespace CommonControls.Images
         }
 
         /// <summary>
-        ///     Handles the MouseUp event of the Grid control.
+        /// Handles the MouseUp event of the Grid control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // Release the mouse capture and stop tracking it.
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-            if (SelectionAdorner == null)
+            if (SelectionAdorner == null) return;
+
+            // 1. Identify "Immediate Action" tools (Drawing tools)
+            bool isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
+                                 SelectionTool == ImageZoomTools.Ellipse ||
+                                 SelectionTool == ImageZoomTools.FreeForm ||
+                                 SelectionTool == ImageZoomTools.Trace ||
+                                 SelectionTool == ImageZoomTools.Dot;
+
+            if (isDrawingTool)
             {
-                Trace.Write(ComCtlResources.InformationArdonerNull);
-                return;
-            }
+                // 2. Capture the data AND Clear the visuals immediately
+                // This prevents the "Ghost Frame" from sticking around
+                SelectionFrame frame = SelectionAdorner.CaptureAndClear();
 
-            switch (SelectionTool)
-            {
-                case ImageZoomTools.Move:
-                    // No specific action required for Move
-                    break;
+                // 3. Validation: Ensure we actually drew something substantial
+                bool isValid = (frame.Width > 0 && frame.Height > 0) ||
+                               frame.Points is { Count: > 0 };
 
-                case ImageZoomTools.Rectangle:
-                case ImageZoomTools.Ellipse:
-
-                    var frame = SelectionAdorner.CurrentSelectionFrame;
-                    SelectedFrame?.Invoke(frame);
+                if (isValid)
+                {
+                    // 4. Fire the Command to the ViewModel (Update the Bitmap)
                     SafeExecuteCommand(SelectedFrameCommand, frame);
-                    break;
-                case ImageZoomTools.FreeForm:
-                    // Get the mouse position relative to the image
-                    var rawPoint = e.GetPosition(BtmImage);
 
-                    //TODO problem with our DPI and multiple Monitor Setup
-
-                    SelectionAdorner.FreeFormPoints.Add(rawPoint);
-                    break;
-
-                case ImageZoomTools.Trace:
-                    SelectionAdorner.IsTracing = false;
-
-                    // Implement logic for FreeFormPoints
-                    var points = SelectionAdorner.FreeFormPoints;
-
-                    if (points is { Count: > 0 })
-                    {
-                        // Process the collected freeform points
-                        SafeExecuteCommand(SelectedFreeFormPointsCommand, points);
-
-                        // Optionally, log or display the points
-                        Trace.WriteLine($"Trace tool completed with {points.Count} points.");
-                    }
-
-                    break;
-
-                case ImageZoomTools.Dot:
-                    SetClickedPoint(e);
-
-                    var endpoint = e.GetPosition(BtmImage);
-                    SelectedPoint?.Invoke(endpoint);
-                    break;
-                default:
-                    // Do nothing for unsupported tools
-                    return;
-            }
-
-            if (SelectionAdorner == null)
-            {
-                return;
-            }
-
-            // Get the AdornerLayer for the image
-            var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-
-            if (adornerLayer != null && SelectionAdorner != null)
-            {
-                // Only remove the adorner for tools that represent a finished, one-shot selection
-                if (SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.Dot)
-                {
-                    adornerLayer.Remove(SelectionAdorner);
-                    SelectionAdorner = null;
+                    // 5. Fire the Event (if anything else is listening)
+                    SelectedFrame?.Invoke(frame);
                 }
-                else
-                {
-                    // Keep the adorner alive for Move, FreeForm, Trace so user can continue interacting
-                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                }
+            }
+            else if (SelectionTool == ImageZoomTools.Move)
+            {
+                // Just release capture, do nothing else
             }
         }
 
@@ -752,9 +726,37 @@ namespace CommonControls.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (SelectionTool == ImageZoomTools.FreeForm)
+            // 1. If we are currently dragging (Mouse Left is Down), cancel the current shape
+            if (_mouseDown)
             {
-                CompleteFreeFormSelection();
+                _mouseDown = false;
+                MainCanvas.ReleaseMouseCapture();
+                // Optional: reset current points in Adorner without committing
+                // SelectionAdorner.ResetCurrent();
+                return;
+            }
+
+            // 2. If we are idle, Right Click means "I am finished selecting"
+            if (SelectionAdorner != null)
+            {
+                // Get all collected frames
+                var frames = SelectionAdorner.GetCommittedFrames();
+
+                if (frames.Count > 0)
+                {
+                    // Fire event with list of frames
+                    SelectedMultiFrames?.Invoke(frames);
+                    // Execute command if you have a List version of the command
+                    // SafeExecuteCommand(SelectedMultiFramesCommand, frames);
+                }
+
+                // Cleanup
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                adornerLayer?.Remove(SelectionAdorner);
+                SelectionAdorner = null;
+
+                // Optional: Reset tool to Move automatically?
+                // SelectionTool = ImageZoomTools.Move;
             }
         }
 

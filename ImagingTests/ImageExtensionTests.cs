@@ -25,7 +25,7 @@ namespace ImagingTests
         {
             // Arrange: create a small image with transparency
             using var bmp = new Bitmap(2, 2);
-            bmp.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0));   // fully transparent red
+            bmp.SetPixel(0, 0, Color.FromArgb(0, 255, 0, 0)); // fully transparent red
             bmp.SetPixel(1, 0, Color.FromArgb(128, 0, 255, 0)); // 50% green
             bmp.SetPixel(0, 1, Color.FromArgb(255, 0, 0, 255)); // opaque blue
             bmp.SetPixel(1, 1, Color.FromArgb(64, 255, 255, 0)); // 25% yellow
@@ -54,21 +54,21 @@ namespace ImagingTests
 
             // Top-right: 50% green
             Assert.AreEqual(128, GetByte(1, 0, 3)); // A
-            Assert.AreEqual(0, GetByte(1, 0, 2));   // R
+            Assert.AreEqual(0, GetByte(1, 0, 2)); // R
             Assert.AreEqual(255, GetByte(1, 0, 1)); // G
-            Assert.AreEqual(0, GetByte(1, 0, 0));   // B
+            Assert.AreEqual(0, GetByte(1, 0, 0)); // B
 
             // Bottom-left: opaque blue
             Assert.AreEqual(255, GetByte(0, 1, 3)); // A
-            Assert.AreEqual(0, GetByte(0, 1, 2));   // R
-            Assert.AreEqual(0, GetByte(0, 1, 1));   // G
+            Assert.AreEqual(0, GetByte(0, 1, 2)); // R
+            Assert.AreEqual(0, GetByte(0, 1, 1)); // G
             Assert.AreEqual(255, GetByte(0, 1, 0)); // B
 
             // Bottom-right: 25% yellow
-            Assert.AreEqual(64, GetByte(1, 1, 3));  // A
+            Assert.AreEqual(64, GetByte(1, 1, 3)); // A
             Assert.AreEqual(255, GetByte(1, 1, 2)); // R
             Assert.AreEqual(255, GetByte(1, 1, 1)); // G
-            Assert.AreEqual(0, GetByte(1, 1, 0));   // B
+            Assert.AreEqual(0, GetByte(1, 1, 0)); // B
         }
     }
 }

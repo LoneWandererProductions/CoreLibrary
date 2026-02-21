@@ -168,6 +168,7 @@ namespace ExtendedSystemObjects
             {
                 MemoryThresholdExceeded?.Invoke(this, new VaultMemoryThresholdExceededEventArgs(_totalBytes));
             }
+
             return identifier;
         }
 
@@ -205,6 +206,7 @@ namespace ExtendedSystemObjects
                 DecrementMemory(item);
                 return true;
             }
+
             return false;
         }
 
@@ -381,6 +383,7 @@ namespace ExtendedSystemObjects
                 }
             }
         }
+
         /// <summary>
         /// Ensures the vault has not been disposed.
         /// </summary>
@@ -416,13 +419,15 @@ namespace ExtendedSystemObjects
         /// </returns>
         public override string ToString()
         {
-            return $"MemoryVault<{typeof(TU).Name}>: {Count} items, {UsedMemory / 1024.0:F2} KB used (Threshold: {MemoryThreshold / 1024.0:F2} KB)";
+            return
+                $"MemoryVault<{typeof(TU).Name}>: {Count} items, {UsedMemory / 1024.0:F2} KB used (Threshold: {MemoryThreshold / 1024.0:F2} KB)";
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
             if (_disposed) return;
+
             lock (InstanceLock)
             {
                 _cleanupTimer.Dispose();

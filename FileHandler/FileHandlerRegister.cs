@@ -35,7 +35,7 @@ namespace FileHandler
         /// <summary>
         /// The error log lock
         /// </summary>
-        private static readonly Lock _errorLogLock = new();
+        private static readonly Lock ErrorLogLock = new();
 
         /// <summary>
         ///     Gets the error log.
@@ -63,7 +63,7 @@ namespace FileHandler
         /// <param name="exception">The exception.</param>
         public static void AddError(string method, string path, Exception exception)
         {
-            lock (_errorLogLock)
+            lock (ErrorLogLock)
             {
                 ErrorLog ??= new List<string>();
 
@@ -84,7 +84,7 @@ namespace FileHandler
         /// </summary>
         public static void ClearLog()
         {
-            lock (_errorLogLock)
+            lock (ErrorLogLock)
             {
                 ErrorLog ??= new List<string>();
                 ErrorLog.Clear();
