@@ -4,7 +4,6 @@
  * FILE:        TextureStream.cs
  * PURPOSE:     Basic stuff for generating textures
  * PROGRAMER:   Peter Geinitz (Wayfarer)
- * Sources:     https://lodev.org/cgtutor/randomnoise.html
  */
 
 using System;
@@ -80,7 +79,8 @@ namespace Imaging.Helpers
             noiseBitmap.SetPixels(pixelData.ToArray());
             pixelData.Clear();
 
-            return noiseBitmap.Bitmap;
+            // Return the final Bitmap, disposing of the DirectBitmap to free resources
+            return new Bitmap(noiseBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -132,7 +132,8 @@ namespace Imaging.Helpers
             cloudsBitmap.SetPixels(pixelArray);
             pixelData.Clear();
 
-            return cloudsBitmap.Bitmap;
+            // Return the final Bitmap, disposing of the DirectBitmap to free resources
+            return new Bitmap(cloudsBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -186,7 +187,8 @@ namespace Imaging.Helpers
             marbleBitmap.SetPixels(pixelData.ToArray());
             pixelData.Clear();
 
-            return marbleBitmap.Bitmap;
+            // Return the final Bitmap, disposing of the DirectBitmap to free resources
+            return new Bitmap(marbleBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -228,7 +230,9 @@ namespace Imaging.Helpers
 
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
                 var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-                var b = Math.Clamp((int)baseColor.B, 0, 255);
+                // Reuse base color's B component without adding sineValue for more natural wood grain
+                // This is a byte so no need to clamp, but we can still ensure it doesn't exceed 255
+                var b = (int)baseColor.B;
 
                 var color = Color.FromArgb(alpha, r, g, b);
                 pixelData.Add((x, y, color));
@@ -239,7 +243,8 @@ namespace Imaging.Helpers
             woodBitmap.SetPixels(pixelArray);
             pixelData.Clear();
 
-            return woodBitmap.Bitmap;
+            // Return the final Bitmap, disposing of the DirectBitmap to free resources
+            return new Bitmap(woodBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -265,7 +270,8 @@ namespace Imaging.Helpers
             var noiseGen = new NoiseGenerator(width, height);
 
             var waveBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
+            var pixelArray = new (int x, int y, Color color)[width * height];
+            int index = 0;
 
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
@@ -285,15 +291,14 @@ namespace Imaging.Helpers
 
                 var hsvColor = ColorHsv.FromHsv(hue, 1.0, 1.0, alpha);
 
-                pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+                pixelArray[index++] = (x, y, hsvColor.GetDrawingColor());
             }
 
             // Convert list to array for SIMD processing
-            var pixelArray = pixelData.ToArray();
             waveBitmap.SetPixels(pixelArray);
-            pixelData.Clear();
 
-            return waveBitmap.Bitmap;
+            // Return the final Bitmap, disposing of the DirectBitmap to free resources
+            return new Bitmap(waveBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -333,24 +338,25 @@ namespace Imaging.Helpers
                 var topEdgePoint = new Point(offset, 0); // Shift along the top edge
                 var leftEdgePoint = new Point(0, offset); // Shift along the left edge
 
-                DrawFullLine(crosshatchBitmap, topEdgePoint, anglePrimary, pen);
-                DrawFullLine(crosshatchBitmap, leftEdgePoint, anglePrimary, pen);
-                DrawFullLine(crosshatchBitmap, topEdgePoint, angleSecondary, pen);
-                DrawFullLine(crosshatchBitmap, leftEdgePoint, angleSecondary, pen);
+                DrawFullLine(graphics, crosshatchBitmap, topEdgePoint, anglePrimary, pen);
+                DrawFullLine(graphics, crosshatchBitmap, leftEdgePoint, anglePrimary, pen);
+                DrawFullLine(graphics, crosshatchBitmap, topEdgePoint, angleSecondary, pen);
+                DrawFullLine(graphics, crosshatchBitmap, leftEdgePoint, angleSecondary, pen);
             }
 
             return crosshatchBitmap;
         }
 
         /// <summary>
-        ///     Draws a line from the given start point at the specified angle, covering the entire image.
+        /// Draws a line from the given start point at the specified angle, covering the entire image.
         /// </summary>
+        /// <param name="graphics">The graphics.</param>
         /// <param name="bitmap">The image on which to draw.</param>
         /// <param name="startPoint">The starting point of the line.</param>
         /// <param name="angleDegrees">The angle of the line, in degrees.</param>
         /// <param name="pen">The pen used to draw the line.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DrawFullLine(Image bitmap, Point startPoint, double angleDegrees, Pen pen)
+        private static void DrawFullLine(Graphics graphics, Image bitmap, Point startPoint, double angleDegrees, Pen pen)
         {
             var angleRadians = angleDegrees * Math.PI / 180.0;
             var dx = Math.Cos(angleRadians);
@@ -366,7 +372,6 @@ namespace Imaging.Helpers
             var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance),
                 (float)(startPoint.Y - dy * maxDistance));
 
-            using var graphics = Graphics.FromImage(bitmap);
             graphics.DrawLine(pen, endpointStart, endpointEnd);
         }
 
@@ -460,7 +465,7 @@ namespace Imaging.Helpers
             // Draw vertical wavy and edge-jagged fibers
             for (var x = 0; x < width; x += lineSpacing)
             {
-                var path = new GraphicsPath();
+                using var path = new GraphicsPath();
                 var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
 
                 // Limit cutoff to top/bottom 20% of the image height
@@ -480,7 +485,7 @@ namespace Imaging.Helpers
             // Draw horizontal wavy and edge-jagged fibers
             for (var y = 0; y < height; y += lineSpacing)
             {
-                var path = new GraphicsPath();
+                using var path = new GraphicsPath();
                 var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
 
                 // Limit cutoff to left/right 20% of the image width

@@ -50,7 +50,7 @@ namespace ImagingTests
             using var sourceBitmap = new Bitmap(imagePath);
             var directBitmap = new DirectBitmap(100, 100);
 
-            using (var graphics = Graphics.FromImage(directBitmap.Bitmap))
+            using (var graphics = Graphics.FromImage(directBitmap.UnsafeBitmap))
             {
                 graphics.DrawImage(sourceBitmap, new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height),
                     0, 0, sourceBitmap.Width, sourceBitmap.Height, GraphicsUnit.Pixel);
@@ -63,12 +63,12 @@ namespace ImagingTests
             var replacementColor = Color.FromArgb(128, 128, 128);
             ApplyReplacementColors(directBitmap, replacementColor, (0, 51), (51, 51), (0, 0), (51, 0));
 
-            using var updatedBitmap = directBitmap.Bitmap;
+            using var updatedBitmap = directBitmap.UnsafeBitmap;
             VerifyReplacementColors(updatedBitmap, directBitmap, replacementColor, (0, 51), (51, 51), (0, 0), (51, 0));
 
             using var originalBitmap = new Bitmap(imagePath);
             var analysis = new ImageAnalysis();
-            var comparisonResult = analysis.CompareImages(originalBitmap, directBitmap.Bitmap);
+            var comparisonResult = analysis.CompareImages(originalBitmap, directBitmap.UnsafeBitmap);
             Assert.AreEqual(100, comparisonResult.Similarity,
                 $"Image comparison failed. Similarity: {comparisonResult.Similarity}");
 

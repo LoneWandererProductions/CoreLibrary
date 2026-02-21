@@ -115,7 +115,8 @@ namespace Imaging
         /// <param name="width">The width of the image.</param>
         /// <param name="height">The height of the image.</param>
         /// <param name="pixels">Enumerable of (x, y, Pixel32) tuples to set.</param>
-        internal static void SetPixelsSimd(Pixel32[] bits, int width, int height, IEnumerable<(int x, int y, Pixel32 color)> pixels)
+        internal static void SetPixelsSimd(Pixel32[] bits, int width, int height,
+            IEnumerable<(int x, int y, Pixel32 color)> pixels)
         {
             if (bits == null || pixels == null) return;
 
@@ -262,8 +263,20 @@ namespace Imaging
                     uint s = *sPtr;
 
                     uint sa = s >> 24;
-                    if (sa == 0) { dPtr++; sPtr++; continue; }
-                    if (sa == 255) { *dPtr = s; dPtr++; sPtr++; continue; }
+                    if (sa == 0)
+                    {
+                        dPtr++;
+                        sPtr++;
+                        continue;
+                    }
+
+                    if (sa == 255)
+                    {
+                        *dPtr = s;
+                        dPtr++;
+                        sPtr++;
+                        continue;
+                    }
 
                     uint d = *dPtr;
 
@@ -293,4 +306,3 @@ namespace Imaging
         }
     }
 }
-

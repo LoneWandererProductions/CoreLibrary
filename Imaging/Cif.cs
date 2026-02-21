@@ -333,7 +333,7 @@ namespace Imaging
                 dbm.SetPixel(coordinate.X, coordinate.Y, key);
             }
 
-            return dbm.Bitmap;
+            return new Bitmap(dbm.UnsafeBitmap);
         }
 
         /// <summary>

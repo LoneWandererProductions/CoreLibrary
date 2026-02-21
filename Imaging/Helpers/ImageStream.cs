@@ -570,7 +570,7 @@ namespace Imaging.Helpers
                 result.SetPixels(pixelsToSet);
 
                 //get the Bitmap
-                var btm = new Bitmap(result.Bitmap);
+                var btm = new Bitmap(result.UnsafeBitmap);
                 //make Transparent
                 btm.MakeTransparent(replacementColor);
                 //cleanup
@@ -672,7 +672,7 @@ namespace Imaging.Helpers
             var dbm = DirectBitmap.GetInstance(image);
             dbm.SetPixel(point.X, point.Y, color);
 
-            return dbm.Bitmap;
+            return new Bitmap(dbm.UnsafeBitmap);
         }
 
         /// <summary>
@@ -703,7 +703,7 @@ namespace Imaging.Helpers
                 result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
             }
 
-            return result.Bitmap;
+            return new Bitmap(result.UnsafeBitmap);
         }
 
         /// <summary>
@@ -871,7 +871,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the modified image as a Bitmap
-            return result.Bitmap;
+            return new Bitmap(result.UnsafeBitmap);
         }
 
         /// <summary>

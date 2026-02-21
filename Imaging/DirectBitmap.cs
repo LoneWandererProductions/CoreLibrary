@@ -84,7 +84,7 @@ namespace Imaging
                 }
             }
 
-            Bitmap = new Bitmap(
+            UnsafeBitmap = new Bitmap(
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(),
@@ -120,7 +120,7 @@ namespace Imaging
                 Height = image.Height;
                 Initiate();
 
-                using var graphics = Graphics.FromImage(Bitmap);
+                using var graphics = Graphics.FromImage(UnsafeBitmap);
                 graphics.DrawImage(image, new Rectangle(0, 0, Width, Height), 0, 0, Width, Height, GraphicsUnit.Pixel);
             }
             catch (Exception ex)
@@ -134,11 +134,14 @@ namespace Imaging
 
         /// <summary>
         ///     Gets the bitmap.
+        ///     Be careful, we pass a reference that never gets copied, so any changes to this Bitmap will affect the DirectBitmap and vice versa.
+        ///     GcHandle is pinned, so the memory address of the pixel data will not change, allowing for direct manipulation of the bitmap's pixels.
+        ///     This memory is not managed by the .NET runtime, so it is crucial to ensure that it is properly released to avoid memory leaks. Always call Dispose() when done with the DirectBitmap to free the pinned handle and associated resources.
         /// </summary>
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap Bitmap { get; private set; }
+        public Bitmap UnsafeBitmap { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
@@ -154,7 +157,12 @@ namespace Imaging
         /// <inheritdoc />
         public int Width { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the bits handle.
+        /// </summary>
+        /// <value>
+        /// The bits handle.
+        /// </value>
         private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
@@ -206,7 +214,7 @@ namespace Imaging
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
             // Create Bitmap from pinned Pixel32 array
-            Bitmap = new Bitmap(
+            UnsafeBitmap = new Bitmap(
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(), // stride in bytes
@@ -230,7 +238,8 @@ namespace Imaging
 
             // Lock source bits
             var rect = new Rectangle(0, 0, btm.Width, btm.Height);
-            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
 
             // We can copy directly into our Bits array since it's pinned
             unsafe
@@ -318,7 +327,7 @@ namespace Imaging
 
                     for (var x = x1; x < x1 + width && x < Width; x++)
                     {
-                        Bits[rowStart + x] = colorPixel; 
+                        Bits[rowStart + x] = colorPixel;
                     }
                 }
             }
@@ -505,7 +514,7 @@ namespace Imaging
         /// <returns>BitmapImage image data</returns>
         public BitmapImage ToBitmapImage()
         {
-            return Bitmap.ToBitmapImage();
+            return UnsafeBitmap.ToBitmapImage();
         }
 
         /// <summary>
@@ -583,21 +592,18 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {
-                // free managed resources
-                Bitmap?.Dispose();
+                // Managed resources (objects that implement IDisposable)
+                UnsafeBitmap?.Dispose();
+            }
 
-                // Free the GCHandle if it is allocated
-                if (BitsHandle.IsAllocated)
-                {
-                    BitsHandle.Free();
-                }
+            // Unmanaged resources/Handles (Free these always)
+            if (BitsHandle.IsAllocated)
+            {
+                BitsHandle.Free();
             }
 
             Disposed = true;

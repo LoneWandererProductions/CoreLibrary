@@ -164,7 +164,7 @@ namespace Imaging
         /// <param name="imgTwo">The second image.</param>
         /// <param name="pixelOperation">A function that defines how to combine the pixel values.</param>
         /// <returns>A bitmap resulting from applying the pixel operation, or null if an error occurs.</returns>
-        private static Bitmap ProcessImages(Image imgOne, Image imgTwo, Func<Color, Color, Color> pixelOperation)
+        private static Bitmap? ProcessImages(Image imgOne, Image imgTwo, Func<Color, Color, Color> pixelOperation)
         {
             if (imgOne.Width != imgTwo.Width || imgOne.Height != imgTwo.Height)
             {
@@ -196,7 +196,7 @@ namespace Imaging
             try
             {
                 result.SetPixels(pixelsToSet);
-                return result.Bitmap;
+                return new Bitmap(result.UnsafeBitmap);
             }
             catch (Exception ex)
             {

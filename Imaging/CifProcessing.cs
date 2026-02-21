@@ -73,7 +73,7 @@ namespace Imaging
                 dbm.SetArea(ids, color);
             }
 
-            return dbm.Bitmap;
+            return new Bitmap(dbm.UnsafeBitmap);
         }
 
         /// <summary>

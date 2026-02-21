@@ -107,7 +107,7 @@ namespace Imaging.Helpers
                 }
             }
 
-            return result.Bitmap;
+            return new Bitmap(result.UnsafeBitmap);
         }
     }
 }
