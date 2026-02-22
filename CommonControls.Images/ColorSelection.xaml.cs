@@ -53,6 +53,7 @@ namespace CommonControls.Images
         public ColorSelection()
         {
             InitializeComponent();
+            Loaded += (s, e) => Initiate(); // Ensure UI elements exist
         }
 
         /// <inheritdoc />
@@ -62,8 +63,8 @@ namespace CommonControls.Images
         /// <param name="color">The color.</param>
         public ColorSelection(string color)
         {
-            StartColor = color;
             InitializeComponent();
+            StartColor = color;
         }
 
         /// <summary>
@@ -75,7 +76,6 @@ namespace CommonControls.Images
             set
             {
                 SetValue(StartColorProperty, value);
-                SwitchColor();
             }
         }
 
@@ -105,24 +105,16 @@ namespace CommonControls.Images
         /// </summary>
         private void Initiate()
         {
-            //Generate Color Dictionary
-            _colorDct = InitiateColors();
+            var properties = typeof(Colors).GetProperties();
+            _colorDct = properties.ToDictionary(
+                p => p.Name,
+                p => (Color)p.GetValue(null, null)
+            );
 
-            try
-            {
-                //Fill the ComboBox
-                CmbColor.ItemsSource = typeof(Colors).GetProperties();
-                //Generate Color Dictionary
-                _colorDct = InitiateColors();
-                //Generate a possible List of Colors we can use from Code
-                ColorPalette = _colorDct.Keys.ToList();
+            CmbColor.ItemsSource = properties;
+            ColorPalette = _colorDct.Keys.ToList();
 
-                SwitchToStartColor();
-            }
-            catch (ArgumentException ex)
-            {
-                ShowErrorMessageBox(ComCtlResources.ErrorInitializingColorSelection, ex);
-            }
+            SwitchToStartColor();
         }
 
         /// <summary>
@@ -187,9 +179,18 @@ namespace CommonControls.Images
         /// </summary>
         private void SwitchToStartColor()
         {
-            if (string.IsNullOrEmpty(StartColor)) return;
+            // Safety check: if the dictionary isn't built or ComboBox isn't ready, bail.
+            if (string.IsNullOrEmpty(StartColor) || _colorDct == null || CmbColor == null)
+            {
+                return;
+            }
 
-            CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
+            // Use the dictionary to find the property info to ensure consistency
+            var property = typeof(Colors).GetProperty(StartColor);
+            if (property != null)
+            {
+                CmbColor.SelectedItem = property;
+            }
         }
 
         /// <summary>

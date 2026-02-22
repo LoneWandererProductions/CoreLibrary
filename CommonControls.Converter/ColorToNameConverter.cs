@@ -1,28 +1,28 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls.Converter
- * FILE:        EnumToBooleanConverter.cs
- * PURPOSE:     Enum to Boolean converter.
+ * FILE:        ColorToNameConverter.cs
+ * PURPOSE:     Convert between Color and its name as string (e.g., "Red", "Blue", etc.) for WPF bindings.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Linq;
 
-namespace CommonControls.Converter
+namespace CommonControls.Converters
 {
     /// <summary>
-    /// Converts between an <see cref="Enum"/> value and a <see cref="bool"/> for use in XAML bindings.
-    /// Typically used to bind enum values to radio buttons or toggle controls:
-    /// - <see cref="Convert"/> returns true if the enum value matches the converter parameter.
-    /// - <see cref="ConvertBack"/> returns the enum value represented by the parameter when the boolean is true.
+    /// Converter that converts between a Color and its name as a string for WPF bindings. It uses reflection to find the name of the color in System.Windows.Media.Colors when converting from Color to string, and uses ColorConverter to convert from string to Color.
     /// </summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class EnumToBooleanConverter : IValueConverter
+    public class ColorToNameConverter : IValueConverter
     {
         /// <summary>
-        /// Converts a value.
+        /// Convert from Color (ViewModel) to string (Control)
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="targetType">The type of the binding target property.</param>
@@ -33,11 +33,19 @@ namespace CommonControls.Converter
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString() == parameter?.ToString();
+            if (value is Color color)
+            {
+                // Find the name of the color in System.Windows.Media.Colors
+                var colorProperty = typeof(Colors).GetProperties()
+                    .FirstOrDefault(p => (Color)p.GetValue(null, null) == color);
+
+                return colorProperty?.Name ?? color.ToString();
+            }
+            return string.Empty;
         }
 
         /// <summary>
-        /// Converts a value.
+        /// Convert from string (Control) to Color (ViewModel)
         /// </summary>
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
@@ -48,9 +56,15 @@ namespace CommonControls.Converter
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value)
-                return Enum.Parse(targetType, parameter.ToString()!);
-            return Binding.DoNothing;
+            if (value is string colorName && !string.IsNullOrEmpty(colorName))
+            {
+                try
+                {
+                    return ColorConverter.ConvertFromString(colorName);
+                }
+                catch { return Colors.Transparent; }
+            }
+            return Colors.Transparent;
         }
     }
 }

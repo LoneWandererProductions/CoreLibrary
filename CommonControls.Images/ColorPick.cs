@@ -64,13 +64,6 @@ namespace CommonControls.Images
         /// </summary>
         private static int OuterRadius => ColorPickerRegister.Size / 2;
 
-        internal static void Initiate(double h, double s, double v)
-        {
-            _sat = s;
-            _val = v;
-            _hue = h;
-        }
-
         /// <summary>
         ///     Hue might be changed. Redraw the Circle and change up Hue.
         /// </summary>
