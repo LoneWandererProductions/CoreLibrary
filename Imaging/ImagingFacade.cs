@@ -211,7 +211,7 @@ namespace Imaging
         /// <returns>The filtered <see cref="Bitmap"/>.</returns>
         public static Bitmap ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object shapeParams,
             Point? startPoint = null)
-            => new FilterGenerator().F(image, null, null, filter, shape, shapeParams, startPoint);
+            => new ImageRender().FilterImageArea(image, null, null, filter, shape, shapeParams, startPoint);
 
         #endregion
 
