@@ -73,7 +73,7 @@ namespace Imaging.Helpers
             using var atr = new ImageAttributes();
 
             //set the color matrix attribute
-            FiltersConfig? settings;
+            FilterConfiguration? settings;
 
             switch (filter)
             {

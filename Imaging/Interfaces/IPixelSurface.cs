@@ -39,7 +39,7 @@ namespace Imaging.Interfaces
         /// <value>
         /// The bits.
         /// </value>
-        Pixel32[] Bits { get; }
+        Pixel32[]? Bits { get; }
 
         /// <summary>
         /// Sets the pixel.

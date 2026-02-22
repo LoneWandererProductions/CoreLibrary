@@ -23,7 +23,7 @@ namespace ImagingTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void BlendInt_NullDst_Throws()
         {
-            Pixel32[] dst = null!;
+            Pixel32[]? dst = null!;
             var src = new uint[1];
             DirectBitmapCore.BlendInt(dst, src);
         }

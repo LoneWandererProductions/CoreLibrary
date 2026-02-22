@@ -41,6 +41,7 @@ namespace CommonControls.Converters
 
                 return colorProperty?.Name ?? color.ToString();
             }
+
             return string.Empty;
         }
 
@@ -64,6 +65,7 @@ namespace CommonControls.Converters
                 }
                 catch { return Colors.Transparent; }
             }
+
             return Colors.Transparent;
         }
     }

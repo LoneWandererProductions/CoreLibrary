@@ -559,7 +559,7 @@ namespace Imaging.Interfaces
         /// </summary>
         /// <param name="images">List off bitmaps and timer data</param>
         /// <param name="target">The target File.</param>
-        void CreateGif(IEnumerable<FrameInfo> images, string target);
+        void CreateGif(IEnumerable<FrameInfo>? images, string target);
 
         /// <summary>
         ///     Bitmaps to base64.

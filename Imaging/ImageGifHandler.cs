@@ -39,9 +39,9 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>gif Infos</returns>
-        public static ImageGifInfo GetImageInfo(string path)
+        public static ImageGifInfo? GetImageInfo(string path)
         {
-            ImageGifInfo info = null;
+            ImageGifInfo? info = null;
 
             try
             {
@@ -157,7 +157,7 @@ namespace Imaging
         /// </summary>
         /// <param name="frames">The frames.</param>
         /// <param name="target">The target.</param>
-        internal static void CreateGif(IEnumerable<FrameInfo> frames, string target)
+        internal static void CreateGif(IEnumerable<FrameInfo>? frames, string target)
         {
             if (frames == null)
             {
@@ -205,8 +205,10 @@ namespace Imaging
         /// </summary>
         /// <param name="frames">The frames.</param>
         /// <param name="target">The target.</param>
-        private static void GifCreator(IEnumerable<FrameInfo> frames, string target)
+        private static void GifCreator(IEnumerable<FrameInfo>? frames, string target)
         {
+            if (frames == null) return;
+
             var gEnc = new GifBitmapEncoder();
 
             foreach (var frameInfo in frames)

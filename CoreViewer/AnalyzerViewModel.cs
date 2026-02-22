@@ -240,7 +240,7 @@ namespace CoreViewer
                     openFile: _ => HandleOpen(d.Name),
                     ignore: _ => HandleIgnore(d.Name),
                     fix: FixableAnalyzers.Contains(d.Name)
-                        ? _ => global::CoreViewer.AnalyzerViewModel.HandleFix(d.Name)
+                        ? _ => HandleFix(d.Name)
                         : null));
             }
         }

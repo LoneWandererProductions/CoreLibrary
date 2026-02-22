@@ -42,15 +42,15 @@ namespace Imaging
         /// Retrieves the configuration for a specific filter type.
         /// </summary>
         /// <param name="filter">The filter type.</param>
-        /// <returns>The current <see cref="FiltersConfig"/> for the filter.</returns>
-        public static FiltersConfig GetFilterSettings(FiltersType filter) => Register.GetSettings(filter);
+        /// <returns>The current <see cref="FilterConfiguration"/> for the filter.</returns>
+        public static FilterConfiguration GetFilterSettings(FiltersType filter) => Register.GetSettings(filter);
 
         /// <summary>
         /// Updates the configuration for a specific filter type.
         /// </summary>
         /// <param name="filter">The filter type.</param>
         /// <param name="config">The new filter configuration.</param>
-        public static void SetFilterSettings(FiltersType filter, FiltersConfig config) =>
+        public static void SetFilterSettings(FiltersType filter, FilterConfiguration config) =>
             Register.SetSettings(filter, config);
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Imaging
         /// <returns>The filtered <see cref="Bitmap"/>.</returns>
         public static Bitmap ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object shapeParams,
             Point? startPoint = null)
-            => new ImageRender().FilterImageArea(image, null, null, filter, shape, shapeParams, startPoint);
+            => new FilterGenerator().F(image, null, null, filter, shape, shapeParams, startPoint);
 
         #endregion
 
@@ -333,7 +333,7 @@ namespace Imaging
         /// </summary>
         /// <param name="frames">The frames to include in the GIF.</param>
         /// <param name="target">The output file path.</param>
-        public static void CreateGif(IEnumerable<FrameInfo> frames, string target)
+        public static void CreateGif(IEnumerable<FrameInfo>? frames, string target)
             => new ImageRender().CreateGif(frames, target);
 
         #endregion

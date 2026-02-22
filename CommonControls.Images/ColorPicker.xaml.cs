@@ -16,6 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging;
 
+// ReSharper disable MemberCanBeInternal
+
 namespace CommonControls.Images
 {
     /// <inheritdoc cref="INotifyPropertyChanged" />
@@ -27,7 +29,7 @@ namespace CommonControls.Images
     /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
     public sealed partial class ColorPicker : INotifyPropertyChanged
     {
-        private WriteableBitmap _bitmap;
+        private WriteableBitmap? _bitmap;
         private bool _isDragging;
 
         // Internal state
@@ -54,7 +56,7 @@ namespace CommonControls.Images
         /// <summary>
         /// Occurs when [color changed].
         /// </summary>
-        public event DelegateColor ColorChanged;
+        public event DelegateColor? ColorChanged;
 
         /// <inheritdoc />
         /// <summary>
@@ -81,13 +83,15 @@ namespace CommonControls.Images
             Alpha = alpha;
 
             // This is the trigger that will finally make it draw
-            this.SizeChanged += (s, e) =>
+            SizeChanged += (s, e) =>
             {
-                if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+                if (!(e.NewSize.Width > 0) || !(e.NewSize.Height > 0))
                 {
-                    RedrawAsync();
-                    UpdateCursors();
+                    return;
                 }
+
+                RedrawAsync();
+                UpdateCursors();
             };
         }
 
@@ -96,7 +100,7 @@ namespace CommonControls.Images
         /// When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.
         /// </summary>
         /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
             // If the bitmap hasn't been created yet, try to draw now
@@ -123,6 +127,12 @@ namespace CommonControls.Images
 
         // --- PROPERTIES with Change Logic ---
 
+        /// <summary>
+        /// Gets or sets the hue.
+        /// </summary>
+        /// <value>
+        /// The hue.
+        /// </value>
         public double Hue
         {
             get => _h;
@@ -135,6 +145,12 @@ namespace CommonControls.Images
             }
         }
 
+        /// <summary>
+        /// Gets or sets the sat.
+        /// </summary>
+        /// <value>
+        /// The sat.
+        /// </value>
         public double Sat
         {
             get => _s;
@@ -147,6 +163,12 @@ namespace CommonControls.Images
             }
         }
 
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
         public double Val
         {
             get => _v;
@@ -159,6 +181,12 @@ namespace CommonControls.Images
             }
         }
 
+        /// <summary>
+        /// Gets or sets the alpha.
+        /// </summary>
+        /// <value>
+        /// The alpha.
+        /// </value>
         public int Alpha
         {
             get => _alpha;
@@ -365,13 +393,21 @@ namespace CommonControls.Images
 
         // --- RENDERING & CURSORS ---
 
+        /// <summary>
+        /// Called when [size changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawAsync();
             UpdateCursors();
         }
 
-        // This is the "Magic" pixel drawer (Same as before)
+        /// <summary>
+        /// This is the "Magic" pixel drawer
+        /// Redraws the color picker asynchronous.
+        /// </summary>
         private void RedrawAsync()
         {
             if (!CheckAccess())
@@ -396,7 +432,7 @@ namespace CommonControls.Images
             PickerContainer.Height = size;
 
             // 4. Create/Draw Bitmap (Standard)
-            if (_bitmap == null || _bitmap.PixelWidth != size || _bitmap.PixelHeight != size)
+            if (_bitmap?.PixelWidth != size || _bitmap.PixelHeight != size)
             {
                 _bitmap = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
                 PickerImage.Source = _bitmap;
@@ -485,6 +521,14 @@ namespace CommonControls.Images
                 w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
         }
 
+        /// <summary>
+        /// HSVs to int.
+        /// </summary>
+        /// <param name="h">The h.</param>
+        /// <param name="s">The s.</param>
+        /// <param name="v">The v.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns></returns>
         private static int HsvToInt(double h, double s, double v, int alpha)
         {
             double c = v * s;
@@ -593,8 +637,15 @@ namespace CommonControls.Images
             v = Math.Max(0, Math.Min(1, v));
         }
 
-
-        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        /// <summary>
+        /// Sets the field.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns>Field name</returns>
+        private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(field, value)) return false;
 
@@ -603,7 +654,11 @@ namespace CommonControls.Images
             return true;
         }
 
-        private void OnPropertyChanged(string propertyName) =>
+        /// <summary>
+        /// Called when [property changed].
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        private void OnPropertyChanged(string? propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

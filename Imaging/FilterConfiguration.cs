@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        FiltersConfig.cs
+ * FILE:        FilterConfiguration.cs
  * PURPOSE:     Object that will be used for fine tuning the filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ namespace Imaging
     /// <summary>
     ///     Settings for the Filter
     /// </summary>
-    public sealed class FiltersConfig
+    public sealed class FilterConfiguration
     {
         /// <summary>
         ///     Gets or sets the factor.

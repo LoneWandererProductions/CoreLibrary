@@ -87,7 +87,7 @@ namespace Imaging
         /// </summary>
         /// <param name="bits">The pixel array (BGRA32).</param>
         /// <param name="width">The width of the image.</param>
-        public DirectBitmapImage(Pixel32[] bits, int width)
+        public DirectBitmapImage(Pixel32[]? bits, int width)
         {
             if (bits == null) throw new ArgumentNullException(nameof(bits));
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
@@ -115,7 +115,7 @@ namespace Imaging
         /// <summary>
         ///     Gets the raw pixel buffer.
         /// </summary>
-        public Pixel32[] Bits { get; }
+        public Pixel32[]? Bits { get; }
 
         /// <summary>
         ///     Gets the cached converted BitmapImage.
@@ -219,6 +219,7 @@ namespace Imaging
         /// Sets pixels from PixelData collection efficiently.
         /// </summary>
         /// <param name="pixels">Collection of PixelData (x, y, RGBA).</param>
+        /// <param name="threshold">The threshold.</param>
         public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 64)
         {
             lock (_syncLock)
@@ -331,7 +332,6 @@ namespace Imaging
             if (disposing && _bitsHandle.IsAllocated)
             {
                 _cachedImage = null;
-
             }
 
             if (_bitsHandle.IsAllocated)

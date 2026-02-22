@@ -357,7 +357,8 @@ namespace Imaging.Helpers
         /// <param name="angleDegrees">The angle of the line, in degrees.</param>
         /// <param name="pen">The pen used to draw the line.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DrawFullLine(Graphics graphics, Image bitmap, Point startPoint, double angleDegrees, Pen pen)
+        private static void DrawFullLine(Graphics graphics, Image bitmap, Point startPoint, double angleDegrees,
+            Pen pen)
         {
             var angleRadians = angleDegrees * Math.PI / 180.0;
             var dx = Math.Cos(angleRadians);

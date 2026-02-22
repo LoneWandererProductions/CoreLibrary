@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,8 +69,6 @@ namespace Imaging
             IEnumerable<PixelData> pixels,
             int threshold)
         {
-            if (pixels == null) return;
-
             IEnumerable<PixelData> pixelCollection = pixels;
 
             int count;
@@ -116,9 +116,9 @@ namespace Imaging
         /// <param name="height">The height of the image.</param>
         /// <param name="pixels">Enumerable of (x, y, Pixel32) tuples to set.</param>
         internal static void SetPixelsSimd(Pixel32[] bits, int width, int height,
-            IEnumerable<(int x, int y, Pixel32 color)> pixels)
+            IEnumerable<(int x, int y, Pixel32 color)>? pixels)
         {
-            if (bits == null || pixels == null) return;
+            if (pixels == null) return;
 
             // Group pixels by row and color to make contiguous writes cache-friendly
             var grouped = pixels
@@ -168,11 +168,11 @@ namespace Imaging
             Pixel32[] bits,
             int width,
             int height,
-            IEnumerable<PixelData> pixels,
+            IEnumerable<PixelData>? pixels,
             byte* backBuffer = null,
             int stride = 0)
         {
-            if (bits == null || pixels == null) return;
+            if (pixels == null) return;
 
             if (backBuffer != null && stride <= 0)
                 throw new ArgumentException("Stride must be positive when backBuffer is provided.");
@@ -199,6 +199,8 @@ namespace Imaging
 
         /// <summary>
         /// Sets the pixels unsafe span.
+        /// Could be private but is internal for testing purposes.
+        /// Uses unsafe code to set pixels from a ReadOnlySpan of PixelData, which can be stackalloc'd for small batches to avoid heap allocations.
         /// </summary>
         /// <param name="bits">The bits.</param>
         /// <param name="width">The width.</param>
@@ -211,8 +213,6 @@ namespace Imaging
             int height,
             ReadOnlySpan<PixelData> pixels)
         {
-            if (bits == null) return;
-
             fixed (Pixel32* pBits = bits)
             {
                 for (int i = 0; i < pixels.Length; i++)

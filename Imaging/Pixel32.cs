@@ -14,7 +14,7 @@ namespace Imaging
     /// Shared data structure for DirectBitmapImage and DirectBitmap to share the same underlying data structure.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Pixel32
+    public readonly struct Pixel32
     {
         /// <summary>
         /// The Blue component of the pixel. 0 is no blue, 255 is full blue.

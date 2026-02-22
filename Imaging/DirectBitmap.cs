@@ -130,7 +130,7 @@ namespace Imaging
         }
 
         /// <inheritdoc />
-        public Pixel32[] Bits { get; private set; }
+        public Pixel32[]? Bits { get; private set; }
 
         /// <summary>
         ///     Gets the bitmap.

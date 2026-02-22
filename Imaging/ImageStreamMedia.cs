@@ -148,14 +148,16 @@ namespace Imaging
 
             // 1. Memory Copy to WriteableBitmap (Your efficient logic)
             var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
-            var rect = new System.Drawing.Rectangle(0, 0, width, height);
-            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var rect = new Rectangle(0, 0, width, height);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             wbmp.Lock();
             unsafe
             {
                 Buffer.MemoryCopy((void*)bmpData.Scan0, (void*)wbmp.BackBuffer, width * height * 4, width * height * 4);
             }
+
             wbmp.AddDirtyRect(new Int32Rect(0, 0, width, height));
             wbmp.Unlock();
             bitmap.UnlockBits(bmpData);

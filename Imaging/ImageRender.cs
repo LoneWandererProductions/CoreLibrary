@@ -193,7 +193,7 @@ namespace Imaging
         /// <param name="y">The y position.</param>
         /// <returns>Combined Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Bitmap? CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+        public Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
         {
             return ImageStream.CombineBitmap(original, overlay, x, y);
         }
@@ -820,7 +820,7 @@ namespace Imaging
         /// </summary>
         /// <param name="images">List off bitmaps and timer data</param>
         /// <param name="target">The target File.</param>
-        public void CreateGif(IEnumerable<FrameInfo> images, string target)
+        public void CreateGif(IEnumerable<FrameInfo>? images, string target)
         {
             ImageGifHandler.CreateGif(images, target);
         }
