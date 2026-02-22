@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
+using static OpenTK.Graphics.OpenGL.GL;
 
 // ReSharper disable UnusedMember.Local
 
@@ -80,7 +81,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(noiseBitmap.UnsafeBitmap);
+            return noiseBitmap.ToBitmap();
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(cloudsBitmap.UnsafeBitmap);
+            return cloudsBitmap.ToBitmap();
         }
 
         /// <summary>
@@ -188,7 +189,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(marbleBitmap.UnsafeBitmap);
+            return marbleBitmap.ToBitmap();
         }
 
         /// <summary>
@@ -244,7 +245,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(woodBitmap.UnsafeBitmap);
+            return woodBitmap.ToBitmap();
         }
 
         /// <summary>
@@ -298,7 +299,7 @@ namespace Imaging.Helpers
             waveBitmap.SetPixels(pixelArray);
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(waveBitmap.UnsafeBitmap);
+            return waveBitmap.ToBitmap();
         }
 
         /// <summary>

@@ -144,6 +144,19 @@ namespace Imaging
         public Bitmap UnsafeBitmap { get; private set; }
 
         /// <summary>
+        /// Creates a standalone, managed copy of the current state of this bitmap.
+        /// This copy survives even after this DirectBitmap is disposed.
+        /// </summary>
+        public Bitmap ToBitmap()
+        {
+            if (Disposed) throw new ObjectDisposedException(nameof(DirectBitmap));
+
+            // We clone the UnsafeBitmap (which is pinned) into a new, 
+            // unpinned managed Bitmap.
+            return (Bitmap)UnsafeBitmap.Clone();
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
         /// </summary>
         /// <value>

@@ -544,16 +544,16 @@ namespace Imaging.Helpers
             ImageHelper.ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
             //use our new Format
-            var result = DirectBitmap.GetInstance(image);
+            var dbm = DirectBitmap.GetInstance(image);
 
             //255,255,255 is White
             var replacementColor = Color.FromArgb(255, 255, 255);
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            for (var x = 0; x < result.Width; x++)
-            for (var y = 0; y < result.Height; y++)
+            for (var x = 0; x < dbm.Width; x++)
+            for (var y = 0; y < dbm.Height; y++)
             {
-                var color = result.GetPixel(x, y);
+                var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
                 if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
@@ -567,14 +567,14 @@ namespace Imaging.Helpers
 
             try
             {
-                result.SetPixels(pixelsToSet);
+                dbm.SetPixels(pixelsToSet);
 
                 //get the Bitmap
-                var btm = new Bitmap(result.UnsafeBitmap);
+                var btm = dbm.ToBitmap();
                 //make Transparent
                 btm.MakeTransparent(replacementColor);
                 //cleanup
-                result.Dispose();
+                dbm.Dispose();
                 return btm;
             }
             catch (Exception ex)
@@ -672,7 +672,7 @@ namespace Imaging.Helpers
             var dbm = DirectBitmap.GetInstance(image);
             dbm.SetPixel(point.X, point.Y, color);
 
-            return new Bitmap(dbm.UnsafeBitmap);
+            return dbm.ToBitmap();
         }
 
         /// <summary>
@@ -688,7 +688,7 @@ namespace Imaging.Helpers
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             var source = new DirectBitmap(image);
-            var result = new DirectBitmap(source.Width, source.Height);
+            var dbm = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
             for (var x = 0; x < source.Width; x++)
@@ -700,10 +700,10 @@ namespace Imaging.Helpers
                 var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
                 var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
 
-                result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                dbm.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
             }
 
-            return new Bitmap(result.UnsafeBitmap);
+            return dbm.ToBitmap();
         }
 
         /// <summary>
@@ -748,7 +748,7 @@ namespace Imaging.Helpers
             int? height,
             Color color,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null)
         {
             // Validate input
@@ -871,7 +871,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the modified image as a Bitmap
-            return new Bitmap(result.UnsafeBitmap);
+            return result.ToBitmap();
         }
 
         /// <summary>

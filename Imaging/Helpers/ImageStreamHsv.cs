@@ -8,6 +8,7 @@
 
 using System;
 using System.Drawing;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace Imaging.Helpers
 {
@@ -88,7 +89,7 @@ namespace Imaging.Helpers
             ImageHelper.ValidateImage(nameof(ProcessImage), image);
 
             var source = new DirectBitmap(image);
-            var result = new DirectBitmap(source.Width, source.Height);
+            var dbm = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
             {
@@ -103,11 +104,11 @@ namespace Imaging.Helpers
                     pixelOp(hsv);
 
                     // Convert HSV -> RGB (your class handles it)
-                    result.SetPixel(x, y, Color.FromArgb(hsv.A, hsv.R, hsv.G, hsv.B));
+                    dbm.SetPixel(x, y, Color.FromArgb(hsv.A, hsv.R, hsv.G, hsv.B));
                 }
             }
 
-            return new Bitmap(result.UnsafeBitmap);
+            return dbm.ToBitmap();
         }
     }
 }

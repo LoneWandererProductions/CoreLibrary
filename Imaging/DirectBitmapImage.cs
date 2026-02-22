@@ -331,9 +331,11 @@ namespace Imaging
             if (disposing && _bitsHandle.IsAllocated)
             {
                 _cachedImage = null;
-                if (_bitsHandle.IsAllocated)
-                    _bitsHandle.Free();
+
             }
+
+            if (_bitsHandle.IsAllocated)
+                _bitsHandle.Free();
 
             _disposed = true;
         }

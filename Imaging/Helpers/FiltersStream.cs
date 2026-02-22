@@ -404,7 +404,7 @@ namespace Imaging.Helpers
         private static Bitmap? ApplyAnisotropicKuwahara(Bitmap image, int baseWindowSize = 5)
         {
             var dbmBase = new DirectBitmap(image);
-            var result = new DirectBitmap(image.Width, image.Height);
+            var dbm = new DirectBitmap(image.Width, image.Height);
             var halfBaseWindow = baseWindowSize / 2;
 
             // Prepare a list to store the pixels to set in bulk using SIMD
@@ -427,10 +427,10 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixels(pixelsToSet);
+                dbm.SetPixels(pixelsToSet);
 
                 // CRITICAL: We must clone because 'result' is about to die
-                return (Bitmap)result.UnsafeBitmap.Clone();
+                return dbm.ToBitmap();
             }
             catch (Exception ex)
             {
@@ -440,7 +440,7 @@ namespace Imaging.Helpers
             }
             finally
             {
-                result.Dispose(); // Now we can safely dispose the wrapper
+                dbm.Dispose(); // Now we can safely dispose the wrapper
             }
         }
 
@@ -483,7 +483,7 @@ namespace Imaging.Helpers
             }
 
             // Dispose the base bitmap and return the dithered result
-            return new Bitmap(dbm.UnsafeBitmap);
+            return dbm.ToBitmap();
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace Imaging.Helpers
             var gaussianKernel = ImageHelper.GenerateGaussianKernel(sigma, 5);
 
             // Apply the Gaussian blur filter
-            return ApplyFilter(dbmBase.UnsafeBitmap, gaussianKernel);
+            return ApplyFilter(dbmBase.ToBitmap(), gaussianKernel);
         }
 
         /// <summary>
@@ -932,7 +932,7 @@ namespace Imaging.Helpers
             {
                 dbm.SetPixels(pixelsToSet);
 
-                return new Bitmap(dbm.UnsafeBitmap);
+                return dbm.ToBitmap();
             }
             catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {

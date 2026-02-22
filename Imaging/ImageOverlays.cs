@@ -174,7 +174,7 @@ namespace Imaging
             var width = imgOne.Width;
             var height = imgOne.Height;
 
-            var result = new DirectBitmap(width, height);
+            var dbm = new DirectBitmap(width, height);
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             using (var dbmOne = new DirectBitmap(imgOne))
@@ -195,8 +195,8 @@ namespace Imaging
 
             try
             {
-                result.SetPixels(pixelsToSet);
-                return new Bitmap(result.UnsafeBitmap);
+                dbm.SetPixels(pixelsToSet);
+                return dbm.ToBitmap();
             }
             catch (Exception ex)
             {

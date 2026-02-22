@@ -258,7 +258,7 @@ namespace ImageCompare
                 }
             });
 
-            return new Bitmap(dbmCanvas.UnsafeBitmap);
+            return dbmCanvas.ToBitmap();
         }
     }
 }
