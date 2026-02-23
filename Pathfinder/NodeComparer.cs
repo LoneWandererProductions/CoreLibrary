@@ -28,12 +28,23 @@ namespace Pathfinder
         /// </returns>
         public int Compare(Node? x, Node? y)
         {
-            var result = (x.G + x.H).CompareTo(y.G + y.H);
+            if (ReferenceEquals(x, y)) return 0;
+            if (x is null) return -1;
+            if (y is null) return 1;
+
+            // 1. Total Cost is always the king of A*
+            int result = x.F.CompareTo(y.F);
+
             if (result == 0)
             {
+                // 2. Revert to your logic: Compare G. 
+                // This ensures we respect the diagonal and movement costs 
+                // when the heuristic guess is identical.
                 result = x.G.CompareTo(y.G);
+
                 if (result == 0)
                 {
+                    // 3. Final unique identifier for the SortedSet
                     result = x.X.CompareTo(y.X);
                     if (result == 0)
                     {

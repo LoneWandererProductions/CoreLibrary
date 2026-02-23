@@ -92,7 +92,7 @@ namespace Pathfinder
         /// <value>
         ///     The F cost.
         /// </value>
-        private int F => G + H;
+        internal int F => G + H;
 
         /// <inheritdoc />
         /// <summary>

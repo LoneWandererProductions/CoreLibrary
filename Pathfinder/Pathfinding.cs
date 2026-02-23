@@ -69,20 +69,25 @@ namespace Pathfinder
         public PathfinderResults FindPath(int startX, int startY, int goalX, int goalY, int rangeLimit)
         {
             var result = new PathfinderResults();
-            var openList = new SortedSet<Node>(new NodeComparer());
-            var closedList = new HashSet<(int, int)>();
-            var nodeIds = new Dictionary<Node, int>();
-            var nodeIdCounter = 0;
 
-            // Initialize start node with its movement cost
+            // We use SortedSet for picking the best node, BUT...
+            var openList = new SortedSet<Node>(new NodeComparer());
+
+            // ...we use a Dictionary to find if a coordinate is already in the open list instantly!
+            var openLookUp = new Dictionary<(int, int), Node>();
+
+            var closedList = new HashSet<(int, int)>();
+
             var startNode = new Node(startX, startY, 0, Heuristic(startX, startY, goalX, goalY), _grid[startX, startY]);
+
             openList.Add(startNode);
-            nodeIds[startNode] = nodeIdCounter++;
+            openLookUp[(startX, startY)] = startNode;
 
             while (openList.Count > 0)
             {
                 var currentNode = openList.Min;
-                _ = openList.Remove(currentNode);
+                openList.Remove(currentNode);
+                openLookUp.Remove((currentNode.X, currentNode.Y));
 
                 if (currentNode.X == goalX && currentNode.Y == goalY)
                 {
@@ -95,26 +100,27 @@ namespace Pathfinder
 
                 foreach (var neighbor in GetNeighbors(currentNode, _grid, goalX, goalY))
                 {
-                    if (closedList.Contains((neighbor.X, neighbor.Y)))
+                    if (closedList.Contains((neighbor.X, neighbor.Y))) continue;
+
+                    // INSTANT LOOKUP - No more FirstOrDefault linear scans!
+                    if (openLookUp.TryGetValue((neighbor.X, neighbor.Y), out var existingOpenNode))
                     {
-                        continue;
+                        if (neighbor.G < existingOpenNode.G)
+                        {
+                            // To update a value in a SortedSet, you MUST remove and re-add
+                            // because the sort order has changed.
+                            openList.Remove(existingOpenNode);
+
+                            existingOpenNode.G = neighbor.G;
+                            existingOpenNode.Parent = currentNode;
+
+                            openList.Add(existingOpenNode);
+                        }
                     }
-
-                    neighbor.H = Heuristic(neighbor.X, neighbor.Y, goalX, goalY);
-                    neighbor.Parent = currentNode;
-
-                    var openNode = openList.FirstOrDefault(n => n.X == neighbor.X && n.Y == neighbor.Y);
-                    if (openNode == null)
+                    else
                     {
                         openList.Add(neighbor);
-                        nodeIds[neighbor] = nodeIdCounter++;
-                    }
-                    else if (neighbor.G < openNode.G)
-                    {
-                        openList.Remove(openNode);
-                        openNode.G = neighbor.G;
-                        openNode.Parent = currentNode;
-                        openList.Add(openNode);
+                        openLookUp[(neighbor.X, neighbor.Y)] = neighbor;
                     }
                 }
             }
@@ -151,11 +157,14 @@ namespace Pathfinder
         /// <param name="x2">The x-coordinate of the second point.</param>
         /// <param name="y2">The y-coordinate of the second point.</param>
         /// <returns>The heuristic estimate of the cost.</returns>
-        private static int Heuristic(int x1, int y1, int x2, int y2)
+        private int Heuristic(int x1, int y1, int x2, int y2)
         {
-            return Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
-        }
+            int dx = Math.Abs(x1 - x2);
+            int dy = Math.Abs(y1 - y2);
 
+            // Move diagonally as much as possible, then move straight for the remaining distance
+            return _straightCost * (dx + dy) + (_diagonalCost - 2 * _straightCost) * Math.Min(dx, dy);
+        }
         /// <summary>
         ///     Gets the neighboring nodes for a given node based on the grid and movement costs.
         /// </summary>
