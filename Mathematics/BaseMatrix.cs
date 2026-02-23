@@ -21,7 +21,7 @@ namespace Mathematics
     ///     Idea and Inspiration:
     ///     https://bratched.com/en/?s=matrix
     /// </summary>
-    public sealed class BaseMatrix : IDisposable
+    public sealed class BaseMatrix
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="BaseMatrix" /> class.
@@ -65,14 +65,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="BaseMatrix" /> is disposed.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if disposed; otherwise, <c>false</c>.
-        /// </value>
-        private bool Disposed { get; set; }
-
-        /// <summary>
         ///     Gets or sets the matrix.
         /// </summary>
         /// <value>
@@ -108,54 +100,7 @@ namespace Mathematics
         public double this[int x, int y]
         {
             get => Matrix[x, y];
-            init => Matrix[x, y] = value;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Free up all the Memory.
-        ///     See:
-        ///     https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1063?view=vs-2019
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
-        ///     unmanaged resources.
-        /// </param>
-        private void Dispose(bool disposing)
-        {
-            if (Disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                // free managed resources
-                Matrix = null;
-            }
-
-            Disposed = true;
-        }
-
-        /// <summary>
-        ///     NOTE: Leave out the finalizer altogether if this class doesn't
-        ///     own unmanaged resources, but leave the other methods
-        ///     exactly as they are.
-        ///     Finalizes an instance of the <see cref="BaseMatrix" /> class.
-        /// </summary>
-        ~BaseMatrix()
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
+            set => Matrix[x, y] = value;
         }
 
         /// <summary>
@@ -332,7 +277,8 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Matrix);
+            // A simple, safe hash for dynamic matrices
+            return Matrix != null ? HashCode.Combine(Width, Height) : 0;
         }
 
         /// <summary>
@@ -397,7 +343,7 @@ namespace Mathematics
         /// </returns>
         public static implicit operator BaseMatrix(double[,] m)
         {
-            return new BaseMatrix { Matrix = m };
+            return new BaseMatrix(m);
         }
 
         /// <summary>

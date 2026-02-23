@@ -14,361 +14,298 @@ using System;
 
 namespace Mathematics
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     Basic Fraction Object
+    ///     A lightweight, immutable Fraction (Rational Number) struct.
+    ///     Internally stores values strictly as a reduced improper fraction (e.g., 3/2 instead of 1 1/2).
+    ///     This prevents mathematical errors during multiplication and division.
     /// </summary>
-    public sealed class Fraction : IEquatable<Fraction>
+    public readonly struct Fraction : IEquatable<Fraction>, IComparable<Fraction>
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Fraction" /> class.
+        /// The top part of the fraction.
+        /// </summary>
+        /// <value>
+        /// The numerator.
+        /// </value>
+        public int Numerator { get; }
+
+        /// <summary>
+        /// The bottom part of the fraction. Guaranteed to always be positive.
+        /// </summary>
+        /// <value>
+        /// The denominator.
+        /// </value>
+        public int Denominator { get; }
+
+        /// <summary>
+        /// Calculates the Whole Number part of the fraction (e.g., the '2' in 2 1/3).
+        /// Integer division naturally truncates the decimal, giving us exactly what we need.
+        /// </summary>
+        /// <value>
+        /// The whole part.
+        /// </value>
+        public int WholePart => Numerator / Denominator;
+
+        /// <summary>
+        /// Calculates the remaining Numerator for a mixed number display (e.g., the '1' in 2 1/3).
+        /// We use Math.Abs so the remainder doesn't display as a negative number if the whole fraction is negative.
+        /// </summary>
+        public int RemainderNumerator => Math.Abs(Numerator % Denominator);
+
+        /// <summary>
+        /// Initializes a standard fraction (e.g., 3 / 4) and automatically reduces it.
         /// </summary>
         /// <param name="numerator">The numerator.</param>
         /// <param name="denominator">The denominator.</param>
-        /// <exception cref="DivideByZeroException">Math Exception division by zero</exception>
+        /// <exception cref="System.DivideByZeroException">Denominator cannot be zero.</exception>
         public Fraction(int numerator, int denominator)
         {
             if (denominator == 0)
             {
-                throw new DivideByZeroException();
+                throw new DivideByZeroException("Denominator cannot be zero.");
             }
 
-            Numerator = numerator;
-            Denominator = denominator;
-            Exponent = 0;
-            Reduce();
+            // SIGN NORMALIZATION:
+            // We always want the negative sign to stay on the Numerator.
+            // If someone passes (1, -2) or (-1, -2), we flip the signs so the Denominator is always positive.
+            if (denominator < 0)
+            {
+                numerator = -numerator;
+                denominator = -denominator;
+            }
+
+            // REDUCTION:
+            // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator 
+            // so the negative sign doesn't break the Euclidean algorithm.
+            int gcd = GetGcf(Math.Abs(numerator), denominator);
+
+            // Apply the reduction and lock the values in.
+            Numerator = numerator / gcd;
+            Denominator = denominator / gcd;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Fraction" /> class.
+        /// Initializes a mixed number fraction (e.g., wholeNumber 2, num 1, den 3 = 2 1/3).
+        /// This immediately converts it into an improper fraction (7/3) and passes it to the main constructor.
         /// </summary>
+        /// <param name="wholeNumber">The whole number.</param>
         /// <param name="numerator">The numerator.</param>
         /// <param name="denominator">The denominator.</param>
-        /// <param name="exponent">The exponent.</param>
-        /// <exception cref="DivideByZeroException">Math Exception division by zero</exception>
-        public Fraction(int numerator, int denominator, int exponent)
+        public Fraction(int wholeNumber, int numerator, int denominator)
+            // Math trick: If the whole number is negative (-2 1/3), we must subtract the numerator, not add it.
+            : this((wholeNumber * denominator) + (wholeNumber < 0 ? -numerator : numerator), denominator)
         {
-            if (denominator == 0)
-            {
-                throw new DivideByZeroException();
-            }
-
-            Denominator = denominator;
-            Numerator = numerator;
-            Exponent = exponent;
-            Reduce();
         }
 
         /// <summary>
-        ///     Gets the numerator.
+        /// Converts the fraction to a highly precise decimal.
         /// </summary>
-        /// <value>
-        ///     The numerator.
-        /// </value>
-        public int Numerator { get; private set; }
+        /// <returns>Dezimal Value.</returns>
+        public decimal ToDecimal() => (decimal)Numerator / Denominator;
 
         /// <summary>
-        ///     Gets the denominator.
+        /// Converts the fraction to a standard double.
         /// </summary>
-        /// <value>
-        ///     The denominator.
-        /// </value>
-        public int Denominator { get; private set; }
+        /// <returns>Double Value</returns>
+        public double ToDouble() => (double)Numerator / Denominator;
 
         /// <summary>
-        ///     Gets or sets the exponent.
-        /// </summary>
-        /// <value>
-        ///     The exponent.
-        /// </value>
-        public int Exponent { get; private set; }
-
-        /// <summary>
-        ///     Gets or sets the exponent.
-        ///     numerator / Denominator
-        /// </summary>
-        /// <value>
-        ///     The exponent.
-        /// </value>
-        public int ExponentNumerator
-        {
-            get
-            {
-                if (Exponent == 0)
-                {
-                    return Numerator;
-                }
-
-                if (Math.Abs(Denominator) == 1)
-                {
-                    return Exponent * Numerator;
-                }
-
-                //catch negative exponent
-                var exponentNumerator = Math.Abs(Exponent * Denominator) + Numerator;
-                if (Exponent < 0)
-                {
-                    return exponentNumerator * -1;
-                }
-
-                return exponentNumerator;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the decimal.
-        /// </summary>
-        /// <value>
-        ///     The decimal.
-        /// </value>
-        public decimal Decimal => ExponentNumerator / (decimal)Denominator;
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Compares If a Fraction is equal to another Fraction
-        /// </summary>
-        /// <param name="other">other Coordinate</param>
-        /// <returns>True if equal, false if not</returns>
-        public bool Equals(Fraction? other)
-        {
-            return Numerator == other?.Numerator && Denominator == other.Denominator && Exponent == other.Exponent;
-        }
-
-        /// <summary>
-        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool Equals(object? obj)
-        {
-            return obj is Fraction other && Equals(other);
-        }
-
-        /// <summary>
-        ///     Implements the operator *.
-        /// </summary>
-        /// <param name="first">The first fraction.</param>
-        /// <param name="second">The second fraction.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static Fraction operator *(Fraction first, Fraction second)
-        {
-            return new Fraction(first.ExponentNumerator * second.ExponentNumerator,
-                first.Denominator * second.Denominator);
-        }
-
-        /// <summary>
-        ///     Implements the operator /.
-        /// </summary>
-        /// <param name="first">The first fraction.</param>
-        /// <param name="second">The second fraction.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static Fraction operator /(Fraction first, Fraction second)
-        {
-            return new Fraction(first.ExponentNumerator * second.Denominator,
-                first.Denominator * second.ExponentNumerator);
-        }
-
-        /// <summary>
-        ///     Implements the operator +.
-        /// </summary>
-        /// <param name="first">The first fraction.</param>
-        /// <param name="second">The second fraction.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static Fraction operator +(Fraction first, Fraction second)
-        {
-            return new Fraction((first.ExponentNumerator * second.Denominator) +
-                                (first.Denominator * second.ExponentNumerator),
-                first.Denominator * second.Denominator);
-        }
-
-        /// <summary>
-        ///     Implements the operator -.
-        /// </summary>
-        /// <param name="first">The first fraction.</param>
-        /// <param name="second">The second fraction.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static Fraction operator -(Fraction first, Fraction second)
-        {
-            return new Fraction((first.ExponentNumerator * second.Denominator) -
-                                (first.Denominator * second.ExponentNumerator),
-                first.Denominator * second.Denominator);
-        }
-
-        /// <summary>
-        ///     Implements the operator ==.
+        /// Implements the operator *.
+        /// Multiplication: (a/b) * (c/d) = (a*c) / (b*d)
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
         /// <returns>
-        ///     The result of the operator.
+        /// The result of the operator.
         /// </returns>
-        public static bool operator ==(Fraction a, Fraction b)
-        {
-            return a.Equals(b);
-        }
+        public static Fraction operator *(Fraction a, Fraction b) =>
+            new(a.Numerator * b.Numerator, a.Denominator * b.Denominator);
 
         /// <summary>
-        ///     Implements the operator !=.
+        /// Division: Multiply by the reciprocal. (a/b) / (c/d) = (a*d) / (b*c)
+        /// Implements the operator /.
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
         /// <returns>
-        ///     The result of the operator.
+        /// The result of the operator.
         /// </returns>
-        public static bool operator !=(Fraction a, Fraction b)
-        {
-            return !(a == b);
-        }
+        public static Fraction operator /(Fraction a, Fraction b) =>
+            new(a.Numerator * b.Denominator, a.Denominator * b.Numerator);
 
         /// <summary>
-        ///     Implements the operator &lt;.
+        /// Addition: Find a common denominator by multiplying them, then cross-multiply the numerators.
+        /// Implements the operator +.
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
         /// <returns>
-        ///     The result of the operator.
+        /// The result of the operator.
         /// </returns>
-        public static bool operator <(Fraction a, Fraction b)
-        {
-            return a.Decimal < b.Decimal;
-        }
+        public static Fraction operator +(Fraction a, Fraction b) =>
+            new((a.Numerator * b.Denominator) + (b.Numerator * a.Denominator), a.Denominator * b.Denominator);
 
         /// <summary>
-        ///     Implements the operator &gt;.
+        /// Subtraction: Same as addition, just subtract the cross-multiplied numerators.
+        /// Implements the operator -.
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
         /// <returns>
-        ///     The result of the operator.
+        /// The result of the operator.
         /// </returns>
-        public static bool operator >(Fraction a, Fraction b)
-        {
-            return a.Decimal > b.Decimal;
-        }
+        public static Fraction operator -(Fraction a, Fraction b) =>
+            new((a.Numerator * b.Denominator) - (b.Numerator * a.Denominator), a.Denominator * b.Denominator);
 
         /// <summary>
-        ///     Returns a hash code for this instance.
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// Because our constructor automatically reduces fractions (e.g., 2/4 becomes 1/2), 
+        /// two equal fractions will ALWAYS have the exact same Numerator and Denominator.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
+        /// </returns>
+        public bool Equals(Fraction other) => Numerator == other.Numerator && Denominator == other.Denominator;
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj) => obj is Fraction other && Equals(other);
+
+        /// <summary>
+        /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Numerator, Denominator, Exponent);
-        }
+        public override int GetHashCode() => HashCode.Combine(Numerator, Denominator);
 
         /// <summary>
-        ///     Reduces the Fraction.
-        /// </summary>
-        private void Reduce()
-        {
-            // If the numerator is zero and the denominator is non-zero, the fraction is 0, so set Exponent to 0
-            if (Numerator == 0)
-            {
-                Exponent = 0;
-                return;
-            }
-
-            // If the denominator is zero (undefined fraction), reset to 0/1
-            if (Denominator == 0)
-            {
-                Numerator = 0;
-                Denominator = 1;
-                return;
-            }
-
-            // Ensure the denominator is positive by flipping the signs of both numerator and denominator if necessary
-            if (Denominator < 0)
-            {
-                Denominator *= -1;
-                Numerator *= -1;
-            }
-
-            // Simplify the fraction by dividing both the numerator and denominator by their greatest common factor
-            var gcd = GetGcf(Numerator, Denominator);
-            if (gcd != 0)
-            {
-                Numerator /= gcd;
-                Denominator /= gcd;
-            }
-
-            // If the denominator becomes 1, the fraction is an integer, and we adjust the Exponent accordingly
-            if (Denominator == 1)
-            {
-                Exponent = Numerator * Exponent;
-                return;
-            }
-
-            // If the numerator is less than or equal to the denominator, there's no need to reduce further
-            if (Numerator <= Denominator)
-            {
-                return;
-            }
-
-            // If the numerator is greater than the denominator, we perform the division to extract the whole part (Exponent)
-            var modulo = Numerator % Denominator;
-            Exponent = (Numerator - modulo) / Denominator; // Integer part of the division
-            Numerator = modulo; // The remainder becomes the new numerator
-
-            // If the remainder is zero, we have an exact division and the fraction reduces to a whole number
-            if (Numerator == 0)
-            {
-                Denominator = 1; // Set denominator to 1 for whole number
-            }
-        }
-
-
-        /// <summary>
-        ///     Gets the greatest common Factor.
-        ///     https://en.wikipedia.org/wiki/Greatest_common_divisor
+        /// Implements the operator ==.
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
-        /// <returns>Greatest common Factor.</returns>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Fraction a, Fraction b) => a.Equals(b);
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Fraction a, Fraction b) => !a.Equals(b);
+
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="other">An object to compare with this instance.</param>
+        /// <returns>
+        /// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+        /// <list type="table"><listheader><term> Value</term><description> Meaning</description></listheader><item><term> Less than zero</term><description> This instance precedes <paramref name="other" /> in the sort order.</description></item><item><term> Zero</term><description> This instance occurs in the same position in the sort order as <paramref name="other" />.</description></item><item><term> Greater than zero</term><description> This instance follows <paramref name="other" /> in the sort order.</description></item></list>
+        /// </returns>
+        public int CompareTo(Fraction other) => ToDecimal().CompareTo(other.ToDecimal());
+
+        /// <summary>
+        /// Implements the operator &lt;.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator <(Fraction a, Fraction b) => a.CompareTo(b) < 0;
+
+        /// <summary>
+        /// Implements the operator &gt;.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator >(Fraction a, Fraction b) => a.CompareTo(b) > 0;
+
+        /// <summary>
+        /// Implements the operator &lt;=.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator <=(Fraction a, Fraction b) => a.CompareTo(b) <= 0;
+
+        /// <summary>
+        /// Implements the operator &gt;=.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator >=(Fraction a, Fraction b) => a.CompareTo(b) >= 0;
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Fraction" /> to <see cref="System.Decimal" />.
+        /// </summary>
+        /// <param name="f">The f.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator decimal(Fraction f) => f.ToDecimal();
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Fraction"/> to <see cref="System.Double"/>.
+        /// </summary>
+        /// <param name="f">The f.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator double(Fraction f) => f.ToDouble();
+
+        /// <summary>
+        /// Formats the fraction nicely for UI display.
+        /// </summary>
+        public override string ToString()
+        {
+            // If it's a whole number (e.g., 5/1), just return "5"
+            if (Denominator == 1) return Numerator.ToString();
+
+            // If it has a whole part (e.g., 7/3), format as a mixed number: "2 1/3"
+            int whole = WholePart;
+            if (whole != 0)
+            {
+                return $"{whole} {RemainderNumerator}/{Denominator}";
+            }
+
+            // Otherwise, just return the standard fraction (e.g., "1/2")
+            return $"{Numerator}/{Denominator}";
+        }
+
+        /// <summary>
+        /// Gets the Greatest Common Factor (GCF) using the Euclidean algorithm.
+        /// It repeatedly takes the remainder of division until it hits 0.
+        /// </summary>
         private static int GetGcf(int a, int b)
         {
+
             while (b != 0)
             {
-                var temp = b;
-                b = a % b;
-                a = temp;
+                int temp = b;
+                b = a % b; // Get the remainder
+                a = temp;  // Shift the values
             }
-
-            return Math.Abs(a);
-        }
-
-        /// <summary>
-        ///     Performs an implicit conversion from <see cref="Fraction" /> to <see cref="System.Decimal" />.
-        /// </summary>
-        /// <param name="f">The f.</param>
-        /// <returns>
-        ///     The result of the conversion.
-        /// </returns>
-        public static implicit operator decimal(Fraction f)
-        {
-            return (decimal)f.Numerator / f.Denominator;
-        }
-
-        /// <summary>
-        ///     Performs an implicit conversion from <see cref="Fraction" /> to <see cref="System.Double" />.
-        /// </summary>
-        /// <param name="f">The f.</param>
-        /// <returns>
-        ///     The result of the conversion.
-        /// </returns>
-        public static implicit operator double(Fraction f)
-        {
-            return (double)f.Numerator / f.Denominator;
+            return a;
         }
     }
 }

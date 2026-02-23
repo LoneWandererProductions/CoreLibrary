@@ -25,25 +25,28 @@ namespace CommonLibraryTests
         public void Fractures()
         {
             var one = new Fraction(14, 2);
+            // 14/2 = 7/1
             Assert.AreEqual(7, one.Numerator, "Expected numerator to be 7 after simplification.");
             Assert.AreEqual(1, one.Denominator, "Expected denominator to be 1 after simplification.");
-            Assert.AreEqual(0, one.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(7, one.ExponentNumerator, "Expected exponent numerator to be 7.");
-            Assert.AreEqual(7, one.Decimal, "Expected decimal value to be 7.");
+            Assert.AreEqual(7, one.WholePart, "Expected WholePart to be 7.");
+            Assert.AreEqual(0, one.RemainderNumerator, "Expected RemainderNumerator to be 0.");
+            Assert.AreEqual(7m, one.ToDecimal(), "Expected decimal value to be 7.");
 
             one = new Fraction(14, 8);
-            Assert.AreEqual(3, one.Numerator, "Expected numerator to be 3 after simplification.");
+            // 14/8 = 7/4 (or 1 3/4)
+            Assert.AreEqual(7, one.Numerator, "Expected numerator to be 7 after simplification.");
             Assert.AreEqual(4, one.Denominator, "Expected denominator to be 4.");
-            Assert.AreEqual(1, one.Exponent, "Expected exponent to be 1.");
-            Assert.AreEqual(7, one.ExponentNumerator, "Expected exponent numerator to be 7.");
-            Assert.AreEqual(1.75m, one.Decimal, "Expected decimal value to be 1.75.");
+            Assert.AreEqual(1, one.WholePart, "Expected WholePart to be 1.");
+            Assert.AreEqual(3, one.RemainderNumerator, "Expected RemainderNumerator to be 3.");
+            Assert.AreEqual(1.75m, one.ToDecimal(), "Expected decimal value to be 1.75.");
 
+            // Mixed Number: 0 1/2
             one = new Fraction(0, 1, 2);
-            Assert.AreEqual(0, one.Numerator, "Expected numerator to be 0.");
-            Assert.AreEqual(1, one.Denominator, "Expected denominator to be 1.");
-            Assert.AreEqual(0, one.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(0, one.ExponentNumerator, "Expected exponent numerator to be 0.");
-            Assert.AreEqual(0, one.Decimal, "Expected decimal value to be 0.");
+            Assert.AreEqual(1, one.Numerator, "Expected numerator to be 1.");
+            Assert.AreEqual(2, one.Denominator, "Expected denominator to be 2.");
+            Assert.AreEqual(0, one.WholePart, "Expected WholePart to be 0.");
+            Assert.AreEqual(1, one.RemainderNumerator, "Expected RemainderNumerator to be 1.");
+            Assert.AreEqual(0.5m, one.ToDecimal(), "Expected decimal value to be 0.5.");
         }
 
         /// <summary>
@@ -52,76 +55,76 @@ namespace CommonLibraryTests
         [TestMethod]
         public void FracturesOperations()
         {
-            var one = new Fraction(1, 2, 2);
-            Assert.AreEqual(5, one.ExponentNumerator, "Expected exponent numerator to be 5.");
-            var two = new Fraction(1, 2, 2);
-            Assert.AreEqual(5, two.ExponentNumerator, "Expected exponent numerator to be 5.");
+            // 2 1/2 = 5/2
+            var one = new Fraction(2, 1, 2);
+            Assert.AreEqual(5, one.Numerator, "Expected numerator to be 5.");
 
+            var two = new Fraction(2, 1, 2);
+            Assert.AreEqual(5, two.Numerator, "Expected numerator to be 5.");
+
+            // 5/2 + 5/2 = 10/2 = 5/1
             var result = one + two;
             Assert.AreEqual(5, result.Numerator, "Expected numerator to be 5.");
             Assert.AreEqual(1, result.Denominator, "Expected denominator to be 1.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(5, result.ExponentNumerator, "Expected exponent numerator to be 5.");
-            Assert.AreEqual(5, result.Decimal, "Expected decimal value to be 5.");
+            Assert.AreEqual(5, result.WholePart, "Expected WholePart to be 5.");
+            Assert.AreEqual(0, result.RemainderNumerator, "Expected RemainderNumerator to be 0.");
+            Assert.AreEqual(5m, result.ToDecimal(), "Expected decimal value to be 5.");
 
+            // 5/2 - 5/2 = 0/1
             result = one - two;
             Assert.AreEqual(0, result.Numerator, "Expected numerator to be 0.");
-            Assert.AreEqual(4, result.Denominator, "Expected denominator to be 4.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(0, result.ExponentNumerator, "Expected exponent numerator to be 0.");
-            Assert.AreEqual(0, result.Decimal, "Expected decimal value to be 0.");
+            Assert.AreEqual(1, result.Denominator, "Expected denominator to be 1 (simplified).");
+            Assert.AreEqual(0m, result.ToDecimal(), "Expected decimal value to be 0.");
 
+            // 4/2 = 2/1
             one = new Fraction(4, 2);
-            Assert.AreEqual(2, one.ExponentNumerator, "Expected exponent numerator to be 2.");
             Assert.AreEqual(2, one.Numerator, "Expected numerator to be 2.");
             Assert.AreEqual(1, one.Denominator, "Expected denominator to be 1.");
 
-            two = new Fraction(1, 1, 4);
-            Assert.AreEqual(4, two.ExponentNumerator, "Expected exponent numerator to be 4.");
+            // Whole number 4 (4/1)
+            two = new Fraction(4, 0, 1);
+            Assert.AreEqual(4, two.Numerator, "Expected numerator to be 4.");
 
+            // 2/1 * 4/1 = 8/1
             result = one * two;
             Assert.AreEqual(8, result.Numerator, "Expected numerator to be 8.");
             Assert.AreEqual(1, result.Denominator, "Expected denominator to be 1.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(8, result.ExponentNumerator, "Expected exponent numerator to be 8.");
-            Assert.AreEqual(8, result.Decimal, "Expected decimal value to be 8.");
+            Assert.AreEqual(8m, result.ToDecimal(), "Expected decimal value to be 8.");
 
+            // 2/1 / 4/1 = 2/4 = 1/2
             result = one / two;
             Assert.AreEqual(1, result.Numerator, "Expected numerator to be 1.");
             Assert.AreEqual(2, result.Denominator, "Expected denominator to be 2.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(1, result.ExponentNumerator, "Expected exponent numerator to be 1.");
-            Assert.AreEqual(0.5m, result.Decimal, "Expected decimal value to be 0.5.");
+            Assert.AreEqual(0.5m, result.ToDecimal(), "Expected decimal value to be 0.5.");
 
             // Edge case tests
-            one = new Fraction(2, 2);
-            two = new Fraction(1, 2, 1);
+            one = new Fraction(2, 2); // 1/1
+            two = new Fraction(1, 1, 2); // 1 1/2 = 3/2
 
+            // 1/1 + 3/2 = 5/2
             result = one + two;
-            Assert.AreEqual(1, result.Numerator, "Expected numerator to be 1.");
+            Assert.AreEqual(5, result.Numerator, "Expected numerator to be 5.");
             Assert.AreEqual(2, result.Denominator, "Expected denominator to be 2.");
-            Assert.AreEqual(2, result.Exponent, "Expected exponent to be 2.");
-            Assert.AreEqual(5, result.ExponentNumerator, "Expected exponent numerator to be 5.");
-            Assert.AreEqual(2.5m, result.Decimal, "Expected decimal value to be 2.5.");
+            Assert.AreEqual(2, result.WholePart, "Expected WholePart to be 2.");
+            Assert.AreEqual(1, result.RemainderNumerator, "Expected RemainderNumerator to be 1.");
+            Assert.AreEqual(2.5m, result.ToDecimal(), "Expected decimal value to be 2.5.");
 
             // Negative handling
-            one = new Fraction(-1, 2);
-            two = new Fraction(1, 2, -1);
-            var three = new Fraction(1, 4, -1);
+            one = new Fraction(-1, 2); // -1/2
+            two = new Fraction(-1, 1, 2); // -1 1/2 = -3/2
+            var three = new Fraction(-1, 1, 4); // -1 1/4 = -5/4
 
+            // -1/2 * -3/2 = 3/4
             result = one * two;
             Assert.AreEqual(3, result.Numerator, "Expected numerator to be 3.");
             Assert.AreEqual(4, result.Denominator, "Expected denominator to be 4.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(3, result.ExponentNumerator, "Expected exponent numerator to be 3.");
-            Assert.AreEqual(0.75m, result.Decimal, "Expected decimal value to be 0.75.");
+            Assert.AreEqual(0.75m, result.ToDecimal(), "Expected decimal value to be 0.75.");
 
+            // -1/2 * -5/4 = 5/8
             result = one * three;
             Assert.AreEqual(5, result.Numerator, "Expected numerator to be 5.");
             Assert.AreEqual(8, result.Denominator, "Expected denominator to be 8.");
-            Assert.AreEqual(0, result.Exponent, "Expected exponent to be 0.");
-            Assert.AreEqual(5, result.ExponentNumerator, "Expected exponent numerator to be 5.");
-            Assert.AreEqual(0.625m, result.Decimal, "Expected decimal value to be 0.625.");
+            Assert.AreEqual(0.625m, result.ToDecimal(), "Expected decimal value to be 0.625.");
         }
 
         /// <summary>
@@ -145,6 +148,7 @@ namespace CommonLibraryTests
             Assert.AreEqual(-1, frac.Numerator, "Expected numerator to be -1.");
             Assert.AreEqual(3, frac.Denominator, "Expected denominator to be 3.");
 
+            // The denominator should flip to positive, keeping the negative on the numerator
             var frac2 = new Fraction(3, -9);
             Assert.AreEqual(-1, frac2.Numerator, "Expected numerator to be -1.");
             Assert.AreEqual(3, frac2.Denominator, "Expected denominator to be 3.");
