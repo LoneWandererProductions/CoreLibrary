@@ -12,6 +12,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>
 

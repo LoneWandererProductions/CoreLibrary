@@ -518,8 +518,8 @@ namespace CommonControls.Images
                 // Neither is 1 → calculate width based on height
                 if (thumbHeight != 1 && thumbWidth != 1 && pics.Count > 1)
                 {
-                    var fraction = new Fraction(pics.Count, thumbHeight);
-                    thumbWidth = (int)Math.Ceiling(fraction.Decimal);
+                    // (Numerator + Denominator - 1) / Denominator
+                    thumbWidth = (pics.Count + thumbHeight - 1) / thumbHeight;
                 }
             }
 
