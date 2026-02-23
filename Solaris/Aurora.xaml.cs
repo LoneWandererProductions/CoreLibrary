@@ -403,29 +403,17 @@ namespace Solaris
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _cursor = new Coordinate2D();
-
             var position = e.GetPosition(Touch);
 
-            if (position.X < AuroraTextureSize)
-            {
-                _cursor.X = 0;
-            }
-            else
-            {
-                _cursor.X = (int)position.X / AuroraTextureSize;
-            }
+            // Let standard integer division do the heavy lifting
+            int gridX = (int)position.X / AuroraTextureSize;
+            int gridY = (int)position.Y / AuroraTextureSize;
 
-            if (position.Y < AuroraTextureSize)
-            {
-                _cursor.Y = 0;
-            }
-            else
-            {
-                _cursor.Y = (int)position.Y / AuroraTextureSize;
-            }
+            // Create the immutable struct
+            _cursor = new Coordinate2D(gridX, gridY);
 
-            var id = _cursor.CalculateId(AuroraWidth);
+            // Get the ID using the new method name (or CalculateId if you kept the old name)
+            var id = _cursor.ToId(AuroraWidth);
 
             TileClicked?.Invoke(this, id);
         }

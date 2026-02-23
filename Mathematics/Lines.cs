@@ -47,7 +47,7 @@ namespace Mathematics
                 var error = dy2 - Math.Abs(dx);
                 while (x != xEnd)
                 {
-                    lst.Add(new Coordinate2D { X = x, Y = y });
+                    lst.Add(new Coordinate2D (x, y ));
                     if (error > 0)
                     {
                         y += signY;
@@ -64,7 +64,7 @@ namespace Mathematics
                 var error = dx2 - Math.Abs(dy);
                 while (y != yEnd)
                 {
-                    lst.Add(new Coordinate2D { X = x, Y = y });
+                    lst.Add(new Coordinate2D(x, y));
                     if (error > 0)
                     {
                         x += signX;
@@ -76,7 +76,7 @@ namespace Mathematics
                 }
             }
 
-            lst.Add(new Coordinate2D { X = x, Y = y }); // Add the last point
+            lst.Add(new Coordinate2D(x, y)); // Add the last point
             return lst;
         }
 

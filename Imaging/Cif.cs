@@ -328,7 +328,7 @@ namespace Imaging
             var dbm = DirectBitmap.GetInstance(image);
 
             foreach (var (key, value) in CifImage)
-            foreach (var coordinate in value.Select(id => Coordinate2D.GetInstance(id, Width)))
+            foreach (var coordinate in value.Select(id => Coordinate2D.FromId(id, Width)))
             {
                 dbm.SetPixel(coordinate.X, coordinate.Y, key);
             }

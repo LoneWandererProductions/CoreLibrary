@@ -419,29 +419,18 @@ namespace Solaris
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _cursor = new Coordinate2D();
-
             var position = e.GetPosition(Touch);
 
-            if (position.X < PolarisTextureSize)
-            {
-                _cursor.X = 0;
-            }
-            else
-            {
-                _cursor.X = (int)position.X / PolarisTextureSize;
-            }
+            // 1. Calculate the values first.
+            // Integer division naturally handles the 0 case for us!
+            int gridX = (int)position.X / PolarisTextureSize;
+            int gridY = (int)position.Y / PolarisTextureSize;
 
-            if (position.Y < PolarisTextureSize)
-            {
-                _cursor.Y = 0;
-            }
-            else
-            {
-                _cursor.Y = (int)position.Y / PolarisTextureSize;
-            }
+            // 2. Create the immutable struct all at once.
+            _cursor = new Coordinate2D(gridX, gridY);
 
-            var id = _cursor.CalculateId(PolarisWidth);
+            // 3. Calculate the 1D array index (using whatever you named the method)
+            var id = _cursor.ToId(PolarisWidth);
 
             Clicked?.Invoke(this, id);
         }

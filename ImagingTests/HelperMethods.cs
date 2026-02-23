@@ -68,7 +68,7 @@ namespace ImagingTests
 
             for (var i = from.X; i <= to.X; i++)
             {
-                var point = new Coordinate2D { X = i, Y = y };
+                var point = new Coordinate2D(i, y);
                 lst.Add(point);
 
                 if (d > 0)
@@ -111,7 +111,7 @@ namespace ImagingTests
 
             for (var i = from.Y; i < to.Y; i++)
             {
-                var point = new Coordinate2D { X = x, Y = i };
+                var point = new Coordinate2D(x, i);
                 lst.Add(point);
 
                 if (d > 0)
