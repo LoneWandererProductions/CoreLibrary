@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Imaging.Interfaces;
-using Mathematics;
 
 namespace Imaging
 {
@@ -214,7 +213,7 @@ namespace Imaging
         /// <returns>Success Status</returns>
         public bool ChangeColor(int x, int y, Color color)
         {
-            var coordinate = new Coordinate2D(x, y, Width);
+            var coordinate = new PointId(x, y, Width);
             var id = coordinate.Id;
 
             if (id > CheckSum)
@@ -328,7 +327,7 @@ namespace Imaging
             var dbm = DirectBitmap.GetInstance(image);
 
             foreach (var (key, value) in CifImage)
-            foreach (var coordinate in value.Select(id => Coordinate2D.FromId(id, Width)))
+            foreach (var coordinate in value.Select(id => PointId.FromId(id, Width)))
             {
                 dbm.SetPixel(coordinate.X, coordinate.Y, key);
             }
