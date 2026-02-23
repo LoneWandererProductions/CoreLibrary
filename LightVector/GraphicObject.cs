@@ -12,6 +12,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Generic;
+using System.Windows.Ink;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
@@ -27,6 +28,16 @@ namespace LightVector
     public abstract class GraphicObject
     {
         /// <summary>
+        /// The fill
+        /// </summary>
+        private SolidColorBrush _fill;
+
+        /// <summary>
+        /// The stroke
+        /// </summary>
+        private SolidColorBrush _stroke = Brushes.Black;
+
+        /// <summary>
         ///     Optional
         /// </summary>
         public int Thickness { get; init; } = 1;
@@ -36,7 +47,15 @@ namespace LightVector
         ///     Optional
         /// </summary>
         [XmlIgnore]
-        public SolidColorBrush Stroke { get; set; } = Brushes.Black;
+        public SolidColorBrush Stroke
+        {
+            get => _stroke;
+            set
+            {
+                _stroke = value;
+                if (_stroke?.CanFreeze == true) _stroke.Freeze();
+            }
+        }
 
         /// <summary>
         ///     Workaround for XML serialization of Stroke
@@ -53,7 +72,15 @@ namespace LightVector
         ///     If filled we will get filled curves
         /// </summary>
         [XmlIgnore]
-        public SolidColorBrush Fill { get; set; }
+        public SolidColorBrush Fill
+        {
+            get => _fill;
+            set
+            {
+                _fill = value;
+                if (_fill?.CanFreeze == true) _fill.Freeze();
+            }
+        }
 
         /// <summary>
         ///     Workaround for XML serialization of Fill

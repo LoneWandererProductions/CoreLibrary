@@ -45,46 +45,73 @@ namespace LightVector
         {
             var canvas = new Canvas();
 
-            // Initialize variables to track the boundaries of the canvas
-            double canvasWidth = 0;
-            double canvasHeight = 0;
+            // If no objects, return an empty 0x0 canvas
+            if (!_vectorObjects.Any()) return canvas;
 
+            double minX = double.MaxValue;
+            double minY = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+
+            // Step 1: Create the shapes and find the global bounding box
             foreach (var obj in _vectorObjects)
             {
                 var shape = ConvertToWpfObject(obj);
+                if (shape == null) continue;
 
-                // Apply position offset based on StartCoordinates
-                if (shape == null)
-                {
-                    continue;
-                }
-
+                // Temporarily set position based on start coordinates
                 Canvas.SetLeft(shape, obj.StartCoordinates.X);
                 Canvas.SetTop(shape, obj.StartCoordinates.Y);
-                _ = canvas.Children.Add(shape);
+                canvas.Children.Add(shape);
 
-                // Update canvas size based on the current object
-                canvasWidth = Math.Max(canvasWidth, obj.StartCoordinates.X + shape.RenderSize.Width);
-                canvasHeight = Math.Max(canvasHeight, obj.StartCoordinates.Y + shape.RenderSize.Height);
+                // Get bounds relative to the object's StartCoordinates
+                var bounds = GetGraphicBounds(obj);
+
+                // Track the absolute world-space edges
+                minX = Math.Min(minX, obj.StartCoordinates.X + bounds.Left);
+                minY = Math.Min(minY, obj.StartCoordinates.Y + bounds.Top);
+                maxX = Math.Max(maxX, obj.StartCoordinates.X + bounds.Right);
+                maxY = Math.Max(maxY, obj.StartCoordinates.Y + bounds.Bottom);
             }
 
-            // Set the canvas size to fit all objects
-            canvas.Width = canvasWidth;
-            canvas.Height = canvasHeight;
+            // Step 2: Calculate actual total dimensions
+            double totalWidth = maxX - minX;
+            double totalHeight = maxY - minY;
+
+            canvas.Width = Math.Max(0, totalWidth);
+            canvas.Height = Math.Max(0, totalHeight);
+
+            // Step 3: Normalization Shift
+            // If our minX is -105, we need to add +105 to every object 
+            // so the drawing starts at 0 on the canvas and doesn't get clipped.
+            foreach (FrameworkElement child in canvas.Children)
+            {
+                double currentLeft = Canvas.GetLeft(child);
+                double currentTop = Canvas.GetTop(child);
+
+                Canvas.SetLeft(child, currentLeft - minX);
+                Canvas.SetTop(child, currentTop - minY);
+            }
 
             return canvas;
         }
-
 
         /// <inheritdoc />
         public ImageSource RenderToImage()
         {
             var canvas = (Canvas)RenderToContainer();
-            var renderBitmap = new RenderTargetBitmap(
-                500, 500, 96, 96, PixelFormats.Pbgra32);
 
-            canvas.Measure(new Size(500, 500));
-            canvas.Arrange(new Rect(0, 0, 500, 500));
+            // Use the width/height we calculated in RenderToContainer
+            int width = (int)Math.Ceiling(canvas.Width);
+            int height = (int)Math.Ceiling(canvas.Height);
+
+            var renderBitmap = new RenderTargetBitmap(
+                width > 0 ? width : 1,
+                height > 0 ? height : 1,
+                96, 96, PixelFormats.Pbgra32);
+
+            canvas.Measure(new Size(width, height));
+            canvas.Arrange(new Rect(0, 0, width, height));
 
             renderBitmap.Render(canvas);
             return renderBitmap;
@@ -140,21 +167,14 @@ namespace LightVector
         /// <returns>Image Object to Wpf Shape</returns>
         private static Line CreateLine(LineObject lineObject, Point startCoordinates)
         {
-            // Calculate the end point based on the start coordinates and direction
-            var endPoint = new Point(
-                startCoordinates.X + lineObject.Direction.X,
-                startCoordinates.Y + lineObject.Direction.Y);
-
-            // Create the Line and set its properties
             return new Line
             {
-                X1 = startCoordinates.X, // Start position
-                Y1 = startCoordinates.Y,
-                X2 = endPoint.X, // End position calculated from the start coordinates + direction
-                Y2 = endPoint.Y,
-                Stroke = lineObject.Stroke ?? Brushes.Black, // Use stroke from LineObject
-                StrokeThickness = lineObject.Thickness, // Use thickness from LineObject
-                StrokeLineJoin = lineObject.StrokeLineJoin // Stroke line join (optional, for appearance)
+                X1 = 0, // Relative to the Canvas.SetLeft
+                Y1 = 0,
+                X2 = lineObject.Direction.X,
+                Y2 = lineObject.Direction.Y,
+                Stroke = lineObject.Stroke ?? Brushes.Black,
+                StrokeThickness = lineObject.Thickness
             };
         }
 
@@ -166,19 +186,16 @@ namespace LightVector
         /// <returns>Image Object to Wpf Shape</returns>
         private static Shape CreatePolygon(PolygonObject polygonObject, Point startCoordinates)
         {
-            // Convert the list of vertices into a collection of Points, offset by the startCoordinates
-            var points = new PointCollection(polygonObject.Vertices.Select(v =>
-                new Point(v.X + startCoordinates.X, v.Y + startCoordinates.Y)));
+            var points = new PointCollection(polygonObject.Vertices.Select(v => new Point(v.X, v.Y)));
 
             return new Polygon
             {
                 Points = points,
-                Stroke = polygonObject.Stroke ?? Brushes.Black, // Default stroke if not provided
-                Fill = polygonObject.Fill ?? Brushes.Transparent, // Default fill if not provided
+                Stroke = polygonObject.Stroke ?? Brushes.Black,
+                Fill = polygonObject.Fill ?? Brushes.Transparent,
                 StrokeThickness = polygonObject.Thickness
             };
         }
-
 
         /// <summary>
         ///     Creates the circle.
@@ -188,14 +205,14 @@ namespace LightVector
         /// <returns>Image Object to Wpf Shape</returns>
         private static Shape CreateCircle(CircleObject circleObject, Point startCoordinates)
         {
-            var circle = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), circleObject.Radius,
-                circleObject.Radius);
+            // Use (0,0) as the center point. Canvas.SetLeft/Top will move it to the right place.
+            var circle = new EllipseGeometry(new Point(0, 0), circleObject.Radius, circleObject.Radius);
 
             return new Path
             {
                 Data = circle,
-                Stroke = circleObject.Stroke ?? Brushes.Black, // Default stroke if not provided
-                Fill = circleObject.Fill ?? Brushes.Transparent, // Default fill if not provided
+                Stroke = circleObject.Stroke ?? Brushes.Black,
+                Fill = circleObject.Fill ?? Brushes.Transparent,
                 StrokeThickness = circleObject.Thickness
             };
         }
@@ -208,16 +225,81 @@ namespace LightVector
         /// <returns>Image Object to Wpf Shape</returns>
         private static Shape CreateOval(OvalObject ovalObject, Point startCoordinates)
         {
-            var oval = new EllipseGeometry(new Point(startCoordinates.X, startCoordinates.Y), ovalObject.RadiusX,
-                ovalObject.RadiusY);
+            // Same as circle: center at 0,0
+            var oval = new EllipseGeometry(new Point(0, 0), ovalObject.RadiusX, ovalObject.RadiusY);
 
             return new Path
             {
                 Data = oval,
-                Stroke = ovalObject.Stroke ?? Brushes.Black, // Default stroke if not provided
-                Fill = ovalObject.Fill ?? Brushes.Transparent, // Default fill if not provided
+                Stroke = ovalObject.Stroke ?? Brushes.Black,
+                Fill = ovalObject.Fill ?? Brushes.Transparent,
                 StrokeThickness = ovalObject.Thickness
             };
+        }
+
+        /// <summary>
+        /// Gets the graphic bounds.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        private static Rect GetGraphicBounds(SaveObject obj)
+        {
+            // Padding to account for half the stroke thickness so edges aren't clipped
+            double padding = obj.Graphic.Thickness / 2.0;
+
+            switch (obj.Type)
+            {
+                case GraphicTypes.Line:
+                    var l = (LineObject)obj.Graphic;
+                    // A line can go negative relative to start (e.g., direction -50, -50)
+                    double x = Math.Min(0, l.Direction.X);
+                    double y = Math.Min(0, l.Direction.Y);
+                    double width = Math.Abs(l.Direction.X);
+                    double height = Math.Abs(l.Direction.Y);
+                    return new Rect(x - padding, y - padding, width + obj.Graphic.Thickness, height + obj.Graphic.Thickness);
+
+                case GraphicTypes.Circle:
+                    var c = (CircleObject)obj.Graphic;
+                    // EllipseGeometry in your code is centered on the start point
+                    return new Rect(-c.Radius - padding, -c.Radius - padding,
+                                    (c.Radius * 2) + obj.Graphic.Thickness, (c.Radius * 2) + obj.Graphic.Thickness);
+
+                case GraphicTypes.Oval:
+                    var o = (OvalObject)obj.Graphic;
+                    return new Rect(-o.RadiusX - padding, -o.RadiusY - padding,
+                                    (o.RadiusX * 2) + obj.Graphic.Thickness, (o.RadiusY * 2) + obj.Graphic.Thickness);
+
+                case GraphicTypes.Polygon:
+                    var p = (PolygonObject)obj.Graphic;
+                    if (p.Vertices == null || p.Vertices.Count == 0) return new Rect(0, 0, 0, 0);
+
+                    // Find the extremes of all vertices
+                    double minX = p.Vertices.Min(v => v.X);
+                    double minY = p.Vertices.Min(v => v.Y);
+                    double maxX = p.Vertices.Max(v => v.X);
+                    double maxY = p.Vertices.Max(v => v.Y);
+
+                    return new Rect(minX - padding, minY - padding,
+                                    (maxX - minX) + obj.Graphic.Thickness, (maxY - minY) + obj.Graphic.Thickness);
+
+                case GraphicTypes.BezierCurve:
+                    var b = (BezierCurve)obj.Graphic;
+                    if (b.Vectors == null || b.Vectors.Count == 0) return new Rect(0, 0, 0, 0);
+
+                    // Note: Mathematical bounds of a Bezier are complex, but for a 
+                    // "Dumb but Reliable" version, the bounding box of the control points 
+                    // is guaranteed to contain the curve.
+                    double bMinX = b.Vectors.Min(v => v.X);
+                    double bMinY = b.Vectors.Min(v => v.Y);
+                    double bMaxX = b.Vectors.Max(v => v.X);
+                    double bMaxY = b.Vectors.Max(v => v.Y);
+
+                    return new Rect(bMinX - padding, bMinY - padding,
+                                    (bMaxX - bMinX) + obj.Graphic.Thickness, (bMaxY - bMinY) + obj.Graphic.Thickness);
+
+                default:
+                    return new Rect(0, 0, 0, 0);
+            }
         }
     }
 }

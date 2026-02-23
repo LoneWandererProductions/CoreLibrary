@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryGuiTests
- * FILE:        CommonLibraryGuiTests/CommonCtrl.cs
+ * FILE:        CommonCtrl.cs
  * PURPOSE:     Tests for CommonCtrl some Controls, not all yet
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

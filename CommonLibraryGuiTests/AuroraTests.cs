@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryGuiTests
- * FILE:        CommonLibraryGuiTests/AuroraTests.cs
+ * FILE:        AuroraTests.cs
  * PURPOSE:     Tests the Aurorae Display
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -22,7 +22,7 @@ namespace CommonLibraryGuiTests
     /// <summary>
     ///     Some Basic tests for the Aurora Engine and the image Combining
     /// </summary>
-    public sealed class Solaris
+    public sealed class AuroraTests
     {
         /// <summary>
         ///     The codebase

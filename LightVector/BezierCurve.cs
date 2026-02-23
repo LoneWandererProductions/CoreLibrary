@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
  * FILE:        LightVector/BezierCurve.cs
- * PURPOSE:     Hold the CurvBecier e Object
+ * PURPOSE:     Hold the Curve Bezier Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
  */

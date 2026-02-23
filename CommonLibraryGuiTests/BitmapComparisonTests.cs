@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryGuiTests
- * FILE:        CommonLibraryGuiTests/BitmapRenderingTests.cs
+ * FILE:        BitmapRenderingTests.cs
  * PURPOSE:     Mostly Performance tests for our Wpf BitmapImage Viewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

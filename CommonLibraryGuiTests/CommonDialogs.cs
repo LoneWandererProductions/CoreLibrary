@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryGuiTests
- * FILE:        CommonLibraryGuiTests/CommonDialogs.cs
+ * FILE:        CommonDialogs.cs
  * PURPOSE:     Tests for CommonCtrl some Controls, not all yet
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
