@@ -48,7 +48,7 @@ namespace CommonControls.Images
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="colorHsv">The color HSV.</param>
         public delegate void DelegateColor(ColorHsv colorHsv);

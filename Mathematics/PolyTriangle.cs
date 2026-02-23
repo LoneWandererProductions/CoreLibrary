@@ -13,20 +13,35 @@ using DataFormatter;
 
 namespace Mathematics
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     In the future will be retooled to polygons.
+    ///     Helper Object to handle the description of a 3D object.
+    ///     Supports triangles and larger polygons.
     /// </summary>
     public sealed class PolyTriangle : IEquatable<PolyTriangle>
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PolyTriangle" /> class.
+        /// Gets the vertices.
+        /// </summary>
+        /// <value>
+        /// The vertices.
+        /// </value>
+        public Vector3D[] Vertices { get; }
+
+        /// <summary>
+        /// Gets the vertex count.
+        /// </summary>
+        /// <value>
+        /// The vertex count.
+        /// </value>
+        public int VertexCount => Vertices.Length;
+
+        /// <summary>
+        /// Initializes a new instance for a generic polygon (N-gon).
         /// </summary>
         /// <param name="array">The array.</param>
         public PolyTriangle(IReadOnlyList<Vector3D> array)
         {
             Vertices = new Vector3D[array.Count];
-
             for (var i = 0; i < array.Count; i++)
             {
                 Vertices[i] = array[i];
@@ -34,15 +49,27 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets the normal.
+        ///     HIGH PERFORMANCE CONSTRUCTOR: Specifically for standard Triangles.
+        ///     Prevents double heap-allocation of temporary arrays.
+        /// </summary>
+        public PolyTriangle(Vector3D v1, Vector3D v2, Vector3D v3)
+        {
+            Vertices = new[] { v1, v2, v3 };
+        }
+
+        /// <summary>
+        /// Gets the normal of the polygon.
         /// </summary>
         /// <value>
-        ///     The normal.
+        /// The normal.
         /// </value>
         public Vector3D Normal
         {
             get
             {
+                // Safety check: A line or point doesn't have a 3D normal
+                if (VertexCount < 3) return Vector3D.ZeroVector;
+
                 var u = Vertices[1] - Vertices[0];
                 var v = Vertices[2] - Vertices[0];
 
@@ -51,29 +78,13 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets the vertex count.
+        /// Gets or sets the <see cref="Vector3D"/> with the specified i.
         /// </summary>
         /// <value>
-        ///     The vertex count.
-        /// </value>
-        public int VertexCount => Vertices.Length;
-
-        /// <summary>
-        ///     Gets or sets the vertices.
-        /// </summary>
-        /// <value>
-        ///     The vertices.
-        /// </value>
-        public Vector3D[] Vertices { get; }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="Vector3D" /> with the specified i.
-        /// </summary>
-        /// <value>
-        ///     The <see cref="Vector3D" />.
+        /// The <see cref="Vector3D"/>.
         /// </value>
         /// <param name="i">The i.</param>
-        /// <returns>vector by id</returns>
+        /// <returns></returns>
         public Vector3D this[int i]
         {
             get => Vertices[i];
@@ -81,64 +92,24 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Indicates whether the current object is equal to another object of the same type.
-        /// </summary>
-        /// <param name="other">An object to compare with this object.</param>
-        /// <returns>
-        ///     <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise,
-        ///     <see langword="false" />.
-        /// </returns>
-        public bool Equals(PolyTriangle other)
-        {
-            // If the other object is null, return false
-            if (other == null)
-            {
-                return false;
-            }
-
-            // If the other object is the same instance as this object, return true
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            // If the number of vertices is different, the triangles are not equal
-            if (VertexCount != other.VertexCount)
-            {
-                return false;
-            }
-
-            // Compare each vertex of the triangles
-            for (var i = 0; i < VertexCount; i++)
-            {
-                if (Vertices[i] != other.Vertices[i])
-                {
-                    return false;
-                }
-            }
-
-            // If all vertices are equal, the triangles are equal
-            return true;
-        }
-
-        /// <summary>
-        ///     Creates the triangle set.
-        ///     Triangles need to be supplied on a CLOCKWISE order
+        /// Creates the triangle set from a raw list of vertices.
+        /// Triangles need to be supplied in a CLOCKWISE order.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
-        /// <returns>A list with Triangles, three Vectors in one Object</returns>
+        /// <returns>List of Poly Triangles.</returns>
         public static List<PolyTriangle> CreateTri(List<TertiaryVector> triangles)
         {
-            var polygons = new List<PolyTriangle>();
+            // Pre-allocate list capacity for a slight performance boost
+            var polygons = new List<PolyTriangle>(triangles.Count / 3);
 
             for (var i = 0; i <= triangles.Count - 3; i += 3)
             {
-                var v1 = triangles[i];
-                var v2 = triangles[i + 1];
-                var v3 = triangles[i + 2];
-
-                var array = new[] { (Vector3D)v1, (Vector3D)v2, (Vector3D)v3 };
-                var tri = new PolyTriangle(array);
+                // Use the new highly optimized constructor directly
+                var tri = new PolyTriangle(
+                    (Vector3D)triangles[i],
+                    (Vector3D)triangles[i + 1],
+                    (Vector3D)triangles[i + 2]
+                );
 
                 polygons.Add(tri);
             }
@@ -147,35 +118,89 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets the plot point.
+        /// Gets the plot point.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>2d Vector, we only need these anyways for drawing.</returns>
+        /// <returns></returns>
         public Vector2D GetPlotPoint(int id)
         {
-            if (id >= VertexCount || id < 0)
-            {
-                return Vector2D.ZeroVector;
-            }
+            if (id >= VertexCount || id < 0) return Vector2D.ZeroVector;
+
             return (Vector2D)Vertices[id];
         }
 
+
         /// <summary>
-        ///     Returns a hash code for this instance.
+        /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
         /// <returns>
-        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
         /// </returns>
-        public override int GetHashCode()
+        public bool Equals(PolyTriangle other)
         {
-            return Vertices[0].GetHashCode();
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (VertexCount != other.VertexCount) return false;
+
+            for (var i = 0; i < VertexCount; i++)
+            {
+                if (Vertices[i] != other.Vertices[i]) return false;
+            }
+
+            return true;
         }
 
         /// <summary>
-        ///     Converts to string.
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj) => obj is PolyTriangle other && Equals(other);
+
+        /// <summary>
+        /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        ///     A <see cref="string" /> that represents this instance.
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            // Safely combine the hashes of up to the first 3 vertices 
+            // to drastically reduce hash collisions for connected geometry.
+            if (VertexCount >= 3)
+                return HashCode.Combine(Vertices[0], Vertices[1], Vertices[2]);
+            if (VertexCount == 2)
+                return HashCode.Combine(Vertices[0], Vertices[1]);
+            if (VertexCount == 1)
+                return Vertices[0].GetHashCode();
+
+            return 0;
+        }
+
+        public static bool operator ==(PolyTriangle first, PolyTriangle second)
+        {
+            if (first is null) return second is null;
+            return first.Equals(second);
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(PolyTriangle first, PolyTriangle second) => !(first == second);
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -184,56 +209,7 @@ namespace Mathematics
             {
                 sb.Append(i).Append(MathResources.Separator).Append(Vertices[i]).Append(Environment.NewLine);
             }
-
             return sb.ToString();
-        }
-
-        /// <summary>
-        ///     Determines whether the specified <see cref="Object" />, is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="Object" /> to compare with this instance.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return obj is PolyTriangle other && Equals(other);
-        }
-
-        /// <summary>
-        ///     Implements the operator ==.
-        /// </summary>
-        /// <param name="first">The first.</param>
-        /// <param name="second">The second.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static bool operator ==(PolyTriangle first, PolyTriangle second)
-        {
-            if (first is null && second is null)
-            {
-                return true;
-            }
-
-            if (first is null || second is null)
-            {
-                return false;
-            }
-
-            return first.Equals(second);
-        }
-
-        /// <summary>
-        ///     Implements the operator !=.
-        /// </summary>
-        /// <param name="first">The first.</param>
-        /// <param name="second">The second.</param>
-        /// <returns>
-        ///     The result of the operator.
-        /// </returns>
-        public static bool operator !=(PolyTriangle first, PolyTriangle second)
-        {
-            return !(first == second);
         }
     }
 }

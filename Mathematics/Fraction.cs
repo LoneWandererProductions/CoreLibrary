@@ -159,7 +159,7 @@ namespace Mathematics
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
-        /// Because our constructor automatically reduces fractions (e.g., 2/4 becomes 1/2), 
+        /// Because our constructor automatically reduces fractions (e.g., 2/4 becomes 1/2),
         /// two equal fractions will ALWAYS have the exact same Numerator and Denominator.
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
@@ -181,7 +181,7 @@ namespace Mathematics
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode() => HashCode.Combine(Numerator, Denominator);
 

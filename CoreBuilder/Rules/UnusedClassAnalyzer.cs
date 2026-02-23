@@ -25,7 +25,7 @@ namespace CoreBuilder.Rules
     /// Analyzer that detects unused classes across a project.
     /// Works by scanning all files for class declarations and then checking
     /// whether those classes are referenced anywhere else in the project.
-    /// 
+    ///
     /// Limitations:
     /// - Simple regex approach (not a full C# parser).
     /// - May flag false positives if a class is used via reflection or dynamically.

@@ -25,7 +25,7 @@ namespace CoreBuilder.Rules
     /// Analyzer that detects unused constants and static readonly fields.
     /// Works by scanning all files for declarations and then checking
     /// whether those constants are referenced anywhere else in the project.
-    /// 
+    ///
     /// Limitations:
     /// - Simple regex approach (not a full C# parser).
     /// - May flag false positives if a constant is used via reflection, nameof(), etc.

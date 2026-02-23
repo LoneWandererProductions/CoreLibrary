@@ -16,7 +16,7 @@ namespace DataFormatter
     /// <summary>
     ///     Three Numbers, here it will describe a 3dimensional Vector
     /// </summary>
-    public sealed class TertiaryVector
+    public readonly struct TertiaryVector
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.

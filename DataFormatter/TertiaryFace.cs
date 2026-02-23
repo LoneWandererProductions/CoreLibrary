@@ -16,7 +16,7 @@ namespace DataFormatter
     /// <summary>
     ///     Plot file for the vectors
     /// </summary>
-    public sealed class TertiaryFace
+    public readonly struct TertiaryFace
     {
         /// <summary>
         ///     Gets the x.
