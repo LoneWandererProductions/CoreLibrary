@@ -35,6 +35,15 @@ namespace Imaging
     public static class ImageGifHandler
     {
         /// <summary>
+        /// Deletes the object.
+        /// </summary>
+        /// <param name="hObject">The h object.</param>
+        /// <returns>Status of cleanup</returns>
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        internal static extern bool DeleteObject(IntPtr hObject);
+
+        /// <summary>
         ///     Gets the image information.
         /// </summary>
         /// <param name="path">The path.</param>
@@ -109,14 +118,15 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Creates the gif.
-        ///     The gif is slightly bigger for now
-        ///     Sources:
-        ///     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
+        /// Creates the gif.
+        /// The gif is slightly bigger for now
+        /// Sources:
+        /// https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
         /// </summary>
         /// <param name="path">The path to the folder.</param>
         /// <param name="target">The target path.</param>
-        internal static void CreateGif(string path, string target)
+        /// <param name="delayMs">Optional delay between frames in milliseconds.</param>
+        internal static void CreateGif(string path, string target, int delayMs = 100)
         {
             //get all allowed files from target folder
             var lst = FileHelper.GetFilesByExtensionFullPath(path, ImagingResources.Appendix);
@@ -131,15 +141,16 @@ namespace Imaging
                 return;
             }
 
-            GifCreator(btm, target);
+            GifCreator(btm, target, delayMs);
         }
 
         /// <summary>
-        ///     Creates the GIF.
+        /// Creates the GIF.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="target">The target.</param>
-        internal static void CreateGif(List<string> path, string target)
+        /// <param name="delayMs">Optional delay between frames in milliseconds.</param>
+        internal static void CreateGif(List<string> path, string target, int delayMs = 100)
         {
             //collect and convert all images
             var btm = path.ConvertAll(ImageStream.GetOriginalBitmap);
@@ -149,7 +160,18 @@ namespace Imaging
                 return;
             }
 
-            GifCreator(btm, target);
+            GifCreator(btm, target, delayMs);
+        }
+
+        /// <summary>
+        ///     Creates the GIF with variable delays per frame using Tuples.
+        /// </summary>
+        /// <param name="frames">Collection of Bitmap and specific DelayMs tuples.</param>
+        /// <param name="target">The target.</param>
+        internal static void CreateGif(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
+        {
+            if (frames == null) return;
+            GifCreator(frames, target);
         }
 
         /// <summary>
@@ -168,40 +190,81 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Create the gif.
+        ///    Create the gif with a fixed delay.
         /// </summary>
         /// <param name="btm">A list of Bitmaps.</param>
         /// <param name="target">The target.</param>
-        private static void GifCreator(IEnumerable<Bitmap> btm, string target)
+        /// <summary>
+        ///     Create the gif from a list of Bitmaps.
+        /// </summary>
+        /// <param name="btm">A list of Bitmaps.</param>
+        /// <param name="target">The target.</param>
+        private static void GifCreator(IEnumerable<Bitmap> btm, string target, int delayMs)
         {
             var gEnc = new GifBitmapEncoder();
+            ushort gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
 
-            foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
-                         System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                             bmp,
-                             IntPtr.Zero,
-                             Int32Rect.Empty,
-                             BitmapSizeOptions.FromEmptyOptions())))
+            foreach (var bmpImage in btm)
             {
-                gEnc.Frames.Add(BitmapFrame.Create(src));
+                IntPtr hBitmap = bmpImage.GetHbitmap();
+                try
+                {
+                    var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                        hBitmap,
+                        IntPtr.Zero,
+                        Int32Rect.Empty,
+                        BitmapSizeOptions.FromEmptyOptions());
+
+                    var metadata = new BitmapMetadata("gif");
+                    metadata.SetQuery("/grctlext/Delay", gifDelay);
+
+                    gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
+                }
+                finally
+                {
+                    DeleteObject(hBitmap);
+                }
             }
 
-            using var ms = new MemoryStream();
-            gEnc.Save(ms);
-            var fileBytes = ms.ToArray();
-            // write custom header
-            // This is the NETSCAPE2.0 Application Extension.
-            var applicationExtension =
-                new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
-            var newBytes = new List<byte>();
-            newBytes.AddRange(fileBytes.Take(13));
-            newBytes.AddRange(applicationExtension);
-            newBytes.AddRange(fileBytes.Skip(13));
-            File.WriteAllBytes(target, newBytes.ToArray());
+            SaveWithLoopingExtension(gEnc, target);
         }
 
         /// <summary>
-        ///     Creates the GIF.
+        /// Create the gif with variable per-frame delay using Tuples.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
+        /// <param name="target">The target.</param>
+        private static void GifCreator(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
+        {
+            var gEnc = new GifBitmapEncoder();
+
+            foreach (var frame in frames)
+            {
+                IntPtr hBitmap = frame.Image.GetHbitmap();
+                try
+                {
+                    var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                        hBitmap,
+                        IntPtr.Zero,
+                        Int32Rect.Empty,
+                        BitmapSizeOptions.FromEmptyOptions());
+
+                    var metadata = new BitmapMetadata("gif");
+                    metadata.SetQuery("/grctlext/Delay", (ushort)(frame.DelayMs / 10));
+
+                    gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
+                }
+                finally
+                {
+                    DeleteObject(hBitmap);
+                }
+            }
+
+            SaveWithLoopingExtension(gEnc, target);
+        }
+
+        /// <summary>
+        /// Creates the GIF from FrameInfo.
         /// </summary>
         /// <param name="frames">The frames.</param>
         /// <param name="target">The target.</param>
@@ -213,28 +276,61 @@ namespace Imaging
 
             foreach (var frameInfo in frames)
             {
-                var bitmapSource = BitmapFrame.Create(
-                    BitmapSource.Create(
-                        frameInfo.Image.Width,
-                        frameInfo.Image.Height,
-                        96, 96, // DPI
-                        PixelFormats.Bgra32, // Or appropriate format
-                        null, // No palette for Bgra32
-                        frameInfo.Image.LockBits(new Rectangle(0, 0, frameInfo.Image.Width, frameInfo.Image.Height),
-                            ImageLockMode.ReadOnly,
-                            PixelFormat.Format32bppArgb).Scan0,
-                        frameInfo.Image.Height * frameInfo.Image.Width * 4, // Image byte size
-                        frameInfo.Image.Width * 4)); // Bytes per row
+                var img = frameInfo.Image;
 
-                var metadata = new BitmapMetadata(ImagingResources.GifMetadata);
-                metadata.SetQuery(ImagingResources.GifMetadataQueryDelay,
-                    (ushort)(frameInfo.DelayTime * 100)); // Delay in hundredths of seconds
+                var bmpData = img.LockBits(
+                    new Rectangle(0, 0, img.Width, img.Height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
 
-                gEnc.Frames.Add(BitmapFrame.Create(bitmapSource, null, metadata, null));
+                try
+                {
+                    var bitmapSource = BitmapSource.Create(
+                        img.Width,
+                        img.Height,
+                        img.HorizontalResolution,
+                        img.VerticalResolution,
+                        PixelFormats.Bgra32,
+                        null,
+                        bmpData.Scan0,
+                        img.Height * bmpData.Stride,
+                        bmpData.Stride);
+
+                    var metadata = new BitmapMetadata(ImagingResources.GifMetadata);
+                    metadata.SetQuery(ImagingResources.GifMetadataQueryDelay, (ushort)(frameInfo.DelayTime * 100));
+
+                    gEnc.Frames.Add(BitmapFrame.Create(bitmapSource, null, metadata, null));
+                }
+                finally
+                {
+                    img.UnlockBits(bmpData);
+                }
             }
 
             using var fs = new FileStream(target, FileMode.Create, FileAccess.Write);
             gEnc.Save(fs);
+        }
+
+        /// <summary>
+        /// Helper method to inject the Netscape looping extension.
+        /// </summary>
+        /// <param name="gEnc">The g enc.</param>
+        /// <param name="target">The target.</param>
+        private static void SaveWithLoopingExtension(GifBitmapEncoder gEnc, string target)
+        {
+            using var ms = new MemoryStream();
+            gEnc.Save(ms);
+            var fileBytes = ms.ToArray();
+
+            // This is the NETSCAPE2.0 Application Extension.
+            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+
+            var newBytes = new List<byte>(fileBytes.Length + applicationExtension.Length);
+            newBytes.AddRange(fileBytes.Take(13));
+            newBytes.AddRange(applicationExtension);
+            newBytes.AddRange(fileBytes.Skip(13));
+
+            File.WriteAllBytes(target, newBytes.ToArray());
         }
     }
 }
