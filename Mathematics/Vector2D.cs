@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Vector2D.cs
+ * FILE:        Vector2D.cs
  * PURPOSE:     Basic 2D Vector implementation
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3DRegister.cs
+ * FILE:        Projection3DRegister.cs
  * PURPOSE:     Basic Config for the 3D Camera
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

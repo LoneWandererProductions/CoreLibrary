@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/FastMath.cs
+ * FILE:        FastMath.cs
  * PURPOSE:     Simple optimized Math Functions
  * PROGRAMMER:   Peter Geinitz (Wayfarer)
  */
@@ -32,7 +32,7 @@ namespace Mathematics
         public static float FastSin(float x)
         {
             x -= (int)(x / TwoPi) * TwoPi; // Faster modulo operation
-            return x * (1.27323954f - (0.405284735f * x * x));
+            return x * (1.27323954f - 0.405284735f * x * x);
         }
 
         /// <summary>

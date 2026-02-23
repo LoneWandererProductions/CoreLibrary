@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3DCamera.cs
+ * FILE:        Projection3DCamera.cs
  * PURPOSE:     Does the heavy liftign for the 3D Display and joins all the Matrices
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms

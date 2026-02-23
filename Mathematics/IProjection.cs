@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/IProjection.cs
+ * FILE:        IProjection.cs
  * PURPOSE:     3D Projection Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

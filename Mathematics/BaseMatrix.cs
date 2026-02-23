@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/BaseMatrix.cs
+ * FILE:        BaseMatrix.cs
  * PURPOSE:     Matrix Object with some basic Operators
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix

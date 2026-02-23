@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Transform.cs
+ * FILE:        Transform.cs
  * PURPOSE:     Controller Class for all 3D Projections and Camera
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

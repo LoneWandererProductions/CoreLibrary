@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3D.cs
+ * FILE:        Projection3D.cs
  * PURPOSE:     3D Matrix transformations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms

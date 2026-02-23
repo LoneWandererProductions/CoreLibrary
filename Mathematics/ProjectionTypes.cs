@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/ProjectionTypes.cs
+ * FILE:        ProjectionTypes.cs
  * PURPOSE:     Config enums for the 3d Projection.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

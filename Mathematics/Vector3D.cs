@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Vector3D.cs
+ * FILE:        Vector3D.cs
  * PURPOSE:     Basic 3D Vector implementation
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

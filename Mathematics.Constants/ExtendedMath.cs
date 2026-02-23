@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/ExtendedMath.cs
+ * PROJECT:     Mathematics.Constants
+ * FILE:        ExtendedMath.cs
  * PURPOSE:     Helper class that extends some Math functions, mostly comparing double values
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/961038/how-do-i-properly-write-math-extension-methods-for-int-double-float-etc
@@ -10,10 +10,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
 using System.Runtime.CompilerServices;
 
-namespace Mathematics
+namespace Mathematics.Constants
 {
     /// <summary>
     ///     Adds some further improvements to certain Math functions
@@ -52,14 +51,14 @@ namespace Mathematics
 
         /// <summary>
         ///     Initializes the <see cref="ExtendedMath" /> class.
-        ///     Precalculate all necessary values.
+        ///     Precalculated necessary values.
         /// </summary>
         static ExtendedMath()
         {
             for (var degree = 0; degree < 360; degree++)
             {
                 // SIN Lookup
-                if (Constants.Sinus.TryGetValue(degree, out var sinValue))
+                if (MathConstants.Sinus.TryGetValue(degree, out var sinValue))
                 {
                     SinDLookup[degree] = sinValue;
                     SinFLookup[degree] = (float)sinValue;
@@ -71,7 +70,7 @@ namespace Mathematics
                 }
 
                 // COS Lookup
-                if (Constants.CoSinus.TryGetValue(degree, out var cosValue))
+                if (MathConstants.CoSinus.TryGetValue(degree, out var cosValue))
                 {
                     CosDLookup[degree] = cosValue;
                     CosFLookup[degree] = (float)cosValue;
@@ -83,7 +82,7 @@ namespace Mathematics
                 }
 
                 // TAN Lookup
-                if (Constants.Tangents.TryGetValue(degree, out var tanValue))
+                if (MathConstants.Tangents.TryGetValue(degree, out var tanValue))
                 {
                     TanDLookup[degree] = tanValue;
                     TanFLookup[degree] = (float)tanValue;

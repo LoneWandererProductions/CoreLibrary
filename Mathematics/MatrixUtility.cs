@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/MatrixUtility.cs
+ * FILE:        MatrixUtility.cs
  * PURPOSE:     Helper class that does some basic Matrix operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix

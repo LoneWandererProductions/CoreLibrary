@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/MathResources.cs
+ * FILE:        MathResources.cs
  * PURPOSE:     Some basic string Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

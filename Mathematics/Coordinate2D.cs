@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Coordinate2D.cs
+ * FILE:        Coordinate2D.cs
  * PURPOSE:     A more clever way to handle some 2D coordinate Stuff
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

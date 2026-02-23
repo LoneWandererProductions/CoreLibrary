@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/MatrixInverse.cs
+ * FILE:        MatrixInverse.cs
  * PURPOSE:     Helper class that does some basic Matrix operations, Determinant, Solve, Inverse
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix

@@ -1,23 +1,20 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Mathematics
- * FILE:        Mathematics/Constants.cs
+ * PROJECT:     Mathematics.Constants
+ * FILE:        MathConstants.cs
  * PURPOSE:     Some Basic Math Constants to increase the correct values.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
-
-namespace Mathematics
+namespace Mathematics.Constants
 {
     /// <summary>
     ///     Some Basic Math Constants
     ///     For future events will be extended
     /// </summary>
-    public static class Constants
+    public static class MathConstants
     {
         /// <summary>
         ///     The SQRT2

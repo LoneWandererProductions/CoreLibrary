@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Permutations.cs
+ * FILE:        Permutations.cs
  * PURPOSE:     Some basic Permutations and Combinations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

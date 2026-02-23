@@ -13,12 +13,12 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
 
-namespace CommonControls.Converters
+namespace CommonControls.Converter
 {
     /// <summary>
     /// Converter that converts between a Color and its name as a string for WPF bindings. It uses reflection to find the name of the color in System.Windows.Media.Colors when converting from Color to string, and uses ColorConverter to convert from string to Color.
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
+    /// <seealso cref="IValueConverter" />
     public class ColorToNameConverter : IValueConverter
     {
         /// <summary>

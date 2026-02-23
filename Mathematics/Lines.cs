@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Bresenham.cs
+ * FILE:        Bresenham.cs
  * PURPOSE:     Implementation of the Bresenham Algorithm, Helps drawing lines.
  *              Alternative Wu's Algorithm TODO
  * PROGRAMER:   Peter Geinitz (Wayfarer)

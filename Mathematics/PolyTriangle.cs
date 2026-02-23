@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/PolyTriangle.cs
+ * FILE:        PolyTriangle.cs
  * PURPOSE:     Helper Object to handle the description of the 3d object. It also supports more than 3 Vectors, in case we want to go full polygon.s
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
