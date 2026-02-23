@@ -23,7 +23,7 @@ namespace Mathematics
     ///     Coordinate 2d Helper Class
     /// </summary>
     [DebuggerDisplay("{ToString()}")]
-    public readonly struct Coordinate2D : ICloneable, IEquatable<Coordinate2D>
+    public readonly struct Coordinate2D : IEquatable<Coordinate2D>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
@@ -98,19 +98,6 @@ namespace Mathematics
         ///     The x.
         /// </value>
         public int X { get;  }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        ///     A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            // Create a new instance of Coordinate2D and copy the properties
-            return new Coordinate2D(X, Y);
-        }
 
         /// <summary>
         ///     Gets the instance.

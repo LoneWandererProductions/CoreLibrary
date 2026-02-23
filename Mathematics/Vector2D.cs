@@ -21,7 +21,7 @@ namespace Mathematics
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public sealed class Vector2D : ICloneable
+    public readonly struct Vector2D : IEquatable<Vector2D>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector2D" /> class.
@@ -47,7 +47,7 @@ namespace Mathematics
         /// <value>
         ///     The x.
         /// </value>
-        public double X { get; set; }
+        public double X { get; }
 
         /// <summary>
         ///     Gets or sets the y.
@@ -55,7 +55,7 @@ namespace Mathematics
         /// <value>
         ///     The y.
         /// </value>
-        public double Y { get; set; }
+        public double Y { get; }
 
         /// <summary>
         ///     Gets the zero Vector.
@@ -89,18 +89,6 @@ namespace Mathematics
         /// </value>
         public int RoundedY => (int)Math.Round(Y, 0);
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        ///     A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            return new Vector2D(X, Y);
-        }
-
         /// <summary>
         ///     Equals the specified other.
         /// </summary>
@@ -108,7 +96,7 @@ namespace Mathematics
         /// <returns>Equal or not</returns>
         public bool Equals(Vector2D other)
         {
-            return X.Equals(other?.X) && Y.Equals(other?.Y);
+            return X.Equals(other.X) && Y.Equals(other.Y);
         }
 
         /// <summary>
@@ -155,7 +143,7 @@ namespace Mathematics
         /// </returns>
         public static bool operator ==(Vector2D first, Vector2D second)
         {
-            return second is not null && first is not null && Math.Abs(first.X - second.X) < MathResources.Tolerance &&
+            return Math.Abs(first.X - second.X) < MathResources.Tolerance &&
                    Math.Abs(first.Y - second.Y) < MathResources.Tolerance;
         }
 
@@ -169,7 +157,7 @@ namespace Mathematics
         /// </returns>
         public static bool operator !=(Vector2D first, Vector2D second)
         {
-            return second is not null && first is not null && (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
+            return (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
                                                                Math.Abs(first.Y - second.Y) > MathResources.Tolerance);
         }
 
@@ -318,7 +306,7 @@ namespace Mathematics
         public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector2D { X = X / l, Y = Y / l };
+            return new Vector2D (  X / l, Y / l );
         }
 
         /// <summary>

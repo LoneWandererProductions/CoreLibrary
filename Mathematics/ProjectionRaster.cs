@@ -147,34 +147,27 @@ namespace Mathematics
         {
             var lst = new List<PolyTriangle>();
 
+            // Pre-calculate the scales once per frame/call, not per vertex!
+            double scaleX = 0.5d * width;
+            double scaleY = 0.5d * height;
+
             foreach (var triangle in triangles)
             {
-                // Scale into view, we moved the normalising into cartesian space
+                for (int i = 0; i < 3; i++)
+                {
+                    var v = triangle[i];
 
-                triangle[0] /= triangle[0].W;
-                triangle[1] /= triangle[1].W;
-                triangle[2] /= triangle[2].W;
+                    // Safety check: Prevent DivisionByZero if W is 0
+                    double w = (v.W != 0) ? v.W : 1.0d;
 
-                // X/Y are inverted so put them back
-                triangle[0].X *= -1.0f;
-                triangle[1].X *= -1.0f;
-                triangle[2].X *= -1.0f;
-                triangle[0].Y *= -1.0f;
-                triangle[1].Y *= -1.0f;
-                triangle[2].Y *= -1.0f;
+                    // Combine Divide (Normalize), Invert, Offset, and Scale into branchless math
+                    double newX = (-(v.X / w) + 1.0d) * scaleX;
+                    double newY = (-(v.Y / w) + 1.0d) * scaleY;
+                    double newZ = v.Z / w;
 
-                // Offset verts into visible normalized space
-                var vOffsetView = new Vector3D(1, 1, 0);
-                triangle[0] += vOffsetView;
-                triangle[1] += vOffsetView;
-                triangle[2] += vOffsetView;
-
-                triangle[0].X *= 0.5d * width;
-                triangle[0].Y *= 0.5d * height;
-                triangle[1].X *= 0.5d * width;
-                triangle[1].Y *= 0.5d * height;
-                triangle[2].X *= 0.5d * width;
-                triangle[2].Y *= 0.5d * height;
+                    // Create the immutable struct and explicitly overwrite the old one in the triangle
+                    triangle[i] = new Vector3D(newX, newY, newZ, w);
+                }
 
                 lst.Add(triangle);
             }
@@ -191,33 +184,29 @@ namespace Mathematics
         /// <returns>
         ///     Center on Screen
         /// </returns>
-        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width,
-            int height)
+        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width, int height)
         {
             var lst = new List<PolyTriangle>();
 
+            // Calculate scale modifiers once outside the loop to save CPU cycles
+            double scaleX = 0.25d * width;
+            double scaleY = 0.25d * height;
+
             foreach (var triangle in triangles)
             {
-                // X/Y are inverted so put them back
-                triangle[0].X *= -1.0f;
-                triangle[1].X *= -1.0f;
-                triangle[2].X *= -1.0f;
-                triangle[0].Y *= -1.0f;
-                triangle[1].Y *= -1.0f;
-                triangle[2].Y *= -1.0f;
+                // Loop through the 3 vertices of the triangle
+                for (int i = 0; i < 3; i++)
+                {
+                    var v = triangle[i];
 
-                // Offset verts into visible normalized space
-                var vOffsetView = new Vector3D(2.5, 3, 0);
-                triangle[0] += vOffsetView;
-                triangle[1] += vOffsetView;
-                triangle[2] += vOffsetView;
+                    // 1. Invert X/Y, Add Offset, and Scale all in one branchless step
+                    double newX = (-v.X + 2.5d) * scaleX;
+                    double newY = (-v.Y + 3.0d) * scaleY;
 
-                triangle[0].X *= 0.25d * width;
-                triangle[0].Y *= 0.25d * height;
-                triangle[1].X *= 0.25d * width;
-                triangle[1].Y *= 0.25d * height;
-                triangle[2].X *= 0.25d * width;
-                triangle[2].Y *= 0.25d * height;
+                    // 2. Create the new immutable Vector3D and assign it back.
+                    // Note: We preserve the original Z and W values!
+                    triangle[i] = new Vector3D(newX, newY, v.Z, v.W);
+                }
 
                 lst.Add(triangle);
             }

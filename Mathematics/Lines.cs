@@ -114,7 +114,7 @@ namespace Mathematics
                 var error2 = dz2 - Math.Abs(dx);
                 while (x != xEnd)
                 {
-                    lst.Add(new Vector3D { X = x, Y = y, Z = z });
+                    lst.Add(new Vector3D(x, y, z));
                     if (error1 > 0)
                     {
                         y += signY;
@@ -139,7 +139,7 @@ namespace Mathematics
                 var error2 = dx2 - Math.Abs(dz);
                 while (z != zEnd)
                 {
-                    lst.Add(new Vector3D { X = x, Y = y, Z = z });
+                    lst.Add(new Vector3D(x, y, z));
                     if (error1 > 0)
                     {
                         y += signY;
@@ -164,7 +164,7 @@ namespace Mathematics
                 var error2 = dz2 - Math.Abs(dy);
                 while (y != yEnd)
                 {
-                    lst.Add(new Vector3D { X = x, Y = y, Z = z });
+                    lst.Add(new Vector3D ( x, y, z ));
                     if (error1 > 0)
                     {
                         x += signX;
@@ -183,7 +183,7 @@ namespace Mathematics
                 }
             }
 
-            lst.Add(new Vector3D { X = x, Y = y, Z = z }); // Add the last point
+            lst.Add(new Vector3D(x, y, z)); // Add the last point
             return lst;
         }
     }

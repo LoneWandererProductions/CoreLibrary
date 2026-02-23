@@ -87,7 +87,7 @@ namespace Mathematics
         /// <value>
         ///     The translation.
         /// </value>
-        public Vector3D? Translation { get; init; }
+        public Vector3D Translation { get; init; }
 
         /// <summary>
         ///     Gets or sets the rotation of the World.
@@ -95,7 +95,7 @@ namespace Mathematics
         /// <value>
         ///     The rotation.
         /// </value>
-        public Vector3D? Rotation { get; init; }
+        public Vector3D Rotation { get; init; }
 
         /// <summary>
         ///     Gets or sets the scale of the World.
@@ -103,7 +103,7 @@ namespace Mathematics
         /// <value>
         ///     The scale.
         /// </value>
-        public Vector3D? Scale { get; init; }
+        public Vector3D Scale { get; init; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
@@ -168,13 +168,17 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void UpCamera(double y = 0.05d)
         {
+            if (!Position.HasValue) return;
+
             switch (CameraType)
             {
                 case Cameras.Orbit:
                     Position += Up * y;
                     break;
                 case Cameras.PointAt:
-                    Position.Y += y;
+                    // Extract the old value, add to Y, and assign a brand new Vector3D
+                    var p = Position.Value;
+                    Position = new Vector3D(p.X, p.Y + y, p.Z, p.W);
                     break;
             }
         }
@@ -186,13 +190,16 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         public void DownCamera(double y = 0.05d)
         {
+            if (!Position.HasValue) return;
+
             switch (CameraType)
             {
                 case Cameras.Orbit:
                     Position -= Up * y;
                     break;
                 case Cameras.PointAt:
-                    Position.Y -= y;
+                    var p = Position.Value;
+                    Position = new Vector3D(p.X, p.Y - y, p.Z, p.W);
                     break;
             }
         }
@@ -203,15 +210,18 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void LeftCamera(double x = 0.05d)
         {
+            if (!Position.HasValue) return;
+
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Position -= Right * x; //switch
+                    Position -= Right * x;
                     Trace.WriteLine("pos l right: " + Position);
                     Trace.WriteLine("pos l: " + Position);
                     break;
                 case Cameras.PointAt:
-                    Position.X -= x;
+                    var p = Position.Value;
+                    Position = new Vector3D(p.X - x, p.Y, p.Z, p.W);
                     break;
             }
         }
@@ -223,16 +233,18 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         public void RightCamera(double x = 0.05d)
         {
+            if (!Position.HasValue) return;
+
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Position += Right * x; //switch
+                    Position += Right * x;
                     Trace.WriteLine("pos r right: " + Position);
                     Trace.WriteLine("pos r: " + Position);
-
                     break;
                 case Cameras.PointAt:
-                    Position.X += x;
+                    var p = Position.Value;
+                    Position = new Vector3D(p.X + x, p.Y, p.Z, p.W);
                     break;
             }
         }

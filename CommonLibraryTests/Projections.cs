@@ -181,18 +181,26 @@ namespace CommonLibraryTests
         [TestMethod]
         public void ModelMatrix()
         {
-            var transform = Transform.GetInstance();
-
-            var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
-
-            var model = new BaseMatrix { Matrix = matrix };
+            // 1. Initialize the Transform with the translation already baked in!
+            // Using the GetInstance overload that accepts translation, scale, and rotation.
+            var transform = Transform.GetInstance(
+                translation: new Vector3D(0, 0, 3), // Here is your Z = 3
+                scale: Vector3D.UnitVector,
+                rotation: Vector3D.ZeroVector
+            );
             transform.Position = new Vector3D(0, 0, 0);
-            transform.Translation.Z = 3;
+
+            // 2. Use the safe constructor for the Matrix
+            var matrix = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 3, 1 } };
+            var model = new BaseMatrix(matrix);
+
             var cache = Projection3DCamera.ModelMatrix(transform);
 
             var check = model.Equals(cache);
             Trace.WriteLine(cache.ToString());
-            Trace.WriteLine(transform.Position.ToString());
+
+            // Safely unwrap the nullable Position for the Trace
+            Trace.WriteLine(transform.Position?.ToString() ?? "null");
 
             Assert.IsTrue(check, "Not the Correct Model Matrix");
 
@@ -248,35 +256,31 @@ namespace CommonLibraryTests
         ///     Multiplies the matrix vector.
         /// </summary>
         /// <param name="i">The i.</param>
-        /// <param name="matProj">The mat proj.</param>
+        /// <param name="matProj">The projection matrix.</param>
         /// <returns>The Projection Vector</returns>
         private static Vector3D MultiplyMatrixVector(Vector3D i, BaseMatrix matProj)
         {
-            var o = new Vector3D
-            {
-                X = (i.X * matProj.Matrix[0, 0]) + (i.Y * matProj.Matrix[1, 0]) + (i.Z * matProj.Matrix[2, 0]) +
-                    matProj.Matrix[3, 0],
-                Y = (i.X * matProj.Matrix[0, 1]) + (i.Y * matProj.Matrix[1, 1]) + (i.Z * matProj.Matrix[2, 1]) +
-                    matProj.Matrix[3, 1],
-                Z = (i.X * matProj.Matrix[0, 2]) + (i.Y * matProj.Matrix[1, 2]) + (i.Z * matProj.Matrix[2, 2]) +
-                    matProj.Matrix[3, 2]
-            };
+            // 1. Calculate raw transformed coordinates into local variables first
+            double newX = (i.X * matProj.Matrix[0, 0]) + (i.Y * matProj.Matrix[1, 0]) + (i.Z * matProj.Matrix[2, 0]) + matProj.Matrix[3, 0];
+            double newY = (i.X * matProj.Matrix[0, 1]) + (i.Y * matProj.Matrix[1, 1]) + (i.Z * matProj.Matrix[2, 1]) + matProj.Matrix[3, 1];
+            double newZ = (i.X * matProj.Matrix[0, 2]) + (i.Y * matProj.Matrix[1, 2]) + (i.Z * matProj.Matrix[2, 2]) + matProj.Matrix[3, 2];
 
-            var w = (i.X * matProj.Matrix[0, 3]) + (i.Y * matProj.Matrix[1, 3]) + (i.Z * matProj.Matrix[2, 3]) +
-                    matProj.Matrix[3, 3];
+            // 2. Calculate W (the homogeneous coordinate)
+            double w = (i.X * matProj.Matrix[0, 3]) + (i.Y * matProj.Matrix[1, 3]) + (i.Z * matProj.Matrix[2, 3]) + matProj.Matrix[3, 3];
 
             w = Math.Round(w, 2);
 
-            if (w == 0.0f)
+            // 3. Perform the Perspective Divide if W is not zero
+            // Note: Comparing exact double to 0.0f is risky. A tiny tolerance check is safer.
+            if (Math.Abs(w) > 0.0001)
             {
-                return o;
+                newX /= w;
+                newY /= w;
+                newZ /= w;
             }
 
-            o.X /= w;
-            o.Y /= w;
-            o.Z /= w;
-
-            return o;
+            // 4. Create and return the immutable struct ONCE with the final, perfect values
+            return new Vector3D(newX, newY, newZ, w);
         }
     }
 }

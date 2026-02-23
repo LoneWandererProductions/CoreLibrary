@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
  * FILE:        PolyTriangle.cs
- * PURPOSE:     Helper Object to handle the description of the 3d object. It also supports more than 3 Vectors, in case we want to go full polygon.s
+ * PURPOSE:     Helper Object to handle the description of the 3d object. It also supports more than 3 Vectors, in case we want to go full polygon.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -153,7 +153,11 @@ namespace Mathematics
         /// <returns>2d Vector, we only need these anyways for drawing.</returns>
         public Vector2D GetPlotPoint(int id)
         {
-            return id > VertexCount || id < 0 ? null : (Vector2D)Vertices[id];
+            if (id >= VertexCount || id < 0)
+            {
+                return Vector2D.ZeroVector;
+            }
+            return (Vector2D)Vertices[id];
         }
 
         /// <summary>

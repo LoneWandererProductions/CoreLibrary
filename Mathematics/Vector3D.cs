@@ -19,11 +19,11 @@ using DataFormatter;
 
 namespace Mathematics
 {
-    /// <inheritdoc cref="ICloneable" />
+    /// <inheritdoc cref="IEquatable" />
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public sealed class Vector3D : ICloneable, IEquatable<Vector3D>
+    public readonly struct Vector3D : IEquatable<Vector3D>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector3D" /> class.
@@ -31,30 +31,34 @@ namespace Mathematics
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="z">The z.</param>
-        public Vector3D(double x, double y, double z)
+        // Passes to the master constructor below, ensuring W defaults to 1.0
+        public Vector3D(double x, double y, double z) : this(x, y, z, 1.0d)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Vector3D"/> struct.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        public Vector3D(double x, double y) : this(x, y, 0d, 1.0d)
+        {
+        }
+
+        /// <summary>
+        /// Master Constructor
+        /// Initializes a new instance of the <see cref="Vector3D"/> struct.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="z">The z.</param>
+        /// <param name="w">The w.</param>
+        public Vector3D(double x, double y, double z, double w)
         {
             X = x;
             Y = y;
             Z = z;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        public Vector3D(double x, double y)
-        {
-            X = x;
-            Y = y;
-            Z = 0;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
-        /// </summary>
-        public Vector3D()
-        {
+            W = w;
         }
 
         /// <summary>
@@ -63,7 +67,7 @@ namespace Mathematics
         /// <value>
         ///     The x.
         /// </value>
-        public double X { get; set; }
+        public double X { get; }
 
         /// <summary>
         ///     Gets or sets the y.
@@ -71,7 +75,7 @@ namespace Mathematics
         /// <value>
         ///     The y.
         /// </value>
-        public double Y { get; set; }
+        public double Y { get; }
 
         /// <summary>
         ///     Gets or sets the z.
@@ -79,7 +83,7 @@ namespace Mathematics
         /// <value>
         ///     The z.
         /// </value>
-        public double Z { get; set; }
+        public double Z { get; }
 
         /// <summary>
         ///     Gets or sets the w, for internal use only, used with the 3D to 2D calculation,
@@ -88,7 +92,7 @@ namespace Mathematics
         /// <value>
         ///     The w  Value, which is 1 when initialized.
         /// </value>
-        public double W { get; private set; } = 1;
+        public double W { get; } = 1;
 
         /// <summary>
         ///     Gets the zero Vector.
@@ -132,35 +136,20 @@ namespace Mathematics
 
         /// <inheritdoc />
         /// <summary>
-        ///     Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        ///     A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            return new Vector3D(X, Y, Z);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
         ///     Equals the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>Equal or not</returns>
         public bool Equals(Vector3D other)
         {
-            return X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+            return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W);
         }
 
         /// <summary>
         ///     Sets the w.
         /// </summary>
         /// <param name="w">The w.</param>
-        internal void SetW(double w)
-        {
-            W = w;
-        }
+        internal Vector3D WithW(double w) => new(X, Y, Z, w);
 
         /// <summary>
         ///     Determines whether the specified <see cref="object" />, is equal to this instance.
@@ -184,9 +173,10 @@ namespace Mathematics
         /// </returns>
         public static bool operator ==(Vector3D first, Vector3D second)
         {
-            return second is not null && first is not null && Math.Abs(first.X - second.X) < MathResources.Tolerance &&
+            return Math.Abs(first.X - second.X) < MathResources.Tolerance &&
                    Math.Abs(first.Y - second.Y) < MathResources.Tolerance &&
-                   Math.Abs(first.Z - second.Z) < MathResources.Tolerance;
+                   Math.Abs(first.Z - second.Z) < MathResources.Tolerance &&
+                   Math.Abs(first.W - second.W) < MathResources.Tolerance;
         }
 
         /// <summary>
@@ -199,9 +189,10 @@ namespace Mathematics
         /// </returns>
         public static bool operator !=(Vector3D first, Vector3D second)
         {
-            return second is not null && first is not null && (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
+            return (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
                                                                Math.Abs(first.Y - second.Y) > MathResources.Tolerance ||
-                                                               Math.Abs(first.Z - second.Z) > MathResources.Tolerance);
+                                                               Math.Abs(first.Z - second.Z) > MathResources.Tolerance ||
+                                                               Math.Abs(first.W - second.W) > MathResources.Tolerance);
         }
 
         /// <summary>
@@ -212,7 +203,7 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(X, Y, Z);
+            return HashCode.Combine(X, Y, Z, W);
         }
 
         /// <summary>
@@ -329,11 +320,11 @@ namespace Mathematics
         public Vector3D CrossProduct(Vector3D second)
         {
             return new Vector3D
-            {
-                X = (Y * second.Z) - (Z * second.Y),
-                Y = (Z * second.X) - (X * second.Z),
-                Z = (X * second.Y) - (Y * second.X)
-            };
+            (
+                (Y * second.Z) - (Z * second.Y),
+                (Z * second.X) - (X * second.Z),
+                (X * second.Y) - (Y * second.X)
+            );
         }
 
         /// <summary>
@@ -354,7 +345,8 @@ namespace Mathematics
         public Vector3D Normalize()
         {
             var l = VectorLength();
-            return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
+            // Safety check to prevent NaN corruption
+            return l > 0 ? new Vector3D(X / l, Y / l, Z / l, W) : ZeroVector;
         }
 
         /// <summary>
