@@ -39,17 +39,6 @@ namespace Imaging
         /// <summary>
         ///     Initializes a new instance of the <see cref="PointId" /> class.
         /// </summary>
-        /// <param name="x">The x in double.</param>
-        /// <param name="y">The yin double.</param>
-        public PointId(double x, double y)
-        {
-            X = (int)Math.Round(x, 1, MidpointRounding.AwayFromZero);
-            Y = (int)Math.Round(y, 1, MidpointRounding.AwayFromZero);
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="PointId" /> class.
-        /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="width">The width.</param>
@@ -59,21 +48,6 @@ namespace Imaging
             Y = y;
             Id = CalculateId(x, y, width);
         }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="PointId" /> class.
-        /// </summary>
-        public PointId()
-        {
-        }
-
-        /// <summary>
-        ///     Gets the null point.
-        /// </summary>
-        /// <value>
-        ///     The null point.
-        /// </value>
-        public static PointId NullPoint { get; } = new(0, 0);
 
         /// <summary>
         ///     Gets the identifier of the Coordinate in the 2D System.
@@ -108,14 +82,6 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PointId FromId(int id, int width) =>
                     new(id % width, id / width);
-
-        /// <summary>
-        /// Converts to id.
-        /// </summary>
-        /// <param name="width">The width.</param>
-        /// <returns>Id of Point</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ToId(int width) => Y * width + X;
 
         /// <summary>
         ///     Equals the specified other.
