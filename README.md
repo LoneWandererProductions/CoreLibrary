@@ -117,11 +117,12 @@ foreach (var entry in logger.GetLogs())
 | `CommonLibraryTests`        | Unit tests for common libraries                 |
 | `CommonExtendedObjectsTests`| Unit tests for ExtendedSystemObjects            |
 | `Imaging`                   | Image manipulation tools                        |
-| `ImagingTests`              | Tests for imaging llibrary                       |
+| `ImagingTests`              | Tests for imaging library                       |
 | `CommonControls`            | WPF custom controls                             |
 | `CommonControls.Images`     | WPF custom controls, mostly related to images   |
 | `SQLiteHelper`              | SQLite DB interaction & abstraction             |
 | `Mathematics`               | Math utilities and calculation libraries        |
+| `Mathematics.Constants`     | Math Constants                                  |
 | `CommonLibrarySqlLiteTests` | Tests for SQLite-related features               |
 | `ExtendedSystemObjects`     | Extensions for .NET base classes                |
 | `FileHandler`               | File system abstraction                          |

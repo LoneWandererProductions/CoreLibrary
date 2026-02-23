@@ -49,6 +49,7 @@
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\LightVector\LightVector.csproj" />
+    <ProjectReference Include="..\Mathematics.Constants\Mathematics.Constants.csproj" />
     <ProjectReference Include="..\Pathfinder\Pathfinder.csproj" />
     <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
     <ProjectReference Include="..\Serializer\Serializer.csproj" />

@@ -8,6 +8,7 @@
 
 using System;
 using System.Diagnostics;
+using Mathematics;
 using Mathematics.Constants;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
