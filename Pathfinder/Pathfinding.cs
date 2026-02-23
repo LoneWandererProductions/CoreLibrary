@@ -15,7 +15,7 @@ namespace Pathfinder
     /// <summary>
     ///     Implementation of the A* pathfinder algorithm.
     /// </summary>
-    public sealed partial class Pathfinding : IPathfinding
+    public sealed class Pathfinding : IPathfinding
     {
         /// <summary>
         /// The diagonal cost
@@ -82,7 +82,7 @@ namespace Pathfinder
             while (openList.Count > 0)
             {
                 var currentNode = openList.Min;
-                openList.Remove(currentNode);
+                _ = openList.Remove(currentNode);
 
                 if (currentNode.X == goalX && currentNode.Y == goalY)
                 {
@@ -127,7 +127,7 @@ namespace Pathfinder
         /// </summary>
         /// <param name="goalNode">The goal node.</param>
         /// <returns>A list of nodes representing the path from start to goal.</returns>
-        private List<Node> BuildPath(Node goalNode)
+        private static List<Node> BuildPath(Node goalNode)
         {
             var path = new List<Node>();
             var currentNode = goalNode;

@@ -122,9 +122,20 @@ namespace Pathfinder
         ///         </item>
         ///     </list>
         /// </returns>
-        public int CompareTo(Node other)
+        public int CompareTo(Node? other)
         {
-            return F.CompareTo(other.F);
+            if (other is null) return 1;
+
+            // Primary Sort: Lowest F cost first
+            int compare = F.CompareTo(other.F);
+
+            // Tie-breaker: If F is equal, pick the one closer to the goal (lower H)
+            if (compare == 0)
+            {
+                compare = H.CompareTo(other.H);
+            }
+
+            return compare;
         }
     }
 }
