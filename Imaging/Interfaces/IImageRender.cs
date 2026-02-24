@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Enums;
+using Imaging.Gifs;
 using Color = System.Drawing.Color;
 
 // ReSharper disable UnusedMemberInSuper.Global

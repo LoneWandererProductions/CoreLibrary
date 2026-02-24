@@ -1,6 +1,6 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     Imaging
+* PROJECT:     Imaging.Gifs
 * FILE:        ImageGifMetadataExtractor.cs
 * PURPOSE:     Get all the info of a gif
 * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System;
 using System.IO;
 
-namespace Imaging
+namespace Imaging.Gifs
 {
     /// <summary>
     ///     Information about the gif
@@ -54,7 +54,7 @@ namespace Imaging
             metadata.HasGlobalColorTable = (packedFields & ImagingResources.GlobalColorTableFlag) != 0;
             metadata.ColorResolution = ((packedFields & ImagingResources.ColorResolutionMask) >> 4) + 1;
             metadata.GlobalColorTableSize = metadata.HasGlobalColorTable
-                ? 3 * (1 << ((packedFields & ImagingResources.TableSizeMask) + 1))
+                ? 3 * (1 << (packedFields & ImagingResources.TableSizeMask) + 1)
                 : 0;
 
             if (metadata.HasGlobalColorTable)
@@ -137,7 +137,7 @@ namespace Imaging
                             packed = reader.ReadByte();
                             if ((packed & ImagingResources.LocalColorTableFlag) != 0)
                             {
-                                var tableSize = 3 * (1 << ((packed & ImagingResources.TableSizeMask) + 1));
+                                var tableSize = 3 * (1 << (packed & ImagingResources.TableSizeMask) + 1);
                                 reader.BaseStream.Seek(tableSize, SeekOrigin.Current);
                             }
 

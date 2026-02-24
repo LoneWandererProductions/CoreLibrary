@@ -8,6 +8,7 @@
 
 using System;
 using System.Drawing;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace Imaging.Helpers
 {

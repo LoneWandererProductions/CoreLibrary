@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Cifs
  * FILE:        PointId.cs
  * PURPOSE:     A more clever way to handle some 2D coordinate Stuff
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Imaging
+namespace Imaging.Cifs
 {
     /// <inheritdoc />
     /// <summary>

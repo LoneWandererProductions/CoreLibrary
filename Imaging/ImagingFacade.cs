@@ -9,14 +9,15 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
+using Imaging.Enums;
+using Imaging.Gifs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Imaging.Enums;
 
 namespace Imaging
 {
@@ -226,7 +227,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <returns>The <see cref="Color"/> of the pixel.</returns>
-        public static Color GetPixel(Bitmap image, Point p)
+        public static System.Drawing.Color GetPixel(Bitmap image, Point p)
             => new ImageRender().GetPixel(image, p);
 
         /// <summary>
@@ -235,7 +236,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <param name="color">The color to set.</param>
-        public static void SetPixel(Bitmap image, Point p, Color color)
+        public static void SetPixel(Bitmap image, Point p, System.Drawing.Color color)
             => new ImageRender().SetPixel(image, p, color);
 
         /// <summary>
@@ -245,7 +246,7 @@ namespace Imaging
         /// <param name="x">X-coordinate of start point.</param>
         /// <param name="y">Y-coordinate of start point.</param>
         /// <param name="newColor">The fill color.</param>
-        public static void FloodFill(Bitmap image, int x, int y, Color newColor)
+        public static void FloodFill(Bitmap image, int x, int y, System.Drawing.Color newColor)
             => new ImageRender().FloodFillScanLineStack(image, x, y, newColor);
 
         #endregion
@@ -317,27 +318,72 @@ namespace Imaging
         #region GIF
 
         /// <summary>
-        ///     Loads a GIF asynchronously and returns all frames as <see cref="Bitmap"/> objects.
+        /// Gets the GIF information.
         /// </summary>
-        /// <param name="path">Path to the GIF file.</param>
-        /// <returns>A task that represents the asynchronous operation, containing a read-only list of frames.</returns>
-        public static async Task<IReadOnlyList<Bitmap>> LoadGifAsync(string path)
+        /// <param name="path">The path.</param>
+        /// <returns>Information about the gif</returns>
+        public static ImageGifInfo? GetGifInfo(string path)
         {
-            var sources = await new ImageRender().LoadGifAsync(path);
-
-            var frames = new List<Bitmap>(sources.Count);
-            frames.AddRange(sources.Select(src => ((BitmapImage)src).ToBitmap()));
-
-            return frames;
+            // Delegates to internal handler
+            return ImageGifHandler.GetImageInfo(path);
         }
 
         /// <summary>
-        ///     Creates a GIF from a sequence of frames.
+        ///     Splits a GIF into individual Bitmap frames.
+        ///     Use this when you need to process or save frames to disk.
         /// </summary>
-        /// <param name="frames">The frames to include in the GIF.</param>
-        /// <param name="target">The output file path.</param>
-        public static void CreateGif(IEnumerable<FrameInfo>? frames, string target)
-            => new ImageRender().CreateGif(frames, target);
+        /// <param name="path">The full path to the GIF file.</param>
+        /// <returns>A list of System.Drawing.Bitmap objects.</returns>
+        /// <exception cref="IOException">Could not find the File</exception>
+        public static Task<List<Bitmap>> SplitGifAsync(string path)
+        {
+            // Delegates to internal handler
+            return ImageGifHandler.SplitGifAsync(path);
+        }
+
+        /// <summary>
+        ///     Loads a GIF directly as a list of WPF ImageSources.
+        ///     Use this for displaying frames directly in the UI.
+        /// </summary>
+        /// <param name="path">The full path to the GIF file.</param>
+        /// <returns>A list of WPF ImageSource objects.</returns>
+        /// <exception cref="IOException">Could not find the File</exception>
+        public static Task<List<ImageSource>> LoadGifAsync(string path)
+        {
+            return ImageGifHandler.LoadGif(path);
+        }
+
+        /// <summary>
+        ///     Creates a GIF from a folder of images.
+        /// </summary>
+        /// <param name="sourceFolder">The folder containing images.</param>
+        /// <param name="targetFile">The full output path for the new GIF.</param>
+        public static void CreateGif(string sourceFolder, string targetFile)
+        {
+            ImageGifHandler.CreateGif(sourceFolder, targetFile);
+        }
+
+        /// <summary>
+        ///     Creates a GIF from a specific list of file paths.
+        /// </summary>
+        /// <param name="imagePaths">The list of image file paths.</param>
+        /// <param name="targetFile">The full output path for the new GIF.</param>
+        public static void CreateGif(List<string> imagePaths, string targetFile)
+        {
+            ImageGifHandler.CreateGif(imagePaths, targetFile);
+        }
+
+        /// <summary>
+        ///     Creates a GIF from a list of FrameInfo objects (Path + Delay).
+        ///     Use this when you need specific timing per frame.
+        /// </summary>
+        /// <param name="frames">List of FrameInfo objects containing path and delay.</param>
+        /// <param name="targetFile">The full output path for the new GIF.</param>
+        public static void CreateGif(IEnumerable<FrameInfo>? frames, string targetFile)
+        {
+            if (frames == null) return;
+            ImageGifHandler.CreateGif(frames, targetFile);
+        }
 
         #endregion
 

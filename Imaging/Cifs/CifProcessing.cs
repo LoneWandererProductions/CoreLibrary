@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Cifs
  * FILE:        CifProcessing.cs
  * PURPOSE:     Processing of our custom Image Format, with custom compression
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -13,7 +13,7 @@ using System.Linq;
 using DataFormatter;
 using ExtendedSystemObjects;
 
-namespace Imaging
+namespace Imaging.Cifs
 {
     //TODO add checksum Fun and custom image Exceptions
 

@@ -22,6 +22,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects;
 using Imaging.Enums;
+using Mathematics;
 using Mathematics.Constants;
 
 namespace Imaging.Helpers

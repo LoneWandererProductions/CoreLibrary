@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifHandler.cs
  * PURPOSE:     Some processing stuff for Gif Images, not perfect, the files are slightly bigger though.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -27,7 +27,7 @@ using ExtendedSystemObjects;
 using Imaging.Helpers;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
-namespace Imaging
+namespace Imaging.Gifs
 {
     /// <summary>
     ///     Central Entry class for all things related to gifs
@@ -41,7 +41,7 @@ namespace Imaging
         /// <returns>Status of cleanup</returns>
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        internal static extern bool DeleteObject(IntPtr hObject);
+        internal static extern bool DeleteObject(nint hObject);
 
         /// <summary>
         ///     Gets the image information.
@@ -206,12 +206,12 @@ namespace Imaging
 
             foreach (var bmpImage in btm)
             {
-                IntPtr hBitmap = bmpImage.GetHbitmap();
+                nint hBitmap = bmpImage.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                         hBitmap,
-                        IntPtr.Zero,
+                        nint.Zero,
                         Int32Rect.Empty,
                         BitmapSizeOptions.FromEmptyOptions());
 
@@ -240,12 +240,12 @@ namespace Imaging
 
             foreach (var frame in frames)
             {
-                IntPtr hBitmap = frame.Image.GetHbitmap();
+                nint hBitmap = frame.Image.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                         hBitmap,
-                        IntPtr.Zero,
+                        nint.Zero,
                         Int32Rect.Empty,
                         BitmapSizeOptions.FromEmptyOptions());
 

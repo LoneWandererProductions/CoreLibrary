@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Cifs
  * FILE:        ICustomImageFormat.cs
  * PURPOSE:     Implementation and main entry of our custom Image Format
  *              Main use is a small save footprint and Image Color manipulation on a large scale
@@ -16,7 +16,7 @@ using Imaging.Interfaces;
 
 //TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?
-namespace Imaging
+namespace Imaging.Cifs
 {
     /// <inheritdoc />
     /// <summary>

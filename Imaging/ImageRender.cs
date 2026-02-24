@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Enums;
+using Imaging.Gifs;
 using Imaging.Helpers;
 using Imaging.Interfaces;
 using Color = System.Drawing.Color;
@@ -770,23 +771,24 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///     Splits the GIF.
+        ///     Splits a GIF into individual Bitmap frames (System.Drawing).
+        ///     Useful for backend processing or saving frames to disk.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>List of Images from gif</returns>
-        /// <exception cref="IOException">Could not find the File</exception>
+        /// <param name="path">The full path to the GIF file.</param>
+        /// <returns>A list of Bitmaps representing the frames.</returns>
         public Task<List<Bitmap>> SplitGif(string path)
         {
+            // Delegates to the static handler
             return ImageGifHandler.SplitGifAsync(path);
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Loads a gif.
+        ///     Loads a GIF directly as a list of WPF ImageSources.
+        ///     Useful for displaying animation directly in the UI.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>List of Images from gif as ImageSource</returns>
-        /// <exception cref="IOException">Could not find the File</exception>
+        /// <param name="path">The full path to the GIF file.</param>
+        /// <returns>A list of ImageSources.</returns>
         public Task<List<ImageSource>> LoadGifAsync(string path)
         {
             return ImageGifHandler.LoadGif(path);
@@ -794,35 +796,38 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///     Creates a gif.
+        ///     Creates a GIF from all images in a specific folder.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="target">The target.</param>
-        public void CreateGif(string path, string target)
+        /// <param name="sourceFolder">The folder containing the source images.</param>
+        /// <param name="targetFile">The output path for the generated GIF.</param>
+        public void CreateGif(string sourceFolder, string targetFile)
         {
-            ImageGifHandler.CreateGif(path, target);
+            ImageGifHandler.CreateGif(sourceFolder, targetFile);
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Creates a gif.
+        ///     Creates a GIF from a specific list of file paths.
+        ///     (Uses default delay).
         /// </summary>
-        /// <param name="path">The paths of the images.</param>
-        /// <param name="target">The target File.</param>
-        public void CreateGif(List<string> path, string target)
+        /// <param name="imagePaths">The list of file paths.</param>
+        /// <param name="targetFile">The output path.</param>
+        public void CreateGif(List<string> imagePaths, string targetFile)
         {
-            ImageGifHandler.CreateGif(path, target);
+            ImageGifHandler.CreateGif(imagePaths, targetFile);
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Creates a gif.
+        ///     Creates a GIF from a list of FrameInfo objects.
+        ///     (Allows specific delay timing per frame).
         /// </summary>
-        /// <param name="images">List off bitmaps and timer data</param>
-        /// <param name="target">The target File.</param>
-        public void CreateGif(IEnumerable<FrameInfo>? images, string target)
+        /// <param name="frames">The list of frames with timing data.</param>
+        /// <param name="targetFile">The output path.</param>
+        public void CreateGif(IEnumerable<FrameInfo>? frames, string targetFile)
         {
-            ImageGifHandler.CreateGif(images, target);
+            if (frames == null) return;
+            ImageGifHandler.CreateGif(frames, targetFile);
         }
 
         /// <inheritdoc />

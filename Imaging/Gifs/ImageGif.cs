@@ -1,6 +1,6 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     Imaging
+* PROJECT:     Imaging.Gifs
 * FILE:        ImageGifThreaded.cs
 * PURPOSE:     Extends Image Control to play GIFs asynchronously on its own thread
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace Imaging
+namespace Imaging.Gifs
 {
     /// <summary>
     /// Image control capable of playing animated GIFs in a self-contained way.

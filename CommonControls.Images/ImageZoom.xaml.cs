@@ -116,8 +116,15 @@ namespace CommonControls.Images
         /// <param name="point">The point.</param>
         public delegate void DelegatePoint(Point point);
 
+        /// <summary>
+        /// Delegate for the Selection Frames.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
         public delegate void DelegateMultiFrame(List<SelectionFrame> frames);
 
+        /// <summary>
+        /// Occurs when [selected multi frames].
+        /// </summary>
         public event DelegateMultiFrame SelectedMultiFrames;
 
         /// <summary>
@@ -146,7 +153,7 @@ namespace CommonControls.Images
                 new PropertyMetadata(OnSelectionToolChanged));
 
         /// <summary>
-        ///     The autoplay gif Property
+        ///     The auto play gif Property
         /// </summary>
         public static readonly DependencyProperty AutoplayGif = DependencyProperty.Register(nameof(AutoplayGifImage),
             typeof(bool),

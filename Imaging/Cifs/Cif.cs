@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Cifs
  * FILE:        Cif.cs
  * PURPOSE:     Custom Image Format object, that contains all attributes and basic information
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -17,7 +17,7 @@ using System.Drawing;
 using System.Linq;
 using Imaging.Interfaces;
 
-namespace Imaging
+namespace Imaging.Cifs
 {
     /// <summary>
     ///     Image in Cif format, with various further Tools

@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using FileHandler;
 using ImageCompare;
 using Imaging;
+using Imaging.Cifs;
 using Imaging.Helpers;
 using Mathematics;
 

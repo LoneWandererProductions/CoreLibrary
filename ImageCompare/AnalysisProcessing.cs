@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Imaging;
+using Imaging.Cifs;
 using Imaging.Enums;
 using Imaging.Interfaces;
 
