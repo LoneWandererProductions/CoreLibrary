@@ -29,7 +29,7 @@ namespace Communication
         public event EventHandler? DataReceived;
 
         /// <inheritdoc />
-        public bool IsOpen => _port.IsOpen;
+        public bool IsOpen => !_disposed && _port.IsOpen;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemSerialPort"/> class.
