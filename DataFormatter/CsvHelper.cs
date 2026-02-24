@@ -16,25 +16,28 @@ using System.Text;
 
 namespace DataFormatter
 {
+    /// <summary>
+    /// Helper class for CSV file operations, including reading, writing, and splitting lines.
+    /// </summary>
     internal static class CsvHelper
     {
         /// <summary>
         ///     Shared method to read file content
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns>Content of File</returns>
-        /// <exception cref="ArgumentException">File path is empty - filepath</exception>
+        /// <exception cref="ArgumentException">File path is empty - file path</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static List<string> ReadFileContent(string filepath)
+        internal static List<string>? ReadFileContent(string filePath)
         {
-            if (string.IsNullOrEmpty(filepath))
+            if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
+                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filePath));
             }
 
             try
             {
-                return ReadText.ReadFile(filepath);
+                return ReadText.ReadFile(filePath);
             }
             catch (Exception ex)
             {
@@ -73,14 +76,14 @@ namespace DataFormatter
         /// <summary>
         ///     Shared method to write content to file
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
+        /// <param name="filePath">The file path.</param>
         /// <param name="content">The content.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void WriteContentToFile(string filepath, StringBuilder content)
+        internal static void WriteContentToFile(string filePath, StringBuilder content)
         {
             try
             {
-                File.WriteAllText(filepath, content.ToString());
+                File.WriteAllText(filePath, content.ToString());
             }
             catch (Exception ex)
             {

@@ -8,121 +8,111 @@
 
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Communication
 {
     /// <summary>
-    ///     Http Client for sending requests.
+    ///      Http Client for sending requests.
     /// </summary>
     public static class HttpClientManager
     {
+
         /// <summary>
-        ///     The HTTP client (static to be shared across all usages).
+        ///  Singleton pattern is correct here
         /// </summary>
         private static readonly HttpClient HttpClient = new();
 
         /// <summary>
-        ///     Calls the SOAP service asynchronous.
+        ///      Calls a SOAP service asynchronously.
         /// </summary>
-        /// <returns>Message as string</returns>
-        public static async Task<string?> CallSoapServiceAsync()
+        /// <param name="url">The endpoint URL.</param>
+        /// <param name="soapAction">The SOAP Action header.</param>
+        /// <param name="soapXmlBody">The actual XML content.</param>
+        /// <returns>Response string or null on failure.</returns>
+        public static async Task<string?> CallSoapServiceAsync(string url, string soapAction, string soapXmlBody)
         {
-            //target url
-            var requestUri = new Uri(string.Empty);
-            //define commmand in xml body, see CreateSoapRequest
-            var soapAction = string.Empty;
-            var soapRequest = CreateSoapRequest();
-            var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
-            {
-                Headers =
-                {
-                    { ComResource.UserAgent, ComResource.InsomniaAgent }, { ComResource.SoapAction, soapAction }
-                },
-                Content = new StringContent(soapRequest)
-                {
-                    // Set the correct Content-Type to 'text/xml; charset=utf-8'
-                    Headers =
-                    {
-                        ContentType = new MediaTypeHeaderValue(ComResource.FormatXml)
-                        {
-                            CharSet = ComResource.Formatting
-                        }
-                    }
-                }
-            };
+            if (string.IsNullOrEmpty(url)) return null;
+
             try
             {
+                // Create the content correctly with type "text/xml" right from the start
+                using var content = new StringContent(soapXmlBody, Encoding.UTF8, ComResource.FormatXml); // "text/xml"
+
+                using var request = new HttpRequestMessage(HttpMethod.Post, url)
+                {
+                    Content = content
+                };
+
+                // Add headers
+                request.Headers.Add(ComResource.UserAgent, ComResource.InsomniaAgent);
+
+                // Some SOAP services require the action to be quoted, e.g. "ActionName"
+                if (!string.IsNullOrEmpty(soapAction))
+                {
+                    request.Headers.Add(ComResource.SoapAction, soapAction);
+                }
+
                 using var response = await HttpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode(); // Will throw if not successful
+                response.EnsureSuccessStatusCode();
+
                 return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
-                // Handle errors (e.g., network issues, timeouts, etc.)
-                Console.WriteLine(ComResource.ErrorFormatOne, ex.Message);
+                // In production, use a proper logger instead of Console.WriteLine
+                Console.WriteLine(string.Format(ComResource.ErrorFormatOne, ex.Message));
                 return null;
             }
         }
 
         /// <summary>
-        ///     Creates the SOAP request.
+        /// Sends an HTTP request to the specified URL.
         /// </summary>
-        /// <returns>Soap xml body</returns>
-        private static string CreateSoapRequest()
+        /// <param name="url">The URL.</param>
+        /// <param name="method">The method.</param>
+        /// <param name="body">The body.</param>
+        /// <param name="contentType">Type of the content.</param>
+        /// <returns>Soap Message</returns>
+        /// <exception cref="System.ArgumentException">
+        /// url
+        /// or
+        /// method
+        /// </exception>
+        /// <exception cref="System.Net.Http.HttpRequestException"></exception>
+        internal static async Task<string> SendMessageAsync(string url, string method, string? body = null, string contentType = ComResource.JsonHeader)
         {
-            // You can structure the SOAP request body using string interpolation for readability
-            return ComResource.SoapHeader;
-        }
+            if (string.IsNullOrEmpty(url)) throw new ArgumentException(ComResource.ErrorUrlEmpty, nameof(url));
+            if (string.IsNullOrEmpty(method)) throw new ArgumentException(ComResource.ErrorMethodCannotBeNull, nameof(method));
 
-        /// <summary>
-        ///     Sends an HTTP request to the specified URL with the given method and body.
-        /// </summary>
-        /// <param name="url">The URL to send the request to.</param>
-        /// <param name="method">The HTTP method (GET, POST, PUT, DELETE, etc.).</param>
-        /// <param name="body">The request body (optional).</param>
-        /// <param name="contentType">The content type (default: application/json).</param>
-        /// <returns>A <see cref="HttpResponseMessage" /> containing the response body.</returns>
-        internal static async Task<string> SendMessageAsync(string url, string method, string? body = null,
-            string contentType = ComResource.JsonHeader)
-        {
-            if (string.IsNullOrEmpty(url))
+            // Wrap HttpRequestMessage in 'using' to clean up resources immediately
+            using var httpRequest = new HttpRequestMessage(new HttpMethod(method), url);
+
+            if (!string.IsNullOrEmpty(body))
             {
-                throw new ArgumentException(ComResource.ErrorUrlEmpty, nameof(url));
+                httpRequest.Content = new StringContent(body, Encoding.UTF8, contentType);
             }
 
-            if (string.IsNullOrEmpty(method))
-            {
-                throw new ArgumentException(ComResource.ErrorMethodCannotBeNull, nameof(method));
-            }
-
-            var httpRequest = new HttpRequestMessage
-            {
-                Method = new HttpMethod(method),
-                RequestUri = new Uri(url),
-                Content = string.IsNullOrEmpty(body) ? null : new StringContent(body, Encoding.UTF8, contentType)
-            };
             try
             {
-                // Send the request and get the response
-                var response = await HttpClient.SendAsync(httpRequest);
-                // Check if the response is successful
+                // Wrap HttpResponseMessage in 'using'
+                using var response = await HttpClient.SendAsync(httpRequest);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    // If the response is JSON or text, read the content
-                    return await response.Content.ReadAsStringAsync(); // Return the response content
+                    return await response.Content.ReadAsStringAsync();
                 }
 
-                // Handle HTTP error status codes
+                // If failed, read the error message from the server (often contains validation details)
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception(string.Format(ComResource.ErrorFormatTwo, response.StatusCode, errorContent));
+                throw new HttpRequestException(string.Format(ComResource.ErrorFormatTwo, response.StatusCode, errorContent));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Handle any exception that occurred during the request
-                throw new Exception(ComResource.ErrorMessageRequest, ex);
+                // Don't wrap the exception in a new generic Exception; just rethrow or let it bubble up.
+                // If you must wrap it, use a custom domain exception.
+                throw;
             }
         }
     }

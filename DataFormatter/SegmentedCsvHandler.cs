@@ -49,7 +49,7 @@ namespace DataFormatter
         /// <param name="filePath">The file path.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string> ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
+        public static List<string>? ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
         {
             var lst = CsvHelper.ReadFileContent(filePath);
             if (lst == null)

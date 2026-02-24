@@ -5,70 +5,74 @@
  * PURPOSE:     Does the heavy lifting for File Transfers
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
-// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Communication
 {
-    /// <summary>
-    ///     Handles file transfers for the Communication project.
-    /// </summary>
     internal static class FileTransfer
     {
         /// <summary>
-        ///     The HTTP client
+        /// Singleton HttpClient is correct practice
         /// </summary>
         private static readonly Lazy<HttpClient> HttpClient = new(() => new HttpClient());
 
         /// <summary>
-        ///     Saves a file from a URL to the specified file path.
+        /// Saves the file asynchronous.
         /// </summary>
-        /// <param name="filePath">The destination folder path.</param>
-        /// <param name="url">The file URL.</param>
-        /// <param name="progress">Optional progress reporter.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
-        /// <returns>A task that resolves to true if the file was saved successfully; otherwise, false.</returns>
-        internal static async Task<bool> SaveFileAsync(string filePath, string url, IProgress<int>? progress = null,
-            CancellationToken cancellationToken = default)
+        /// <param name="folderPath">The folder path.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="progress">The progress.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        internal static async Task<bool> SaveFileAsync(string folderPath, string url, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                Directory.CreateDirectory(filePath);
-                var uri = new Uri(url);
-                var path = GetPath(uri, filePath);
-                if (string.IsNullOrEmpty(path))
-                {
-                    return false;
-                }
+                // Validate URL
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
 
-                using var response =
-                    await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                Directory.CreateDirectory(folderPath);
+
+                // 1. PATH FIX: Robust name generation
+                var fileName = GetFileNameFromUri(uri);
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 response.EnsureSuccessStatusCode();
-                await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                await using var fileStream =
-                    new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
                 var totalBytes = response.Content.Headers.ContentLength ?? -1L;
+
+                await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+
+                // Buffer size: 8192 is standard.
+                await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
                 var buffer = new byte[8192];
                 long totalRead = 0;
                 int bytesRead;
-                while ((bytesRead =
-                           await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) >
-                       0)
+                int lastReportedPercent = -1;
+
+                while ((bytesRead = await contentStream.ReadAsync(buffer, cancellationToken)) > 0)
                 {
                     await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                     totalRead += bytesRead;
+
+                    // 2. PROGRESS FIX: Only report if totalBytes is known AND percentage changed
                     if (progress != null && totalBytes > 0)
                     {
-                        var percentage = (int)(totalRead * 100 / totalBytes);
-                        progress.Report(percentage);
+                        var currentPercent = (int)((totalRead * 100) / totalBytes);
+                        if (currentPercent > lastReportedPercent)
+                        {
+                            progress.Report(currentPercent);
+                            lastReportedPercent = currentPercent;
+                        }
                     }
                 }
 
@@ -76,56 +80,50 @@ namespace Communication
             }
             catch (Exception ex) when (ex is HttpRequestException or IOException)
             {
-                Trace.WriteLine(string.Format(ComResource.ErrorSavingFile, ex.Message));
+                // Log and swallow known I/O errors
+                Trace.WriteLine($"Error saving file: {ex.Message}");
                 return false;
             }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format(ComResource.ErrorUnexpected, ex));
-                throw; // Re-throw unexpected exceptions to let the caller handle them.
-            }
+            // Let TaskCanceledException bubble up so the caller knows it was cancelled intentionally
         }
 
         /// <summary>
-        ///     Saves multiple files from URLs to the specified file path.
+        /// Saves the files asynchronous.
         /// </summary>
-        /// <param name="filePath">The destination folder path.</param>
-        /// <param name="urls">The file URLs.</param>
-        /// <param name="progress">Optional progress reporter.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
-        internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls,
-            IProgress<int>? progress = null,
-            CancellationToken cancellationToken = default)
+        /// <param name="filePath">The file path.</param>
+        /// <param name="urls">The url.</param>
+        /// <param name="progress">The progress.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
         {
+            // Note: This downloads sequentially.
+            // If you want parallel, you would need Task.WhenAll (but be careful of bandwidth).
             foreach (var url in urls)
             {
+                // Check cancellation before starting next file
+                cancellationToken.ThrowIfCancellationRequested();
                 await SaveFileAsync(filePath, url, progress, cancellationToken);
             }
         }
 
         /// <summary>
-        ///     Generates a valid file path based on the URL and destination folder.
+        /// Gets a safe filename from the URI.
         /// </summary>
-        /// <param name="link">The URL of the file.</param>
-        /// <param name="filePath">The destination folder path.</param>
-        /// <returns>The full file path for saving the file.</returns>
-        private static string GetPath(Uri link, string filePath)
+        /// <param name="uri">The URI.</param>
+        /// <returns></returns>
+        private static string GetFileNameFromUri(Uri uri)
         {
-            if (string.IsNullOrEmpty(link.AbsoluteUri))
+            // Try to get the file name from the LocalPath (handles most cases)
+            var fileName = Path.GetFileName(uri.LocalPath);
+
+            // If empty (e.g. "http://site.com/"), generate a default name
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                return string.Empty;
+                // You could also use a Guid here, or "index.html" depending on context
+                return $"download_{DateTime.Now.Ticks}.dat";
             }
 
-            var target = Path.GetFileName(link.AbsolutePath);
-            if (!string.IsNullOrWhiteSpace(target))
-            {
-                return Path.Combine(filePath, target);
-            }
-
-            target = Regex.Replace(
-                link.AbsoluteUri[(link.AbsoluteUri.LastIndexOf(ComResource.Separator, StringComparison.Ordinal) + 2)..],
-                ComResource.Backslash, string.Empty);
-            return Path.Combine(filePath, target);
+            return fileName;
         }
     }
 }

@@ -21,12 +21,12 @@ namespace DataFormatter
         /// <summary>
         ///     Reads a CSV file and splits it by separator.
         /// </summary>
-        /// <param name="filepath">Path of the CSV file.</param>
+        /// <param name="filePath">Path of the CSV file.</param>
         /// <param name="separator">The separator in use.</param>
         /// <returns>List of lines split into parts if successful; otherwise, null.</returns>
-        public static List<List<string>> ReadCsv(string filepath, char separator)
+        public static List<List<string>> ReadCsv(string filePath, char separator)
         {
-            var lst = CsvHelper.ReadFileContent(filepath);
+            var lst = CsvHelper.ReadFileContent(filePath);
             return lst?.ConvertAll(item => CsvHelper.SplitLine(item, separator));
         }
 
@@ -48,16 +48,16 @@ namespace DataFormatter
         ///     Reads a specific range of lines from a CSV file and maps them to objects using a converter function.
         /// </summary>
         /// <typeparam name="T">The type of objects to parse.</typeparam>
-        /// <param name="filepath">The path of the CSV file.</param>
+        /// <param name="filePath">The path of the CSV file.</param>
         /// <param name="separator">The separator character.</param>
         /// <param name="converter">The converter function to map each line to an object.</param>
         /// <param name="startLine">The starting line (inclusive). Optional, defaults to 0.</param>
         /// <param name="endLine">The ending line (inclusive). Optional, defaults to all lines.</param>
         /// <returns>A list of parsed objects of the specified type.</returns>
-        public static List<T> ReadCsvRange<T>(string filepath, char separator, Func<List<string>, T> converter,
+        public static List<T>? ReadCsvRange<T>(string filePath, char separator, Func<List<string>, T> converter,
             int startLine = 0, int endLine = int.MaxValue)
         {
-            var lst = ReadText.ReadFile(filepath);
+            var lst = ReadText.ReadFile(filePath);
             if (lst == null || lst.Count == 0 || startLine > endLine || startLine >= lst.Count)
             {
                 return null;
@@ -81,10 +81,10 @@ namespace DataFormatter
         /// <summary>
         ///     Writes the CSV data into a file.
         /// </summary>
-        /// <param name="filepath">The file path.</param>
+        /// <param name="filePath">The file path.</param>
         /// <param name="csv">The CSV data.</param>
         /// <param name="separator">The separator character. Defaults to comma.</param>
-        public static void WriteCsv(string filepath, IEnumerable<List<string>> csv, string separator = ",")
+        public static void WriteCsv(string filePath, IEnumerable<List<string>> csv, string separator = ",")
         {
             var file = new StringBuilder();
 
@@ -93,7 +93,7 @@ namespace DataFormatter
                 file.AppendLine(line);
             }
 
-            CsvHelper.WriteContentToFile(filepath, file);
+            CsvHelper.WriteContentToFile(filePath, file);
         }
     }
 }
