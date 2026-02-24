@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/ShearTransform.cs
+ * FILE:        ShearTransform.cs
  * PURPOSE:     Basic Transform Class, mostly for Bezier
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

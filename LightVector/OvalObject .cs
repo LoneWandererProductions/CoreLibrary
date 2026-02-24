@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/OvalObject.cs
+ * FILE:        OvalObject.cs
  * PURPOSE:     Generic oval Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -37,7 +37,7 @@ namespace LightVector
         /// <summary>
         ///     Checks if this object supports the given transformation.
         /// </summary>
-        /// <param name="transformation"></param>
+        /// <param name="transformation">Transformation Information</param>
         /// <returns>If specific transformation is supported</returns>
         public override bool SupportsTransformation(Transform transformation)
         {

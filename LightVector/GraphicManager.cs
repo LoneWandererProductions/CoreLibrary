@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/GraphicManager.cs
+ * FILE:        GraphicManager.cs
  * PURPOSE:     Implementation of our Contract for our Library
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

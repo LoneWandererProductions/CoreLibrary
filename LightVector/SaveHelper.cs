@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/SaveHelper.cs
+ * FILE:        SaveHelper.cs
  * PURPOSE:     Save our Images
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

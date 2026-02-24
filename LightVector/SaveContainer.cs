@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/SaveContainer.cs
+ * FILE:        SaveContainer.cs
  * PURPOSE:     Container that holds some basic Image Informations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

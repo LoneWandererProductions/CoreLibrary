@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/LineObject.cs
+ * FILE:        LineObject.cs
  * PURPOSE:     Hold the Line Objects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
@@ -41,7 +41,7 @@ namespace LightVector
         /// <summary>
         ///     Checks if this object supports the given transformation.
         /// </summary>
-        /// <param name="transformation"></param>
+        /// <param name="transformation">Transform Information.</param>
         /// <returns>If specific transformation is supported</returns>
         public override bool SupportsTransformation(Transform transformation)
         {

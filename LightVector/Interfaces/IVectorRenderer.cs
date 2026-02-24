@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     LightVector
- * FILE:        LightVector/IVectorRenderer.cs
+ * PROJECT:     LightVector.Interfaces
+ * FILE:        IVectorRenderer.cs
  * PURPOSE:     Contract on how to display our vector image the implementation details are up to the user
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@
 
 using System.Windows.Media;
 
-namespace LightVector
+namespace LightVector.Interfaces
 {
     /// <summary>
     ///     Interface for Vector Render

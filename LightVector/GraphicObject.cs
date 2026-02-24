@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/TranslatedLine.cs
+ * FILE:        TranslatedLine.cs
  * PURPOSE:     Hold the Graphic Objects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
@@ -12,8 +12,6 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Generic;
-using System.Windows.Ink;
-using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace LightVector
@@ -29,13 +27,14 @@ namespace LightVector
     {
         /// <summary>
         /// The fill
+        /// Default null/transparent
         /// </summary>
-        private SolidColorBrush _fill;
+        public string Fill { get; set; }
 
         /// <summary>
         /// The stroke
         /// </summary>
-        private SolidColorBrush _stroke = Brushes.Black;
+        public string Stroke { get; set; } = "#FF000000";
 
         /// <summary>
         ///     Optional
@@ -43,57 +42,11 @@ namespace LightVector
         public int Thickness { get; init; } = 1;
 
         /// <summary>
-        ///     Gets or sets the stroke.
-        ///     Optional
+        /// Gets or sets the optional attributes.
         /// </summary>
-        [XmlIgnore]
-        public SolidColorBrush Stroke
-        {
-            get => _stroke;
-            set
-            {
-                _stroke = value;
-                if (_stroke?.CanFreeze == true) _stroke.Freeze();
-            }
-        }
-
-        /// <summary>
-        ///     Workaround for XML serialization of Stroke
-        /// </summary>
-        [XmlElement("Stroke")]
-        public string StrokeColor
-        {
-            get => Stroke.Color.ToString();
-            set => Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
-        }
-
-        /// <summary>
-        ///     Optional
-        ///     If filled we will get filled curves
-        /// </summary>
-        [XmlIgnore]
-        public SolidColorBrush Fill
-        {
-            get => _fill;
-            set
-            {
-                _fill = value;
-                if (_fill?.CanFreeze == true) _fill.Freeze();
-            }
-        }
-
-        /// <summary>
-        ///     Workaround for XML serialization of Fill
-        /// </summary>
-        [XmlElement("Fill")]
-        public string FillColor
-        {
-            get => Fill?.Color.ToString();
-            set => Fill = string.IsNullOrEmpty(value)
-                ? null
-                : new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
-        }
-
+        /// <value>
+        /// The optional attributes.
+        /// </value>
         [XmlIgnore] public Dictionary<string, object> OptionalAttributes { get; set; } = new();
 
         /// <summary>
@@ -136,7 +89,7 @@ namespace LightVector
         /// <value>
         /// The stroke line join.
         /// </value>
-        public PenLineJoin StrokeLineJoin { get; init; } = PenLineJoin.Bevel;
+        public VectorLineJoin StrokeLineJoin { get; init; } = VectorLineJoin.Bevel;
 
         /// <summary>
         /// Checks if this object supports the given transformation.

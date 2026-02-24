@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/SaveObject.cs
+ * FILE:        SaveObject.cs
  * PURPOSE:     Container that is needed to save our data in an xml format.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,6 +9,7 @@
 using System;
 using System.Windows;
 using System.Xml.Serialization;
+using LightVector.Enums;
 
 namespace LightVector
 {

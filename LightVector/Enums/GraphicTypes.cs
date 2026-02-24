@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     LightVector
- * FILE:        LightVector/GraphicTypes.cs
+ * PROJECT:     LightVector.Enums
+ * FILE:        GraphicTypes.cs
  * PURPOSE:     Types of graphic objects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace LightVector
+namespace LightVector.Enums
 {
     /// <summary>
     ///     Describes the typ of Vector Object

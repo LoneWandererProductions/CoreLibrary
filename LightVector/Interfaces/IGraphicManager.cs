@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     LightVector
- * FILE:        LightVector/IGraphicManager.cs
+ * PROJECT:     LightVector.Interfaces
+ * FILE:        IGraphicManager.cs
  * PURPOSE:     Interface Contract for our Library
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,19 +9,10 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     LightVector
- * FILE:        LightVector/IGraphicManager.cs
- * PURPOSE:     Interface Contract for our Vector Library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-
-
 using System.Collections.Generic;
 using System.Windows;
 
-namespace LightVector
+namespace LightVector.Interfaces
 {
     /// <summary>
     ///     Interface for our Vector Library

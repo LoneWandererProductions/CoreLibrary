@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/WpfVectorRenderer.cs
+ * FILE:        WpfVectorRenderer.cs
  * PURPOSE:     On possible Contract to display our vector image
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -16,6 +16,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using LightVector.Enums;
+using LightVector.Interfaces;
 
 namespace LightVector
 {
@@ -125,56 +127,55 @@ namespace LightVector
         /// <exception cref="NotSupportedException">Unknown graphic type: {obj.Type}</exception>
         private static Shape ConvertToWpfObject(SaveObject obj)
         {
-            switch (obj.Type)
+            // 1. GEOMETRY CREATION (Local Space 0,0)
+            // We do NOT pass StartCoordinates here. 
+            // The object is created at (0,0) so the Canvas can move it later.
+            Shape wpfShape = obj.Type switch
             {
-                case GraphicTypes.Line:
-                    var lineObject = (LineObject)obj.Graphic;
-                    return CreateLine(lineObject, obj.StartCoordinates);
+                GraphicTypes.Line => CreateLine((LineObject)obj.Graphic),
+                GraphicTypes.Circle => CreateCircle((CircleObject)obj.Graphic),
+                GraphicTypes.Oval => CreateOval((OvalObject)obj.Graphic),
+                GraphicTypes.Polygon => CreatePolygon((PolygonObject)obj.Graphic),
+                GraphicTypes.BezierCurve => CreateBezier((BezierCurve)obj.Graphic),
+                _ => throw new NotSupportedException($"Unknown graphic type: {obj.Type}")
+            };
 
-                case GraphicTypes.Point:
-                    break;
+            // 2. STYLE INTEGRATION (WPF Brushes & Strokes)
+            // This turns your generic Hex strings into actual WPF resources
+            var graphic = obj.Graphic;
 
-                case GraphicTypes.BezierCurve:
-                    var bezierObject = (BezierCurve)obj.Graphic;
-                    var tension = bezierObject.Tension; // Default tension if not provided
-                    return BezierCurveFactory.CreateBezierCurve(bezierObject.Vectors,
-                        tension); // Now returns the generated path from the factory
+            wpfShape.Stroke = ParseColor(graphic.Stroke);
+            wpfShape.Fill = ParseColor(graphic.Fill);
+            wpfShape.StrokeThickness = graphic.Thickness;
 
-                case GraphicTypes.Polygon:
-                    var polygonObject = (PolygonObject)obj.Graphic;
-                    return CreatePolygon(polygonObject, obj.StartCoordinates);
+            wpfShape.StrokeLineJoin = graphic.StrokeLineJoin switch
+            {
+                VectorLineJoin.Bevel => PenLineJoin.Bevel,
+                VectorLineJoin.Miter => PenLineJoin.Miter,
+                VectorLineJoin.Round => PenLineJoin.Round,
+                _ => PenLineJoin.Bevel
+            };
 
-                case GraphicTypes.Circle:
-                    var circleObject = (CircleObject)obj.Graphic;
-                    return CreateCircle(circleObject, obj.StartCoordinates);
-
-                case GraphicTypes.Oval:
-                    var ovalObject = (OvalObject)obj.Graphic;
-                    return CreateOval(ovalObject, obj.StartCoordinates);
-
-                default:
-                    throw new NotSupportedException($"Unknown graphic type: {obj.Type}");
-            }
-
-            return null;
+            return wpfShape;
         }
 
         /// <summary>
         ///     Creates the line.
         /// </summary>
         /// <param name="lineObject">The line object.</param>
-        /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
-        private static Line CreateLine(LineObject lineObject, Point startCoordinates)
+        private static Line CreateLine(LineObject lineObject)
         {
+            // INTEGRATION NOTE: 
+            // We set X1/Y1 to 0. 
+            // The 'StartCoordinates' from SaveObject will be applied via Canvas.SetLeft/Top
+            // outside of this method.
             return new Line
             {
-                X1 = 0, // Relative to the Canvas.SetLeft
+                X1 = 0,
                 Y1 = 0,
                 X2 = lineObject.Direction.X,
-                Y2 = lineObject.Direction.Y,
-                Stroke = lineObject.Stroke ?? Brushes.Black,
-                StrokeThickness = lineObject.Thickness
+                Y2 = lineObject.Direction.Y
             };
         }
 
@@ -182,18 +183,15 @@ namespace LightVector
         ///     Creates the polygon.
         /// </summary>
         /// <param name="polygonObject">The polygon object.</param>
-        /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
-        private static Shape CreatePolygon(PolygonObject polygonObject, Point startCoordinates)
+        private static Polygon CreatePolygon(PolygonObject polygonObject)
         {
+            // PURE GEOMETRY: Just the relative vertices.
             var points = new PointCollection(polygonObject.Vertices.Select(v => new Point(v.X, v.Y)));
 
             return new Polygon
             {
-                Points = points,
-                Stroke = polygonObject.Stroke ?? Brushes.Black,
-                Fill = polygonObject.Fill ?? Brushes.Transparent,
-                StrokeThickness = polygonObject.Thickness
+                Points = points
             };
         }
 
@@ -201,19 +199,15 @@ namespace LightVector
         ///     Creates the circle.
         /// </summary>
         /// <param name="circleObject">The circle object.</param>
-        /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
-        private static Shape CreateCircle(CircleObject circleObject, Point startCoordinates)
+        private static Path CreateCircle(CircleObject circleObject)
         {
-            // Use (0,0) as the center point. Canvas.SetLeft/Top will move it to the right place.
+            // CENTER IS (0,0). Canvas moves it to the right spot.
             var circle = new EllipseGeometry(new Point(0, 0), circleObject.Radius, circleObject.Radius);
 
             return new Path
             {
-                Data = circle,
-                Stroke = circleObject.Stroke ?? Brushes.Black,
-                Fill = circleObject.Fill ?? Brushes.Transparent,
-                StrokeThickness = circleObject.Thickness
+                Data = circle
             };
         }
 
@@ -221,20 +215,49 @@ namespace LightVector
         ///     Creates the oval.
         /// </summary>
         /// <param name="ovalObject">The oval object.</param>
-        /// <param name="startCoordinates">The start coordinates.</param>
         /// <returns>Image Object to Wpf Shape</returns>
-        private static Shape CreateOval(OvalObject ovalObject, Point startCoordinates)
+        private static Path CreateOval(OvalObject ovalObject)
         {
-            // Same as circle: center at 0,0
             var oval = new EllipseGeometry(new Point(0, 0), ovalObject.RadiusX, ovalObject.RadiusY);
 
             return new Path
             {
-                Data = oval,
-                Stroke = ovalObject.Stroke ?? Brushes.Black,
-                Fill = ovalObject.Fill ?? Brushes.Transparent,
-                StrokeThickness = ovalObject.Thickness
+                Data = oval
             };
+        }
+
+        private static Path CreateBezier(BezierCurve bezierObject)
+        {
+            // Assuming your Factory returns a generic Geometry or PathGeometry
+            // Ensure your Factory doesn't add offsets internally!
+            return new Path
+            {
+                Data = BezierCurveFactory.CreateBezierGeometry(bezierObject.Vectors, bezierObject.Tension)
+            };
+        }
+
+        /// <summary>
+        /// Parses Hex String to WPF Brush (Optimized).
+        /// </summary>
+        /// <param name="colorString">The color string.</param>
+        /// <returns>Parsed Hex to wpf color.</returns>
+        private static SolidColorBrush ParseColor(string colorString)
+        {
+            if (string.IsNullOrEmpty(colorString)) return Brushes.Transparent;
+
+            try
+            {
+                var color = (Color)ColorConverter.ConvertFromString(colorString);
+                var brush = new SolidColorBrush(color);
+
+                // IMPORTANT: Freezing makes rendering significantly faster
+                if (brush.CanFreeze) brush.Freeze();
+                return brush;
+            }
+            catch
+            {
+                return Brushes.Transparent;
+            }
         }
 
         /// <summary>

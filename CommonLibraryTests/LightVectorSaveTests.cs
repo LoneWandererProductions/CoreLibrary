@@ -13,6 +13,7 @@ using System.Numerics;
 using System.Windows;
 using System.Xml.Serialization;
 using LightVector;
+using LightVector.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonLibraryTests

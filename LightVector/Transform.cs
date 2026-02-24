@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     LightVector
- * FILE:        LightVector/Transform.cs
+ * FILE:        Transform.cs
  * PURPOSE:     Basic Transform Class 
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

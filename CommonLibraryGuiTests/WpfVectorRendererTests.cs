@@ -15,6 +15,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Linq;
 using LightVector;
+using LightVector.Enums;
 
 namespace CommonLibraryGuiTests
 {
