@@ -13,6 +13,7 @@
 
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using LightVector.Enums;
 
 namespace LightVector
 {
