@@ -116,14 +116,13 @@ namespace Communication
         /// <returns></returns>
         private static string GetFileNameFromUri(Uri uri)
         {
-            // Try to get the file name from the LocalPath (handles most cases)
+            // Try standard extraction first (e.g., site.com/image.png -> image.png)
             var fileName = Path.GetFileName(uri.LocalPath);
 
-            // If empty (e.g. "http://site.com/"), generate a default name
+            // FIX: If the URL is just the root (site.com/), use the Host name (site.com)
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                // You could also use a Guid here, or "index.html" depending on context
-                return $"download_{DateTime.Now.Ticks}.dat";
+                return uri.Host; // This returns "www.google.de"
             }
 
             return fileName;
