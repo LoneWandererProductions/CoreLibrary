@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace Communication
 {
+    /// <summary>
+    /// Helper class for file transfers, including downloading files from URLs and saving them to disk.
+    /// </summary>
     internal static class FileTransfer
     {
         /// <summary>

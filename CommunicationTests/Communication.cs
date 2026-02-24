@@ -30,12 +30,19 @@ namespace CommunicationTests
         public async Task CommunicationsAsync()
         {
             var communication = new NetCom();
-            _ = await communication.SaveFile(_path, "https://www.google.de/");
-            var path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Communication), "www.google.de");
+            // Use a URL that actually ends in a filename
+            string url = "https://www.google.de/favicon.ico";
+            string targetFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestDownloads");
 
-            Assert.IsTrue(File.Exists(path), "File not found");
+            bool success = await communication.SaveFile(targetFolder, url);
 
-            File.Delete(path);
+            // The helper logic will extract "favicon.ico"
+            var expectedPath = Path.Combine(targetFolder, "favicon.ico");
+
+            Assert.IsTrue(success, "Download failed");
+            Assert.IsTrue(File.Exists(expectedPath), $"File not found at {expectedPath}");
+
+            if (File.Exists(expectedPath)) File.Delete(expectedPath);
         }
 
         /// <summary>
@@ -50,7 +57,7 @@ namespace CommunicationTests
             var cancellationTokenSource = new CancellationTokenSource();
 
             // Start the listener in a separate task to simulate real-world usage
-            var listenerTask = Task.Run(() => listener.StartListening(cancellationTokenSource.Token),
+            var listenerTask = Task.Run(() => listener.StartListeningAsync(cancellationTokenSource.Token),
                 cancellationTokenSource.Token);
 
             // Wait for a brief moment to ensure the server is up and listening

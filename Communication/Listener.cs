@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Communication
 {
@@ -48,31 +49,35 @@ namespace Communication
         ///     Starts the listening.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public void StartListening(CancellationToken cancellationToken)
+        public async Task StartListeningAsync(CancellationToken cancellationToken)
         {
             _isRunning = true;
             _tcpListener.Start();
             Console.WriteLine(ComResource.MessageListening, _port);
-            while (_isRunning)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    StopListening();
-                    return;
-                }
 
-                try
+            try
+            {
+                // We use the CancellationToken to stop the loop gracefully
+                while (!cancellationToken.IsCancellationRequested && _isRunning)
                 {
-                    if (_tcpListener.Pending()) // Non-blocking accept
-                    {
-                        var client = _tcpListener.AcceptTcpClient();
-                        ThreadPool.QueueUserWorkItem(HandleClient, client);
-                    }
+                    // This blocks asynchronously: 0% CPU usage while waiting
+                    using var client = await _tcpListener.AcceptTcpClientAsync(cancellationToken);
+
+                    // Fire and forget the handler so we can accept the next client immediately
+                    _ = HandleClientAsync(client);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Normal exit when token is cancelled
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
+            }
+            finally
+            {
+                StopListening();
             }
         }
 
@@ -90,17 +95,26 @@ namespace Communication
         ///     Handles the client.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private static void HandleClient(object obj)
+        private static async Task HandleClientAsync(TcpClient client)
         {
-            var client = (TcpClient)obj;
-            var stream = client.GetStream();
-            // Respond with a simple message (acting as the "ping response")
-            const string response = ComResource.AnswerMessage;
-            var buffer = Encoding.ASCII.GetBytes(response);
-            stream.Write(buffer, 0, buffer.Length);
-            // Close the connection
-            client.Close();
-            Console.WriteLine(ComResource.MessageAnswer);
+            try
+            {
+                using (client) // Ensures the client is closed
+                using (var stream = client.GetStream()) // Ensures the stream is closed
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
+
+                    // Use Async write
+                    await stream.WriteAsync(buffer, 0, buffer.Length);
+                    await stream.FlushAsync();
+
+                    Console.WriteLine(ComResource.MessageAnswer);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error handling client: " + ex.Message);
+            }
         }
     }
 }
