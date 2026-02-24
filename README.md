@@ -146,7 +146,6 @@ foreach (var entry in logger.GetLogs())
 | `Pathfinder`                | A* pathfinding for grid-based maps              |
 | `InterOp`                   | Windows API bindings                             |
 | `CoreInject`                | Minimal DI/injection support                    |
-| `CoreConsole`               | Quick console runner for apps                   |
 | `CoreMemoryLog`             | In-memory logger, structured, UI-ready          |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
 | `Contracts`                 | Holds all shared Interfaces                      |
