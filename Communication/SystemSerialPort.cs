@@ -13,9 +13,17 @@ using Communication.Interfaces;
 namespace Communication
 {
     /// <inheritdoc />
-    internal sealed class SystemSerialPort : ISerialPort
+    internal sealed class SystemSerialPort : ISerialPort, IDisposable
     {
+        /// <summary>
+        /// The port
+        /// </summary>
         private readonly SerialPort _port;
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
 
         /// <inheritdoc />
         public event EventHandler? DataReceived;
@@ -42,8 +50,17 @@ namespace Communication
                 WriteTimeout = -1
             };
 
-            _port.DataReceived += (_, __) =>
-                DataReceived?.Invoke(this, EventArgs.Empty);
+            _port.DataReceived += OnDataReceived;
+        }
+
+        /// <summary>
+        /// Called when [data received].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SerialDataReceivedEventArgs"/> instance containing the event data.</param>
+        private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            DataReceived?.Invoke(this, EventArgs.Empty);
         }
 
         /// <inheritdoc />
@@ -67,5 +84,25 @@ namespace Communication
         /// <inheritdoc />
         public void Write(byte[] buffer, int offset, int count)
             => _port.Write(buffer, offset, count);
+
+        /// <summary>
+        /// Cleanup the hardware port.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            // Unhook event to avoid memory leaks
+            _port.DataReceived -= OnDataReceived;
+
+            // Close and Dispose the actual hardware port
+            if (_port.IsOpen)
+            {
+                _port.Close();
+            }
+
+            _port.Dispose();
+            _disposed = true;
+        }
     }
 }
