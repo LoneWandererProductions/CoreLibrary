@@ -14,11 +14,11 @@ using ViewModel;
 
 namespace CommonControls
 {
-    /// <inheritdoc cref="ObservableObject" />
+    /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
     ///     Data Object
     /// </summary>
-    public sealed class DataItem : ObservableObject, IEquatable<DataItem>
+    public sealed class DataItem : ViewModelBase, IEquatable<DataItem>
     {
         /// <summary>
         ///     The id.
@@ -28,7 +28,7 @@ namespace CommonControls
         /// <summary>
         ///     The name.
         /// </summary>
-        private string _name;
+        private string _name = string.Empty;
 
         /// <summary>
         ///     Gets or sets the id.
@@ -36,16 +36,7 @@ namespace CommonControls
         public int Id
         {
             get => _id;
-            set
-            {
-                if (_id == value)
-                {
-                    return;
-                }
-
-                _id = value;
-                RaisePropertyChangedEvent(nameof(Id));
-            }
+            set => SetProperty(ref _id, value);
         }
 
         /// <summary>
@@ -54,16 +45,7 @@ namespace CommonControls
         public string Name
         {
             get => _name;
-            set
-            {
-                if (_name == value)
-                {
-                    return;
-                }
-
-                _name = value;
-                RaisePropertyChangedEvent(nameof(Name));
-            }
+            set => SetProperty(ref _name, value);
         }
 
         /// <inheritdoc />
@@ -75,17 +57,10 @@ namespace CommonControls
         ///     <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise,
         ///     <see langword="false" />.
         /// </returns>
-        public bool Equals(DataItem other)
+        public bool Equals(DataItem? other)
         {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return _id == other._id && _name == other._name;
         }
@@ -98,7 +73,7 @@ namespace CommonControls
         /// <returns>
         ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) || (obj is DataItem other && Equals(other));
         }
@@ -112,7 +87,9 @@ namespace CommonControls
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(_id);
+            // Note: If Equals uses Name, HashCode should ideally include it too, 
+            // unless Id is guaranteed unique across all instances.
+            return HashCode.Combine(_id, _name);
         }
 
         /// <inheritdoc />

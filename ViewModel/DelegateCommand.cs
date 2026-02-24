@@ -23,11 +23,6 @@ namespace ViewModel
     public sealed class DelegateCommand<T> : ICommand
     {
         /// <summary>
-        ///     The action to execute.
-        /// </summary>
-        private readonly Action<T> _action;
-
-        /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
         private readonly Predicate<T>? _canExecute;

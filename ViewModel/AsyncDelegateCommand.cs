@@ -34,6 +34,16 @@ namespace ViewModel
         private readonly Func<T, Task> _execute;
 
         /// <summary>
+        /// The on exception
+        /// </summary>
+        private readonly Action<Exception>? _onException;
+
+        /// <summary>
+        /// The is executing
+        /// </summary>
+        private bool _isExecuting;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncDelegateCommand{T}" /> class.
         /// </summary>
         /// <param name="execute">The asynchronous action to execute.</param>
@@ -55,7 +65,30 @@ namespace ViewModel
         /// <param name="parameter">The parameter for the action.</param>
         public async void Execute(object? parameter)
         {
-            await _execute((T)parameter);
+            // 1. Safe Casting: Ensure parameter is actually T
+            if (!IsValidParameter(parameter, out T validParam))
+                return;
+
+            // 2. Concurrency Lock
+            if (_isExecuting) return;
+
+            _isExecuting = true;
+            RaiseCanExecuteChanged(); // Refreshes button state (disables it)
+
+            try
+            {
+                // 3. Exception Handling wrapper
+                await _execute(validParam);
+            }
+            catch (Exception ex)
+            {
+                _onException?.Invoke(ex);
+            }
+            finally
+            {
+                _isExecuting = false;
+                RaiseCanExecuteChanged(); // Re-enables button
+            }
         }
 
         /// <summary>
@@ -83,6 +116,32 @@ namespace ViewModel
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
+        }
+
+        /// <summary>
+        /// Safely casts the object to type T.
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        /// <param name="result">The result.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid parameter] [the specified parameter]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsValidParameter(object? parameter, out T result)
+        {
+            result = default!;
+
+            // Case 1: T is a reference type or Nullable<T>, and parameter is null
+            if (parameter is null && (default(T) == null))
+                return true;
+
+            // Case 2: parameter is actually T
+            if (parameter is T typedParam)
+            {
+                result = typedParam;
+                return true;
+            }
+
+            return false;
         }
     }
 }

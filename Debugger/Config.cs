@@ -20,8 +20,11 @@ namespace Debugger
     ///     The config class.
     ///     Only used for Data that is permanent and saved
     /// </summary>
-    public class Config : ObservableObject
+    public class Config : ViewModelBase
     {
+        private long _maxFileSize = 5 * 1024 * 1024; // Default: 5 MB
+        private int _maxFileCount = 10; // Default: 10
+
         /// <summary>
         ///     Gets or sets the debug path.
         /// </summary>
@@ -30,8 +33,9 @@ namespace Debugger
             get => DebugRegister.DebugPath;
             set
             {
+                if (DebugRegister.DebugPath == value) return;
                 DebugRegister.DebugPath = value;
-                RaisePropertyChangedEvent(nameof(DebugPath));
+                OnPropertyChanged();
             }
         }
 
@@ -43,8 +47,9 @@ namespace Debugger
             get => DebugRegister.SecondsTick;
             set
             {
+                if (DebugRegister.SecondsTick == value) return;
                 DebugRegister.SecondsTick = value;
-                RaisePropertyChangedEvent(nameof(SecondsTick));
+                OnPropertyChanged();
             }
         }
 
@@ -56,8 +61,9 @@ namespace Debugger
             get => DebugRegister.MinutesTick;
             set
             {
+                if (DebugRegister.MinutesTick == value) return;
                 DebugRegister.MinutesTick = value;
-                RaisePropertyChangedEvent(nameof(MinutesTick));
+                OnPropertyChanged();
             }
         }
 
@@ -69,8 +75,9 @@ namespace Debugger
             get => DebugRegister.HourTick;
             set
             {
+                if (DebugRegister.HourTick == value) return;
                 DebugRegister.HourTick = value;
-                RaisePropertyChangedEvent(nameof(HourTick));
+                OnPropertyChanged();
             }
         }
 
@@ -82,25 +89,42 @@ namespace Debugger
             get => DebugRegister.IsDumpActive;
             set
             {
+                if (DebugRegister.IsDumpActive == value) return;
                 DebugRegister.IsDumpActive = value;
-                RaisePropertyChangedEvent(nameof(IsDumpActive));
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is verbose.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is verbose; otherwise, <c>false</c>.
-        /// </value>
         public bool IsVerbose
         {
             get => DebugRegister.IsVerbose;
             set
             {
+                if (DebugRegister.IsVerbose == value) return;
                 DebugRegister.IsVerbose = value;
-                RaisePropertyChangedEvent(nameof(IsVerbose));
+                OnPropertyChanged();
             }
+        }
+
+        /// <summary>
+        ///     Maximum size for each log file in bytes.
+        /// </summary>
+        public long MaxFileSize
+        {
+            get => _maxFileSize;
+            set => SetProperty(ref _maxFileSize, value);
+        }
+
+        /// <summary>
+        ///     Maximum number of log files to retain.
+        /// </summary>
+        public int MaxFileCount
+        {
+            get => _maxFileCount;
+            set => SetProperty(ref _maxFileCount, value);
         }
     }
 
@@ -119,8 +143,9 @@ namespace Debugger
             get => DebugRegister.SuppressWindow;
             set
             {
+                if (DebugRegister.SuppressWindow == value) return;
                 DebugRegister.SuppressWindow = value;
-                RaisePropertyChangedEvent(nameof(SuppressWindow));
+                OnPropertyChanged();
             }
         }
 
@@ -130,10 +155,11 @@ namespace Debugger
         public bool IsRunning
         {
             get => DebugRegister.IsRunning;
-            init
+            set
             {
+                if (DebugRegister.IsRunning == value) return;
                 DebugRegister.IsRunning = value;
-                RaisePropertyChangedEvent(nameof(IsRunning));
+                OnPropertyChanged();
             }
         }
 
@@ -145,8 +171,9 @@ namespace Debugger
             get => DebugRegister.ErrorColor;
             set
             {
+                if (DebugRegister.ErrorColor == value) return;
                 DebugRegister.ErrorColor = value;
-                RaisePropertyChangedEvent(nameof(ErrorColor));
+                OnPropertyChanged();
             }
         }
 
@@ -158,8 +185,9 @@ namespace Debugger
             get => DebugRegister.WarningColor;
             set
             {
+                if (DebugRegister.WarningColor == value) return;
                 DebugRegister.WarningColor = value;
-                RaisePropertyChangedEvent(nameof(WarningColor));
+                OnPropertyChanged();
             }
         }
 
@@ -171,8 +199,9 @@ namespace Debugger
             get => DebugRegister.InformationColor;
             set
             {
+                if (DebugRegister.InformationColor == value) return;
                 DebugRegister.InformationColor = value;
-                RaisePropertyChangedEvent(nameof(InformationColor));
+                OnPropertyChanged();
             }
         }
 
@@ -184,8 +213,9 @@ namespace Debugger
             get => DebugRegister.ExternalColor;
             set
             {
+                if (DebugRegister.ExternalColor == value) return;
                 DebugRegister.ExternalColor = value;
-                RaisePropertyChangedEvent(nameof(ExternalColor));
+                OnPropertyChanged();
             }
         }
 
@@ -197,35 +227,24 @@ namespace Debugger
             get => DebugRegister.StandardColor;
             set
             {
+                if (DebugRegister.StandardColor == value) return;
                 DebugRegister.StandardColor = value;
-                RaisePropertyChangedEvent(nameof(StandardColor));
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         ///     Gets or sets the color options.
         /// </summary>
-        /// <value>
-        ///     The color options.
-        /// </value>
         public List<ColorOption> ColorOptions
         {
             get => DebugRegister.ColorOptions;
             set
             {
+                if (DebugRegister.ColorOptions == value) return;
                 DebugRegister.ColorOptions = value;
-                RaisePropertyChangedEvent(nameof(ColorOptions));
+                OnPropertyChanged();
             }
         }
-
-        /// <summary>
-        ///     Maximum size for each log file in bytes.
-        /// </summary>
-        public long MaxFileSize { get; set; } = 5 * 1024 * 1024; // Default: 5 MB
-
-        /// <summary>
-        ///     Maximum number of log files to retain.
-        /// </summary>
-        public int MaxFileCount { get; set; } = 10; // Default: 10
     }
 }
