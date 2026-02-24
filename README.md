@@ -142,7 +142,7 @@ foreach (var entry in logger.GetLogs())
 | `CoreBuilderTests`          | Tests for image/vector building tools           |
 | `Loader`                    | Generic Plugin loading, via Interface           |
 | `CommonFilter`              | WPF control to filter data tables               |
-| `CoreBuilder`               | Utilities for image/vector creation             |
+| `CoreBuilder`               | Utilities and small programs for Weaver engine  |
 | `Pathfinder`                | A* pathfinding for grid-based maps              |
 | `InterOp`                   | Windows API bindings                             |
 | `CoreInject`                | Minimal DI/injection support                    |
