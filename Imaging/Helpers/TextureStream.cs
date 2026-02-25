@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
-using static OpenTK.Graphics.OpenGL.GL;
 
 // ReSharper disable UnusedMember.Local
 

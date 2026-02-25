@@ -4,6 +4,12 @@
  * FILE:        SimpleLogServer.cs
  * PURPOSE:     Facade to simplify usage of LogCollectorServer for users who just want to provide a simple callback for log processing without needing to implement the ILogProcessor interface themselves.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * * TO DO:
+ * 1. [Config] Expose the 'Read Timeout' (currently hardcoded to 5s) as a constructor parameter or options object.
+ * 2. [Events] Add an 'OnError' Action<Exception> callback so users can handle server errors instead of just Console.WriteLine.
+ * 3. [Events] Add 'OnClientConnected' and 'OnClientDisconnected' callbacks for better monitoring.
+ * 4. [Security] Add support for SslStream (TLS) to allow secure log transmission.
+ * 5. [Network] Explicitly support IPv6 (currently defaults to IPv4/Any).
  */
 
 using System;
