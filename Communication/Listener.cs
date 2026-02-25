@@ -2,11 +2,12 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Communication
  * FILE:        Listener.cs
- * PURPOSE:     Simple port checker.
+ * PURPOSE:     Simple port checker. Just listens to a port and answers with a fixed message.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -53,7 +54,7 @@ namespace Communication
         {
             _isRunning = true;
             _tcpListener.Start();
-            Console.WriteLine(ComResource.MessageListening, _port);
+            Trace.WriteLine(ComResource.MessageListening, _port.ToString());
 
             try
             {
@@ -73,7 +74,7 @@ namespace Communication
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
+                Trace.WriteLine(ComResource.ErrorAcceptingCommunication, ex.Message);
             }
             finally
             {
@@ -88,7 +89,7 @@ namespace Communication
         {
             _isRunning = false;
             _tcpListener.Stop();
-            Console.WriteLine(ComResource.ServerStatusStop);
+            Trace.WriteLine(ComResource.ServerStatusStop);
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace Communication
             try
             {
                 using (client) // Ensures the client is closed
-                using (var stream = client.GetStream()) // Ensures the stream is closed
+                await using (var stream = client.GetStream()) // Ensures the stream is closed
                 {
                     byte[] buffer = Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
 
@@ -113,7 +114,7 @@ namespace Communication
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error handling client: " + ex.Message);
+                Trace.WriteLine("Error handling client: " + ex.Message);
             }
         }
     }
