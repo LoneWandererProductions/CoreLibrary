@@ -81,7 +81,7 @@ namespace CoreBuilder.Rules
             }
 
             var output = string.Join("\n", results.Select(d => $"{Path.GetFileName(d.FilePath)} -> {d.Message}"));
-            return CommandResult.Ok($"Unused references detected:\n{output}", results);
+            return CommandResult.Ok($"Unused references detected:\n{output}", EnumTypes.Wstring);
         }
     }
 }

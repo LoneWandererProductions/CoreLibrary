@@ -26,27 +26,10 @@ namespace Weaver.Evaluate
         /// </summary>
         private readonly IVariableRegistry? _registry;
 
-        private readonly RpnEngine _rpn;
-
         /// <summary>
-        /// The operators
+        /// The RPN
         /// </summary>
-        private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators = new()
-        {
-            ["!"] = (5, true, 1),
-            ["*"] = (4, false, 2),
-            ["/"] = (4, false, 2),
-            ["+"] = (3, false, 2),
-            ["-"] = (3, false, 2),
-            [">"] = (2, false, 2),
-            ["<"] = (2, false, 2),
-            [">="] = (2, false, 2),
-            ["<="] = (2, false, 2),
-            ["=="] = (2, false, 2),
-            ["!="] = (2, false, 2),
-            ["&&"] = (1, false, 2),
-            ["||"] = (0, false, 2),
-        };
+        private readonly RpnEngine _rpn;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionEvaluator"/> class.
@@ -67,60 +50,24 @@ namespace Weaver.Evaluate
 
             expression = expression.Trim();
 
-            // direct boolean literals
-            if (expression.Equals("true", StringComparison.OrdinalIgnoreCase))
-                return true;
+            // 1. Fast Path: Direct boolean literals
+            if (expression.Equals("true", StringComparison.OrdinalIgnoreCase)) return true;
+            if (expression.Equals("false", StringComparison.OrdinalIgnoreCase)) return false;
 
-            if (expression.Equals("false", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            // single-variable evaluation
+            // 2. Fast Path: Single-variable evaluation
             if (_registry != null && _registry.TryEvaluateAsBool(expression, out var single))
                 return single;
 
-            // try to interpret as a variable
-            if (_registry != null) expression = _registry.ReplaceVariablesInExpression(expression);
+            // 3. Complex Evaluation
+            // We NO LONGER do string replacement here! 
+            // The Lexer safely splits the string, and the RPN Engine fetches variables from the registry.
+            var tokens = Lexer.Tokenize(expression).ToList();
 
-            // --- comparison operators ---
-            var tokens = Lexer.Tokenize(expression).ToArray();
+            // RpnEngine calculates the entire math/logic tree and returns a double (1 or 0 for logic)
+            var numericResult = _rpn.EvaluateRpn(tokens);
 
-            if (tokens.Length == 2 && tokens[0] == ScriptConstants.LogicalNotSymbol) // "!"
-            {
-                var val = GetValue(tokens[1]);
-                return !Convert.ToBoolean(val);
-            }
-
-            if (tokens.Length == 3)
-            {
-                var left = GetValue(tokens[0]);
-                var op = tokens[1];
-                var right = GetValue(tokens[2]);
-
-                return op switch
-                {
-                    ScriptConstants.EqualEqual => Equals(left, right),
-                    ScriptConstants.BangEqual => !Equals(left, right),
-                    ScriptConstants.Greater => Compare(left, right) > 0,
-                    ScriptConstants.Less => Compare(left, right) < 0,
-                    ScriptConstants.GreaterEqual => Compare(left, right) >= 0,
-                    ScriptConstants.LessEqual => Compare(left, right) <= 0,
-                    ScriptConstants.LogicalAndSymbol => Convert.ToBoolean(left) && Convert.ToBoolean(right),
-                    ScriptConstants.LogicalOrSymbol => Convert.ToBoolean(left) || Convert.ToBoolean(right),
-                    _ => throw new ArgumentException($"Unsupported operator: {op}")
-                };
-            }
-
-            // unary NOT with tokens
-            if (tokens.Length == 2 && tokens[0].Equals("not", StringComparison.OrdinalIgnoreCase))
-            {
-                var val = GetValue(tokens[1]);
-                return !Convert.ToBoolean(val);
-            }
-
-            //TODO cache Tokens -> RPN conversion for performance
-
-            // fallback numeric
-            return EvaluateNumeric(expression) != 0;
+            // Convert C-style numeric boolean back to C# bool
+            return numericResult != 0;
         }
 
         /// <inheritdoc />
@@ -133,36 +80,6 @@ namespace Weaver.Evaluate
             //return EvaluateRpn(rpn);
 
             return _rpn.EvaluateRpn(tokens);
-        }
-
-        /// <summary>
-        /// Retrieve a token value (number, variable, or literal string).
-        /// </summary>
-        private object GetValue(string token)
-        {
-            // Try numeric literal
-            if (double.TryParse(token, out var num))
-                return num;
-
-            // Try registry lookup
-            if (_registry != null && _registry.TryGet(token, out var val, out _))
-                return val!;
-
-            // Treat as literal string
-            return token;
-        }
-
-        /// <summary>
-        /// Compare two numeric values.
-        /// </summary>
-        /// <param name="a">a.</param>
-        /// <param name="b">The b.</param>
-        /// <returns>Compare result.</returns>
-        private static int Compare(object a, object b)
-        {
-            var da = Convert.ToDouble(a);
-            var db = Convert.ToDouble(b);
-            return da.CompareTo(db);
         }
 
         /// <inheritdoc />

@@ -51,6 +51,11 @@ namespace Weaver.Registry
         /// </summary>
         private readonly Dictionary<int, VmValue> _store = new();
 
+        /// <summary>
+        /// The heap pointer
+        /// </summary>
+        private int _heapPointer = 0;
+
         /// <inheritdoc />
         public string Get(string key)
         {
@@ -70,6 +75,121 @@ namespace Weaver.Registry
         public void Set(string key, VmValue value)
         {
             _registry[key] = value;
+        }
+
+        /// <inheritdoc />
+        public void SetList(string key, IReadOnlyList<VmValue> elements)
+        {
+            var newLength = elements.Count;
+
+            // 1. Does the list already exist?
+            if (_lookUp.TryGetValue(key, out var existingRange))
+            {
+                // THE OPTIMIZATION: Sizes match! Just overwrite the existing memory slots.
+                if (existingRange.Length == newLength)
+                {
+                    for (int i = 0; i < newLength; i++)
+                    {
+                        _store[existingRange.Start + i] = elements[i];
+                    }
+                    return; // We are done. No allocation needed!
+                }
+
+                // Sizes don't match. We have to abandon the old block.
+                // Remove() will clear the old _store items and remove the _lookUp entry.
+                Remove(key);
+            }
+
+            // 2. We need new memory (either brand new list, or size changed)
+            if (!TryAllocate(newLength, out var newRange))
+            {
+                throw new OutOfMemoryException("Weaver VM Heap is exhausted!");
+            }
+
+            // 3. Save the new pointer range
+            _lookUp[key] = newRange;
+
+            // 4. Write the actual data to the heap (_store)
+            for (int i = 0; i < newLength; i++)
+            {
+                _store[newRange.Start + i] = elements[i];
+            }
+
+            // 5. Update the stack (_registry) to know this key is a list
+            // Note: You will need to add a `VmValue.FromList()` factory method to your struct
+            _registry[key] = VmValue.FromList();
+        }
+
+        /// <inheritdoc />
+        public void SetObject(string key, IReadOnlyDictionary<string, VmValue> properties)
+        {
+            var newLength = properties.Count;
+
+            // 1. Check for memory reuse optimization
+            if (_lookUp.TryGetValue(key, out var existingRange))
+            {
+                if (existingRange.Length == newLength)
+                {
+                    int index = existingRange.Start;
+                    foreach (var kvp in properties)
+                    {
+                        // Attach the Dictionary Key as the VmValue.Attribute!
+                        _store[index] = kvp.Value.WithAttribute(kvp.Key);
+                        index++;
+                    }
+                    return; // Done without allocating!
+                }
+
+                // Sizes mismatch. Abandon old memory.
+                Remove(key);
+            }
+
+            // 2. Allocate new Heap Space
+            if (!TryAllocate(newLength, out var newRange))
+            {
+                throw new OutOfMemoryException("Weaver VM Heap is exhausted!");
+            }
+
+            // 3. Save the boundary pointer
+            _lookUp[key] = newRange;
+
+            // 4. Write the properties to the heap
+            int idx = newRange.Start;
+            foreach (var kvp in properties)
+            {
+                // Write it to memory, tagging it with its property name
+                _store[idx] = kvp.Value.WithAttribute(kvp.Key);
+                idx++;
+            }
+
+            // 5. Update the Stack with the Object Pointer
+            // Note: You already created FromObject()!
+            _registry[key] = VmValue.FromObject();
+        }
+
+        /// <inheritdoc />
+        public bool TryAllocate(int length, out VmRange range)
+        {
+            // GUARD: Prevent overflow
+            // We check if adding the length would push us past the absolute maximum
+            if (_heapPointer > long.MaxValue - length)
+            {
+                // Option A: Throw an exception (Hard crash the script)
+                throw new OutOfMemoryException("Weaver VM Heap is exhausted. Please restart the engine.");
+
+                // Option B: Return false (Let the engine handle the failure gracefully)
+                // range = default;
+                // return false; 
+            }
+
+            // Since _store dictionary keys in C# are ints, if you upgrade to long, 
+            // you would need to change private readonly Dictionary<int, VmValue> _store 
+            // to Dictionary<long, VmValue> _store.
+
+            range = new VmRange((int)_heapPointer, length);
+            _heapPointer += length;
+
+            return true;
         }
 
         /// <inheritdoc />
@@ -103,12 +223,10 @@ namespace Weaver.Registry
                 return false;
 
             var dict = new Dictionary<string, VmValue>();
-            for (var i = range.Start; i < range.End; i++)
+            for (var i = range.Start; i <= range.End; i++)
             {
                 var valueVm = _store[i];
-                if (valueVm.Attribute == null)
-                    continue; // skip values without an attribute
-
+                if (valueVm.Attribute == null) continue;
                 dict[valueVm.Attribute] = valueVm;
             }
 

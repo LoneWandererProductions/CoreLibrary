@@ -73,7 +73,7 @@ namespace Weaver.Core.Commands
                 }
 
                 _registry.Set(key, value, type);
-                return CommandResult.Ok($"Decremented '{key}' to {value}.", value, type);
+                return CommandResult.Ok($"Decremented '{key}' to {value.ToString()}.", value.ToString(), type);
             }
             catch (Exception ex)
             {

@@ -131,7 +131,7 @@ namespace CoreBuilder.Rules
             }
 
             var output = string.Join("\n", results.Select(d => d.ToString()));
-            return CommandResult.Ok(output, results);
+            return CommandResult.Ok(output, EnumTypes.Wstring);
         }
     }
 }

@@ -22,6 +22,13 @@ namespace Weaver
     /// </summary>
     public sealed class Weave
     {
+
+        /// <summary>
+        /// The synchronization lock object.
+        /// We use a private object to prevent deadlocks from external locking on 'this'.
+        /// </summary>
+        private readonly object _syncRoot = new();
+
         /// <summary>
         /// Stores registered commands, keyed by (namespace, name, parameter count)
         /// </summary>
@@ -29,38 +36,17 @@ namespace Weaver
             = new();
 
         /// <summary>
-        /// Stores per-command extension definitions
-        /// </summary>
-        private readonly Dictionary<(string ns, string name, int paramCount), Dictionary<string, int>>
-            _commandExtensions
-                = new();
-
-        /// <summary>
         /// Built-in extensions injected into every command
         /// </summary>
-        private static readonly Dictionary<string, CommandExtension> GlobalExtensions
-            = new(StringComparer.OrdinalIgnoreCase)
-            {
-                [WeaverResources.GlobalExtensionHelp] =
-                    new CommandExtension
-                    {
-                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
-                    },
-                [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
-                {
-                    Name = WeaverResources.GlobalExtensionTryRun,
-                    ParameterCount = 0,
-                    IsInternal = true,
-                    IsPreview = true
-                },
-                [WeaverResources.GlobalExtensionStore] = new CommandExtension
-                {
-                    Name = WeaverResources.GlobalExtensionStore,
-                    ParameterCount = -1,
-                    IsInternal = true,
-                    IsPreview = true
-                }
-            };
+        private static readonly Dictionary<string, CommandExtension> GlobalExtensions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            [WeaverResources.GlobalExtensionHelp] = new CommandExtension
+            { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
+            [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
+            { Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true, IsPreview = true },
+            [WeaverResources.GlobalExtensionStore] = new CommandExtension
+            { Name = WeaverResources.GlobalExtensionStore, ParameterCount = -1, IsInternal = true, IsPreview = true }
+        };
 
         /// <summary>
         /// The mediator
@@ -73,14 +59,9 @@ namespace Weaver
         private FeedbackRequest? _pendingFeedback;
 
         /// <summary>
-        /// The evaluator
-        /// </summary>
-        private readonly IEvaluator _evaluator;
-
-        /// <summary>
         /// The extensions
         /// </summary>
-        private readonly List<ICommandExtension> _extensions = new();
+        private readonly Dictionary<string, ICommandExtension> _extensions = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the IVariableRegistry runtime.
@@ -88,47 +69,19 @@ namespace Weaver
         /// <value>
         /// The runtime.
         /// </value>
-        public WeaveRuntime Runtime { get; } = new();
+        public WeaveRuntime Runtime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Weave"/> class.
+        /// Initializes a new instance of the <see cref="Weave" /> class.
         /// </summary>
-        public Weave()
+        /// <param name="runtime">Optional: The runtime environment to use. If null, a new one is created.</param>
+        public Weave(WeaveRuntime? runtime = null)
         {
-            // Register internal commands
-            var list = new ListCommand(() => GetCommands());
-            Register(list);
+            // Use the injected runtime, or create a fresh default one
+            Runtime = runtime ?? new WeaveRuntime();
 
-            var help = new HelpCommand(() => GetCommands());
-            Register(help);
-
-            var print = new PrintCommand();
-            Register(print);
-
-            // Our custom calculator command, needs the evaluator.
-            _evaluator = new ExpressionEvaluator(Runtime.Variables);
-            Register(new EvaluateCommand(_evaluator, Runtime.Variables));
-
-            //Register plugin loader
-            Register(new LoadPluginCommand(this));
-
-            // Register all variable commands with the runtime registry
-            Register(new SetValueCommand(Runtime.Variables, _evaluator));
-            Register(new GetValueCommand(Runtime.Variables));
-            Register(new IncCommand(Runtime.Variables));
-            Register(new DecCommand(Runtime.Variables));
-            Register(new DeleteValueCommand(Runtime.Variables));
-            Register(new MemoryCommand(Runtime.Variables));
-            Register(new ScriptCommand(Runtime.Variables));
-            Register(new MemClearCommand(Runtime.Variables));
-
-            // Register built-in extensions using RegisterExtension (unifies code path & enforces duplicate checks)
-            RegisterExtension(new HelpExtension());
-            RegisterExtension(new TryRunExtension());
-            RegisterExtension(new StoreExtension(Runtime.Variables));
-            RegisterExtension(new ScriptStepperExtension(Runtime.Variables));
+            RegisterDefaults();
         }
-
 
         /// <summary>
         /// Registers a command in the engine.
@@ -137,28 +90,12 @@ namespace Weaver
         /// <param name="command">The command to register.</param>
         public void Register(ICommand command)
         {
-            var mergedExtensions = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-            // Include command-defined extensions
-            if (command.Extensions != null)
+            // Lock ensures we don't modify the dictionary while ProcessInput is reading it
+            lock (_syncRoot)
             {
-                foreach (var kv in command.Extensions)
-                    mergedExtensions[kv.Key] = kv.Value;
+                var key = (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(), command.ParameterCount);
+                _commands[key] = command;
             }
-
-            // Include global extensions, skipping duplicates
-            foreach (var kv in GlobalExtensions)
-                if (!mergedExtensions.ContainsKey(kv.Key))
-                    mergedExtensions[kv.Key] = kv.Value.ParameterCount;
-
-            // Store extensions for internal lookup
-            _commandExtensions[
-                    (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(), command.ParameterCount)] =
-                mergedExtensions;
-
-            // Store the command itself
-            _commands[(command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(), command.ParameterCount)] =
-                command;
         }
 
         /// <summary>
@@ -168,14 +105,15 @@ namespace Weaver
         /// <param name="extension">The extension to register.</param>
         public void RegisterExtension(ICommandExtension extension)
         {
-            if (extension == null)
-                throw new ArgumentNullException(nameof(extension));
+            if (extension == null) throw new ArgumentNullException(nameof(extension));
 
-            // Avoid duplicate registration
-            if (_extensions.Any(e => e.Name.Equals(extension.Name, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException($"Extension '{extension.Name}' is already registered.");
+            lock (_syncRoot)
+            {
+                if (_extensions.ContainsKey(extension.Name))
+                    throw new InvalidOperationException($"Extension '{extension.Name}' is already registered.");
 
-            _extensions.Add(extension);
+                _extensions[extension.Name] = extension;
+            }
         }
 
         /// <summary>
@@ -183,9 +121,15 @@ namespace Weaver
         /// </summary>
         private IEnumerable<ICommand> GetCommands(string? ns = null)
         {
-            return ns == null
-                ? _commands.Values
-                : _commands.Values.Where(c => c.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase));
+            // Used by ListCommand/HelpCommand.
+            // Since those run inside ProcessInput -> Command.Execute, the _syncRoot is already held.
+            // C# locks are re-entrant, so this is safe.
+            lock (_syncRoot)
+            {
+                return ns == null
+                    ? _commands.Values.ToList() // Return a copy to prevent "Collection Modified" errors
+                    : _commands.Values.Where(c => c.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
         }
 
         /// <summary>
@@ -210,7 +154,7 @@ namespace Weaver
         ///   </item>
         ///   <item>
         ///     <description>
-        ///       <c>namespace:command()</c> or <c>namespace:command(arg1, ...)</c> – A namespaced command.
+        ///       <c>namespace:command()</c> or <c>namespace:command(arg1, ...)</c> – A namespace command.
         /// </description>
         ///   </item>
         ///   <item>
@@ -221,7 +165,7 @@ namespace Weaver
         ///   </item>
         ///   <item>
         ///     <description>
-        ///       <c>namespace:command(...).Extension(...)</c> – Full namespaced command with extension and optional arguments.
+        ///       <c>namespace:command(...).Extension(...)</c> – Full namespace command with extension and optional arguments.
         /// </description>
         ///   </item>
         /// </list>
@@ -241,83 +185,66 @@ namespace Weaver
         public CommandResult ProcessInput(string raw)
         {
             raw = raw.Trim();
-            if (string.IsNullOrEmpty(raw))
-                return CommandResult.Fail("Empty input.");
+            if (string.IsNullOrEmpty(raw)) return CommandResult.Fail("Empty input.");
 
-            // 1️⃣ Pending feedback
-            if (_pendingFeedback?.IsPending == true)
+            // CRITICAL SECTION:
+            // We lock the entire execution pipeline. This ensures that checking for 
+            // _pendingFeedback and executing the command happens as one atomic unit.
+            lock (_syncRoot)
             {
-                // Verify the command using mediator
-                var associatedCommand = Mediator.Resolve(_pendingFeedback.RequestId);
-                if (associatedCommand == null)
+                // 1. Pending Feedback
+                if (_pendingFeedback?.IsPending == true)
                 {
-                    // Unexpected state
+                    var associatedCommand = Mediator.Resolve(_pendingFeedback.RequestId);
+                    if (associatedCommand == null)
+                    {
+                        _pendingFeedback = null;
+                        return CommandResult.Fail("Pending feedback has no associated command.");
+                    }
+
+                    var result = _pendingFeedback.Respond(raw);
+
+                    // If still waiting for more input (multi-stage feedback), return immediately
+                    if (result.RequiresConfirmation) return result;
+
+                    Mediator.Clear(_pendingFeedback.RequestId);
                     _pendingFeedback = null;
-                    return CommandResult.Fail("Pending feedback has no associated command.");
+                    return result;
                 }
 
-                var result = _pendingFeedback.Respond(raw);
-
-                if (result.RequiresConfirmation) return result;
-
-                Mediator.Clear(_pendingFeedback.RequestId);
-                _pendingFeedback = null;
-
-                return result;
-            }
-
-            // 2️⃣ Parse command
-            ParsedCommand parsed;
-            try
-            {
-                parsed = SimpleCommandParser.Parse(raw);
-            }
-            catch (Exception ex)
-            {
-                return CommandResult.Fail($"Syntax error: {ex.Message}");
-            }
-
-            var (cmd, cmdError) = FindCommand(parsed.Name, parsed.Args.Length, parsed.Namespace);
-            if (cmdError != null)
-                return cmdError;
-
-            // 3️⃣ Handle extensions
-            if (!string.IsNullOrEmpty(parsed.Extension))
-            {
-                // Find the extension associated with this command
-                var (ext, error) = FindExtension(cmd, parsed.Extension, parsed.ExtensionArgs.Length);
-                if (error != null)
-                    return error;
-
-                CommandResult result;
-
-                if (ext != null)
+                // 2. Parse
+                ParsedCommand parsed;
+                try
                 {
-                    // Pass **command args** to the executor, **extension args** to the extension
-                    result = ext.Invoke(cmd, parsed.ExtensionArgs, cmd.Execute, parsed.Args);
+                    parsed = SimpleCommandParser.Parse(raw);
                 }
-                else
+                catch (Exception ex)
                 {
-                    // In the past we would call an obsolete InvokeExtension method here.
-                    // No extension found — return error (instead of calling obsolete InvokeExtension)
-                    return CommandResult.Fail($"Unknown extension '{parsed.Extension}' for command '{cmd.Name}'.");
+                    return CommandResult.Fail($"Syntax error: {ex.Message}");
                 }
 
-                return HandleFeedback(result, cmd);
+                var (cmd, cmdError) = FindCommand(parsed.Name, parsed.Args.Length, parsed.Namespace);
+                if (cmdError != null) return cmdError;
+
+                // 3. Extensions
+                if (!string.IsNullOrEmpty(parsed.Extension))
+                {
+                    var (ext, error) = FindExtension(cmd!, parsed.Extension, parsed.ExtensionArgs.Length);
+                    if (error != null) return error;
+
+                    if (ext != null)
+                    {
+                        var result = ext.Invoke(cmd!, parsed.ExtensionArgs, cmd!.Execute, parsed.Args);
+                        return HandleFeedback(result, cmd!);
+                    }
+
+                    return CommandResult.Fail($"Unknown extension '{parsed.Extension}' for command '{cmd!.Name}'.");
+                }
+
+                // 4. Execution
+                var execResult = cmd!.Execute(parsed.Args);
+                return HandleFeedback(execResult, cmd);
             }
-
-
-            // 4️⃣ Normal execution
-            var execResult = cmd.Execute(parsed.Args);
-            if (execResult.RequiresConfirmation && execResult.Feedback != null)
-            {
-                _pendingFeedback = execResult.Feedback;
-
-                // Register feedback with mediator
-                Mediator.Register(cmd, _pendingFeedback);
-            }
-
-            return execResult;
         }
 
         /// <summary>
@@ -326,7 +253,7 @@ namespace Weaver
         /// </summary>
         /// <param name="name">The command name.</param>
         /// <param name="argCount">The number of arguments provided in the invocation.</param>
-        /// <param name="ns">The optional namespace for namespaced commands.</param>
+        /// <param name="ns">The optional namespace for namespace commands.</param>
         /// <returns>
         /// The best matching <see cref="ICommand"/> if found, otherwise <c>null</c>.
         /// Returns a failed <see cref="CommandResult"/> for namespace mismatches.
@@ -394,72 +321,52 @@ namespace Weaver
         /// <param name="extensionName">The name of the extension.</param>
         /// <param name="argCount">The number of arguments passed to the extension.</param>
         /// <returns>
-        /// A tuple containing the matching <see cref="ICommandExtension"/>, or a failure <see cref="CommandResult"/> if not found or invalid.
+        /// A tuple containing the matching <see cref="ICommandExtension" />, or a failure <see cref="CommandResult" /> if not found or invalid.
         /// </returns>
-        private (ICommandExtension? Extension, CommandResult? Error) FindExtension(ICommand command,
-            string extensionName, int argCount)
+        private (ICommandExtension? Extension, CommandResult? Error) FindExtension(ICommand command, string extensionName, int argCount)
         {
             if (string.IsNullOrWhiteSpace(extensionName))
                 return (null, CommandResult.Fail("No extension name provided."));
 
-            // Normalize casing
             extensionName = extensionName.ToLowerInvariant();
 
-            // 1️⃣ Check Global Extensions first
+            // 1. Check Global Definitions
             if (GlobalExtensions.TryGetValue(extensionName, out var globalExt))
             {
-                switch (globalExt.ParameterCount)
+                if (globalExt.ParameterCount != 0 && globalExt.ParameterCount != -1)
                 {
-                    case 0: break; // variadic: always OK
-                    case -1: break; // optional 0..1 args: always OK
-                    default:
-                        if (globalExt.ParameterCount != argCount)
-                            return (null, CommandResult.Fail(
-                                $"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
-
-                        break;
+                    if (globalExt.ParameterCount != argCount)
+                        return (null, CommandResult.Fail($"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
                 }
 
-                var wrapper = _extensions.FirstOrDefault(e =>
-                    e.Name.Equals(extensionName, StringComparison.OrdinalIgnoreCase));
-
-                return (wrapper, null);
+                // O(1) Lookup from registry
+                return _extensions.TryGetValue(extensionName, out var impl)
+                    ? (impl, null)
+                    : (null, null); // Global def exists, but no implementation registered
             }
 
-            // 2️⃣ Check registered runtime extensions
-            var found = _extensions.FirstOrDefault(e =>
-                e.Name.Equals(extensionName, StringComparison.OrdinalIgnoreCase));
-
-            if (found == null)
+            // 2. Check Registered Extensions
+            if (!_extensions.TryGetValue(extensionName, out var found))
                 return (null, CommandResult.Fail($"Extension '{extensionName}' not found."));
 
-            // 3️⃣ Namespace validation — must match if both define namespaces
+            // 3. Namespace Validation
             if (!string.IsNullOrEmpty(found.Namespace) &&
                 !string.IsNullOrEmpty(command.Namespace) &&
                 !found.Namespace.Equals(command.Namespace, StringComparison.OrdinalIgnoreCase))
             {
-                return (null, CommandResult.Fail(
-                    $"Namespace mismatch: Command '{command.Namespace}' cannot use extension '{found.Name}' from '{found.Namespace}'."));
+                return (null, CommandResult.Fail($"Namespace mismatch: Command '{command.Namespace}' cannot use extension '{found.Name}' from '{found.Namespace}'."));
             }
 
-            // 4️⃣ Parameter count check (0 = variable)
+            // 4. Parameter Validation
             switch (found.ExtensionParameterCount)
             {
-                case 0: // fully variadic
+                case 0: break;
+                case -1:
+                    if (argCount > 1) return (null, CommandResult.Fail($"Extension '{found.Name}' expects zero or one parameter, but got {argCount}."));
                     break;
-
-                case -1: // optional 1
-                    if (argCount > 1)
-                        return (null, CommandResult.Fail(
-                            $"Extension '{found.Name}' expects zero or one parameter, but got {argCount}."));
-
-                    break;
-
-                default: // exact
+                default:
                     if (found.ExtensionParameterCount != argCount)
-                        return (null, CommandResult.Fail(
-                            $"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
-
+                        return (null, CommandResult.Fail($"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
                     break;
             }
 
@@ -481,12 +388,44 @@ namespace Weaver
         }
 
         /// <summary>
+        /// Registers the defaults.
+        /// </summary>
+        private void RegisterDefaults()
+        {
+            // Core Commands
+            Register(new ListCommand(() => GetCommands()));
+            Register(new HelpCommand(() => GetCommands()));
+            Register(new PrintCommand());
+            Register(new LoadPluginCommand(this));
+            Register(new EvaluateCommand(Runtime.Evaluator, Runtime.Variables));
+
+            // Variable/Memory Commands
+            Register(new SetValueCommand(Runtime.Variables, Runtime.Evaluator));
+            Register(new GetValueCommand(Runtime.Variables));
+            Register(new IncCommand(Runtime.Variables));
+            Register(new DecCommand(Runtime.Variables));
+            Register(new DeleteValueCommand(Runtime.Variables));
+            Register(new MemoryCommand(Runtime.Variables));
+            Register(new ScriptCommand(Runtime.Variables));
+            Register(new MemClearCommand(Runtime.Variables));
+
+            // Extensions
+            RegisterExtension(new HelpExtension());
+            RegisterExtension(new TryRunExtension());
+            RegisterExtension(new StoreExtension(Runtime.Variables));
+            RegisterExtension(new ScriptStepperExtension(Runtime.Variables));
+        }
+
+        /// <summary>
         /// Resets this instance.
         /// </summary>
         public void Reset()
         {
-            _pendingFeedback = null;
-            Mediator.ClearAll();
+            lock (_syncRoot)
+            {
+                _pendingFeedback = null;
+                Mediator.ClearAll();
+            }
         }
     }
 }

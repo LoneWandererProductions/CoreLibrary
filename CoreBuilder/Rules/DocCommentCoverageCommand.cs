@@ -110,7 +110,7 @@ namespace CoreBuilder.Rules
             }
 
             var messages = string.Join("\n", results.Select(d => d.ToString()));
-            return CommandResult.Ok(messages, results);
+            return CommandResult.Ok(messages, EnumTypes.Wstring);
         }
     }
 }

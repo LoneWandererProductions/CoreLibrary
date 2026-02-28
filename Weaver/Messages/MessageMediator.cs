@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Concurrent;
 using Weaver.Interfaces;
 
 namespace Weaver.Messages
@@ -18,7 +19,7 @@ namespace Weaver.Messages
         /// <summary>
         /// The pending
         /// </summary>
-        private readonly Dictionary<string, ICommand> _pending = new(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, ICommand> _pending = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Registers the specified command.
@@ -50,7 +51,7 @@ namespace Weaver.Messages
         /// <param name="requestId">The request identifier.</param>
         public void Clear(string requestId)
         {
-            _pending.Remove(requestId);
+            _pending.TryRemove(requestId, out _);
         }
 
         /// <summary>

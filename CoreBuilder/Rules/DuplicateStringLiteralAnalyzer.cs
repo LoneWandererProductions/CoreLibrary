@@ -125,7 +125,7 @@ namespace CoreBuilder.Rules
             }
             catch (Exception ex)
             {
-                return CommandResult.Fail($"DuplicateStringLiteral execution failed: {ex.Message}", ex);
+                return CommandResult.Fail($"DuplicateStringLiteral execution failed: {ex.Message}", EnumTypes.Wstring);
             }
 
             if (diagnostics.Count == 0)
@@ -141,7 +141,7 @@ namespace CoreBuilder.Rules
             sb.AppendLine(new string('-', 80));
             sb.AppendLine($"{diagnostics.Count} duplicate string occurrences detected.");
 
-            return CommandResult.Ok(sb.ToString(), diagnostics);
+            return CommandResult.Ok(sb.ToString(), EnumTypes.Wstring);
         }
 
         /// <summary>

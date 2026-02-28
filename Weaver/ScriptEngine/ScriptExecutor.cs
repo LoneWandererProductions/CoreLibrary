@@ -79,7 +79,7 @@ namespace Weaver.ScriptEngine
         /// <param name="weave">The weave.</param>
         /// <param name="statements">The statements.</param>
         /// <param name="debug">if set to <c>true</c> [debug].</param>
-        public ScriptExecutor(Weave weave, List<(string Category, string)> statements, bool debug = false)
+        public ScriptExecutor(Weave weave, List<(string Category, string? Statement)> statements, bool debug = false)
         {
             //now weave also holds all the variables and evaluator commands we need.
             _weave = weave;
@@ -320,7 +320,12 @@ namespace Weaver.ScriptEngine
             if (_debug)
                 Trace.WriteLine("[Internal] Script finished successfully.");
 
-            return new CommandResult { Success = true, Message = "Script finished.", Feedback = null };
+            return new CommandResult
+            {
+                Success = true,
+                Message = "Script finished.",
+                Feedback = null
+            };
         }
 
         /// <summary>

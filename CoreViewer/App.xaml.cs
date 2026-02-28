@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreViewer
- * FILE:        BoolToVisibilityConverter.cs
+ * FILE:        CoreViewer/BoolToVisibilityConverter.cs
  * PURPOSE:     Entry point and application definition for the WPF application.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

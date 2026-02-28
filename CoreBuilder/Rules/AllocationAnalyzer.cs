@@ -139,7 +139,7 @@ namespace CoreBuilder.Rules
                 return CommandResult.Ok("No Allocations found.");
 
             var output = string.Join("\n", diagnostics.Select(d => d.ToString()));
-            return CommandResult.Ok(output, diagnostics);
+            return CommandResult.Ok(output, EnumTypes.Wstring);
         }
     }
 }

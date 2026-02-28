@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreViewer
- * FILE:        DiagnosticItemViewModel.cs
+ * FILE:        CoreViewer/DiagnosticItemViewModel.cs
  * PURPOSE:     Our ViewModel for a single diagnostic item in the list.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

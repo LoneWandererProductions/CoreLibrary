@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using Weaver.Interfaces;
 
@@ -31,7 +32,7 @@ namespace Weaver.Messages
         /// <value>
         /// The prompt.
         /// </value>
-        public string Prompt { get; init; }
+        public string Prompt { get; }
 
         /// <summary>
         /// Gets the options.
@@ -39,7 +40,7 @@ namespace Weaver.Messages
         /// <value>
         /// The options.
         /// </value>
-        public string[] Options { get; init; }
+        public IReadOnlyList<string> Options { get; init; }
 
         /// <summary>
         /// Indicates if feedback is still pending.
@@ -77,6 +78,7 @@ namespace Weaver.Messages
         public CommandResult Respond(string input)
         {
             var result = _onRespond(input);
+            // If the next result doesn't require more confirmation, we are done.
             if (!result.RequiresConfirmation)
                 IsPending = false;
 
@@ -88,7 +90,7 @@ namespace Weaver.Messages
         /// </summary>
         public override string ToString()
         {
-            var optionsPart = Options.Length == 0 ? "<none>" : string.Join(", ", Options);
+            var optionsPart = Options.Count == 0 ? "<none>" : string.Join(", ", Options);
             return $"[{RequestId}] Prompt: \"{Prompt}\", Options: [{optionsPart}], IsPending: {IsPending}";
         }
     }

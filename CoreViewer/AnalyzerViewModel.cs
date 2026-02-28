@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreViewer
- * FILE:        AnalyzerViewModel.cs
+ * FILE:        CoreViewer/AnalyzerViewModel.cs
  * PURPOSE:     ViewModel for Analyzer Viewer, handles loading and running analyzers, filtering diagnostics, and folder selection
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -239,9 +239,7 @@ namespace CoreViewer
                 DiagnosticsView.Add(new DiagnosticItemViewModel(d,
                     openFile: _ => HandleOpen(d.Name),
                     ignore: _ => HandleIgnore(d.Name),
-                    fix: FixableAnalyzers.Contains(d.Name)
-                        ? _ => HandleFix(d.Name)
-                        : null));
+                    fix: FixableAnalyzers.Contains(d.Name) ? _ => HandleFix(d.Name) : null));
             }
         }
 
@@ -279,7 +277,7 @@ namespace CoreViewer
         /// Handles the fix.
         /// </summary>
         /// <param name="name">The name.</param>
-        private static void HandleFix(string name)
+        private void HandleFix(string name)
         {
             // Minimal placeholder
             System.Windows.MessageBox.Show($"Fix logic for {name} not implemented yet.", "Fix");

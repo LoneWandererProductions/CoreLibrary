@@ -76,7 +76,7 @@ namespace Weaver.Core.Commands
                 }
 
                 _registry.Set(key, value, type);
-                return CommandResult.Ok($"Incremented '{key}' to {value}.", value, type);
+                return CommandResult.Ok($"Incremented '{key}' to {value}.", value.ToString(), type);
             }
             catch (Exception ex)
             {

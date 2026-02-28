@@ -7,8 +7,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-//TODO the node exit for DoWhile is currently not implemented in the ScriptExecutor
-
 using System.Text.RegularExpressions;
 using Weaver.Interfaces;
 using Weaver.Messages;
@@ -73,10 +71,10 @@ namespace Weaver.ScriptEngine
                             }
                             else if (IsSimpleExpression(expr))
                             {
-                                yield return (ScriptConstants.CommandRewriteToken,
-                                    $"EvaluateCommand({rewrittenExpr}, {varName})");
+                                // Pass the RAW expression. The Evaluator will fetch the variables at runtime!
+                                yield return (ScriptConstants.CommandRewriteToken, $"EvaluateCommand({expr}, {varName})");
                             }
-                            else
+                                else
                             {
                                 throw new Exception($"Unsupported assignment expression: '{expr}'");
                             }
@@ -176,12 +174,13 @@ namespace Weaver.ScriptEngine
         /// </returns>
         private static bool IsSimpleExpression(string expr)
         {
-            if (expr.Contains("(") || expr.Contains(")"))
-                return false;
-
+            // Let the new RPN Engine handle the parentheses!
             foreach (var c in expr)
-                if (!char.IsLetterOrDigit(c) && "+-*/<>=!&| ".IndexOf(c) < 0)
+            {
+                // Added '(' and ')' to the allowed characters
+                if (!char.IsLetterOrDigit(c) && "+-*/<>=!&| ()".IndexOf(c) < 0)
                     return false;
+            }
 
             return true;
         }

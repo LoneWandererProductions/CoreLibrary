@@ -59,6 +59,30 @@ namespace Weaver.Interfaces
         void Set(string key, object value, EnumTypes type);
 
         /// <summary>
+        /// Sets the list.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="elements">The elements.</param>
+        void SetList(string key, IReadOnlyList<VmValue> elements);
+
+        /// <summary>
+        /// Sets the object.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="properties">The properties.</param>
+        void SetObject(string key, IReadOnlyDictionary<string, VmValue> properties);
+
+        /// <summary>
+        /// Tries the allocate.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <param name="range">The range.</param>
+        /// <returns>
+        /// Check if we have enough memory.
+        /// </returns>
+        bool TryAllocate(int length, out VmRange range);
+
+        /// <summary>
         /// Tries the get.
         /// </summary>
         /// <param name="key">The key.</param>

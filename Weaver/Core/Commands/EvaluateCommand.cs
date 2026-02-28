@@ -113,7 +113,7 @@ namespace Weaver.Core.Commands
 
                 return CommandResult.Ok(
                     $"Stored '{result}' in '{targetVar}'.",
-                    result,
+                    result.ToString(),
                     type
                 );
             }
@@ -126,7 +126,7 @@ namespace Weaver.Core.Commands
                 _ => result?.ToString() ?? "null"
             };
 
-            return CommandResult.Ok(message, result, type);
+            return CommandResult.Ok(message, result.ToString(), type);
         }
     }
 }

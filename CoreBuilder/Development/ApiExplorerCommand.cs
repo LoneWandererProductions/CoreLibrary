@@ -150,6 +150,8 @@ namespace CoreBuilder.Development
                     {
                         var memberLine = member switch
                         {
+                            ConstructorDeclarationSyntax c when IsPublic(c.Modifiers) =>
+                                $"    constructor: {c.Identifier}({string.Join(", ", c.ParameterList.Parameters.Select(p => $"{p.Type} {p.Identifier}"))})",
                             MethodDeclarationSyntax m when IsPublic(m.Modifiers) =>
                                 $"    method: {m.Identifier}({string.Join(", ", m.ParameterList.Parameters.Select(p => $"{p.Type} {p.Identifier}"))})",
                             PropertyDeclarationSyntax p when IsPublic(p.Modifiers) =>
@@ -183,7 +185,7 @@ namespace CoreBuilder.Development
         /// </returns>
         private static bool IsPublic(SyntaxTokenList modifiers)
         {
-            return modifiers.Any(m => m.Text == "public");
+            return modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword));
         }
     }
 }

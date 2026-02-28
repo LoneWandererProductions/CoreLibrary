@@ -86,7 +86,7 @@ namespace CoreBuilder.Rules
                 results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")
             );
 
-            return CommandResult.Ok(output, results);
+            return CommandResult.Ok(output, EnumTypes.Wstring);
         }
 
         /// <summary>

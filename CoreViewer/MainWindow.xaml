@@ -4,12 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CoreViewer"
-        xmlns:conv="clr-namespace:CommonControls.Converter;assembly=CommonControls.Converter"
         mc:Ignorable="d"
         Title="Analyzer Viewer" Height="450" Width="900">
 
     <Window.Resources>
-        <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
 
     <Window.DataContext>

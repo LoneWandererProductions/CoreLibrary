@@ -14,6 +14,7 @@ using CoreBuilder.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Weaver;
 using Weaver.Interfaces;
 
 namespace CoreBuilder
@@ -26,8 +27,11 @@ namespace CoreBuilder
         /// <summary>
         /// Gets the commands.
         /// </summary>
-        /// <returns>All commands.</returns>
-        public static IReadOnlyList<ICommand> GetCommands()
+        /// <param name="weave">The weave.</param>
+        /// <returns>
+        /// All commands.
+        /// </returns>
+        public static IReadOnlyList<ICommand> GetCommands(Weave? weave = null)
         {
             ICommand[] modules =
             {
@@ -37,7 +41,7 @@ namespace CoreBuilder
                 new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(), new SmartPingPro(), new WhoAmI(), new Tree()
+                new FileLockScanner(), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 
             return modules;
@@ -47,8 +51,11 @@ namespace CoreBuilder
         /// Gets the commands.
         /// </summary>
         /// <param name="userspace">The userspace.</param>
-        /// <returns>All commands by Namespace.</returns>
-        public static IReadOnlyList<ICommand> GetCommands(string userspace)
+        /// <param name="weave">The weave.</param>
+        /// <returns>
+        /// All commands by Namespace.
+        /// </returns>
+        public static IReadOnlyList<ICommand> GetCommands(string userspace, Weave? weave = null)
         {
             ICommand[] modules =
             {
@@ -58,7 +65,7 @@ namespace CoreBuilder
                 new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
                 new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(), new WhoAmI(), new Tree()
+                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 
             // Filter by Namespace
@@ -70,7 +77,9 @@ namespace CoreBuilder
         /// <summary>
         /// Gets the extensions.
         /// </summary>
-        /// <returns>All Extensions</returns>
+        /// <returns>
+        /// All Extensions
+        /// </returns>
         public static IReadOnlyList<ICommandExtension> GetExtensions()
         {
             ICommandExtension[] modules = { new WhoAmIExtension() };

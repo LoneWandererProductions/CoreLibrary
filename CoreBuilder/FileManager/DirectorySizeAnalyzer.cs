@@ -165,7 +165,7 @@ namespace CoreBuilder.FileManager
             }
             catch (Exception ex)
             {
-                return CommandResult.Fail($"DirectorySize execution failed: {ex.Message}", ex, EnumTypes.Wstring);
+                return CommandResult.Fail($"DirectorySize execution failed: {ex.Message}", EnumTypes.Wstring);
             }
         }
     }

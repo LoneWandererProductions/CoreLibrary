@@ -71,7 +71,7 @@ namespace Weaver.Core.Commands
 
             return CommandResult.Ok(
                 $"Retrieved key '{key}' of type {type}.",
-                value,
+                value.ToString(),
                 type
             );
         }

@@ -7,10 +7,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using Weaver.Registry;
 
 namespace CoreBuilder.Extensions
 {
@@ -31,8 +33,7 @@ namespace CoreBuilder.Extensions
         public string Namespace => "System";
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
-            string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor, string[] commandArgs)
         {
             if (extensionArgs.Length == 0)
             {
@@ -40,14 +41,35 @@ namespace CoreBuilder.Extensions
                     "No parameter specified. Example: whoami().who(ip,hostname) or whoami().who(ip)");
             }
 
+            // 1. Cast to the concrete parent command to access its public/internal fields
+            if (command is not WhoAmI parent)
+            {
+                return CommandResult.Fail("Extension 'who' is only compatible with the WhoAmI command.");
+            }
+
+            // Use the registry and the key defined by the parent command
+            var registry = parent.Variables;
+            string storeKey = parent.LastStoreKey;
+
             try
             {
+                // 2. Fetch existing object from the registry to allow incremental updates
+                // This ensures that whoami(x).who(ip).who(os) preserves the IP.
+                var whoamiData = new Dictionary<string, VmValue>();
+                if (registry.TryGetObject(storeKey, out var existingObj) && existingObj != null)
+                {
+                    foreach (var kvp in existingObj)
+                    {
+                        whoamiData[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                // 3. Gather System Data
                 var hostname = Environment.MachineName;
                 var username = Environment.UserName;
                 var domain = Environment.UserDomainName;
 
-                var ips = NetworkInterface
-                    .GetAllNetworkInterfaces()
+                var ips = NetworkInterface.GetAllNetworkInterfaces()
                     .Where(n => n.OperationalStatus == OperationalStatus.Up)
                     .SelectMany(n => n.GetIPProperties().UnicastAddresses)
                     .Where(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
@@ -55,31 +77,63 @@ namespace CoreBuilder.Extensions
                     .Distinct()
                     .ToList();
 
-                var ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
+                string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
-                // Build a list of lines for requested fields
-                var lines = extensionArgs.Select(arg => arg.ToLowerInvariant())
-                    .Select(field =>
+                // 4. Parse requested fields and update the dictionary
+                var lines = new List<string>();
+                foreach (var field in extensionArgs.Select(arg => arg.ToLowerInvariant()))
+                {
+                    switch (field)
                     {
-                        return field switch
-                        {
-                            "hostname" => $"Hostname: {hostname}",
-                            "username" => $"Username: {username}",
-                            "domain" => $"Domain: {domain}",
-                            "ip" => $"IP: {ipsJoined}",
-                            "os" => $"OS: {Environment.OSVersion}",
-                            "64bitos" => $"64-bit OS: {Environment.Is64BitOperatingSystem}",
-                            "64bitprocess" => $"64-bit Process: {Environment.Is64BitProcess}",
-                            "processorcount" => $"Processor Count: {Environment.ProcessorCount}",
-                            "clrversion" => $"CLR Version: {Environment.Version}",
-                            _ => $"Unknown parameter: {field}"
-                        };
-                    }).ToArray();
+                        case "hostname":
+                            whoamiData["hostname"] = VmValue.FromString(hostname);
+                            lines.Add($"Hostname: {hostname}");
+                            break;
+                        case "username":
+                            whoamiData["username"] = VmValue.FromString(username);
+                            lines.Add($"Username: {username}");
+                            break;
+                        case "domain":
+                            whoamiData["domain"] = VmValue.FromString(domain);
+                            lines.Add($"Domain: {domain}");
+                            break;
+                        case "ip":
+                            whoamiData["ip"] = VmValue.FromString(ipsJoined);
+                            lines.Add($"IP: {ipsJoined}");
+                            break;
+                        case "os":
+                            whoamiData["os"] = VmValue.FromString(Environment.OSVersion.ToString());
+                            lines.Add($"OS: {Environment.OSVersion}");
+                            break;
+                        case "64bitos":
+                            whoamiData["64bitos"] = VmValue.FromBool(Environment.Is64BitOperatingSystem);
+                            lines.Add($"64-bit OS: {Environment.Is64BitOperatingSystem}");
+                            break;
+                        case "64bitprocess":
+                            whoamiData["64bitprocess"] = VmValue.FromBool(Environment.Is64BitProcess);
+                            lines.Add($"64-bit Process: {Environment.Is64BitProcess}");
+                            break;
+                        case "processorcount":
+                            whoamiData["processorcount"] = VmValue.FromInt(Environment.ProcessorCount);
+                            lines.Add($"Processor Count: {Environment.ProcessorCount}");
+                            break;
+                        case "clrversion":
+                            whoamiData["clrversion"] = VmValue.FromString(Environment.Version.ToString());
+                            lines.Add($"CLR Version: {Environment.Version}");
+                            break;
+                        default:
+                            lines.Add($"Unknown parameter: {field}");
+                            break;
+                    }
+                }
 
-                // Join lines into a single message
-                var message = string.Join(Environment.NewLine, lines);
+                // 5. Store the updated dictionary back into the registry
+                // Your VariableRegistry.SetObject handles the memory overwrite/reuse logic.
+                registry.SetObject(storeKey, whoamiData);
 
-                return CommandResult.Ok(message: message);
+                // 6. Return the status message
+                string message = string.Join(Environment.NewLine, lines);
+                return CommandResult.Ok(message, storeKey, EnumTypes.Wobject);
             }
             catch (Exception ex)
             {

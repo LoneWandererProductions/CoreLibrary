@@ -70,15 +70,7 @@ namespace Weaver.Registry
         }
 
         /// <summary>
-        /// Froms the int.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>New VmValue</returns>
-        public static VmValue FromInt(long value) =>
-            new(EnumTypes.Wint, value, default, default, null);
-
-        /// <summary>
-        /// Froms the double.
+        /// From double.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>New VmValue</returns>
@@ -86,7 +78,7 @@ namespace Weaver.Registry
             new(EnumTypes.Wdouble, default, value, default, null);
 
         /// <summary>
-        /// Froms the bool.
+        /// From bool.
         /// </summary>
         /// <param name="value">if set to <c>true</c> [value].</param>
         /// <returns>New VmValue</returns>
@@ -102,7 +94,7 @@ namespace Weaver.Registry
             new(EnumTypes.Wstring, default, default, default, value);
 
         /// <summary>
-        /// Froms the int.
+        /// From int.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="attribute">The attribute.</param>
@@ -129,7 +121,7 @@ namespace Weaver.Registry
             new VmValue(EnumTypes.Wbool, i: 0, d: 0, b: value, s: null, attribute: attribute);
 
         /// <summary>
-        /// Froms the string.
+        /// From string.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="attribute">The attribute.</param>
@@ -138,7 +130,7 @@ namespace Weaver.Registry
             new VmValue(EnumTypes.Wstring, i: 0, d: 0, b: false, s: value, attribute: attribute);
 
         /// <summary>
-        /// Froms the pointer.
+        /// From pointer.
         /// </summary>
         /// <param name="pointerKey">The pointer key.</param>
         /// <returns>New VmValue</returns>
@@ -146,11 +138,26 @@ namespace Weaver.Registry
             new VmValue(EnumTypes.Wpointer, i: 0, d: 0, b: false, s: pointerKey);
 
         /// <summary>
-        /// Froms the object.
+        /// From object.
         /// </summary>
         /// <returns>New VmValue</returns>
         public static VmValue FromObject() =>
             new VmValue(EnumTypes.Wobject, i: 0, d: 0, b: false, s: null);
+
+        /// <summary>
+        /// Creates a new VM value representing a list reference.
+        /// </summary>
+        /// <returns>New VmValue of type Wlist</returns>
+        public static VmValue FromList() =>
+            new VmValue(EnumTypes.Wlist, i: 0, d: 0, b: false, s: null);
+
+        /// <summary>
+        /// Clones the VmValue but applies a new attribute (used for Object keys).
+        /// </summary>
+        /// <param name="newAttribute">The new attribute.</param>
+        /// <returns></returns>
+        public VmValue WithAttribute(string newAttribute) => 
+            new VmValue(Type, Int64, Double, Bool, String, newAttribute);
 
         /// <summary>
         /// Converts to string.
@@ -168,10 +175,10 @@ namespace Weaver.Registry
                 EnumTypes.Wstring => String ?? "<null>",
                 EnumTypes.Wpointer => String ?? "<null>",
                 EnumTypes.Wobject => "<object>",
+                EnumTypes.Wlist => "<list>", // <-- ADD THIS LINE
                 _ => "<unknown>"
             };
 
-            // Append attribute if present
             if (!string.IsNullOrEmpty(Attribute))
                 valueStr += $" [Attribute: {Attribute}]";
 

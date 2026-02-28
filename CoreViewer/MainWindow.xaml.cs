@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CoreViewer
- * FILE:        MainWindow.xaml.cs
+ * FILE:        CoreViewer/MainWindow.xaml.cs
  * PURPOSE:     Entry for the WPF application.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

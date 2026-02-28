@@ -13,6 +13,7 @@ using System.Net.NetworkInformation;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using Weaver.Registry;
 
 namespace CoreBuilder
 {
@@ -22,6 +23,28 @@ namespace CoreBuilder
     /// </summary>
     public sealed class WhoAmI : ICommand
     {
+        /// <summary>
+        /// The variables
+        /// </summary>
+        internal IVariableRegistry Variables;
+
+        /// <summary>
+        /// Gets the last store key.
+        /// </summary>
+        /// <value>
+        /// The last store key.
+        /// </value>
+        public string LastStoreKey { get; private set; } = "whoami";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WhoAmI"/> class.
+        /// </summary>
+        /// <param name="variables">The variables.</param>
+        public WhoAmI(IVariableRegistry variables)
+        {
+            Variables = variables;
+        }
+
         /// <inheritdoc />
         public string Name => "WhoAmI";
 
@@ -33,7 +56,7 @@ namespace CoreBuilder
         public string Namespace => "System";
 
         /// <inheritdoc />
-        public int ParameterCount => 0;
+        public int ParameterCount => 1;
 
         /// <inheritdoc />
         public IReadOnlyDictionary<string, int>? Extensions => new Dictionary<string, int>
@@ -45,13 +68,20 @@ namespace CoreBuilder
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
+        /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
+            // 1. Overload Logic: Use the first argument as the store key if provided
+            LastStoreKey = (args != null && args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))
+                ? args[0]
+                : "whoami";
+
             try
             {
                 var hostname = Environment.MachineName;
                 var username = Environment.UserName;
                 var domain = Environment.UserDomainName;
+                var os = Environment.OSVersion.ToString();
 
                 var ips = NetworkInterface
                     .GetAllNetworkInterfaces()
@@ -62,20 +92,39 @@ namespace CoreBuilder
                     .Distinct()
                     .ToList();
 
+                string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
+
+                // 2. Prepare the data for the Heap
+                var whoamiData = new Dictionary<string, VmValue>
+                {
+                    { "hostname", VmValue.FromString(hostname) },
+                    { "username", VmValue.FromString(username) },
+                    { "domain", VmValue.FromString(domain) },
+                    { "ip", VmValue.FromString(ipsJoined) },
+                    { "os", VmValue.FromString(os) },
+                    { "64bitos", VmValue.FromBool(Environment.Is64BitOperatingSystem) },
+                    { "64bitprocess", VmValue.FromBool(Environment.Is64BitProcess) },
+                    { "processorcount", VmValue.FromInt(Environment.ProcessorCount) },
+                    { "clrversion", VmValue.FromString(Environment.Version.ToString()) }
+                };
+
+                // 3. Store the Object in the Registry
+                // This utilizes your SetObject logic to handle memory allocation/reuse
+                Variables.SetObject(LastStoreKey, whoamiData);
+
+                // 4. Generate the console output string
                 var info =
                     "WhoAmI System Report\n" +
                     "------------------------\n" +
                     $"Hostname: {hostname}\n" +
                     $"Username: {username}\n" +
                     $"Domain: {domain}\n" +
-                    $"IPv4 Addresses: {(ips.Any() ? string.Join(", ", ips) : "None")}\n" +
-                    $"OS: {Environment.OSVersion}\n" +
-                    $"64-bit OS: {Environment.Is64BitOperatingSystem}\n" +
-                    $"64-bit Process: {Environment.Is64BitProcess}\n" +
-                    $"Processor Count: {Environment.ProcessorCount}\n" +
-                    $"CLR Version: {Environment.Version}";
+                    $"IPv4 Addresses: {ipsJoined}\n" +
+                    $"OS: {os}\n" +
+                    $"Data stored in: ${LastStoreKey}\n" +
+                    "------------------------";
 
-                return CommandResult.Ok(info, EnumTypes.Wstring);
+                return CommandResult.Ok(info, LastStoreKey, EnumTypes.Wobject);
             }
             catch (Exception ex)
             {

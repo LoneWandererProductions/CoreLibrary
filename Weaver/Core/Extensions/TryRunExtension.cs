@@ -61,7 +61,8 @@ namespace Weaver.Core.Extensions
                 var fallback = executor(commandArgs);
                 preview = new CommandResult
                 {
-                    Message = $"[Preview-Fallback] {fallback.Message}", Success = fallback.Success
+                    Message = $"[Preview-Fallback] {fallback.Message}",
+                    Success = fallback.Success
                 };
             }
 
@@ -81,7 +82,9 @@ namespace Weaver.Core.Extensions
                         "no" => CommandResult.Fail("Execution cancelled by user."),
                         _ => new CommandResult
                         {
-                            Message = "Please answer yes/no", RequiresConfirmation = true, Feedback = cache
+                            Message = "Please answer yes/no",
+                            RequiresConfirmation = true,
+                            Feedback = cache
                         }
                     };
                 });

@@ -23,14 +23,16 @@ namespace Weaver.Registry
         /// <returns>
         /// Expression replaced with values from registry.
         /// </returns>
-        public static string ReplaceVariablesInExpression(
-            this IVariableRegistry registry,
-            string expression)
+        public static string ReplaceVariablesInExpression(this IVariableRegistry registry, string expression)
         {
             if (registry == null || string.IsNullOrWhiteSpace(expression))
                 return expression;
 
-            foreach (var variable in registry.GetAll())
+            // FIX: Sort keys by length descending so "health_max" is replaced before "health"
+            var sortedVariables = registry.GetAll()
+                .OrderByDescending(kvp => kvp.Key.Length);
+
+            foreach (var variable in sortedVariables)
             {
                 var key = variable.Key;
                 var (valueObj, valueType) = variable.Value;
@@ -40,27 +42,14 @@ namespace Weaver.Registry
 
                 var replacement = valueType switch
                 {
-                    EnumTypes.Wint =>
-                        Convert.ToInt64(valueObj).ToString(),
-
-                    EnumTypes.Wdouble =>
-                        Convert.ToDouble(valueObj)
-                            .ToString(CultureInfo.InvariantCulture),
-
-                    EnumTypes.Wbool =>
-                        Convert.ToBoolean(valueObj) ? "1" : "0",
-
-                    EnumTypes.Wstring =>
-                        valueObj.ToString() ?? string.Empty,
-
-                    _ =>
-                        valueObj.ToString() ?? string.Empty
+                    EnumTypes.Wint => Convert.ToInt64(valueObj).ToString(),
+                    EnumTypes.Wdouble => Convert.ToDouble(valueObj).ToString(CultureInfo.InvariantCulture),
+                    EnumTypes.Wbool => Convert.ToBoolean(valueObj) ? "1" : "0", // "Truthy/Falsy"
+                    EnumTypes.Wstring => valueObj.ToString() ?? string.Empty,
+                    _ => valueObj.ToString() ?? string.Empty
                 };
 
-                expression = expression.Replace(
-                    key,
-                    replacement,
-                    StringComparison.OrdinalIgnoreCase);
+                expression = expression.Replace(key, replacement, StringComparison.OrdinalIgnoreCase);
             }
 
             return expression;

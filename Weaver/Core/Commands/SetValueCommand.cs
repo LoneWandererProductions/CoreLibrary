@@ -113,7 +113,7 @@ namespace Weaver.Core.Commands
 
             return CommandResult.Ok(
                 $"Registered key '{key}' with type {type} and value '{value}'.",
-                value,
+                value.ToString(),
                 type
             );
         }

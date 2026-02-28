@@ -39,16 +39,20 @@ namespace Weaver.Evaluate
         private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators = new()
         {
             ["!"] = (5, true, 1),
+
             ["*"] = (4, false, 2),
             ["/"] = (4, false, 2),
+
             ["+"] = (3, false, 2),
             ["-"] = (3, false, 2),
+
             [">"] = (2, false, 2),
             ["<"] = (2, false, 2),
             [">="] = (2, false, 2),
             ["<="] = (2, false, 2),
             ["=="] = (2, false, 2),
             ["!="] = (2, false, 2),
+
             ["&&"] = (1, false, 2),
             ["||"] = (0, false, 2),
         };
@@ -65,7 +69,7 @@ namespace Weaver.Evaluate
         /// Converts to rpn.
         /// </summary>
         /// <param name="tokens">The tokens.</param>
-        /// <returns>Reverse Polish Notation expfression.</returns>
+        /// <returns>Reverse Polish Notation expression.</returns>
         private List<string> ToRpn(IEnumerable<string> tokens)
         {
             var output = new List<string>();
@@ -76,6 +80,17 @@ namespace Weaver.Evaluate
                 if (double.TryParse(token, out _) || _registry!.IsNumericType(token))
                 {
                     output.Add(token);
+                    continue;
+                }
+
+                if (token.Equals("true", StringComparison.OrdinalIgnoreCase))
+                {
+                    output.Add("1");
+                    continue;
+                }
+                if (token.Equals("false", StringComparison.OrdinalIgnoreCase))
+                {
+                    output.Add("0");
                     continue;
                 }
 
@@ -154,8 +169,9 @@ namespace Weaver.Evaluate
                         "/" => a / b,
                         "&&" => (a != 0 && b != 0) ? 1 : 0,
                         "||" => (a != 0 || b != 0) ? 1 : 0,
-                        "==" => a == b ? 1 : 0,
-                        "!=" => a != b ? 1 : 0,
+                        //add some tolerance for equality checks to avoid floating point issues
+                        "==" => Math.Abs(a - b) < 0.00001 ? 1 : 0,
+                        "!=" => Math.Abs(a - b) > 0.00001 ? 1 : 0,
                         ">" => a > b ? 1 : 0,
                         "<" => a < b ? 1 : 0,
                         ">=" => a >= b ? 1 : 0,
