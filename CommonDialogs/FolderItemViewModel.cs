@@ -88,7 +88,7 @@ namespace CommonDialogs
         public FolderItemViewModel(string path, FolderViewModel parentVm)
         {
             Path = path;
-            Header = System.IO.Path.GetFileName(path) ?? path;
+            Header = System.IO.Path.GetFileName(path);
             _parentVm = parentVm;
             HasChildren = SafeHasChildren(path);
         }

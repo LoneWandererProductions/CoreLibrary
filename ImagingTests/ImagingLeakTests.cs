@@ -36,11 +36,9 @@ namespace ImagingTests
                 for (var i = 0; i < 5; i++)
                 {
                     // We simulate the UI usage: Load -> Process -> Convert -> Dispose
-                    using (var result = ImagingFacade.Resize(testBmp, 1000, 1000))
-                    {
-                        var uiImage = ImagingFacade.ToBitmapImage(result);
-                        // uiImage is now managed by WPF, result is disposed here
-                    }
+                    using var result = ImagingFacade.Resize(testBmp, 1000, 1000);
+                    var uiImage = ImagingFacade.ToBitmapImage(result);
+                    // uiImage is now managed by WPF, result is disposed here
                 }
             }, "Facade Resize and Convert Leak Test");
         }

@@ -44,10 +44,7 @@ namespace LightVector
             var pathFigure = new PathFigure { StartPoint = startPoint, IsClosed = false };
 
             // Add the segments (groups of 3 points)
-            var polyBezierSegment = new PolyBezierSegment
-            {
-                Points = new PointCollection(segmentPoints)
-            };
+            var polyBezierSegment = new PolyBezierSegment { Points = new PointCollection(segmentPoints) };
 
             pathFigure.Segments.Add(polyBezierSegment);
             pathGeometry.Figures.Add(pathFigure);

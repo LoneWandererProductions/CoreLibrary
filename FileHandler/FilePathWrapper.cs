@@ -48,7 +48,7 @@ namespace FileHandler
                 throw new ArgumentException("Path cannot be null or empty.", nameof(path));
 
             FullPath = path;
-            FileName = Path.GetFileName(path) ?? string.Empty;
+            FileName = Path.GetFileName(path);
             Directory = Path.GetDirectoryName(path);
 
             // Precompute split parts for natural sorting

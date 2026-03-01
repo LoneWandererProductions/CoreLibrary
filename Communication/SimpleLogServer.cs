@@ -51,6 +51,7 @@ namespace Communication
             // This constructor just wraps the Action into our helper class
             // and chains to Constructor 2.
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLogServer"/> class.
         /// </summary>
@@ -86,7 +87,10 @@ namespace Communication
             {
                 _serverTask?.Wait(); // Wait for it to finish cleaning up
             }
-            catch (AggregateException) { /* Ignore cancellation errors */ }
+            catch (AggregateException)
+            {
+                /* Ignore cancellation errors */
+            }
         }
 
         /// <summary>

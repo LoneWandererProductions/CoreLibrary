@@ -63,7 +63,7 @@ namespace Imaging.Cifs
         /// <value>
         ///     The y.
         /// </value>
-        public int Y { get;  }
+        public int Y { get; }
 
         /// <summary>
         ///     Gets or sets the x.
@@ -71,7 +71,7 @@ namespace Imaging.Cifs
         /// <value>
         ///     The x.
         /// </value>
-        public int X { get;  }
+        public int X { get; }
 
         /// <summary>
         ///     Gets the instance.
@@ -81,7 +81,7 @@ namespace Imaging.Cifs
         /// <returns>Instance of Coordinate 2D with the help of the Id</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PointId FromId(int id, int width) =>
-                    new(id % width, id / width);
+            new(id % width, id / width);
 
         /// <summary>
         ///     Equals the specified other.

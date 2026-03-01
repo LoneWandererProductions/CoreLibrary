@@ -72,7 +72,7 @@ namespace CoreBuilder
         public CommandResult Execute(params string[] args)
         {
             // 1. Overload Logic: Use the first argument as the store key if provided
-            LastStoreKey = (args != null && args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))
+            LastStoreKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
                 ? args[0]
                 : "whoami";
 

@@ -597,7 +597,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "Test Content");
+            await File.WriteAllTextAsync(sourceFilePath, "Test Content");
 
             // Act
             var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
@@ -606,7 +606,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(result);
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
             Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.AreEqual("Test Content", await File.ReadAllTextAsync(targetFilePath));
             Assert.IsFalse(File.Exists(sourceFilePath));
         }
 
@@ -638,7 +638,7 @@ namespace CommonLibraryTests
         {
             // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "Test Content");
+            await File.WriteAllTextAsync(sourceFilePath, "Test Content");
             var fileList = new List<string> { sourceFilePath };
 
             // Act
@@ -648,7 +648,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(result);
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
             Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.AreEqual("Test Content", await File.ReadAllTextAsync(targetFilePath));
             Assert.IsFalse(File.Exists(sourceFilePath));
         }
 
@@ -682,8 +682,8 @@ namespace CommonLibraryTests
             // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "New Content");
-            File.WriteAllText(targetFilePath, "Old Content");
+            await File.WriteAllTextAsync(sourceFilePath, "New Content");
+            await File.WriteAllTextAsync(targetFilePath, "Old Content");
 
             // Act
             var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
@@ -691,7 +691,7 @@ namespace CommonLibraryTests
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("New Content", File.ReadAllText(targetFilePath));
+            Assert.AreEqual("New Content", await File.ReadAllTextAsync(targetFilePath));
             Assert.IsFalse(File.Exists(sourceFilePath));
         }
 
@@ -704,8 +704,8 @@ namespace CommonLibraryTests
             // Arrange
             var sourceFilePath = Path.Combine(TestSourceDir, "test.txt");
             var targetFilePath = Path.Combine(TestTargetDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "New Content");
-            File.WriteAllText(targetFilePath, "Old Content");
+            await File.WriteAllTextAsync(sourceFilePath, "New Content");
+            await File.WriteAllTextAsync(targetFilePath, "Old Content");
 
             // Act
             var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, false);
@@ -713,7 +713,7 @@ namespace CommonLibraryTests
             // Assert, show false, since we have not moved all files
             Assert.IsFalse(result);
             Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("Old Content", File.ReadAllText(targetFilePath));
+            Assert.AreEqual("Old Content", await File.ReadAllTextAsync(targetFilePath));
             Assert.IsTrue(File.Exists(sourceFilePath)); // Source file should not be moved
         }
 
@@ -727,7 +727,7 @@ namespace CommonLibraryTests
             var subDir = Path.Combine(TestSourceDir, "SubDir");
             _ = Directory.CreateDirectory(subDir);
             var sourceFilePath = Path.Combine(subDir, "test.txt");
-            File.WriteAllText(sourceFilePath, "Test Content");
+            await File.WriteAllTextAsync(sourceFilePath, "Test Content");
 
             // Act
             var result = await FileHandleCut.CutFiles(TestSourceDir, TestTargetDir, true);
@@ -736,7 +736,7 @@ namespace CommonLibraryTests
             Assert.IsTrue(result);
             var targetFilePath = Path.Combine(TestTargetDir, "SubDir", "test.txt");
             Assert.IsTrue(File.Exists(targetFilePath));
-            Assert.AreEqual("Test Content", File.ReadAllText(targetFilePath));
+            Assert.AreEqual("Test Content", await File.ReadAllTextAsync(targetFilePath));
             Assert.IsFalse(File.Exists(sourceFilePath));
         }
 

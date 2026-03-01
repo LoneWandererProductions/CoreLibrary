@@ -190,9 +190,9 @@ namespace Mathematics
         public static bool operator !=(Vector3D first, Vector3D second)
         {
             return (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
-                                                               Math.Abs(first.Y - second.Y) > MathResources.Tolerance ||
-                                                               Math.Abs(first.Z - second.Z) > MathResources.Tolerance ||
-                                                               Math.Abs(first.W - second.W) > MathResources.Tolerance);
+                    Math.Abs(first.Y - second.Y) > MathResources.Tolerance ||
+                    Math.Abs(first.Z - second.Z) > MathResources.Tolerance ||
+                    Math.Abs(first.W - second.W) > MathResources.Tolerance);
         }
 
         /// <summary>

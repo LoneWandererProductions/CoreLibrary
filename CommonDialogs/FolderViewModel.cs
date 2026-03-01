@@ -290,7 +290,7 @@ namespace CommonDialogs
                 {
                     foreach (var file in files)
                         FolderItems.Add(
-                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
+                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) });
                 }
             });
         }

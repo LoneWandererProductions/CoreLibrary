@@ -407,7 +407,7 @@ namespace CommonControls.Images
         private async Task OnItemsSourceChanged()
         {
             // Cancel any ongoing loads
-            _cancellationTokenSource?.Cancel();
+            await _cancellationTokenSource?.CancelAsync();
             _cancellationTokenSource?.Dispose();
 
             // Unsubscribe events and clear dictionaries
@@ -482,7 +482,7 @@ namespace CommonControls.Images
         {
             if (ItemsSource?.Any() != true) return;
 
-            _cancellationTokenSource?.Cancel();
+            await _cancellationTokenSource?.CancelAsync();
             _cancellationTokenSource = new CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
 
@@ -663,16 +663,14 @@ namespace CommonControls.Images
                 try
                 {
                     var bitmapImage = new BitmapImage();
-                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        bitmapImage.BeginInit();
-                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmapImage.DecodePixelWidth = width;
-                        // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
-                        bitmapImage.StreamSource = stream;
-                        bitmapImage.EndInit();
-                        bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
-                    }
+                    using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.DecodePixelWidth = width;
+                    // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                    bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
 
                     return bitmapImage;
                 }

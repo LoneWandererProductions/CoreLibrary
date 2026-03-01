@@ -165,6 +165,7 @@ namespace Pathfinder
             // Move diagonally as much as possible, then move straight for the remaining distance
             return _straightCost * (dx + dy) + (_diagonalCost - 2 * _straightCost) * Math.Min(dx, dy);
         }
+
         /// <summary>
         ///     Gets the neighboring nodes for a given node based on the grid and movement costs.
         /// </summary>

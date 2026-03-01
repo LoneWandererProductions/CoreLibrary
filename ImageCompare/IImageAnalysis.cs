@@ -54,7 +54,7 @@ namespace ImageCompare
         /// <returns>List of Image Details as Image Data Object</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        List<ImageData> GetImageDetails(List<string> imagePaths);
+        List<ImageData>? GetImageDetails(List<string> imagePaths);
 
         /// <summary>
         ///     Compares the two images.

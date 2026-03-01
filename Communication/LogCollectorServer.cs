@@ -53,58 +53,55 @@ namespace Communication
 
             // 2. Use a specific cancellation token source for just this client
             // capable of cancelling if the global token cancels OR if we time out manually.
-            using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token))
-            using (var stream = client.GetStream())
-            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            try
             {
-                try
+                while (!token.IsCancellationRequested)
                 {
-                    while (!token.IsCancellationRequested)
+                    // 3. The "Safe" Read. 
+                    // StreamReader.ReadLineAsync() typically DOES NOT accept a CancellationToken directly
+                    // in older .NET versions, and it doesn't respect ReceiveTimeout easily.
+                    // We must handle the timeout manually or use a specific trick.
+
+                    var lineTask = reader.ReadLineAsync();
+
+                    // Wait for the line OR a timeout (e.g., 5 seconds idle)
+                    var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5), linkedCts.Token);
+
+                    var completedTask = await Task.WhenAny(lineTask, timeoutTask);
+
+                    if (completedTask == timeoutTask)
                     {
-                        // 3. The "Safe" Read. 
-                        // StreamReader.ReadLineAsync() typically DOES NOT accept a CancellationToken directly
-                        // in older .NET versions, and it doesn't respect ReceiveTimeout easily.
-                        // We must handle the timeout manually or use a specific trick.
+                        // Timeout occurred! Client is too slow or holding the connection open.
+                        Trace.WriteLine("Client timed out. Disconnecting.");
+                        break;
+                    }
 
-                        var lineTask = reader.ReadLineAsync();
+                    // If we got here, the line was read successfully
+                    string line = await lineTask;
 
-                        // Wait for the line OR a timeout (e.g., 5 seconds idle)
-                        var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5), linkedCts.Token);
+                    if (line == null) break; // Client disconnected gracefully
 
-                        var completedTask = await Task.WhenAny(lineTask, timeoutTask);
-
-                        if (completedTask == timeoutTask)
-                        {
-                            // Timeout occurred! Client is too slow or holding the connection open.
-                            Trace.WriteLine("Client timed out. Disconnecting.");
-                            break;
-                        }
-
-                        // If we got here, the line was read successfully
-                        string line = await lineTask;
-
-                        if (line == null) break; // Client disconnected gracefully
-
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            await _processor.ProcessMessageAsync(line);
-                        }
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        await _processor.ProcessMessageAsync(line);
                     }
                 }
-                catch (IOException)
-                {
-                    // Socket timeout or connection issue
-                }
-                catch (OperationCanceledException)
-                {
-                    // Server is stopping
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"Error processing client: {ex.Message}");
-                }
             }
-
+            catch (IOException)
+            {
+                // Socket timeout or connection issue
+            }
+            catch (OperationCanceledException)
+            {
+                // Server is stopping
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error processing client: {ex.Message}");
+            }
         }
     }
 }

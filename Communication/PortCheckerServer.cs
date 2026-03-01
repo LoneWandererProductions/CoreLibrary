@@ -33,13 +33,11 @@ namespace Communication
         /// <param name="token">The token.</param>
         protected override async Task HandleClientAsync(TcpClient client, CancellationToken token)
         {
-            using (var stream = client.GetStream())
-            {
-                byte[] buffer = System.Text.Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
-                await stream.WriteAsync(buffer, 0, buffer.Length, token);
-                await stream.FlushAsync(token);
-                Trace.WriteLine("Port check handled.");
-            }
+            await using var stream = client.GetStream();
+            byte[] buffer = System.Text.Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
+            await stream.WriteAsync(buffer, 0, buffer.Length, token);
+            await stream.FlushAsync(token);
+            Trace.WriteLine("Port check handled.");
         }
     }
 }

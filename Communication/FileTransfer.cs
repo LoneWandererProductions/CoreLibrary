@@ -34,7 +34,8 @@ namespace Communication
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        internal static async Task<bool> SaveFileAsync(string folderPath, string url, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
+        internal static async Task<bool> SaveFileAsync(string folderPath, string url, IProgress<int>? progress = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -47,7 +48,8 @@ namespace Communication
                 var fileName = GetFileNameFromUri(uri);
                 var fullPath = Path.Combine(folderPath, fileName);
 
-                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                using var response = await HttpClient.Value.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead,
+                    cancellationToken);
                 response.EnsureSuccessStatusCode();
 
                 var totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -55,7 +57,8 @@ namespace Communication
                 await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
                 // Buffer size: 8192 is standard.
-                await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+                await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
+                    8192, true);
 
                 var buffer = new byte[8192];
                 long totalRead = 0;
@@ -97,7 +100,8 @@ namespace Communication
         /// <param name="urls">The url.</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
+        internal static async Task SaveFilesAsync(string filePath, IEnumerable<string> urls,
+            IProgress<int>? progress = null, CancellationToken cancellationToken = default)
         {
             // Note: This downloads sequentially.
             // If you want parallel, you would need Task.WhenAll (but be careful of bandwidth).

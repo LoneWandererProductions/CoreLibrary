@@ -48,7 +48,8 @@ namespace LightVector
         /// <value>
         /// The optional attributes.
         /// </value>
-        [XmlIgnore] public Dictionary<string, object> OptionalAttributes { get; set; } = new();
+        [XmlIgnore]
+        public Dictionary<string, object> OptionalAttributes { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the serializable attributes.

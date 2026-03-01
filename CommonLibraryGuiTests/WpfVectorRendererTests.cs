@@ -46,7 +46,8 @@ namespace CommonLibraryGuiTests
             // Assert
             // Because of normalization, the line is shifted. 
             // It should now be at 'padding' (Thickness / 2)
-            Assert.That(Canvas.GetLeft(renderedLine), Is.EqualTo(1.0d), "Line should be shifted to the edge of the canvas.");
+            Assert.That(Canvas.GetLeft(renderedLine), Is.EqualTo(1.0d),
+                "Line should be shifted to the edge of the canvas.");
             Assert.That(renderedLine.X1, Is.EqualTo(0), "Internal offset must remain 0.");
         }
 
@@ -60,10 +61,7 @@ namespace CommonLibraryGuiTests
             var circle = new CircleObject { Radius = 100, Thickness = 10 };
             var saveObj = new SaveObject
             {
-                Graphic = circle,
-                Type = GraphicTypes.Circle,
-                StartCoordinates = new Point(0, 0),
-                Layer = 0
+                Graphic = circle, Type = GraphicTypes.Circle, StartCoordinates = new Point(0, 0), Layer = 0
             };
 
             var renderer = new WpfVectorRenderer(new List<SaveObject> { saveObj });

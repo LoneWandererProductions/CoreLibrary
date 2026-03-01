@@ -22,7 +22,6 @@ namespace Weaver
     /// </summary>
     public sealed class Weave
     {
-
         /// <summary>
         /// The synchronization lock object.
         /// We use a private object to prevent deadlocks from external locking on 'this'.
@@ -38,15 +37,29 @@ namespace Weaver
         /// <summary>
         /// Built-in extensions injected into every command
         /// </summary>
-        private static readonly Dictionary<string, CommandExtension> GlobalExtensions = new(StringComparer.OrdinalIgnoreCase)
-        {
-            [WeaverResources.GlobalExtensionHelp] = new CommandExtension
-            { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
-            [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
-            { Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true, IsPreview = true },
-            [WeaverResources.GlobalExtensionStore] = new CommandExtension
-            { Name = WeaverResources.GlobalExtensionStore, ParameterCount = -1, IsInternal = true, IsPreview = true }
-        };
+        private static readonly Dictionary<string, CommandExtension> GlobalExtensions =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                [WeaverResources.GlobalExtensionHelp] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
+                    },
+                [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
+                {
+                    Name = WeaverResources.GlobalExtensionTryRun,
+                    ParameterCount = 0,
+                    IsInternal = true,
+                    IsPreview = true
+                },
+                [WeaverResources.GlobalExtensionStore] = new CommandExtension
+                {
+                    Name = WeaverResources.GlobalExtensionStore,
+                    ParameterCount = -1,
+                    IsInternal = true,
+                    IsPreview = true
+                }
+            };
 
         /// <summary>
         /// The mediator
@@ -93,7 +106,8 @@ namespace Weaver
             // Lock ensures we don't modify the dictionary while ProcessInput is reading it
             lock (_syncRoot)
             {
-                var key = (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(), command.ParameterCount);
+                var key = (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(),
+                    command.ParameterCount);
                 _commands[key] = command;
             }
         }
@@ -323,7 +337,8 @@ namespace Weaver
         /// <returns>
         /// A tuple containing the matching <see cref="ICommandExtension" />, or a failure <see cref="CommandResult" /> if not found or invalid.
         /// </returns>
-        private (ICommandExtension? Extension, CommandResult? Error) FindExtension(ICommand command, string extensionName, int argCount)
+        private (ICommandExtension? Extension, CommandResult? Error) FindExtension(ICommand command,
+            string extensionName, int argCount)
         {
             if (string.IsNullOrWhiteSpace(extensionName))
                 return (null, CommandResult.Fail("No extension name provided."));
@@ -336,7 +351,9 @@ namespace Weaver
                 if (globalExt.ParameterCount != 0 && globalExt.ParameterCount != -1)
                 {
                     if (globalExt.ParameterCount != argCount)
-                        return (null, CommandResult.Fail($"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
+                        return (null,
+                            CommandResult.Fail(
+                                $"Global extension '{extensionName}' expects {globalExt.ParameterCount} parameters, but got {argCount}."));
                 }
 
                 // O(1) Lookup from registry
@@ -354,7 +371,9 @@ namespace Weaver
                 !string.IsNullOrEmpty(command.Namespace) &&
                 !found.Namespace.Equals(command.Namespace, StringComparison.OrdinalIgnoreCase))
             {
-                return (null, CommandResult.Fail($"Namespace mismatch: Command '{command.Namespace}' cannot use extension '{found.Name}' from '{found.Namespace}'."));
+                return (null,
+                    CommandResult.Fail(
+                        $"Namespace mismatch: Command '{command.Namespace}' cannot use extension '{found.Name}' from '{found.Namespace}'."));
             }
 
             // 4. Parameter Validation
@@ -362,11 +381,16 @@ namespace Weaver
             {
                 case 0: break;
                 case -1:
-                    if (argCount > 1) return (null, CommandResult.Fail($"Extension '{found.Name}' expects zero or one parameter, but got {argCount}."));
+                    if (argCount > 1)
+                        return (null,
+                            CommandResult.Fail(
+                                $"Extension '{found.Name}' expects zero or one parameter, but got {argCount}."));
                     break;
                 default:
                     if (found.ExtensionParameterCount != argCount)
-                        return (null, CommandResult.Fail($"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
+                        return (null,
+                            CommandResult.Fail(
+                                $"Extension '{found.Name}' expects {found.ExtensionParameterCount} parameters, but got {argCount}."));
                     break;
             }
 

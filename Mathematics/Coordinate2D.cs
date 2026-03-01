@@ -89,7 +89,7 @@ namespace Mathematics
         /// <value>
         ///     The y.
         /// </value>
-        public int Y { get;  }
+        public int Y { get; }
 
         /// <summary>
         ///     Gets or sets the x.
@@ -97,7 +97,7 @@ namespace Mathematics
         /// <value>
         ///     The x.
         /// </value>
-        public int X { get;  }
+        public int X { get; }
 
         /// <summary>
         ///     Gets the instance.
@@ -107,7 +107,7 @@ namespace Mathematics
         /// <returns>Instance of Coordinate 2D with the help of the Id</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Coordinate2D FromId(int id, int width) =>
-                    new(id % width, id / width);
+            new(id % width, id / width);
 
         /// <summary>
         /// Converts to id.

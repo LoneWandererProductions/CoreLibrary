@@ -67,14 +67,12 @@ namespace Mathematics
 
             // The inverse camera's translation
             var transl = new Vector3D(-(right * pos),
-                                      -(up * pos),
-                                      -(forward * pos));
+                -(up * pos),
+                -(forward * pos));
 
             double[,] viewMatrix =
             {
-                { right.X, up.X, forward.X, 0 },
-                { right.Y, up.Y, forward.Y, 0 },
-                { right.Z, up.Z, forward.Z, 0 },
+                { right.X, up.X, forward.X, 0 }, { right.Y, up.Y, forward.Y, 0 }, { right.Z, up.Z, forward.Z, 0 },
                 { transl.X, transl.Y, transl.Z, 1 }
             };
 

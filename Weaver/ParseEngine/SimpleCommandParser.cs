@@ -155,6 +155,7 @@ namespace Weaver.ParseEngine
                     return i;
                 }
             }
+
             return -1;
         }
 
@@ -291,6 +292,7 @@ namespace Weaver.ParseEngine
                 if (val.StartsWith("\"") && val.EndsWith("\"")) return val[1..^1];
                 if (val.StartsWith("'") && val.EndsWith("'")) return val[1..^1];
             }
+
             return val;
         }
     }

@@ -322,7 +322,8 @@ namespace Imaging.Gifs
             var fileBytes = ms.ToArray();
 
             // This is the NETSCAPE2.0 Application Extension.
-            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            var applicationExtension =
+                new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 
             var newBytes = new List<byte>(fileBytes.Length + applicationExtension.Length);
             newBytes.AddRange(fileBytes.Take(13));

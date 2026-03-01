@@ -72,9 +72,10 @@ namespace Weaver.ScriptEngine
                             else if (IsSimpleExpression(expr))
                             {
                                 // Pass the RAW expression. The Evaluator will fetch the variables at runtime!
-                                yield return (ScriptConstants.CommandRewriteToken, $"EvaluateCommand({expr}, {varName})");
+                                yield return (ScriptConstants.CommandRewriteToken,
+                                    $"EvaluateCommand({expr}, {varName})");
                             }
-                                else
+                            else
                             {
                                 throw new Exception($"Unsupported assignment expression: '{expr}'");
                             }

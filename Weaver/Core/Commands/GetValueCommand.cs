@@ -64,8 +64,7 @@ namespace Weaver.Core.Commands
             {
                 return CommandResult.Fail(
                     $"Key '{key}' not found.",
-                    null,
-                    EnumTypes.Wstring
+                    null
                 );
             }
 

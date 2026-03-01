@@ -18,7 +18,6 @@ namespace Communication
     /// </summary>
     public static class HttpClientManager
     {
-
         /// <summary>
         ///  Singleton pattern is correct here
         /// </summary>
@@ -40,10 +39,7 @@ namespace Communication
                 // Create the content correctly with type "text/xml" right from the start
                 using var content = new StringContent(soapXmlBody, Encoding.UTF8, ComResource.FormatXml); // "text/xml"
 
-                using var request = new HttpRequestMessage(HttpMethod.Post, url)
-                {
-                    Content = content
-                };
+                using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
 
                 // Add headers
                 request.Headers.Add(ComResource.UserAgent, ComResource.InsomniaAgent);
@@ -81,10 +77,12 @@ namespace Communication
         /// method
         /// </exception>
         /// <exception cref="System.Net.Http.HttpRequestException"></exception>
-        internal static async Task<string> SendMessageAsync(string url, string method, string? body = null, string contentType = ComResource.JsonHeader)
+        internal static async Task<string> SendMessageAsync(string url, string method, string? body = null,
+            string contentType = ComResource.JsonHeader)
         {
             if (string.IsNullOrEmpty(url)) throw new ArgumentException(ComResource.ErrorUrlEmpty, nameof(url));
-            if (string.IsNullOrEmpty(method)) throw new ArgumentException(ComResource.ErrorMethodCannotBeNull, nameof(method));
+            if (string.IsNullOrEmpty(method))
+                throw new ArgumentException(ComResource.ErrorMethodCannotBeNull, nameof(method));
 
             // Wrap HttpRequestMessage in 'using' to clean up resources immediately
             using var httpRequest = new HttpRequestMessage(new HttpMethod(method), url);
@@ -106,7 +104,8 @@ namespace Communication
 
                 // If failed, read the error message from the server (often contains validation details)
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException(string.Format(ComResource.ErrorFormatTwo, response.StatusCode, errorContent));
+                throw new HttpRequestException(string.Format(ComResource.ErrorFormatTwo, response.StatusCode,
+                    errorContent));
             }
             catch (Exception)
             {

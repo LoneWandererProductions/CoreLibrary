@@ -64,7 +64,10 @@ namespace Communication
                     _ = HandleClientInternalAsync(client, token);
                 }
             }
-            catch (OperationCanceledException) { /* Graceful shutdown */ }
+            catch (OperationCanceledException)
+            {
+                /* Graceful shutdown */
+            }
             finally { Stop(); }
         }
 

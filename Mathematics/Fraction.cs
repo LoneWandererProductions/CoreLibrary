@@ -298,13 +298,13 @@ namespace Mathematics
         /// </summary>
         private static int GetGcf(int a, int b)
         {
-
             while (b != 0)
             {
                 int temp = b;
                 b = a % b; // Get the remainder
-                a = temp;  // Shift the values
+                a = temp; // Shift the values
             }
+
             return a;
         }
     }

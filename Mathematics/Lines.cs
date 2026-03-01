@@ -47,7 +47,7 @@ namespace Mathematics
                 var error = dy2 - Math.Abs(dx);
                 while (x != xEnd)
                 {
-                    lst.Add(new Coordinate2D (x, y ));
+                    lst.Add(new Coordinate2D(x, y));
                     if (error > 0)
                     {
                         y += signY;
@@ -164,7 +164,7 @@ namespace Mathematics
                 var error2 = dz2 - Math.Abs(dy);
                 while (y != yEnd)
                 {
-                    lst.Add(new Vector3D ( x, y, z ));
+                    lst.Add(new Vector3D(x, y, z));
                     if (error1 > 0)
                     {
                         x += signX;

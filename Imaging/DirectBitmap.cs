@@ -261,7 +261,7 @@ namespace Imaging
                 {
                     Buffer.MemoryCopy(
                         (void*)srcData.Scan0,
-                        (void*)pDest,
+                        pDest,
                         dbm.Bits.Length * 4,
                         dbm.Bits.Length * 4
                     );

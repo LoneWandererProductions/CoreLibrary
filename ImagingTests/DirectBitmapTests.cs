@@ -97,6 +97,7 @@ namespace ImagingTests
             {
                 warmupGraphics.FillRectangle(brush, 0, 0, lineWidth, height);
             }
+
             directBitmap.DrawRectangle(0, 0, lineWidth, height, Color.Black);
 
             // 3. Optional but highly recommended: Move context creation OUTSIDE the loop

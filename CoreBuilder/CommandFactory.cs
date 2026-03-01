@@ -65,7 +65,8 @@ namespace CoreBuilder
                 new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
                 new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables), new Tree()
+                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(),
+                new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 
             // Filter by Namespace

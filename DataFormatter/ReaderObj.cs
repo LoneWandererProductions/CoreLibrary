@@ -62,6 +62,7 @@ namespace DataFormatter
                             vectors.Add(new TertiaryVector { X = x, Y = y, Z = z });
                         }
                     }
+
                     continue;
                 }
 
@@ -83,6 +84,7 @@ namespace DataFormatter
                             faces.Add(new TertiaryFace { X = v1, Y = v2, Z = v3 });
                         }
                     }
+
                     continue;
                 }
 
@@ -105,6 +107,7 @@ namespace DataFormatter
             {
                 return result;
             }
+
             return 0;
         }
     }

@@ -184,7 +184,8 @@ namespace Mathematics
         /// <returns>
         ///     Center on Screen
         /// </returns>
-        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width, int height)
+        public static List<PolyTriangle> MoveIntoViewOrthographic(IEnumerable<PolyTriangle> triangles, int width,
+            int height)
         {
             var lst = new List<PolyTriangle>();
 

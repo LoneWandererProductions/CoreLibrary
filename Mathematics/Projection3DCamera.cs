@@ -189,8 +189,7 @@ namespace Mathematics
             {
                 { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
                 { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
-                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 },
-                { transl.X,        transl.Y,       transl.Z,          1 }
+                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
             // 2. USE THE CONSTRUCTOR INSTEAD OF OBJECT INITIALIZER

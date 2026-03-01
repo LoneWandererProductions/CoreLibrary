@@ -156,7 +156,7 @@ namespace Weaver.Registry
         /// </summary>
         /// <param name="newAttribute">The new attribute.</param>
         /// <returns></returns>
-        public VmValue WithAttribute(string newAttribute) => 
+        public VmValue WithAttribute(string newAttribute) =>
             new VmValue(Type, Int64, Double, Bool, String, newAttribute);
 
         /// <summary>

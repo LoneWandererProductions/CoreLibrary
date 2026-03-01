@@ -170,13 +170,7 @@ namespace LightVector
             // We set X1/Y1 to 0. 
             // The 'StartCoordinates' from SaveObject will be applied via Canvas.SetLeft/Top
             // outside of this method.
-            return new Line
-            {
-                X1 = 0,
-                Y1 = 0,
-                X2 = lineObject.Direction.X,
-                Y2 = lineObject.Direction.Y
-            };
+            return new Line { X1 = 0, Y1 = 0, X2 = lineObject.Direction.X, Y2 = lineObject.Direction.Y };
         }
 
         /// <summary>
@@ -189,10 +183,7 @@ namespace LightVector
             // PURE GEOMETRY: Just the relative vertices.
             var points = new PointCollection(polygonObject.Vertices.Select(v => new Point(v.X, v.Y)));
 
-            return new Polygon
-            {
-                Points = points
-            };
+            return new Polygon { Points = points };
         }
 
         /// <summary>
@@ -205,10 +196,7 @@ namespace LightVector
             // CENTER IS (0,0). Canvas moves it to the right spot.
             var circle = new EllipseGeometry(new Point(0, 0), circleObject.Radius, circleObject.Radius);
 
-            return new Path
-            {
-                Data = circle
-            };
+            return new Path { Data = circle };
         }
 
         /// <summary>
@@ -220,10 +208,7 @@ namespace LightVector
         {
             var oval = new EllipseGeometry(new Point(0, 0), ovalObject.RadiusX, ovalObject.RadiusY);
 
-            return new Path
-            {
-                Data = oval
-            };
+            return new Path { Data = oval };
         }
 
         private static Path CreateBezier(BezierCurve bezierObject)
@@ -279,18 +264,19 @@ namespace LightVector
                     double y = Math.Min(0, l.Direction.Y);
                     double width = Math.Abs(l.Direction.X);
                     double height = Math.Abs(l.Direction.Y);
-                    return new Rect(x - padding, y - padding, width + obj.Graphic.Thickness, height + obj.Graphic.Thickness);
+                    return new Rect(x - padding, y - padding, width + obj.Graphic.Thickness,
+                        height + obj.Graphic.Thickness);
 
                 case GraphicTypes.Circle:
                     var c = (CircleObject)obj.Graphic;
                     // EllipseGeometry in your code is centered on the start point
                     return new Rect(-c.Radius - padding, -c.Radius - padding,
-                                    (c.Radius * 2) + obj.Graphic.Thickness, (c.Radius * 2) + obj.Graphic.Thickness);
+                        (c.Radius * 2) + obj.Graphic.Thickness, (c.Radius * 2) + obj.Graphic.Thickness);
 
                 case GraphicTypes.Oval:
                     var o = (OvalObject)obj.Graphic;
                     return new Rect(-o.RadiusX - padding, -o.RadiusY - padding,
-                                    (o.RadiusX * 2) + obj.Graphic.Thickness, (o.RadiusY * 2) + obj.Graphic.Thickness);
+                        (o.RadiusX * 2) + obj.Graphic.Thickness, (o.RadiusY * 2) + obj.Graphic.Thickness);
 
                 case GraphicTypes.Polygon:
                     var p = (PolygonObject)obj.Graphic;
@@ -303,7 +289,7 @@ namespace LightVector
                     double maxY = p.Vertices.Max(v => v.Y);
 
                     return new Rect(minX - padding, minY - padding,
-                                    (maxX - minX) + obj.Graphic.Thickness, (maxY - minY) + obj.Graphic.Thickness);
+                        (maxX - minX) + obj.Graphic.Thickness, (maxY - minY) + obj.Graphic.Thickness);
 
                 case GraphicTypes.BezierCurve:
                     var b = (BezierCurve)obj.Graphic;
@@ -318,7 +304,7 @@ namespace LightVector
                     double bMaxY = b.Vectors.Max(v => v.Y);
 
                     return new Rect(bMinX - padding, bMinY - padding,
-                                    (bMaxX - bMinX) + obj.Graphic.Thickness, (bMaxY - bMinY) + obj.Graphic.Thickness);
+                        (bMaxX - bMinX) + obj.Graphic.Thickness, (bMaxY - bMinY) + obj.Graphic.Thickness);
 
                 default:
                     return new Rect(0, 0, 0, 0);

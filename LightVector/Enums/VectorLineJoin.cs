@@ -8,7 +8,6 @@
 
 namespace LightVector.Enums
 {
-
     /// <summary>
     /// A platform-agnostic enum for line join styles. The Renderer will map this to the appropriate PenLineJoin value.
     /// </summary>

@@ -158,7 +158,7 @@ namespace Mathematics
         public static bool operator !=(Vector2D first, Vector2D second)
         {
             return (Math.Abs(first.X - second.X) > MathResources.Tolerance ||
-                                                               Math.Abs(first.Y - second.Y) > MathResources.Tolerance);
+                    Math.Abs(first.Y - second.Y) > MathResources.Tolerance);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace Mathematics
         public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector2D (  X / l, Y / l );
+            return new Vector2D(X / l, Y / l);
         }
 
         /// <summary>

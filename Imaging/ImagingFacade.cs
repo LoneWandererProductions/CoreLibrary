@@ -212,10 +212,11 @@ namespace Imaging
         /// <returns>
         /// The filtered <see cref="Bitmap" />.
         /// </returns>
-
-        public static Bitmap? ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object? shapeParams = null,
+        public static Bitmap? ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape,
+            object? shapeParams = null,
             Point? startPoint = null)
-            => new FilterGenerator().GenerateFilterOverlay(image, image.Width, image.Height, filter, shape, startPoint, shapeParams);
+            => new FilterGenerator().GenerateFilterOverlay(image, image.Width, image.Height, filter, shape, startPoint,
+                shapeParams);
 
         #endregion
 
@@ -401,8 +402,9 @@ namespace Imaging
         /// The generated texture as a <see cref="Bitmap" />.
         /// </returns>
         public static Bitmap? GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
-                    object? shapeParams = null, Point? startPoint = null)
-                    => new TextureGenerator().GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint, shapeParams);
+            object? shapeParams = null, Point? startPoint = null)
+            => new TextureGenerator().GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint,
+                shapeParams);
 
         /// <summary>
         ///     Generates a procedural texture using the specified type, mask shape, and parameters.

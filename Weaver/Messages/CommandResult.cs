@@ -57,13 +57,7 @@ namespace Weaver.Messages
         /// <param name="feedback">The feedback.</param>
         /// <returns>Drop in ready Command.</returns>
         public static CommandResult Prompt(string message, FeedbackRequest feedback)
-            => new()
-            {
-                Success = true,
-                RequiresConfirmation = true,
-                Message = message,
-                Feedback = feedback
-            };
+            => new() { Success = true, RequiresConfirmation = true, Message = message, Feedback = feedback };
 
         /// <summary>
         /// Oks the specified MSG.
@@ -78,7 +72,8 @@ namespace Weaver.Messages
         /// <param name="msg">The MSG.</param>
         /// <param name="type">The type.</param>
         /// <returns>Drop in ready Command.</returns>
-        public static CommandResult Ok(string msg, EnumTypes type = EnumTypes.Wstring) => new() { Success = true, Message = msg, Type  = type};
+        public static CommandResult Ok(string msg, EnumTypes type = EnumTypes.Wstring) =>
+            new() { Success = true, Message = msg, Type = type };
 
         /// <summary>
         /// Fails the specified MSG.
@@ -93,7 +88,8 @@ namespace Weaver.Messages
         /// <param name="msg">The MSG.</param>
         /// <param name="type">The type.</param>
         /// <returns>Drop in ready Command.</returns>
-        public static CommandResult Fail(string msg, EnumTypes type = EnumTypes.Wstring) => new() { Success = false, Message = msg, Type = type };
+        public static CommandResult Fail(string msg, EnumTypes type = EnumTypes.Wstring) =>
+            new() { Success = false, Message = msg, Type = type };
 
         /// <summary>
         /// Success variant.

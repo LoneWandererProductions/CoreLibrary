@@ -209,6 +209,7 @@ namespace Mathematics
             {
                 sb.Append(i).Append(MathResources.Separator).Append(Vertices[i]).Append(Environment.NewLine);
             }
+
             return sb.ToString();
         }
     }

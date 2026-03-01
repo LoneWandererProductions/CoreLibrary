@@ -42,13 +42,26 @@ namespace Imaging
                 FiltersType.GaussianBlur,
                 new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
             },
-            { FiltersType.BoxBlur, new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) } },
             {
-                FiltersType.MotionBlur, new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
+                FiltersType.BoxBlur,
+                new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
             },
-            { FiltersType.Sharpen, new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) } },
-            { FiltersType.Emboss, new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) } },
-            { FiltersType.Laplacian, new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) } },
+            {
+                FiltersType.MotionBlur,
+                new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
+            },
+            {
+                FiltersType.Sharpen,
+                new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
+            },
+            {
+                FiltersType.Emboss,
+                new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
+            },
+            {
+                FiltersType.Laplacian,
+                new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
+            },
             {
                 FiltersType.EdgeEnhance,
                 new HashSet<string> { nameof(FilterConfiguration.Factor), nameof(FilterConfiguration.Bias) }
