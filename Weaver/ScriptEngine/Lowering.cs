@@ -60,7 +60,6 @@ namespace Weaver.ScriptEngine
                         if (rewrite ?? true)
                         {
                             var rewrittenExpr = expr;
-
                             // Replace registry variables if possible
                             if (registry != null)
                                 rewrittenExpr = ReplaceRegistryVariables(expr, registry);
