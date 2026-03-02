@@ -187,50 +187,50 @@ public sealed class LayeredImageContainer : IDisposable
     }
 
     /// <summary>
-    ///     Performs alpha blending of an overlay image onto a base image buffer.
-    ///     Both buffers must be in BGRA format with 4 bytes per pixel.
+    /// Performs alpha blending using highly optimized integer math and pointer arithmetic.
+    /// Implements Porter-Duff "Source Over" without floating-point overhead.
     /// </summary>
-    /// <param name="baseSpan">The span of bytes representing the base image buffer.</param>
-    /// <param name="overlaySpan">The span of bytes representing the overlay image buffer.</param>
-    private static void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
+    /// <param name="baseSpan">The base span.</param>
+    /// <param name="overlaySpan">The overlay span.</param>
+    private static unsafe void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
     {
-        var length = baseSpan.Length;
-        const int bytesPerPixel = 4;
+        int length = baseSpan.Length;
 
-        for (var i = 0; i < length; i += bytesPerPixel)
+        // Pin the spans in memory so we can use raw pointers for maximum speed
+        fixed (byte* pBase = baseSpan)
+        fixed (byte* pOverlay = overlaySpan)
         {
-            var srcB = overlaySpan[i];
-            var srcG = overlaySpan[i + 1];
-            var srcR = overlaySpan[i + 2];
-            var srcAByte = overlaySpan[i + 3];
-            var srcA = srcAByte / 255f;
-
-            if (srcA <= 0)
+            for (int i = 0; i < length; i += 4)
             {
-                continue;
+                int srcA = pOverlay[i + 3];
+
+                // 1. Fast Path: Fully Transparent Overlay
+                if (srcA == 0) continue;
+
+                // 2. Fast Path: Fully Opaque Overlay (Just overwrite the base pixel)
+                if (srcA == 255)
+                {
+                    // Cast to an integer pointer to copy all 4 bytes (BGRA) in a single CPU tick
+                    *(int*)(pBase + i) = *(int*)(pOverlay + i);
+                    continue;
+                }
+
+                // 3. Integer Math Porter-Duff Compositing
+                int dstA = pBase[i + 3];
+                int invSrcA = 255 - srcA;
+
+                // Calculate the output alpha scaled by 255
+                int outA = (srcA * 255) + (dstA * invSrcA);
+                if (outA == 0) continue;
+
+                // Calculate color channels (Numerator / Denominator)
+                // Maximum value of numerator is ~33 million, which fits perfectly inside a standard 32-bit int
+                pBase[i] = (byte)(((pOverlay[i] * srcA * 255) + (pBase[i] * dstA * invSrcA)) / outA);     // Blue
+                pBase[i + 1] = (byte)(((pOverlay[i + 1] * srcA * 255) + (pBase[i + 1] * dstA * invSrcA)) / outA); // Green
+                pBase[i + 2] = (byte)(((pOverlay[i + 2] * srcA * 255) + (pBase[i + 2] * dstA * invSrcA)) / outA); // Red
+
+                pBase[i + 3] = (byte)(outA / 255); // Alpha
             }
-
-            var dstB = baseSpan[i];
-            var dstG = baseSpan[i + 1];
-            var dstR = baseSpan[i + 2];
-            var dstAByte = baseSpan[i + 3];
-            var dstA = dstAByte / 255f;
-
-            var outA = srcA + (dstA * (1 - srcA));
-
-            if (outA <= 0)
-            {
-                baseSpan[i] = 0;
-                baseSpan[i + 1] = 0;
-                baseSpan[i + 2] = 0;
-                baseSpan[i + 3] = 0;
-                continue;
-            }
-
-            baseSpan[i] = (byte)Math.Round(((srcB * srcA) + (dstB * dstA * (1 - srcA))) / outA);
-            baseSpan[i + 1] = (byte)Math.Round(((srcG * srcA) + (dstG * dstA * (1 - srcA))) / outA);
-            baseSpan[i + 2] = (byte)Math.Round(((srcR * srcA) + (dstR * dstA * (1 - srcA))) / outA);
-            baseSpan[i + 3] = (byte)Math.Round(outA * 255);
         }
     }
 }

@@ -288,7 +288,6 @@ namespace CommonExtendedObjectsTests
             Assert.AreEqual(9, list[5]);
         }
 
-
         /// <summary>
         ///     Benchmarks the add performance.
         /// </summary>

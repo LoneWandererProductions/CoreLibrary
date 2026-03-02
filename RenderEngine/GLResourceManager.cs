@@ -249,7 +249,6 @@ namespace RenderEngine
             throw new Exception($"Error compiling {type}: {info}");
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

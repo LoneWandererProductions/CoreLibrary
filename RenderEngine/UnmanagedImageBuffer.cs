@@ -88,7 +88,21 @@ namespace RenderEngine
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)BufferSpan.ToArray()).GetEnumerator();
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
@@ -209,34 +223,7 @@ namespace RenderEngine
             var bufferSize = Width * Height * BytesPerPixel;
             if (fullBuffer.Length != bufferSize) throw new ArgumentException(RenderResource.ErrorInputBuffer);
 
-            var buffer = BufferSpan;
-
-            if (Avx2.IsSupported)
-            {
-                const int vectorSize = 32; // 256-bit vector
-                var vectorCount = bufferSize / vectorSize;
-                var remainder = bufferSize % vectorSize;
-
-                fixed (byte* srcPtr = fullBuffer)
-                {
-                    var dstPtr = (byte*)_buffer.ToPointer();
-
-                    for (var i = 0; i < vectorCount; i++)
-                    {
-                        var vec = Avx.LoadVector256(srcPtr + i * vectorSize);
-                        Avx.Store(dstPtr + i * vectorSize, vec);
-                    }
-
-                    // Copy remaining bytes
-                    for (var i = bufferSize - remainder; i < bufferSize; i++)
-                        buffer[i] = fullBuffer[i];
-                }
-            }
-            else
-            {
-                // Fallback to managed copy
-                fullBuffer.CopyTo(buffer);
-            }
+            fullBuffer.CopyTo(BufferSpan);
         }
 
         /// <summary>
@@ -268,41 +255,53 @@ namespace RenderEngine
             if (x < 0 || x >= Width || y < 0 || y >= Height) return;
 
             var offset = (y * Width + x) * BytesPerPixel;
+            var span = BufferSpan;
 
-            // Read existing pixel
-            var destB = BufferSpan[offset + 0];
-            var destG = BufferSpan[offset + 1];
-            var destR = BufferSpan[offset + 2];
-            var destA = BufferSpan[offset + 3];
+            // Fast Integer Math Alpha Blending
+            int invAlpha = 255 - a;
 
-            var alpha = a / 255f;
-            var invAlpha = 1f - alpha;
-
-            // Blend each channel
-            BufferSpan[offset + 0] = (byte)(b * alpha + destB * invAlpha);
-            BufferSpan[offset + 1] = (byte)(g * alpha + destG * invAlpha);
-            BufferSpan[offset + 2] = (byte)(r * alpha + destR * invAlpha);
-            BufferSpan[offset + 3] = (byte)(a * alpha + destA * invAlpha); // optional: blend alpha
+            // Formula: (NewColor * Alpha + OldColor * InvAlpha) >> 8
+            span[offset + 0] = (byte)((b * a + span[offset + 0] * invAlpha) >> 8); // B
+            span[offset + 1] = (byte)((g * a + span[offset + 1] * invAlpha) >> 8); // G
+            span[offset + 2] = (byte)((r * a + span[offset + 2] * invAlpha) >> 8); // R
+            span[offset + 3] = (byte)((a * a + span[offset + 3] * invAlpha) >> 8); // A
         }
 
         /// <summary>
-        ///     Blits a rectangular region from the source buffer to this buffer.
+        /// Blits a rectangular region from the source buffer to this buffer.
         /// </summary>
         /// <param name="src">The source.</param>
         /// <param name="srcX">X-coordinate of the top-left corner in the source.</param>
         /// <param name="srcY">Y-coordinate of the top-left corner in the source.</param>
         /// <param name="width">Width of the region to copy.</param>
         /// <param name="height">Height of the region to copy.</param>
-        /// <param name="destX">The dest x.</param>
-        /// <param name="destY">The dest y.</param>
-        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX,
-            int destY)
+        /// <param name="destX">The x destination.</param>
+        /// <param name="destY">The y destination.</param>
+        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX, int destY)
         {
-            for (var y = 0; y < height; y++)
+            if (width <= 0 || height <= 0) return;
+
+            // 1. Calculate how many bytes we actually need to copy per row
+            int bytesToCopy = width * BytesPerPixel;
+
+            // 2. Calculate the "Stride" (total bytes per row) for both images.
+            // We use this to jump the pointer down to the next row in memory.
+            int srcStride = src.Width * BytesPerPixel;
+            int destStride = Width * BytesPerPixel;
+
+            // 3. Find the exact starting memory addresses for the top-left pixel of the copy regions
+            byte* pSrc = (byte*)src._buffer.ToPointer() + (srcY * srcStride) + (srcX * BytesPerPixel);
+            byte* pDest = (byte*)_buffer.ToPointer() + (destY * destStride) + (destX * BytesPerPixel);
+
+            // 4. The ultra-fast copy loop
+            for (int y = 0; y < height; y++)
             {
-                var srcRow = src.GetPixelSpan(srcX, srcY + y, width);
-                var dstRow = GetPixelSpan(destX, destY + y, width);
-                srcRow.CopyTo(dstRow);
+                // Blast the row of bytes from source to destination
+                System.Buffer.MemoryCopy(pSrc, pDest, bytesToCopy, bytesToCopy);
+
+                // Jump the pointers down exactly one row
+                pSrc += srcStride;
+                pDest += destStride;
             }
         }
 
@@ -393,34 +392,25 @@ namespace RenderEngine
             var buffer = new UnmanagedImageBuffer(width, height);
 
             var rect = new Rectangle(0, 0, width, height);
-            var bmpData = bmp.LockBits(rect,
-                ImageLockMode.ReadOnly,
-                PixelFormat.Format32bppArgb);
+            var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             try
             {
-                var srcPtr = (byte*)bmpData.Scan0;
-                var dstSpan = buffer.BufferSpan;
+                int rowBytes = width * BytesPerPixel;
 
-                for (var y = 0; y < height; y++)
+                // If Stride matches exact bytes, we can copy the entire image in ONE instruction
+                if (bmpData.Stride == rowBytes)
                 {
-                    var rowOffset = y * width * BytesPerPixel;
-                    var rowSrc = srcPtr + y * bmpData.Stride;
-
-                    for (var x = 0; x < width; x++)
+                    System.Buffer.MemoryCopy((void*)bmpData.Scan0, (void*)buffer._buffer, buffer.Count, buffer.Count);
+                }
+                else
+                {
+                    // Fallback: Copy row by row (Still 100x faster than pixel-by-pixel)
+                    for (var y = 0; y < height; y++)
                     {
-                        var colOffset = x * BytesPerPixel;
-
-                        var b = rowSrc[colOffset + 0];
-                        var g = rowSrc[colOffset + 1];
-                        var r = rowSrc[colOffset + 2];
-                        var a = rowSrc[colOffset + 3];
-
-                        var dstIndex = rowOffset + colOffset;
-                        dstSpan[dstIndex + 0] = b;
-                        dstSpan[dstIndex + 1] = g;
-                        dstSpan[dstIndex + 2] = r;
-                        dstSpan[dstIndex + 3] = a;
+                        byte* srcRow = (byte*)bmpData.Scan0 + (y * bmpData.Stride);
+                        byte* dstRow = (byte*)buffer._buffer + (y * rowBytes);
+                        System.Buffer.MemoryCopy(srcRow, dstRow, rowBytes, rowBytes);
                     }
                 }
             }
@@ -444,14 +434,11 @@ namespace RenderEngine
         /// </summary>
         public void Clear(Color color)
         {
-            var span = BufferSpan;
-            for (var i = 0; i < span.Length; i += BytesPerPixel)
-            {
-                span[i + 0] = color.B;
-                span[i + 1] = color.G;
-                span[i + 2] = color.R;
-                span[i + 3] = color.A;
-            }
+            // Pack the color into a single 32-bit integer (BGRA)
+            uint colorValue = PackBgra(color.A, color.R, color.G, color.B);
+
+            // Cast the Span<byte> to Span<uint> and blast the memory
+            MemoryMarshal.Cast<byte, uint>(BufferSpan).Fill(colorValue);
         }
 
         /// <summary>

@@ -23,14 +23,14 @@ public interface IImageToolkit
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
     /// <param name="bits">The bits.</param>
-    /// <returns></returns>
+    /// <returns>Image array data as UnmanagedImageBuffer.</returns>
     UnmanagedImageBuffer FromIntArray(int width, int height, int[] bits);
 
     /// <summary>
     ///     Converts to int array.
     /// </summary>
     /// <param name="buffer">The buffer.</param>
-    /// <returns></returns>
+    /// <returns>Image array data from UnmanagedImageBuffer.</returns>
     int[] ToIntArray(UnmanagedImageBuffer buffer);
 
     /// <summary>
@@ -38,21 +38,21 @@ public interface IImageToolkit
     /// </summary>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    /// <returns></returns>
+    /// <returns>A layered ImageContainer</returns>
     LayeredImageContainer CreateLayeredContainer(int width, int height);
 
     /// <summary>
     ///     Creates from layers.
     /// </summary>
     /// <param name="layers">The layers.</param>
-    /// <returns></returns>
+    /// <returns>A layered ImageContainer</returns>
     LayeredImageContainer CreateFromLayers(params UnmanagedImageBuffer[] layers);
 
     /// <summary>
     ///     Composites the specified container.
     /// </summary>
     /// <param name="container">The container.</param>
-    /// <returns></returns>
+    /// <returns>A lUnmanagedImageBuffer from LayeredImageContainer.</returns>
     UnmanagedImageBuffer Composite(LayeredImageContainer container);
 
     /// <summary>

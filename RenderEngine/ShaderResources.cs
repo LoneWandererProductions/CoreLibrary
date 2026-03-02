@@ -72,10 +72,11 @@ void main() { FragColor = texture(uSkybox, vTexCoord); }";
         /// </remarks>
         public static readonly float[] SkyboxVertices = new float[]
         {
-            -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f, -1f, -1f, 1f, -1f,
-            -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f,
-            1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f,
-            -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, -1f
+            -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f,
+            -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, 1f, -1f, 1f, 1f,
+            1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f,
+            1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f, -1f, -1f, -1f, -1f,
+            -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, -1f
         };
 
         /// <summary>

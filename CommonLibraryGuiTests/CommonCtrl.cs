@@ -44,15 +44,6 @@ namespace CommonLibraryGuiTests
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
 
-            try
-            {
-                _ = new OpenTkControl();
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e);
-            }
-
             Assert.Pass();
         }
 

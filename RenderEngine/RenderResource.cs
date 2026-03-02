@@ -14,11 +14,6 @@ namespace RenderEngine;
 internal static class RenderResource
 {
     /// <summary>
-    /// The error open gl
-    /// </summary>
-    internal const string ErrorOpenGl = "OpenGL 4.5 or higher required.";
-
-    /// <summary>
     /// The error input buffer
     /// </summary>
     internal const string ErrorInputBuffer = "Input buffer size does not match.";
