@@ -151,10 +151,8 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void Fill<T>(T* ptr, T value, int count) where T : unmanaged
         {
-            for (var i = 0; i < count; i++)
-            {
-                ptr[i] = value;
-            }
+            // Generates highly optimized, vectorized machine code natively
+            new Span<T>(ptr, count).Fill(value);
         }
 
         /// <summary>
@@ -163,15 +161,8 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe int IndexOf<T>(T* ptr, T value, int length) where T : unmanaged, IEquatable<T>
         {
-            for (var i = 0; i < length; i++)
-            {
-                if (ptr[i].Equals(value))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            // Bypasses the manual loop and uses native vectorization
+            return new ReadOnlySpan<T>(ptr, length).IndexOf(value);
         }
 
         /// <summary>
