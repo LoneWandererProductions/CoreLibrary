@@ -35,13 +35,13 @@ namespace CoreBuilder
         {
             ICommand[] modules =
             {
-                new DirectorySizeAnalyzer(), new LogTailCommand(), new HeaderExtractor(), new ResXtract(),
+                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(), new HeaderExtractor(), new ResXtract(),
                 new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
                 new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
                 new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables), new Tree()
+                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 
             return modules;
@@ -50,28 +50,28 @@ namespace CoreBuilder
         /// <summary>
         /// Gets the commands.
         /// </summary>
-        /// <param name="userspace">The userspace.</param>
+        /// <param name="userSpace">The user space.</param>
         /// <param name="weave">The weave.</param>
         /// <returns>
         /// All commands by Namespace.
         /// </returns>
-        public static IReadOnlyList<ICommand> GetCommands(string userspace, Weave? weave = null)
+        public static IReadOnlyList<ICommand> GetCommands(string userSpace, Weave? weave = null)
         {
             ICommand[] modules =
             {
-                new DirectorySizeAnalyzer(), new DirectorySizeAnalyzer(), new LogTailCommand(),
+                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(),
                 new HeaderExtractor(), new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(),
                 new DoubleNewlineAnalyzer(), new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(),
                 new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
                 new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(), new FileLockScanner(), new SmartPingPro(),
+                new ApiExplorerCommand(), new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
                 new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 
             // Filter by Namespace
             return modules
-                .Where(m => string.Equals(m.Namespace, userspace, StringComparison.OrdinalIgnoreCase))
+                .Where(m => string.Equals(m.Namespace, userSpace, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 

@@ -24,12 +24,18 @@ namespace Weaver.Core.Commands
         private readonly Func<IEnumerable<ICommand>> _getCommands;
 
         /// <summary>
+        /// The get extensions
+        /// </summary>
+        private readonly Func<List<ICommandExtension>> _getExtensions;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="HelpCommand"/> class.
         /// </summary>
         /// <param name="getCommands">The get commands.</param>
-        public HelpCommand(Func<IEnumerable<ICommand>> getCommands)
+        public HelpCommand(Func<IEnumerable<ICommand>> getCommands, Func<List<ICommandExtension>> getExtensions)
         {
             _getCommands = getCommands;
+            _getExtensions = getExtensions;
         }
 
         /// <inheritdoc />
@@ -54,18 +60,24 @@ namespace Weaver.Core.Commands
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
-            // 1️⃣ No arguments → simple static help
+            // 1️⃣ No arguments → List everything grouped by Namespace
             if (args.Length == 0)
             {
                 var allCommands = _getCommands();
+                var allExtensions = _getExtensions();
 
-                var grouped = allCommands
-                    .GroupBy(c => c.Namespace)
+                // Merge both into a single anonymous structure for unified grouping
+                var combined = allCommands
+                    .Select(c => new { c.Name, c.Description, c.Namespace, Prefix = "" })
+                    .Concat(allExtensions.Select(e => new { e.Name, e.Description, e.Namespace, Prefix = "." }));
+
+                var grouped = combined
+                    .GroupBy(x => string.IsNullOrWhiteSpace(x.Namespace) ? "Global" : x.Namespace)
                     .OrderBy(g => g.Key)
                     .Select(g =>
                     {
-                        var entries = string.Join("\n", g.Select(c => $"  {c.Name} — {c.Description}"));
-                        return $"{g.Key}:\n{entries}";
+                        var entries = string.Join("\n", g.Select(x => $"  {x.Prefix}{x.Name} — {x.Description}"));
+                        return $"[{g.Key.ToUpperInvariant()}]:\n{entries}";
                     });
 
                 var text = string.Join("\n\n", grouped);
@@ -75,21 +87,33 @@ namespace Weaver.Core.Commands
                 );
             }
 
-            // 2️⃣ One argument → look up command description
+            // 2️⃣ One argument → Look up Command OR Extension description
             if (args.Length == 1)
             {
-                var cmdName = args[0];
-                var match = _getCommands().FirstOrDefault(c =>
-                    c.Name.Equals(cmdName, StringComparison.OrdinalIgnoreCase));
+                var targetName = args[0].TrimStart('.'); // Handle "help(.store)" or "help(store)"
 
-                if (match != null)
-                    return CommandResult.Ok($"{match.Namespace}:{match.Name} — {match.Description}");
+                // Search Commands first
+                var cmdMatch = _getCommands().FirstOrDefault(c =>
+                    c.Name.Equals(targetName, StringComparison.OrdinalIgnoreCase));
 
-                return CommandResult.Fail($"Unknown command '{cmdName}'.");
+                if (cmdMatch != null)
+                    return CommandResult.Ok($"{cmdMatch.Namespace}:{cmdMatch.Name} — {cmdMatch.Description}");
+
+                // Search Extensions second
+                var extMatch = _getExtensions().FirstOrDefault(e =>
+                    e.Name.Equals(targetName, StringComparison.OrdinalIgnoreCase));
+
+                if (extMatch != null)
+                {
+                    var ns = string.IsNullOrEmpty(extMatch.Namespace) ? "Global" : extMatch.Namespace;
+                    return CommandResult.Ok($".{extMatch.Name} (Extension) [{ns}] — {extMatch.Description}");
+                }
+
+                return CommandResult.Fail($"Unknown command or extension '{targetName}'.");
             }
 
-            // 3️⃣ More than one argument → optional, you could return syntax hint
-            return CommandResult.Fail("Usage: help([commandName])");
+            // 3️⃣ Error handling
+            return CommandResult.Fail("Usage: help() to list all, or help(name) for details.");
         }
     }
 }

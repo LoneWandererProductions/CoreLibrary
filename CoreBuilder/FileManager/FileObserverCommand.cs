@@ -33,6 +33,16 @@ namespace CoreBuilder.FileManager
         /// <inheritdoc />
         public string Namespace => "FileManager";
 
+        /// <summary>
+        /// The read lock
+        /// </summary>
+        private readonly object _readLock = new();
+
+        /// <summary>
+        /// The last length
+        /// </summary>
+        private long _lastLength;
+
         /// <inheritdoc />
         /// <summary>
         /// Gets the parameter count, 1 for folder path.
@@ -67,26 +77,40 @@ namespace CoreBuilder.FileManager
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
-            var path = args[0];
-            if (!Directory.Exists(path))
-                return CommandResult.Fail($"Directory does not exist: {path}");
+            // 1. Fix Instant Crash
+            if (args.Length < 1 || string.IsNullOrWhiteSpace(args[0]))
+                return CommandResult.Fail("Usage: LogTail([filePath])");
 
-            _watcher = new FileSystemWatcher(path)
+            var filePath = args[0];
+
+            if (!File.Exists(filePath))
+                return CommandResult.Fail($"File does not exist: {filePath}");
+
+            // 3. Fix Memory Leak (Dispose old watcher if it exists)
+            StopWatching();
+
+            var directory = Path.GetDirectoryName(filePath)!;
+            var fileName = Path.GetFileName(filePath);
+
+            _lastLength = new FileInfo(filePath).Length;
+
+            _watcher = new FileSystemWatcher(directory)
             {
-                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite,
-                IncludeSubdirectories = true,
+                Filter = fileName,
+                NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite,
                 EnableRaisingEvents = true
             };
 
+            _watcher.Changed += (s, e) => ReadNewContent(filePath);
+
             _watcher.Created += (s, e) => OnEvent("Created", e.FullPath);
-            _watcher.Changed += (s, e) => OnEvent("Changed", e.FullPath);
             _watcher.Deleted += (s, e) => OnEvent("Deleted", e.FullPath);
             _watcher.Renamed += (s, e) => OnEvent("Renamed", e.FullPath);
             _watcher.Error += (s, e) => OnEvent("Error", e.GetException()?.Message ?? "Unknown error");
 
             return new CommandResult
             {
-                Message = $"Watching folder '{path}' for changes...",
+                Message = $"Watching folder '{filePath}' for changes...",
                 RequiresConfirmation = true,
                 Feedback = new FeedbackRequest(
                     prompt: "Send 'stop' to end watching.",
@@ -106,6 +130,48 @@ namespace CoreBuilder.FileManager
                         };
                     })
             };
+        }
+
+        /// <summary>
+        /// Reads the new content.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        private void ReadNewContent(string filePath)
+        {
+            // 4. Fix Thread Race Conditions
+            lock (_readLock)
+            {
+                try
+                {
+                    var fileInfo = new FileInfo(filePath);
+                    if (fileInfo.Length < _lastLength)
+                    {
+                        // file rotated or truncated
+                        _lastLength = 0;
+                    }
+
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    fs.Seek(_lastLength, SeekOrigin.Begin);
+
+                    using var reader = new StreamReader(fs);
+                    var newText = reader.ReadToEnd();
+
+                    if (!string.IsNullOrEmpty(newText))
+                        _output.Write(newText.TrimEnd());
+
+                    // 2. Fix "Time Travel" Duplicate Log
+                    _lastLength = fs.Position;
+                }
+                catch (IOException)
+                {
+                    // Silently ignore IO exceptions caused by the writing process locking the file.
+                    // The watcher will fire again a millisecond later when the lock releases.
+                }
+                catch (Exception ex)
+                {
+                    _output.Write($"[ERROR] {ex.Message}");
+                }
+            }
         }
 
         /// <summary>

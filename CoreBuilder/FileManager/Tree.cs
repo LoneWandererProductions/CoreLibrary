@@ -73,8 +73,26 @@ namespace CoreBuilder.FileManager
 
             indent += last ? "    " : "│   ";
 
-            var dirs = Directory.GetDirectories(path);
-            var files = Directory.GetFiles(path);
+            string[] dirs = Array.Empty<string>();
+            string[] files = Array.Empty<string>();
+
+            try
+            {
+                // Attempt to read the directory
+                dirs = Directory.GetDirectories(path);
+                files = Directory.GetFiles(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Print a visual indicator that we couldn't read this folder
+                sb.AppendLine($"{indent}└── [Access Denied]");
+                return; // Stop processing this branch, but don't crash the command!
+            }
+            catch (Exception)
+            {
+                sb.AppendLine($"{indent}└── [Error reading folder]");
+                return;
+            }
 
             for (var i = 0; i < files.Length; i++)
             {

@@ -168,7 +168,9 @@ namespace CoreBuilder.Development
                         "no" => CommandResult.Fail("Operation cancelled by user."),
                         _ => new CommandResult
                         {
-                            Message = "Please answer yes/no.", RequiresConfirmation = true, Feedback = feedback
+                            Message = "Please answer yes/no.",
+                            RequiresConfirmation = true,
+                            Feedback = feedback
                         }
                     };
                 });

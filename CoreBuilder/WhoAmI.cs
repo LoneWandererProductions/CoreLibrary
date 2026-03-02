@@ -21,20 +21,26 @@ namespace CoreBuilder
     /// <summary>
     /// Displays local machine identity (hostname, user, IP addresses) and allows extensions to fetch individual properties.
     /// </summary>
-    public sealed class WhoAmI : ICommand
+    public sealed class WhoAmI : ICommand, IRegistryProducer
     {
+        /// <inheritdoc />
+        public string CurrentRegistryKey => StoreKey;
+
+        /// <inheritdoc />
+        public EnumTypes DataType => EnumTypes.Wobject;
+
+        /// <inheritdoc />
+        public IVariableRegistry Variables => _variables;
+
         /// <summary>
         /// The variables
         /// </summary>
-        internal IVariableRegistry Variables;
+        private IVariableRegistry _variables;
 
         /// <summary>
-        /// Gets the last store key.
+        /// The store key
         /// </summary>
-        /// <value>
-        /// The last store key.
-        /// </value>
-        public string LastStoreKey { get; private set; } = "whoami";
+        private string StoreKey = "whoami";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WhoAmI"/> class.
@@ -42,7 +48,7 @@ namespace CoreBuilder
         /// <param name="variables">The variables.</param>
         public WhoAmI(IVariableRegistry variables)
         {
-            Variables = variables;
+            _variables = variables;
         }
 
         /// <inheritdoc />
@@ -59,7 +65,7 @@ namespace CoreBuilder
         public int ParameterCount => 1;
 
         /// <inheritdoc />
-        public IReadOnlyDictionary<string, int>? Extensions => new Dictionary<string, int>
+        public IReadOnlyDictionary<string, int> Extensions => new Dictionary<string, int>
         {
             { "who", 1 } // "who" extension expects at least 1 parameter (or variable)
         };
@@ -68,11 +74,10 @@ namespace CoreBuilder
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
             // 1. Overload Logic: Use the first argument as the store key if provided
-            LastStoreKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
+            StoreKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
                 ? args[0]
                 : "whoami";
 
@@ -92,7 +97,7 @@ namespace CoreBuilder
                     .Distinct()
                     .ToList();
 
-                string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
+                var ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
                 // 2. Prepare the data for the Heap
                 var whoamiData = new Dictionary<string, VmValue>
@@ -110,7 +115,7 @@ namespace CoreBuilder
 
                 // 3. Store the Object in the Registry
                 // This utilizes your SetObject logic to handle memory allocation/reuse
-                Variables.SetObject(LastStoreKey, whoamiData);
+                _variables.SetObject(StoreKey, whoamiData);
 
                 // 4. Generate the console output string
                 var info =
@@ -121,10 +126,10 @@ namespace CoreBuilder
                     $"Domain: {domain}\n" +
                     $"IPv4 Addresses: {ipsJoined}\n" +
                     $"OS: {os}\n" +
-                    $"Data stored in: ${LastStoreKey}\n" +
+                    $"Data stored in: ${StoreKey}\n" +
                     "------------------------";
 
-                return CommandResult.Ok(info, LastStoreKey, EnumTypes.Wobject);
+                return CommandResult.Ok(info, StoreKey, EnumTypes.Wobject);
             }
             catch (Exception ex)
             {

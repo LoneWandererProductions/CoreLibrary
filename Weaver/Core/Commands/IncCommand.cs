@@ -66,7 +66,7 @@ namespace Weaver.Core.Commands
                 switch (type)
                 {
                     case EnumTypes.Wint:
-                        value = Convert.ToInt32(value) + 1;
+                        value = Convert.ToInt64(value) + 1L;
                         break;
                     case EnumTypes.Wdouble:
                         value = Convert.ToDouble(value) + 1.0;

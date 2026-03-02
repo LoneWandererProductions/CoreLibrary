@@ -128,7 +128,7 @@ namespace Weaver.Registry
         /// <param name="pointer">The pointer.</param>
         /// <returns>Get type and Key to Pointer.</returns>
         public static bool TryGetPointer(
-            this IVariableRegistry registry,
+            this IVariableRegistry? registry,
             string name,
             out EnumTypes type,
             out string pointer)

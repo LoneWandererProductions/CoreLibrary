@@ -8,7 +8,9 @@
 
 // ReSharper disable UnusedType.Global
 
+using CoreBuilder.Helper;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,6 +18,7 @@ using System.Text;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using Weaver.Registry;
 
 namespace CoreBuilder.FileManager
 {
@@ -24,8 +27,36 @@ namespace CoreBuilder.FileManager
     /// Simple command to scan a directory for locked files and list the processes locking them.
     /// </summary>
     /// <seealso cref="ICommand" />
-    public sealed class FileLockScanner : ICommand
+    public sealed class FileLockScanner : ICommand, IRegistryProducer
     {
+        /// <inheritdoc />
+        public string CurrentRegistryKey => StoreKey;
+
+        /// <inheritdoc />
+        public EnumTypes DataType => EnumTypes.Wobject;
+
+        /// <inheritdoc />
+        public IVariableRegistry Variables => _variables;
+
+        /// <summary>
+        /// The variables
+        /// </summary>
+        private readonly IVariableRegistry _variables;
+
+        /// <summary>
+        /// The store key
+        /// </summary>
+        private string StoreKey = "lockedfiles";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileLockScanner"/> class.
+        /// </summary>
+        /// <param name="variables">The variables.</param>
+        public FileLockScanner(IVariableRegistry variables)
+        {
+            _variables = variables;
+        }
+
         /// <inheritdoc />
         public string Name => "FileLockScanner";
 
@@ -55,7 +86,19 @@ namespace CoreBuilder.FileManager
             sb.AppendLine($"Scanning for locked files in: {directoryPath}");
             sb.AppendLine("-----------------------------------");
 
-            var files = Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+            // 1. Prepare the Dictionary for the VM Heap
+            var lockedData = new Dictionary<string, VmValue>();
+
+            // 2. Use SafeEnumerateFiles to prevent UnauthorizedAccessException crashes!
+            IEnumerable<string> files;
+            try
+            {
+                files = CoreHelper.SafeEnumerateFiles(directoryPath, "*.*");
+            }
+            catch (Exception ex)
+            {
+                return CommandResult.Fail($"Failed to enumerate directory safely: {ex.Message}");
+            }
 
             foreach (var file in files)
             {
@@ -70,11 +113,26 @@ namespace CoreBuilder.FileManager
                 {
                     // File is locked; find locking processes
                     var lockingProcs = GetLockingProcesses(file);
-                    sb.AppendLine($"{file} locked by: {string.Join(", ", lockingProcs)}");
+                    var procsString = string.Join(", ", lockingProcs);
+
+                    sb.AppendLine($"{file} locked by: {procsString}");
+
+                    // Add it to our machine-readable payload!
+                    // Key = FilePath, Value = String of processes
+                    lockedData[file] = VmValue.FromString(procsString);
                 }
             }
 
-            return CommandResult.Ok(sb.ToString(), EnumTypes.Wstring);
+            if (lockedData.Count == 0)
+            {
+                sb.AppendLine("No locked files found.");
+            }
+
+            // 3. Store the Object in the Registry
+            _variables.SetObject(StoreKey, lockedData);
+
+            // 4. Dual-Channel Return
+            return CommandResult.Ok(sb.ToString(), StoreKey, EnumTypes.Wobject);
         }
 
         /// <summary>
@@ -96,7 +154,7 @@ namespace CoreBuilder.FileManager
                         }
                         catch
                         {
-                            return false;
+                            return false; // Safely ignores Access Denied on elevated processes
                         }
                     })
                     .Select(p => p.ProcessName)

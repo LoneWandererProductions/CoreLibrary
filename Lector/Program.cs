@@ -58,7 +58,7 @@ namespace Lector
         /// <param name="weave">The weave.</param>
         private static void RegisterApps(Weave weave)
         {
-            foreach (var module in CommandFactory.GetCommands())
+            foreach (var module in CommandFactory.GetCommands(weave))
                 weave.Register(module);
 
             foreach (var ext in CommandFactory.GetExtensions())

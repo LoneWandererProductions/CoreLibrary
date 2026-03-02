@@ -42,15 +42,15 @@ namespace CoreBuilder.Extensions
                     "No parameter specified. Example: whoami().who(ip,hostname) or whoami().who(ip)");
             }
 
-            // 1. Cast to the concrete parent command to access its public/internal fields
-            if (command is not WhoAmI parent)
+            // 1. Logic check: If it doesn't implement IRegistryProducer, we can't save data.
+            if (command is not IRegistryProducer producer)
             {
-                return CommandResult.Fail("Extension 'who' is only compatible with the WhoAmI command.");
+                return CommandResult.Fail($"Extension 'who' requires an IRegistryProducer, but {command.Name} does not implement it.");
             }
 
             // Use the registry and the key defined by the parent command
-            var registry = parent.Variables;
-            string storeKey = parent.LastStoreKey;
+            var registry = producer.Variables;
+            string storeKey = producer.CurrentRegistryKey;
 
             try
             {

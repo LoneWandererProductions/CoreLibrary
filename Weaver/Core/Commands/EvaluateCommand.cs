@@ -123,7 +123,7 @@ namespace Weaver.Core.Commands
             {
                 EnumTypes.Wbool => result?.ToString() ?? "false",
                 EnumTypes.Wdouble => Convert.ToDouble(result).ToString(CultureInfo.InvariantCulture),
-                _ => result?.ToString() ?? "null"
+                _ => result.ToString() ?? "null"
             };
 
             return CommandResult.Ok(message, result.ToString(), type);

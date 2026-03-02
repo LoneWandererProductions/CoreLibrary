@@ -37,6 +37,11 @@ namespace CoreBuilder.FileManager
         /// <inheritdoc />
         public int ParameterCount => 1;
 
+        /// <summary>
+        /// The synchronize root
+        /// </summary>
+        private readonly object _syncRoot = new object();
+
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
@@ -67,6 +72,9 @@ namespace CoreBuilder.FileManager
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
+            if (args == null || args.Length == 0)
+                return CommandResult.Fail("No file path provided.");
+
             var filePath = args[0];
 
             if (!File.Exists(filePath))
@@ -103,7 +111,8 @@ namespace CoreBuilder.FileManager
 
                         return new CommandResult
                         {
-                            Message = $"Unknown input '{input}'. Type 'stop'.", RequiresConfirmation = true
+                            Message = $"Unknown input '{input}'. Type 'stop'.",
+                            RequiresConfirmation = true
                         };
                     })
             };
@@ -115,29 +124,39 @@ namespace CoreBuilder.FileManager
         /// <param name="filePath">The file path.</param>
         private void ReadNewContent(string filePath)
         {
-            try
+            // Lock ensures multiple Rapid FileSystemWatcher events don't step on each other
+            lock (_syncRoot)
             {
-                var fileInfo = new FileInfo(filePath);
-                if (fileInfo.Length < _lastLength)
+                try
                 {
-                    // file rotated or truncated
-                    _lastLength = 0;
+                    var fileInfo = new FileInfo(filePath);
+                    if (fileInfo.Length < _lastLength)
+                    {
+                        // File rotated or truncated
+                        _lastLength = 0;
+                    }
+
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    fs.Seek(_lastLength, SeekOrigin.Begin);
+
+                    using var reader = new StreamReader(fs);
+                    var newText = reader.ReadToEnd();
+
+                    if (!string.IsNullOrEmpty(newText))
+                        _output.Write(newText.TrimEnd());
+
+                    // Accurately capture where we stopped reading
+                    _lastLength = fs.Position;
                 }
-
-                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                fs.Seek(_lastLength, SeekOrigin.Begin);
-
-                using var reader = new StreamReader(fs);
-                var newText = reader.ReadToEnd();
-
-                if (!string.IsNullOrEmpty(newText))
-                    _output.Write(newText.TrimEnd());
-
-                _lastLength = fileInfo.Length;
-            }
-            catch (Exception ex)
-            {
-                _output.Write($"[ERROR] {ex.Message}");
+                catch (IOException)
+                {
+                    // Often happens if another process has an exclusive lock momentarily.
+                    // Safe to ignore; the next Changed event will pick it up.
+                }
+                catch (Exception ex)
+                {
+                    _output.Write($"[ERROR] {ex.Message}");
+                }
             }
         }
 

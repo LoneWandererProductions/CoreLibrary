@@ -61,10 +61,22 @@ namespace CoreBuilder.UI
                 var thread = new System.Threading.Thread(() =>
                 {
                     var w = new LogWindow();
+
+                    // Clean up the thread and the reference when the user closes the window
+                    w.Closed += (s, e) =>
+                    {
+                        lock (_lock)
+                        {
+                            _window = null;
+                        }
+                        // Shut down the dispatcher so the background thread can exit properly
+                        System.Windows.Threading.Dispatcher.ExitAllFrames();
+                    };
+
                     w.Show();
                     _window = w;
                     tcs.SetResult(w);
-                    System.Windows.Threading.Dispatcher.Run(); // Start message loop
+                    System.Windows.Threading.Dispatcher.Run();
                 });
 
                 thread.SetApartmentState(System.Threading.ApartmentState.STA);

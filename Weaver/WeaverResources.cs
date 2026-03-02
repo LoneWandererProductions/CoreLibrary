@@ -28,6 +28,12 @@ namespace Weaver
         /// </summary>
         internal const string GlobalExtensionStore = "store";
 
+
+        /// <summary>
+        /// The global extension store
+        /// </summary>
+        internal const string GlobalExtensionClean = "clean";
+
         /// <summary>
         /// The global extension help
         /// </summary>

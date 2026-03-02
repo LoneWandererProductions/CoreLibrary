@@ -7,21 +7,36 @@
  */
 
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace CoreBuilder.UI
 {
     /// <summary>
-    /// Simple Display window for logging messages
+    /// Log Window - A simple WPF window that displays log messages in a ListBox. It supports auto-scrolling, timestamp display, and clearing the log.
+    /// Designed for use in long-running applications to monitor events and messages.
     /// </summary>
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class LogWindow
     {
+        /// <summary>
+        /// The data source for the ListBox
+        /// </summary>
+        private readonly ObservableCollection<LogEntry> _logEntries = new();
+
+        /// <summary>
+        /// Prevent infinite memory growth for long-running sessions
+        /// The maximum log lines
+        /// </summary>
+        private const int MaxLogLines = 10000;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LogWindow"/> class.
         /// </summary>
         public LogWindow()
         {
             InitializeComponent();
+            LogList.ItemsSource = _logEntries; // Bind the UI to the collection
         }
 
         /// <summary>
@@ -36,7 +51,8 @@ namespace CoreBuilder.UI
             }
             else
             {
-                Dispatcher.Invoke(() => AppendInternal(message));
+                // BeginInvoke is better here so background threads aren't blocked waiting for the UI
+                Dispatcher.BeginInvoke(() => AppendInternal(message));
             }
         }
 
@@ -46,16 +62,29 @@ namespace CoreBuilder.UI
         /// <param name="message">The message.</param>
         private void AppendInternal(string message)
         {
-            if (ShowTimestampCheck.IsChecked == true)
+            // 1. Create the entry
+            var entry = new LogEntry
             {
-                var ts = DateTime.Now.ToString("HH:mm:ss.fff");
-                message = $"[{ts}] {message}";
+                Message = message,
+                Timestamp = ShowTimestampCheck.IsChecked == true
+                    ? DateTime.Now.ToString("HH:mm:ss.fff")
+                    : string.Empty
+            };
+
+            // 2. Add it to the list
+            _logEntries.Add(entry);
+
+            // 3. Keep memory in check (Rolling Log)
+            if (_logEntries.Count > MaxLogLines)
+            {
+                _logEntries.RemoveAt(0); // Drop the oldest entry
             }
 
-            LogText.Text += message + Environment.NewLine;
-
+            // 4. Handle Auto-Scroll
             if (AutoScrollCheck.IsChecked == true)
+            {
                 ScrollToBottom();
+            }
         }
 
         /// <summary>
@@ -63,7 +92,10 @@ namespace CoreBuilder.UI
         /// </summary>
         private void ScrollToBottom()
         {
-            ScrollViewer.ScrollToEnd();
+            if (_logEntries.Count > 0)
+            {
+                LogList.ScrollIntoView(_logEntries[^1]); // Scroll to the last item
+            }
         }
 
         /// <summary>
@@ -71,10 +103,11 @@ namespace CoreBuilder.UI
         /// </summary>
         private void ScrollToTop()
         {
-            ScrollViewer.ScrollToHome();
+            if (_logEntries.Count > 0)
+            {
+                LogList.ScrollIntoView(_logEntries[0]);
+            }
         }
-
-        // Menu Handlers
 
         /// <summary>
         /// Handles the Click event of the ClearLog control.
@@ -82,22 +115,20 @@ namespace CoreBuilder.UI
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ClearLog_Click(object sender, RoutedEventArgs e)
-            => LogText.Text = string.Empty;
+            => _logEntries.Clear(); // Just clear the collection, UI updates automatically
 
         /// <summary>
         /// Handles the Click event of the GoTop control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void GoTop_Click(object sender, RoutedEventArgs e)
-            => ScrollToTop();
+        private void GoTop_Click(object sender, RoutedEventArgs e) => ScrollToTop();
 
         /// <summary>
         /// Handles the Click event of the GoBottom control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void GoBottom_Click(object sender, RoutedEventArgs e)
-            => ScrollToBottom();
+        private void GoBottom_Click(object sender, RoutedEventArgs e) => ScrollToBottom();
     }
 }
