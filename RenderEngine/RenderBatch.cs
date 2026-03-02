@@ -13,8 +13,8 @@ namespace RenderEngine
 {
     public sealed class RenderBatch
     {
-        public readonly List<float> SolidLineVertices = new();
-        public readonly List<float> SolidTriangleVertices = new();
+        public readonly List<float> SolidLineVertices = new(8192);
+        public readonly List<float> SolidTriangleVertices = new(8192);
         public readonly Dictionary<int, List<float>> TexturedBatches = new();
 
         public readonly List<Action> HostActions = new();
@@ -71,7 +71,8 @@ namespace RenderEngine
             // Grab the list for this specific texture, or create it if it doesn't exist
             if (!TexturedBatches.TryGetValue(textureId, out var list))
             {
-                list = new List<float>();
+                // Pre-allocate the new list!
+                list = new List<float>(4096);
                 TexturedBatches[textureId] = list;
             }
 
@@ -104,7 +105,14 @@ namespace RenderEngine
         {
             SolidLineVertices.Clear();
             SolidTriangleVertices.Clear();
-            TexturedBatches.Clear(); // Clear the dictionary here
+
+            // FIX: Clear the inner lists instead of destroying the dictionary items
+            foreach (var list in TexturedBatches.Values)
+            {
+                list.Clear();
+            }
+            // Note: We leave the dictionary keys intact for the next frame!
+
             HostActions.Clear();
         }
 
