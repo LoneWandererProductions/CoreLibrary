@@ -108,6 +108,7 @@ namespace Imaging
 
         /// <summary>
         ///     Updates the image.
+        ///     Do not dispose and do not use: Graphics.FromImage
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="newBitmap">The new bitmap.</param>
@@ -118,12 +119,31 @@ namespace Imaging
                 return;
             }
 
-            if (control._pictureBox.Image is Bitmap oldBitmap)
-            {
-                oldBitmap.Dispose();
-            }
+            // Grab the old image before overwriting it
+            var oldImage = control._pictureBox.Image;
 
-            control._pictureBox.Image = newBitmap.Clone() as Bitmap; // Clone to ensure safe assignment
+            // Instant O(1) assignment. No memory allocation, no cloning overhead.
+            control._pictureBox.Image = newBitmap;
+
+            // Dispose the old image AFTER swapping to prevent UI flickering 
+            // and GDI+ locking issues.
+            oldImage?.Dispose();
+        }
+
+        /// <summary>
+        /// Forces the PictureBox to redraw the current image. 
+        /// Call this after updating the DirectBitmap pixels!
+        /// </summary>
+        public void InvalidateCanvas()
+        {
+            if (_pictureBox.InvokeRequired)
+            {
+                _pictureBox.Invoke(new System.Windows.Forms.MethodInvoker(() => _pictureBox.Invalidate()));
+            }
+            else
+            {
+                _pictureBox.Invalidate();
+            }
         }
 
         /// <inheritdoc />

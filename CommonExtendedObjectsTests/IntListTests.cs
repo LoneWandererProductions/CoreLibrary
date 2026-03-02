@@ -314,8 +314,8 @@ namespace CommonExtendedObjectsTests
 
             swUnmanaged.Stop();
 
-            Console.WriteLine($"List<int>.Add: {swList.ElapsedMilliseconds} ms");
-            Console.WriteLine($"UnmanagedIntList.Add: {swUnmanaged.ElapsedMilliseconds} ms");
+            Trace.WriteLine($"List<int>.Add: {swList.ElapsedMilliseconds} ms");
+            Trace.WriteLine($"UnmanagedIntList.Add: {swUnmanaged.ElapsedMilliseconds} ms");
 
             unmanaged.Dispose();
 
@@ -323,7 +323,6 @@ namespace CommonExtendedObjectsTests
             Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= swList.ElapsedMilliseconds * 5,
                 "UnmanagedIntList.Add is too slow.");
         }
-
 
         /// <summary>
         ///     Benchmarks the remove performance.
@@ -334,6 +333,7 @@ namespace CommonExtendedObjectsTests
             var list = new List<int>();
             var unmanaged = new UnmanagedIntList();
 
+            // Setup Phase
             for (var i = 0; i < ItemCount; i++)
             {
                 list.Add(i);
@@ -343,30 +343,40 @@ namespace CommonExtendedObjectsTests
             const int removeCount = 1000;
             var removeIndex = list.Count / 2; // fixed middle index
 
+            // WARMUP: Force JIT to compile the methods and Stopwatch before measuring
+            list.RemoveAt(list.Count - 1);
+            unmanaged.RemoveAt(unmanaged.Length - 1);
+
+            // CLEAN SLATE: Force GC to clean up the arrays abandoned during the 'Add' phase
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            // 1. Measure List<int>
             var swList = Stopwatch.StartNew();
             for (var i = 0; i < removeCount; i++)
             {
                 list.RemoveAt(removeIndex);
             }
-
             swList.Stop();
 
+            // CLEAN SLATE AGAIN
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            // 2. Measure UnmanagedIntList
             var swUnmanaged = Stopwatch.StartNew();
             for (var i = 0; i < removeCount; i++)
             {
                 unmanaged.RemoveAt(removeIndex);
             }
-
             swUnmanaged.Stop();
 
-            Console.WriteLine($"List<int>.RemoveAt: {swList.ElapsedMilliseconds} ms");
-            Console.WriteLine($"UnmanagedIntList.RemoveAt: {swUnmanaged.ElapsedMilliseconds} ms");
+            // Use TotalMilliseconds for high-precision decimal values!
+            Trace.WriteLine($"List<int>.RemoveAt: {swList.Elapsed.TotalMilliseconds:F4} ms");
+            Trace.WriteLine($"UnmanagedIntList.RemoveAt: {swUnmanaged.Elapsed.TotalMilliseconds:F4} ms");
 
-            unmanaged.Dispose();
-
-            //TODO fix this!
 #if DEBUG
-            //Assert.AreEqual(list.Count, unmanaged.Length);
+            Assert.AreEqual(list.Count, unmanaged.Length, "The lists should have the exact same number of elements.");
 #endif
         }
 
