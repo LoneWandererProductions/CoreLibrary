@@ -15,16 +15,20 @@ namespace RenderEngine
     {
         public readonly List<float> SolidLineVertices = new();
         public readonly List<float> SolidTriangleVertices = new();
-        public readonly List<float> TexVertices = new();
+        public readonly Dictionary<int, List<float>> TexturedBatches = new();
+
         public readonly List<Action> HostActions = new();
 
-        public void AddColoredLine(
-            float x0, float y0,
-            float x1, float y1,
-            int r, int g, int b, int a)
+        public void AddColoredLine(float x, float y, int r, int g, int b, int a)
         {
-            AddColoredVertex(x0, y0, r, g, b, a, SolidLineVertices);
-            AddColoredVertex(x1, y1, r, g, b, a, SolidLineVertices);
+            // Pushes a single vertex into the line batch.
+            // When flushed, OpenGL will connect every 2 consecutive vertices into a line segment.
+            AddColoredVertex(x, y, r, g, b, a, SolidLineVertices);
+        }
+
+        public void AddSolidTriangleVertex(float x, float y, int r, int g, int b, int a)
+        {
+            AddColoredVertex(x, y, r, g, b, a, SolidTriangleVertices);
         }
 
         public void AddColoredTriangle(
@@ -54,25 +58,35 @@ namespace RenderEngine
         public void AddTexturedQuad(
             (int x, int y) p1, (int x, int y) p2,
             (int x, int y) p3, (int x, int y) p4,
-            int textureId) // Note: Batching assumes the same textureId for the whole batch for now
+            int textureId)
         {
-            AddTexturedTriangle(p1, p2, p3);
-            AddTexturedTriangle(p1, p3, p4);
-        }
-        public void AddTexturedTriangle(
-            (int x, int y) p1, (int x, int y) p2, (int x, int y) p3)
-        {
-            AddTexturedVertex(p1.x, p1.y, 0f, 0f);
-            AddTexturedVertex(p2.x, p2.y, 1f, 0f);
-            AddTexturedVertex(p3.x, p3.y, 0f, 1f);
+            AddTexturedTriangle(p1, p2, p3, textureId);
+            AddTexturedTriangle(p1, p3, p4, textureId);
         }
 
-        private void AddTexturedVertex(float x, float y, float u, float v)
+        public void AddTexturedTriangle(
+            (int x, int y) p1, (int x, int y) p2, (int x, int y) p3,
+            int textureId)
         {
-            TexVertices.Add(x);
-            TexVertices.Add(y);
-            TexVertices.Add(u);
-            TexVertices.Add(v);
+            // Grab the list for this specific texture, or create it if it doesn't exist
+            if (!TexturedBatches.TryGetValue(textureId, out var list))
+            {
+                list = new List<float>();
+                TexturedBatches[textureId] = list;
+            }
+
+            // Notice we only push the 4 required floats, but into the correct texture's list
+            AddTexturedVertex(p1.x, p1.y, 0f, 0f, list);
+            AddTexturedVertex(p2.x, p2.y, 1f, 0f, list);
+            AddTexturedVertex(p3.x, p3.y, 0f, 1f, list);
+        }
+
+        private void AddTexturedVertex(float x, float y, float u, float v, List<float> targetList)
+        {
+            targetList.Add(x);
+            targetList.Add(y);
+            targetList.Add(u);
+            targetList.Add(v);
         }
 
         private void AddColoredVertex(
@@ -85,11 +99,12 @@ namespace RenderEngine
             targetList.Add(b / 255f);
             targetList.Add(a / 255f);
         }
+
         public void Clear()
         {
-            TexVertices.Clear();
             SolidLineVertices.Clear();
             SolidTriangleVertices.Clear();
+            TexturedBatches.Clear(); // Clear the dictionary here
             HostActions.Clear();
         }
 

@@ -515,7 +515,6 @@ namespace RenderEngine
                 ((int)w, (int)h),
                 (0, (int)h));
 
-            // FIXED: Using correct texture VBO, capacity, and checking data.Length instead of texture ID
             EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -563,19 +562,34 @@ namespace RenderEngine
             }
 
             // --- Textured Vertices ---
-            if (batch.TexVertices.Count > 0)
+            if (batch.TexturedBatches.Count > 0)
             {
                 GL.UseProgram(_ui2DTextureShader);
                 GL.BindVertexArray(_vaoTex);
 
-                var data = batch.TexVertices.ToArray();
-                EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
+                // Loop through each texture group
+                foreach (var kvp in batch.TexturedBatches)
+                {
+                    int texId = kvp.Key;
+                    var dataList = kvp.Value;
 
-                GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
-                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
+                    if (dataList.Count == 0) continue;
 
-                // Note: For now, this assumes the appropriate texture was bound BEFORE calling FlushBatch.
-                GL.DrawArrays(PrimitiveType.Triangles, 0, data.Length / 4);
+                    var data = dataList.ToArray();
+                    EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
+
+                    // Bind the specific texture for this batch
+                    GL.ActiveTexture(TextureUnit.Texture0);
+
+                    // Use checkerboard if the texture ID is invalid (< 0)
+                    GL.BindTexture(TextureTarget.Texture2D, texId < 0 ? GetOrCreateCheckerboardTexture() : texId);
+                    GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
+
+                    // Upload and draw
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
+                    GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
+                    GL.DrawArrays(PrimitiveType.Triangles, 0, data.Length / 4);
+                }
 
                 GL.BindTexture(TextureTarget.Texture2D, 0);
                 GL.BindVertexArray(0);

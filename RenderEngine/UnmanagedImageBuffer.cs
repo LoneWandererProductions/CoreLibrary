@@ -311,6 +311,8 @@ namespace RenderEngine
         /// </summary>
         public IntPtr Buffer => _buffer;
 
+        public int Id { get; set; }
+
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
