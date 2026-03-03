@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
- * FILE:        IntListUnitTests.cs
+ * FILE:        UnmanagedIntListTests.cs
  * PURPOSE:     Tests for my custom list
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -18,7 +18,7 @@ namespace CommonExtendedObjectsTests
     ///     Some basic sanity tests for my list
     /// </summary>
     [TestClass]
-    public class IntListTests
+    public class UnmanagedIntListTests
     {
         /// <summary>
         ///     The item count

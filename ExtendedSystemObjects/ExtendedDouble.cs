@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/ExtendedDouble.cs
+ * FILE:        ExtendedDouble.cs
  * PURPOSE:     Some Extensions for double
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/TransactionLogs.cs
+ * FILE:         TransactionLogs.cs
  * PURPOSE:      Basic Transaction Log, log Changes
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * DESCRIPTION:

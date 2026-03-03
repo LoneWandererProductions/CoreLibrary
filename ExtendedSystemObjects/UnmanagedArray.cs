@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
+ * FILE:        IUnmanagedArray.cs
  * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similar to IntArray.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

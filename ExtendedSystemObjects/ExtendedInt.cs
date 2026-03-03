@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/ExtendedInt.cs
+ * FILE:        ExtendedInt.cs
  * PURPOSE:     Some Extensions for int
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

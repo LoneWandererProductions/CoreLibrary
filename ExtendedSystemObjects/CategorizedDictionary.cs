@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/CategorizedDictionary.cs
+ * FILE:         CategorizedDictionary.cs
  * PURPOSE:      Extended Dictionary with a Category.
  * PROGRAMER:    Peter Geinitz (Wayfarer)
  */

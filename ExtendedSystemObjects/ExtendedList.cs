@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/ExtendedList.cs
+ * FILE:        ExtendedList.cs
  * PURPOSE:     Generic System Functions for Lists, most operations are not thread safe, so beware.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

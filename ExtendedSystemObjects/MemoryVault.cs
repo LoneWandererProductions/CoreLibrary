@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/MemoryVault.cs
+ * FILE:        MemoryVault.cs
  * PURPOSE:     In Memory Storage
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/VaultMetadata.cs
+ * FILE:        VaultMetadata.cs
  * PURPOSE:     Metadata for all saved Infos about the stored items.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

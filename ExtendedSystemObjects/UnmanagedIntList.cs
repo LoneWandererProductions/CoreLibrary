@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/UnmanagedIntList.cs
+ * FILE:        UnmanagedIntList.cs
  * PURPOSE:     Provides a high-performance list implementation for integer values using unmanaged memory.
  *              Designed for scenarios requiring manual memory control.
  *              Not inherently thread-safe.

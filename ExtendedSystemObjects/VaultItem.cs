@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/VaultItem.cs
+ * FILE:         VaultItem.cs
  * PURPOSE:      Holds an Item that can expire
  * PROGRAMER:    Peter Geinitz (Wayfarer)
  */

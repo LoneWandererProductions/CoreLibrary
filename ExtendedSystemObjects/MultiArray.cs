@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/MultiArray.cs
+ * FILE:        MultiArray.cs
  * PURPOSE:     Utility extensions for 2D and jagged arrays, with focus on performance and unsafe access.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  *

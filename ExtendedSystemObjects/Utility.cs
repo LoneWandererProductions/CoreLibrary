@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/Utility.cs
+ * FILE:        Utility.cs
  * PURPOSE:     Some Methods I seem to use very often. Might add a better way to search the keys!
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

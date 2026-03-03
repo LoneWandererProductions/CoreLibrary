@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/LogEntry.cs
+ * FILE:        LogEntry.cs
  * PURPOSE:     Basic Transaction Log Object that holds all Infos
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

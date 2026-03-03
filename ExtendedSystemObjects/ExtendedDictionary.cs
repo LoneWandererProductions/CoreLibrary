@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/DictionaryExtensions.cs
+ * FILE:        DictionaryExtensions.cs
  * PURPOSE:     Helper class that extends the already versatile Dictionary, most operations are not thread safe, so beware.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

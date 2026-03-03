@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/ImmutableLookupMap.cs
+ * FILE:         ImmutableLookupMap.cs
  * PURPOSE:      A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
  * This version is limited to unmanaged types and uses UnmanagedArray<T>.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
