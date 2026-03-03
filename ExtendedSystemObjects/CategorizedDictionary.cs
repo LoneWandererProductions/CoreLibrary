@@ -85,7 +85,7 @@ namespace ExtendedSystemObjects
         /// </value>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key '{key}' not found.</exception>
+        /// <exception cref="KeyNotFoundException">Key '{key}' not found.</exception>
         public TV this[TK key]
         {
             get
@@ -253,7 +253,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>Categroy of the value</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
+        /// <exception cref="KeyNotFoundException"></exception>
         public string GetCategory(TK key)
         {
             _lock.EnterReadLock();

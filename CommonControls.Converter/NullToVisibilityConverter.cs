@@ -16,7 +16,7 @@ namespace CommonControls.Converter
     /// <summary>
     /// Convert null to Visibility converter.
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
+    /// <seealso cref="IValueConverter" />
     public class NullToVisibilityConverter : IValueConverter
     {
         /// <summary>

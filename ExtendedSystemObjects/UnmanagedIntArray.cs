@@ -405,7 +405,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the not disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">T</exception>
+        /// <exception cref="ObjectDisposedException">T</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {

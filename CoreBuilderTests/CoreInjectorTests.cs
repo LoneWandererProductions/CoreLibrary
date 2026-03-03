@@ -195,8 +195,8 @@ namespace CoreBuilderTests
     /// <summary>
     /// Test Service that implements IDisposable.
     /// </summary>
-    /// <seealso cref="CoreBuilderTests.IService" />
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="IService" />
+    /// <seealso cref="IDisposable" />
     public class DisposableService : IService, IDisposable
     {
         public bool WasDisposed { get; private set; }

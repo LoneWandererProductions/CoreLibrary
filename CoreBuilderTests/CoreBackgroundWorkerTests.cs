@@ -139,7 +139,7 @@ namespace CoreBuilderTests
             ///     Initializes a new instance of the <see cref="TestBackgroundWorker" /> class.
             /// </summary>
             /// <param name="logger">The logger.</param>
-            /// <exception cref="System.ArgumentNullException">logger</exception>
+            /// <exception cref="ArgumentNullException">logger</exception>
             public TestBackgroundWorker(ILogger logger)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));

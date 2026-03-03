@@ -71,12 +71,12 @@ namespace Communication
         /// <param name="body">The body.</param>
         /// <param name="contentType">Type of the content.</param>
         /// <returns>Soap Message</returns>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// url
         /// or
         /// method
         /// </exception>
-        /// <exception cref="System.Net.Http.HttpRequestException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         internal static async Task<string> SendMessageAsync(string url, string method, string? body = null,
             string contentType = ComResource.JsonHeader)
         {

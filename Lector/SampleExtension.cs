@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Lector
  * FILE:        SampleExtension.cs
@@ -18,7 +18,7 @@ namespace Lector
     /// <summary>
     /// Sample Extension.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommandExtension" />
+    /// <seealso cref="ICommandExtension" />
     public sealed class SampleExtension : ICommandExtension
     {
         /// <inheritdoc />

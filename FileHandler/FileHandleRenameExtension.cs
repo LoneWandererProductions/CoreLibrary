@@ -107,7 +107,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="str">The string.</param>
         /// <returns>Normalized File name.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         private static string NormalizeInput(string str)
         {
             // preserve original NullException behavior for compatibility
@@ -120,7 +120,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="str">The string.</param>
         /// <returns>Normalized File name.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         private static string NormalizeSubInput(string str)
         {
             ArgumentNullException.ThrowIfNull(str);

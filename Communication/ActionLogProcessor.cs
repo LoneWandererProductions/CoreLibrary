@@ -17,7 +17,7 @@ namespace Communication
     /// <summary>
     /// Internal Helper Class to adapt the Action to the Interface
     /// </summary>
-    /// <seealso cref="Interfaces.ILogProcessor" />
+    /// <seealso cref="ILogProcessor" />
     internal class ActionLogProcessor : ILogProcessor
     {
         /// <summary>

@@ -18,7 +18,7 @@ namespace Communication
     /// <summary>
     /// Wrapper around a serial port implementing IComTransport
     /// </summary>
-    /// <seealso cref="Communication.Interfaces.IComTransport" />
+    /// <seealso cref="IComTransport" />
     public sealed class ComTransport : IComTransport
     {
         /// <summary>

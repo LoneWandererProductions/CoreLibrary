@@ -176,7 +176,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
+        /// <exception cref="KeyNotFoundException">Key {key} not found.</exception>
         public TValue Get(int key)
         {
             var idx = FindIndex(key);

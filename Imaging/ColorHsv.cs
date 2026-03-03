@@ -174,7 +174,7 @@ namespace Imaging
         /// <param name="hex">The hexadecimal.</param>
         /// <param name="a">a.</param>
         /// <returns>Color HSV object.</returns>
-        /// <exception cref="System.ArgumentException">Hex string cannot be null or empty.</exception>
+        /// <exception cref="ArgumentException">Hex string cannot be null or empty.</exception>
         public static ColorHsv FromHex(string hex, int a = 255)
         {
             if (string.IsNullOrWhiteSpace(hex))
@@ -401,7 +401,7 @@ namespace Imaging
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
         /// <param name="a">a.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">RGB values must be 0–255</exception>
+        /// <exception cref="ArgumentOutOfRangeException">RGB values must be 0–255</exception>
         private static void ValidateRgb(int r, int g, int b, int a)
         {
             if (r is < 0 or > 255 || g is < 0 or > 255 || b is < 0 or > 255 || a is < 0 or > 255)

@@ -70,7 +70,7 @@ namespace FileHandler
         /// Initializes a new instance of the <see cref="FileObserver"/> class.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
         public FileObserver(string path)
         {
             if (!Directory.Exists(path))

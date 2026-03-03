@@ -16,7 +16,7 @@ namespace CommonControls.Converter
     /// <summary>
     /// Boolean to Visibility converter.
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
+    /// <seealso cref="IValueConverter" />
     public class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>

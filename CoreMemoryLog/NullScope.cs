@@ -13,7 +13,7 @@ namespace CoreMemoryLog
     /// <summary>
     /// Null scope for IDisposable pattern.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="IDisposable" />
     public sealed class NullScope : IDisposable
     {
         /// <summary>

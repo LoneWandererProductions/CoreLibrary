@@ -56,7 +56,7 @@ namespace Imaging.Helpers
         /// <param name="path">The path.</param>
         /// <param name="extension">The extension.</param>
         /// <returns>List of files with certain extensions.</returns>
-        /// <exception cref="System.ArgumentException">Path must not be empty. - path</exception>
+        /// <exception cref="ArgumentException">Path must not be empty. - path</exception>
         internal static List<string>? GetFilesByExtension(
             string path,
             string? extension)

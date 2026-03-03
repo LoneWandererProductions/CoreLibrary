@@ -33,7 +33,7 @@ namespace Debugger
         /// Initializes a new instance of the <see cref="InMemoryLogSource"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <exception cref="System.ArgumentNullException">logger</exception>
+        /// <exception cref="ArgumentNullException">logger</exception>
         public InMemoryLogSource(InMemoryLogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

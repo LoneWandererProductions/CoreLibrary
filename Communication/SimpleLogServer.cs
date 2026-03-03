@@ -57,7 +57,7 @@ namespace Communication
         /// </summary>
         /// <param name="port">The port.</param>
         /// <param name="processor">The processor.</param>
-        /// <exception cref="System.ArgumentNullException">processor</exception>
+        /// <exception cref="ArgumentNullException">processor</exception>
         public SimpleLogServer(int port, ILogProcessor processor)
         {
             if (processor == null) throw new ArgumentNullException(nameof(processor));

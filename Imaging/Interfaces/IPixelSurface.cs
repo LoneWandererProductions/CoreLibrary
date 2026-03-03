@@ -14,7 +14,7 @@ namespace Imaging.Interfaces
     /// <summary>
     /// Pixel manipulation surface interface, which can be used for rendering and manipulation of pixel data.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="IDisposable" />
     public interface IPixelSurface : IDisposable
     {
         /// <summary>

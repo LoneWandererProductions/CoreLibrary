@@ -290,7 +290,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="identifier">The identifier.</param>
         /// <param name="metaData">The meta data.</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddMetadata(long identifier, VaultMetadata metaData)
         {
             EnsureNotDisposed();
@@ -387,7 +387,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the vault has not been disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">TU</exception>
+        /// <exception cref="ObjectDisposedException">TU</exception>
         private void EnsureNotDisposed()
         {
             if (!_disposed)

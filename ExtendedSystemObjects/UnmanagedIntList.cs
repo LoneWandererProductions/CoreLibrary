@@ -187,7 +187,7 @@ namespace ExtendedSystemObjects
         ///     Resizes the specified new size.
         /// </summary>
         /// <param name="newSize">The new size.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
+        /// <exception cref="ArgumentOutOfRangeException">newSize</exception>
         public void Resize(int newSize)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(newSize);
@@ -355,7 +355,7 @@ namespace ExtendedSystemObjects
         /// <param name="index">The index.</param>
         /// <param name="value">The value.</param>
         /// <param name="count">The count.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <exception cref="ArgumentOutOfRangeException">index</exception>
         public void InsertAt(int index, int value, int count = 1)
         {
             EnsureNotDisposed();
@@ -451,8 +451,8 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="arrayIndex">Index of the array.</param>
-        /// <exception cref="System.ArgumentNullException">array</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">arrayIndex</exception>
+        /// <exception cref="ArgumentNullException">array</exception>
+        /// <exception cref="ArgumentOutOfRangeException">arrayIndex</exception>
         public void CopyTo(int[] array, int arrayIndex = 0)
         {
             EnsureNotDisposed();
@@ -495,7 +495,7 @@ namespace ExtendedSystemObjects
         ///     Copies to.
         /// </summary>
         /// <param name="target">The target.</param>
-        /// <exception cref="System.ArgumentException">Target span too small</exception>
+        /// <exception cref="ArgumentException">Target span too small</exception>
         public void CopyTo(Span<int> target)
         {
 #if DEBUG
@@ -519,7 +519,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the not disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">UnmanagedIntList</exception>
+        /// <exception cref="ObjectDisposedException">UnmanagedIntList</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {

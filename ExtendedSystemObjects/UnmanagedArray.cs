@@ -244,7 +244,7 @@ namespace ExtendedSystemObjects
         /// <param name="index">The index.</param>
         /// <param name="value">The value.</param>
         /// <param name="count">The count.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">
         ///     index
         ///     or
         ///     count
@@ -304,7 +304,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the not disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">T</exception>
+        /// <exception cref="ObjectDisposedException">T</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {

@@ -57,7 +57,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="numerator">The numerator.</param>
         /// <param name="denominator">The denominator.</param>
-        /// <exception cref="System.DivideByZeroException">Denominator cannot be zero.</exception>
+        /// <exception cref="DivideByZeroException">Denominator cannot be zero.</exception>
         public Fraction(int numerator, int denominator)
         {
             if (denominator == 0)

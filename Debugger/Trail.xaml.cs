@@ -201,7 +201,7 @@ namespace Debugger
         /// Menu handler: Stops the log source and attempts to delete its backing file (if file-based).
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenDel_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
@@ -225,7 +225,7 @@ namespace Debugger
         /// Menu handler: Stops log updates.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenStop_Click(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer?.Stop();
@@ -236,7 +236,7 @@ namespace Debugger
         /// Menu handler: Starts or resumes log updates.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenStart_Click(object sender, RoutedEventArgs e)
         {
             _lastLineCount = _logSource.ReadAll().Count();
@@ -248,7 +248,7 @@ namespace Debugger
         /// Menu handler: Loads all lines asynchronously into the UI.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void MenLoadA_Click(object sender, RoutedEventArgs e)
         {
             await LoadFileAsync();
@@ -258,7 +258,7 @@ namespace Debugger
         /// Menu handler: Opens a log file chosen by the user and replaces the current source.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenLog_Click(object sender, RoutedEventArgs e)
         {
             var file = DialogHandler.HandleFileOpen("*.log");
@@ -276,7 +276,7 @@ namespace Debugger
         /// Menu handler: Clears the UI log display.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenClear_Click(object sender, RoutedEventArgs e)
         {
             Log.Document.Blocks.Clear();
@@ -286,7 +286,7 @@ namespace Debugger
         /// Menu handler: Opens the configuration window.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenConfig_Click(object sender, RoutedEventArgs e)
         {
             var conf = new ConfigWindow();
@@ -323,7 +323,7 @@ namespace Debugger
         /// Menu handler: Starts the filter dialog and listens for filter changes.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void MenFilter_Click(object sender, RoutedEventArgs e)
         {
             _filter.FilterChanged += FilterChanged;
@@ -335,7 +335,7 @@ namespace Debugger
         /// Re-applies the filter to all lines and highlights matches.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void FilterChanged(object sender, EventArgs e)
         {
             Log.Document.Blocks.Clear();

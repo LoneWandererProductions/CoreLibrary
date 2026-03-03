@@ -14,7 +14,7 @@ namespace CoreBuilder.UI
     /// <summary>
     /// Logging output that displays messages in a WPF window.
     /// </summary>
-    /// <seealso cref="CoreBuilder.Interface.IEventOutput" />
+    /// <seealso cref="IEventOutput" />
     public sealed class WpfEventOutput : IEventOutput
     {
         /// <summary>

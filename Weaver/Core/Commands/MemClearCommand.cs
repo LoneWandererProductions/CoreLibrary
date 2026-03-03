@@ -14,7 +14,7 @@ namespace Weaver.Core.Commands
     /// <summary>
     /// Memory management command, clears all stored variables or a specific variable.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="ICommand" />
     public sealed class MemClearCommand : ICommand
     {
         /// <summary>

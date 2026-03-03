@@ -16,7 +16,7 @@ namespace Weaver.Core.Extensions
     /// This is a global extension that can be used with any command that implements IRegistryProducer. It wipes the registry entry associated with the command, effectively clearing any stored data or state.
     /// This can be useful for resetting a command's state or ensuring that sensitive information is removed from memory after use.
     /// </summary>
-    /// <seealso cref="Weaver.Interfaces.ICommandExtension" />
+    /// <seealso cref="ICommandExtension" />
     public sealed class CleanExtension : ICommandExtension
     {
         /// <inheritdoc />

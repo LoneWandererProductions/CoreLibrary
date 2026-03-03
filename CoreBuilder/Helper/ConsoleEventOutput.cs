@@ -15,7 +15,7 @@ namespace CoreBuilder.Helper
     /// <summary>
     /// Console side channel for event output.
     /// </summary>
-    /// <seealso cref="CoreBuilder.Interface.IEventOutput" />
+    /// <seealso cref="IEventOutput" />
     public sealed class ConsoleEventOutput : IEventOutput
     {
         /// <inheritdoc />

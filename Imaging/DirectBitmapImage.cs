@@ -253,7 +253,7 @@ namespace Imaging
         /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
         /// </summary>
         /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
-        /// <exception cref="System.ArgumentException">Source must match image size</exception>
+        /// <exception cref="ArgumentException">Source must match image size</exception>
         public void BlendInt(uint[] src)
         {
             DirectBitmapCore.BlendInt(Bits, src);

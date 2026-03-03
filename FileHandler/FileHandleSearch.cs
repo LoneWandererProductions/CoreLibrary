@@ -137,7 +137,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Subfolders</returns>
-        /// <exception cref="FileHandler.FileHandlerException"></exception>
+        /// <exception cref="FileHandlerException"></exception>
         public static List<string> GetAllSubfolders(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -154,7 +154,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Check if folder is empty.</returns>
-        /// <exception cref="FileHandler.FileHandlerException"></exception>
+        /// <exception cref="FileHandlerException"></exception>
         public static bool CheckIfFolderContainsElement(string path)
         {
             if (string.IsNullOrEmpty(path))

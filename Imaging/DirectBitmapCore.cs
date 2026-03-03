@@ -206,7 +206,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="pixels">The pixels.</param>
-        /// <exception cref="System.ArgumentException">Stride must be positive when backBuffer is provided.</exception>
+        /// <exception cref="ArgumentException">Stride must be positive when backBuffer is provided.</exception>
         internal static unsafe void SetPixelsUnsafeSpan(
             Pixel32[] bits,
             int width,
@@ -234,12 +234,12 @@ namespace Imaging
         /// </summary>
         /// <param name="dstBits">The DST bits.</param>
         /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// dstBits
         /// or
         /// src
         /// </exception>
-        /// <exception cref="System.ArgumentException">Source must match image size</exception>
+        /// <exception cref="ArgumentException">Source must match image size</exception>
         internal static unsafe void BlendInt(Pixel32[] dstBits, uint[] src)
         {
             if (dstBits == null) throw new ArgumentNullException(nameof(dstBits));

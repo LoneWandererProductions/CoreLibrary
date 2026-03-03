@@ -17,7 +17,7 @@ namespace Imaging
     /// <summary>
     /// The Filter Generator
     /// </summary>
-    /// <seealso cref="Imaging.Interfaces.IFilterGenerator" />
+    /// <seealso cref="IFilterGenerator" />
     public class FilterGenerator : IFilterGenerator
     {
         /// <summary>
