@@ -88,7 +88,8 @@ namespace RenderEngine
 
             //Buffer 
             // For Solid VBO
-            GL.BufferData(BufferTarget.ArrayBuffer, _vboSolidCapacity * sizeof(float), IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vboSolidCapacity * sizeof(float), IntPtr.Zero,
+                BufferUsageHint.DynamicDraw);
 
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0); // Position
             GL.EnableVertexAttribArray(0);
@@ -104,7 +105,8 @@ namespace RenderEngine
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
 
             // for Textured VBO ...
-            GL.BufferData(BufferTarget.ArrayBuffer, _vboTexCapacity * sizeof(float), IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vboTexCapacity * sizeof(float), IntPtr.Zero,
+                BufferUsageHint.DynamicDraw);
 
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0); // Position
             GL.EnableVertexAttribArray(0);
@@ -114,44 +116,10 @@ namespace RenderEngine
             GL.BindVertexArray(0);
 
             // --- Shaders ---
-            _ui2DColorShader = CompileShader(
-                Ui2DShaders.ColorVertex(Width, Height, true),
-                Ui2DShaders.ColorFragment());
-
-            _ui2DTextureShader = CompileShader(
-                Ui2DShaders.TextureVertex(Width, Height, true),
-                Ui2DShaders.TextureFragment());
+            _ui2DColorShader = _resources.GetShaderProgram(ShaderTypeApp.VertexColor2D);
+            _ui2DTextureShader = _resources.GetShaderProgram(ShaderTypeApp.TexturedQuad2D);
 
             _initialized = true;
-        }
-
-        /// <summary>
-        /// Compiles vertex and fragment shader sources into a GL program.
-        /// </summary>
-        private int CompileShader(string vertexSrc, string fragmentSrc)
-        {
-            var v = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(v, vertexSrc);
-            GL.CompileShader(v);
-            GL.GetShader(v, ShaderParameter.CompileStatus, out var success);
-            if (success == 0) throw new Exception(GL.GetShaderInfoLog(v));
-
-            var f = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(f, fragmentSrc);
-            GL.CompileShader(f);
-            GL.GetShader(f, ShaderParameter.CompileStatus, out success);
-            if (success == 0) throw new Exception(GL.GetShaderInfoLog(f));
-
-            var program = GL.CreateProgram();
-            GL.AttachShader(program, v);
-            GL.AttachShader(program, f);
-            GL.LinkProgram(program);
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out success);
-            if (success == 0) throw new Exception(GL.GetProgramInfoLog(program));
-
-            GL.DeleteShader(v);
-            GL.DeleteShader(f);
-            return program;
         }
 
         public void Flush(RenderBatch batch)
@@ -167,8 +135,7 @@ namespace RenderEngine
         {
             DrawColoredLines(new[]
             {
-                (x0, y0, color.r, color.g, color.b, color.a),
-                (x1, y1, color.r, color.g, color.b, color.a),
+                (x0, y0, color.r, color.g, color.b, color.a), (x1, y1, color.r, color.g, color.b, color.a),
             });
         }
 
@@ -201,7 +168,7 @@ namespace RenderEngine
         public void DrawColoredLines((float x, float y, int r, int g, int b, int a)[] points)
         {
             EnsureInitialized();
-            GL.UseProgram(_ui2DColorShader);
+            BindShaderAndViewport(_ui2DColorShader);
             GL.BindVertexArray(_vaoSolid);
 
             var data = Geometry2DBuilder.BuildColoredLines(points);
@@ -226,7 +193,7 @@ namespace RenderEngine
             (int r, int g, int b, int a) fill)
         {
             EnsureInitialized();
-            GL.UseProgram(_ui2DColorShader);
+            BindShaderAndViewport(_ui2DColorShader);
             GL.BindVertexArray(_vaoSolid);
 
             var data = Geometry2DBuilder.BuildSolidQuad(p0, p1, p2, p3, fill);
@@ -251,7 +218,7 @@ namespace RenderEngine
             (float x, float y, int r, int g, int b, int a) p2)
         {
             EnsureInitialized();
-            GL.UseProgram(_ui2DColorShader);
+            BindShaderAndViewport(_ui2DColorShader);
             GL.BindVertexArray(_vaoSolid);
 
             var data = Geometry2DBuilder.BuildColoredTriangle(p0, p1, p2);
@@ -281,19 +248,14 @@ namespace RenderEngine
                 textureId = GetOrCreateCheckerboardTexture();
 
             EnsureInitialized();
-            GL.UseProgram(_ui2DTextureShader);
+            BindShaderAndViewport(_ui2DTextureShader);
             GL.BindVertexArray(_vaoTex);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureId);
             GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
 
-            var data = new[]
-            {
-                p0.x, p0.y, 0f, 0f,
-                p1.x, p1.y, 1f, 0f,
-                p2.x, p2.y, 0.5f, 1f
-            };
+            var data = new[] { p0.x, p0.y, 0f, 0f, p1.x, p1.y, 1f, 0f, p2.x, p2.y, 0.5f, 1f };
 
             EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
 
@@ -322,7 +284,7 @@ namespace RenderEngine
                 textureId = GetOrCreateCheckerboardTexture();
 
             EnsureInitialized();
-            GL.UseProgram(_ui2DTextureShader);
+            BindShaderAndViewport(_ui2DTextureShader);
             GL.BindVertexArray(_vaoTex);
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -378,28 +340,28 @@ namespace RenderEngine
             (int r, int g, int b, int a) fill)
         {
             EnsureInitialized();
-            GL.UseProgram(_ui2DColorShader);
+            BindShaderAndViewport(_ui2DColorShader);
             GL.BindVertexArray(_vaoSolid);
 
-            float r = fill.r / 255f;
-            float g = fill.g / 255f;
-            float b = fill.b / 255f;
-            float a = fill.a / 255f;
+            var r = fill.r / 255f;
+            var g = fill.g / 255f;
+            var b = fill.b / 255f;
+            var a = fill.a / 255f;
 
             var data = new float[segments * 3 * 6];
-            int idx = 0;
+            var idx = 0;
 
-            float step = MathF.PI * 2f / segments;
+            var step = MathF.PI * 2f / segments;
 
-            for (int i = 0; i < segments; i++)
+            for (var i = 0; i < segments; i++)
             {
-                float a0 = i * step;
-                float a1 = (i + 1) * step;
+                var a0 = i * step;
+                var a1 = (i + 1) * step;
 
-                float x0 = cx + MathF.Cos(a0) * radiusX;
-                float y0 = cy + MathF.Sin(a0) * radiusY;
-                float x1 = cx + MathF.Cos(a1) * radiusX;
-                float y1 = cy + MathF.Sin(a1) * radiusY;
+                var x0 = cx + MathF.Cos(a0) * radiusX;
+                var y0 = cy + MathF.Sin(a0) * radiusY;
+                var x1 = cx + MathF.Cos(a1) * radiusX;
+                var y1 = cy + MathF.Sin(a1) * radiusY;
 
                 // center
                 data[idx++] = cx;
@@ -446,7 +408,7 @@ namespace RenderEngine
                 textureId = GetOrCreateCheckerboardTexture();
 
             EnsureInitialized();
-            GL.UseProgram(_ui2DTextureShader);
+            BindShaderAndViewport(_ui2DTextureShader);
             GL.BindVertexArray(_vaoTex);
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -454,29 +416,38 @@ namespace RenderEngine
             GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
 
             var data = new float[segments * 3 * 4];
-            int idx = 0;
+            var idx = 0;
 
-            float step = MathF.PI * 2f / segments;
+            var step = MathF.PI * 2f / segments;
 
-            for (int i = 0; i < segments; i++)
+            for (var i = 0; i < segments; i++)
             {
                 // (Vertex calculation logic stays exactly the same)
-                float a0 = i * step;
-                float a1 = (i + 1) * step;
+                var a0 = i * step;
+                var a1 = (i + 1) * step;
 
-                float x0 = cx + MathF.Cos(a0) * radiusX;
-                float y0 = cy + MathF.Sin(a0) * radiusY;
-                float x1 = cx + MathF.Cos(a1) * radiusX;
-                float y1 = cy + MathF.Sin(a1) * radiusY;
+                var x0 = cx + MathF.Cos(a0) * radiusX;
+                var y0 = cy + MathF.Sin(a0) * radiusY;
+                var x1 = cx + MathF.Cos(a1) * radiusX;
+                var y1 = cy + MathF.Sin(a1) * radiusY;
 
-                float u0 = MathF.Cos(a0) * 0.5f + 0.5f;
-                float v0 = MathF.Sin(a0) * 0.5f + 0.5f;
-                float u1 = MathF.Cos(a1) * 0.5f + 0.5f;
-                float v1 = MathF.Sin(a1) * 0.5f + 0.5f;
+                var u0 = MathF.Cos(a0) * 0.5f + 0.5f;
+                var v0 = MathF.Sin(a0) * 0.5f + 0.5f;
+                var u1 = MathF.Cos(a1) * 0.5f + 0.5f;
+                var v1 = MathF.Sin(a1) * 0.5f + 0.5f;
 
-                data[idx++] = cx; data[idx++] = cy; data[idx++] = 0.5f; data[idx++] = 0.5f;
-                data[idx++] = x0; data[idx++] = y0; data[idx++] = u0; data[idx++] = v0;
-                data[idx++] = x1; data[idx++] = y1; data[idx++] = u1; data[idx++] = v1;
+                data[idx++] = cx;
+                data[idx++] = cy;
+                data[idx++] = 0.5f;
+                data[idx++] = 0.5f;
+                data[idx++] = x0;
+                data[idx++] = y0;
+                data[idx++] = u0;
+                data[idx++] = v0;
+                data[idx++] = x1;
+                data[idx++] = y1;
+                data[idx++] = u1;
+                data[idx++] = v1;
             }
 
             // FIXED: Using correct texture VBO and capacity
@@ -499,7 +470,7 @@ namespace RenderEngine
         {
             EnsureInitialized();
 
-            GL.UseProgram(_ui2DTextureShader);
+            BindShaderAndViewport(_ui2DTextureShader);
             GL.BindVertexArray(_vaoTex);
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -525,38 +496,52 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
-        private void FlushBatch(RenderBatch batch)
+        private unsafe void FlushBatch(RenderBatch batch)
         {
             EnsureInitialized();
 
             // --- Solid Lines ---
-            if (batch.SolidLineVertices.Count > 0)
+            if (batch.SolidLineVertices.Length > 0) // Use .Length instead of .Count
             {
-                GL.UseProgram(_ui2DColorShader);
+                BindShaderAndViewport(_ui2DColorShader);
                 GL.BindVertexArray(_vaoSolid);
 
-                var data = batch.SolidLineVertices.ToArray();
-                EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, data.Length);
+                EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, batch.SolidLineVertices.Length);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
-                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
-                GL.DrawArrays(PrimitiveType.Lines, 0, data.Length / 6);
+
+                // ✨ THE MAGIC HAPPENS HERE ✨
+                // We pass the raw pointer directly to OpenGL. Zero C# array allocations!
+                GL.BufferSubData(
+                    BufferTarget.ArrayBuffer,
+                    IntPtr.Zero,
+                    batch.SolidLineVertices.Length * sizeof(float),
+                    (IntPtr)batch.SolidLineVertices.Pointer);
+
+                GL.DrawArrays(PrimitiveType.Lines, 0, batch.SolidLineVertices.Length / 6);
 
                 GL.BindVertexArray(0);
             }
 
             // --- Solid Triangles/Quads ---
-            if (batch.SolidTriangleVertices.Count > 0)
+            if (batch.SolidTriangleVertices.Length > 0)
             {
-                GL.UseProgram(_ui2DColorShader);
+                BindShaderAndViewport(_ui2DColorShader);
+
                 GL.BindVertexArray(_vaoSolid);
 
-                var data = batch.SolidTriangleVertices.ToArray();
-                EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, data.Length);
+                EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, batch.SolidTriangleVertices.Length);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
-                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, data.Length / 6);
+
+                // Pass the raw pointer directly!
+                GL.BufferSubData(
+                    BufferTarget.ArrayBuffer,
+                    IntPtr.Zero,
+                    batch.SolidTriangleVertices.Length * sizeof(float),
+                    (IntPtr)batch.SolidTriangleVertices.Pointer);
+
+                GL.DrawArrays(PrimitiveType.Triangles, 0, batch.SolidTriangleVertices.Length / 6);
 
                 GL.BindVertexArray(0);
             }
@@ -564,13 +549,13 @@ namespace RenderEngine
             // --- Textured Vertices ---
             if (batch.TexturedBatches.Count > 0)
             {
-                GL.UseProgram(_ui2DTextureShader);
+                BindShaderAndViewport(_ui2DTextureShader);
                 GL.BindVertexArray(_vaoTex);
 
                 // Loop through each texture group
                 foreach (var kvp in batch.TexturedBatches)
                 {
-                    int texId = kvp.Key;
+                    var texId = kvp.Key;
                     var dataList = kvp.Value;
 
                     if (dataList.Count == 0) continue;
@@ -606,14 +591,14 @@ namespace RenderEngine
         {
             EnsureInitialized();
 
-            int w = Width;
-            int h = Height;
+            var w = Width;
+            var h = Height;
 
             var buffer = new UnmanagedImageBuffer(w, h);
 
             // OpenGL gives bottom-left origin, so we read and flip.
-            int byteCount = w * h * UnmanagedImageBuffer.BytesPerPixel;
-            byte[] temp = new byte[byteCount];
+            var byteCount = w * h * UnmanagedImageBuffer.BytesPerPixel;
+            var temp = new byte[byteCount];
 
             GL.ReadPixels(
                 0,
@@ -626,13 +611,13 @@ namespace RenderEngine
 
             var dst = buffer.BufferSpan;
 
-            int rowSize = w * UnmanagedImageBuffer.BytesPerPixel;
+            var rowSize = w * UnmanagedImageBuffer.BytesPerPixel;
 
             // Flip Y while copying
-            for (int y = 0; y < h; y++)
+            for (var y = 0; y < h; y++)
             {
-                int srcRow = (h - 1 - y) * rowSize;
-                int dstRow = y * rowSize;
+                var srcRow = (h - 1 - y) * rowSize;
+                var dstRow = y * rowSize;
 
                 temp.AsSpan(srcRow, rowSize).CopyTo(dst.Slice(dstRow, rowSize));
             }
@@ -652,7 +637,7 @@ namespace RenderEngine
         {
             EnsureInitialized();
 
-            int texId = GL.GenTexture();
+            var texId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texId);
 
             GL.TexImage2D(
@@ -676,8 +661,10 @@ namespace RenderEngine
                 TextureParameterName.TextureMagFilter,
                 (int)(linearFilter ? TextureMagFilter.Linear : TextureMagFilter.Nearest));
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+                (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+                (int)TextureWrapMode.ClampToEdge);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
@@ -695,7 +682,8 @@ namespace RenderEngine
             }
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, currentCapacity * sizeof(float), IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, currentCapacity * sizeof(float), IntPtr.Zero,
+                BufferUsageHint.DynamicDraw);
         }
 
         // FIX 5: Create once and cache
@@ -704,21 +692,29 @@ namespace RenderEngine
             EnsureInitialized();
             if (_fallbackTextureId >= 0) return _fallbackTextureId;
 
-            byte[] pixels = new byte[]
-            {
-        0, 0, 0, 255, 255, 255, 255, 255,
-        255, 255, 255, 255, 0, 0, 0, 255
-            };
+            var pixels = new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255 };
 
             _fallbackTextureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, _fallbackTextureId);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 2, 2, 0,
                 PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Nearest);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
             return _fallbackTextureId;
+        }
+
+        /// <summary>
+        /// Binds the shader and viewport.
+        /// </summary>
+        /// <param name="shaderId">The shader identifier.</param>
+        private void BindShaderAndViewport(int shaderId)
+        {
+            GL.UseProgram(shaderId);
+            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), (float)Width, (float)Height);
         }
 
         /// <summary>
@@ -732,9 +728,6 @@ namespace RenderEngine
             GL.DeleteVertexArray(_vaoSolid);
             GL.DeleteBuffer(_vboTex);
             GL.DeleteVertexArray(_vaoTex);
-
-            GL.DeleteProgram(_ui2DColorShader);
-            GL.DeleteProgram(_ui2DTextureShader);
 
             if (_fallbackTextureId >= 0)
             {

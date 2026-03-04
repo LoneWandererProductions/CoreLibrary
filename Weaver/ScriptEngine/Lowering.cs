@@ -53,43 +53,43 @@ namespace Weaver.ScriptEngine
                         break;
 
                     case AssignmentNode an:
+                    {
+                        var expr = an.Expression?.Trim() ?? "";
+                        var varName = an.Variable?.Trim() ?? "";
+
+                        // Step 1: Replace variables first so the following logic works on actual values
+                        var processedExpr = expr;
+                        if (registry != null)
                         {
-                            var expr = an.Expression?.Trim() ?? "";
-                            var varName = an.Variable?.Trim() ?? "";
+                            processedExpr = ReplaceRegistryVariables(expr, registry);
+                        }
 
-                            // Step 1: Replace variables first so the following logic works on actual values
-                            var processedExpr = expr;
-                            if (registry != null)
+                        if (rewrite ?? true)
+                        {
+                            // Step 2: Use processedExpr for logic and output
+                            if (IsCommandCall(processedExpr))
                             {
-                                processedExpr = ReplaceRegistryVariables(expr, registry);
+                                yield return (ScriptConstants.CommandRewriteToken, $"{processedExpr}.Store({varName})");
                             }
-
-                            if (rewrite ?? true)
+                            else if (IsSimpleExpression(processedExpr))
                             {
-                                // Step 2: Use processedExpr for logic and output
-                                if (IsCommandCall(processedExpr))
-                                {
-                                    yield return (ScriptConstants.CommandRewriteToken, $"{processedExpr}.Store({varName})");
-                                }
-                                else if (IsSimpleExpression(processedExpr))
-                                {
-                                    // The Evaluator gets the expression with variables already swapped for literals
-                                    yield return (ScriptConstants.CommandRewriteToken,
-                                        $"EvaluateCommand({processedExpr}, {varName})");
-                                }
-                                else
-                                {
-                                    throw new Exception($"Unsupported assignment expression: '{processedExpr}'");
-                                }
+                                // The Evaluator gets the expression with variables already swapped for literals
+                                yield return (ScriptConstants.CommandRewriteToken,
+                                    $"EvaluateCommand({processedExpr}, {varName})");
                             }
                             else
                             {
-                                // Step 3: Even without structural rewrite, use the substituted expression
-                                yield return (ScriptConstants.AssignmentToken, $"{varName} = {processedExpr}");
+                                throw new Exception($"Unsupported assignment expression: '{processedExpr}'");
                             }
-
-                            break;
                         }
+                        else
+                        {
+                            // Step 3: Even without structural rewrite, use the substituted expression
+                            yield return (ScriptConstants.AssignmentToken, $"{varName} = {processedExpr}");
+                        }
+
+                        break;
+                    }
 
                     case IfNode ifn:
                         // Emit condition

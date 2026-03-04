@@ -264,7 +264,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">The Table alias.</param>
         /// <returns>The <see cref="T:List{string}" />.</returns>
-        List<string> Pragma_index_list(string tableAlias);
+        List<string>? Pragma_index_list(string tableAlias);
 
         /// <summary>
         ///     Get the tables.
@@ -386,7 +386,7 @@ namespace SqliteHelper
         /// <returns>
         ///     List of Lines, that should be converted into a csv
         /// </returns>
-        List<List<string>> ExportCvs(string tableAlias, bool headers);
+        List<List<string>>? ExportCvs(string tableAlias, bool headers);
 
         /// <summary>
         ///     Get the connection details.

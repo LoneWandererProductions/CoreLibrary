@@ -189,15 +189,11 @@ namespace Imaging.Gifs
         }
 
         /// <summary>
-        ///    Create the gif with a fixed delay.
+        /// Create the gif with a fixed delay.
         /// </summary>
         /// <param name="btm">A list of Bitmaps.</param>
         /// <param name="target">The target.</param>
-        /// <summary>
-        ///     Create the gif from a list of Bitmaps.
-        /// </summary>
-        /// <param name="btm">A list of Bitmaps.</param>
-        /// <param name="target">The target.</param>
+        /// <param name="delayMs">The delay ms.</param>
         private static void GifCreator(IEnumerable<Bitmap> btm, string target, int delayMs)
         {
             var gEnc = new GifBitmapEncoder();

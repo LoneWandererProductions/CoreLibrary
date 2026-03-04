@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -130,13 +133,13 @@ namespace CommonFilter
         /// <value>
         ///     The reference.
         /// </value>
-        public SearchParameterControl Reference { get; set; }
+        public SearchParameterControl? Reference { get; set; }
 
         /// <inheritdoc />
         /// <summary>
         ///     Triggers if an Attribute gets changed
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         ///     Gets the options.
@@ -174,7 +177,7 @@ namespace CommonFilter
         /// <param name="propertyName">Name of the property.</param>
         public void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -185,7 +188,7 @@ namespace CommonFilter
         {
             // Perform delete action logic
             // Raise the event
-            Reference.DeleteClicked();
+            Reference?.DeleteClicked();
         }
     }
 }

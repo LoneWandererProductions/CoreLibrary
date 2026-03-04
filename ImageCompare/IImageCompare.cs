@@ -28,7 +28,7 @@ namespace ImageCompare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        List<List<string>> GetSimilarImages(string folderPath, bool checkSubfolders,
+        List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
             IEnumerable<string> extensions, float threshold);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace ImageCompare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        List<List<string>> GetDuplicateImages(string folderPath, bool checkSubfolders,
+        List<List<string>>? GetDuplicateImages(string folderPath, bool checkSubfolders,
             IEnumerable<string> extensions);
     }
 }

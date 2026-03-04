@@ -8,16 +8,13 @@
 
 // ReSharper disable UnusedVariable
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using CommonControls;
 using CommonControls.Images;
 using Imaging;
 using InterOp;
 using NUnit.Framework;
-using RenderEngine;
 
 namespace CommonLibraryGuiTests
 {

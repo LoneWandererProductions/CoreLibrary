@@ -6,6 +6,7 @@
  *              allowing other commands to access it without needing explicit variable assignment.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 using Weaver.Messages;
 
 namespace Weaver.Interfaces

@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -61,7 +63,7 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string> GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
+        public static List<string?> GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
             return files.Select(Path.GetFileName).ToList();
@@ -74,7 +76,7 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string> GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
+        public static List<string?> GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
             return files.Select(Path.GetFileNameWithoutExtension).ToList();
@@ -138,7 +140,7 @@ namespace FileHandler
         /// <param name="path">The path.</param>
         /// <returns>Subfolders</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static List<string> GetAllSubfolders(string path)
+        public static List<string?> GetAllSubfolders(string path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -160,10 +162,7 @@ namespace FileHandler
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
-            if (!Directory.Exists(path))
-                return false;
-
-            return Directory.EnumerateFileSystemEntries(path).Any();
+            return Directory.Exists(path) && Directory.EnumerateFileSystemEntries(path).Any();
         }
 
         /// <summary>

@@ -356,6 +356,7 @@ namespace CommonExtendedObjectsTests
             {
                 list.RemoveAt(removeIndex);
             }
+
             swList.Stop();
 
             // CLEAN SLATE AGAIN
@@ -368,6 +369,7 @@ namespace CommonExtendedObjectsTests
             {
                 unmanaged.RemoveAt(removeIndex);
             }
+
             swUnmanaged.Stop();
 
             // Use TotalMilliseconds for high-precision decimal values!

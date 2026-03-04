@@ -24,14 +24,14 @@ namespace Imaging.Interfaces
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Image as pure Cif format</returns>
-        Cif GetCif(string path);
+        Cif? GetCif(string path);
 
         /// <summary>
         ///     Generates Image from Cif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>A bitmap Image</returns>
-        Bitmap GetImageFromCif(string path);
+        Bitmap? GetImageFromCif(string path);
 
         /// <summary>
         ///     Generate Cif from Bitmap

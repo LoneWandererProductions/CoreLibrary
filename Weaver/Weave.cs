@@ -9,7 +9,6 @@
 using Weaver.Core;
 using Weaver.Core.Commands;
 using Weaver.Core.Extensions;
-using Weaver.Evaluate;
 using Weaver.Interfaces;
 using Weaver.Messages;
 using Weaver.ParseEngine;
@@ -40,16 +39,24 @@ namespace Weaver
         private static readonly Dictionary<string, CommandExtension> GlobalExtensions =
             new(StringComparer.OrdinalIgnoreCase)
             {
-                [WeaverResources.GlobalExtensionHelp] = new CommandExtension
-                    { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
-                [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
-                {
-                    Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true,
-                    IsPreview = true
-                },
+                [WeaverResources.GlobalExtensionHelp] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
+                    },
+                [WeaverResources.GlobalExtensionTryRun] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionTryRun,
+                        ParameterCount = 0,
+                        IsInternal = true,
+                        IsPreview = true
+                    },
                 [WeaverResources.GlobalExtensionStore] = new CommandExtension
                 {
-                    Name = WeaverResources.GlobalExtensionStore, ParameterCount = -1, IsInternal = true,
+                    Name = WeaverResources.GlobalExtensionStore,
+                    ParameterCount = -1,
+                    IsInternal = true,
                     IsPreview = false
                 },
                 [WeaverResources.GlobalExtensionClean] = new CommandExtension
@@ -157,7 +164,8 @@ namespace Weaver
             {
                 return ns == null
                     ? _extensions.Values.ToList()
-                    : _extensions.Values.Where(e => e.Namespace != null && e.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase)).ToList();
+                    : _extensions.Values.Where(e =>
+                        e.Namespace != null && e.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase)).ToList();
             }
         }
 

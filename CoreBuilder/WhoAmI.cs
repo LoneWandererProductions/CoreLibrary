@@ -24,7 +24,7 @@ namespace CoreBuilder
     public sealed class WhoAmI : ICommand, IRegistryProducer
     {
         /// <inheritdoc />
-        public string CurrentRegistryKey => StoreKey;
+        public string CurrentRegistryKey => _storeKey;
 
         /// <inheritdoc />
         public EnumTypes DataType => EnumTypes.Wobject;
@@ -35,12 +35,12 @@ namespace CoreBuilder
         /// <summary>
         /// The variables
         /// </summary>
-        private IVariableRegistry _variables;
+        private readonly IVariableRegistry _variables;
 
         /// <summary>
         /// The store key
         /// </summary>
-        private string StoreKey = "whoami";
+        private string _storeKey = "whoami";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WhoAmI"/> class.
@@ -77,7 +77,7 @@ namespace CoreBuilder
         public CommandResult Execute(params string[] args)
         {
             // 1. Overload Logic: Use the first argument as the store key if provided
-            StoreKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
+            _storeKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
                 ? args[0]
                 : "whoami";
 
@@ -115,7 +115,7 @@ namespace CoreBuilder
 
                 // 3. Store the Object in the Registry
                 // This utilizes your SetObject logic to handle memory allocation/reuse
-                _variables.SetObject(StoreKey, whoamiData);
+                _variables.SetObject(_storeKey, whoamiData);
 
                 // 4. Generate the console output string
                 var info =
@@ -126,10 +126,10 @@ namespace CoreBuilder
                     $"Domain: {domain}\n" +
                     $"IPv4 Addresses: {ipsJoined}\n" +
                     $"OS: {os}\n" +
-                    $"Data stored in: ${StoreKey}\n" +
+                    $"Data stored in: ${_storeKey}\n" +
                     "------------------------";
 
-                return CommandResult.Ok(info, StoreKey, EnumTypes.Wobject);
+                return CommandResult.Ok(info, _storeKey, EnumTypes.Wobject);
             }
             catch (Exception ex)
             {

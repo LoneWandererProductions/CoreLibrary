@@ -34,7 +34,7 @@ namespace ImageCompare
         /// <returns>List of Images with similar Color range</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        List<string> FindImagesInColorRange(int r, int g, int b, int range, string folderPath,
+        List<string>? FindImagesInColorRange(int r, int g, int b, int range, string folderPath,
             bool checkSubfolders,
             IEnumerable<string> extensions);
 
@@ -45,7 +45,7 @@ namespace ImageCompare
         /// <returns>Image Details as Image Data Object</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        ImageData GetImageDetails(string imagePath);
+        ImageData? GetImageDetails(string imagePath);
 
         /// <summary>
         ///     Gets the image details.

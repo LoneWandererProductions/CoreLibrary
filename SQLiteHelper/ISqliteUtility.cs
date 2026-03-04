@@ -22,7 +22,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>The <see cref="DictionaryTableColumns" />.</returns>
-        DictionaryTableColumns ConvertObjectToTableColumns(object obj);
+        DictionaryTableColumns? ConvertObjectToTableColumns(object obj);
 
         /// <summary>
         ///     Convert the to attribute.
@@ -31,7 +31,7 @@ namespace SqliteHelper
         /// <returns>
         ///     The <see cref="T:List{string}" />, can return null.
         /// </returns>
-        List<string> ConvertObjectToAttributes(object obj);
+        List<string>? ConvertObjectToAttributes(object obj);
 
         /// <summary>
         ///     Converts to table set.
@@ -40,7 +40,7 @@ namespace SqliteHelper
         /// <returns>
         ///     The TableSet, can return null.
         /// </returns>
-        TableSet ConvertObjectToTableSet(object obj);
+        TableSet? ConvertObjectToTableSet(object obj);
 
         /// <summary>
         ///     Fill the object.

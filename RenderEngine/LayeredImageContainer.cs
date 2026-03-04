@@ -194,13 +194,13 @@ public sealed class LayeredImageContainer : IDisposable
     /// <param name="overlaySpan">The overlay span.</param>
     private static unsafe void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
     {
-        int length = baseSpan.Length;
+        var length = baseSpan.Length;
 
         // Pin the spans in memory so we can use raw pointers for maximum speed
         fixed (byte* pBase = baseSpan)
         fixed (byte* pOverlay = overlaySpan)
         {
-            for (int i = 0; i < length; i += 4)
+            for (var i = 0; i < length; i += 4)
             {
                 int srcA = pOverlay[i + 3];
 
@@ -217,16 +217,17 @@ public sealed class LayeredImageContainer : IDisposable
 
                 // 3. Integer Math Porter-Duff Compositing
                 int dstA = pBase[i + 3];
-                int invSrcA = 255 - srcA;
+                var invSrcA = 255 - srcA;
 
                 // Calculate the output alpha scaled by 255
-                int outA = (srcA * 255) + (dstA * invSrcA);
+                var outA = (srcA * 255) + (dstA * invSrcA);
                 if (outA == 0) continue;
 
                 // Calculate color channels (Numerator / Denominator)
                 // Maximum value of numerator is ~33 million, which fits perfectly inside a standard 32-bit int
-                pBase[i] = (byte)(((pOverlay[i] * srcA * 255) + (pBase[i] * dstA * invSrcA)) / outA);     // Blue
-                pBase[i + 1] = (byte)(((pOverlay[i + 1] * srcA * 255) + (pBase[i + 1] * dstA * invSrcA)) / outA); // Green
+                pBase[i] = (byte)(((pOverlay[i] * srcA * 255) + (pBase[i] * dstA * invSrcA)) / outA); // Blue
+                pBase[i + 1] =
+                    (byte)(((pOverlay[i + 1] * srcA * 255) + (pBase[i + 1] * dstA * invSrcA)) / outA); // Green
                 pBase[i + 2] = (byte)(((pOverlay[i + 2] * srcA * 255) + (pBase[i + 2] * dstA * invSrcA)) / outA); // Red
 
                 pBase[i + 3] = (byte)(outA / 255); // Alpha

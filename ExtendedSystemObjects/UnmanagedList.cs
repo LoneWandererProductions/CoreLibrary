@@ -254,6 +254,7 @@ namespace ExtendedSystemObjects
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -412,6 +413,7 @@ namespace ExtendedSystemObjects
                 AsSpan().CopyTo(new Span<T>(clone._ptr, Length));
                 clone.Length = Length;
             }
+
             return clone;
         }
 

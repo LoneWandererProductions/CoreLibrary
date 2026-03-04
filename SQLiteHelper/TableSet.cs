@@ -40,7 +40,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the row.
         /// </summary>
-        public List<string> Row { get; init; }
+        public List<string?> Row { get; init; }
     }
 
     /// <summary>

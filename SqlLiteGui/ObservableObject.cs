@@ -20,7 +20,7 @@ namespace SQLiteGui
         /// <summary>
         ///     The property changed event of the <see cref="PropertyChangedEventHandler" />.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         ///     The raise property changed event.

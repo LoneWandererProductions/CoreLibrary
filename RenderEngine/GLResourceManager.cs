@@ -17,7 +17,7 @@ using System.IO;
 namespace RenderEngine
 {
     /// <summary>
-    /// Texute and Shader manager for OpenGL.
+    /// Texture and Shader manager for OpenGL.
     /// </summary>
     /// <seealso cref="IDisposable" />
     public sealed class GlResourceManager : IDisposable
@@ -125,7 +125,8 @@ namespace RenderEngine
                     fragmentSrc = ShaderResource.VertexColorFragmentShader;
                     break;
 
-                    bool useMatrices = true;
+                case ShaderTypeApp.Wireframe:
+                    var useMatrices = true;
                     vertexSrc = useMatrices
                         ? ShaderResource.WireframeVertexShader
                         : ShaderResource.WireframeVertexShaderPassThrough;
@@ -133,6 +134,7 @@ namespace RenderEngine
                         ? ShaderResource.WireframeFragmentShader
                         : ShaderResource.WireframeFragmentShaderPassThrough;
                     break;
+
                 case ShaderTypeApp.TextureArrayTilemap:
                     vertexSrc = ShaderResource.TextureArrayTilemapVertexShader;
                     fragmentSrc = ShaderResource.TextureArrayTilemapFragmentShader;

@@ -69,6 +69,7 @@ namespace CoreBuilder.UI
                         {
                             _window = null;
                         }
+
                         // Shut down the dispatcher so the background thread can exit properly
                         System.Windows.Threading.Dispatcher.ExitAllFrames();
                     };

@@ -72,7 +72,7 @@ namespace CommunicationTests
                     // Try to connect
                     await client.ConnectAsync("127.0.0.1", port);
 
-                    using var stream = client.GetStream();
+                    await using var stream = client.GetStream();
                     // Important: Add NewLine (\n) so ReadLineAsync fires!
                     byte[] data = Encoding.UTF8.GetBytes(message + Environment.NewLine);
                     await stream.WriteAsync(data, 0, data.Length);
@@ -142,7 +142,7 @@ namespace CommunicationTests
 
             using var client = new TcpClient();
             await client.ConnectAsync("127.0.0.1", port);
-            using var stream = client.GetStream();
+            await using var stream = client.GetStream();
             // Act: Send data WITHOUT a newline
             byte[] data = Encoding.UTF8.GetBytes("I am a bad client...");
             await stream.WriteAsync(data, 0, data.Length);

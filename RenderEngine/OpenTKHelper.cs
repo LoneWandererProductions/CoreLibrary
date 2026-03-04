@@ -12,7 +12,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
@@ -25,37 +24,6 @@ namespace RenderEngine
     public static class OpenTkHelper
     {
         private static Version? _glVersion;
-
-        /// <summary>
-        /// Checks if the system supports at least the given OpenGL version.
-        /// Caches the result to avoid repeated GLContext creation.
-        /// </summary>
-        /// <param name="requiredMajor">Required major version (default: 4).</param>
-        /// <param name="requiredMinor">Required minor version (default: 5).</param>
-        /// <returns><c>true</c> if compatible; otherwise <c>false</c>.</returns>
-        internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
-        {
-            if (_glVersion == null)
-            {
-                // MUST be called with an active GL context
-                string version = GL.GetString(StringName.Version);
-                var parts = version.Split('.', ' ');
-
-                if (parts.Length >= 2 &&
-                    int.TryParse(parts[0], out int major) &&
-                    int.TryParse(parts[1], out int minor))
-                {
-                    _glVersion = new Version(major, minor);
-                }
-                else
-                {
-                    _glVersion = new Version(0, 0);
-                }
-            }
-
-            // Compare to minimum supported version
-            return _glVersion >= new Version(requiredMajor, requiredMinor);
-        }
 
         /// <summary>
         /// Compiles a GLSL shader from source code.
@@ -122,7 +90,7 @@ namespace RenderEngine
         /// <returns>OpenGL texture ID.</returns>
         public static int CreateTexture(UnmanagedImageBuffer image, bool opaqueFastPath = false)
         {
-            int texId = GL.GenTexture();
+            var texId = GL.GenTexture();
             try
             {
                 GL.BindTexture(TextureTarget.Texture2D, texId);
@@ -160,6 +128,72 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Loads a 2D texture from a file path into OpenGL.
+        /// Generates mipmaps for better scaling.
+        /// </summary>
+        /// <param name="filePath">Path to texture image.</param>
+        /// <returns>OpenGL texture ID.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if file missing.</exception>
+        internal static int LoadTextureFromFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Trace.WriteLine($"File not found: {filePath}");
+                throw new FileNotFoundException($"Texture file not found: {filePath}");
+            }
+
+            using var bitmap = new Bitmap(filePath);
+
+            // Fix for OpenGL's bottom-left origin requirement
+            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+            var texId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, texId);
+
+            try
+            {
+                var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                try
+                {
+                    // Zero-allocation upload directly from the unmanaged memory pointer
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width,
+                        bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+                }
+                finally
+                {
+                    bitmap.UnlockBits(bmpData);
+                }
+
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                    (int)TextureMinFilter.LinearMipmapLinear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                    (int)TextureMagFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+                    (int)TextureWrapMode.Repeat);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+                    (int)TextureWrapMode.Repeat);
+
+                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+                return texId;
+            }
+            catch
+            {
+                // Cleanup if something goes wrong during upload
+                if (texId != 0 && GL.IsTexture(texId))
+                    GL.DeleteTexture(texId);
+                throw;
+            }
+            finally
+            {
+                GL.BindTexture(TextureTarget.Texture2D, 0); // Always unbind
+            }
+        }
+
+        /// <summary>
         /// Loads a cubemap texture from six image files.
         /// </summary>
         /// <param name="filePaths">Array of six image file paths in cubemap order.</param>
@@ -173,115 +207,80 @@ namespace RenderEngine
             var textureId = GL.GenTexture();
             GL.BindTexture(TextureTarget.TextureCubeMap, textureId);
 
-            for (var i = 0; i < 6; i++)
-            {
-                if (!File.Exists(filePaths[i]))
-                    throw new FileNotFoundException($"Cubemap texture not found: {filePaths[i]}");
-
-                using var bitmap = new Bitmap(filePaths[i]);
-                var pixels = GetBitmapBytes(bitmap);
-                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
-                    bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-            }
-
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.LinearMipmapLinear);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS,
-                (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT,
-                (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR,
-                (int)TextureWrapMode.ClampToEdge);
-
-            GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
-
-            return textureId;
-        }
-
-        /// <summary>
-        /// Loads a 2D texture from a file path into OpenGL.
-        /// Returns -1 if file not found.
-        /// Generates mipmaps for better scaling.
-        /// </summary>
-        /// <param name="filePath">Path to texture image.</param>
-        /// <returns>OpenGL texture ID or -1 if file missing.</returns>
-        internal static int LoadTextureFromFile(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                Trace.WriteLine($"File not found: {filePath}");
-                throw new FileNotFoundException();
-            }
-
-            using var bitmap = new Bitmap(filePath);
-            var pixels = GetBitmapBytes(bitmap);
-
-            var texId = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, texId);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width,
-                bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.LinearMipmapLinear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
-                (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
-                (int)TextureWrapMode.Repeat);
-
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
-            return texId;
-        }
-
-        /// <summary>
-        /// Converts a <see cref="Bitmap"/> to a tightly packed byte array (BGRA).
-        /// </summary>
-        /// <param name="bitmap">Input bitmap.</param>
-        /// <returns>Byte array containing image data.</returns>
-        private static byte[] GetBitmapBytes(Bitmap bitmap)
-        {
-            var width = bitmap.Width;
-            var height = bitmap.Height;
-            var rect = new Rectangle(0, 0, width, height);
-            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
             try
             {
-                var stride = bmpData.Stride;
-                const int bytesPerPixel = 4;
-                var rawData = new byte[stride * height];
-                Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
-
-                var pixels = new byte[width * height * bytesPerPixel];
-
-                for (var y = 0; y < height; y++)
+                for (var i = 0; i < 6; i++)
                 {
-                    var srcRow = y * stride;
-                    var dstRow = y * width * bytesPerPixel;
+                    if (!File.Exists(filePaths[i]))
+                        throw new FileNotFoundException($"Cubemap texture not found: {filePaths[i]}");
 
-                    for (var x = 0; x < width; x++)
+                    using var bitmap = new Bitmap(filePaths[i]);
+
+                    var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                    var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                    try
                     {
-                        var srcIndex = srcRow + (x * bytesPerPixel);
-                        var dstIndex = dstRow + (x * bytesPerPixel);
-
-                        pixels[dstIndex + 0] = rawData[srcIndex + 0];
-                        pixels[dstIndex + 1] = rawData[srcIndex + 1];
-                        pixels[dstIndex + 2] = rawData[srcIndex + 2];
-                        pixels[dstIndex + 3] = rawData[srcIndex + 3];
+                        // Zero-allocation upload
+                        GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba,
+                            bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+                    }
+                    finally
+                    {
+                        bitmap.UnlockBits(bmpData);
                     }
                 }
 
-                return pixels;
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter,
+                    (int)TextureMinFilter.LinearMipmapLinear);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter,
+                    (int)TextureMagFilter.Linear);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS,
+                    (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT,
+                    (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR,
+                    (int)TextureWrapMode.ClampToEdge);
+
+                GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
+
+                return textureId;
+            }
+            catch
+            {
+                if (textureId != 0 && GL.IsTexture(textureId))
+                    GL.DeleteTexture(textureId);
+                throw;
             }
             finally
             {
-                bitmap.UnlockBits(bmpData);
+                GL.BindTexture(TextureTarget.TextureCubeMap, 0); // Always unbind
             }
+        }
+
+        /// <summary>
+        /// Checks if the system supports at least the given OpenGL version.
+        /// Caches the result to avoid repeated GLContext queries.
+        /// </summary>
+        internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
+        {
+            if (_glVersion == null)
+            {
+                try
+                {
+                    // Use GetInteger instead of GetString to avoid GPU vendor string formatting issues
+                    var major = GL.GetInteger(GetPName.MajorVersion);
+                    var minor = GL.GetInteger(GetPName.MinorVersion);
+                    _glVersion = new Version(major, minor);
+                }
+                catch
+                {
+                    _glVersion = new Version(0, 0);
+                }
+            }
+
+            return _glVersion >= new Version(requiredMajor, requiredMinor);
         }
     }
 }

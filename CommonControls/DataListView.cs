@@ -189,7 +189,7 @@ namespace CommonControls
         /// <summary>
         ///     Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         ///     Updates the selected item. Only used for ChangeLog a bit of a hack but it works

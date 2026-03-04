@@ -347,17 +347,13 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Connects string for Create Table query
+        /// Connects string for Create Table query
         /// </summary>
         /// <param name="tableHeaders">List of Names and Parameters</param>
         /// <param name="query">Start of the query</param>
-        /// <returns>Table creation, empty if Key Constraint</returns>
-        /// <summary>
-        /// Connects string for Create Table query, side-effect-free.
-        /// </summary>
-        /// <param name="tableHeaders">List of Names and Parameters</param>
-        /// <param name="query">Start of the query</param>
-        /// <returns>Table creation, empty if Key Constraint</returns>
+        /// <returns>
+        /// Table creation, empty if Key Constraint
+        /// </returns>
         private static string ConcatenateHeaders(DictionaryTableColumns tableHeaders, string query)
         {
             if (tableHeaders.DColumns.Count == 0)

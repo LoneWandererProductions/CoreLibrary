@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 
 namespace RenderEngine
 {
@@ -258,7 +257,7 @@ namespace RenderEngine
             var span = BufferSpan;
 
             // Fast Integer Math Alpha Blending
-            int invAlpha = 255 - a;
+            var invAlpha = 255 - a;
 
             // Formula: (NewColor * Alpha + OldColor * InvAlpha) >> 8
             span[offset + 0] = (byte)((b * a + span[offset + 0] * invAlpha) >> 8); // B
@@ -277,24 +276,25 @@ namespace RenderEngine
         /// <param name="height">Height of the region to copy.</param>
         /// <param name="destX">The x destination.</param>
         /// <param name="destY">The y destination.</param>
-        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX, int destY)
+        public void BlitRegion(UnmanagedImageBuffer src, int srcX, int srcY, int width, int height, int destX,
+            int destY)
         {
             if (width <= 0 || height <= 0) return;
 
             // 1. Calculate how many bytes we actually need to copy per row
-            int bytesToCopy = width * BytesPerPixel;
+            var bytesToCopy = width * BytesPerPixel;
 
             // 2. Calculate the "Stride" (total bytes per row) for both images.
             // We use this to jump the pointer down to the next row in memory.
-            int srcStride = src.Width * BytesPerPixel;
-            int destStride = Width * BytesPerPixel;
+            var srcStride = src.Width * BytesPerPixel;
+            var destStride = Width * BytesPerPixel;
 
             // 3. Find the exact starting memory addresses for the top-left pixel of the copy regions
-            byte* pSrc = (byte*)src._buffer.ToPointer() + (srcY * srcStride) + (srcX * BytesPerPixel);
-            byte* pDest = (byte*)_buffer.ToPointer() + (destY * destStride) + (destX * BytesPerPixel);
+            var pSrc = (byte*)src._buffer.ToPointer() + (srcY * srcStride) + (srcX * BytesPerPixel);
+            var pDest = (byte*)_buffer.ToPointer() + (destY * destStride) + (destX * BytesPerPixel);
 
             // 4. The ultra-fast copy loop
-            for (int y = 0; y < height; y++)
+            for (var y = 0; y < height; y++)
             {
                 // Blast the row of bytes from source to destination
                 System.Buffer.MemoryCopy(pSrc, pDest, bytesToCopy, bytesToCopy);
@@ -398,7 +398,7 @@ namespace RenderEngine
 
             try
             {
-                int rowBytes = width * BytesPerPixel;
+                var rowBytes = width * BytesPerPixel;
 
                 // If Stride matches exact bytes, we can copy the entire image in ONE instruction
                 if (bmpData.Stride == rowBytes)
@@ -410,8 +410,8 @@ namespace RenderEngine
                     // Fallback: Copy row by row (Still 100x faster than pixel-by-pixel)
                     for (var y = 0; y < height; y++)
                     {
-                        byte* srcRow = (byte*)bmpData.Scan0 + (y * bmpData.Stride);
-                        byte* dstRow = (byte*)buffer._buffer + (y * rowBytes);
+                        var srcRow = (byte*)bmpData.Scan0 + (y * bmpData.Stride);
+                        var dstRow = (byte*)buffer._buffer + (y * rowBytes);
                         System.Buffer.MemoryCopy(srcRow, dstRow, rowBytes, rowBytes);
                     }
                 }
@@ -437,7 +437,7 @@ namespace RenderEngine
         public void Clear(Color color)
         {
             // Pack the color into a single 32-bit integer (BGRA)
-            uint colorValue = PackBgra(color.A, color.R, color.G, color.B);
+            var colorValue = PackBgra(color.A, color.R, color.G, color.B);
 
             // Cast the Span<byte> to Span<uint> and blast the memory
             MemoryMarshal.Cast<byte, uint>(BufferSpan).Fill(colorValue);
@@ -454,18 +454,18 @@ namespace RenderEngine
         /// <summary>
         /// Converts the unmanaged buffer into a managed <see cref="Bitmap"/>.
         /// </summary>
-        public Bitmap ToBitmap()
+        public Bitmap? ToBitmap()
         {
             var bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, Width, Height);
             var data = bmp.LockBits(rect, ImageLockMode.WriteOnly, bmp.PixelFormat);
 
-            int srcRowSize = Width * BytesPerPixel;
+            var srcRowSize = Width * BytesPerPixel;
 
-            for (int y = 0; y < Height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                byte* src = (byte*)_buffer + y * srcRowSize;
-                byte* dst = (byte*)data.Scan0 + y * data.Stride;
+                var src = (byte*)_buffer + y * srcRowSize;
+                var dst = (byte*)data.Scan0 + y * data.Stride;
 
                 // Destination buffer size must match ROW copy size
                 System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);

@@ -211,7 +211,10 @@ namespace CommonExtendedObjectsTests
 
             // Assert
             Assert.ThrowsException<ObjectDisposedException>(() => list.Add(2));
-            Assert.ThrowsException<ObjectDisposedException>(() => { var x = list[0]; });
+            Assert.ThrowsException<ObjectDisposedException>(() =>
+            {
+                var x = list[0];
+            });
             Assert.ThrowsException<ObjectDisposedException>(() => list.Clear());
         }
 

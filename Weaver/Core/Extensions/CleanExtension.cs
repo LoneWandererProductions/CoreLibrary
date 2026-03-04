@@ -11,7 +11,6 @@ using Weaver.Messages;
 
 namespace Weaver.Core.Extensions
 {
-
     /// <summary>
     /// This is a global extension that can be used with any command that implements IRegistryProducer. It wipes the registry entry associated with the command, effectively clearing any stored data or state.
     /// This can be useful for resetting a command's state or ensuring that sensitive information is removed from memory after use.
@@ -21,6 +20,7 @@ namespace Weaver.Core.Extensions
     {
         /// <inheritdoc />
         public string Name => WeaverResources.GlobalExtensionClean;
+
         /// <inheritdoc />
         public string Description => "Wipes the last used registry entry associated with a command.";
 
@@ -29,12 +29,13 @@ namespace Weaver.Core.Extensions
 
         /// <inheritdoc />
         public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
-                                    string[] commandArgs)
+            string[] commandArgs)
         {
             // 1. Check if the command is a producer
             if (command is not IRegistryProducer producer)
             {
-                return CommandResult.Fail($"Command '{command.Name}' does not support registry operations (IRegistryProducer not implemented).");
+                return CommandResult.Fail(
+                    $"Command '{command.Name}' does not support registry operations (IRegistryProducer not implemented).");
             }
 
             try

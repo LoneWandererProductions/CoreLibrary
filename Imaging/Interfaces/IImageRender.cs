@@ -89,7 +89,7 @@ namespace Imaging.Interfaces
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-        Bitmap FilterImage(Bitmap image, FiltersType filter);
+        Bitmap? FilterImage(Bitmap image, FiltersType filter);
 
         /// <summary>
         ///     Filters the image area.
@@ -127,7 +127,7 @@ namespace Imaging.Interfaces
         ///     a new Bitmap with all combined Images
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        Bitmap CombineBitmap(List<string> files);
+        Bitmap? CombineBitmap(List<string> files);
 
         /// <summary>
         ///     Combines the bitmaps.

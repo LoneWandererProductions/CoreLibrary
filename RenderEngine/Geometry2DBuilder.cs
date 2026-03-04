@@ -21,7 +21,7 @@ namespace RenderEngine
         {
             var data = new float[points.Length * 6];
 
-            for (int i = 0; i < points.Length; i++)
+            for (var i = 0; i < points.Length; i++)
             {
                 data[i * 6 + 0] = points[i].x;
                 data[i * 6 + 1] = points[i].y;
@@ -41,20 +41,15 @@ namespace RenderEngine
             (int x, int y) p3,
             (int r, int g, int b, int a) fill)
         {
-            float r = fill.r / 255f;
-            float g = fill.g / 255f;
-            float b = fill.b / 255f;
-            float a = fill.a / 255f;
+            var r = fill.r / 255f;
+            var g = fill.g / 255f;
+            var b = fill.b / 255f;
+            var a = fill.a / 255f;
 
             return new[]
             {
-                p0.x, p0.y, r, g, b, a,
-                p1.x, p1.y, r, g, b, a,
-                p2.x, p2.y, r, g, b, a,
-
-                p2.x, p2.y, r, g, b, a,
-                p3.x, p3.y, r, g, b, a,
-                p0.x, p0.y, r, g, b, a
+                p0.x, p0.y, r, g, b, a, p1.x, p1.y, r, g, b, a, p2.x, p2.y, r, g, b, a, p2.x, p2.y, r, g, b, a,
+                p3.x, p3.y, r, g, b, a, p0.x, p0.y, r, g, b, a
             };
         }
 
@@ -65,9 +60,9 @@ namespace RenderEngine
         {
             return new[]
             {
-                p0.x, p0.y, p0.r / 255f, p0.g / 255f, p0.b / 255f, p0.a / 255f,
-                p1.x, p1.y, p1.r / 255f, p1.g / 255f, p1.b / 255f, p1.a / 255f,
-                p2.x, p2.y, p2.r / 255f, p2.g / 255f, p2.b / 255f, p2.a / 255f,
+                p0.x, p0.y, p0.r / 255f, p0.g / 255f, p0.b / 255f, p0.a / 255f, p1.x, p1.y, p1.r / 255f,
+                p1.g / 255f, p1.b / 255f, p1.a / 255f, p2.x, p2.y, p2.r / 255f, p2.g / 255f, p2.b / 255f,
+                p2.a / 255f,
             };
         }
 
@@ -79,12 +74,7 @@ namespace RenderEngine
         {
             return new[]
             {
-                p0.x, p0.y, 0f, 0f,
-                p1.x, p1.y, 1f, 0f,
-                p2.x, p2.y, 1f, 1f,
-
-                p2.x, p2.y, 1f, 1f,
-                p3.x, p3.y, 0f, 1f,
+                p0.x, p0.y, 0f, 0f, p1.x, p1.y, 1f, 0f, p2.x, p2.y, 1f, 1f, p2.x, p2.y, 1f, 1f, p3.x, p3.y, 0f, 1f,
                 p0.x, p0.y, 0f, 0f
             };
         }
@@ -98,8 +88,8 @@ namespace RenderEngine
 
             var data = new (float x, float y, int r, int g, int b, int a)[points.Length * 2 - 2];
 
-            int idx = 0;
-            for (int i = 0; i < points.Length - 1; i++)
+            var idx = 0;
+            for (var i = 0; i < points.Length - 1; i++)
             {
                 data[idx++] = (points[i].x, points[i].y, color.r, color.g, color.b, color.a);
                 data[idx++] = (points[i + 1].x, points[i + 1].y, color.r, color.g, color.b, color.a);
@@ -114,14 +104,7 @@ namespace RenderEngine
                 float w, float h,
                 (int r, int g, int b, int a) color)
         {
-            Span<(float x, float y)> pts = stackalloc[]
-            {
-                (x, y),
-                (x + w, y),
-                (x + w, y + h),
-                (x, y + h),
-                (x, y),
-            };
+            Span<(float x, float y)> pts = stackalloc[] { (x, y), (x + w, y), (x + w, y + h), (x, y + h), (x, y), };
 
             return BuildPolyline(pts, color);
         }
@@ -138,18 +121,18 @@ namespace RenderEngine
 
             var pts = new (float x, float y, int r, int g, int b, int a)[segments * 2];
 
-            float step = MathF.PI * 2f / segments;
-            int idx = 0;
+            var step = MathF.PI * 2f / segments;
+            var idx = 0;
 
-            float prevX = cx + MathF.Cos(0) * radius;
-            float prevY = cy + MathF.Sin(0) * radius;
+            var prevX = cx + MathF.Cos(0) * radius;
+            var prevY = cy + MathF.Sin(0) * radius;
 
-            for (int i = 1; i <= segments; i++)
+            for (var i = 1; i <= segments; i++)
             {
-                float a = i * step;
+                var a = i * step;
 
                 var x = cx + MathF.Cos(a) * radius;
-                float y = cy + MathF.Sin(a) * radius;
+                var y = cy + MathF.Sin(a) * radius;
 
                 pts[idx++] = (prevX, prevY, color.r, color.g, color.b, color.a);
                 pts[idx++] = (x, y, color.r, color.g, color.b, color.a);

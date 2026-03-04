@@ -72,11 +72,10 @@ void main() { FragColor = texture(uSkybox, vTexCoord); }";
         /// </remarks>
         public static readonly float[] SkyboxVertices = new float[]
         {
-            -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f,
-            -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, 1f, -1f, 1f, 1f,
-            1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f,
-            1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f, -1f, -1f, -1f, -1f,
-            -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, -1f
+            -1f, 1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, -1f, 1f, -1f, -1f, -1f, 1f, -1f,
+            -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, 1f, -1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f,
+            1f, -1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, -1f, 1f, -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, 1f, 1f,
+            -1f, -1f, -1f, -1f, -1f, -1f, 1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f, -1f, -1f
         };
 
         /// <summary>
@@ -144,8 +143,8 @@ void main() { FragColor = texture(uTexture, vTexCoord); }";
         /// </remarks>
         public const string VertexColorVertexShader = @"#version 450 core
 layout(location = 0) in vec3 aPosition;
-layout(location = 1) in vec3 aColor;
-out vec3 vColor;
+layout(location = 1) in vec4 aColor; // Changed to vec4
+out vec4 vColor;                     // Changed to vec4
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -161,9 +160,9 @@ void main() {
         /// Produces a smooth color blend between vertex-defined colors.
         /// </remarks>
         public const string VertexColorFragmentShader = @"#version 450 core
-in vec3 vColor;
+in vec4 vColor;                      // Changed to vec4
 out vec4 FragColor;
-void main() { FragColor = vec4(vColor, 1.0); }";
+void main() { FragColor = vColor; }";
 
         /// <summary>
         /// Wireframe vertex shader with optional matrix transforms.
@@ -368,7 +367,9 @@ void main() {
     vec2 pos = aPos / uViewport * 2.0 - 1.0;
     pos.y = -pos.y;
     gl_Position = vec4(pos, 0.0, 1.0);
-    vTex = aTex;
+    
+    // Restore the Y-flip for the texture coordinates!
+    vTex = vec2(aTex.x, 1.0 - aTex.y);
 }";
 
         /// <summary>

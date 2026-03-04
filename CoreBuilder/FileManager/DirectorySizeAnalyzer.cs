@@ -34,7 +34,8 @@ namespace CoreBuilder.FileManager
         public string CurrentRegistryKey => StoreKey;
 
         /// <inheritdoc />
-        public EnumTypes DataType => EnumTypes.Wobject; // We will return an object containing the total size and a list of files
+        public EnumTypes DataType =>
+            EnumTypes.Wobject; // We will return an object containing the total size and a list of files
 
         /// <inheritdoc />
         public IVariableRegistry Variables => _variables;
@@ -42,7 +43,7 @@ namespace CoreBuilder.FileManager
         /// <summary>
         /// The variables
         /// </summary>
-        private IVariableRegistry _variables;
+        private readonly IVariableRegistry _variables;
 
         /// <summary>
         /// The store key
@@ -83,7 +84,8 @@ namespace CoreBuilder.FileManager
         /// <returns>
         /// A formatted string containing file size and percentage information.
         /// </returns>
-        public (string TextOutput, Dictionary<string, VmValue>? RawData) AnalyzeDirectory(string? directoryPath, bool includeSubdirectories)
+        public (string TextOutput, Dictionary<string, VmValue>? RawData) AnalyzeDirectory(string? directoryPath,
+            bool includeSubdirectories)
         {
             if (string.IsNullOrWhiteSpace(directoryPath) || !Directory.Exists(directoryPath))
                 return ("Directory does not exist.", null);
@@ -98,7 +100,11 @@ namespace CoreBuilder.FileManager
                     : Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly);
 
                 files = filePaths
-                    .Select(path => { try { return new FileInfo(path); } catch { return null; } })
+                    .Select(path =>
+                    {
+                        try { return new FileInfo(path); }
+                        catch { return null; }
+                    })
                     .Where(f => f is not null)
                     .ToList()!;
             }
@@ -138,7 +144,8 @@ namespace CoreBuilder.FileManager
                 };
 
                 // Add it to our list, assigning it the Wobject type
-                fileList.Add(new VmValue(EnumTypes.Wobject, 0, 0, false, null, null)); // You might need a helper method in VmValue for this depending on how you handle nested objects
+                fileList.Add(new VmValue(EnumTypes.Wobject, 0, 0, false, null,
+                    null)); // You might need a helper method in VmValue for this depending on how you handle nested objects
             }
 
             sb.AppendLine();
@@ -147,8 +154,7 @@ namespace CoreBuilder.FileManager
             // Combine the totals into the main parent object
             var rawData = new Dictionary<string, VmValue>
             {
-                { "total_size_bytes", VmValue.FromInt(totalSize) },
-                { "file_count", VmValue.FromInt(files.Count) }
+                { "total_size_bytes", VmValue.FromInt(totalSize) }, { "file_count", VmValue.FromInt(files.Count) }
             };
 
             return (sb.ToString(), rawData);

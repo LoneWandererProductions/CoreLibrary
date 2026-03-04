@@ -17,7 +17,7 @@
             </MenuItem>
         </Menu>
 
-        <ListBox x:Name="LogList" 
+        <ListBox x:Name="LogList"
                  Margin="10"
                  FontFamily="Consolas"
                  BorderThickness="0"
@@ -27,23 +27,23 @@
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
-                    <Setter Property="Focusable" Value="False"/>
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="Margin" Value="0"/>
-                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="BorderThickness" Value="0" />
                 </Style>
             </ListBox.ItemContainerStyle>
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBox Text="{Binding Mode=OneWay}" 
-                             TextWrapping="Wrap" 
-                             IsReadOnly="True" 
-                             BorderThickness="0" 
+                    <TextBox Text="{Binding Mode=OneWay}"
+                             TextWrapping="Wrap"
+                             IsReadOnly="True"
+                             BorderThickness="0"
                              Background="Transparent"
-                             Padding="0" 
+                             Padding="0"
                              Margin="0"
-                             Style="{x:Null}"/>
+                             Style="{x:Null}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

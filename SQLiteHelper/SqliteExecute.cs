@@ -1214,7 +1214,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="dt">Data Table of the select Statement</param>
         /// <returns>List of Names of all Table Headers</returns>
-        private static List<string> GetTableHeaders(DataTable dt)
+        private static List<string?> GetTableHeaders(DataTable dt)
         {
             return (from DataRow row in dt.Rows select row[0].ToString()).ToList();
         }

@@ -45,7 +45,8 @@ namespace CoreBuilder.Extensions
             // 1. Logic check: If it doesn't implement IRegistryProducer, we can't save data.
             if (command is not IRegistryProducer producer)
             {
-                return CommandResult.Fail($"Extension 'who' requires an IRegistryProducer, but {command.Name} does not implement it.");
+                return CommandResult.Fail(
+                    $"Extension 'who' requires an IRegistryProducer, but {command.Name} does not implement it.");
             }
 
             // Use the registry and the key defined by the parent command

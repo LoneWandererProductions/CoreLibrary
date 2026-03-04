@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using ExtendedSystemObjects;
 using System;
 using System.Collections.Generic;
 
@@ -13,8 +14,8 @@ namespace RenderEngine
 {
     public sealed class RenderBatch
     {
-        public readonly List<float> SolidLineVertices = new(8192);
-        public readonly List<float> SolidTriangleVertices = new(8192);
+        public readonly UnmanagedList<float> SolidLineVertices = new(8192);
+        public readonly UnmanagedList<float> SolidTriangleVertices = new(8192);
         public readonly Dictionary<int, List<float>> TexturedBatches = new();
 
         public readonly List<Action> HostActions = new();
@@ -91,7 +92,7 @@ namespace RenderEngine
         }
 
         private void AddColoredVertex(
-            float x, float y, int r, int g, int b, int a, List<float> targetList)
+            float x, float y, int r, int g, int b, int a, UnmanagedList<float> targetList)
         {
             targetList.Add(x);
             targetList.Add(y);

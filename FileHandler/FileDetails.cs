@@ -27,7 +27,7 @@ namespace FileHandler
         /// <summary>
         ///     Gets or sets the original filename.
         /// </summary>
-        public string OriginalFilename { get; init; }
+        public string? OriginalFilename { get; init; }
 
         /// <summary>
         ///     Gets or sets the path.
@@ -47,27 +47,27 @@ namespace FileHandler
         /// <summary>
         ///     Gets or sets the description.
         /// </summary>
-        public string Description { get; internal init; }
+        public string? Description { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the company name.
         /// </summary>
-        public string CompanyName { get; internal init; }
+        public string? CompanyName { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the product name.
         /// </summary>
-        public string ProductName { get; internal init; }
+        public string? ProductName { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the file version.
         /// </summary>
-        public string FileVersion { get; internal init; }
+        public string? FileVersion { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the product version.
         /// </summary>
-        public string ProductVersion { get; internal init; }
+        public string? ProductVersion { get; internal init; }
 
         /// <summary>
         /// Returns a string representation of the file details.

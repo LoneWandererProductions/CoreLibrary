@@ -116,8 +116,8 @@ namespace CommonLibraryTests
             // Act: Spam the file with 5 rapid saves
             for (var i = 0; i < 5; i++)
             {
-                using var fs = new FileStream(testFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                using var writer = new StreamWriter(fs);
+                await using var fs = new FileStream(testFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                await using var writer = new StreamWriter(fs);
                 await writer.WriteAsync($"Spam {i}");
             }
 

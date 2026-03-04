@@ -206,7 +206,8 @@ namespace CommonLibraryGuiTests
         private static void DoEvents(DependencyObject control)
         {
             var frame = new System.Windows.Threading.DispatcherFrame();
-            control.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, new Action(delegate {
+            control.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, new Action(delegate
+            {
                 frame.Continue = false;
             }));
             System.Windows.Threading.Dispatcher.PushFrame(frame);

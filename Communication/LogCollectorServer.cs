@@ -54,7 +54,7 @@ namespace Communication
             // 2. Use a specific cancellation token source for just this client
             // capable of cancelling if the global token cancels OR if we time out manually.
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token);
-            using var stream = client.GetStream();
+            await using var stream = client.GetStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             try
             {
