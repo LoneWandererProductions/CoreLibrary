@@ -22,7 +22,7 @@ namespace CoreBuilder.Rules
     /// <summary>
     /// Command that detects unused project/assembly references.
     /// </summary>
-    /// <seealso cref="ICommand" />
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
     public sealed class DeadReferenceAnalyzer : ICommand, ICodeAnalyzer
     {
         /// <inheritdoc cref="ICodeAnalyzer" />

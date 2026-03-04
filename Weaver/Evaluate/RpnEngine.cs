@@ -16,7 +16,7 @@ namespace Weaver.Evaluate
     /// <summary>
     /// Main implementation of a Reverse Polish Notation (RPN) evaluation engine.
     /// </summary>
-    /// <seealso cref="IRpnEngine" />
+    /// <seealso cref="Weaver.Interfaces.IRpnEngine" />
     public class RpnEngine : IRpnEngine
     {
         /// <summary>
@@ -39,16 +39,20 @@ namespace Weaver.Evaluate
         private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators = new()
         {
             ["!"] = (5, true, 1),
+
             ["*"] = (4, false, 2),
             ["/"] = (4, false, 2),
+
             ["+"] = (3, false, 2),
             ["-"] = (3, false, 2),
+
             [">"] = (2, false, 2),
             ["<"] = (2, false, 2),
             [">="] = (2, false, 2),
             ["<="] = (2, false, 2),
             ["=="] = (2, false, 2),
             ["!="] = (2, false, 2),
+
             ["&&"] = (1, false, 2),
             ["||"] = (0, false, 2),
         };
@@ -186,7 +190,7 @@ namespace Weaver.Evaluate
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns>Registry value as numeric value</returns>
-        /// <exception cref="InvalidOperationException">Invalid numeric token: {token}</exception>
+        /// <exception cref="System.InvalidOperationException">Invalid numeric token: {token}</exception>
         private double GetNumericValue(string token)
         {
             if (_registry != null && _registry.TryGet(token, out var val, out var type))

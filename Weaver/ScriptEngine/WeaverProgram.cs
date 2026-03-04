@@ -29,7 +29,7 @@ namespace Weaver.ScriptEngine
         /// Initializes a new instance of the <see cref="WeaverProgram" /> class.
         /// </summary>
         /// <param name="instructions">The instructions.</param>
-        /// <exception cref="ArgumentNullException">instructions</exception>
+        /// <exception cref="System.ArgumentNullException">instructions</exception>
         private WeaverProgram(IEnumerable<(string Category, string? Statement)> instructions)
         {
             _instructions = instructions ?? throw new ArgumentNullException(nameof(instructions));
@@ -44,7 +44,7 @@ namespace Weaver.ScriptEngine
         /// The Script converted and ready for execution.
         /// </returns>
         /// <exception cref="ArgumentException">Script cannot be null or empty., nameof(script)</exception>
-        /// <exception cref="ArgumentException">Script cannot be null or empty. - script</exception>
+        /// <exception cref="System.ArgumentException">Script cannot be null or empty. - script</exception>
         public static WeaverProgram Compile(string script, IVariableRegistry registry)
         {
             if (string.IsNullOrWhiteSpace(script))
@@ -65,8 +65,8 @@ namespace Weaver.ScriptEngine
         /// </summary>
         /// <param name="weave">The weave.</param>
         /// <param name="maxIterations">The maximum iterations.</param>
-        /// <exception cref="ArgumentNullException">weave</exception>
-        /// <exception cref="InvalidOperationException">Script execution exceeded maximum iterations. Possible infinite loop.</exception>
+        /// <exception cref="System.ArgumentNullException">weave</exception>
+        /// <exception cref="System.InvalidOperationException">Script execution exceeded maximum iterations. Possible infinite loop.</exception>
         public void Run(Weave weave, int maxIterations = 1000)
         {
             if (weave == null) throw new ArgumentNullException(nameof(weave));
@@ -92,7 +92,7 @@ namespace Weaver.ScriptEngine
         /// </summary>
         /// <param name="weave">The weave.</param>
         /// <returns>The Script Executor to rune the script.</returns>
-        /// <exception cref="ArgumentNullException">weave</exception>
+        /// <exception cref="System.ArgumentNullException">weave</exception>
         public ScriptExecutor GetStepper(Weave weave)
         {
             if (weave == null) throw new ArgumentNullException(nameof(weave));

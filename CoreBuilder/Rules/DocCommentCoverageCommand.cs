@@ -24,7 +24,7 @@ namespace CoreBuilder.Rules
     /// <summary>
     /// Command that checks code for XML documentation comment coverage.
     /// </summary>
-    /// <seealso cref="ICommand" />
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
     public sealed class DocCommentCoverageCommand : ICodeAnalyzer, ICommand
     {
         /// <inheritdoc cref="ICodeAnalyzer" />

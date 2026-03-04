@@ -22,7 +22,7 @@ namespace CoreBuilder
     /// <summary>
     /// Command to perform advanced network diagnostics (ping, traceroute, ports, DNS).
     /// </summary>
-    /// <seealso cref="ICommand" />
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
     public sealed class SmartPingPro : ICommand
     {
         /// <inheritdoc />

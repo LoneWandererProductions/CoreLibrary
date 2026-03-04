@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ParseEngine
  * FILE:        SimpleCommandParser.cs
@@ -102,7 +102,7 @@ namespace Weaver.ParseEngine
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Get command name and parameter</returns>
-        /// <exception cref="FormatException">Missing closing parenthesis in '{input}'.</exception>
+        /// <exception cref="System.FormatException">Missing closing parenthesis in '{input}'.</exception>
         private static (string Name, string[] Args) ParseSignature(string input)
         {
             // Find the first '(' that isn't inside quotes.

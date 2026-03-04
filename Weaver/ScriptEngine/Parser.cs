@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine;
  * FILE:        Parser.cs
@@ -90,7 +90,7 @@ namespace Weaver.ScriptEngine
         /// Parses the label node.
         /// </summary>
         /// <returns>Label Node record.</returns>
-        /// <exception cref="ArgumentException">Expected identifier after 'label'</exception>
+        /// <exception cref="System.ArgumentException">Expected identifier after 'label'</exception>
         private LabelNode ParseLabelNode()
         {
             var pos = _position;
@@ -108,7 +108,7 @@ namespace Weaver.ScriptEngine
         /// Parses the goto node.
         /// </summary>
         /// <returns>Goto Node record.</returns>
-        /// <exception cref="ArgumentException">Expected identifier after 'goto'</exception>
+        /// <exception cref="System.ArgumentException">Expected identifier after 'goto'</exception>
         private GotoNode ParseGotoNode()
         {
             var pos = _position;
@@ -174,7 +174,7 @@ namespace Weaver.ScriptEngine
         /// Parses the do while node.
         /// </summary>
         /// <returns>Do7While Node record.</returns>
-        /// <exception cref="ArgumentException">Expected 'while' after 'do' block</exception>
+        /// <exception cref="System.ArgumentException">Expected 'while' after 'do' block</exception>
         private DoWhileNode ParseDoWhileNode()
         {
             var pos = _position;
@@ -315,7 +315,7 @@ namespace Weaver.ScriptEngine
         /// Expects the specified expected.
         /// </summary>
         /// <param name="expected">The expected.</param>
-        /// <exception cref="ArgumentException">Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'</exception>
+        /// <exception cref="System.ArgumentException">Expected token '{expected}' but found '{(IsAtEnd() ? "EOF" : Peek().Type.ToString())}'</exception>
         private void Expect(TokenType expected)
         {
             if (IsAtEnd() || Peek().Type != expected)

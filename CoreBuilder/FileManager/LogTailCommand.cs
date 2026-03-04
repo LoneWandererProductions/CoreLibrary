@@ -111,7 +111,8 @@ namespace CoreBuilder.FileManager
 
                         return new CommandResult
                         {
-                            Message = $"Unknown input '{input}'. Type 'stop'.", RequiresConfirmation = true
+                            Message = $"Unknown input '{input}'. Type 'stop'.",
+                            RequiresConfirmation = true
                         };
                     })
             };

@@ -188,7 +188,7 @@ namespace Weaver.Registry
             // you would need to change private readonly Dictionary<int, VmValue> _store 
             // to Dictionary<long, VmValue> _store.
 
-            range = new VmRange((int)_heapPointer, length);
+            range = new VmRange(_heapPointer, length);
             _heapPointer += length;
 
             return true;

@@ -29,9 +29,10 @@ namespace Weaver.Core.Commands
         private readonly Func<List<ICommandExtension>> _getExtensions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCommand"/> class.
+        /// Initializes a new instance of the <see cref="HelpCommand" /> class.
         /// </summary>
         /// <param name="getCommands">The get commands.</param>
+        /// <param name="getExtensions">The get extensions.</param>
         public HelpCommand(Func<IEnumerable<ICommand>> getCommands, Func<List<ICommandExtension>> getExtensions)
         {
             _getCommands = getCommands;

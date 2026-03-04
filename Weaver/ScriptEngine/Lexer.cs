@@ -21,11 +21,7 @@ namespace Weaver.ScriptEngine
         /// </summary>
         private static readonly HashSet<string> Keywords = new(StringComparer.OrdinalIgnoreCase)
         {
-            ScriptConstants.If,
-            ScriptConstants.Else,
-            ScriptConstants.Label,
-            ScriptConstants.Goto,
-            ScriptConstants.Do,
+            ScriptConstants.If, ScriptConstants.Else, ScriptConstants.Label, ScriptConstants.Goto, ScriptConstants.Do,
             ScriptConstants.While
         };
 
@@ -165,9 +161,7 @@ namespace Weaver.ScriptEngine
 
                     if (!IsAtEnd()) Advance(); // skip closing "
                     tokens.Add(new Token
-                    {
-                        Type = TokenType.String, Lexeme = sb.ToString(), Line = line, Column = col
-                    });
+                        { Type = TokenType.String, Lexeme = sb.ToString(), Line = line, Column = col });
                     continue;
                 }
 
@@ -299,7 +293,13 @@ namespace Weaver.ScriptEngine
 
             if (type != null)
             {
-                tokens.Add(new Token { Type = type.Value, Lexeme = two, Line = line, Column = col });
+                tokens.Add(new Token
+                {
+                    Type = type.Value,
+                    Lexeme = two,
+                    Line = line,
+                    Column = col
+                });
                 Advance(2);
                 return true;
             }
@@ -349,7 +349,10 @@ namespace Weaver.ScriptEngine
                         var comment = ReadWhile(ch => ch != '\n' && ch != '\r');
                         tokens.Add(new Token
                         {
-                            Type = TokenType.Comment, Lexeme = comment.Trim(), Line = line, Column = col
+                            Type = TokenType.Comment,
+                            Lexeme = comment.Trim(),
+                            Line = line,
+                            Column = col
                         });
                     }
                     else

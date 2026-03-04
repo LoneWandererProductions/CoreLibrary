@@ -36,13 +36,14 @@ namespace CoreBuilder
             ICommand[] modules =
             {
                 new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(), new HeaderExtractor(),
-                new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
+                new ResXtract(),
+                new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
                 new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
                 new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
-                new WhoAmI(weave.Runtime.Variables), new Tree()
+                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(), new WhoAmI(weave.Runtime.Variables),
+                new Tree()
             };
 
             return modules;
@@ -60,13 +61,13 @@ namespace CoreBuilder
         {
             ICommand[] modules =
             {
-                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(), new HeaderExtractor(),
-                new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
+                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(),
+                new HeaderExtractor(), new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(),
+                new DoubleNewlineAnalyzer(), new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(),
+                new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
+                new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
+                new ApiExplorerCommand(), new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
                 new WhoAmI(weave.Runtime.Variables), new Tree()
             };
 

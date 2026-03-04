@@ -26,7 +26,7 @@ namespace Weaver.Messages
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="feedback">The feedback.</param>
-        /// <exception cref="ArgumentNullException">feedback</exception>
+        /// <exception cref="System.ArgumentNullException">feedback</exception>
         public void Register(ICommand command, FeedbackRequest feedback)
         {
             if (feedback == null)

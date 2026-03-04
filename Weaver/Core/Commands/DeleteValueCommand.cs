@@ -16,7 +16,7 @@ namespace Weaver.Core.Commands
     /// <summary>
     /// Mostly internal command, deletes a value from the Scripter registry.
     /// </summary>
-    /// <seealso cref="ICommand" />
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
     public sealed class DeleteValueCommand : ICommand
     {
         /// <summary>

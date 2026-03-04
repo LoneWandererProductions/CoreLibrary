@@ -35,7 +35,7 @@ namespace Weaver.ScriptEngine
         /// <summary>
         /// The statements
         /// </summary>
-        private readonly List<(string Category, string? Statement)>? _statements;
+        private readonly List<(string Category, string)> _statements;
 
         /// <summary>
         /// The label positions
@@ -79,12 +79,12 @@ namespace Weaver.ScriptEngine
         /// <param name="weave">The weave.</param>
         /// <param name="statements">The statements.</param>
         /// <param name="debug">if set to <c>true</c> [debug].</param>
-        public ScriptExecutor(Weave weave, List<(string Category, string? Statement)>? statements, bool debug = false)
+        public ScriptExecutor(Weave weave, List<(string Category, string? Statement)> statements, bool debug = false)
         {
             //now weave also holds all the variables and evaluator commands we need.
             _weave = weave;
             _evaluator = new ExpressionEvaluator(_weave.Runtime.Variables);
-            _statements = statements ?? new List<(string Category, string? Statement)>();
+            _statements = statements ?? new List<(string Category, string)>();
             _position = 0;
             _debug = debug;
 
@@ -320,7 +320,12 @@ namespace Weaver.ScriptEngine
             if (_debug)
                 Trace.WriteLine("[Internal] Script finished successfully.");
 
-            return new CommandResult { Success = true, Message = "Script finished.", Feedback = null };
+            return new CommandResult
+            {
+                Success = true,
+                Message = "Script finished.",
+                Feedback = null
+            };
         }
 
         /// <summary>

@@ -102,8 +102,14 @@ namespace CoreBuilder.FileManager
                 files = filePaths
                     .Select(path =>
                     {
-                        try { return new FileInfo(path); }
-                        catch { return null; }
+                        try
+                        {
+                            return new FileInfo(path);
+                        }
+                        catch
+                        {
+                            return null;
+                        }
                     })
                     .Where(f => f is not null)
                     .ToList()!;
@@ -154,7 +160,8 @@ namespace CoreBuilder.FileManager
             // Combine the totals into the main parent object
             var rawData = new Dictionary<string, VmValue>
             {
-                { "total_size_bytes", VmValue.FromInt(totalSize) }, { "file_count", VmValue.FromInt(files.Count) }
+                { "total_size_bytes", VmValue.FromInt(totalSize) },
+                { "file_count", VmValue.FromInt(files.Count) }
             };
 
             return (sb.ToString(), rawData);
