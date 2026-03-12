@@ -9,7 +9,7 @@
 using System.Reflection;
 using Core.Inject;
 
-namespace CoreTests
+namespace Core.Tests
 {
     /// <summary>
     ///     Part of my Dependency Injection Journey

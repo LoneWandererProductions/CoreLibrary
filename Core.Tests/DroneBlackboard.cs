@@ -8,8 +8,9 @@
 
 using Core.StateExecutive.Interfaces;
 
-namespace CoreTests
+namespace Core.Tests
 {
+    /// <inheritdoc />
     /// <summary>
     /// A simulated drone. The blackboard holds the state of the drone, such as whether the engine is on and the battery level.
     /// </summary>
@@ -40,31 +41,14 @@ namespace CoreTests
         /// </value>
         public List<string> EventLog { get; } = new();
 
-        /// <summary>
-        /// Determines whether the specified key has resource.
-        /// The library will call this to check if a transition is legal
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="amount">The amount.</param>
-        /// <returns>
-        /// <c>true</c> if the specified key has resource; otherwise, <c>false</c>.
-        /// </returns>
+        /// <inheritdoc />
         public bool HasResource(string key, int amount = 1)
         {
             if (key == "Battery") return BatteryLevel >= amount;
             return false;
         }
 
-        // 
-        /// <summary>
-        /// Tries the claim resource.
-        /// The library will call this to atomically consume the resource during the flip
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="amount">The amount.</param>
-        /// <returns>
-        /// <c>true</c> if the specified key has resource, and it will deduce it; otherwise, <c>false</c> and no resources will be deduced.
-        /// </returns>
+        /// <inheritdoc />
         public bool TryClaimResource(string key, int amount = 1)
         {
             if (HasResource(key, amount))
@@ -72,13 +56,11 @@ namespace CoreTests
                 if (key == "Battery") BatteryLevel -= amount;
                 return true;
             }
+
             return false;
         }
 
-        /// <summary>
-        /// Logs the specified message.
-        /// </summary>
-        /// <param name="message">The message.</param>
+        /// <inheritdoc />
         public void Log(string message)
         {
             EventLog.Add(message);

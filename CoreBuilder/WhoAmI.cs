@@ -17,7 +17,7 @@ using Weaver.Registry;
 
 namespace CoreBuilder
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICommand" />
     /// <summary>
     /// Displays local machine identity (hostname, user, IP addresses) and allows extensions to fetch individual properties.
     /// </summary>

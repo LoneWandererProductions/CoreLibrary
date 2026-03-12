@@ -23,7 +23,7 @@ using Weaver.Registry;
 
 namespace CoreBuilder.FileManager
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICommand" />
     /// <summary>
     /// Provides functionality to analyze directory size and
     /// display file contributions as percentages of total size.
@@ -160,8 +160,7 @@ namespace CoreBuilder.FileManager
             // Combine the totals into the main parent object
             var rawData = new Dictionary<string, VmValue>
             {
-                { "total_size_bytes", VmValue.FromInt(totalSize) },
-                { "file_count", VmValue.FromInt(files.Count) }
+                { "total_size_bytes", VmValue.FromInt(totalSize) }, { "file_count", VmValue.FromInt(files.Count) }
             };
 
             return (sb.ToString(), rawData);

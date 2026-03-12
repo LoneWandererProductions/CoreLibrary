@@ -76,7 +76,8 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string?> GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
+        public static List<string?> GetFileByExtensionWithoutExtension(string path, string appendix,
+            bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
             return files.Select(Path.GetFileNameWithoutExtension).ToList();

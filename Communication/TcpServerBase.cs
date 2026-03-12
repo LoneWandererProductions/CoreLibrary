@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace Communication
 {
-    /// <inheritdoc />
     /// <summary>
     /// Base class for TCP servers, providing common functionality for starting, stopping, and accepting clients.
     /// </summary>

@@ -35,7 +35,7 @@ namespace Imaging
     ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>, IPixelSurface
+    public sealed class DirectBitmap : IEquatable<DirectBitmap>, IPixelSurface
     {
         /// <summary>
         ///     The synchronize lock

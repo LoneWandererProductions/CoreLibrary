@@ -22,7 +22,7 @@ using Weaver.Registry;
 
 namespace CoreBuilder.FileManager
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICommand" />
     /// <summary>
     /// Simple command to scan a directory for locked files and list the processes locking them.
     /// </summary>

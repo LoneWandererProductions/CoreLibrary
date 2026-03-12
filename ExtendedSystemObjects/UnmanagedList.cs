@@ -361,14 +361,7 @@ namespace ExtendedSystemObjects
             int newCapacity = Capacity == 0 ? 4 : Capacity * 2;
             if (newCapacity < min) newCapacity = min;
 
-            if (_buffer == IntPtr.Zero)
-            {
-                _buffer = UnmanagedMemoryHelper.Allocate<T>(newCapacity);
-            }
-            else
-            {
-                _buffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, newCapacity);
-            }
+            _buffer = _buffer == IntPtr.Zero ? UnmanagedMemoryHelper.Allocate<T>(newCapacity) : UnmanagedMemoryHelper.Reallocate<T>(_buffer, newCapacity);
 
             _ptr = (T*)_buffer;
             Capacity = newCapacity;

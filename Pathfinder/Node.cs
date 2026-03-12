@@ -68,7 +68,7 @@ namespace Pathfinder
         /// <value>
         ///     The H cost.
         /// </value>
-        internal int H { get; set; }
+        internal int H { get; init; }
 
         /// <summary>
         ///     Gets or sets the parent node, which is used to reconstruct the path once the goal is reached.

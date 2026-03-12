@@ -12,7 +12,7 @@ using Communication.Interfaces;
 
 namespace Communication
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ISerialPort" />
     internal sealed class SystemSerialPort : ISerialPort, IDisposable
     {
         /// <summary>

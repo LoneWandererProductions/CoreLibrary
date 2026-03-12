@@ -69,6 +69,7 @@ namespace Core.StateExecutive
                     return true;
                 }
             }
+
             return false;
         }
     }

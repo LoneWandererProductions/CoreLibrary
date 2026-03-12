@@ -14,16 +14,6 @@ namespace Communication
     internal static class ComResource
     {
         /// <summary>
-        ///     The separator used in URLs.
-        /// </summary>
-        internal const string Separator = "//";
-
-        /// <summary>
-        ///     The formatting used for encoding.
-        /// </summary>
-        internal const string Formatting = "utf-8";
-
-        /// <summary>
         ///     The SOAP header used in SOAP requests.
         /// </summary>
         internal const string SoapHeader = @"<?xml version=""1.0""?>
@@ -50,11 +40,6 @@ namespace Communication
         internal const string ErrorMethodCannotBeNull = "Method cannot be null or empty.";
 
         /// <summary>
-        ///     The error message request that occurs when sending a request.
-        /// </summary>
-        internal const string ErrorMessageRequest = "An error occurred while sending the request.";
-
-        /// <summary>
         ///     The error format used for displaying error messages.
         /// </summary>
         internal const string ErrorFormatOne = "Error: {0}";
@@ -75,11 +60,6 @@ namespace Communication
         internal const string AnswerMessage = "PONG";
 
         /// <summary>
-        ///     The backslash used in URLs.
-        /// </summary>
-        internal const string Backslash = "/";
-
-        /// <summary>
         ///     The message answer sent in response to a ping request.
         /// </summary>
         internal const string MessageAnswer = "Responded to a ping.";
@@ -98,16 +78,6 @@ namespace Communication
         ///     The error sending request message.
         /// </summary>
         internal const string ErrorSendingRequest = "An error occurred while sending the HTTP request.";
-
-        /// <summary>
-        ///     The error saving file message.
-        /// </summary>
-        internal const string ErrorSavingFile = "Error saving file: {0}";
-
-        /// <summary>
-        ///     The error unexpected message.
-        /// </summary>
-        internal const string ErrorUnexpected = "Unexpected error: {0}";
 
         /// <summary>
         ///     The user agent header used in HTTP requests.

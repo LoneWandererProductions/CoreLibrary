@@ -21,7 +21,7 @@ namespace Solaris
     /// <summary>
     ///     Helper class that manages image generation tasks.
     /// </summary>
-    internal static partial class Helper
+    internal static class Helper
     {
         /// <summary>
         ///     The render

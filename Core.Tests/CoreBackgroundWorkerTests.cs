@@ -10,7 +10,7 @@ using Contracts;
 using Core.Inject;
 using Core.MemoryLog;
 
-namespace CoreTests
+namespace Core.Tests
 {
     /// <summary>
     ///     Part of my Dependency Injection Journey

@@ -9,7 +9,7 @@
 using System.Diagnostics;
 using CoreBuilder.Development;
 
-namespace CoreTests
+namespace Core.Tests
 {
     /// <summary>
     ///     test Class for ResXtract.

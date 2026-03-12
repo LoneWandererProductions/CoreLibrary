@@ -9,7 +9,7 @@
 using CoreBuilder;
 using CoreBuilder.Rules;
 
-namespace CoreTests
+namespace Core.Tests
 {
     /// <summary>
     /// Unit tests for UnusedConstantAnalyzer.

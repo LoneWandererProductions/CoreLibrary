@@ -16,7 +16,6 @@ using ExtendedSystemObjects;
 
 namespace Mathematics
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Idea and Inspiration:
     ///     https://bratched.com/en/?s=matrix

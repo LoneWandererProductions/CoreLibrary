@@ -9,7 +9,7 @@
 using Core.StateExecutive;
 using Core.StateExecutive.Builder;
 
-namespace CoreTests
+namespace Core.Tests
 {
     /// <summary>
     /// Fluent Builder tests for the State Executive Engine. This test class demonstrates how to use the EngineContext and StateBuilder to create states and transitions, 
@@ -40,13 +40,13 @@ namespace CoreTests
             // 1. Build the States using your Fluent Builder
             var idleState = StateBuilder.Create("Idle")
                 .TransitionTo("Flying")
-                    // GUARD: Must be true to proceed
-                    .When(ctx => ((DroneBlackboard)ctx).IsEngineOn)
-                    // RESOURCE: Costs 5 battery to take off
-                    .Claim("Battery", 5)
-                    // ACTION: Do this during the switch
-                    .OnTransition(ctx => ctx.Log("Liftoff successful!"))
-                    .EndTransition()
+                // GUARD: Must be true to proceed
+                .When(ctx => ((DroneBlackboard)ctx).IsEngineOn)
+                // RESOURCE: Costs 5 battery to take off
+                .Claim("Battery", 5)
+                // ACTION: Do this during the switch
+                .OnTransition(ctx => ctx.Log("Liftoff successful!"))
+                .EndTransition()
                 .Build();
 
             var flyingState = StateBuilder.Create("Flying").Build();
@@ -76,7 +76,8 @@ namespace CoreTests
 
             // Prove the atomic transaction worked
             Assert.AreEqual(95, _blackboard.BatteryLevel, "The transition should have consumed 5 Battery.");
-            Assert.IsTrue(_blackboard.EventLog.Contains("Liftoff successful!"), "The transition effect should have fired.");
+            Assert.IsTrue(_blackboard.EventLog.Contains("Liftoff successful!"),
+                "The transition effect should have fired.");
         }
 
         /// <summary>
