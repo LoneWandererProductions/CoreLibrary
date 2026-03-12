@@ -16,7 +16,7 @@
     <ProjectReference Include="..\CommonControls.Images\CommonControls.Images.csproj" />
     <ProjectReference Include="..\CommonDialogs\CommonDialogs.csproj" />
     <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
-    <ProjectReference Include="..\CoreMemoryLog\CoreMemoryLog.csproj" />
+    <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
   </ItemGroup>
 
   <ItemGroup>

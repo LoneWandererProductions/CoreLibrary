@@ -7,7 +7,7 @@
  */
 
 using System.Collections.Generic;
-using CoreMemoryLog;
+using Core.MemoryLog;
 
 namespace SqliteHelper
 {

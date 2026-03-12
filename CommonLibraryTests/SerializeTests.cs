@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CoreMemoryLog;
+using Core.MemoryLog;
 using FileHandler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serializer;

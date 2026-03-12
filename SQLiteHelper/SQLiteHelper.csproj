@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreMemoryLog\CoreMemoryLog.csproj" />
+    <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
   </ItemGroup>
 
 </Project>

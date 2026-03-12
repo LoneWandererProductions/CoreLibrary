@@ -139,14 +139,16 @@ foreach (var entry in logger.GetLogs())
 | `DataFormatter`             | CSV reading/writing and formatting              |
 | `Communication`             | Networking and web service helpers,Port stuff   |
 | `CommunicationTests`        | Tests for the Network stuff                     |
-| `CoreBuilderTests`          | Tests for image/vector building tools           |
+| `Core.Tests`                | Tests for, mostly related to core namespace     |
 | `Loader`                    | Generic Plugin loading, via Interface           |
 | `CommonFilter`              | WPF control to filter data tables               |
 | `CoreBuilder`               | Utilities and small programs for Weaver engine  |
 | `Pathfinder`                | A* pathfinding for grid-based maps              |
 | `InterOp`                   | Windows API bindings                             |
-| `CoreInject`                | Minimal DI/injection support                    |
-| `CoreMemoryLog`             | In-memory logger, structured, UI-ready          |
+| `Core.Inject`               | Minimal DI/injection support                    |
+| `Core.MemoryLog`            | In-memory logger, structured, UI-ready          |
 | `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
+| `Core.StateExecutive`       | Experiment with fluent Engines                  |
+| `Core.StateExecutive.Builder` | Experiment with fluent Engines                |
+| `Core.StateExecutive.Interfaces`  | Experiment with fluent Engines            |
 | `Contracts`                 | Holds all shared Interfaces                      |
-
