@@ -34,6 +34,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.DebugPath == value) return;
+
                 DebugRegister.DebugPath = value;
                 OnPropertyChanged();
             }
@@ -48,6 +49,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.SecondsTick == value) return;
+
                 DebugRegister.SecondsTick = value;
                 OnPropertyChanged();
             }
@@ -62,6 +64,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.MinutesTick == value) return;
+
                 DebugRegister.MinutesTick = value;
                 OnPropertyChanged();
             }
@@ -76,6 +79,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.HourTick == value) return;
+
                 DebugRegister.HourTick = value;
                 OnPropertyChanged();
             }
@@ -90,6 +94,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.IsDumpActive == value) return;
+
                 DebugRegister.IsDumpActive = value;
                 OnPropertyChanged();
             }
@@ -104,6 +109,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.IsVerbose == value) return;
+
                 DebugRegister.IsVerbose = value;
                 OnPropertyChanged();
             }
@@ -144,6 +150,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.SuppressWindow == value) return;
+
                 DebugRegister.SuppressWindow = value;
                 OnPropertyChanged();
             }
@@ -158,6 +165,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.IsRunning == value) return;
+
                 DebugRegister.IsRunning = value;
                 OnPropertyChanged();
             }
@@ -172,6 +180,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.ErrorColor == value) return;
+
                 DebugRegister.ErrorColor = value;
                 OnPropertyChanged();
             }
@@ -186,6 +195,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.WarningColor == value) return;
+
                 DebugRegister.WarningColor = value;
                 OnPropertyChanged();
             }
@@ -200,6 +210,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.InformationColor == value) return;
+
                 DebugRegister.InformationColor = value;
                 OnPropertyChanged();
             }
@@ -214,6 +225,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.ExternalColor == value) return;
+
                 DebugRegister.ExternalColor = value;
                 OnPropertyChanged();
             }
@@ -228,6 +240,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.StandardColor == value) return;
+
                 DebugRegister.StandardColor = value;
                 OnPropertyChanged();
             }
@@ -242,6 +255,7 @@ namespace Debugger
             set
             {
                 if (DebugRegister.ColorOptions == value) return;
+
                 DebugRegister.ColorOptions = value;
                 OnPropertyChanged();
             }

@@ -154,6 +154,7 @@ namespace RenderEngine
         public void Dispose()
         {
             if (!_initialized) return;
+
             GL.DeleteBuffer(_vbo);
             GL.DeleteVertexArray(_vao);
             // Note: We do NOT delete the _shaderProgram here anymore, 

@@ -170,6 +170,7 @@ namespace Imaging.Gifs
         internal static void CreateGif(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
         {
             if (frames == null) return;
+
             GifCreator(frames, target);
         }
 

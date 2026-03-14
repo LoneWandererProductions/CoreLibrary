@@ -361,7 +361,9 @@ namespace ExtendedSystemObjects
             int newCapacity = Capacity == 0 ? 4 : Capacity * 2;
             if (newCapacity < min) newCapacity = min;
 
-            _buffer = _buffer == IntPtr.Zero ? UnmanagedMemoryHelper.Allocate<T>(newCapacity) : UnmanagedMemoryHelper.Reallocate<T>(_buffer, newCapacity);
+            _buffer = _buffer == IntPtr.Zero
+                ? UnmanagedMemoryHelper.Allocate<T>(newCapacity)
+                : UnmanagedMemoryHelper.Reallocate<T>(_buffer, newCapacity);
 
             _ptr = (T*)_buffer;
             Capacity = newCapacity;
@@ -381,6 +383,7 @@ namespace ExtendedSystemObjects
         public T Pop()
         {
             if (Length == 0) throw new InvalidOperationException("Stack empty");
+
             return _ptr[--Length];
         }
 
@@ -393,6 +396,7 @@ namespace ExtendedSystemObjects
         {
             EnsureNotDisposed();
             if (Length == 0) throw new InvalidOperationException("Stack empty");
+
             return _ptr[Length - 1];
         }
 
@@ -423,6 +427,7 @@ namespace ExtendedSystemObjects
         public void TrimExcess()
         {
             if (Length == Capacity) return;
+
             _buffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, Length);
             _ptr = (T*)_buffer;
             Capacity = Length;

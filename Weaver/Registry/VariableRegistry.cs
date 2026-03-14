@@ -229,6 +229,7 @@ namespace Weaver.Registry
             {
                 var valueVm = _store[i];
                 if (valueVm.Attribute == null) continue;
+
                 dict[valueVm.Attribute] = valueVm;
             }
 

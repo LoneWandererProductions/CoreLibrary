@@ -18,7 +18,7 @@ namespace CommonControls.Converter
     /// - <see cref="Convert"/> returns true if the enum value matches the converter parameter.
     /// - <see cref="ConvertBack"/> returns the enum value represented by the parameter when the boolean is true.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="System.Windows.Data.IValueConverter" />
     public class EnumToBooleanConverter : IValueConverter
     {
         /// <summary>
@@ -50,6 +50,7 @@ namespace CommonControls.Converter
         {
             if ((bool)value)
                 return Enum.Parse(targetType, parameter.ToString()!);
+
             return Binding.DoNothing;
         }
     }

@@ -67,7 +67,10 @@ namespace CommonControls.Converter
             {
                 return ColorConverter.ConvertFromString(colorName) ?? Colors.Transparent;
             }
-            catch { return Colors.Transparent; }
+            catch
+            {
+                return Colors.Transparent;
+            }
         }
     }
 }

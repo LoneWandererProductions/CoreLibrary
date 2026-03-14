@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Globalization;
 using System.Windows;
@@ -13,10 +15,11 @@ using System.Windows.Data;
 
 namespace CommonControls.Converter
 {
+    /// <inheritdoc />
     /// <summary>
     /// Boolean to Visibility converter.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="System.Windows.Data.IValueConverter" />
     public class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
@@ -27,6 +30,7 @@ namespace CommonControls.Converter
         /// </value>
         public bool Collapse { get; set; } = false; // true → Collapsed, false → Hidden
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -41,9 +45,11 @@ namespace CommonControls.Converter
         {
             if (value is bool b)
                 return b ? Visibility.Visible : (Collapse ? Visibility.Collapsed : Visibility.Hidden);
+
             return Visibility.Hidden;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>

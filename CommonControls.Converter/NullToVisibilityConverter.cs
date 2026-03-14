@@ -13,10 +13,11 @@ using System.Windows.Data;
 
 namespace CommonControls.Converter
 {
+    /// <inheritdoc />
     /// <summary>
     /// Convert null to Visibility converter.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public class NullToVisibilityConverter : IValueConverter
     {
         /// <summary>
@@ -28,6 +29,15 @@ namespace CommonControls.Converter
         public bool Collapse { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="NullToVisibilityConverter"/> is invert.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if invert; otherwise, <c>false</c>.
+        /// </value>
+        public bool Invert { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
         /// Converts a value.
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
@@ -37,9 +47,17 @@ namespace CommonControls.Converter
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => value == null ? (Collapse ? Visibility.Collapsed : Visibility.Hidden) : Visibility.Visible;
+        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isNull = value == null;
 
+            // If we want to show when NULL, and it IS NULL, we want Visible.
+            if (Invert) isNull = !isNull;
+
+            return isNull ? (Collapse ? Visibility.Collapsed : Visibility.Hidden) : Visibility.Visible;
+        }
+
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>

@@ -827,6 +827,7 @@ namespace Imaging
         public void CreateGif(IEnumerable<FrameInfo>? frames, string targetFile)
         {
             if (frames == null) return;
+
             ImageGifHandler.CreateGif(frames, targetFile);
         }
 

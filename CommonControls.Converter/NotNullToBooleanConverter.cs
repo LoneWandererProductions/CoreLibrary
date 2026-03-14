@@ -15,7 +15,7 @@ namespace CommonControls.Converter
     /// <summary>
     /// Converts between a not-null value and a boolean.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="System.Windows.Data.IValueConverter" />
     public class NotNullToBooleanConverter : IValueConverter
     {
         /// <summary>

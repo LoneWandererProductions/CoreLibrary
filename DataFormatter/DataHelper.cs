@@ -28,6 +28,7 @@ namespace DataFormatter
         internal static List<string> GetParts(string str, char separator)
         {
             if (string.IsNullOrEmpty(str)) return new List<string>();
+
             return str.Split(separator).ToList();
         }
 

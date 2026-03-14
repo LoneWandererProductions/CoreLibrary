@@ -45,6 +45,7 @@ namespace Core.Tests
         public bool HasResource(string key, int amount = 1)
         {
             if (key == "Battery") return BatteryLevel >= amount;
+
             return false;
         }
 

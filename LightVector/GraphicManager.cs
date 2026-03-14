@@ -103,6 +103,7 @@ namespace LightVector
         public bool UpdateObjectLayer(int id, int newLayer)
         {
             if (!_objects.TryGetValue(id, out var obj)) return false;
+
             obj.Layer = newLayer;
             return true;
         }

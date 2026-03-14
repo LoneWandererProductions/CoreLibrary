@@ -183,6 +183,7 @@ namespace Mathematics
         public static bool operator ==(PolyTriangle first, PolyTriangle second)
         {
             if (first is null) return second is null;
+
             return first.Equals(second);
         }
 

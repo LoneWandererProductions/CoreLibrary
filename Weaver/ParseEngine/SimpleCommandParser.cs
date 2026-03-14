@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ParseEngine
  * FILE:        SimpleCommandParser.cs
@@ -287,6 +287,7 @@ namespace Weaver.ParseEngine
         private static string StripQuotes(string val)
         {
             if (string.IsNullOrEmpty(val)) return val;
+
             if (val.Length >= 2)
             {
                 if (val.StartsWith("\"") && val.EndsWith("\"")) return val[1..^1];
