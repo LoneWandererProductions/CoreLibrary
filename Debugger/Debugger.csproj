@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
     <ProjectReference Include="..\CommonControls.Images\CommonControls.Images.csproj" />
-    <ProjectReference Include="..\CommonDialogs\CommonDialogs.csproj" />
     <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
     <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
   </ItemGroup>

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreBuilder\CoreBuilder.csproj" />
+    <ProjectReference Include="..\Core.Apps\Core.Apps.csproj" />
     <ProjectReference Include="..\Weaver\Weaver.csproj" />
   </ItemGroup>
 

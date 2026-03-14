@@ -7,7 +7,7 @@
  */
 
 using System.Diagnostics;
-using CoreBuilder.Development;
+using Core.Apps.Development;
 
 namespace Core.Tests
 {

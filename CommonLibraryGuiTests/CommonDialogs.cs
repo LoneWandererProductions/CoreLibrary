@@ -10,7 +10,7 @@
 
 using System;
 using System.Threading;
-using CommonDialogs;
+using Common.Dialogs;
 using NUnit.Framework;
 
 namespace CommonLibraryGuiTests

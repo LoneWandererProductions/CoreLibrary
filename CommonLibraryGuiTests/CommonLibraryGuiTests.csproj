@@ -52,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
     <ProjectReference Include="..\Debugger\Debugger.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />

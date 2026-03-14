@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
-using CommonDialogs;
+using Common.Dialogs;
 using CommonFilter;
 
 namespace Debugger

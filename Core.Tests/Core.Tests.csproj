@@ -24,12 +24,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\Core.Apps\Core.Apps.csproj" />
     <ProjectReference Include="..\Core.Inject\Core.Inject.csproj" />
     <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
     <ProjectReference Include="..\Core.StateExecutive.Builder\Core.StateExecutive.Builder.csproj" />
     <ProjectReference Include="..\Core.StateExecutive.Interfaces\Core.StateExecutive.Interfaces.csproj" />
     <ProjectReference Include="..\Core.StateExecutive\Core.StateExecutive.csproj" />
-    <ProjectReference Include="..\CoreBuilder\CoreBuilder.csproj" />
   </ItemGroup>
 
   <ItemGroup>

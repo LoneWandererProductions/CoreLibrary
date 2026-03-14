@@ -6,8 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using CoreBuilder;
-using CoreBuilder.Rules;
+using Core.Apps;
+using Core.Apps.Rules;
 
 namespace Core.Tests
 {

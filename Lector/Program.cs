@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using CoreBuilder;
+using Core.Apps;
 using Weaver;
 
 namespace Lector
