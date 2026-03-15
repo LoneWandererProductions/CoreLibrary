@@ -26,7 +26,7 @@ namespace Core.Apps.Rules
     /// <summary>
     ///     Finds double line breaks.
     /// </summary>
-    /// <seealso cref="T:CoreBuilder.ICodeAnalyzer" />
+    /// <seealso cref="ICodeAnalyzer" />
     public sealed class DoubleNewlineAnalyzer : ICodeAnalyzer, ICommand
     {
         /// <inheritdoc cref="ICodeAnalyzer" />

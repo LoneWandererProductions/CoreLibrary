@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        DataList.xaml.cs
  * PURPOSE:     Basic List View with some extended Features
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ExtendedSystemObjects;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>

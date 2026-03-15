@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        DataListView.cs
  * PURPOSE:     Basic View for ListView
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -19,7 +19,7 @@ using System.Windows.Input;
 using ExtendedSystemObjects;
 using ViewModel;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc />
     /// <summary>

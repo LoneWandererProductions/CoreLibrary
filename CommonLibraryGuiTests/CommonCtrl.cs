@@ -10,7 +10,7 @@
 
 using System.Collections.Generic;
 using System.Threading;
-using CommonControls;
+using Common.Controls;
 using CommonControls.Images;
 using Imaging;
 using InterOp;

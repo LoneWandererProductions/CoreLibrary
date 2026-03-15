@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        GlobalKeyHandler.cs
  * PURPOSE:     Attached Control to handle global Keystrokes
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <summary>
     ///     A static class that provides global key handling functionality to attach key-command mappings to UI elements.

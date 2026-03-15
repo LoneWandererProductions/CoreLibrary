@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        DataItem.cs
  * PURPOSE:     Basic Object needed for DataList
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -12,7 +12,7 @@
 using System;
 using ViewModel;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
@@ -75,7 +75,7 @@ namespace CommonControls
         /// </returns>
         public override bool Equals(object? obj)
         {
-            return ReferenceEquals(this, obj) || (obj is DataItem other && Equals(other));
+            return ReferenceEquals(this, obj) || obj is DataItem other && Equals(other);
         }
 
         /// <inheritdoc />

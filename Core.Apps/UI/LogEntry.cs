@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CoreBuilder.UI
+ * PROJECT:     Core.Apps.UI
  * FILE:        LogEntry.cs
  * PURPOSE:     Entry model for log messages, including optional timestamps for display in the UI.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace CommonControls
+namespace Common.Controls
 {
     public partial class ThumbnailsNew
     {

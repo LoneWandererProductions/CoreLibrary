@@ -1,32 +1,23 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Converter
- * FILE:        NullToVisibilityConverter.cs
- * PURPOSE:     Convert null to Visibility converter.
+ * PROJECT:     SlimControls
+ * FILE:        NotNullToBooleanConverter.cs
+ * PURPOSE:     NotNull to Boolean converter.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
-namespace CommonControls.Converter
+namespace Common.Converter
 {
     /// <summary>
-    /// Convert null to Visibility converter.
+    /// Converts between a not-null value and a boolean.
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class NullToVisibilityConverter : IValueConverter
+    /// <seealso cref="IValueConverter" />
+    public class NotNullToBooleanConverter : IValueConverter
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="NullToVisibilityConverter"/> is collapse.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if collapse; otherwise, <c>false</c>.
-        /// </value>
-        public bool Collapse { get; set; } = true;
-
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -38,7 +29,7 @@ namespace CommonControls.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => value == null ? (Collapse ? Visibility.Collapsed : Visibility.Hidden) : Visibility.Visible;
+            => value != null;
 
         /// <summary>
         /// Converts a value.

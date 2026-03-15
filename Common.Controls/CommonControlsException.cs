@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        CommonControlsException.cs
  * PURPOSE:     CommonControls Exception Class
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 
 // ReSharper disable MemberCanBeInternal
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc />
     /// <summary>

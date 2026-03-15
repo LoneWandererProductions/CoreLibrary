@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        InspectorGrid.cs
  * PURPOSE:     Reflection-based property editor control for WPF.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>

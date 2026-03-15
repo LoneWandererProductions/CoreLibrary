@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        ExtendedGrid.cs
  * PURPOSE:     Extension for Grid Control, not elegant but does the job
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <summary>
     ///     The extended grid class.

@@ -14,7 +14,7 @@ namespace Core.Viewer
     internal static class CoreResources
     {
         /// <summary>
-        /// The cs extension
+        /// The cs extension.
         /// </summary>
         internal const string ResourceCsExtension = "*.cs";
     }

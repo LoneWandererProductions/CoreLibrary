@@ -1,28 +1,34 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Converter
- * FILE:        ColorToNameConverter.cs
- * PURPOSE:     Convert between Color and its name as string (e.g., "Red", "Blue", etc.) for WPF bindings.
+ * PROJECT:     Common.Converter
+ * FILE:        BooleanToVisibilityConverter.cs
+ * PURPOSE:     Boolean to Visibility converter.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
-using System.Linq;
 
-namespace CommonControls.Converter
+namespace Common.Converter
 {
     /// <summary>
-    /// Converter that converts between a Color and its name as a string for WPF bindings. It uses reflection to find the name of the color in System.Windows.Media.Colors when converting from Color to string, and uses ColorConverter to convert from string to Color.
+    /// Boolean to Visibility converter.
     /// </summary>
     /// <seealso cref="IValueConverter" />
-    public class ColorToNameConverter : IValueConverter
+    public class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
-        /// Convert from Color (ViewModel) to string (Control)
+        /// Gets or sets a value indicating whether this <see cref="BooleanToVisibilityConverter"/> is collapse.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if collapse; otherwise, <c>false</c>.
+        /// </value>
+        public bool Collapse { get; set; } = false; // true → Collapsed, false → Hidden
+
+        /// <summary>
+        /// Converts a value.
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="targetType">The type of the binding target property.</param>
@@ -33,21 +39,18 @@ namespace CommonControls.Converter
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Color color)
-            {
-                // Find the name of the color in System.Windows.Media.Colors
-                var colorProperty = typeof(Colors).GetProperties()
-                    .FirstOrDefault(p => (Color)p.GetValue(null, null) == color);
+            bool b = value is bool booleanValue && booleanValue;
 
-                return colorProperty?.Name ?? color.ToString();
+            if (b)
+            {
+                return Visibility.Visible;
             }
 
-            return string.Empty;
+            return Collapse ? Visibility.Collapsed : Visibility.Hidden;
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Convert from string (Control) to Color (ViewModel)
+        /// Converts a value.
         /// </summary>
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
@@ -57,17 +60,6 @@ namespace CommonControls.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is not string colorName || string.IsNullOrEmpty(colorName))
-            {
-                return Colors.Transparent;
-            }
-
-            try
-            {
-                return ColorConverter.ConvertFromString(colorName) ?? Colors.Transparent;
-            }
-            catch { return Colors.Transparent; }
-        }
+            => value is Visibility.Visible;
     }
 }

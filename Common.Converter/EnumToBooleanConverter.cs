@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimControls
- * FILE:        NotNullToBooleanConverter.cs
- * PURPOSE:     NotNull to Boolean converter.
+ * PROJECT:     Common.Converter
+ * FILE:        EnumToBooleanConverter.cs
+ * PURPOSE:     Enum to Boolean converter.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -10,13 +10,16 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace CommonControls.Converter
+namespace Common.Converter
 {
     /// <summary>
-    /// Converts between a not-null value and a boolean.
+    /// Converts between an <see cref="Enum"/> value and a <see cref="bool"/> for use in XAML bindings.
+    /// Typically used to bind enum values to radio buttons or toggle controls:
+    /// - <see cref="Convert"/> returns true if the enum value matches the converter parameter.
+    /// - <see cref="ConvertBack"/> returns the enum value represented by the parameter when the boolean is true.
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class NotNullToBooleanConverter : IValueConverter
+    /// <seealso cref="IValueConverter" />
+    public class EnumToBooleanConverter : IValueConverter
     {
         /// <summary>
         /// Converts a value.
@@ -29,7 +32,9 @@ namespace CommonControls.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => value != null;
+        {
+            return value?.ToString() == parameter?.ToString();
+        }
 
         /// <summary>
         /// Converts a value.
@@ -42,6 +47,10 @@ namespace CommonControls.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => Binding.DoNothing;
+        {
+            if ((bool)value)
+                return Enum.Parse(targetType, parameter.ToString()!);
+            return Binding.DoNothing;
+        }
     }
 }

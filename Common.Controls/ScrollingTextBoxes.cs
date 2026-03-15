@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
+ * PROJECT:     Common.Controls
  * FILE:        PathObject.cs
  * PURPOSE:     Extensions for TextBox and RichTextBox
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -15,7 +15,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CommonControls
+namespace Common.Controls
 {
     /// <inheritdoc />
     /// <summary>
