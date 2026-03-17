@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,7 +59,7 @@ namespace Communication
             catch (Exception ex)
             {
                 // In production, use a proper logger instead of Console.WriteLine
-                Console.WriteLine(string.Format(ComResource.ErrorFormatOne, ex.Message));
+                Trace.WriteLine(string.Format(ComResource.ErrorFormatOne, ex.Message));
                 return null;
             }
         }

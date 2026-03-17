@@ -109,7 +109,7 @@ namespace Communication
                     await stream.WriteAsync(buffer, 0, buffer.Length);
                     await stream.FlushAsync();
 
-                    Console.WriteLine(ComResource.MessageAnswer);
+                    Trace.WriteLine(ComResource.MessageAnswer);
                 }
             }
             catch (Exception ex)
