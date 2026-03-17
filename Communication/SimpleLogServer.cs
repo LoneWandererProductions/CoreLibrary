@@ -119,11 +119,13 @@ namespace Communication
             _cts.Cancel();
             try
             {
-                _serverTask?.Wait(); // Wait for it to finish cleaning up
+                // Wait for all active server tasks to complete their cleanup
+                Task.WaitAll(_serverTasks.ToArray(), TimeSpan.FromSeconds(3));
             }
-            catch (AggregateException)
+            catch (AggregateException) { /* Expected on cancellation */ }
+            finally
             {
-                /* Ignore cancellation errors */
+                _serverTasks.Clear();
             }
         }
 
