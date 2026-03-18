@@ -23,9 +23,6 @@ namespace Solaris
     /// </summary>
     internal static class Helper
     {
-        /// <summary>
-        ///     The render
-        /// </summary>
         private static readonly ImageRender Render = new();
 
         /// <summary>
@@ -34,14 +31,14 @@ namespace Solaris
         private static readonly ConcurrentDictionary<string, Bitmap> ImageCache = new();
 
         /// <summary>
-        ///     Generates the final image based on map and textures.
+        /// Generates the final image based on map and textures.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
-        /// <returns>Generated Board as Imaage</returns>
+        /// <returns>Full Image.</returns>
         internal static Bitmap GenerateImage(
             int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
@@ -54,34 +51,29 @@ namespace Solaris
                 return background;
             }
 
-            var tiles = new List<Box>();
+            // Using ConcurrentBag removes the need for thread blocking (locking)
+            var tiles = new ConcurrentBag<Box>();
 
             Parallel.ForEach(map, tile =>
             {
-                if (tile.Value is not { Count: > 0 })
-                {
-                    return;
-                }
+                if (tile.Value is not { Count: > 0 }) return;
 
                 var x = tile.Key % width * textureSize;
                 var y = tile.Key / width * textureSize;
 
-                var boxes = tile.Value.Select(textureId =>
+                foreach (var textureId in tile.Value)
                 {
                     var texture = textures[textureId];
                     var image = ImageCache.GetOrAdd(texture.Path, path => Render.GetBitmapFile(path));
-                    return new Box { X = x, Y = y, Layer = texture.Layer, Image = image };
-                });
-
-                lock (tiles)
-                {
-                    tiles.AddRange(boxes);
+                    tiles.Add(new Box { X = x, Y = y, Layer = texture.Layer, Image = image });
                 }
             });
 
-            tiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
+            // Convert to a list to sort by layer (so top layers render last)
+            var sortedTiles = tiles.ToList();
+            sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            foreach (var slice in tiles)
+            foreach (var slice in sortedTiles)
             {
                 Render.CombineBitmap(background, slice.Image, slice.X, slice.Y);
             }
@@ -90,7 +82,7 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Generates a grid overlay.
+        /// Generates a grid overlay.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -102,22 +94,22 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-            }
+                for (var x = 0; x < width; x++)
+                {
+                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                }
 
             return bitmap.ToBitmapImage();
         }
 
         /// <summary>
-        ///     Generates a number overlay.
+        /// Generates a number overlay.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="padding">The padding.</param>
-        /// <returns>Image with Numbers overlayed.</returns>
+        /// <returns></returns>
         internal static ImageSource GenerateNumbers(int width, int height, int textureSize, int padding = 2)
         {
             using var bitmap = new Bitmap(width * textureSize, height * textureSize);
@@ -128,26 +120,26 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++, count++)
-            {
-                var rect = new RectangleF(
-                    (x * textureSize) + padding,
-                    (y * textureSize) + padding,
-                    textureSize - padding,
-                    textureSize - padding);
+                for (var x = 0; x < width; x++, count++)
+                {
+                    var rect = new RectangleF(
+                        (x * textureSize) + padding,
+                        (y * textureSize) + padding,
+                        textureSize - padding,
+                        textureSize - padding);
 
-                graphics.DrawString(count.ToString(), font, brush, rect);
-            }
+                    graphics.DrawString(count.ToString(), font, brush, rect);
+                }
 
             return bitmap.ToBitmapImage();
         }
 
         /// <summary>
-        ///     Adds a tile to the map.
+        /// Adds a tile to the map.
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="idTexture">The identifier texture.</param>
-        /// <returns>Generate a new Bitmap for the new Map</returns>
+        /// <returns></returns>
         internal static MapChangeResult AddTile(
             Dictionary<int, List<int>>? map, KeyValuePair<int, int> idTexture)
         {
@@ -158,12 +150,12 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Removes a tile from the map.
+        /// Removes a tile from the map.
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="idLayer">The identifier layer.</param>
-        /// <returns>Remove a Tile from the map.</returns>
+        /// <returns></returns>
         internal static MapChangeResult RemoveTile(
             Dictionary<int, List<int>>? map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
         {
@@ -194,14 +186,14 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Adds a tile image to the display layer.
+        /// Adds a tile image to the display layer.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
-        /// <returns>Add an Image to the image Layer</returns>
+        /// <returns>Image on screen</returns>
         public static Bitmap? AddDisplay(
             int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
             KeyValuePair<int, int> idTile)
@@ -221,7 +213,7 @@ namespace Solaris
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="position">The position.</param>
-        /// <returns>Remove areal from Image</returns>
+        /// <returns>Cleaned Image.</returns>
         public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
         {
             var x = position % width * textureSize;
@@ -231,7 +223,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Displays movement animation.
+        /// Displays movement animation frame by frame.
         /// </summary>
         /// <param name="aurora">The aurora.</param>
         /// <param name="steps">The steps.</param>
@@ -239,39 +231,34 @@ namespace Solaris
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        /// <returns>Status of the animation.</returns>
+        /// <returns>Movement animation</returns>
         internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
             int width, int height, int textureSize)
         {
             aurora.IsEnabled = false;
-            using var background = new Bitmap(width * textureSize, height * textureSize);
 
             foreach (var step in steps)
             {
                 var x = step % width * textureSize;
                 var y = step / width * textureSize;
 
-                await MoveAvatar(x, y, background, avatar, 100);
+                // 1. Create a fresh, transparent frame for this specific step to prevent "ghost trails"
+                using var frame = new Bitmap(width * textureSize, height * textureSize);
+
+                // 2. Draw the avatar at the current step
+                Render.CombineBitmap(frame, avatar, x, y);
+
+                // 3. Push this frame immediately to the UI so we actually see the animation
+                aurora.LayerThree.Source = frame.ToBitmapImage();
+
+                // 4. Wait before drawing the next frame
+                await Task.Delay(100);
             }
 
-            aurora.IsEnabled = true;
-            aurora.LayerThree.Source = background.ToBitmapImage();
-        }
+            // Optional: Clear the avatar after the animation is entirely done
+            // aurora.LayerThree.Source = null; 
 
-        /// <summary>
-        /// Moves the avatar to a new position with animation.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <param name="background">The background.</param>
-        /// <param name="avatar">The avatar.</param>
-        /// <param name="sleep">The sleep.</param>
-        /// <returns>Status of the animation.</returns>
-        private static async Task<bool> MoveAvatar(int x, int y, Bitmap? background, Bitmap? avatar, int sleep)
-        {
-            Render.CombineBitmap(background, avatar, x, y);
-            await Task.Delay(sleep);
-            return true;
+            aurora.IsEnabled = true;
         }
     }
 }
