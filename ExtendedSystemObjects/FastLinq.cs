@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
@@ -145,6 +146,24 @@ namespace ExtendedSystemObjects
                 if (!predicate(t))
                     return false;
 
+            return true;
+        }
+
+        /// <summary>
+        /// High-performance 'All' check for Lists to avoid LINQ's IEnumerable overhead.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">The list.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>True if all elements satisfy the predicate; otherwise false.</returns>
+        public static bool AllFast<T>(this List<T> list, Func<T, bool> predicate)
+        {
+            // Accessing by index or using the List's struct enumerator is 
+            // faster and cheaper than LINQ's version.
+            foreach (var item in list)
+            {
+                if (!predicate(item)) return false;
+            }
             return true;
         }
 

@@ -86,6 +86,38 @@ namespace Common.Dialogs
         }
 
         /// <summary>
+        ///     Looks up a file
+        ///     Returns the PathObject
+        ///     With Start Folder
+        /// </summary>
+        /// <param name="appendage">File Extension we allow</param>
+        /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
+        /// <returns>PathObject with basic File Parameters</returns>
+        public static PathObject? HandleFileOpen(string appendage, string folder = "")
+        {
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComDlgResources.Appendix;
+            }
+
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
+
+            var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
+
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
+
+            var path = openFile.FileName;
+
+            return new PathObject { FilePath = path };
+        }
+
+        /// <summary>
         ///     Looks up multiple files
         ///     Returns a list of PathObjects
         ///     With Start Folder
