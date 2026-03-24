@@ -97,5 +97,21 @@ namespace Core.MemoryLog
         /// The name of the method.
         /// </value>
         public string? MethodName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event identifier.
+        /// </summary>
+        /// <value>
+        /// The event identifier.
+        /// </value>
+        public int? EventId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the event.
+        /// </summary>
+        /// <value>
+        /// The name of the event.
+        /// </value>
+        public string? EventName { get; set; }
     }
 }
