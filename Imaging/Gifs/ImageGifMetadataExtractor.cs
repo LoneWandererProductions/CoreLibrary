@@ -94,29 +94,34 @@ namespace Imaging.Gifs
                             switch (extensionLabel)
                             {
                                 case ImagingResources.ApplicationExtensionLabel:
-                                    var blockSize = reader.ReadByte();
-                                    var appIdentifier =
-                                        new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
-                                    var appAuthCode = new string(reader.ReadChars(ImagingResources.AppAuthCodeLength));
+                                    // Skip blockSize (1 byte)
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current);
+
+                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+
+                                    // Skip the auth code bytes
+                                    reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
 
                                     if (appIdentifier == ImagingResources.NetScapeIdentifier)
                                     {
-                                        var subBlockSize = reader.ReadByte();
-                                        var loopFlag = reader.ReadByte();
+                                        // Skip subBlockSize (1 byte) and loopFlag (1 byte)
+                                        reader.BaseStream.Seek(2, SeekOrigin.Current);
                                         metadata.LoopCount = reader.ReadInt16();
                                     }
                                     else
                                     {
                                         SkipExtensionBlocks(reader);
                                     }
-
                                     break;
 
                                 case ImagingResources.GraphicsControlExtensionLabel:
-                                    reader.BaseStream.Seek(1, SeekOrigin.Current);
-                                    packed = reader.ReadByte();
+                                    // Skip blockSize (1 byte) and packed flags (1 byte)
+                                    reader.BaseStream.Seek(2, SeekOrigin.Current);
+
                                     var delay = reader.ReadInt16();
                                     lastFrameDelay = delay / ImagingResources.DelayDivisor;
+
+                                    // Skip transparent color index (1 byte)
                                     reader.BaseStream.Seek(1, SeekOrigin.Current);
                                     break;
 
