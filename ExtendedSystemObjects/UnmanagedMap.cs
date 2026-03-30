@@ -92,11 +92,43 @@ namespace ExtendedSystemObjects
         /// The <see cref="TValue"/>.
         /// </value>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Value at Key</returns>
         public TValue this[int key]
         {
             get => Get(key);
             set => Set(key, value);
+        }
+
+        /// <summary>
+        ///     Gets the values.
+        /// </summary>
+        /// <value>
+        ///     The values.
+        /// </value>
+        public IEnumerable<TValue> Values
+        {
+            get
+            {
+                return GetValuesSnapshot();
+            }
+        }
+
+        /// <summary>
+        /// Gets the values snapshot.
+        /// </summary>
+        /// <returns>List of Values</returns>
+        private List<TValue> GetValuesSnapshot()
+        {
+            var values = new List<TValue>(Count);
+            for (var i = 0; i < Capacity; i++)
+            {
+                var entry = _entries[i];
+                if (entry.Used == SharedResources.Occupied)
+                {
+                    values.Add(entry.Value);
+                }
+            }
+            return values;
         }
 
         /// <summary>

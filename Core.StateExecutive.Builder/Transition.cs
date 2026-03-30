@@ -8,6 +8,7 @@
  */
 
 using Core.StateExecutive.Interfaces;
+using ExtendedSystemObjects;
 
 namespace Core.StateExecutive.Builder
 {
@@ -61,7 +62,7 @@ namespace Core.StateExecutive.Builder
             if (!_condition(context)) return false;
 
             // 2. Check resource availability without consuming
-            return _claims.All(claim => context.HasResource(claim.key, claim.amount));
+            return _claims.AllFast(claim => context.HasResource(claim.key, claim.amount));
         }
 
         /// <inheritdoc />

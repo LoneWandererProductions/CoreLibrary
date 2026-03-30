@@ -13,6 +13,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Communication.Interfaces;
@@ -41,29 +42,59 @@ namespace Communication
         private Task _serverTask;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleLogServer"/> class.
+        /// The TCP log server
+        /// </summary>
+        private readonly LogCollectorServer _tcpServer;
+
+        /// <summary>
+        /// The UDP log server
+        /// </summary>
+        private readonly UdpLogCollector _udpServer;
+
+        /// <summary>
+        /// The protocol
+        /// </summary>
+        private readonly LogProtocol _protocol;
+
+        /// <summary>
+        /// The server tasks
+        /// </summary>
+        private readonly List<Task> _serverTasks = new();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleLogServer" /> class.
         /// </summary>
         /// <param name="port">The port.</param>
         /// <param name="onLogReceived">The on log received.</param>
-        public SimpleLogServer(int port, Action<string> onLogReceived)
-            : this(port, new ActionLogProcessor(onLogReceived))
+        /// <param name="protocol">The protocol.</param>
+        public SimpleLogServer(int port, Action<string> onLogReceived, LogProtocol protocol = LogProtocol.TCP)
+                : this(port, new ActionLogProcessor(onLogReceived), protocol)
         {
             // This constructor just wraps the Action into our helper class
             // and chains to Constructor 2.
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleLogServer"/> class.
+        /// Initializes a new instance of the <see cref="SimpleLogServer" /> class.
         /// </summary>
         /// <param name="port">The port.</param>
         /// <param name="processor">The processor.</param>
+        /// <param name="protocol">The protocol.</param>
+        /// <exception cref="System.ArgumentNullException">processor</exception>
         /// <exception cref="ArgumentNullException">processor</exception>
-        public SimpleLogServer(int port, ILogProcessor processor)
+        public SimpleLogServer(int port, ILogProcessor processor, LogProtocol protocol = LogProtocol.TCP)
         {
             if (processor == null) throw new ArgumentNullException(nameof(processor));
 
+            _protocol = protocol;
             _cts = new CancellationTokenSource();
-            _internalServer = new LogCollectorServer(port, processor);
+
+            // Initialize based on choice
+            if (protocol == LogProtocol.TCP || protocol == LogProtocol.Both)
+                _tcpServer = new LogCollectorServer(port, processor);
+
+            if (protocol == LogProtocol.UDP || protocol == LogProtocol.Both)
+                _udpServer = new UdpLogCollector(port, processor);
         }
 
         /// <summary>
@@ -71,10 +102,13 @@ namespace Communication
         /// </summary>
         public void Start()
         {
-            if (_serverTask != null) return; // Already running
+            if (_serverTasks.Count > 0) return;
 
-            // Run the server in a background task so it doesn't block the main thread
-            _serverTask = Task.Run(() => _internalServer.StartAsync(_cts.Token));
+            if (_tcpServer != null)
+                _serverTasks.Add(Task.Run(() => _tcpServer.StartAsync(_cts.Token)));
+
+            if (_udpServer != null)
+                _serverTasks.Add(Task.Run(() => _udpServer.StartAsync(_cts.Token)));
         }
 
         /// <summary>
@@ -85,11 +119,13 @@ namespace Communication
             _cts.Cancel();
             try
             {
-                _serverTask?.Wait(); // Wait for it to finish cleaning up
+                // Wait for all active server tasks to complete their cleanup
+                Task.WaitAll(_serverTasks.ToArray(), TimeSpan.FromSeconds(3));
             }
-            catch (AggregateException)
+            catch (AggregateException) { /* Expected on cancellation */ }
+            finally
             {
-                /* Ignore cancellation errors */
+                _serverTasks.Clear();
             }
         }
 

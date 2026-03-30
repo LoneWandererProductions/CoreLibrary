@@ -28,6 +28,14 @@ namespace Common.Converter
         public bool Collapse { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="NullToVisibilityConverter"/> is invert.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if invert; otherwise, <c>false</c>.
+        /// </value>
+        public bool Invert { get; set; } = false;
+
+        /// <summary>
         /// Converts a value.
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
@@ -38,7 +46,22 @@ namespace Common.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => value == null ? Collapse ? Visibility.Collapsed : Visibility.Hidden : Visibility.Visible;
+        {
+            // Check if value is null
+            bool isNull = value == null;
+
+            // Apply inversion: 
+            // If Invert is false: Null -> Hidden/Collapsed, Not Null -> Visible
+            // If Invert is true:  Null -> Visible, Not Null -> Hidden/Collapsed
+            bool shouldHide = Invert ? !isNull : isNull;
+
+            if (shouldHide)
+            {
+                return Collapse ? Visibility.Collapsed : Visibility.Hidden;
+            }
+
+            return Visibility.Visible;
+        }
 
         /// <summary>
         /// Converts a value.

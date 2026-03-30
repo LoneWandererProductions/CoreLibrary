@@ -26,59 +26,15 @@ namespace CommonFilter
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.FilterWindow" /> class.
         /// </summary>
-        /// <param name="filter"></param>
+        /// <param name="filter">The Filter</param>
         public FilterWindow(Filter filter)
         {
             InitializeComponent();
             View.Reference = this;
-            View.Filter = new Dictionary<int, SearchParameterControl>();
             _interface = filter;
-            AddFilter();
-        }
 
-        /// <summary>
-        ///     Adds the filter.
-        /// </summary>
-        public void AddFilter()
-        {
-            var id = GetFirstAvailableIndex(View.Filter.Keys.ToList());
-
-            var searchParameterControl = new SearchParameterControl(id);
-            searchParameterControl.DeleteLogic += SearchParameterControl_DeleteLogic;
-
-            // Add the control to the ListBox's Items
-            _ = FilterList.Items.Add(searchParameterControl);
-
-            View.Filter.Add(id, searchParameterControl);
-        }
-
-        /// <summary>
-        ///     Gets the first index of the available.
-        ///     See ExtendedSystemObjects.
-        /// </summary>
-        /// <param name="lst">The List of elements.</param>
-        /// <returns>First available free id.</returns>
-        private static int GetFirstAvailableIndex(IEnumerable<int> lst)
-        {
-            return Enumerable.Range(0, int.MaxValue)
-                .Except(lst)
-                .FirstOrDefault();
-        }
-
-        /// <summary>
-        ///     Searches the parameter control delete logic.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="id">The identifier.</param>
-        private void SearchParameterControl_DeleteLogic(object sender, int id)
-        {
-            if (id == 0)
-            {
-                return;
-            }
-
-            FilterList.Items.Remove(sender);
-            View.Filter.Remove(id);
+            // Add the first blank filter row on startup
+            View.AddCommand.Execute(null);
         }
 
         /// <summary>

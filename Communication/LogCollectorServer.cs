@@ -3,6 +3,7 @@
  * PROJECT:     Communication
  * FILE:        LogCollectorServer.cs
  * PURPOSE:     Central log collector server that listens for incoming log messages and processes them using a provided ILogProcessor implementation.
+ *              The TCP Variation
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

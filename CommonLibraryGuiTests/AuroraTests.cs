@@ -155,85 +155,54 @@ namespace CommonLibraryGuiTests
 
             var compare = new ImageAnalysis();
 
-            //new Test with other UI
             var polaris = new Polaris
             {
                 PolarisTextures = new Dictionary<int, Texture>
                 {
-                    {
-                        0,
-                        new Texture
-                        {
-                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
-                        }
-                    },
-                    {
-                        1,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
-                        }
-                    },
-                    {
-                        2,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
-                        }
-                    }
+                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png") } },
+                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png") } },
+                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png") } }
                 },
                 PolarisTextureSize = 100,
                 PolarisHeight = 2,
                 PolarisWidth = 3
             };
 
-            //way hacky but works for for now....
             polaris.Initiate();
             var blank = polaris.BitmapLayerThree;
 
-            //0
-            var keyValue = new KeyValuePair<int, int>(0, 0);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(0, 1);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(0, 2);
-            polaris.PolarisAdd = keyValue;
-            //1
-            keyValue = new KeyValuePair<int, int>(1, 0);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(1, 1);
-            polaris.PolarisAdd = keyValue;
-            //2
-            keyValue = new KeyValuePair<int, int>(2, 0);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(2, 1);
-            polaris.PolarisAdd = keyValue;
-            //3
-            keyValue = new KeyValuePair<int, int>(3, 0);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(3, 1);
-            polaris.PolarisAdd = keyValue;
-            //4
-            keyValue = new KeyValuePair<int, int>(4, 0);
-            polaris.PolarisAdd = keyValue;
-            keyValue = new KeyValuePair<int, int>(4, 1);
-            polaris.PolarisAdd = keyValue;
-            //5
-            keyValue = new KeyValuePair<int, int>(5, 0);
-            polaris.PolarisAdd = keyValue;
+            // FIXED: Swapped all = assignments to method calls ()
+            // 0
+            polaris.AddTile(new KeyValuePair<int, int>(0, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(0, 1));
+            polaris.AddTile(new KeyValuePair<int, int>(0, 2));
+            // 1
+            polaris.AddTile(new KeyValuePair<int, int>(1, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(1, 1));
+            // 2
+            polaris.AddTile(new KeyValuePair<int, int>(2, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(2, 1));
+            // 3
+            polaris.AddTile(new KeyValuePair<int, int>(3, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(3, 1));
+            // 4
+            polaris.AddTile(new KeyValuePair<int, int>(4, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(4, 1));
+            // 5
+            polaris.AddTile(new KeyValuePair<int, int>(5, 0));
 
             polaris.BitmapLayerOne.Save($"{SampleImagesFolder}/example Polaris.png", ImageFormat.Png);
 
             var data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
-
             Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(1, 0);
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(2, 0);
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(3, 0);
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(4, 0);
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(5, 0);
+            // FIXED: Display method calls
+            polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
+            polaris.AddDisplay(new KeyValuePair<int, int>(1, 0));
+            polaris.AddDisplay(new KeyValuePair<int, int>(2, 0));
+            polaris.AddDisplay(new KeyValuePair<int, int>(3, 0));
+            polaris.AddDisplay(new KeyValuePair<int, int>(4, 0));
+            polaris.AddDisplay(new KeyValuePair<int, int>(5, 0));
 
             data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
 
@@ -261,19 +230,19 @@ namespace CommonLibraryGuiTests
 
             Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
-            polaris.PolarisRemoveDisplay = 0;
-            polaris.PolarisRemoveDisplay = 1;
-            polaris.PolarisRemoveDisplay = 2;
-            polaris.PolarisRemoveDisplay = 3;
-            polaris.PolarisRemoveDisplay = 4;
-            polaris.PolarisRemoveDisplay = 5;
+            // FIXED: Method calls for removing displays
+            polaris.RemoveDisplay(0);
+            polaris.RemoveDisplay(1);
+            polaris.RemoveDisplay(2);
+            polaris.RemoveDisplay(3);
+            polaris.RemoveDisplay(4);
+            polaris.RemoveDisplay(5);
 
             data = compare.CompareImages(blank, polaris.BitmapLayerThree);
-
             Assert.AreEqual(100, data.Similarity, $"Map Polaris was not correct: {data.Similarity}");
 
-            //this is a duplicate so this should not be added
-            polaris.PolarisAddDisplay = new KeyValuePair<int, int>(0, 0);
+            // this is a duplicate so this should not be added
+            polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
 
             for (var i = 0; i <= 5; i++)
             {

@@ -50,12 +50,14 @@ namespace Core.MemoryLog
         /// <param name="message">The log message.</param>
         /// <param name="libraryName">The name of the library (for categorization).</param>
         /// <param name="exception">Optional exception.</param>
+        /// <param name="eventId">Optional EventId for structured logging.</param>
         /// <param name="callerMethod">The calling method name (auto-filled via CallerMemberName).</param>
         /// <param name="args">Optional arguments for message formatting.</param>
         void Log(LogLevel logLevel,
             string? message,
             string? libraryName = null,
             Exception? exception = null,
+            Microsoft.Extensions.Logging.EventId? eventId = null, // <-- ADDED THIS
             [CallerMemberName] string callerMethod = "",
             params object[] args);
 

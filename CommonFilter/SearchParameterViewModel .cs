@@ -53,6 +53,11 @@ namespace CommonFilter
         internal FilterOption Options => GetOptions();
 
         /// <summary>
+        /// The delete callback
+        /// </summary>
+        private readonly Action<SearchParameterViewModel> _deleteCallback;
+
+        /// <summary>
         ///     Gets or sets the entry text.
         /// </summary>
         /// <value>
@@ -128,12 +133,13 @@ namespace CommonFilter
             _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
 
         /// <summary>
-        ///     Gets or sets the reference.
+        /// Initializes a new instance of the <see cref="SearchParameterViewModel"/> class.
         /// </summary>
-        /// <value>
-        ///     The reference.
-        /// </value>
-        public SearchParameterControl? Reference { get; set; }
+        /// <param name="deleteCallback">The delete callback.</param>
+        public SearchParameterViewModel(Action<SearchParameterViewModel> deleteCallback)
+        {
+            _deleteCallback = deleteCallback;
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -186,9 +192,7 @@ namespace CommonFilter
         /// <param name="obj">The object.</param>
         private void DeleteAction(object obj)
         {
-            // Perform delete action logic
-            // Raise the event
-            Reference?.DeleteClicked();
+            _deleteCallback?.Invoke(this);
         }
     }
 }

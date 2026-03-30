@@ -6,12 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedType.Global
-// ReSharper disable PropertyCanBeMadeInitOnly.Global
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -28,115 +22,71 @@ namespace Solaris
     /// <summary>
     ///     Generate a playing field for the editor
     /// </summary>
-    public sealed partial class Polaris
+    public sealed partial class Polaris : UserControl
     {
+        #region Dependency Properties
+
         /// <summary>
-        ///     The editor height
+        /// The polaris height property
         /// </summary>
         public static readonly DependencyProperty PolarisHeightProperty = DependencyProperty.Register(
-            nameof(PolarisHeight),
-            typeof(int),
-            typeof(Polaris), new PropertyMetadata(100));
+            nameof(PolarisHeight), typeof(int), typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
-        ///     The editor width
+        /// The polaris width property
         /// </summary>
         public static readonly DependencyProperty PolarisWidthProperty = DependencyProperty.Register(
-            nameof(PolarisWidth),
-            typeof(int),
-            typeof(Polaris), new PropertyMetadata(100));
+            nameof(PolarisWidth), typeof(int), typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
-        ///     The editor texture size
+        /// The polaris texture size property
         /// </summary>
         public static readonly DependencyProperty PolarisTextureSizeProperty = DependencyProperty.Register(
-            nameof(PolarisTextureSize),
-            typeof(int),
-            typeof(Polaris), new PropertyMetadata(100));
+            nameof(PolarisTextureSize), typeof(int), typeof(Polaris), new PropertyMetadata(100));
 
         /// <summary>
-        ///     The editor map
-        /// </summary>
-        public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(
-            nameof(PolarisMap),
-            typeof(Dictionary<int, List<int>>),
-            typeof(Polaris),
-            new PropertyMetadata(null));
-
-        /// <summary>
-        ///     The editor textures
+        /// The polaris textures property
         /// </summary>
         public static readonly DependencyProperty PolarisTexturesProperty = DependencyProperty.Register(
-            nameof(PolarisTextures),
-            typeof(Dictionary<int, Texture>),
-            typeof(Polaris),
-            new PropertyMetadata(null));
+            nameof(PolarisTextures), typeof(Dictionary<int, Texture>), typeof(Polaris), new PropertyMetadata(null));
+
+        // Note the added Callbacks for properties that trigger visual updates
 
         /// <summary>
-        ///     The editor grid
+        /// The polaris map property
         /// </summary>
-        public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(nameof(PolarisGrid),
-            typeof(bool),
-            typeof(Polaris),
-            new PropertyMetadata(false));
+        public static readonly DependencyProperty PolarisMapProperty = DependencyProperty.Register(
+            nameof(PolarisMap), typeof(Dictionary<int, List<int>>), typeof(Polaris),
+            new PropertyMetadata(null, OnMapChanged));
 
         /// <summary>
-        ///     The editor number
+        /// The polaris grid property
+        /// </summary>
+        public static readonly DependencyProperty PolarisGridProperty = DependencyProperty.Register(
+            nameof(PolarisGrid), typeof(bool), typeof(Polaris),
+            new PropertyMetadata(false, OnGridChanged));
+
+        /// <summary>
+        /// The polaris number property
         /// </summary>
         public static readonly DependencyProperty PolarisNumberProperty = DependencyProperty.Register(
-            nameof(PolarisNumber),
-            typeof(bool),
-            typeof(Polaris),
-            new PropertyMetadata(false));
+            nameof(PolarisNumber), typeof(bool), typeof(Polaris),
+            new PropertyMetadata(false, OnNumberChanged));
+
+        #endregion
 
         /// <summary>
-        ///     The editor add
-        /// </summary>
-        public static readonly DependencyProperty PolarisAddProperty = DependencyProperty.Register(nameof(PolarisAdd),
-            typeof(KeyValuePair<int, int>),
-            typeof(Polaris),
-            new PropertyMetadata(null));
-
-        /// <summary>
-        ///     The editor remove
-        /// </summary>
-        public static readonly DependencyProperty PolarisRemoveProperty = DependencyProperty.Register(
-            nameof(PolarisRemove),
-            typeof(KeyValuePair<int, int>),
-            typeof(Polaris),
-            new PropertyMetadata(null));
-
-        /// <summary>
-        ///     The editor add display
-        /// </summary>
-        public static readonly DependencyProperty PolarisAddDisplayProperty = DependencyProperty.Register(
-            nameof(PolarisAddDisplay),
-            typeof(KeyValuePair<int, int>),
-            typeof(Polaris),
-            new PropertyMetadata(null));
-
-        /// <summary>
-        ///     The editor remove display
-        /// </summary>
-        public static readonly DependencyProperty PolarisRemoveDisplayProperty = DependencyProperty.Register(
-            nameof(PolarisRemoveDisplay),
-            typeof(int),
-            typeof(Polaris),
-            new PropertyMetadata(null));
-
-        /// <summary>
-        ///     The lock
+        /// The lock
         /// </summary>
         private readonly Lock _lock = new();
 
         /// <summary>
-        ///     The cursor
+        /// The cursor
         /// </summary>
         private Coordinate2D _cursor;
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Polaris" /> class.
+        /// Initializes a new instance of the <see cref="Polaris"/> class.
         /// </summary>
         public Polaris()
         {
@@ -144,27 +94,33 @@ namespace Solaris
             Initiate();
         }
 
-        /// <summary>
-        ///     Gets the bitmap layer three.
-        /// </summary>
-        /// <value>
-        ///     The bitmap layer three.
-        /// </value>
-        internal Bitmap? BitmapLayerThree { get; private set; }
+        // We use these properties to safely manage GDI+ memory
 
         /// <summary>
-        ///     Gets the bitmap layer one.
+        /// Gets the bitmap layer one.
         /// </summary>
         /// <value>
-        ///     The bitmap layer one.
+        /// The bitmap layer one.
         /// </value>
         internal Bitmap? BitmapLayerOne { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the height of the Polaris.
+        /// Gets the bitmap layer three.
         /// </summary>
         /// <value>
-        ///     The height of the Polaris.
+        /// The bitmap layer three.
+        /// </value>
+        internal Bitmap? BitmapLayerThree { get; private set; }
+
+        public event EventHandler<int>? Clicked;
+
+        #region CLR Property Wrappers (MUST stay purely Get/Set)
+
+        /// <summary>
+        /// Gets or sets the height of the polaris.
+        /// </summary>
+        /// <value>
+        /// The height of the polaris.
         /// </value>
         public int PolarisHeight
         {
@@ -173,10 +129,10 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Gets or sets the width of the Polaris.
+        /// Gets or sets the width of the polaris.
         /// </summary>
         /// <value>
-        ///     The width of the Polaris.
+        /// The width of the polaris.
         /// </value>
         public int PolarisWidth
         {
@@ -185,10 +141,10 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Gets or sets the size of the Polaris texture.
+        /// Gets or sets the size of the polaris texture.
         /// </summary>
         /// <value>
-        ///     The size of the Polaris texture.
+        /// The size of the polaris texture.
         /// </value>
         public int PolarisTextureSize
         {
@@ -197,36 +153,10 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Gets or sets the Polaris map.
+        /// Gets or sets the polaris textures.
         /// </summary>
         /// <value>
-        ///     The Polaris map.
-        /// </value>
-        public Dictionary<int, List<int>>? PolarisMap
-        {
-            get => (Dictionary<int, List<int>>)GetValue(PolarisMapProperty);
-            set
-            {
-                if (value == null || PolarisTextures == null)
-                {
-                    return;
-                }
-
-                lock (_lock)
-                {
-                    SetValue(PolarisMapProperty, value);
-                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                        PolarisTextures, PolarisMap);
-                    LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the dependency textures.
-        /// </summary>
-        /// <value>
-        ///     The dependency textures.
+        /// The polaris textures.
         /// </value>
         public Dictionary<int, Texture> PolarisTextures
         {
@@ -235,209 +165,277 @@ namespace Solaris
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [dependency grid].
+        /// Gets or sets the polaris map.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [dependency grid]; otherwise, <c>false</c>.
+        /// The polaris map.
+        /// </value>
+        public Dictionary<int, List<int>>? PolarisMap
+        {
+            get => (Dictionary<int, List<int>>?)GetValue(PolarisMapProperty);
+            set => SetValue(PolarisMapProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [polaris grid].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [polaris grid]; otherwise, <c>false</c>.
         /// </value>
         public bool PolarisGrid
         {
             get => (bool)GetValue(PolarisGridProperty);
-            set
-            {
-                SetValue(PolarisGridProperty, value);
-                LayerTwo.Source = !PolarisGrid
-                    ? null
-                    : Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
+            set => SetValue(PolarisGridProperty, value);
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [dependency number].
+        /// Gets or sets a value indicating whether [polaris number].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [dependency number]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [polaris number]; otherwise, <c>false</c>.
         /// </value>
         public bool PolarisNumber
         {
             get => (bool)GetValue(PolarisNumberProperty);
-            set
-            {
-                SetValue(PolarisNumberProperty, value);
-                LayerThree.Source = !PolarisNumber
-                    ? null
-                    : Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
+            set => SetValue(PolarisNumberProperty, value);
         }
 
+        #endregion
+
+        #region Dependency Property Callbacks (Where the magic happens)
+
         /// <summary>
-        ///     Gets or sets the dependency add.
+        /// Called when [map changed].
         /// </summary>
-        /// <value>
-        ///     The dependency add.
-        /// </value>
-        public KeyValuePair<int, int> PolarisAdd
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get => (KeyValuePair<int, int>)GetValue(PolarisAddProperty);
-            set
+            var control = (Polaris)d;
+            if (e.NewValue == null || control.PolarisTextures == null) return;
+
+            lock (control._lock)
             {
-                SetValue(PolarisAddProperty, value);
-
-                var (check, dictionary) = Helper.AddTile(PolarisMap, value);
-
-                if (!check)
-                {
-                    return;
-                }
-
-                PolarisMap = dictionary;
-
-                lock (_lock)
-                {
-                    BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                        PolarisTextures, PolarisMap);
-
-                    LayerOne.Source = BitmapLayerOne.ToBitmapImage();
-                }
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, (Dictionary<int, List<int>>)e.NewValue);
+                control.ReplaceBitmapLayerOne(newBitmap);
             }
         }
 
         /// <summary>
-        ///     Gets or sets the dependency remove.
+        /// Called when [grid changed].
         /// </summary>
-        /// <value>
-        ///     The dependency remove.
-        /// </value>
-        public KeyValuePair<int, int> PolarisRemove
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnGridChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get => (KeyValuePair<int, int>)GetValue(PolarisRemoveProperty);
-            set
-            {
-                SetValue(PolarisRemoveProperty, value);
-                var (check, dictionary) = Helper.RemoveTile(PolarisMap, PolarisTextures, value);
+            var control = (Polaris)d;
+            var isGridEnabled = (bool)e.NewValue;
 
-                if (!check)
-                {
-                    return;
-                }
-
-                PolarisMap = dictionary;
-
-                BitmapLayerOne = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize,
-                    PolarisTextures, PolarisMap);
-
-                lock (_lock)
-                {
-                    LayerOne.Source = BitmapLayerOne.ToBitmapImage();
-                }
-            }
+            control.LayerTwo.Source = isGridEnabled
+                ? Helper.GenerateGrid(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize)
+                : null;
         }
 
         /// <summary>
-        ///     Gets or sets the dependency add display.
+        /// Called when [number changed].
         /// </summary>
-        /// <value>
-        ///     The dependency add display.
-        /// </value>
-        public KeyValuePair<int, int> PolarisAddDisplay
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnNumberChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get => (KeyValuePair<int, int>)GetValue(PolarisAddDisplayProperty);
-            set
-            {
-                SetValue(PolarisAddDisplayProperty, value);
-                var bmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize,
-                    PolarisTextures, BitmapLayerThree, value);
+            var control = (Polaris)d;
+            var isNumberEnabled = (bool)e.NewValue;
 
-                LayerThree.Source = bmp.ToBitmapImage();
-            }
+            control.LayerThree.Source = isNumberEnabled
+                ? Helper.GenerateNumbers(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize)
+                : null;
         }
 
         /// <summary>
-        ///     Gets or sets the dependency remove display.
+        /// Called when [add changed].
         /// </summary>
-        /// <value>
-        ///     The dependency remove display.
-        /// </value>
-        public int PolarisRemoveDisplay
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnAddChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get => (int)GetValue(PolarisRemoveDisplayProperty);
-            set
-            {
-                SetValue(PolarisRemoveDisplayProperty, value);
-                var bmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, value);
+            var control = (Polaris)d;
+            var value = (KeyValuePair<int, int>)e.NewValue;
 
-                LayerThree.Source = bmp.ToBitmapImage();
+            var (check, dictionary) = Helper.AddTile(control.PolarisMap, value);
+            if (!check) return;
+
+            control.PolarisMap = dictionary;
+
+            lock (control._lock)
+            {
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
+                control.ReplaceBitmapLayerOne(newBitmap);
             }
         }
 
         /// <summary>
-        ///     Gets the width of the canvas.
+        /// Called when [remove changed].
         /// </summary>
-        /// <value>
-        ///     The width of the canvas.
-        /// </value>
-        private int CanvasWidth => PolarisWidth * PolarisTextureSize;
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnRemoveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Polaris)d;
+            var value = (KeyValuePair<int, int>)e.NewValue;
+
+            var (check, dictionary) = Helper.RemoveTile(control.PolarisMap, control.PolarisTextures, value);
+            if (!check) return;
+
+            control.PolarisMap = dictionary;
+
+            lock (control._lock)
+            {
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
+                control.ReplaceBitmapLayerOne(newBitmap);
+            }
+        }
 
         /// <summary>
-        ///     Gets the height of the canvas.
+        /// Called when [add display changed].
         /// </summary>
-        /// <value>
-        ///     The height of the canvas.
-        /// </value>
-        private int CanvasHeight => PolarisHeight * PolarisTextureSize;
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnAddDisplayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Polaris)d;
+            var value = (KeyValuePair<int, int>)e.NewValue;
+
+            var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures, control.BitmapLayerThree, value);
+            control.LayerThree.Source = newBmp?.ToBitmapImage();
+        }
+
+        private static void OnRemoveDisplayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Polaris)d;
+            var value = (int)e.NewValue;
+
+            var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize, control.BitmapLayerThree, value);
+            control.LayerThree.Source = newBmp?.ToBitmapImage();
+        }
+
+        #endregion
+
+        #region Setup and Memory Management
 
         /// <summary>
-        ///     Initiates this instance.
+        /// Initiates this instance.
         /// </summary>
         public void Initiate()
         {
             if (PolarisWidth == 0 || PolarisHeight == 0 || PolarisTextureSize == 0)
-            {
                 return;
-            }
 
-            Touch.Height = CanvasHeight;
-            Touch.Width = CanvasWidth;
+            Touch.Height = PolarisHeight * PolarisTextureSize;
+            Touch.Width = PolarisWidth * PolarisTextureSize;
 
             if (PolarisGrid)
-            {
                 LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
 
             if (PolarisNumber)
-            {
                 LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
-            }
 
-            BitmapLayerThree = new Bitmap(CanvasWidth, CanvasHeight);
+            ReplaceBitmapLayerThree(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1, Touch.Height > 0 ? (int)Touch.Height : 1));
         }
 
         /// <summary>
-        ///     Handles the MouseDown event of the Touch control.
+        /// Safely swaps the unmanaged LayerOne Bitmap and immediately frees the old memory.
+        /// </summary>
+        private void ReplaceBitmapLayerOne(Bitmap? newBitmap)
+        {
+            BitmapLayerOne?.Dispose();
+            BitmapLayerOne = newBitmap;
+            LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Safely swaps the unmanaged LayerThree Bitmap and immediately frees the old memory.
+        /// </summary>
+        private void ReplaceBitmapLayerThree(Bitmap? newBitmap)
+        {
+            BitmapLayerThree?.Dispose();
+            BitmapLayerThree = newBitmap;
+            // Only update the Image.Source if you need it instantly, otherwise let overlays handle it.
+        }
+
+        /// <summary>
+        /// Adds the tile.
+        /// </summary>
+        /// <param name="tileData">The tile data.</param>
+        public void AddTile(KeyValuePair<int, int> tileData)
+        {
+            var (check, dictionary) = Helper.AddTile(PolarisMap, tileData);
+            if (!check) return;
+
+            PolarisMap = dictionary;
+            lock (_lock)
+            {
+                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                ReplaceBitmapLayerOne(newBitmap);
+            }
+        }
+
+        /// <summary>
+        /// Removes the tile.
+        /// </summary>
+        /// <param name="tileData">The tile data.</param>
+        public void RemoveTile(KeyValuePair<int, int> tileData)
+        {
+            var (check, dictionary) = Helper.RemoveTile(PolarisMap, PolarisTextures, tileData);
+            if (!check) return;
+
+            PolarisMap = dictionary;
+            lock (_lock)
+            {
+                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                ReplaceBitmapLayerOne(newBitmap);
+            }
+        }
+
+        /// <summary>
+        /// Adds the display.
+        /// </summary>
+        /// <param name="tileData">The tile data.</param>
+        public void AddDisplay(KeyValuePair<int, int> tileData)
+        {
+            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree, tileData);
+            LayerThree.Source = newBmp?.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Removes the display.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        public void RemoveDisplay(int position)
+        {
+            var newBmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, position);
+            LayerThree.Source = newBmp?.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Handles the MouseDown event of the Touch control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var position = e.GetPosition(Touch);
 
             // 1. Calculate the values first.
             // Integer division naturally handles the 0 case for us!
-            var gridX = (int)position.X / PolarisTextureSize;
-            var gridY = (int)position.Y / PolarisTextureSize;
+            int gridX = (int)position.X / PolarisTextureSize;
+            int gridY = (int)position.Y / PolarisTextureSize;
 
-            // 2. Create the immutable struct all at once.
             _cursor = new Coordinate2D(gridX, gridY);
-
-            // 3. Calculate the 1D array index (using whatever you named the method)
             var id = _cursor.ToId(PolarisWidth);
 
             Clicked?.Invoke(this, id);
         }
 
-        /// <summary>
-        ///     Occurs when [delete logic].
-        /// </summary>
-        public event EventHandler<int> Clicked;
+        #endregion
     }
 }

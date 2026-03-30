@@ -9,7 +9,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Win32;
 
 namespace Common.Dialogs
@@ -113,6 +115,44 @@ namespace Common.Dialogs
             var path = openFile.FileName;
 
             return new PathObject { FilePath = path };
+        }
+
+        /// <summary>
+        ///     Looks up multiple files
+        ///     Returns a list of PathObjects
+        ///     With Start Folder
+        /// </summary>
+        /// <param name="appendage">File Extension we allow</param>
+        /// <param name="folder">Folder, optional parameter, uses CurrentDirectory as fallback</param>
+        /// <returns>A List of PathObjects, or null if canceled</returns>
+        public static List<PathObject>? HandleFilesOpen(string appendage, string folder = "")
+        {
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComDlgResources.Appendix;
+            }
+
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
+
+            var openFile = new OpenFileDialog
+            {
+                Filter = appendage,
+                InitialDirectory = folder,
+                Multiselect = true // This enables multi-selection
+            };
+
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
+
+            // Convert the array of selected paths into a List of PathObjects
+            return openFile.FileNames
+                           .Select(path => new PathObject { FilePath = path })
+                           .ToList();
         }
 
         /// <summary>

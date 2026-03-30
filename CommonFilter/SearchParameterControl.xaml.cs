@@ -6,9 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBeInternal
-
-using System;
 using System.Windows.Controls;
 
 namespace CommonFilter
@@ -17,7 +14,7 @@ namespace CommonFilter
     /// <summary>
     ///     Search Parameter
     /// </summary>
-    internal sealed partial class SearchParameterControl
+    internal sealed partial class SearchParameterControl : UserControl
     {
         /// <inheritdoc />
         /// <summary>
@@ -26,40 +23,6 @@ namespace CommonFilter
         public SearchParameterControl()
         {
             InitializeComponent();
-            View.Reference = this;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.Filters.SearchParameterControl" /> class.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        public SearchParameterControl(int id)
-        {
-            InitializeComponent();
-            Id = id;
-            View.Reference = this;
-        }
-
-        /// <summary>
-        ///     Gets or sets the identifier.
-        /// </summary>
-        /// <value>
-        ///     The identifier.
-        /// </value>
-        private int Id { get; }
-
-        /// <summary>
-        ///     Occurs when [delete logic].
-        /// </summary>
-        public event EventHandler<int> DeleteLogic;
-
-        /// <summary>
-        ///     Deletes the clicked.
-        /// </summary>
-        internal void DeleteClicked()
-        {
-            DeleteLogic(this, Id);
         }
     }
 }

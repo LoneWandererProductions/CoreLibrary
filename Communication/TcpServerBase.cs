@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -52,7 +53,7 @@ namespace Communication
             _tcpListener = new TcpListener(IPAddress.Any, _port);
             _tcpListener.Start();
             _isRunning = true;
-            Console.WriteLine($"Server started on port {_port}");
+            Trace.WriteLine($"Server started on port {_port}");
 
             try
             {
@@ -96,7 +97,7 @@ namespace Communication
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Client Error: {ex.Message}");
+                Trace.WriteLine($"Client Error: {ex.Message}");
             }
         }
 
