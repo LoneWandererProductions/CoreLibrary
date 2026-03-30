@@ -211,7 +211,7 @@ namespace ExtendedSystemObjects
             if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 1 || index + count > Length) throw new ArgumentOutOfRangeException(nameof(count));
 
-            int moveCount = Length - (index + count);
+            var moveCount = Length - (index + count);
             if (moveCount > 0)
             {
                 // Use Spans to perform a high-speed memmove
@@ -335,7 +335,7 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            int moveCount = Length - index;
+            var moveCount = Length - index;
             if (moveCount > 0)
             {
                 var source = new ReadOnlySpan<T>(_ptr + index, moveCount);
@@ -358,7 +358,7 @@ namespace ExtendedSystemObjects
             EnsureNotDisposed();
             if (min <= Capacity) return;
 
-            int newCapacity = Capacity == 0 ? 4 : Capacity * 2;
+            var newCapacity = Capacity == 0 ? 4 : Capacity * 2;
             if (newCapacity < min) newCapacity = min;
 
             _buffer = _buffer == IntPtr.Zero

@@ -27,10 +27,10 @@ namespace CommonLibraryTests
             var vault = MemoryVault<byte[]>.Instance;
             vault.Clear(); // Ensure a clean state
 
-            byte[] largeData = new byte[1024 * 1024]; // 1MB
+            var largeData = new byte[1024 * 1024]; // 1MB
             var id = vault.Add(largeData, TimeSpan.FromHours(1), "Test Item");
 
-            long sizeAfterAdd = vault.UsedMemory;
+            var sizeAfterAdd = vault.UsedMemory;
             Assert.IsTrue(sizeAfterAdd >= 1024 * 1024, "Memory should increase.");
 
             vault.Remove(id);

@@ -67,7 +67,7 @@ namespace ViewModel
         public async void Execute(object? parameter)
         {
             // 1. Safe Casting: Ensure parameter is actually T
-            if (!IsValidParameter(parameter, out T validParam))
+            if (!IsValidParameter(parameter, out var validParam))
                 return;
 
             // 2. Concurrency Lock

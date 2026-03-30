@@ -73,11 +73,11 @@ namespace DataFormatter
                     if (bits.Count >= 4)
                     {
                         // Helper to extract index from formats like "1/2/3"
-                        int v1 = ParseIndex(bits[1]);
-                        int v2 = ParseIndex(bits[2]);
+                        var v1 = ParseIndex(bits[1]);
+                        var v2 = ParseIndex(bits[2]);
 
                         // 3. LOGIC FIX: Changed to ParseIndex(bits[3]) instead of bits[1]
-                        int v3 = ParseIndex(bits[3]);
+                        var v3 = ParseIndex(bits[3]);
 
                         if (v1 != 0 && v2 != 0 && v3 != 0)
                         {
@@ -103,7 +103,7 @@ namespace DataFormatter
         {
             // Split by '/' and take the first part (the vertex index)
             var parts = DataHelper.GetParts(token, '/');
-            if (parts.Count > 0 && int.TryParse(parts[0], out int result))
+            if (parts.Count > 0 && int.TryParse(parts[0], out var result))
             {
                 return result;
             }

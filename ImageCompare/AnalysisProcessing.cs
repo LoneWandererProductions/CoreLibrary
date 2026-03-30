@@ -234,8 +234,8 @@ namespace ImageCompare
         {
             _render = new ImageRender();
 
-            int width = Math.Min(first.Width, second.Width);
-            int height = Math.Min(first.Height, second.Height);
+            var width = Math.Min(first.Width, second.Width);
+            var height = Math.Min(first.Height, second.Height);
 
             var canvas = _render.CutBitmap(first, 0, 0, height, width);
 
@@ -248,10 +248,10 @@ namespace ImageCompare
 
             Parallel.For(0, height, y =>
             {
-                int offset = y * width;
-                for (int x = 0; x < width; x++)
+                var offset = y * width;
+                for (var x = 0; x < width; x++)
                 {
-                    int index = offset + x;
+                    var index = offset + x;
                     if (!Pixel32.AreEqual(canvasPixels[index], comparePixels[index]))
                     {
                         canvasPixels[index] = highlightPixel;

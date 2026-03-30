@@ -146,7 +146,7 @@ namespace ExtendedSystemObjects
                 if (slot.Used == SharedResources.Empty)
                 {
                     // Reclaim first tombstone found in the chain, or use this empty slot
-                    int targetIdx = (firstTombstone != -1) ? firstTombstone : idx;
+                    var targetIdx = (firstTombstone != -1) ? firstTombstone : idx;
 
                     ref var target = ref _entries[targetIdx];
                     target.Key = key;
@@ -303,7 +303,7 @@ namespace ExtendedSystemObjects
             _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * Capacity);
             Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
 
-            int oldCount = Count;
+            var oldCount = Count;
             Count = 0;
             _usedCount = 0;
 

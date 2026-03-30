@@ -313,9 +313,9 @@ namespace CommonControls.Images
             var layout = GetLayoutInfo();
             if (layout.Size <= 0) return;
 
-            double dx = p.X - layout.CenterX;
-            double dy = p.Y - layout.CenterY;
-            double dist = Math.Sqrt(dx * dx + dy * dy);
+            var dx = p.X - layout.CenterX;
+            var dy = p.Y - layout.CenterY;
+            var dist = Math.Sqrt(dx * dx + dy * dy);
 
             _ignoreUpdates = true;
 
@@ -323,7 +323,7 @@ namespace CommonControls.Images
             // We add +5px tolerance so you don't have to be pixel-perfect
             if (dist > layout.InnerRadius && dist <= layout.Radius + 5)
             {
-                double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
+                var angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                 if (angle < 0) angle += 360;
                 _h = angle;
                 RedrawAsync();
@@ -334,7 +334,7 @@ namespace CommonControls.Images
             else if (dist <= layout.InnerRadius + 2)
             {
                 // Try exact math first
-                if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out double s, out double v))
+                if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out var s, out var v))
                 {
                     _s = s;
                     _v = v;
@@ -364,14 +364,14 @@ namespace CommonControls.Images
             if (layout.Size <= 0) return;
 
             // --- 1. HUE RING ---
-            double hueRad = _h * Math.PI / 180.0;
+            var hueRad = _h * Math.PI / 180.0;
 
             // VISUAL FIX: Align to the exact center of the drawn ring
             // The ring is drawn from (InnerRadius) to (Radius). Center is the average.
-            double ringCenterRadius = (layout.Radius + layout.InnerRadius) / 2.0;
+            var ringCenterRadius = (layout.Radius + layout.InnerRadius) / 2.0;
 
-            double hx = layout.CenterX + (Math.Cos(hueRad) * ringCenterRadius);
-            double hy = layout.CenterY + (Math.Sin(hueRad) * ringCenterRadius);
+            var hx = layout.CenterX + (Math.Cos(hueRad) * ringCenterRadius);
+            var hy = layout.CenterY + (Math.Sin(hueRad) * ringCenterRadius);
 
             // WPF positions from Top-Left, so subtract HALF the cursor size
             Canvas.SetLeft(HueCursor, hx - (HueCursor.ActualWidth / 2));
@@ -379,11 +379,11 @@ namespace CommonControls.Images
             HueCursor.Visibility = Visibility.Visible;
 
             // --- 2. TRIANGLE ---
-            Point svPoint = GetPointFromSv(_h, _s, _v, layout.InnerRadius);
+            var svPoint = GetPointFromSv(_h, _s, _v, layout.InnerRadius);
 
             // svPoint is relative to (0,0) center. Add layout center.
-            double svx = svPoint.X + layout.CenterX;
-            double svy = svPoint.Y + layout.CenterY;
+            var svx = svPoint.X + layout.CenterX;
+            var svy = svPoint.Y + layout.CenterY;
 
             // WPF positions from Top-Left, so subtract HALF the cursor size
             Canvas.SetLeft(SvCursor, svx - (SvCursor.ActualWidth / 2));
@@ -423,7 +423,7 @@ namespace CommonControls.Images
 
             // 2. Calculate the Square Size
             // We assume the available space is the parent's size
-            int size = (int)Math.Min(parent.ActualWidth, parent.ActualHeight);
+            var size = (int)Math.Min(parent.ActualWidth, parent.ActualHeight);
 
             // 3. FORCE the Container to be this square size.
             // Because we set Horizontal/VerticalAlignment="Center" in XAML,
@@ -441,33 +441,33 @@ namespace CommonControls.Images
             _bitmap.Lock();
             unsafe
             {
-                int* pBackBuffer = (int*)_bitmap.BackBuffer;
-                int stride = _bitmap.BackBufferStride;
-                double radius = size / 2.0;
-                double innerRadius = radius * 0.85;
-                double c = size / 2.0;
+                var pBackBuffer = (int*)_bitmap.BackBuffer;
+                var stride = _bitmap.BackBufferStride;
+                var radius = size / 2.0;
+                var innerRadius = radius * 0.85;
+                var c = size / 2.0;
 
-                for (int y = 0; y < size; y++)
+                for (var y = 0; y < size; y++)
                 {
-                    for (int x = 0; x < size; x++)
+                    for (var x = 0; x < size; x++)
                     {
-                        double dx = x - c;
-                        double dy = y - c;
-                        double dist = Math.Sqrt(dx * dx + dy * dy);
-                        int colorData = 0;
+                        var dx = x - c;
+                        var dy = y - c;
+                        var dist = Math.Sqrt(dx * dx + dy * dy);
+                        var colorData = 0;
 
                         if (dist <= radius && dist >= innerRadius - 1)
                         {
-                            double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
+                            var angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                             if (angle < 0) angle += 360;
-                            int alpha = 255;
+                            var alpha = 255;
                             if (dist > radius - 1) alpha = (int)((radius - dist) * 255);
                             else if (dist < innerRadius) alpha = (int)((dist - (innerRadius - 1)) * 255);
                             colorData = HsvToInt(angle, 1, 1, alpha);
                         }
                         else if (dist < innerRadius)
                         {
-                            if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
+                            if (GetSvFromPoint(dx, dy, innerRadius, _h, out var s, out var v))
                             {
                                 colorData = HsvToInt(_h, s, v, 255);
                             }
@@ -489,15 +489,15 @@ namespace CommonControls.Images
         {
             s = 0;
             v = 0;
-            double hueRad = hue * Math.PI / 180.0;
-            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
-            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
-            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+            var hueRad = hue * Math.PI / 180.0;
+            var pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            var pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            var pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
 
-            double det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
-            double w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
-            double w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
-            double w3 = 1.0 - w1 - w2;
+            var det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
+            var w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
+            var w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
+            var w3 = 1.0 - w1 - w2;
 
             if (w1 < -0.01 || w2 < -0.01 || w3 < -0.01) return false;
 
@@ -508,14 +508,14 @@ namespace CommonControls.Images
 
         private Point GetPointFromSv(double h, double s, double v, double r)
         {
-            double hueRad = h * Math.PI / 180.0;
-            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
-            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
-            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+            var hueRad = h * Math.PI / 180.0;
+            var pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            var pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            var pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
 
-            double w1 = s * v;
-            double w2 = v * (1 - s);
-            double w3 = 1 - v;
+            var w1 = s * v;
+            var w2 = v * (1 - s);
+            var w3 = 1 - v;
 
             return new Point(w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X,
                 w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
@@ -531,9 +531,9 @@ namespace CommonControls.Images
         /// <returns></returns>
         private static int HsvToInt(double h, double s, double v, int alpha)
         {
-            double c = v * s;
-            double x = c * (1 - Math.Abs(h / 60.0 % 2 - 1));
-            double m = v - c;
+            var c = v * s;
+            var x = c * (1 - Math.Abs(h / 60.0 % 2 - 1));
+            var m = v - c;
             double r = 0, g = 0, b = 0;
 
             if (h < 60)
@@ -585,11 +585,11 @@ namespace CommonControls.Images
         /// </returns>
         private (double CenterX, double CenterY, double Size, double Radius, double InnerRadius) GetLayoutInfo()
         {
-            double size = PickerContainer.Width;
+            var size = PickerContainer.Width;
 
             if (double.IsNaN(size) || size <= 0) return (0, 0, 0, 0, 0);
 
-            double c = size / 2.0;
+            var c = size / 2.0;
 
             return (
                 CenterX: c, // Defined X
@@ -602,18 +602,18 @@ namespace CommonControls.Images
 
         private void GetSvFromPointClamped(double x, double y, double r, double hue, out double s, out double v)
         {
-            double hueRad = hue * Math.PI / 180.0;
+            var hueRad = hue * Math.PI / 180.0;
 
             // Calculate Vertices (Same as before)
-            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
-            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
-            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+            var pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            var pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            var pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
 
             // Barycentric Weights
-            double det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
-            double w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
-            double w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
-            double w3 = 1.0 - w1 - w2;
+            var det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
+            var w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
+            var w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
+            var w3 = 1.0 - w1 - w2;
 
             // THE FIX: Clamp weights to 0. This "pulls" the point to the edge.
             // Negative weight means "outside the edge opposite to this vertex".
@@ -622,7 +622,7 @@ namespace CommonControls.Images
             if (w3 < 0) w3 = 0;
 
             // Re-normalize so they sum to 1.0
-            double total = w1 + w2 + w3;
+            var total = w1 + w2 + w3;
             if (total == 0) total = 1; // Safety
             w1 /= total;
             w2 /= total;

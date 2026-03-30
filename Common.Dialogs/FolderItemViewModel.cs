@@ -123,10 +123,12 @@ namespace Common.Dialogs
         {
             try
             {
-                return Directory.EnumerateFileSystemEntries(path).Any();
+                using var enumerator = Directory.EnumerateFileSystemEntries(path).GetEnumerator();
+                return enumerator.MoveNext();
             }
             catch
             {
+                // Handles UnauthorizedAccess, PathTooLong, or DirectoryNotFound
                 return false;
             }
         }

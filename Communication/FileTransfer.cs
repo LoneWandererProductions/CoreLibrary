@@ -63,7 +63,7 @@ namespace Communication
                 var buffer = new byte[8192];
                 long totalRead = 0;
                 int bytesRead;
-                int lastReportedPercent = -1;
+                var lastReportedPercent = -1;
 
                 while ((bytesRead = await contentStream.ReadAsync(buffer, cancellationToken)) > 0)
                 {

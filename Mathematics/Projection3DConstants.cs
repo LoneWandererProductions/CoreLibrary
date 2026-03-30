@@ -56,7 +56,7 @@ namespace Mathematics
         {
             // 1. UNWRAP THE NULLABLE SAFELY! 
             // If Position is null, default to 0,0,0 so the math doesn't crash.
-            Vector3D pos = transform.Position ?? Vector3D.ZeroVector;
+            var pos = transform.Position ?? Vector3D.ZeroVector;
 
             // Now everything is a solid Vector3D struct, and the compiler is happy.
             var forward = (target - pos).Normalize(); // Z axis

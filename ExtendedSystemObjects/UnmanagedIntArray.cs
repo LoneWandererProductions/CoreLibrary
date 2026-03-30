@@ -196,7 +196,7 @@ namespace ExtendedSystemObjects
             if (index < 0 || index + count > Length) throw new IndexOutOfRangeException();
 #endif
 
-            int moveCount = Length - (index + count);
+            var moveCount = Length - (index + count);
             if (moveCount > 0)
             {
                 // Source: Everything after the chunk we are removing

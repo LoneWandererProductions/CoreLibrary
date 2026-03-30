@@ -35,7 +35,7 @@ namespace SqliteHelper
             {
                 if (row == null) continue;
 
-                string? name = row.Field<string>(1);
+                var name = row.Field<string>(1);
                 if (string.IsNullOrEmpty(name))
                     continue;
 
@@ -47,7 +47,7 @@ namespace SqliteHelper
                 };
 
                 // Extract type and normalize
-                string? type = row.Field<string>(2);
+                var type = row.Field<string>(2);
                 column = SetDataType(column, type);
 
                 if (column == null)
@@ -73,7 +73,7 @@ namespace SqliteHelper
 
             foreach (DataRow row in table.Rows)
             {
-                string? col = row.Field<string>(1);
+                var col = row.Field<string>(1);
 
                 if (!string.IsNullOrEmpty(col))
                     uniqueCols.Add(col);
@@ -91,7 +91,7 @@ namespace SqliteHelper
         {
             foreach (DataRow row in table.Rows)
             {
-                string? name = row.Field<string>(2);
+                var name = row.Field<string>(2);
                 if (!string.IsNullOrEmpty(name))
                     return name;
             }
@@ -109,7 +109,7 @@ namespace SqliteHelper
             Dictionary<string, TableColumns> tableInfo,
             List<string> uniqueHeaders)
         {
-            foreach (string header in uniqueHeaders)
+            foreach (var header in uniqueHeaders)
             {
                 if (tableInfo.TryGetValue(header, out var col))
                     col.Unique = true; // mark as unique if indexed
@@ -155,7 +155,7 @@ namespace SqliteHelper
             {
                 var set = new TableSet { Row = new List<string?>(row.ItemArray.Length) };
 
-                foreach (object? item in row.ItemArray)
+                foreach (var item in row.ItemArray)
                     set.Row.Add(item?.ToString());
 
                 result.Row.Add(set);

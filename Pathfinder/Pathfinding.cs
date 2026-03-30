@@ -159,8 +159,8 @@ namespace Pathfinder
         /// <returns>The heuristic estimate of the cost.</returns>
         private int Heuristic(int x1, int y1, int x2, int y2)
         {
-            int dx = Math.Abs(x1 - x2);
-            int dy = Math.Abs(y1 - y2);
+            var dx = Math.Abs(x1 - x2);
+            var dy = Math.Abs(y1 - y2);
 
             // Move diagonally as much as possible, then move straight for the remaining distance
             return _straightCost * (dx + dy) + (_diagonalCost - 2 * _straightCost) * Math.Min(dx, dy);

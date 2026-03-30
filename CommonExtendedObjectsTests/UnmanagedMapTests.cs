@@ -160,7 +160,7 @@ namespace CommonExtendedObjectsTests
             var map = new UnmanagedMap<int>(18); // 2^17
 
             // Warm-up: ensures JIT and caches are ready
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 dict[i] = i;
                 map.Set(i, i);
@@ -172,7 +172,7 @@ namespace CommonExtendedObjectsTests
 
             // Benchmark dictionary
             var swDict = Stopwatch.StartNew();
-            for (int i = 0; i < iterations; i++)
+            for (var i = 0; i < iterations; i++)
             {
                 dict[i] = i;
             }
@@ -181,7 +181,7 @@ namespace CommonExtendedObjectsTests
 
             // Benchmark UnmanagedMap
             var swMap = Stopwatch.StartNew();
-            for (int i = 0; i < iterations; i++)
+            for (var i = 0; i < iterations; i++)
             {
                 map.Set(i, i);
             }
@@ -232,7 +232,7 @@ namespace CommonExtendedObjectsTests
             }
 
             // Benchmark Dictionary
-            for (int loop = 0; loop < loops; loop++)
+            for (var loop = 0; loop < loops; loop++)
             {
                 var swDict = Stopwatch.StartNew();
                 for (var i = 0; i < Iterations; i++)
@@ -241,10 +241,10 @@ namespace CommonExtendedObjectsTests
                 totalDictMs += swDict.Elapsed.TotalMilliseconds;
             }
 
-            double avgDictMs = totalDictMs / loops;
+            var avgDictMs = totalDictMs / loops;
 
             // Benchmark UnmanagedMap
-            for (int loop = 0; loop < loops; loop++)
+            for (var loop = 0; loop < loops; loop++)
             {
                 var swMap = Stopwatch.StartNew();
                 for (var i = 0; i < Iterations; i++)
@@ -253,7 +253,7 @@ namespace CommonExtendedObjectsTests
                 totalMapMs += swMap.Elapsed.TotalMilliseconds;
             }
 
-            double avgMapMs = totalMapMs / loops;
+            var avgMapMs = totalMapMs / loops;
 
             map.Dispose();
 

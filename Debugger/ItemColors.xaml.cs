@@ -94,21 +94,28 @@ namespace Debugger
         /// <param name="colorOptions">The filter option.</param>
         private void AddFilter(IEnumerable<ColorOption> colorOptions)
         {
-            if (colorOptions?.Any() != true)
-            {
-                return;
-            }
+            // 1. Guard against null only
+            if (colorOptions == null) return;
 
-            ColorList.Items.Clear();
-            _filterOption.Clear();
+            var listCleared = false;
 
             foreach (var item in colorOptions)
             {
-                var id = GetFirstAvailableIndex(_filterOption.Keys.ToList());
+                if (!listCleared)
+                {
+                    ColorList.Items.Clear();
+                    _filterOption.Clear();
+                    listCleared = true;
+                }
+
+                // 3. Efficiency Tip: Avoid .ToList() inside a loop!
+                // Pass _filterOption.Keys directly if GetFirstAvailableIndex allows it.
+                var id = GetFirstAvailableIndex(_filterOption.Keys);
 
                 var itemControl = new ItemColor(id, item);
                 itemControl.DeleteLogic += ItemControl_DeleteLogic;
-                _ = ColorList.Items.Add(itemControl);
+
+                ColorList.Items.Add(itemControl);
                 _filterOption.Add(id, itemControl);
             }
         }

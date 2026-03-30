@@ -51,7 +51,7 @@ namespace Core.Apps.Extensions
 
             // Use the registry and the key defined by the parent command
             var registry = producer.Variables;
-            string storeKey = producer.CurrentRegistryKey;
+            var storeKey = producer.CurrentRegistryKey;
 
             try
             {
@@ -79,7 +79,7 @@ namespace Core.Apps.Extensions
                     .Distinct()
                     .ToList();
 
-                string ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
+                var ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
                 // 4. Parse requested fields and update the dictionary
                 var lines = new List<string>();
@@ -134,7 +134,7 @@ namespace Core.Apps.Extensions
                 registry.SetObject(storeKey, whoamiData);
 
                 // 6. Return the status message
-                string message = string.Join(Environment.NewLine, lines);
+                var message = string.Join(Environment.NewLine, lines);
                 return CommandResult.Ok(message, storeKey, EnumTypes.Wobject);
             }
             catch (Exception ex)

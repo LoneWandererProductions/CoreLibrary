@@ -61,7 +61,7 @@ namespace SqliteHelper
             var schemaColumns = tableInfo.Values.ToList();
 
             // Loop through each column in the row
-            for (int i = 0; i < row.Row.Count; i++)
+            for (var i = 0; i < row.Row.Count; i++)
             {
                 var value = row.Row[i];
                 var definition = schemaColumns[i];
@@ -146,7 +146,7 @@ namespace SqliteHelper
 
             // Check if this value appears more than once in this specific column index across the batch
             // Note: This does not check the Database itself, only the data we are about to insert.
-            int count = batch.Count(r => r.Row.Count > columnIndex && r.Row[columnIndex] == value);
+            var count = batch.Count(r => r.Row.Count > columnIndex && r.Row[columnIndex] == value);
 
             if (count <= 1)
             {

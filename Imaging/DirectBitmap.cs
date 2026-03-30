@@ -75,9 +75,9 @@ namespace Imaging
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
             using var bmp = new Bitmap(image);
-            for (int y = 0; y < Height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                for (int x = 0; x < Width; x++)
+                for (var x = 0; x < Width; x++)
                 {
                     var c = bmp.GetPixel(x, y);
                     Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);

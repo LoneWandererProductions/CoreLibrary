@@ -253,7 +253,7 @@ namespace CommonControls.Images
         {
             // 1. Prepare data variables
             int x = 0, y = 0, width = 0, height = 0;
-            List<Point> points = new List<Point>();
+            var points = new List<Point>();
 
             // 2. Calculate based on Tool Type
             if (Tool == ImageZoomTools.FreeForm || Tool == ImageZoomTools.Trace)
@@ -280,10 +280,10 @@ namespace CommonControls.Images
                     // ---------------------------------
 
                     // Calculate Bounding Box (after closing)
-                    double minX = points.Min(p => p.X);
-                    double minY = points.Min(p => p.Y);
-                    double maxX = points.Max(p => p.X);
-                    double maxY = points.Max(p => p.Y);
+                    var minX = points.Min(p => p.X);
+                    var minY = points.Min(p => p.Y);
+                    var maxX = points.Max(p => p.X);
+                    var maxY = points.Max(p => p.Y);
 
                     x = (int)minX;
                     y = (int)minY;
@@ -354,8 +354,8 @@ namespace CommonControls.Images
             foreach (var frame in _committedFrames)
             {
                 // We must apply the current transform to the saved raw coordinates to ensure they zoom/pan correctly
-                Point p1 = _imageTransform.Transform(new Point(frame.X, frame.Y));
-                Point p2 = _imageTransform.Transform(new Point(frame.X + frame.Width, frame.Y + frame.Height));
+                var p1 = _imageTransform.Transform(new Point(frame.X, frame.Y));
+                var p2 = _imageTransform.Transform(new Point(frame.X + frame.Width, frame.Y + frame.Height));
                 var rect = new Rect(p1, p2);
 
                 if (frame.Tool == ImageZoomTools.Ellipse)

@@ -66,40 +66,47 @@ namespace Core.Apps.Development
         /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
-            if (args.Length == 0)
+            if (args == null || args.Length == 0)
                 return CommandResult.Fail("Usage: apiexplore <folder>");
 
             var rootPath = args[0];
+
             if (!Directory.Exists(rootPath))
                 return CommandResult.Fail($"Folder not found: {rootPath}");
 
-            var useWindow = args.Length > 1 && args[1].Equals("window", StringComparison.OrdinalIgnoreCase);
+            // Pattern matching to grab the second arg safely
+            var useWindow = args is [_, "window", ..];
 
             var sb = new StringBuilder();
-            var files = Directory
-                .EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
-                .Where(f => !CoreHelper.ShouldIgnoreFile(f)); // <-- filter out ignored files
+            var files = Directory.EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
+                                 .Where(f => !CoreHelper.ShouldIgnoreFile(f));
 
             foreach (var file in files)
             {
                 try
                 {
+                    // For .NET 9, consider using a stream if files are massive, 
+                    // but ReadAllText is usually fine for source code.
                     var code = File.ReadAllText(file);
                     var tree = CSharpSyntaxTree.ParseText(code);
                     var root = tree.GetCompilationUnitRoot();
 
-                    var namespaces = root.DescendantNodes().OfType<BaseNamespaceDeclarationSyntax>();
-                    if (!namespaces.Any())
+                    var namespaceFound = false;
+                    // Iterate directly over members to avoid deep tree walking
+                    foreach (var ns in root.Members.OfType<BaseNamespaceDeclarationSyntax>())
+                    {
+                        namespaceFound = true;
+                        DumpTypes(ns.Members.OfType<BaseTypeDeclarationSyntax>(), sb, _output, ns.Name.ToString());
+                    }
+
+                    if (!namespaceFound)
+                    {
                         DumpTypes(root.Members.OfType<BaseTypeDeclarationSyntax>(), sb, _output, "(global)");
-                    else
-                        foreach (var ns in namespaces)
-                            DumpTypes(ns.Members.OfType<BaseTypeDeclarationSyntax>(), sb, _output, ns.Name.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
-                    var line = $"// Error parsing {file}: {ex.Message}";
-                    sb.AppendLine(line);
-                    _output?.Write(line);
+                    sb.AppendLine($"// Error parsing {file}: {ex.Message}");
                 }
             }
 

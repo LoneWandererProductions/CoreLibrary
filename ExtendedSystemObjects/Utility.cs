@@ -267,8 +267,8 @@ namespace ExtendedSystemObjects
             }
 
             var results = new List<KeyValuePair<int, int>>();
-            int startValue = numbers[0];
-            int count = 1;
+            var startValue = numbers[0];
+            var count = 1;
 
             // Logic uses a single pass O(N) approach
             for (var i = 1; i < numbers.Count; i++)
@@ -359,8 +359,8 @@ namespace ExtendedSystemObjects
             var result = new List<(int start, int end, int value)>();
             if (numbers == null || numbers.Count == 0) return result;
 
-            int start = 0;
-            for (int i = 1; i <= numbers.Count; i++)
+            var start = 0;
+            for (var i = 1; i <= numbers.Count; i++)
             {
                 if (i == numbers.Count || numbers[i] != numbers[start])
                 {

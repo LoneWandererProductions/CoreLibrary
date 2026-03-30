@@ -79,7 +79,7 @@ namespace CommonExtendedObjectsTests
             var result = new int[_largeData!.Length];
             ReadOnlySpan<int> span = _largeData;
 
-            int count = span.WhereFast(result.AsSpan(), x => x % 2 == 0);
+            var count = span.WhereFast(result.AsSpan(), x => x % 2 == 0);
 
             for (var i = 0; i < count; i++)
                 Assert.AreEqual(0, result[i] % 2);
@@ -92,8 +92,8 @@ namespace CommonExtendedObjectsTests
         public void TestAggregateFast()
         {
             ReadOnlySpan<int> span = _largeData!;
-            long sum1 = _largeData!.Select(x => (long)x).Sum();
-            long sum2 = span.AggregateFast(0L, (acc, val) => acc + val);
+            var sum1 = _largeData!.Select(x => (long)x).Sum();
+            var sum2 = span.AggregateFast(0L, (acc, val) => acc + val);
 
             Assert.AreEqual(sum1, sum2);
         }
@@ -131,12 +131,12 @@ namespace CommonExtendedObjectsTests
             Trace.WriteLine($"foreach elapsed: {sw.ElapsedMilliseconds} ms");
 
             sw.Restart();
-            long linqSum = _largeData!.Select(x => (long)x).Sum();
+            var linqSum = _largeData!.Select(x => (long)x).Sum();
             sw.Stop();
             Trace.WriteLine($"LINQ Sum (long) elapsed: {sw.ElapsedMilliseconds} ms");
 
             sw.Restart();
-            long fastSum = span.AggregateFast(0L, (acc, val) => acc + val);
+            var fastSum = span.AggregateFast(0L, (acc, val) => acc + val);
             sw.Stop();
             Trace.WriteLine($"AggregateFast (long) elapsed: {sw.ElapsedMilliseconds} ms");
         }

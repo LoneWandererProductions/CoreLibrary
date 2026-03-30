@@ -133,20 +133,23 @@ namespace Weaver.ScriptEngine
         /// <summary>
         /// Replaces known registry variables in a simple expression with their literal values.
         /// </summary>
+        /// <param name="expr">The expr.</param>
+        /// <param name="registry">The registry.</param>
+        /// <returns>Replaced placeholders with the actual value.</returns>
         private static string ReplaceRegistryVariables(string expr, IVariableRegistry registry)
         {
             var variables = registry.GetAll();
-            if (variables == null || !variables.Any()) return expr;
+            if (variables == null || variables.Count == 0)
+                return expr;
 
             // 1. Build a pattern like: \b(var1|var2|var3)\b
             // Join all keys with | and wrap in word boundaries
-            string pattern = $@"\b({string.Join("|", variables.Keys.Select(Regex.Escape))})\b";
-
             // 2. Use a single Regex.Replace with a callback (MatchEvaluator)
-            return Regex.Replace(expr, pattern, match =>
+            return Regex.Replace(expr, @"\b\w+\b", match =>
             {
                 var name = match.Value;
-                if (!variables.TryGetValue(name, out var vm)) return name;
+                if (!variables.TryGetValue(name, out var vm))
+                    return name;
 
                 return vm.Type switch
                 {

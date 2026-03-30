@@ -52,11 +52,11 @@ namespace ExtendedSystemObjects
             ArgumentNullException.ThrowIfNull(data);
 
             // 1. Calculate capacity as a Power of 2 (at least double the count to keep load factor < 50%)
-            int capacity = (int)BitOperations.RoundUpToPowerOf2((uint)data.Count * 2);
+            var capacity = (int)BitOperations.RoundUpToPowerOf2((uint)data.Count * 2);
             if (capacity < 16) capacity = 16;
 
             // 2. The mask replaces the modulo operator: (hash % capacity) becomes (hash & mask)
-            int mask = capacity - 1;
+            var mask = capacity - 1;
 
             // 3. Initialize the internal arrays (Struct of Arrays approach)
             _keys = new TKey[capacity];
@@ -66,17 +66,17 @@ namespace ExtendedSystemObjects
             // 4. Populate the arrays using Linear Probing
             foreach (var kvp in data)
             {
-                TKey key = kvp.Key;
-                TValue value = kvp.Value;
+                var key = kvp.Key;
+                var value = kvp.Value;
 
                 // Get initial raw hash
-                int hash = GetHash(key);
-                bool placed = false;
+                var hash = GetHash(key);
+                var placed = false;
 
-                for (int i = 0; i < capacity; i++)
+                for (var i = 0; i < capacity; i++)
                 {
                     // The mask here handles everything (sign bit, wrapping, and range)
-                    int index = (int)((uint)(hash + i) & (uint)mask);
+                    var index = (int)((uint)(hash + i) & (uint)mask);
 
                     if (!_keyPresence[index])
                     {

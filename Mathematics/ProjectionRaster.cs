@@ -148,22 +148,22 @@ namespace Mathematics
             var lst = new List<PolyTriangle>();
 
             // Pre-calculate the scales once per frame/call, not per vertex!
-            double scaleX = 0.5d * width;
-            double scaleY = 0.5d * height;
+            var scaleX = 0.5d * width;
+            var scaleY = 0.5d * height;
 
             foreach (var triangle in triangles)
             {
-                for (int i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                 {
                     var v = triangle[i];
 
                     // Safety check: Prevent DivisionByZero if W is 0
-                    double w = (v.W != 0) ? v.W : 1.0d;
+                    var w = (v.W != 0) ? v.W : 1.0d;
 
                     // Combine Divide (Normalize), Invert, Offset, and Scale into branchless math
-                    double newX = (-(v.X / w) + 1.0d) * scaleX;
-                    double newY = (-(v.Y / w) + 1.0d) * scaleY;
-                    double newZ = v.Z / w;
+                    var newX = (-(v.X / w) + 1.0d) * scaleX;
+                    var newY = (-(v.Y / w) + 1.0d) * scaleY;
+                    var newZ = v.Z / w;
 
                     // Create the immutable struct and explicitly overwrite the old one in the triangle
                     triangle[i] = new Vector3D(newX, newY, newZ, w);
@@ -190,19 +190,19 @@ namespace Mathematics
             var lst = new List<PolyTriangle>();
 
             // Calculate scale modifiers once outside the loop to save CPU cycles
-            double scaleX = 0.25d * width;
-            double scaleY = 0.25d * height;
+            var scaleX = 0.25d * width;
+            var scaleY = 0.25d * height;
 
             foreach (var triangle in triangles)
             {
                 // Loop through the 3 vertices of the triangle
-                for (int i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                 {
                     var v = triangle[i];
 
                     // 1. Invert X/Y, Add Offset, and Scale all in one branchless step
-                    double newX = (-v.X + 2.5d) * scaleX;
-                    double newY = (-v.Y + 3.0d) * scaleY;
+                    var newX = (-v.X + 2.5d) * scaleX;
+                    var newY = (-v.Y + 3.0d) * scaleY;
 
                     // 2. Create the new immutable Vector3D and assign it back.
                     // Note: We preserve the original Z and W values!

@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
     <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
     <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />

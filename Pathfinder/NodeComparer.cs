@@ -33,7 +33,7 @@ namespace Pathfinder
             if (y is null) return 1;
 
             // 1. Total Cost is always the king of A*
-            int result = x.F.CompareTo(y.F);
+            var result = x.F.CompareTo(y.F);
 
             if (result == 0)
             {

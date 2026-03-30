@@ -88,7 +88,7 @@ namespace Weaver.Registry
                 // THE OPTIMIZATION: Sizes match! Just overwrite the existing memory slots.
                 if (existingRange.Length == newLength)
                 {
-                    for (int i = 0; i < newLength; i++)
+                    for (var i = 0; i < newLength; i++)
                     {
                         _store[existingRange.Start + i] = elements[i];
                     }
@@ -111,7 +111,7 @@ namespace Weaver.Registry
             _lookUp[key] = newRange;
 
             // 4. Write the actual data to the heap (_store)
-            for (int i = 0; i < newLength; i++)
+            for (var i = 0; i < newLength; i++)
             {
                 _store[newRange.Start + i] = elements[i];
             }
@@ -131,7 +131,7 @@ namespace Weaver.Registry
             {
                 if (existingRange.Length == newLength)
                 {
-                    int index = existingRange.Start;
+                    var index = existingRange.Start;
                     foreach (var kvp in properties)
                     {
                         // Attach the Dictionary Key as the VmValue.Attribute!
@@ -156,7 +156,7 @@ namespace Weaver.Registry
             _lookUp[key] = newRange;
 
             // 4. Write the properties to the heap
-            int idx = newRange.Start;
+            var idx = newRange.Start;
             foreach (var kvp in properties)
             {
                 // Write it to memory, tagging it with its property name

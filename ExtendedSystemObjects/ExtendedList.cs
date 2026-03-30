@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -32,7 +33,7 @@ namespace ExtendedSystemObjects
         /// <param name="lst">List we want to check</param>
         /// <returns>Empty or not</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty<TValue>(this List<TValue> lst)
+        public static bool IsNullOrEmpty<TValue>([NotNullWhen(false)] this ICollection<TValue> lst)
         {
             if (lst == null)
             {
@@ -238,7 +239,14 @@ namespace ExtendedSystemObjects
                         return false;
                     }
 
-                    return !lst.Where((t, i) => !t.Equals(compare[i])).Any();
+                    for (var i = 0; i < lst.Count; i++)
+                    {
+                        if (!EqualityComparer<TValue>.Default.Equals(lst[i], compare[i]))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(comparer), comparer, null);
             }

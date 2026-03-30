@@ -618,7 +618,7 @@ namespace CommonControls.Images
             if (SelectionAdorner == null) return;
 
             // 1. Identify "Immediate Action" tools (Drawing tools)
-            bool isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
+            var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
                                  SelectionTool == ImageZoomTools.Ellipse ||
                                  SelectionTool == ImageZoomTools.FreeForm ||
                                  SelectionTool == ImageZoomTools.Trace ||
@@ -628,10 +628,10 @@ namespace CommonControls.Images
             {
                 // 2. Capture the data AND Clear the visuals immediately
                 // This prevents the "Ghost Frame" from sticking around
-                SelectionFrame frame = SelectionAdorner.CaptureAndClear();
+                var frame = SelectionAdorner.CaptureAndClear();
 
                 // 3. Validation: Ensure we actually drew something substantial
-                bool isValid = (frame.Width > 0 && frame.Height > 0) ||
+                var isValid = (frame.Width > 0 && frame.Height > 0) ||
                                frame.Points is { Count: > 0 };
 
                 if (isValid)

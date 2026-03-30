@@ -42,7 +42,7 @@ namespace ImagingTests
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            long startMem = Process.GetCurrentProcess().PrivateMemorySize64;
+            var startMem = Process.GetCurrentProcess().PrivateMemorySize64;
 
             action();
 
@@ -51,12 +51,12 @@ namespace ImagingTests
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            long endMem = Process.GetCurrentProcess().PrivateMemorySize64;
-            long diff = endMem - startMem;
+            var endMem = Process.GetCurrentProcess().PrivateMemorySize64;
+            var diff = endMem - startMem;
 
             if (diff > thresholdBytes)
             {
-                string msg = $"[LEAK WARNING] {label}: Memory increased by {diff / 1024.0 / 1024.0:F2} MB";
+                var msg = $"[LEAK WARNING] {label}: Memory increased by {diff / 1024.0 / 1024.0:F2} MB";
                 Debug.WriteLine(msg);
                 // In a Unit Test environment, you might throw an exception here:
                 // throw new Exception(msg);

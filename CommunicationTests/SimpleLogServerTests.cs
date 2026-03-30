@@ -40,7 +40,7 @@ namespace CommunicationTests
 
             // 3. Send the message with a "Retry Policy"
             //    We try to connect 5 times. If the server is slow to start, this handles it.
-            bool connected = await TrySendTcpMessageAsync(TestPort, "Hello World!");
+            var connected = await TrySendTcpMessageAsync(TestPort, "Hello World!");
             Assert.IsTrue(connected, "Could not connect to the server. It might not have started in time.");
 
             // 4. Wait for the result with a TIMEOUT
@@ -64,7 +64,7 @@ namespace CommunicationTests
         /// <returns>Message Status.</returns>
         private async Task<bool> TrySendTcpMessageAsync(int port, string message)
         {
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace CommunicationTests
 
                     await using var stream = client.GetStream();
                     // Important: Add NewLine (\n) so ReadLineAsync fires!
-                    byte[] data = Encoding.UTF8.GetBytes(message + Environment.NewLine);
+                    var data = Encoding.UTF8.GetBytes(message + Environment.NewLine);
                     await stream.WriteAsync(data, 0, data.Length);
                     await stream.FlushAsync();
 
@@ -107,7 +107,7 @@ namespace CommunicationTests
 
             // FIX: Use 'TrySendTcpMessageAsync' (Retry Logic) instead of 'SendTcpMessageAsync'
             // We also check the boolean result to ensure connection happened.
-            bool connected = await TrySendTcpMessageAsync(port, "Hello from Class!");
+            var connected = await TrySendTcpMessageAsync(port, "Hello from Class!");
             Assert.IsTrue(connected, "Could not connect to the server (Timeout).");
 
             // Wait for the processor to get the message (Polling with timeout)
@@ -135,7 +135,7 @@ namespace CommunicationTests
         public async Task Server_ShouldDisconnect_SlowClients()
         {
             // Arrange
-            int port = 55150;
+            var port = 55150;
             using var server = new SimpleLogServer(port, msg => { });
             server.Start();
             await Task.Delay(100);
@@ -144,7 +144,7 @@ namespace CommunicationTests
             await client.ConnectAsync("127.0.0.1", port);
             await using var stream = client.GetStream();
             // Act: Send data WITHOUT a newline
-            byte[] data = Encoding.UTF8.GetBytes("I am a bad client...");
+            var data = Encoding.UTF8.GetBytes("I am a bad client...");
             await stream.WriteAsync(data, 0, data.Length);
 
             // Don't send \n. Just wait.
@@ -152,8 +152,8 @@ namespace CommunicationTests
 
             // Assert: Try to read from the stream. 
             // If the server disconnects us, ReadAsync returns 0.
-            byte[] buffer = new byte[10];
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+            var buffer = new byte[10];
+            var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
 
             // If bytesRead is 0, it means the server closed the connection.
             Assert.AreEqual(0, bytesRead, "Server should have closed the connection due to timeout.");

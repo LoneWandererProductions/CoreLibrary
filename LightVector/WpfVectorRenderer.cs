@@ -50,10 +50,10 @@ namespace LightVector
             // If no objects, return an empty 0x0 canvas
             if (!_vectorObjects.Any()) return canvas;
 
-            double minX = double.MaxValue;
-            double minY = double.MaxValue;
-            double maxX = double.MinValue;
-            double maxY = double.MinValue;
+            var minX = double.MaxValue;
+            var minY = double.MaxValue;
+            var maxX = double.MinValue;
+            var maxY = double.MinValue;
 
             // Step 1: Create the shapes and find the global bounding box
             foreach (var obj in _vectorObjects)
@@ -77,8 +77,8 @@ namespace LightVector
             }
 
             // Step 2: Calculate actual total dimensions
-            double totalWidth = maxX - minX;
-            double totalHeight = maxY - minY;
+            var totalWidth = maxX - minX;
+            var totalHeight = maxY - minY;
 
             canvas.Width = Math.Max(0, totalWidth);
             canvas.Height = Math.Max(0, totalHeight);
@@ -88,8 +88,8 @@ namespace LightVector
             // so the drawing starts at 0 on the canvas and doesn't get clipped.
             foreach (FrameworkElement child in canvas.Children)
             {
-                double currentLeft = Canvas.GetLeft(child);
-                double currentTop = Canvas.GetTop(child);
+                var currentLeft = Canvas.GetLeft(child);
+                var currentTop = Canvas.GetTop(child);
 
                 Canvas.SetLeft(child, currentLeft - minX);
                 Canvas.SetTop(child, currentTop - minY);
@@ -104,8 +104,8 @@ namespace LightVector
             var canvas = (Canvas)RenderToContainer();
 
             // Use the width/height we calculated in RenderToContainer
-            int width = (int)Math.Ceiling(canvas.Width);
-            int height = (int)Math.Ceiling(canvas.Height);
+            var width = (int)Math.Ceiling(canvas.Width);
+            var height = (int)Math.Ceiling(canvas.Height);
 
             var renderBitmap = new RenderTargetBitmap(
                 width > 0 ? width : 1,
@@ -253,7 +253,7 @@ namespace LightVector
         private static Rect GetGraphicBounds(SaveObject obj)
         {
             // Padding to account for half the stroke thickness so edges aren't clipped
-            double padding = obj.Graphic.Thickness / 2.0;
+            var padding = obj.Graphic.Thickness / 2.0;
 
             switch (obj.Type)
             {

@@ -31,10 +31,10 @@ namespace CommunicationTests
         {
             var communication = new NetCom();
             // Use a URL that actually ends in a filename
-            string url = "https://www.google.de/favicon.ico";
-            string targetFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestDownloads");
+            var url = "https://www.google.de/favicon.ico";
+            var targetFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestDownloads");
 
-            bool success = await communication.SaveFile(targetFolder, url);
+            var success = await communication.SaveFile(targetFolder, url);
 
             // The helper logic will extract "favicon.ico"
             var expectedPath = Path.Combine(targetFolder, "favicon.ico");

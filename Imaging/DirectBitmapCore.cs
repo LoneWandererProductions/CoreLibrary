@@ -35,7 +35,7 @@ namespace Imaging
         {
             if ((uint)x >= width || (uint)y >= height) return;
 
-            int index = x + y * width;
+            var index = x + y * width;
             bits[index] = color;
         }
 
@@ -50,7 +50,7 @@ namespace Imaging
         /// <returns>Pixel32 Struct for the Coordinate.</returns>
         internal static Pixel32 GetPixel(Pixel32[] bits, int width, int height, int x, int y)
         {
-            int index = x + y * width;
+            var index = x + y * width;
             return bits[index];
         }
 
@@ -69,7 +69,7 @@ namespace Imaging
             IEnumerable<PixelData> pixels,
             int threshold)
         {
-            IEnumerable<PixelData> pixelCollection = pixels;
+            var pixelCollection = pixels;
 
             int count;
             if (pixels is ICollection<PixelData> col)
@@ -88,7 +88,7 @@ namespace Imaging
             {
                 Span<PixelData> span = stackalloc PixelData[count];
 
-                int i = 0;
+                var i = 0;
                 foreach (var p in pixelCollection)
                     span[i++] = p;
 
@@ -127,26 +127,26 @@ namespace Imaging
 
             foreach (var group in grouped)
             {
-                int y = group.Key.y;
-                Pixel32 color = group.Key.color;
+                var y = group.Key.y;
+                var color = group.Key.color;
 
                 // Sort X positions to detect contiguous runs
                 var xs = group.Select(p => p.x).Order().ToArray();
 
-                int i = 0;
+                var i = 0;
                 while (i < xs.Length)
                 {
-                    int runStart = xs[i];
-                    int runLength = 1;
+                    var runStart = xs[i];
+                    var runLength = 1;
 
                     // Detect contiguous sequence
                     while (i + runLength < xs.Length && xs[i + runLength] == runStart + runLength)
                         runLength++;
 
-                    int startIndex = runStart + (y * width);
+                    var startIndex = runStart + (y * width);
 
                     // Scalar write for the run
-                    for (int offset = 0; offset < runLength; offset++)
+                    for (var offset = 0; offset < runLength; offset++)
                         bits[startIndex + offset] = color;
 
                     i += runLength;
@@ -215,7 +215,7 @@ namespace Imaging
         {
             fixed (Pixel32* pBits = bits)
             {
-                for (int i = 0; i < pixels.Length; i++)
+                for (var i = 0; i < pixels.Length; i++)
                 {
                     var pixel = pixels[i];
 
@@ -250,19 +250,19 @@ namespace Imaging
             var dstSpan = MemoryMarshal.Cast<Pixel32, uint>(dstBits.AsSpan());
             var srcSpan = src.AsSpan();
 
-            int len = dstSpan.Length;
+            var len = dstSpan.Length;
 
             fixed (uint* pDst = dstSpan)
             fixed (uint* pSrc = srcSpan)
             {
-                uint* dPtr = pDst;
-                uint* sPtr = pSrc;
+                var dPtr = pDst;
+                var sPtr = pSrc;
 
-                for (int i = 0; i < len; i++)
+                for (var i = 0; i < len; i++)
                 {
-                    uint s = *sPtr;
+                    var s = *sPtr;
 
-                    uint sa = s >> 24;
+                    var sa = s >> 24;
                     if (sa == 0)
                     {
                         dPtr++;
@@ -278,24 +278,24 @@ namespace Imaging
                         continue;
                     }
 
-                    uint d = *dPtr;
+                    var d = *dPtr;
 
-                    uint da = d >> 24;
-                    uint dr = (d >> 16) & 0xFF;
-                    uint dg = (d >> 8) & 0xFF;
-                    uint db = d & 0xFF;
+                    var da = d >> 24;
+                    var dr = (d >> 16) & 0xFF;
+                    var dg = (d >> 8) & 0xFF;
+                    var db = d & 0xFF;
 
-                    uint sr = (s >> 16) & 0xFF;
-                    uint sg = (s >> 8) & 0xFF;
-                    uint sb = s & 0xFF;
+                    var sr = (s >> 16) & 0xFF;
+                    var sg = (s >> 8) & 0xFF;
+                    var sb = s & 0xFF;
 
-                    uint invA = 255 - sa;
+                    var invA = 255 - sa;
 
-                    uint r = (sr * sa + dr * invA) / 255;
-                    uint g = (sg * sa + dg * invA) / 255;
-                    uint b = (sb * sa + db * invA) / 255;
+                    var r = (sr * sa + dr * invA) / 255;
+                    var g = (sg * sa + dg * invA) / 255;
+                    var b = (sb * sa + db * invA) / 255;
 
-                    uint a = sa + ((da * invA) / 255);
+                    var a = sa + ((da * invA) / 255);
 
                     *dPtr = (a << 24) | (r << 16) | (g << 8) | b;
 

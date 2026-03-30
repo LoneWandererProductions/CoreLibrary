@@ -91,12 +91,18 @@ namespace Core.Apps.Development
         {
             var files = CoreHelper.GetSourceFiles(projectPath);
 
-            var affectedFiles =
-                (from file in files
-                    let code = File.ReadAllText(file)
-                    let strings = ExtractStrings(code)
-                    where strings.Any()
-                    select Path.GetFullPath(file)).ToList();
+            if (files?.Any() != false) return null;
+
+            var affectedFiles = new List<string>();
+
+            foreach (var file in files)
+            {
+                // Actually peek inside the file
+                if (FilePeekContainsString(file))
+                {
+                    affectedFiles.Add(Path.GetFullPath(file));
+                }
+            }
 
             return affectedFiles.Count == 0
                 ? null
@@ -366,6 +372,43 @@ namespace Core.Apps.Development
                                string.Join("\n", resourceEntries) + "\n}";
                 File.WriteAllText(outputFilePath, classDef);
             }
+        }
+
+
+        /// <summary>
+        /// Files the peek contains string.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>If string is contained</returns>
+        private bool FilePeekContainsString(string filePath)
+        {
+            try
+            {
+                // This is the "Lazy" way: stops at the first hit
+                foreach (var line in File.ReadLines(filePath))
+                {
+                    if (ContainsStringPattern(line)) return true;
+                }
+            }
+            catch { /* Handle locked files or permissions */ }
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Determines whether [contains string pattern] [the specified line].
+        /// </summary>
+        /// <param name="line">The line.</param>
+        /// <returns>
+        ///   <c>true</c> if [contains string pattern] [the specified line]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool ContainsStringPattern(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line)) return false;
+
+
+            return line.IndexOf('"') != -1 || line.IndexOf('\'') != -1;
         }
     }
 }

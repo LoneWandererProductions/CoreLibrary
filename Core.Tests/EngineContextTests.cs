@@ -68,7 +68,7 @@ namespace Core.Tests
             _blackboard.BatteryLevel = 100;
 
             // Act: "Hey Engine, look at the blackboard. Should we change states?"
-            bool didTransition = _engine.Evaluate(_blackboard);
+            var didTransition = _engine.Evaluate(_blackboard);
 
             // Assert
             Assert.IsTrue(didTransition, "The engine should have triggered a transition.");
@@ -91,7 +91,7 @@ namespace Core.Tests
             _blackboard.BatteryLevel = 100;
 
             // Act
-            bool didTransition = _engine.Evaluate(_blackboard);
+            var didTransition = _engine.Evaluate(_blackboard);
 
             // Assert
             Assert.IsFalse(didTransition, "The engine should NOT have transitioned.");
@@ -113,7 +113,7 @@ namespace Core.Tests
             _blackboard.BatteryLevel = 2; // Guard is true, but NOT enough battery!
 
             // Act
-            bool didTransition = _engine.Evaluate(_blackboard);
+            var didTransition = _engine.Evaluate(_blackboard);
 
             // Assert
             Assert.IsFalse(didTransition, "Transition should fail due to lack of resources.");

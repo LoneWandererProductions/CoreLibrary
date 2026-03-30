@@ -168,7 +168,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public override string ToString()
         {
-            string status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
+            var status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
             return $"VaultItem<{typeof(TU).Name}> | {status} | Size: {DataSize} bytes | Desc: {Description}";
         }
     }

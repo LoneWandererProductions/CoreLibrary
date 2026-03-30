@@ -61,23 +61,26 @@ namespace Core.Apps.Helper
         /// </returns>
         internal static LoopContext GetLoopContext(SyntaxNode node)
         {
+            // Use an enumerator directly. No ToList() = No heap allocation.
             var loops = node.Ancestors().Where(a =>
-                    a is ForStatementSyntax or ForEachStatementSyntax or WhileStatementSyntax or DoStatementSyntax)
-                .ToList();
+                a is ForStatementSyntax or ForEachStatementSyntax or WhileStatementSyntax or DoStatementSyntax);
 
-            if (!loops.Any())
+            using var enumerator = loops.GetEnumerator();
+
+            // Check for the first loop
+            if (!enumerator.MoveNext())
                 return LoopContext.None;
 
-            if (loops.Count > 1)
+            var firstLoop = enumerator.Current;
+
+            // Check if there is a SECOND loop (Nested)
+            if (enumerator.MoveNext())
                 return LoopContext.Nested;
 
-            var loop = loops.First();
-            return loop switch
+            // Only one loop exists
+            return firstLoop switch
             {
                 ForStatementSyntax forLoop => AnalyzeForLoop(forLoop),
-                ForEachStatementSyntax => LoopContext.VariableBounded,
-                WhileStatementSyntax => LoopContext.VariableBounded,
-                DoStatementSyntax => LoopContext.VariableBounded,
                 _ => LoopContext.VariableBounded
             };
         }
@@ -89,7 +92,6 @@ namespace Core.Apps.Helper
         /// <returns>The project root directory.</returns>
         internal static string FindProjectRoot(string startPath)
         {
-            // Normalize: convert file path → directory path
             if (File.Exists(startPath))
                 startPath = Path.GetDirectoryName(startPath)!;
 
@@ -97,13 +99,12 @@ namespace Core.Apps.Helper
 
             while (dir != null)
             {
-                if (dir.GetFiles(CoreResources.ResourceCsProjectExtension).Any())
+                if (dir.EnumerateFiles(CoreResources.ResourceCsProjectExtension).Any())
                     return dir.FullName;
 
                 dir = dir.Parent;
             }
 
-            // Fallback
             return startPath;
         }
 

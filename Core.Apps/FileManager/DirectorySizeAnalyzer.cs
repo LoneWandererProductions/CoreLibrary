@@ -95,7 +95,7 @@ namespace Core.Apps.FileManager
             try
             {
                 // ... (Your existing file enumeration logic stays exactly the same) ...
-                IEnumerable<string> filePaths = includeSubdirectories
+                var filePaths = includeSubdirectories
                     ? CoreHelper.SafeEnumerateFiles(directoryPath, "*.*")
                     : Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly);
 

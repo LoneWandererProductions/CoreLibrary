@@ -56,11 +56,11 @@ namespace Communication
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnPortData(object? sender, EventArgs e)
         {
-            int bytes = _port.Read(_buffer, 0, _buffer.Length);
+            var bytes = _port.Read(_buffer, 0, _buffer.Length);
             if (bytes <= 0)
                 return;
 
-            string text = _encoding.GetString(_buffer, 0, bytes);
+            var text = _encoding.GetString(_buffer, 0, bytes);
             DataReceived?.Invoke(text);
         }
 

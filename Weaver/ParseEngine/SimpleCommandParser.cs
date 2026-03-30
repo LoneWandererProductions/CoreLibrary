@@ -35,7 +35,7 @@ namespace Weaver.ParseEngine
             var dotIndex = FindSeparatorIndex(raw, '.', fromRight: true);
 
             string mainPart;
-            string extPart = string.Empty;
+            var extPart = string.Empty;
 
             if (dotIndex != -1)
             {
@@ -50,7 +50,7 @@ namespace Weaver.ParseEngine
             // 2. Split Namespace
             // We search for the first colon ':' that is NOT inside quotes or parentheses.
             var colonIndex = FindSeparatorIndex(mainPart, ':');
-            string ns = string.Empty;
+            var ns = string.Empty;
             string cmdSig;
 
             if (colonIndex != -1)
@@ -74,8 +74,8 @@ namespace Weaver.ParseEngine
             // If the input had an opening parenthesis but we couldn't parse it cleanly, ParseSignature handles checks.
 
             // 4. Parse Extension Signature "Name(Args)" (if exists)
-            string extName = string.Empty;
-            string[] extArgs = Array.Empty<string>();
+            var extName = string.Empty;
+            var extArgs = Array.Empty<string>();
 
             if (!string.IsNullOrEmpty(extPart))
             {

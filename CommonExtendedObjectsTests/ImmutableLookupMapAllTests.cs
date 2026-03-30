@@ -284,7 +284,7 @@ namespace CommonExtendedObjectsTests
         {
             var data = new Dictionary<int, string>();
             // Using multiples of large numbers often creates hash clusters
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 data[i * 1024] = $"CollisionValue_{i}";
             }

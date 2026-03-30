@@ -49,7 +49,7 @@ namespace FileHandler
             if (!tgtDir.Exists)
                 tgtDir.Create();
 
-            bool success = true;
+            var success = true;
             CopyDirectoryRecursive(srcDir, tgtDir, overwrite, ref success);
             return success;
         }
@@ -83,7 +83,7 @@ namespace FileHandler
             var root = FileHandlerProcessing.SearchRoot(source);
             root = Path.GetFullPath(new FileInfo(root).Directory!.FullName);
 
-            bool success = true;
+            var success = true;
 
             foreach (var filePath in source)
             {
@@ -162,7 +162,7 @@ namespace FileHandler
             if (!Directory.Exists(source))
                 return false;
 
-            bool success = true;
+            var success = true;
 
             var dir = new DirectoryInfo(source);
             var files = dir.GetFiles();

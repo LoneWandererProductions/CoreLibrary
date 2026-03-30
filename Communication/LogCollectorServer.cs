@@ -80,7 +80,7 @@ namespace Communication
                     }
 
                     // If we got here, the line was read successfully
-                    string line = await lineTask;
+                    var line = await lineTask;
 
                     if (line == null) break; // Client disconnected gracefully
 

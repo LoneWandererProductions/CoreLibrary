@@ -179,7 +179,7 @@ namespace CommonLibraryGuiTests
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
             // 4. THE RENDER LOOP
-            for (int i = 0; i < updateCount; i++)
+            for (var i = 0; i < updateCount; i++)
             {
                 // A. Mutate the pixels directly in RAM (Zero allocations!)
                 // In a real app, this might be copying a video frame array.

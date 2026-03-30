@@ -34,7 +34,7 @@ namespace FileHandler
             if (!File.Exists(path))
                 return false;
 
-            int attempt = 0;
+            var attempt = 0;
             while (IsFileLocked(path) && attempt < FileHandlerRegister.Tries)
             {
                 attempt++;
@@ -73,7 +73,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">Thrown when paths are null or empty.</exception>
         public static async Task<bool> DeleteFiles(IEnumerable<string> paths)
         {
-            if (paths == null || !paths.Any())
+            if (paths == null || paths.Count() == 0)
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyList);
 
             var tasks = paths.Select(DeleteFile);
@@ -100,7 +100,7 @@ namespace FileHandler
                 var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                 var files = Directory.GetFiles(path, FileHandlerResources.FileSeparator, option);
 
-                if (!files.Any())
+                if (files.Length == 0)
                     return false;
 
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteAllContents),
@@ -142,7 +142,7 @@ namespace FileHandler
                 .SelectMany(ext => FileHandleSearch.GetFilesByExtensionFullPath(path, ext, subdirectories))
                 .ToList();
 
-            if (!filesToDelete.Any())
+            if (filesToDelete.Count == 0)
                 return false;
 
             FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtension),

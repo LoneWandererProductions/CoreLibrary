@@ -72,20 +72,20 @@ namespace ExtendedSystemObjects
             _mask = _capacity - 1;
 
             _entries = new UnmanagedArray<Entry>(_capacity);
-            Entry* entriesPtr = _entries.Pointer;
+            var entriesPtr = _entries.Pointer;
 
             foreach (var kvp in data)
             {
-                TKey key = kvp.Key;
-                TValue value = kvp.Value;
-                int hash = GetHash(key) & _mask;
-                bool placed = false;
+                var key = kvp.Key;
+                var value = kvp.Value;
+                var hash = GetHash(key) & _mask;
+                var placed = false;
 
                 // 2. Linear Probing for cache line efficiency
                 for (var i = 0; i < _capacity; i++)
                 {
-                    int index = (int)((uint)(hash + i) & (uint)_mask);
-                    Entry* entry = entriesPtr + index;
+                    var index = (int)((uint)(hash + i) & (uint)_mask);
+                    var entry = entriesPtr + index;
 
                     if (entry->IsPresent == 0)
                     {
@@ -163,13 +163,13 @@ namespace ExtendedSystemObjects
         /// <exception cref="KeyNotFoundException">Thrown if the key is not found in the map.</exception>
         public TValue Get(TKey key)
         {
-            int hash = GetHash(key) & _mask;
-            Entry* entriesPtr = _entries.Pointer;
+            var hash = GetHash(key) & _mask;
+            var entriesPtr = _entries.Pointer;
 
             for (var i = 0; i < _capacity; i++)
             {
-                int index = (hash + i) & _mask;
-                Entry* entry = entriesPtr + index;
+                var index = (hash + i) & _mask;
+                var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
 
@@ -193,13 +193,13 @@ namespace ExtendedSystemObjects
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            int hash = GetHash(key) & _mask;
-            Entry* entriesPtr = _entries.Pointer;
+            var hash = GetHash(key) & _mask;
+            var entriesPtr = _entries.Pointer;
 
             for (var i = 0; i < _capacity; i++)
             {
-                int index = (hash + i) & _mask;
-                Entry* entry = entriesPtr + index;
+                var index = (hash + i) & _mask;
+                var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
 

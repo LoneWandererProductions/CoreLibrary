@@ -198,11 +198,11 @@ namespace Imaging.Gifs
         private static void GifCreator(IEnumerable<Bitmap> btm, string target, int delayMs)
         {
             var gEnc = new GifBitmapEncoder();
-            ushort gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
+            var gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
 
             foreach (var bmpImage in btm)
             {
-                nint hBitmap = bmpImage.GetHbitmap();
+                var hBitmap = bmpImage.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
@@ -236,7 +236,7 @@ namespace Imaging.Gifs
 
             foreach (var frame in frames)
             {
-                nint hBitmap = frame.Image.GetHbitmap();
+                var hBitmap = frame.Image.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(

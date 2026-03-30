@@ -360,12 +360,12 @@ namespace SqliteHelper
                 return SqliteHelperResources.ErrorCheck;
 
             var headersList = tableHeaders.DColumns.ToList();
-            bool primaryKeyUsed = false;
+            var primaryKeyUsed = false;
 
             string AddHeader(KeyValuePair<string, TableColumns> kv)
             {
                 var col = kv.Value;
-                string line = $"{kv.Key} {col.DataType}";
+                var line = $"{kv.Key} {col.DataType}";
 
                 if (col.PrimaryKey)
                 {

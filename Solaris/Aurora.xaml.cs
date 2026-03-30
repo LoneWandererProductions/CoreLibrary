@@ -406,8 +406,8 @@ namespace Solaris
             var position = e.GetPosition(Touch);
 
             // Let standard integer division do the heavy lifting
-            int gridX = (int)position.X / AuroraTextureSize;
-            int gridY = (int)position.Y / AuroraTextureSize;
+            var gridX = (int)position.X / AuroraTextureSize;
+            var gridY = (int)position.Y / AuroraTextureSize;
 
             // Create the immutable struct
             _cursor = new Coordinate2D(gridX, gridY);

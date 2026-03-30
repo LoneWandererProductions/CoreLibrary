@@ -8,6 +8,7 @@
 
 using System.Linq;
 using System.Windows;
+using ExtendedSystemObjects;
 
 namespace Debugger
 {
@@ -87,7 +88,7 @@ namespace Debugger
         private void InitializeConfiguration()
         {
             var options = DebugRegister.ColorOptions;
-            if (options?.Any() != true)
+            if (options == null || options.Count == 0)
             {
                 options = DebuggerResources.InitialOptions.ToList();
             }

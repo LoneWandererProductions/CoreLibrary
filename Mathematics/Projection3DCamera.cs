@@ -130,7 +130,7 @@ namespace Mathematics
             var vLookDir = transform.Target * matCameraRot;
 
             // 1. Unpack the nullable Position safely
-            Vector3D pos = transform.Position ?? Vector3D.ZeroVector;
+            var pos = transform.Position ?? Vector3D.ZeroVector;
 
             // 2. Add two solid Vector3D structs together
             var vTarget = pos + vLookDir;
@@ -174,7 +174,7 @@ namespace Mathematics
 
             // 1. SAFELY UNWRAP NULLABLE POSITION
             // If Position is null, default to 0,0,0 so the dot product resolves to 0 safely.
-            Vector3D pos = transform.Position ?? Vector3D.ZeroVector;
+            var pos = transform.Position ?? Vector3D.ZeroVector;
 
             // The inverse camera's translation using the unwrapped position
             var transl = new Vector3D(

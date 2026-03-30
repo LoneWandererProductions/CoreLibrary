@@ -96,7 +96,7 @@ namespace ExtendedSystemObjects
                     State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
                 };
 
-                int key = GetNewKey();
+                var key = GetNewKey();
                 Changelog[key] = log;
                 _lookupIndex[(uniqueIdentifier, LogState.Add)] = key; // Update Index
                 Changed = true;
@@ -120,7 +120,7 @@ namespace ExtendedSystemObjects
 
                 var item = Changelog[id].Data;
 
-                int key = GetNewKey();
+                var key = GetNewKey();
                 Changelog[key] = new LogEntry
                 {
                     State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
@@ -157,7 +157,7 @@ namespace ExtendedSystemObjects
                 }
                 else if (entry == -1)
                 {
-                    int key = GetNewKey();
+                    var key = GetNewKey();
                     Changelog[key] = new LogEntry
                     {
                         State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier

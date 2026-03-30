@@ -234,7 +234,7 @@ namespace Common.Dialogs
 
                 var newDirPath = Path.Combine(Paths, ComDlgResources.NewFolder);
                 var dirName = newDirPath;
-                int i = 1;
+                var i = 1;
 
                 while (Directory.Exists(dirName))
                     dirName = $"{newDirPath} ({i++})";
@@ -273,9 +273,9 @@ namespace Common.Dialogs
         {
             Paths = path;
 
-            string[] directories =
+            var directories =
                 Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
-            string[] files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
+            var files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -308,10 +308,10 @@ namespace Common.Dialogs
                     return null;
 
                 // Normalize path (removes trailing slashes)
-                string full = Path.GetFullPath(path);
+                var full = Path.GetFullPath(path);
 
                 // Detect root (C:\, D:\, etc.)
-                string? root = Path.GetPathRoot(full);
+                var root = Path.GetPathRoot(full);
                 if (root != null &&
                     root.Equals(full, StringComparison.OrdinalIgnoreCase))
                 {

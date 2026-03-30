@@ -77,7 +77,7 @@ namespace Mathematics
             // REDUCTION:
             // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator 
             // so the negative sign doesn't break the Euclidean algorithm.
-            int gcd = GetGcf(Math.Abs(numerator), denominator);
+            var gcd = GetGcf(Math.Abs(numerator), denominator);
 
             // Apply the reduction and lock the values in.
             Numerator = numerator / gcd;
@@ -282,7 +282,7 @@ namespace Mathematics
             if (Denominator == 1) return Numerator.ToString();
 
             // If it has a whole part (e.g., 7/3), format as a mixed number: "2 1/3"
-            int whole = WholePart;
+            var whole = WholePart;
             if (whole != 0)
             {
                 return $"{whole} {RemainderNumerator}/{Denominator}";
@@ -300,7 +300,7 @@ namespace Mathematics
         {
             while (b != 0)
             {
-                int temp = b;
+                var temp = b;
                 b = a % b; // Get the remainder
                 a = temp; // Shift the values
             }

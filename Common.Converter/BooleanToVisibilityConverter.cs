@@ -39,7 +39,7 @@ namespace Common.Converter
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool b = value is bool booleanValue && booleanValue;
+            var b = value is bool booleanValue && booleanValue;
 
             if (b)
             {

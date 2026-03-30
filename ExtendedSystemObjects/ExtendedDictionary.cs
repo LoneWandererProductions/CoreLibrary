@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects.Helper;
@@ -171,7 +172,7 @@ namespace ExtendedSystemObjects
         /// <param name="dic">Internal Target Dictionary</param>
         /// <returns>If Dictionary is Null or has zero Elements</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> dic)
+        public static bool IsNullOrEmpty<TKey, TValue>([NotNullWhen(false)] this IDictionary<TKey, TValue> dic)
         {
             if (dic == null)
             {

@@ -160,10 +160,14 @@ namespace FileHandler
         /// <exception cref="FileHandlerException"></exception>
         public static bool CheckIfFolderContainsElement(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrWhiteSpace(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
-            return Directory.Exists(path) && Directory.EnumerateFileSystemEntries(path).Any();
+            if (!Directory.Exists(path))
+                return false;
+
+            using var enumerator = Directory.EnumerateFileSystemEntries(path).GetEnumerator();
+            return enumerator.MoveNext();
         }
 
         /// <summary>

@@ -73,8 +73,8 @@ namespace Core.Apps.FileManager
 
             indent += last ? "    " : "│   ";
 
-            string[] dirs = Array.Empty<string>();
-            string[] files = Array.Empty<string>();
+            var dirs = Array.Empty<string>();
+            var files = Array.Empty<string>();
 
             try
             {

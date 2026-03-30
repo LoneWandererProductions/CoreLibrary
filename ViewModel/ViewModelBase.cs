@@ -96,7 +96,7 @@ namespace ViewModel
             if (handler == null)
                 return;
 
-            SynchronizationContext? ctx = SynchronizationContext.Current;
+            var ctx = SynchronizationContext.Current;
             if (ctx != null)
             {
                 ctx.Post(_ => handler(this, new PropertyChangedEventArgs(propertyName)), null);

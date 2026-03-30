@@ -103,7 +103,7 @@ namespace Communication
                 using (client) // Ensures the client is closed
                 await using (var stream = client.GetStream()) // Ensures the stream is closed
                 {
-                    byte[] buffer = Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
+                    var buffer = Encoding.ASCII.GetBytes(ComResource.AnswerMessage);
 
                     // Use Async write
                     await stream.WriteAsync(buffer, 0, buffer.Length);

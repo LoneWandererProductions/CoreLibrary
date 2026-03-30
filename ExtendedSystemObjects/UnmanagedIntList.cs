@@ -166,13 +166,13 @@ namespace ExtendedSystemObjects
             }
 #endif
 
-            int moveCount = Length - (index + count);
+            var moveCount = Length - (index + count);
             if (moveCount > 0)
             {
                 // Source: Elements after the deleted range
-                ReadOnlySpan<int> source = new ReadOnlySpan<int>(_ptr + index + count, moveCount);
+                var source = new ReadOnlySpan<int>(_ptr + index + count, moveCount);
                 // Destination: The start of the deleted range
-                Span<int> destination = new Span<int>(_ptr + index, moveCount);
+                var destination = new Span<int>(_ptr + index, moveCount);
 
                 // This is a high-speed memmove equivalent
                 source.CopyTo(destination);
@@ -296,7 +296,7 @@ namespace ExtendedSystemObjects
         {
             if (values.IsEmpty) return;
 
-            int count = values.Length;
+            var count = values.Length;
             EnsureCapacity(Length + count);
 
             // Copy the entire span directly into the unmanaged buffer
@@ -369,13 +369,13 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            int moveCount = Length - index;
+            var moveCount = Length - index;
             if (moveCount > 0)
             {
                 // Source: Elements from index to the end
-                ReadOnlySpan<int> source = new ReadOnlySpan<int>(_ptr + index, moveCount);
+                var source = new ReadOnlySpan<int>(_ptr + index, moveCount);
                 // Destination: The new position after the gap
-                Span<int> destination = new Span<int>(_ptr + index + count, moveCount);
+                var destination = new Span<int>(_ptr + index + count, moveCount);
 
                 source.CopyTo(destination);
             }
