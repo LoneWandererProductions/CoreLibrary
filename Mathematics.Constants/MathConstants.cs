@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 namespace Mathematics.Constants
 {

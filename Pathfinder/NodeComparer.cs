@@ -37,8 +37,8 @@ namespace Pathfinder
 
             if (result == 0)
             {
-                // 2. Revert to your logic: Compare G. 
-                // This ensures we respect the diagonal and movement costs 
+                // 2. Revert to your logic: Compare G.
+                // This ensures we respect the diagonal and movement costs
                 // when the heuristic guess is identical.
                 result = x.G.CompareTo(y.G);
 

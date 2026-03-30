@@ -11,7 +11,7 @@ namespace Core.Apps.UI
     /// <summary>
     /// Entry model for log messages, including optional timestamps for display in the UI.
     /// </summary>
-    public class LogEntry
+    public sealed class LogEntry
     {
         /// <summary>
         /// Gets or sets the message.

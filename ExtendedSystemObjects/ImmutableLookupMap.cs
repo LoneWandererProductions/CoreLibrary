@@ -179,11 +179,13 @@ namespace ExtendedSystemObjects
 
                 if (!_keyPresence[index]) break; // Hit an empty slot; key doesn't exist
 
-                if (_keys[index].Equals(key))
+                if (!_keys[index].Equals(key))
                 {
-                    value = _values[index];
-                    return true;
+                    continue;
                 }
+
+                value = _values[index];
+                return true;
             }
 
             value = default;

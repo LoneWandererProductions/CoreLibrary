@@ -159,9 +159,27 @@ namespace CommonLibraryGuiTests
             {
                 PolarisTextures = new Dictionary<int, Texture>
                 {
-                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png") } },
-                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png") } },
-                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png") } }
+                    {
+                        0,
+                        new Texture
+                        {
+                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
+                        }
+                    },
+                    {
+                        1,
+                        new Texture
+                        {
+                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
+                        }
+                    },
+                    {
+                        2,
+                        new Texture
+                        {
+                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
+                        }
+                    }
                 },
                 PolarisTextureSize = 100,
                 PolarisHeight = 2,

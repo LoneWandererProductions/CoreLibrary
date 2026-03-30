@@ -44,7 +44,7 @@ namespace CommonLibraryGuiTests
             var renderedLine = canvas.Children.OfType<Line>().First();
 
             // Assert
-            // Because of normalization, the line is shifted. 
+            // Because of normalization, the line is shifted.
             // It should now be at 'padding' (Thickness / 2)
             Assert.That(Canvas.GetLeft(renderedLine), Is.EqualTo(1.0d),
                 "Line should be shifted to the edge of the canvas.");

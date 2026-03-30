@@ -77,7 +77,6 @@ namespace Core.Apps
         public CommandResult Execute(params string[] args)
         {
             _storeKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
-
                 ? args[0]
                 : "whoami";
 

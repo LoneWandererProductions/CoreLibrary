@@ -125,13 +125,13 @@ namespace Imaging
             // Instant O(1) assignment. No memory allocation, no cloning overhead.
             control._pictureBox.Image = newBitmap;
 
-            // Dispose the old image AFTER swapping to prevent UI flickering 
+            // Dispose the old image AFTER swapping to prevent UI flickering
             // and GDI+ locking issues.
             oldImage?.Dispose();
         }
 
         /// <summary>
-        /// Forces the PictureBox to redraw the current image. 
+        /// Forces the PictureBox to redraw the current image.
         /// Call this after updating the DirectBitmap pixels!
         /// </summary>
         public void InvalidateCanvas()

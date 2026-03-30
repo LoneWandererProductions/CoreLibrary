@@ -262,15 +262,15 @@ namespace CommonLibraryTests
         {
             // 1. Calculate raw transformed coordinates into local variables first
             var newX = (i.X * matProj.Matrix[0, 0]) + (i.Y * matProj.Matrix[1, 0]) + (i.Z * matProj.Matrix[2, 0]) +
-                          matProj.Matrix[3, 0];
+                       matProj.Matrix[3, 0];
             var newY = (i.X * matProj.Matrix[0, 1]) + (i.Y * matProj.Matrix[1, 1]) + (i.Z * matProj.Matrix[2, 1]) +
-                          matProj.Matrix[3, 1];
+                       matProj.Matrix[3, 1];
             var newZ = (i.X * matProj.Matrix[0, 2]) + (i.Y * matProj.Matrix[1, 2]) + (i.Z * matProj.Matrix[2, 2]) +
-                          matProj.Matrix[3, 2];
+                       matProj.Matrix[3, 2];
 
             // 2. Calculate W (the homogeneous coordinate)
             var w = (i.X * matProj.Matrix[0, 3]) + (i.Y * matProj.Matrix[1, 3]) + (i.Z * matProj.Matrix[2, 3]) +
-                       matProj.Matrix[3, 3];
+                    matProj.Matrix[3, 3];
 
             w = Math.Round(w, 2);
 

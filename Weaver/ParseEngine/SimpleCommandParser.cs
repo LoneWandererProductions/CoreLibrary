@@ -194,7 +194,7 @@ namespace Weaver.ParseEngine
 
                 // Match Target
                 // We only match if we are at the top level (depth 0) AND the character matches.
-                // We do this check *after* depth adjustment logic would technically be cleaner, 
+                // We do this check *after* depth adjustment logic would technically be cleaner,
                 // but since separator chars ('.' / ':') are never '(' or ')', this order is safe.
                 if (parenDepth == 0 && c == target)
                 {

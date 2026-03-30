@@ -16,7 +16,7 @@ namespace Weaver.Core.Commands
     /// <summary>
     /// Command to compile & execute Weaver scripts.
     /// </summary>
-    internal class ScriptCommand : ICommand
+    internal sealed class ScriptCommand : ICommand
     {
         /// <summary>
         /// The registry

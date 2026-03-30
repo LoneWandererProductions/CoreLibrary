@@ -87,7 +87,7 @@ namespace Common.Controls
         /// </returns>
         public override int GetHashCode()
         {
-            // Note: If Equals uses Name, HashCode should ideally include it too, 
+            // Note: If Equals uses Name, HashCode should ideally include it too,
             // unless Id is guaranteed unique across all instances.
             return HashCode.Combine(_id, _name);
         }

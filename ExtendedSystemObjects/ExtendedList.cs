@@ -246,6 +246,7 @@ namespace ExtendedSystemObjects
                             return false;
                         }
                     }
+
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(comparer), comparer, null);

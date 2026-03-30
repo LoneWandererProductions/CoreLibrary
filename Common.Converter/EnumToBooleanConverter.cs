@@ -6,21 +6,25 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
 namespace Common.Converter
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Converts between an <see cref="Enum"/> value and a <see cref="bool"/> for use in XAML bindings.
+    /// Converts between an <see cref="T:System.Enum" /> value and a <see cref="T:System.Boolean" /> for use in XAML bindings.
     /// Typically used to bind enum values to radio buttons or toggle controls:
-    /// - <see cref="Convert"/> returns true if the enum value matches the converter parameter.
-    /// - <see cref="ConvertBack"/> returns the enum value represented by the parameter when the boolean is true.
+    /// - <see cref="M:Common.Converter.EnumToBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)" /> returns true if the enum value matches the converter parameter.
+    /// - <see cref="M:Common.Converter.EnumToBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)" /> returns the enum value represented by the parameter when the boolean is true.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public class EnumToBooleanConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -31,11 +35,12 @@ namespace Common.Converter
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
         {
             return value?.ToString() == parameter?.ToString();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -50,6 +55,7 @@ namespace Common.Converter
         {
             if ((bool)value)
                 return Enum.Parse(targetType, parameter.ToString()!);
+
             return Binding.DoNothing;
         }
     }

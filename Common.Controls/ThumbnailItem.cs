@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Common.Controls
  * FILE:        ThumbnailItem.cs
@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace Common.Controls
 {
-    public class ThumbnailItem : INotifyPropertyChanged
+    public sealed class ThumbnailItem : INotifyPropertyChanged
     {
         private bool _isSelected;
         private BitmapSource _imageSource;

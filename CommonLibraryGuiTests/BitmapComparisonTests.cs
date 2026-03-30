@@ -176,7 +176,7 @@ namespace CommonLibraryGuiTests
             // This passes the shared memory canvas to the WinForms picture box.
             display.Bitmap = directBitmap.UnsafeBitmap;
 
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             // 4. THE RENDER LOOP
             for (var i = 0; i < updateCount; i++)
@@ -189,8 +189,8 @@ namespace CommonLibraryGuiTests
                 // B. Tell the UI to repaint what is in memory
                 display.InvalidateCanvas();
 
-                // (Optional: In a UI test, you sometimes need to pump the WPF Dispatcher 
-                // here to force it to actually draw to the screen immediately, otherwise 
+                // (Optional: In a UI test, you sometimes need to pump the WPF Dispatcher
+                // here to force it to actually draw to the screen immediately, otherwise
                 // it just queues up 100 invalidate requests and draws once at the end).
                 DoEvents(display);
             }
@@ -206,10 +206,8 @@ namespace CommonLibraryGuiTests
         private static void DoEvents(DependencyObject control)
         {
             var frame = new System.Windows.Threading.DispatcherFrame();
-            control.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, new Action(delegate
-            {
-                frame.Continue = false;
-            }));
+            control.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() =>
+                frame.Continue = false));
             System.Windows.Threading.Dispatcher.PushFrame(frame);
         }
 

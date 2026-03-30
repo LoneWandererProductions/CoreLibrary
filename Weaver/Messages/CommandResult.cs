@@ -57,13 +57,7 @@ namespace Weaver.Messages
         /// <param name="feedback">The feedback.</param>
         /// <returns>Drop in ready Command.</returns>
         public static CommandResult Prompt(string message, FeedbackRequest feedback)
-            => new()
-            {
-                Success = true,
-                RequiresConfirmation = true,
-                Message = message,
-                Feedback = feedback
-            };
+            => new() { Success = true, RequiresConfirmation = true, Message = message, Feedback = feedback };
 
         /// <summary>
         /// Oks the specified MSG.

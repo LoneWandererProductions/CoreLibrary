@@ -14,7 +14,7 @@ namespace Core.StateExecutive
     /// <summary>
     /// EngineContext manages the current state and transitions of the State Executive Engine.
     /// </summary>
-    public class EngineContext
+    public sealed class EngineContext
     {
         /// <summary>
         /// The states

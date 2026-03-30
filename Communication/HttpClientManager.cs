@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Diagnostics;
 using System.Net.Http;
@@ -108,11 +111,10 @@ namespace Communication
                 throw new HttpRequestException(string.Format(ComResource.ErrorFormatTwo, response.StatusCode,
                     errorContent));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Don't wrap the exception in a new generic Exception; just rethrow or let it bubble up.
-                // If you must wrap it, use a custom domain exception.
-                throw;
+                Trace.WriteLine(ex.Message);
+                throw ex;
             }
         }
     }

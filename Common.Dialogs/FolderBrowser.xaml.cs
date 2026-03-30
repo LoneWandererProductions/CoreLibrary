@@ -6,7 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Common.Dialogs;
+// ReSharper disable MemberCanBeInternal
+
 using System.ComponentModel;
 using System.Windows;
 

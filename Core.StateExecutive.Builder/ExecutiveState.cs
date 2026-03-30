@@ -15,7 +15,7 @@ namespace Core.StateExecutive.Builder
     /// Stat eof the State Executive Engine. Each state has a unique ID and a list of transitions to other states.
     /// </summary>
     /// <seealso cref="Core.StateExecutive.Interfaces.IState" />
-    internal class ExecutiveState : IState
+    internal sealed class ExecutiveState : IState
     {
         /// <inheritdoc />
         public string Id { get; }

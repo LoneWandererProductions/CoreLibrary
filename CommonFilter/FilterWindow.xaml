@@ -21,8 +21,8 @@
             <RowDefinition />
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Column="1" Grid.Row="2" Name="FilterList" 
-                 ItemsSource="{Binding Filters}" 
+        <ListBox Grid.Column="1" Grid.Row="2" Name="FilterList"
+                 ItemsSource="{Binding Filters}"
                  HorizontalContentAlignment="Stretch"
                  BorderThickness="0">
             <ListBox.ItemTemplate>

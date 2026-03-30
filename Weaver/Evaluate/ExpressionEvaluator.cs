@@ -59,7 +59,7 @@ namespace Weaver.Evaluate
                 return single;
 
             // 3. Complex Evaluation
-            // We NO LONGER do string replacement here! 
+            // We NO LONGER do string replacement here!
             // The Lexer safely splits the string, and the RPN Engine fetches variables from the registry.
             var tokens = Lexer.Tokenize(expression).ToList();
 

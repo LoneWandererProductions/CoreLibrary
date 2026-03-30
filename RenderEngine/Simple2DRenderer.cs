@@ -86,7 +86,7 @@ namespace RenderEngine
             GL.BindVertexArray(_vaoSolid);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
 
-            //Buffer 
+            //Buffer
             // For Solid VBO
             GL.BufferData(BufferTarget.ArrayBuffer, _vboSolidCapacity * sizeof(float), IntPtr.Zero,
                 BufferUsageHint.DynamicDraw);

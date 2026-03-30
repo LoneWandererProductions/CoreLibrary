@@ -22,7 +22,7 @@ namespace Solaris
     /// <summary>
     ///     Generate a playing field
     /// </summary>
-    public sealed partial class Aurora : UserControl
+    public sealed partial class Aurora
     {
         #region Dependency Properties
 
@@ -322,8 +322,9 @@ namespace Solaris
 
             try
             {
-                // Safely await the animation without blocking the main UI thread 
-                await Helper.DisplayMovement(control, movement, control.AuroraAvatar, control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize);
+                // Safely await the animation without blocking the main UI thread
+                await Helper.DisplayMovement(control, movement, control.AuroraAvatar, control.AuroraWidth,
+                    control.AuroraHeight, control.AuroraTextureSize);
             }
             catch (Exception ex)
             {
@@ -391,7 +392,8 @@ namespace Solaris
             var control = (Aurora)d;
             var value = (KeyValuePair<int, int>)e.NewValue;
 
-            var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraTextureSize, control.AuroraTextures, control._thirdLayer, value);
+            var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraTextureSize, control.AuroraTextures,
+                control._thirdLayer, value);
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
@@ -405,7 +407,8 @@ namespace Solaris
             var control = (Aurora)d;
             var value = (int)e.NewValue;
 
-            var newBmp = Helper.RemoveDisplay(control.AuroraWidth, control.AuroraTextureSize, control._thirdLayer, value);
+            var newBmp = Helper.RemoveDisplay(control.AuroraWidth, control.AuroraTextureSize, control._thirdLayer,
+                value);
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
@@ -429,7 +432,8 @@ namespace Solaris
             if (AuroraGrid)
                 LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
 
-            ReplaceThirdLayer(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1, Touch.Height > 0 ? (int)Touch.Height : 1));
+            ReplaceThirdLayer(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1,
+                Touch.Height > 0 ? (int)Touch.Height : 1));
         }
 
         /// <summary>
@@ -439,7 +443,8 @@ namespace Solaris
         {
             if (AuroraTextures == null) return;
 
-            var newBitmap = Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap);
+            var newBitmap =
+                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap);
             ReplaceBitmapLayerOne(newBitmap);
         }
 

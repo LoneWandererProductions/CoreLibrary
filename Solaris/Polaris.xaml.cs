@@ -22,7 +22,7 @@ namespace Solaris
     /// <summary>
     ///     Generate a playing field for the editor
     /// </summary>
-    public sealed partial class Polaris : UserControl
+    public sealed partial class Polaris
     {
         #region Dependency Properties
 
@@ -216,7 +216,8 @@ namespace Solaris
 
             lock (control._lock)
             {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, (Dictionary<int, List<int>>)e.NewValue);
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
+                    control.PolarisTextureSize, control.PolarisTextures, (Dictionary<int, List<int>>)e.NewValue);
                 control.ReplaceBitmapLayerOne(newBitmap);
             }
         }
@@ -268,7 +269,8 @@ namespace Solaris
 
             lock (control._lock)
             {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
+                    control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
                 control.ReplaceBitmapLayerOne(newBitmap);
             }
         }
@@ -290,7 +292,8 @@ namespace Solaris
 
             lock (control._lock)
             {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
+                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
+                    control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
                 control.ReplaceBitmapLayerOne(newBitmap);
             }
         }
@@ -305,7 +308,8 @@ namespace Solaris
             var control = (Polaris)d;
             var value = (KeyValuePair<int, int>)e.NewValue;
 
-            var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures, control.BitmapLayerThree, value);
+            var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures,
+                control.BitmapLayerThree, value);
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
@@ -314,7 +318,8 @@ namespace Solaris
             var control = (Polaris)d;
             var value = (int)e.NewValue;
 
-            var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize, control.BitmapLayerThree, value);
+            var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize,
+                control.BitmapLayerThree, value);
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
@@ -339,7 +344,8 @@ namespace Solaris
             if (PolarisNumber)
                 LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
 
-            ReplaceBitmapLayerThree(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1, Touch.Height > 0 ? (int)Touch.Height : 1));
+            ReplaceBitmapLayerThree(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1,
+                Touch.Height > 0 ? (int)Touch.Height : 1));
         }
 
         /// <summary>
@@ -374,7 +380,8 @@ namespace Solaris
             PolarisMap = dictionary;
             lock (_lock)
             {
-                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
+                    PolarisMap);
                 ReplaceBitmapLayerOne(newBitmap);
             }
         }
@@ -391,7 +398,8 @@ namespace Solaris
             PolarisMap = dictionary;
             lock (_lock)
             {
-                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
+                    PolarisMap);
                 ReplaceBitmapLayerOne(newBitmap);
             }
         }
@@ -402,7 +410,8 @@ namespace Solaris
         /// <param name="tileData">The tile data.</param>
         public void AddDisplay(KeyValuePair<int, int> tileData)
         {
-            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree, tileData);
+            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree,
+                tileData);
             LayerThree.Source = newBmp?.ToBitmapImage();
         }
 

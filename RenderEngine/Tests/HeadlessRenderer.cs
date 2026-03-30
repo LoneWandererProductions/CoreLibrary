@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        HeadlessRenderer.cs
@@ -15,7 +15,7 @@ using OpenTK.Mathematics;
 
 namespace RenderEngine.Tests
 {
-    class HeadlessRenderer
+    sealed class HeadlessRenderer
     {
         private readonly GameWindow _window;
         private int _fbo, _tex, _vao, _vbo;

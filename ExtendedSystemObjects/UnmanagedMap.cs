@@ -9,6 +9,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable OutParameterValueIsAlwaysDiscarded.Global
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,16 +24,26 @@ using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc cref="IEnumerable" />
     /// <summary>
-    ///      Represents a high-performance, unmanaged hash map with integer keys and unmanaged values.
-    ///      Uses open addressing with linear probing for collision resolution and
-    ///      supports lazy deletion (tombstoning) to improve performance on removals.
+    /// Represents a high-performance, unmanaged hash map with integer keys and unmanaged values.
+    /// Uses open addressing with linear probing for collision resolution and
+    /// supports lazy deletion (tombstoning) to improve performance on removals.
     /// </summary>
     /// <typeparam name="TValue">The type of values stored, must be unmanaged.</typeparam>
+    /// <seealso cref="!:System.Collections.Generic.IEnumerable&lt;(System.Int32, TValue)&gt;" />
+    /// <seealso cref="T:System.IDisposable" />
     [DebuggerDisplay("{ToString()}")]
     public sealed unsafe class UnmanagedMap<TValue> : IEnumerable<(int, TValue)>, IDisposable where TValue : unmanaged
     {
+        /// <summary>
+        /// The minimum power of2
+        /// </summary>
         private const int MinPowerOf2 = 4;
+
+        /// <summary>
+        /// The maximum power of2
+        /// </summary>
         private const int MaxPowerOf2 = 20;
 
         /// <summary>
@@ -128,9 +143,11 @@ namespace ExtendedSystemObjects
                     values.Add(entry.Value);
                 }
             }
+
             return values;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -222,7 +239,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
+        /// <returns>Gets Value by Kex and returns if the kex exists or not.</returns>
         public bool TryGetValue(int key, out TValue value)
         {
             var idx = FindIndex(key);
@@ -241,7 +258,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
+        /// <returns>Success Status if Element was removed</returns>
         public bool TryRemove(int key, out TValue value)
         {
             var idx = FindIndex(key);
@@ -262,14 +279,14 @@ namespace ExtendedSystemObjects
         /// Tries the remove.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Success Status if Element was removed</returns>
         public bool TryRemove(int key) => TryRemove(key, out _);
 
         /// <summary>
         /// Finds the index.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Index of Key.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int FindIndex(int key)
         {
@@ -335,7 +352,6 @@ namespace ExtendedSystemObjects
             _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * Capacity);
             Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
 
-            var oldCount = Count;
             Count = 0;
             _usedCount = 0;
 
@@ -355,12 +371,14 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            if (_entries != null)
+            if (_entries == null)
             {
-                Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
-                Count = 0;
-                _usedCount = 0;
+                return;
             }
+
+            Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
+            Count = 0;
+            _usedCount = 0;
         }
 
         /// <summary>
@@ -385,6 +403,7 @@ namespace ExtendedSystemObjects
         /// <returns></returns>
         public EntryGenericEnumerator<TValue> GetEnumerator() => new(_entries, Capacity);
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -393,6 +412,7 @@ namespace ExtendedSystemObjects
         /// </returns>
         IEnumerator<(int, TValue)> IEnumerable<(int, TValue)>.GetEnumerator() => GetEnumerator();
 
+        /// <inheritdoc />
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -413,7 +433,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Gets the keys snapshot.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of all available Keys.</returns>
         private List<int> GetKeysSnapshot()
         {
             var keys = new List<int>(Count);
@@ -425,6 +445,9 @@ namespace ExtendedSystemObjects
             return keys;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="UnmanagedMap{TValue}"/> class.
+        /// </summary>
         ~UnmanagedMap() => Free();
     }
 }

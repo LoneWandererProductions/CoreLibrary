@@ -20,11 +20,12 @@ using Communication.Interfaces;
 
 namespace Communication
 {
+    /// <inheritdoc />
     /// <summary>
     /// A "Stupid Simple" wrapper for the LogCollector.
     /// No DI required. Just new it up and go.
     /// </summary>
-    public class SimpleLogServer : IDisposable
+    public sealed class SimpleLogServer : IDisposable
     {
         /// <summary>
         /// The internal server
@@ -67,8 +68,8 @@ namespace Communication
         /// <param name="port">The port.</param>
         /// <param name="onLogReceived">The on log received.</param>
         /// <param name="protocol">The protocol.</param>
-        public SimpleLogServer(int port, Action<string> onLogReceived, LogProtocol protocol = LogProtocol.TCP)
-                : this(port, new ActionLogProcessor(onLogReceived), protocol)
+        public SimpleLogServer(int port, Action<string> onLogReceived, LogProtocol protocol = LogProtocol.Tcp)
+            : this(port, new ActionLogProcessor(onLogReceived), protocol)
         {
             // This constructor just wraps the Action into our helper class
             // and chains to Constructor 2.
@@ -82,7 +83,7 @@ namespace Communication
         /// <param name="protocol">The protocol.</param>
         /// <exception cref="System.ArgumentNullException">processor</exception>
         /// <exception cref="ArgumentNullException">processor</exception>
-        public SimpleLogServer(int port, ILogProcessor processor, LogProtocol protocol = LogProtocol.TCP)
+        public SimpleLogServer(int port, ILogProcessor processor, LogProtocol protocol = LogProtocol.Tcp)
         {
             if (processor == null) throw new ArgumentNullException(nameof(processor));
 
@@ -90,10 +91,10 @@ namespace Communication
             _cts = new CancellationTokenSource();
 
             // Initialize based on choice
-            if (protocol == LogProtocol.TCP || protocol == LogProtocol.Both)
+            if (protocol == LogProtocol.Tcp || protocol == LogProtocol.Both)
                 _tcpServer = new LogCollectorServer(port, processor);
 
-            if (protocol == LogProtocol.UDP || protocol == LogProtocol.Both)
+            if (protocol == LogProtocol.Udp || protocol == LogProtocol.Both)
                 _udpServer = new UdpLogCollector(port, processor);
         }
 
@@ -122,7 +123,10 @@ namespace Communication
                 // Wait for all active server tasks to complete their cleanup
                 Task.WaitAll(_serverTasks.ToArray(), TimeSpan.FromSeconds(3));
             }
-            catch (AggregateException) { /* Expected on cancellation */ }
+            catch (AggregateException)
+            {
+                /* Expected on cancellation */
+            }
             finally
             {
                 _serverTasks.Clear();

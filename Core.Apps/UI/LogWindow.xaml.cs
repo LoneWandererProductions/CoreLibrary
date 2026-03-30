@@ -6,19 +6,21 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Core.Apps.UI;
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace CoreBuilder.UI
+namespace Core.Apps.UI
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
     /// Log Window - A simple WPF window that displays log messages in a ListBox. It supports auto-scrolling, timestamp display, and clearing the log.
     /// Designed for use in long-running applications to monitor events and messages.
     /// </summary>
-    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
-    public partial class LogWindow
+    /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
+    public sealed partial class LogWindow
     {
         /// <summary>
         /// The data source for the ListBox
@@ -31,8 +33,9 @@ namespace CoreBuilder.UI
         /// </summary>
         private const int MaxLogLines = 10000;
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogWindow"/> class.
+        /// Initializes a new instance of the <see cref="T:Core.Apps.UI.LogWindow" /> class.
         /// </summary>
         public LogWindow()
         {
@@ -67,7 +70,7 @@ namespace CoreBuilder.UI
             var entry = new LogEntry
             {
                 Message = message,
-                Timestamp = ShowTimestampCheck.IsChecked == true
+                Timestamp = ShowTimestampCheck.IsChecked
                     ? DateTime.Now.ToString("HH:mm:ss.fff")
                     : string.Empty
             };
@@ -82,7 +85,7 @@ namespace CoreBuilder.UI
             }
 
             // 4. Handle Auto-Scroll
-            if (AutoScrollCheck.IsChecked == true)
+            if (AutoScrollCheck.IsChecked)
             {
                 ScrollToBottom();
             }
