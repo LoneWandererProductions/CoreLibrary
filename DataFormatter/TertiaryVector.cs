@@ -32,13 +32,6 @@ namespace DataFormatter
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.
-        /// </summary>
-        public TertiaryVector()
-        {
-        }
-
-        /// <summary>
         ///     Gets the x.
         /// </summary>
         /// <value>
