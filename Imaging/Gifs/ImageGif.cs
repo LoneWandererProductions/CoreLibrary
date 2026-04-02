@@ -7,9 +7,13 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -44,9 +48,10 @@ namespace Imaging.Gifs
                 new PropertyMetadata(false));
 
         /// <summary>
-        /// The decoder
+        /// The frames
         /// </summary>
-        private GifBitmapDecoder? _decoder;
+        private List<ImageSource>? _frames;
+        private ImageGifInfo? _metadata;
 
         /// <summary>
         /// The timer
@@ -91,12 +96,12 @@ namespace Imaging.Gifs
         /// DP callback: a new GIF path was assigned.
         /// This method completely resets GIF state and loads the new file.
         /// </summary>
-        private static void OnGifSourceChanged(
-            DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
+        private static void OnGifSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if (sender is ImageGif gif)
-                gif.LoadGif(e.NewValue as string);
+            {
+                gif.LoadGifAsync(e.NewValue as string);
+            }
         }
 
         /// <summary>
@@ -107,42 +112,38 @@ namespace Imaging.Gifs
         /// - optionally starts animation
         /// </summary>
         /// <param name="path">The path.</param>
-        private void LoadGif(string? path)
+        private async void LoadGifAsync(string? path)
         {
+            ResetInternalState();
             Source = null;
-            _decoder = null;
+            _frames = null;
+            _metadata = null;
 
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
                 return;
 
             try
             {
-                var decoder = new GifBitmapDecoder(
-                    new Uri(path, UriKind.Absolute),
-                    BitmapCreateOptions.PreservePixelFormat,
-                    BitmapCacheOption.OnLoad);
+                // Run both decoding and metadata extraction in parallel
+                var framesTask = ImageGifHandler.LoadGif(path);
+                var metadataTask = Task.Run(() => ImageGifMetadataExtractor.ExtractGifMetadata(path));
 
-                if (decoder.Frames.Count == 0)
-                    return;
+                await Task.WhenAll(framesTask, metadataTask);
 
-                // Freeze frames for safety & performance
-                foreach (var f in decoder.Frames)
-                {
-                    if (f.CanFreeze) f.Freeze();
-                }
+                _frames = await framesTask;
+                _metadata = await metadataTask;
 
-                _decoder = decoder;
+                if (_frames == null || _frames.Count == 0) return;
+
                 _frameIndex = 0;
-
-                Source = _decoder.Frames[0];
+                Source = _frames[_frameIndex];
 
                 if (AutoStart)
                     StartGif();
             }
-            catch
+            catch (Exception ex)
             {
-                Source = null;
-                _decoder = null;
+                Trace.WriteLine($"GIF Load Error: {ex.Message}");
             }
         }
 
@@ -152,21 +153,16 @@ namespace Imaging.Gifs
         /// </summary>
         public void StartGif()
         {
-            if (_decoder == null || _decoder.Frames.Count <= 1)
-                return;
+            if (_frames == null || _frames.Count <= 1) return;
 
-            const int delay = 80;
-
-            _dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(delay) };
-            _dispatcherTimer.Tick += (s, e) =>
+            if (_dispatcherTimer == null)
             {
-                if (_decoder == null)
-                    return;
+                _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Render);
+                _dispatcherTimer.Tick += Timer_Tick;
+            }
 
-                _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
-
-                Source = _decoder.Frames[_frameIndex];
-            };
+            _dispatcherTimer.Stop();
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(GetDelayForFrame(0));
             _dispatcherTimer.Start();
         }
 
@@ -175,27 +171,8 @@ namespace Imaging.Gifs
         /// </summary>
         public void StopGif()
         {
-            StopGifInternal();
-            // Important: clear the visual to guarantee no ghosting
-            Source = null;
-        }
-
-        /// <summary>
-        /// Stops the GIF internal.
-        /// </summary>
-        private void StopGifInternal()
-        {
-            _dispatcherTimer?.Stop();
-            _dispatcherTimer = null;
-
-            if (!string.IsNullOrEmpty(GifSource))
-            {
-                GifSource = string.Empty;
-                Dispatcher.Invoke(() => { }, DispatcherPriority.Render);
-            }
-
-            _decoder = null;
-            _frameIndex = 0;
+            ResetInternalState();
+            GifSource = string.Empty; // Now safe to clear
         }
 
         /// <summary>
@@ -215,6 +192,63 @@ namespace Imaging.Gifs
         {
             base.OnRenderSizeChanged(sizeInfo);
             // this is intentionally left empty: no resize side-effects needed
+        }
+
+        /// <summary>
+        /// Clears frames and timers without clearing the Dependency Property to avoid recursion.
+        /// </summary>
+        private void ResetInternalState()
+        {
+            _dispatcherTimer?.Stop();
+            _dispatcherTimer = null;
+            _frames = null;
+            _metadata = null;
+            _frameIndex = 0;
+            Source = null;
+        }
+
+        /// <summary>
+        /// Timers the tick.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            if (_frames == null || _frames.Count == 0 || _dispatcherTimer == null) return;
+
+            // Move to next frame
+            _frameIndex = (_frameIndex + 1) % _frames.Count;
+            Source = _frames[_frameIndex];
+
+            // Update timer interval for the NEXT frame to support variable speed GIFs
+            var nextDelay = GetDelayForFrame(_frameIndex);
+
+            // Optimization: Only update interval if it actually changed
+            if (_dispatcherTimer.Interval.TotalMilliseconds != nextDelay)
+            {
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(nextDelay);
+            }
+        }
+
+        /// <summary>
+        /// Helper to get delay from metadata, converted from GIF units (1/100s) to Milliseconds.
+        /// </summary>
+        /// <param name="index">The frame index.</param>
+        /// <returns>Delay in milliseconds.</returns>
+        private double GetDelayForFrame(int index)
+        {
+            if (_metadata != null && _metadata.Frames.Count > index)
+            {
+                // GIF units are 1/100 of a second. Multiply by 10 to get milliseconds.
+                var delay = _metadata.Frames[index].DelayTime * 10;
+
+                // Industry Standard: Delays of 0ms or < 20ms are forced to 100ms 
+                // by most renderers to prevent CPU spikes and "way too fast" playback.
+                return delay < 20 ? 100 : delay;
+            }
+
+            // Default fallback if metadata is missing
+            return 80;
         }
 
         /// <summary>

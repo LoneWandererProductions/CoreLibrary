@@ -150,23 +150,36 @@ namespace Imaging.Gifs
 
             return await Task.Run(() =>
             {
-                var frames = new List<ImageSource>();
+                var composedFrames = new List<ImageSource>();
 
-                // Load file into a stream
                 using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                // Use WPF's native decoder. PreservePixelFormat ensures transparency is kept.
+                // OnLoad is important to ensure the stream can be closed immediately
                 var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+
+                int width = decoder.Frames[0].PixelWidth;
+                int height = decoder.Frames[0].PixelHeight;
+
+                // We use a Group to keep track of all previous drawings (the accumulation)
+                var drawingGroup = new DrawingGroup();
 
                 foreach (BitmapFrame frame in decoder.Frames)
                 {
-                    // Freeze is CRITICAL here. It makes the ImageSource cross-thread accessible,
-                    // allowing us to pass it from this background Task back to the UI thread.
-                    frame.Freeze();
-                    frames.Add(frame);
+                    // We append the new frame to the group instead of overwriting
+                    using (var context = drawingGroup.Append())
+                    {
+                        context.DrawImage(frame, new Rect(0, 0, width, height));
+                    }
+
+                    // Create a DrawingImage from the current state of the group
+                    // This is MUCH faster and more memory efficient than RenderTargetBitmap
+                    var image = new DrawingImage(drawingGroup.Clone());
+
+                    // Freeze is CRITICAL for cross-thread access and performance
+                    image.Freeze();
+                    composedFrames.Add(image);
                 }
 
-                return frames;
+                return composedFrames;
             });
         }
 
