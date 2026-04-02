@@ -24,7 +24,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using Imaging.Helpers;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+
 
 namespace Imaging.Gifs
 {
@@ -74,6 +74,12 @@ namespace Imaging.Gifs
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif</returns>
+        /// <summary>
+        ///     Splits the GIF into individual frames while filling transparency holes with Gray
+        ///     and accumulating frame data to prevent incomplete images.
+        /// </summary>
+        /// <param name="path">The path to the GIF file.</param>
+        /// <returns>List of composed Bitmaps.</returns>
         internal static async Task<List<Bitmap>> SplitGifAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
@@ -83,37 +89,85 @@ namespace Imaging.Gifs
             {
                 var frames = new List<Bitmap>();
 
-                // Load GIF without locking the file
                 using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var image = Image.FromStream(fs);
+                using var gifImage = Image.FromStream(fs);
 
-                var frameCount = image.GetFrameCount(FrameDimension.Time);
+                var frameCount = gifImage.GetFrameCount(FrameDimension.Time);
+                var width = gifImage.Width;
+                var height = gifImage.Height;
+
+                // This is our canvas that survives the loop
+                var masterCanvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using var g = Graphics.FromImage(masterCanvas);
+
+                // Start the whole GIF on a Gray floor
+                g.Clear(System.Drawing.Color.Gray);
+
+                // GIF Property ID for Frame Delay and Disposal
+                // 0x5100 is the PropertyTagFrameDelay in GDI+
+                var disposalProperty = gifImage.GetPropertyItem(0x5100);
 
                 for (var i = 0; i < frameCount; i++)
                 {
-                    image.SelectActiveFrame(FrameDimension.Time, i);
+                    gifImage.SelectActiveFrame(FrameDimension.Time, i);
 
-                    // clone the frame immediately ON THE SAME THREAD
-                    frames.Add(new Bitmap(image));
+                    // Get the disposal method for THIS specific frame
+                    // The disposal method is usually the 4th byte of the property data
+                    var disposalMethod = disposalProperty.Value[i * 4 + 3];
+
+                    // If Disposal Method is 2 (Restore to Background), 
+                    // we have to clear the canvas back to Gray before drawing this frame
+                    if (disposalMethod == 2)
+                    {
+                        g.Clear(System.Drawing.Color.Gray);
+                    }
+
+                    // Draw the current frame patch
+                    g.DrawImage(gifImage, new Rectangle(0, 0, width, height));
+
+                    // Snapshot the result
+                    frames.Add(new Bitmap(masterCanvas));
+
+                    // If the disposal method was 3 (Restore to Previous), 
+                    // technically we should undo the last draw, but Method 2 is the 
+                    // one that usually causes the "white hole" issue.
                 }
 
                 return frames;
             });
         }
 
-
         /// <summary>
-        ///     Loads the GIF.
+        ///     Loads the GIF using WPF's native decoder.
+        ///     This perfectly preserves transparency and is much faster.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif as ImageSource</returns>
         internal static async Task<List<ImageSource>> LoadGif(string path)
         {
-            // Await the result from the async SplitGifAsync method
-            var bitmapList = await SplitGifAsync(path);
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                throw new IOException($"File not found: {path}");
 
-            // Convert each Bitmap to ImageSource and return the list
-            return bitmapList.Select(image => image.ToBitmapImage()).Cast<ImageSource>().ToList();
+            return await Task.Run(() =>
+            {
+                var frames = new List<ImageSource>();
+
+                // Load file into a stream
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                // Use WPF's native decoder. PreservePixelFormat ensures transparency is kept.
+                var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+
+                foreach (BitmapFrame frame in decoder.Frames)
+                {
+                    // Freeze is CRITICAL here. It makes the ImageSource cross-thread accessible,
+                    // allowing us to pass it from this background Task back to the UI thread.
+                    frame.Freeze();
+                    frames.Add(frame);
+                }
+
+                return frames;
+            });
         }
 
         /// <summary>
@@ -198,28 +252,19 @@ namespace Imaging.Gifs
         private static void GifCreator(IEnumerable<Bitmap> btm, string target, int delayMs)
         {
             var gEnc = new GifBitmapEncoder();
-            var gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
+            var gifDelay = (ushort)(delayMs / 10);
 
             foreach (var bmpImage in btm)
             {
-                var hBitmap = bmpImage.GetHbitmap();
-                try
-                {
-                    var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        hBitmap,
-                        nint.Zero,
-                        Int32Rect.Empty,
-                        BitmapSizeOptions.FromEmptyOptions());
+                var src = ConvertToBitmapSource(bmpImage);
+                var metadata = new BitmapMetadata("gif");
 
-                    var metadata = new BitmapMetadata("gif");
-                    metadata.SetQuery("/grctlext/Delay", gifDelay);
+                metadata.SetQuery("/grctlext/Delay", gifDelay);
+                // Optional but recommended: Set Disposal method to "Restore to Background" (2)
+                // This prevents transparent frames from stacking on top of each other.
+                metadata.SetQuery("/grctlext/Disposal", 2);
 
-                    gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
-                }
-                finally
-                {
-                    DeleteObject(hBitmap);
-                }
+                gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
             }
 
             SaveWithLoopingExtension(gEnc, target);
@@ -277,7 +322,7 @@ namespace Imaging.Gifs
                 var bmpData = img.LockBits(
                     new Rectangle(0, 0, img.Width, img.Height),
                     ImageLockMode.ReadOnly,
-                    PixelFormat.Format32bppArgb);
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 try
                 {
@@ -328,6 +373,29 @@ namespace Imaging.Gifs
             newBytes.AddRange(fileBytes.Skip(13));
 
             File.WriteAllBytes(target, newBytes.ToArray());
+        }
+
+        /// <summary>
+        /// Helper method to safely convert System.Drawing.Bitmap to WPF BitmapSource
+        /// while perfectly preserving transparency.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Image as BitmapSource.</returns>
+        private static BitmapSource ConvertToBitmapSource(Bitmap bitmap)
+        {
+            using var ms = new MemoryStream();
+            // Saving as PNG preserves the Alpha channel
+            bitmap.Save(ms, ImageFormat.Png);
+            ms.Position = 0;
+
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = ms;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze(); // Freezing is good practice for WPF cross-thread usage
+
+            return bitmapImage;
         }
     }
 }

@@ -4,18 +4,18 @@
     xmlns:common="clr-namespace:Common.Dialogs"
     x:Class="Common.Dialogs.FolderBrowser"
     Title="FolderBrowser"
-    Height="300" Width="300" Topmost="True">
+    Padding="5" Topmost="False">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
-            <ColumnDefinition Width="55" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Button Content="OK" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch"
                 Click="BtnOk_Click" />

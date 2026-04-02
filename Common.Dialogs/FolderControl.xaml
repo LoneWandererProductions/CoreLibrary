@@ -5,33 +5,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="350" d:DesignWidth="500">
 
     <Grid>
         <!-- Row/Column Definitions -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Display Path -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Path Input -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Navigation Buttons -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Shortcut 1 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Shortcut 2 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Shortcut 3 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Shortcut 4 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <!-- Shortcut 5 -->
             <RowDefinition Height="5*" />
             <!-- Spacer -->
@@ -39,15 +39,15 @@
             <!-- TreeView -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="Auto" />
             <!-- Buttons Column -->
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <!-- TreeView Column -->
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="Auto" />
             <!-- Nav Buttons -->
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="Auto" />
             <!-- Explorer Button -->
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
