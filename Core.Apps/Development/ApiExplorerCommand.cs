@@ -75,17 +75,19 @@ namespace Core.Apps.Development
                 return CommandResult.Fail($"Folder not found: {rootPath}");
 
             // Pattern matching to grab the second arg safely
-            var useWindow = args is [_, "window", ..];
+            var useWindow = args is  [_,
+            "window", ..];
 
             var sb = new StringBuilder();
-            var files = Directory.EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
-                                 .Where(f => !CoreHelper.ShouldIgnoreFile(f));
+            var files = Directory
+                .EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
+                .Where(f => !CoreHelper.ShouldIgnoreFile(f));
 
             foreach (var file in files)
             {
                 try
                 {
-                    // For .NET 9, consider using a stream if files are massive, 
+                    // For .NET 9, consider using a stream if files are massive,
                     // but ReadAllText is usually fine for source code.
                     var code = File.ReadAllText(file);
                     var tree = CSharpSyntaxTree.ParseText(code);

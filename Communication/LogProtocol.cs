@@ -12,9 +12,9 @@ namespace Communication
     /// Enum of supported Protocols
     /// </summary>
     public enum LogProtocol
-    { 
-        TCP, 
-        UDP, 
-        Both 
+    {
+        Tcp,
+        Udp,
+        Both
     }
 }

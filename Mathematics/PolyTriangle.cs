@@ -168,7 +168,7 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            // Safely combine the hashes of up to the first 3 vertices 
+            // Safely combine the hashes of up to the first 3 vertices
             // to drastically reduce hash collisions for connected geometry.
             if (VertexCount >= 3)
                 return HashCode.Combine(Vertices[0], Vertices[1], Vertices[2]);

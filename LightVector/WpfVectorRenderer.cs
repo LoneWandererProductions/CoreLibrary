@@ -26,7 +26,7 @@ namespace LightVector
     ///     Sample Implementation for an WPF Renderer
     /// </summary>
     /// <seealso cref="IVectorRenderer" />
-    public class WpfVectorRenderer : IVectorRenderer
+    public sealed class WpfVectorRenderer : IVectorRenderer
     {
         /// <summary>
         ///     The vector objects
@@ -84,7 +84,7 @@ namespace LightVector
             canvas.Height = Math.Max(0, totalHeight);
 
             // Step 3: Normalization Shift
-            // If our minX is -105, we need to add +105 to every object 
+            // If our minX is -105, we need to add +105 to every object
             // so the drawing starts at 0 on the canvas and doesn't get clipped.
             foreach (FrameworkElement child in canvas.Children)
             {
@@ -128,7 +128,7 @@ namespace LightVector
         private static Shape ConvertToWpfObject(SaveObject obj)
         {
             // 1. GEOMETRY CREATION (Local Space 0,0)
-            // We do NOT pass StartCoordinates here. 
+            // We do NOT pass StartCoordinates here.
             // The object is created at (0,0) so the Canvas can move it later.
             Shape wpfShape = obj.Type switch
             {
@@ -166,8 +166,8 @@ namespace LightVector
         /// <returns>Image Object to Wpf Shape</returns>
         private static Line CreateLine(LineObject lineObject)
         {
-            // INTEGRATION NOTE: 
-            // We set X1/Y1 to 0. 
+            // INTEGRATION NOTE:
+            // We set X1/Y1 to 0.
             // The 'StartCoordinates' from SaveObject will be applied via Canvas.SetLeft/Top
             // outside of this method.
             return new Line { X1 = 0, Y1 = 0, X2 = lineObject.Direction.X, Y2 = lineObject.Direction.Y };
@@ -295,8 +295,8 @@ namespace LightVector
                     var b = (BezierCurve)obj.Graphic;
                     if (b.Vectors == null || b.Vectors.Count == 0) return new Rect(0, 0, 0, 0);
 
-                    // Note: Mathematical bounds of a Bezier are complex, but for a 
-                    // "Dumb but Reliable" version, the bounding box of the control points 
+                    // Note: Mathematical bounds of a Bezier are complex, but for a
+                    // "Dumb but Reliable" version, the bounding box of the control points
                     // is guaranteed to contain the curve.
                     double bMinX = b.Vectors.Min(v => v.X);
                     double bMinY = b.Vectors.Min(v => v.Y);

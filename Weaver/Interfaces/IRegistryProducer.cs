@@ -12,7 +12,7 @@ using Weaver.Messages;
 namespace Weaver.Interfaces
 {
     /// <summary>
-    /// Interface declaration for commands that produce data to be stored in the Weaver registry. Implementing this interface allows a command's output to be automatically registered under a specified key and type, 
+    /// Interface declaration for commands that produce data to be stored in the Weaver registry. Implementing this interface allows a command's output to be automatically registered under a specified key and type,
     /// enabling other commands to access it without explicit variable assignment.
     /// </summary>
     public interface IRegistryProducer

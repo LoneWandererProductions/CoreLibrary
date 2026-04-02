@@ -17,7 +17,7 @@ namespace Weaver.Core.Commands
     /// Simple Commmand to evaluate expressions or do simple calculations.
     /// </summary>
     /// <seealso cref="ICommand" />
-    internal class EvaluateCommand : ICommand
+    internal sealed class EvaluateCommand : ICommand
     {
         /// <inheritdoc />
         public string Name => "Evaluate";

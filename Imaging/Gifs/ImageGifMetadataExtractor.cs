@@ -97,7 +97,8 @@ namespace Imaging.Gifs
                                     // Skip blockSize (1 byte)
                                     reader.BaseStream.Seek(1, SeekOrigin.Current);
 
-                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+                                    var appIdentifier =
+                                        new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
 
                                     // Skip the auth code bytes
                                     reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
@@ -112,6 +113,7 @@ namespace Imaging.Gifs
                                     {
                                         SkipExtensionBlocks(reader);
                                     }
+
                                     break;
 
                                 case ImagingResources.GraphicsControlExtensionLabel:

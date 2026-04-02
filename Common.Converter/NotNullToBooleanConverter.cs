@@ -6,18 +6,23 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
 namespace Common.Converter
 {
+    /// <inheritdoc />
     /// <summary>
     /// Converts between a not-null value and a boolean.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public class NotNullToBooleanConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -28,9 +33,10 @@ namespace Common.Converter
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
             => value != null;
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>

@@ -75,7 +75,7 @@ namespace Mathematics
             }
 
             // REDUCTION:
-            // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator 
+            // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator
             // so the negative sign doesn't break the Euclidean algorithm.
             var gcd = GetGcf(Math.Abs(numerator), denominator);
 

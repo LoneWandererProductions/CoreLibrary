@@ -59,7 +59,7 @@ namespace DataFormatter
                             double.TryParse(bits[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var y) &&
                             double.TryParse(bits[3], NumberStyles.Float, CultureInfo.InvariantCulture, out var z))
                         {
-                            vectors.Add(new TertiaryVector { X = x, Y = y, Z = z });
+                            vectors.Add(new TertiaryVector(x, y, z));
                         }
                     }
 

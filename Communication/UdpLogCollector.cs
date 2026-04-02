@@ -20,7 +20,7 @@ namespace Communication
     /// <summary>
     /// Similar to LogCollectorServer
     /// </summary>
-    public class UdpLogCollector
+    public sealed class UdpLogCollector
     {
         /// <summary>
         /// The port
@@ -60,7 +60,8 @@ namespace Communication
                     var result = await udpClient.ReceiveAsync(token);
                     string message = Encoding.UTF8.GetString(result.Buffer);
 
-                    Trace.WriteLine(string.Concat("Received UDP log from {Remote}: {Message}", result.RemoteEndPoint, message));
+                    Trace.WriteLine(string.Concat("Received UDP log from {Remote}: {Message}", result.RemoteEndPoint,
+                        message));
 
                     // Pass it to your existing Database processor!
                     await _processor.ProcessMessageAsync(message);

@@ -54,7 +54,7 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix LookAt(Transform transform, Vector3D target)
         {
-            // 1. UNWRAP THE NULLABLE SAFELY! 
+            // 1. UNWRAP THE NULLABLE SAFELY!
             // If Position is null, default to 0,0,0 so the math doesn't crash.
             var pos = transform.Position ?? Vector3D.ZeroVector;
 

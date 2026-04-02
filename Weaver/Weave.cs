@@ -39,16 +39,24 @@ namespace Weaver
         private static readonly Dictionary<string, CommandExtension> GlobalExtensions =
             new(StringComparer.OrdinalIgnoreCase)
             {
-                [WeaverResources.GlobalExtensionHelp] = new CommandExtension
-                    { Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true },
-                [WeaverResources.GlobalExtensionTryRun] = new CommandExtension
-                {
-                    Name = WeaverResources.GlobalExtensionTryRun, ParameterCount = 0, IsInternal = true,
-                    IsPreview = true
-                },
+                [WeaverResources.GlobalExtensionHelp] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionHelp, ParameterCount = 0, IsInternal = true
+                    },
+                [WeaverResources.GlobalExtensionTryRun] =
+                    new CommandExtension
+                    {
+                        Name = WeaverResources.GlobalExtensionTryRun,
+                        ParameterCount = 0,
+                        IsInternal = true,
+                        IsPreview = true
+                    },
                 [WeaverResources.GlobalExtensionStore] = new CommandExtension
                 {
-                    Name = WeaverResources.GlobalExtensionStore, ParameterCount = -1, IsInternal = true,
+                    Name = WeaverResources.GlobalExtensionStore,
+                    ParameterCount = -1,
+                    IsInternal = true,
                     IsPreview = false
                 },
                 [WeaverResources.GlobalExtensionClean] = new CommandExtension
@@ -217,7 +225,7 @@ namespace Weaver
             if (string.IsNullOrEmpty(raw)) return CommandResult.Fail("Empty input.");
 
             // CRITICAL SECTION:
-            // We lock the entire execution pipeline. This ensures that checking for 
+            // We lock the entire execution pipeline. This ensures that checking for
             // _pendingFeedback and executing the command happens as one atomic unit.
             lock (_syncRoot)
             {

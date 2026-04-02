@@ -390,7 +390,10 @@ namespace Core.Apps.Development
                     if (ContainsStringPattern(line)) return true;
                 }
             }
-            catch { /* Handle locked files or permissions */ }
+            catch
+            {
+                /* Handle locked files or permissions */
+            }
 
             return false;
         }

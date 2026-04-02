@@ -94,10 +94,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++)
-                {
-                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-                }
+            for (var x = 0; x < width; x++)
+            {
+                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -120,16 +120,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++, count++)
-                {
-                    var rect = new RectangleF(
-                        (x * textureSize) + padding,
-                        (y * textureSize) + padding,
-                        textureSize - padding,
-                        textureSize - padding);
+            for (var x = 0; x < width; x++, count++)
+            {
+                var rect = new RectangleF(
+                    (x * textureSize) + padding,
+                    (y * textureSize) + padding,
+                    textureSize - padding,
+                    textureSize - padding);
 
-                    graphics.DrawString(count.ToString(), font, brush, rect);
-                }
+                graphics.DrawString(count.ToString(), font, brush, rect);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -256,7 +256,7 @@ namespace Solaris
             }
 
             // Optional: Clear the avatar after the animation is entirely done
-            // aurora.LayerThree.Source = null; 
+            // aurora.LayerThree.Source = null;
 
             aurora.IsEnabled = true;
         }

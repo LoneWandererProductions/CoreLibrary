@@ -12,7 +12,7 @@ using Core.StateExecutive.Builder;
 namespace Core.Tests
 {
     /// <summary>
-    /// Fluent Builder tests for the State Executive Engine. This test class demonstrates how to use the EngineContext and StateBuilder to create states and transitions, 
+    /// Fluent Builder tests for the State Executive Engine. This test class demonstrates how to use the EngineContext and StateBuilder to create states and transitions,
     /// and then evaluates those transitions based on a simulated drone blackboard context.
     /// </summary>
     [TestClass]

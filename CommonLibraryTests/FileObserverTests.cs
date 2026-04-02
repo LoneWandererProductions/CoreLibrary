@@ -146,7 +146,7 @@ namespace CommonLibraryTests
             // Cancel it almost immediately
             cts.Cancel();
 
-            // Await the task. If it throws an unhandled exception, the test fails. 
+            // Await the task. If it throws an unhandled exception, the test fails.
             await runTask;
 
             // Assert

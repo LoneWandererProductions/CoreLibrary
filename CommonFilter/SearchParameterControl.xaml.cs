@@ -14,7 +14,7 @@ namespace CommonFilter
     /// <summary>
     ///     Search Parameter
     /// </summary>
-    internal sealed partial class SearchParameterControl : UserControl
+    internal sealed partial class SearchParameterControl
     {
         /// <inheritdoc />
         /// <summary>

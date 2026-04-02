@@ -15,7 +15,7 @@ namespace Core.Tests
     /// A simulated drone. The blackboard holds the state of the drone, such as whether the engine is on and the battery level.
     /// </summary>
     /// <seealso cref="Core.StateExecutive.Interfaces.IStateContext" />
-    public class DroneBlackboard : IStateContext
+    public sealed class DroneBlackboard : IStateContext
     {
         /// <summary>
         /// Gets or sets a value indicating whether this instance is engine on.

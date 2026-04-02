@@ -16,7 +16,7 @@ namespace Core.StateExecutive.Builder
     /// ITransition implementation for the State Executive Engine. Represents a pathway from one state to another, with guards and effects.
     /// </summary>
     /// <seealso cref="Core.StateExecutive.Interfaces.ITransition" />
-    internal class Transition : ITransition
+    internal sealed class Transition : ITransition
     {
         /// <inheritdoc />
         public string TargetStateId { get; }

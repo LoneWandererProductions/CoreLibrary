@@ -23,7 +23,7 @@ namespace Communication
     /// Connects and listens for logs continuously.
     /// Central entry and processing point for logs, which can be extended to save logs to a database, write to files, or perform any other processing as needed.
     /// </summary>
-    public class LogCollectorServer : TcpServerBase
+    public sealed class LogCollectorServer : TcpServerBase
     {
         /// <summary>
         /// The log processor, which can be implemented to save logs to a database, write to a file, or perform any other processing as needed.
@@ -48,7 +48,7 @@ namespace Communication
         /// <param name="token">The token.</param>
         protected override async Task HandleClientAsync(TcpClient client, CancellationToken token)
         {
-            // 1. Set a hard timeout on the socket itself. 
+            // 1. Set a hard timeout on the socket itself.
             // If no data arrives for 5 seconds, the socket throws an IOException.
             client.ReceiveTimeout = 5000;
 
@@ -61,7 +61,7 @@ namespace Communication
             {
                 while (!token.IsCancellationRequested)
                 {
-                    // 3. The "Safe" Read. 
+                    // 3. The "Safe" Read.
                     // StreamReader.ReadLineAsync() typically DOES NOT accept a CancellationToken directly
                     // in older .NET versions, and it doesn't respect ReceiveTimeout easily.
                     // We must handle the timeout manually or use a specific trick.

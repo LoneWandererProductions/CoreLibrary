@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver;
  * FILE:        CommandSignature.cs
@@ -14,5 +14,5 @@ namespace Weaver
     /// <param name="Namespace">The namespace of the command.</param>
     /// <param name="Name">The name of the command.</param>
     /// <param name="ParameterCount">The number of parameters the command expects.</param>
-    public record CommandSignature(string Namespace, string Name, int ParameterCount);
+    public sealed record CommandSignature(string Namespace, string Name, int ParameterCount);
 }

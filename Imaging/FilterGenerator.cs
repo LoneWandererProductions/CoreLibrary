@@ -18,7 +18,7 @@ namespace Imaging
     /// The Filter Generator
     /// </summary>
     /// <seealso cref="IFilterGenerator" />
-    public class FilterGenerator : IFilterGenerator
+    public sealed class FilterGenerator : IFilterGenerator
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="FilterGenerator" /> class.

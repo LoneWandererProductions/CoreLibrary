@@ -151,7 +151,7 @@ namespace Imaging
         {
             if (Disposed) throw new ObjectDisposedException(nameof(DirectBitmap));
 
-            // We clone the UnsafeBitmap (which is pinned) into a new, 
+            // We clone the UnsafeBitmap (which is pinned) into a new,
             // unpinned managed Bitmap.
             return (Bitmap)UnsafeBitmap.Clone();
         }

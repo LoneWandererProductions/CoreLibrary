@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.Core.Commands
  * FILE:        ListCommand.cs
@@ -63,7 +63,7 @@ namespace Weaver.Core.Commands
             var allCommands = _getCommands();
             var allExtensions = _getExtensions();
 
-            // 1. Project both into a common format (Name, Description, Namespace) 
+            // 1. Project both into a common format (Name, Description, Namespace)
             // to group them together under the same headers
             var combined = allCommands
                 .Select(c => new { c.Name, c.Description, c.Namespace, Type = "Command" })

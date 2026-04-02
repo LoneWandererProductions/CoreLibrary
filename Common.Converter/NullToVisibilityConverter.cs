@@ -50,7 +50,7 @@ namespace Common.Converter
             // Check if value is null
             bool isNull = value == null;
 
-            // Apply inversion: 
+            // Apply inversion:
             // If Invert is false: Null -> Hidden/Collapsed, Not Null -> Visible
             // If Invert is true:  Null -> Visible, Not Null -> Hidden/Collapsed
             bool shouldHide = Invert ? !isNull : isNull;

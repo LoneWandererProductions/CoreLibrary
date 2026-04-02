@@ -171,7 +171,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         /// <returns>Debug message</returns>
         public void LogDebug(string? message, params object[] args) =>
-                    Log(LogLevel.Debug, message: message, exception: null, args: args);
+            Log(LogLevel.Debug, message: message, exception: null, args: args);
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
@@ -181,7 +181,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         /// <returns>Trace Message</returns>
         public void LogTrace(string? message, params object[] args) =>
-                    Log(LogLevel.Trace, message: message, exception: null, args: args);
+            Log(LogLevel.Trace, message: message, exception: null, args: args);
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
@@ -191,7 +191,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         /// <returns>Information message</returns>
         public void LogInformation(string? message, params object[] args) =>
-                    Log(LogLevel.Information, message: message, exception: null, args: args);
+            Log(LogLevel.Information, message: message, exception: null, args: args);
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
@@ -201,7 +201,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         /// <returns>Warning Message</returns>
         public void LogWarning(string? message, params object[] args) =>
-                    Log(LogLevel.Warning, message: message, exception: null, args: args);
+            Log(LogLevel.Warning, message: message, exception: null, args: args);
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
@@ -211,7 +211,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         /// <returns>Error Message</returns>
         public void LogError(string? message, params object[] args) =>
-                    Log(LogLevel.Error, message: message, exception: null, args: args);
+            Log(LogLevel.Error, message: message, exception: null, args: args);
 
         #endregion
 
@@ -390,7 +390,7 @@ namespace Core.MemoryLog
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
-                    Func<TState, Exception, string?> formatter)
+            Func<TState, Exception, string?> formatter)
         {
             if (!IsEnabled(logLevel)) return;
 
@@ -411,7 +411,7 @@ namespace Core.MemoryLog
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
         public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state,
-                    Exception? exception, Func<TState, Exception?, string> formatter)
+            Exception? exception, Func<TState, Exception?, string> formatter)
         {
             // Pass the eventId down to your core logger
             Log((LogLevel)logLevel, message: formatter(state, exception), exception: exception, eventId: eventId);

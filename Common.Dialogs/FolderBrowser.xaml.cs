@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Common.Dialogs;
 using System.ComponentModel;
 using System.Windows;
 

@@ -619,10 +619,10 @@ namespace CommonControls.Images
 
             // 1. Identify "Immediate Action" tools (Drawing tools)
             var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
-                                 SelectionTool == ImageZoomTools.Ellipse ||
-                                 SelectionTool == ImageZoomTools.FreeForm ||
-                                 SelectionTool == ImageZoomTools.Trace ||
-                                 SelectionTool == ImageZoomTools.Dot;
+                                SelectionTool == ImageZoomTools.Ellipse ||
+                                SelectionTool == ImageZoomTools.FreeForm ||
+                                SelectionTool == ImageZoomTools.Trace ||
+                                SelectionTool == ImageZoomTools.Dot;
 
             if (isDrawingTool)
             {
@@ -632,7 +632,7 @@ namespace CommonControls.Images
 
                 // 3. Validation: Ensure we actually drew something substantial
                 var isValid = (frame.Width > 0 && frame.Height > 0) ||
-                               frame.Points is { Count: > 0 };
+                              frame.Points is { Count: > 0 };
 
                 if (isValid)
                 {

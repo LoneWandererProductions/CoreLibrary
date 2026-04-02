@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
 
 using System;
 using System.Globalization;
@@ -15,12 +16,14 @@ using System.Linq;
 
 namespace Common.Converter
 {
+    /// <inheritdoc />
     /// <summary>
     /// Converter that converts between a Color and its name as a string for WPF bindings. It uses reflection to find the name of the color in System.Windows.Media.Colors when converting from Color to string, and uses ColorConverter to convert from string to Color.
     /// </summary>
-    /// <seealso cref="IValueConverter" />
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public class ColorToNameConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         /// Convert from Color (ViewModel) to string (Control)
         /// </summary>
@@ -33,16 +36,16 @@ namespace Common.Converter
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Color color)
+            if (value is not Color color)
             {
-                // Find the name of the color in System.Windows.Media.Colors
-                var colorProperty = typeof(Colors).GetProperties()
-                    .FirstOrDefault(p => (Color)p.GetValue(null, null) == color);
-
-                return colorProperty?.Name ?? color.ToString();
+                return string.Empty;
             }
 
-            return string.Empty;
+            // Find the name of the color in System.Windows.Media.Colors
+            var colorProperty = typeof(Colors).GetProperties()
+                .FirstOrDefault(p => (Color)p.GetValue(null, null) == color);
+
+            return colorProperty?.Name ?? color.ToString();
         }
 
         /// <inheritdoc />

@@ -157,7 +157,7 @@ namespace RenderEngine
 
             GL.DeleteBuffer(_vbo);
             GL.DeleteVertexArray(_vao);
-            // Note: We do NOT delete the _shaderProgram here anymore, 
+            // Note: We do NOT delete the _shaderProgram here anymore,
             // because the GlResourceManager owns it and will clean it up!
         }
     }

@@ -181,11 +181,11 @@ namespace Weaver.Registry
 
                 // Option B: Return false (Let the engine handle the failure gracefully)
                 // range = default;
-                // return false; 
+                // return false;
             }
 
-            // Since _store dictionary keys in C# are ints, if you upgrade to long, 
-            // you would need to change private readonly Dictionary<int, VmValue> _store 
+            // Since _store dictionary keys in C# are ints, if you upgrade to long,
+            // you would need to change private readonly Dictionary<int, VmValue> _store
             // to Dictionary<long, VmValue> _store.
 
             range = new VmRange(_heapPointer, length);

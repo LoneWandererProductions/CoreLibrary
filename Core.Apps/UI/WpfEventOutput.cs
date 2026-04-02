@@ -6,17 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-
-/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Core.Apps.UI
- * FILE:        WpfEventOutput.cs
- * PURPOSE:     Sample wpf side channel for event output.
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
- */
-
 using Core.Apps.Interface;
-using CoreBuilder.UI;
 
 namespace Core.Apps.UI
 {

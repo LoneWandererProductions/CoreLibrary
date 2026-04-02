@@ -8,7 +8,6 @@
 
 using System.Linq;
 using System.Windows;
-using ExtendedSystemObjects;
 
 namespace Debugger
 {

@@ -194,7 +194,7 @@ namespace Core.Tests
     /// </summary>
     /// <seealso cref="IService" />
     /// <seealso cref="IDisposable" />
-    public class DisposableService : IService, IDisposable
+    public sealed class DisposableService : IService, IDisposable
     {
         public bool WasDisposed { get; private set; }
         public void Dispose() => WasDisposed = true;
