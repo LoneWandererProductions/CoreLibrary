@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images.Images
+ * PROJECT:     Common.Images.Images
  * FILE:        ComCtlResources.cs
  * PURPOSE:     String Resources
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     The com Control resources class.

@@ -10,7 +10,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-
   <ItemGroup>
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>

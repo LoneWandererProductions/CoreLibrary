@@ -1,6 +1,6 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     CommonControls.Images
+* PROJECT:     Common.Images
 * FILE:        ImageEventArgs.cs
 * PURPOSE:     Image Event Detail Information can be further extended in the future
 * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <inheritdoc />
     /// <summary>

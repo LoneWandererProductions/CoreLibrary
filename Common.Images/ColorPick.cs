@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorPick.cs
  * PURPOSE:     Color Palette Control, much like Color Picker but for a finer selection of Colors
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System.Drawing.Imaging;
 using Imaging;
 using Point = System.Windows.Point;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     Generate basic Color Wheel and Triangle

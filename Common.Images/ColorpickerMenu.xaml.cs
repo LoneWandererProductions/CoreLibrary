@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorPickerMenu.xaml.cs
  * PURPOSE:     Menu Item for the ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -13,9 +13,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Common.Images;
 using Imaging;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>

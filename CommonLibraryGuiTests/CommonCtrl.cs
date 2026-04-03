@@ -11,7 +11,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Common.Controls;
-using CommonControls.Images;
+using Common.Images;
 using Imaging;
 using InterOp;
 using NUnit.Framework;

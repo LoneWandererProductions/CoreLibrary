@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorPicker.xaml.cs
  * PURPOSE:     ColorPicker control with a hue ring and saturation/value triangle, supporting RGB/Hex input and output.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -18,7 +18,7 @@ using Imaging;
 
 // ReSharper disable MemberCanBeInternal
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <inheritdoc cref="INotifyPropertyChanged" />
     /// <summary>
@@ -60,7 +60,7 @@ namespace CommonControls.Images
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonControls.Images.ColorPicker" /> class.
+        /// Initializes a new instance of the <see cref="T:Common.Images.ColorPicker" /> class.
         /// </summary>
         public ColorPicker()
         {
@@ -69,7 +69,7 @@ namespace CommonControls.Images
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonControls.Images.ColorPicker" /> class.
+        /// Initializes a new instance of the <see cref="T:Common.Images.ColorPicker" /> class.
         /// </summary>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>

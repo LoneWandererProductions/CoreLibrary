@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        Thumbnails.xaml.cs
  * PURPOSE:     Custom Thumbnail Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -26,8 +26,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Common.Images;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     Basic Image Thumbnails

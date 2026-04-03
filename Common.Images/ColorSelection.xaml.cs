@@ -1,6 +1,6 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     CommonControls.Images
+* PROJECT:     Common.Images
 * FILE:        ColorPicker.xaml.cs
 * PURPOSE:     Basic Color Picker Control
 * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -13,13 +13,14 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Common.Images;
 
 // ReSharper disable UnusedMember.Global, well we will use it
 // ReSharper disable PossibleNullReferenceException, well this one should be quite impossible
 // ReSharper disable UnusedAutoPropertyAccessor.Global, we use it
 // ReSharper disable MemberCanBePrivate.Global, we will use it
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

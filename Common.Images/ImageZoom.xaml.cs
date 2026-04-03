@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ImageZoom.xaml.cs
  * PURPOSE:     Image View Control, that can handle some tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -96,7 +96,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

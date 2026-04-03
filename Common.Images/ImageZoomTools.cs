@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
- * FILE:        ImageZoomTools.xaml.cs
+ * PROJECT:     Common.Images
+ * FILE:        ImageZoomTools.cs
  * PURPOSE:     Image View Control Tools, that are exposed to the Outside
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,7 +10,7 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     The possible Selection Tools

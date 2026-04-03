@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorProcessing.cs
  * PURPOSE:     Some internal Processing for the clicked Point
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@
 using System;
 using ExtendedSystemObjects;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     Some internal Processing for the clicked Point

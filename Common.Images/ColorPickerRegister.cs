@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorPickerRegister.cs
  * PURPOSE:     Central Register
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using Imaging;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     Handles some configurations at runtime for the Color picker Control

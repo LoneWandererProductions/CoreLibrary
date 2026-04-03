@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        SelectionFrame.cs
  * PURPOSE:     Selection Frame
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///      The Selection Frame on the Image

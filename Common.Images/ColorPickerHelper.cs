@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
+ * PROJECT:     Common.Images
  * FILE:        ColorPickerHelper.cs
  * PURPOSE:     Helper functions for  ColorPicker
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Imaging;
 
-namespace CommonControls.Images
+namespace Common.Images
 {
     /// <summary>
     ///     Helper Class for the ColorPicker
