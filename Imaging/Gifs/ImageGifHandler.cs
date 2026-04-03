@@ -151,30 +151,29 @@ namespace Imaging.Gifs
             return await Task.Run(() =>
             {
                 var composedFrames = new List<ImageSource>();
-
                 using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                // OnLoad is important to ensure the stream can be closed immediately
                 var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
 
                 int width = decoder.Frames[0].PixelWidth;
                 int height = decoder.Frames[0].PixelHeight;
 
-                // We use a Group to keep track of all previous drawings (the accumulation)
                 var drawingGroup = new DrawingGroup();
 
                 foreach (BitmapFrame frame in decoder.Frames)
                 {
-                    // We append the new frame to the group instead of overwriting
+                    // 1. Get the offsets for THIS specific frame
+                    // These queries return the relative position of the frame patch
+                    var metadata = frame.Metadata as BitmapMetadata;
+                    double left = (ushort)(metadata?.GetQuery("/imgdesc/Left") ?? 0);
+                    double top = (ushort)(metadata?.GetQuery("/imgdesc/Top") ?? 0);
+
                     using (var context = drawingGroup.Append())
                     {
-                        context.DrawImage(frame, new Rect(0, 0, width, height));
+                        // 2. Draw the frame at its intended offset, not just (0,0)
+                        context.DrawImage(frame, new Rect(left, top, frame.PixelWidth, frame.PixelHeight));
                     }
 
-                    // Create a DrawingImage from the current state of the group
-                    // This is MUCH faster and more memory efficient than RenderTargetBitmap
                     var image = new DrawingImage(drawingGroup.Clone());
-
-                    // Freeze is CRITICAL for cross-thread access and performance
                     image.Freeze();
                     composedFrames.Add(image);
                 }
@@ -182,6 +181,7 @@ namespace Imaging.Gifs
                 return composedFrames;
             });
         }
+
 
         /// <summary>
         /// Creates the gif.
