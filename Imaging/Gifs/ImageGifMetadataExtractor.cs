@@ -81,32 +81,66 @@ namespace Imaging.Gifs
                         switch (extensionLabel)
                         {
                             case ImagingResources.ApplicationExtensionLabel:
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Block Size
-                                var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
-                                reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
+                                var appBlockSize = reader.ReadByte(); // Usually 11 (0x0B)
 
-                                if (appIdentifier == ImagingResources.NetScapeIdentifier)
+                                if (appBlockSize >= 11)
                                 {
-                                    reader.BaseStream.Seek(2, SeekOrigin.Current); // Sub-block size + loop flag
-                                    metadata.LoopCount = reader.ReadInt16();
-                                    reader.ReadByte(); // Block terminator
+                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+                                    reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
+
+                                    // If block size > 11, skip the anomalous padding
+                                    if (appBlockSize > 11)
+                                    {
+                                        reader.BaseStream.Seek(appBlockSize - 11, SeekOrigin.Current);
+                                    }
+
+                                    if (appIdentifier == ImagingResources.NetScapeIdentifier)
+                                    {
+                                        var subBlockSize = reader.ReadByte();
+                                        if (subBlockSize == 3)
+                                        {
+                                            reader.ReadByte(); // Loop flag
+                                                               // Use ReadUInt16 to prevent integer overflow on large delays/loops
+                                            metadata.LoopCount = reader.ReadUInt16();
+                                        }
+                                        else
+                                        {
+                                            reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    SkipExtensionBlocks(reader);
+                                    // Malformed App Block, safely jump over its declared payload
+                                    reader.BaseStream.Seek(appBlockSize, SeekOrigin.Current);
                                 }
+
+                                // GUARANTEES we consume all remaining sub-blocks and hit the 0x00 terminator cleanly
+                                SkipExtensionBlocks(reader);
                                 break;
 
                             case ImagingResources.GraphicsControlExtensionLabel:
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Block Size (usually 4)
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Packed fields
+                                var gceSize = reader.ReadByte(); // Usually 4
 
-                                // Delay is in 100ths of a second. 
-                                // Note: If you want ms, multiply by 10 here or in the ImageControl.
-                                lastFrameDelay = reader.ReadInt16();
+                                if (gceSize >= 4)
+                                {
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Packed fields
+                                    lastFrameDelay = reader.ReadUInt16(); // Use UInt16 to avoid negative time spans
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Transparent Color Index
 
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Transparent Color Index
-                                reader.ReadByte(); // Block Terminator (0x00)
+                                    // Skip anomalous padding if gceSize > 4
+                                    if (gceSize > 4)
+                                    {
+                                        reader.BaseStream.Seek(gceSize - 4, SeekOrigin.Current);
+                                    }
+                                }
+                                else
+                                {
+                                    reader.BaseStream.Seek(gceSize, SeekOrigin.Current);
+                                }
+
+                                // GUARANTEES we hit the 0x00 terminator cleanly
+                                SkipExtensionBlocks(reader);
                                 break;
 
                             default:

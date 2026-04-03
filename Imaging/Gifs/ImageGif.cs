@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +52,7 @@ namespace Imaging.Gifs
         /// <summary>
         /// The frames
         /// </summary>
-        private List<ImageSource>? _frames;
+        private List<BitmapSource>? _frames;
         private ImageGifInfo? _metadata;
 
         /// <summary>
@@ -67,6 +69,9 @@ namespace Imaging.Gifs
         /// The is disposed
         /// </summary>
         private bool _isDisposed;
+
+
+        private CancellationTokenSource _loaderCts;
 
         /// <summary>
         /// Gets or sets the GIF source.
@@ -114,32 +119,41 @@ namespace Imaging.Gifs
         /// <param name="path">The path.</param>
         private async void LoadGifAsync(string? path)
         {
-            ResetInternalState();
-            Source = null;
-            _frames = null;
-            _metadata = null;
+            _loaderCts?.Cancel();
+            _loaderCts = new CancellationTokenSource();
+            var token = _loaderCts.Token;
 
-            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-                return;
+            ResetInternalState();
 
             try
             {
-                // Run both decoding and metadata extraction in parallel
-                var framesTask = ImageGifHandler.LoadGif(path);
-                var metadataTask = Task.Run(() => ImageGifMetadataExtractor.ExtractGifMetadata(path));
+                // 1. Get the GDI+ Bitmaps from your splitter
+                // SplitGifAsync handles the complex frame disposal logic
+                var rawFrames = await ImageGifHandler.SplitGifAsync(path);
 
-                await Task.WhenAll(framesTask, metadataTask);
+                if (token.IsCancellationRequested) return;
 
-                _frames = await framesTask;
-                _metadata = await metadataTask;
+                // 2. Use your Extension Method to convert
+                _frames = rawFrames.Select(b => {
+                    // Use the extension you provided
+                    var bi = b.BitmapToSource();
 
-                if (_frames == null || _frames.Count == 0) return;
+                    // CRITICAL: Make the image cross-thread safe
+                    if (bi.CanFreeze) bi.Freeze();
 
-                _frameIndex = 0;
-                Source = _frames[_frameIndex];
+                    // Dispose the GDI+ Bitmap immediately to save RAM
+                    b.Dispose();
 
-                if (AutoStart)
-                    StartGif();
+                    return bi;
+                }).Cast<BitmapSource>().ToList();
+
+                // 3. Update the UI
+                if (_frames.Count > 0)
+                {
+                    _frameIndex = 0;
+                    Source = _frames[_frameIndex];
+                    if (AutoStart) StartGif();
+                }
             }
             catch (Exception ex)
             {

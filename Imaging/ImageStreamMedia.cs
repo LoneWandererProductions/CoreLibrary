@@ -182,5 +182,45 @@ namespace Imaging
             bitmapImage.Freeze();
             return bitmapImage;
         }
+
+
+        /// <summary>
+        /// Bitmaps to source optimized.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>BitmapImageSource</returns>
+        internal static BitmapSource BitmapToSource(Bitmap bitmap)
+        {
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+
+            // 1. Lock GDI+ bits
+            var rect = new Rectangle(0, 0, width, height);
+            var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                // 2. Create the WPF bitmap directly from the pointer
+                // This is significantly faster than using MemoryStream/Encoders
+                var source = BitmapSource.Create(
+                    width,
+                    height,
+                    96, 96,
+                    PixelFormats.Bgra32,
+                    null,
+                    bmpData.Scan0,
+                    bmpData.Stride * height,
+                    bmpData.Stride);
+
+                // 3. Freeze it so it can be used on the UI thread
+                source.Freeze();
+                return source;
+            }
+            finally
+            {
+                bitmap.UnlockBits(bmpData);
+            }
+        }
     }
 }

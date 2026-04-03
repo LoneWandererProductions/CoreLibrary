@@ -36,6 +36,19 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Bitmaps to source.
+        /// </summary>
+        /// <param name="bmp">The BMP.</param>
+        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
+        /// <returns></returns>
+        public static BitmapSource BitmapToSource(this Bitmap bmp, bool lossless = false)
+        {
+            return ImageStreamMedia.BitmapToSource(bmp);
+        }
+
+        
+
+        /// <summary>
         ///     Extension Method
         ///     Converts Bitmap to BitmapImage.
         /// </summary>

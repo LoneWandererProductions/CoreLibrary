@@ -370,20 +370,42 @@ namespace Imaging.Gifs
         /// </summary>
         /// <param name="gEnc">The g enc.</param>
         /// <param name="target">The target.</param>
+        /// <summary>
+        /// Helper method to inject the Netscape looping extension safely.
+        /// </summary>
         private static void SaveWithLoopingExtension(GifBitmapEncoder gEnc, string target)
         {
             using var ms = new MemoryStream();
             gEnc.Save(ms);
             var fileBytes = ms.ToArray();
 
-            // This is the NETSCAPE2.0 Application Extension.
-            var applicationExtension =
-                new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            // NETSCAPE2.0 Application Extension (loops forever)
+            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+
+            // GIF Header (6) + Logical Screen Descriptor (7) = 13 bytes
+            int insertionIndex = 13;
+
+            // Byte 10 contains the packed fields. 
+            // Bit 7 (0x80) indicates if a Global Color Table (GCT) is present.
+            bool hasGlobalColorTable = (fileBytes[10] & 0x80) != 0;
+
+            if (hasGlobalColorTable)
+            {
+                // The size of the GCT is determined by the lower 3 bits of byte 10.
+                // Size = 3 * 2^(value + 1)
+                int gctSizeValue = fileBytes[10] & 0x07;
+                int gctSize = 3 * (1 << (gctSizeValue + 1));
+
+                // Push the insertion index past the Global Color Table
+                insertionIndex += gctSize;
+            }
 
             var newBytes = new List<byte>(fileBytes.Length + applicationExtension.Length);
-            newBytes.AddRange(fileBytes.Take(13));
+
+            // Safely insert the extension after the Header, LSD, and GCT
+            newBytes.AddRange(fileBytes.Take(insertionIndex));
             newBytes.AddRange(applicationExtension);
-            newBytes.AddRange(fileBytes.Skip(13));
+            newBytes.AddRange(fileBytes.Skip(insertionIndex));
 
             File.WriteAllBytes(target, newBytes.ToArray());
         }
