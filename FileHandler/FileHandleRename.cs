@@ -78,7 +78,6 @@ namespace FileHandler
                 throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
             }
 
-            //if nothing exists we can return anyways
             if (!File.Exists(source))
             {
                 return false;
@@ -87,6 +86,14 @@ namespace FileHandler
             try
             {
                 await Task.Run(() => File.Move(source, target));
+                return true;
+            }
+            catch (IOException ex) when (IsFileLocked(ex))
+            {
+                // This is where you "skip." 
+                // Log that it's in use and return false so the caller knows it wasn't moved.
+                FileHandlerRegister.AddError(nameof(RenameFile), source, new Exception("File is currently in use by another process.", ex));
+                return false;
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
             {
@@ -94,8 +101,19 @@ namespace FileHandler
                 Trace.WriteLine(ex);
                 return false;
             }
+        }
 
-            return true;
+        /// <summary>
+        /// Determines whether [is file locked] [the specified exception].
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <returns>
+        ///   <c>true</c> if [is file locked] [the specified exception]; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsFileLocked(IOException exception)
+        {
+            int errorCode = exception.HResult & 0xFFFF;
+            return errorCode == 32 || errorCode == 33; // 32: Sharing violation, 33: Lock violation
         }
     }
 }

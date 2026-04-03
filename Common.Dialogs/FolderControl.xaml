@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-             d:DesignHeight="350" d:DesignWidth="500">
+            Padding="5">
 
     <Grid>
         <!-- Row/Column Definitions -->
