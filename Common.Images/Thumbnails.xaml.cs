@@ -26,7 +26,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Common.Images;
+using System.Windows.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Common.Images
 {
@@ -127,6 +128,16 @@ namespace Common.Images
         ///     The cancellation token source
         /// </summary>
         private CancellationTokenSource? _cancellationTokenSource;
+
+        /// <summary>
+        /// The loading CTS
+        /// </summary>
+        private CancellationTokenSource? _loadingCts;
+
+        /// <summary>
+        /// The loading task
+        /// </summary>
+        private Task? _loadingTask;
 
         /// <summary>
         ///     The current selected border
@@ -407,24 +418,21 @@ namespace Common.Images
         /// </summary>
         private async Task OnItemsSourceChanged()
         {
-            // Cancel any ongoing loads
-            await _cancellationTokenSource?.CancelAsync();
-            _cancellationTokenSource?.Dispose();
+            // 1. Signal cancellation to the PREVIOUS run
+            _loadingCts?.Cancel();
 
-            // Unsubscribe events and clear dictionaries
-            foreach (var img in ImageDct?.Values ?? Enumerable.Empty<Image>())
+            // 2. WAIT for the previous run to finish or acknowledge cancellation
+            // This prevents "Double-Loading" and collection collisions
+            if (_loadingTask != null)
             {
-                img.MouseDown -= ImageClick_MouseDown;
-                img.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
-                img.Source = null;
+                try { await _loadingTask; }
+                catch (OperationCanceledException) { /* Swallow expected cancel */ }
             }
 
-            foreach (var cb in ChkBox?.Values ?? Enumerable.Empty<CheckBox>())
-            {
-                cb.Checked -= CheckBox_Checked;
-                cb.Unchecked -= CheckBox_Unchecked;
-            }
+            _loadingCts = new CancellationTokenSource();
+            var token = _loadingCts.Token;
 
+            // 3. Clean up UI and collections safely
             Thb.Children.Clear();
             Keys?.Clear();
             ImageDct?.Clear();
@@ -432,14 +440,9 @@ namespace Common.Images
             Border?.Clear();
             Selection?.Clear();
 
-            ThumbWidth = _originalWidth;
-            ThumbHeight = _originalHeight;
-
-            await LoadImages();
-
-            //All Images Loaded
-            ImageLoadedCommand?.Execute(this);
-            ImageLoaded?.Invoke();
+            // 4. Start the new task and track it
+            _loadingTask = LoadImages(token);
+            await _loadingTask;
         }
 
         /// <summary>
@@ -479,82 +482,104 @@ namespace Common.Images
         /// <summary>
         /// Loads the images.
         /// </summary>
-        private async Task LoadImages()
+        private async Task LoadImages(CancellationToken externalToken)
         {
             if (ItemsSource?.Any() != true) return;
 
-            await _cancellationTokenSource?.CancelAsync();
+            // 1. Manage the internal CTS
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
-            var token = _cancellationTokenSource.Token;
+
+            // 2. Link the external token (from the caller) with our internal token
+            // This ensures if either one cancels, the work stops.
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(externalToken, _cancellationTokenSource.Token);
+            var token = linkedCts.Token;
 
             var timer = Stopwatch.StartNew();
 
-            // Make a local copy of images
-            var pics = new Dictionary<int, string>(ItemsSource);
-
-            // Initialize dictionaries
-            Keys = new ConcurrentDictionary<string, int>();
-            ImageDct = new ConcurrentDictionary<string, Image>();
-            Border = new ConcurrentDictionary<int, Border>();
-            Selection = new ConcurrentDictionary<int, bool>();
-            if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
-
-            // Capture initial values from dependency properties
-            var cellSize = await Application.Current.Dispatcher.InvokeAsync(() => ThumbCellSize);
-            var thumbWidth = await Application.Current.Dispatcher.InvokeAsync(() => ThumbWidth);
-            var thumbHeight = await Application.Current.Dispatcher.InvokeAsync(() => ThumbHeight);
-            var thumbGrid = await Application.Current.Dispatcher.InvokeAsync(() => ThumbGrid);
-
-            // --- Handle special cases ---
-            if (cellSize <= 0) cellSize = 100;
-            if (thumbHeight <= 0 && thumbWidth <= 0) thumbHeight = 1;
-
-            if (thumbHeight * thumbWidth < pics.Count)
+            try
             {
-                // Only one row or one column
-                if (thumbWidth == 1) thumbHeight = pics.Count;
-                if (thumbHeight == 1) thumbWidth = pics.Count;
+                // Check for cancellation before doing heavy setup
+                token.ThrowIfCancellationRequested();
 
-                // Neither is 1 → calculate width based on height
-                if (thumbHeight != 1 && thumbWidth != 1 && pics.Count > 1)
+                var pics = new Dictionary<int, string>(ItemsSource);
+
+                // Initialize dictionaries
+                Keys = new ConcurrentDictionary<string, int>();
+                ImageDct = new ConcurrentDictionary<string, Image>();
+                Border = new ConcurrentDictionary<int, Border>();
+                Selection = new ConcurrentDictionary<int, bool>();
+                if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
+
+                // Capture UI values
+                var cellSize = await Dispatcher.InvokeAsync(() => ThumbCellSize);
+                var thumbWidth = await Dispatcher.InvokeAsync(() => ThumbWidth);
+                var thumbHeight = await Dispatcher.InvokeAsync(() => ThumbHeight);
+                var thumbGrid = await Dispatcher.InvokeAsync(() => ThumbGrid);
+
+                // Logic for dimensions
+                if (cellSize <= 0) cellSize = 100;
+                if (thumbHeight <= 0 && thumbWidth <= 0) thumbHeight = 1;
+
+                if (thumbHeight * thumbWidth < pics.Count)
                 {
-                    // (Numerator + Denominator - 1) / Denominator
-                    thumbWidth = (pics.Count + thumbHeight - 1) / thumbHeight;
+                    if (thumbWidth == 1) thumbHeight = pics.Count;
+                    else if (thumbHeight == 1) thumbWidth = pics.Count;
+                    else if (pics.Count > 1)
+                    {
+                        thumbWidth = (pics.Count + thumbHeight - 1) / thumbHeight;
+                    }
                 }
+
+                // Update properties
+                ThumbWidth = thumbWidth;
+                ThumbHeight = thumbHeight;
+                ThumbCellSize = cellSize;
+
+                // Setup grid
+                var exGrid = ExtendedGrid.ExtendGrid(thumbWidth, thumbHeight, thumbGrid);
+                Thb.Children.Clear();
+                Thb.Children.Add(exGrid);
+
+                // --- Load images with linked token ---
+                var semaphore = new SemaphoreSlim(4);
+                var tasks = pics.Select(async kv =>
+                {
+                    await semaphore.WaitAsync();
+                    if (token.IsCancellationRequested)
+                    {
+                        semaphore.Release();
+                        return;
+                    }
+
+                    try
+                    {
+                        await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }).ToArray();
+
+                await Task.WhenAll(tasks);
+
+                ImageLoaded?.Invoke();
             }
-
-            // Update dependency properties so other code/XAML sees correct sizes
-            ThumbWidth = thumbWidth;
-            ThumbHeight = thumbHeight;
-            ThumbCellSize = cellSize;
-
-            // --- Setup grid layout ---
-            var exGrid = ExtendedGrid.ExtendGrid(thumbWidth, thumbHeight, thumbGrid);
-            Thb.Children.Clear();
-            _ = Thb.Children.Add(exGrid);
-
-            // --- Load images concurrently with semaphore ---
-            var semaphore = new SemaphoreSlim(4);
-            var tasks = pics.Select(async kv =>
+            catch (OperationCanceledException)
             {
-                await semaphore.WaitAsync(token);
-                try
-                {
-                    await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
-                }
-                finally
-                {
-                    semaphore.Release();
-                }
-            }).ToArray();
-
-            await Task.WhenAll(tasks);
-
-            timer.Stop();
-            Trace.WriteLine($"{ComCtlResources.DebugTimer}{timer.Elapsed}");
-
-            // Notify that loading is finished
-            ImageLoaded?.Invoke();
+                // swallow silently
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error in LoadImages: {ex.Message}");
+            }
+            finally
+            {
+                timer.Stop();
+                Trace.WriteLine($"{ComCtlResources.DebugTimer}{timer.Elapsed}");
+            }
         }
 
         /// <summary>
@@ -569,83 +594,75 @@ namespace Common.Images
         /// <returns>
         /// Load all images async
         /// </returns>
-        private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token,
-            int cellSize,
-            int thumbWidth)
+        private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize, int thumbWidth)
         {
             if (token.IsCancellationRequested) return;
 
-            // Capture UI-thread values safely
-            var isCheckBoxSelected = await Application.Current.Dispatcher.InvokeAsync(() => IsCheckBoxSelected);
-
-            // Load the bitmap off the UI thread
+            // 1. Heavy lifting (IO) happens on the background thread
             var bitmap = await GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
-            if (bitmap == null) return;
+            if (bitmap == null || token.IsCancellationRequested) return;
 
-            // Prepare UI elements
-            var images = new Image { Height = cellSize, Width = cellSize, Name = $"{ComCtlResources.ImageAdd}{key}" };
-
-            var border = new Border
+            // 2. ALL UI element creation and property setting happens on the UI Thread
+            await Dispatcher.InvokeAsync(() =>
             {
-                Child = images,
-                BorderThickness = new Thickness(0),
-                BorderBrush = Brushes.Transparent,
-                Margin = new Thickness(1),
-                Name = images.Name
-            };
+                if (token.IsCancellationRequested) return;
 
-            CheckBox checkbox = null;
-            if (SelectBox)
-            {
-                checkbox = new CheckBox
+                var imageName = $"{ComCtlResources.ImageAdd}{key}";
+
+                var images = new Image
                 {
-                    Height = 23,
-                    Width = 23,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    IsChecked = isCheckBoxSelected
+                    Height = cellSize,
+                    Width = cellSize,
+                    Name = imageName,
+                    Source = bitmap,
+                    ToolTip = filePath
                 };
 
-                if (isCheckBoxSelected)
+                var border = new Border
                 {
-                    Selection.TryAdd(key, true);
-                }
+                    Child = images,
+                    BorderThickness = new Thickness(0),
+                    BorderBrush = Brushes.Transparent,
+                    Margin = new Thickness(1),
+                    Name = imageName
+                };
 
-                checkbox.Checked += CheckBox_Checked;
-                checkbox.Unchecked += CheckBox_Unchecked;
-
-                ChkBox.TryAdd(key, checkbox);
-            }
-
-            // All UI updates in one Dispatcher batch
-            await Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                Keys.TryAdd(images.Name, key);
-                ImageDct.TryAdd(images.Name, images);
-                Border.TryAdd(key, border);
-
-                // Grid placement
-                Grid.SetRow(border, key / thumbWidth);
-                Grid.SetColumn(border, key % thumbWidth);
-                _ = exGrid.Children.Add(border);
-
-                if (SelectBox && checkbox != null)
+                if (SelectBox)
                 {
+                    var checkbox = new CheckBox
+                    {
+                        Height = 23,
+                        Width = 23,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        IsChecked = IsCheckBoxSelected,
+                        Name = imageName // Ensure the checkbox has the name so TryGetValue works
+                    };
+
+                    if (IsCheckBoxSelected) Selection.TryAdd(key, true);
+
+                    checkbox.Checked += CheckBox_Checked;
+                    checkbox.Unchecked += CheckBox_Unchecked;
+                    ChkBox.TryAdd(key, checkbox);
+
                     Grid.SetRow(checkbox, key / thumbWidth);
                     Grid.SetColumn(checkbox, key % thumbWidth);
-                    _ = exGrid.Children.Add(checkbox);
+                    exGrid.Children.Add(checkbox);
 
-                    // Attach right-click event for context menu
                     images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
                 }
 
-                // Assign image source and tooltip
-                images.Source = bitmap;
-                images.ToolTip = filePath;
+                // Add to collections
+                Keys.TryAdd(imageName, key);
+                ImageDct.TryAdd(imageName, images);
+                Border.TryAdd(key, border);
 
-                // Attach left-click event
+                Grid.SetRow(border, key / thumbWidth);
+                Grid.SetColumn(border, key % thumbWidth);
+                exGrid.Children.Add(border);
+
                 images.MouseDown += ImageClick_MouseDown;
-            });
+            }, DispatcherPriority.Normal, token);
         }
 
         /// <summary>
@@ -664,14 +681,16 @@ namespace Common.Images
                 try
                 {
                     var bitmapImage = new BitmapImage();
-                    using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.DecodePixelWidth = width;
-                    // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
+                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        bitmapImage.BeginInit();
+                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmapImage.DecodePixelWidth = width;
+                        // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
+                        bitmapImage.StreamSource = stream;
+                        bitmapImage.EndInit();
+                        bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
+                    }
 
                     return bitmapImage;
                 }
@@ -758,10 +777,10 @@ namespace Common.Images
                 var itemPosition = itemTransform.Transform(new Point(0, 0));
 
                 // Calculate the offsets needed to center the item
-                var centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) +
-                                    (targetElement.RenderSize.Width / 2);
-                var centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) +
-                                    (targetElement.RenderSize.Height / 2);
+                var centerOffsetX = itemPosition.X - MainScrollViewer.ViewportWidth / 2 +
+                                    targetElement.RenderSize.Width / 2;
+                var centerOffsetY = itemPosition.Y - MainScrollViewer.ViewportHeight / 2 +
+                                    targetElement.RenderSize.Height / 2;
 
                 // Set the ScrollViewer's offset to center the item
                 MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
@@ -879,7 +898,7 @@ namespace Common.Images
                 return;
             }
 
-            _ = Selection.TryAdd(id, true);
+            _ = Selection.TryRemove(id, out _);
         }
 
         /// <summary>
@@ -975,6 +994,15 @@ namespace Common.Images
                 // Cancel any ongoing image loading
                 _cancellationTokenSource?.Cancel();
                 _cancellationTokenSource?.Dispose();
+
+                _disposed = true;
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource?.Dispose();
+                _loadingCts?.Cancel();
+                _loadingCts?.Dispose();
+
+                ImageDct?.Clear();
+                Border?.Clear();
             }
 
             _disposed = true;
