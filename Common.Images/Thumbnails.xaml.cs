@@ -609,6 +609,7 @@ namespace Common.Images
 
                 var imageName = $"{ComCtlResources.ImageAdd}{key}";
 
+                // 1. Create the Image and its Border
                 var images = new Image
                 {
                     Height = cellSize,
@@ -627,6 +628,12 @@ namespace Common.Images
                     Name = imageName
                 };
 
+                // 2. Create a cell container to hold both Image and CheckBox
+                var cellContainer = new Grid();
+
+                // The order of adding to Children determines Z-order (last = top)
+                cellContainer.Children.Add(border);
+
                 if (SelectBox)
                 {
                     var checkbox = new CheckBox
@@ -636,7 +643,9 @@ namespace Common.Images
                         VerticalAlignment = VerticalAlignment.Top,
                         HorizontalAlignment = HorizontalAlignment.Left,
                         IsChecked = IsCheckBoxSelected,
-                        Name = imageName // Ensure the checkbox has the name so TryGetValue works
+                        Name = imageName,
+                        // Ensure the checkbox background doesn't block the image
+                        Margin = new Thickness(5)
                     };
 
                     if (IsCheckBoxSelected) Selection.TryAdd(key, true);
@@ -645,23 +654,24 @@ namespace Common.Images
                     checkbox.Unchecked += CheckBox_Unchecked;
                     ChkBox.TryAdd(key, checkbox);
 
-                    Grid.SetRow(checkbox, key / thumbWidth);
-                    Grid.SetColumn(checkbox, key % thumbWidth);
-                    exGrid.Children.Add(checkbox);
+                    // Add checkbox to the cellContainer, NOT exGrid directly
+                    cellContainer.Children.Add(checkbox);
 
                     images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
                 }
 
-                // Add to collections
+                // 3. Add to collections
                 Keys.TryAdd(imageName, key);
                 ImageDct.TryAdd(imageName, images);
                 Border.TryAdd(key, border);
 
-                Grid.SetRow(border, key / thumbWidth);
-                Grid.SetColumn(border, key % thumbWidth);
-                exGrid.Children.Add(border);
+                // 4. Position the container in the main exGrid
+                Grid.SetRow(cellContainer, key / thumbWidth);
+                Grid.SetColumn(cellContainer, key % thumbWidth);
+                exGrid.Children.Add(cellContainer);
 
                 images.MouseDown += ImageClick_MouseDown;
+
             }, DispatcherPriority.Normal, token);
         }
 

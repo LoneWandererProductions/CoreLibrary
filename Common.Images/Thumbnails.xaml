@@ -9,8 +9,15 @@
     <ScrollViewer x:Name="MainScrollViewer"
                   HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
+        <ScrollViewer.LayoutTransform>
+            <ScaleTransform ScaleY="-1" />
+        </ScrollViewer.LayoutTransform>
+
         <Grid x:Name="Thb">
-            <!-- Your dynamically added images will go here -->
+            <Grid.LayoutTransform>
+                <ScaleTransform ScaleY="-1" />
+            </Grid.LayoutTransform>
+
         </Grid>
     </ScrollViewer>
 </UserControl>

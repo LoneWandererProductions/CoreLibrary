@@ -6,11 +6,13 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using ViewModel;
 
 namespace Common.Dialogs
 {
@@ -18,7 +20,7 @@ namespace Common.Dialogs
     /// <summary>
     /// Represents a single folder or file in a TreeView. Supports lazy loading of children and selection tracking.
     /// </summary>
-    public sealed class FolderItemViewModel : INotifyPropertyChanged
+    public sealed class FolderItemViewModel : ViewModelBase
     {
         /// <summary>
         /// Gets the full path of this folder or file.
@@ -118,16 +120,38 @@ namespace Common.Dialogs
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>If folder has child</returns>
+        /// <summary>
+        /// Safely checks if a folder has children without throwing exceptions for files.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>True if the folder has children; otherwise, false.</returns>
         private static bool SafeHasChildren(string path)
         {
             try
             {
+                // PREVENT the IOException by checking if it's actually a directory first.
+                // If it's a file (or doesn't exist/access denied), Directory.Exists cleanly returns false.
+                if (!Directory.Exists(path))
+                {
+                    return false;
+                }
+
                 using var enumerator = Directory.EnumerateFileSystemEntries(path).GetEnumerator();
                 return enumerator.MoveNext();
             }
+            catch (UnauthorizedAccessException)
+            {
+                // Handle permission errors silently
+                return false;
+            }
+            catch (IOException)
+            {
+                // Handle locked system files, device errors, or edge-case invalid paths silently
+                return false;
+            }
             catch
             {
-                // Handles UnauthorizedAccess, PathTooLong, or DirectoryNotFound
+                // Fallback for PathTooLongException, DirectoryNotFoundException, etc.
                 return false;
             }
         }
@@ -139,30 +163,37 @@ namespace Common.Dialogs
         {
             try
             {
-                var dirs = Directory.GetDirectories(Path);
-                var files = Directory.GetFiles(Path);
+                var dirs = Array.Empty<string>();
+                var files = Array.Empty<string>();
+
+                await Task.Run(() =>
+                {
+                    if (Directory.Exists(Path))
+                    {
+                        dirs = Directory.GetDirectories(Path);
+                        files = Directory.GetFiles(Path);
+                    }
+                });
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     foreach (var dir in dirs)
                         Children.Add(new FolderItemViewModel(dir, _parentVm));
 
-                    foreach (var file in files)
-                        Children.Add(
-                            new FolderItemViewModel(file, _parentVm) { Header = System.IO.Path.GetFileName(file) });
+                    if (_parentVm.ShowFiles)
+                    {
+                        foreach (var file in files)
+                            Children.Add(new FolderItemViewModel(file, _parentVm)
+                            {
+                                Header = System.IO.Path.GetFileName(file)
+                            });
+                    }
                 });
             }
             catch
             {
-                // Access denied or IO exceptions are silently ignored
+                // ignore
             }
         }
-
-        /// <summary>
-        /// Raises the <see cref="PropertyChanged"/> event for a property.
-        /// </summary>
-        /// <param name="propertyName">Name of the property that changed.</param>
-        private void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

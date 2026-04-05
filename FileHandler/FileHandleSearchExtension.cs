@@ -47,7 +47,7 @@ namespace FileHandler
         /// <returns>Ordered List of files.</returns>
         private static IEnumerable<string> CustomSort(this IEnumerable<string> lst)
         {
-            if (lst is null || lst.Count() == 0)
+            if (lst is null || lst.Count() ==0)
             {
                 return lst;
             }

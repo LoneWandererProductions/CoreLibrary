@@ -16,7 +16,7 @@ namespace FileHandler
     /// <summary>
     /// Represents a file path and provides natural sorting functionality.
     /// </summary>
-    internal sealed class FilePathWrapper : IComparable<FilePathWrapper>
+    internal class FilePathWrapper : IComparable<FilePathWrapper>
     {
         /// <summary>
         /// Gets the full path of the file.

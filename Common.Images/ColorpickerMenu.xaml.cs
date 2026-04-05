@@ -13,7 +13,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Common.Images;
 using Imaging;
 
 namespace Common.Images

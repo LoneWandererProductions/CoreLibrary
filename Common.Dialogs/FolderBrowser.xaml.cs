@@ -39,7 +39,7 @@ namespace Common.Dialogs
             // Set up the ViewModel
             _viewModel = new FolderViewModel();
             VFolder.DataContext = _viewModel;
-            VFolder.Initiate(startFolder);
+            _viewModel.StartFolder = startFolder;
         }
 
         /// <summary>

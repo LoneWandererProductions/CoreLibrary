@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+             Height="320"
             Padding="5">
 
     <Grid>
@@ -16,24 +17,24 @@
             <RowDefinition Height="Auto" />
             <!-- Path Input -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="39*" />
             <!-- Navigation Buttons -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="38*" />
             <!-- Shortcut 1 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="39*" />
             <!-- Shortcut 2 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="39*" />
             <!-- Shortcut 3 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="39*" />
             <!-- Shortcut 4 -->
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="39*" />
             <!-- Shortcut 5 -->
-            <RowDefinition Height="5*" />
+            <RowDefinition Height="4*" />
             <!-- Spacer -->
             <RowDefinition />
             <!-- TreeView -->
@@ -42,28 +43,37 @@
             <ColumnDefinition Width="Auto" />
             <!-- Buttons Column -->
             <ColumnDefinition Width="5" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="0*" />
             <!-- TreeView Column -->
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="54*" />
             <!-- Nav Buttons -->
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="59*" />
             <!-- Explorer Button -->
             <ColumnDefinition Width="5" />
+            <!-- Up Buttons -->
+
+            <ColumnDefinition Width="54*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Display Path -->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                   Text="{Binding Paths}" TextWrapping="Wrap"
-                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                   Background="White" />
-
-        <!-- Path Input -->
-        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                 Text="{Binding LookUp}" TextWrapping="Wrap" VerticalAlignment="Center" />
+        <!-- Display and input Path -->
+        <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center">
+            <TextBox x:Name="PathEntry"
+             Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
+             Padding="2"
+             Visibility="Collapsed"
+             LostFocus="PathEntry_LostFocus" />
+            <TextBlock x:Name="PathDisplay"
+               Text="{Binding Paths}"
+               TextTrimming="CharacterEllipsis"
+               Background="White"
+               Padding="5,2"
+               Cursor="IBeam"
+               MouseDown="PathDisplay_MouseDown" />
+        </Grid>
 
         <!-- Navigation Buttons -->
-        <Button Content="Up" Grid.Row="0" Grid.Column="3" Command="{Binding UpCommand}" />
+        <Button Content="Up" Grid.Row="2" Grid.Column="7" Command="{Binding UpCommand}" />
         <Button Content="Go" Grid.Row="2" Grid.Column="3" Command="{Binding GoCommand}" />
         <Button Content="Exp" Grid.Row="2" Grid.Column="5" Command="{Binding ExplorerCommand}" />
 
@@ -80,8 +90,8 @@
                 Command="{Binding CreateFolderCommand}" />
 
         <!-- TreeView -->
-        <TreeView ItemsSource="{Binding FolderItems}" Grid.Row="4" Grid.Column="2" Grid.RowSpan="12"
-                  Grid.ColumnSpan="4">
+        <TreeView ItemsSource="{Binding FolderItems}" Grid.Row="6" Grid.Column="2" Grid.RowSpan="9"
+                  Grid.ColumnSpan="6">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />

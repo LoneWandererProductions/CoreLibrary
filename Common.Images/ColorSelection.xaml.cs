@@ -13,7 +13,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Common.Images;
 
 // ReSharper disable UnusedMember.Global, well we will use it
 // ReSharper disable PossibleNullReferenceException, well this one should be quite impossible

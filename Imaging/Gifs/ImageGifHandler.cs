@@ -12,18 +12,20 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using ExtendedSystemObjects;
+using Imaging.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ExtendedSystemObjects;
-using Imaging.Helpers;
 
 
 namespace Imaging.Gifs
@@ -33,15 +35,6 @@ namespace Imaging.Gifs
     /// </summary>
     public static class ImageGifHandler
     {
-        /// <summary>
-        /// Deletes the object.
-        /// </summary>
-        /// <param name="hObject">The h object.</param>
-        /// <returns>Status of cleanup</returns>
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        internal static extern bool DeleteObject(nint hObject);
-
         /// <summary>
         ///     Gets the image information.
         /// </summary>
@@ -138,11 +131,14 @@ namespace Imaging.Gifs
         }
 
         /// <summary>
-        ///     Loads the GIF using WPF's native decoder.
-        ///     This perfectly preserves transparency and is much faster.
+        /// Loads the GIF using WPF's native decoder.
+        /// This perfectly preserves transparency and is much faster.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>List of Images from gif as ImageSource</returns>
+        /// <returns>
+        /// List of Images from gif as ImageSource
+        /// </returns>
+        /// <exception cref="System.IO.IOException">File not found: {path}</exception>
         internal static async Task<List<ImageSource>> LoadGif(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
@@ -150,38 +146,84 @@ namespace Imaging.Gifs
 
             return await Task.Run(() =>
             {
-                var composedFrames = new List<ImageSource>();
+                var result = new List<ImageSource>();
+
                 using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
 
                 int width = decoder.Frames[0].PixelWidth;
                 int height = decoder.Frames[0].PixelHeight;
 
-                var drawingGroup = new DrawingGroup();
+                var composed = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
 
-                foreach (BitmapFrame frame in decoder.Frames)
+                // Clear initial canvas
+                ImageGifHelper.ClearBitmap(composed);
+
+                WriteableBitmap? previousFrameBackup = null;
+
+                int prevLeft = 0, prevTop = 0, prevWidth = 0, prevHeight = 0;
+                int prevDisposal = 0;
+
+                foreach (var frame in decoder.Frames)
                 {
-                    // 1. Get the offsets for THIS specific frame
-                    // These queries return the relative position of the frame patch
                     var metadata = frame.Metadata as BitmapMetadata;
-                    double left = (ushort)(metadata?.GetQuery("/imgdesc/Left") ?? 0);
-                    double top = (ushort)(metadata?.GetQuery("/imgdesc/Top") ?? 0);
 
-                    using (var context = drawingGroup.Append())
+                    int left = ImageGifHelper.GetShort(metadata, "/imgdesc/Left");
+                    int top = ImageGifHelper.GetShort(metadata, "/imgdesc/Top");
+                    int disposal = ImageGifHelper.GetShort(metadata, "/grctlext/Disposal");
+
+                    int frameWidth = frame.PixelWidth;
+                    int frameHeight = frame.PixelHeight;
+
+                    // 🔁 1. Apply previous disposal
+                    switch (prevDisposal)
                     {
-                        // 2. Draw the frame at its intended offset, not just (0,0)
-                        context.DrawImage(frame, new Rect(left, top, frame.PixelWidth, frame.PixelHeight));
+                        case 2: // Restore to background
+                            ImageGifHelper.ClearRegion(composed, prevLeft, prevTop, prevWidth, prevHeight);
+                            break;
+
+                        case 3: // Restore to previous
+                            if (previousFrameBackup != null)
+                            {
+                                ImageGifHelper.CopyBitmap(previousFrameBackup, composed);
+                            }
+                            break;
                     }
 
-                    var image = new DrawingImage(drawingGroup.Clone());
-                    image.Freeze();
-                    composedFrames.Add(image);
+                    // 💾 2. Backup if current frame requires it
+                    if (disposal == 3)
+                    {
+                        previousFrameBackup = composed.Clone();
+                        previousFrameBackup.Freeze();
+                    }
+                    else
+                    {
+                        previousFrameBackup = null;
+                    }
+
+                    // 🧩 3. Blend frame into canvas
+                    ImageGifHelper.BlendFrame(composed, frame, left, top);
+
+                    // 📸 4. Snapshot
+                    //var snapshot = composed.Clone();
+                    //snapshot.Freeze();
+
+                    var snapshot = new WriteableBitmap(composed);
+                    snapshot.Freeze();
+
+                    result.Add(snapshot);
+
+                    // store for next loop
+                    prevDisposal = disposal;
+                    prevLeft = left;
+                    prevTop = top;
+                    prevWidth = frameWidth;
+                    prevHeight = frameHeight;
                 }
 
-                return composedFrames;
+                return result;
             });
         }
-
 
         /// <summary>
         /// Creates the gif.
@@ -230,18 +272,6 @@ namespace Imaging.Gifs
         }
 
         /// <summary>
-        ///     Creates the GIF with variable delays per frame using Tuples.
-        /// </summary>
-        /// <param name="frames">Collection of Bitmap and specific DelayMs tuples.</param>
-        /// <param name="target">The target.</param>
-        internal static void CreateGif(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
-        {
-            if (frames == null) return;
-
-            GifCreator(frames, target);
-        }
-
-        /// <summary>
         ///     Creates the GIF.
         /// </summary>
         /// <param name="frames">The frames.</param>
@@ -278,40 +308,6 @@ namespace Imaging.Gifs
                 metadata.SetQuery("/grctlext/Disposal", 2);
 
                 gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
-            }
-
-            SaveWithLoopingExtension(gEnc, target);
-        }
-
-        /// <summary>
-        /// Create the gif with variable per-frame delay using Tuples.
-        /// </summary>
-        /// <param name="frames">The frames.</param>
-        /// <param name="target">The target.</param>
-        private static void GifCreator(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
-        {
-            var gEnc = new GifBitmapEncoder();
-
-            foreach (var frame in frames)
-            {
-                var hBitmap = frame.Image.GetHbitmap();
-                try
-                {
-                    var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        hBitmap,
-                        nint.Zero,
-                        Int32Rect.Empty,
-                        BitmapSizeOptions.FromEmptyOptions());
-
-                    var metadata = new BitmapMetadata("gif");
-                    metadata.SetQuery("/grctlext/Delay", (ushort)(frame.DelayMs / 10));
-
-                    gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
-                }
-                finally
-                {
-                    DeleteObject(hBitmap);
-                }
             }
 
             SaveWithLoopingExtension(gEnc, target);
@@ -428,7 +424,7 @@ namespace Imaging.Gifs
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.StreamSource = ms;
             bitmapImage.EndInit();
-            bitmapImage.Freeze(); // Freezing is good practice for WPF cross-thread usage
+            bitmapImage.Freeze(); // Freezing for WPF cross-thread usage
 
             return bitmapImage;
         }
