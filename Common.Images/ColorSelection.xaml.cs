@@ -58,7 +58,7 @@ namespace Common.Images
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.ColorPicker" /> class.
+        ///     Initializes a new instance of the <see cref="T:Common.Controls.ColorPicker" /> class.
         /// </summary>
         /// <param name="color">The color.</param>
         public ColorSelection(string color)

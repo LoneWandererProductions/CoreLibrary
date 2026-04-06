@@ -918,7 +918,7 @@ namespace Common.Images
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
-            ImageClickedCommand.Execute(args);
+            ImageClickedCommand?.Execute(args);
 
             ImageClicked?.Invoke(this, args);
         }

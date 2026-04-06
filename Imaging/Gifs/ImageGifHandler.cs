@@ -300,12 +300,12 @@ namespace Imaging.Gifs
             foreach (var bmpImage in btm)
             {
                 var src = ConvertToBitmapSource(bmpImage);
-                var metadata = new BitmapMetadata("gif");
+                var metadata = new BitmapMetadata(ImagingResources.GifMetadata);
 
-                metadata.SetQuery("/grctlext/Delay", gifDelay);
+                metadata.SetQuery(ImagingResources.GifMetadataQueryDelay, gifDelay);
                 // Optional but recommended: Set Disposal method to "Restore to Background" (2)
                 // This prevents transparent frames from stacking on top of each other.
-                metadata.SetQuery("/grctlext/Disposal", 2);
+                metadata.SetQuery(ImagingResources.GifMetadataQueryDisposal, 2);
 
                 gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
             }
@@ -357,18 +357,14 @@ namespace Imaging.Gifs
                 }
             }
 
-            using var fs = new FileStream(target, FileMode.Create, FileAccess.Write);
-            gEnc.Save(fs);
+            SaveWithLoopingExtension(gEnc, target);
         }
 
         /// <summary>
-        /// Helper method to inject the Netscape looping extension.
+        /// Helper method to inject the Netscape looping extension safely and efficiently.
         /// </summary>
-        /// <param name="gEnc">The g enc.</param>
-        /// <param name="target">The target.</param>
-        /// <summary>
-        /// Helper method to inject the Netscape looping extension safely.
-        /// </summary>
+        /// <param name="gEnc">The GifBitmapEncoder containing the image data.</param>
+        /// <param name="target">The target file path.</param>
         private static void SaveWithLoopingExtension(GifBitmapEncoder gEnc, string target)
         {
             using var ms = new MemoryStream();
@@ -396,14 +392,17 @@ namespace Imaging.Gifs
                 insertionIndex += gctSize;
             }
 
-            var newBytes = new List<byte>(fileBytes.Length + applicationExtension.Length);
+            // Write directly to the file stream to avoid large memory allocations and LINQ overhead
+            using var fs = new FileStream(target, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            // Safely insert the extension after the Header, LSD, and GCT
-            newBytes.AddRange(fileBytes.Take(insertionIndex));
-            newBytes.AddRange(applicationExtension);
-            newBytes.AddRange(fileBytes.Skip(insertionIndex));
+            // 1. Write the Header, Logical Screen Descriptor, and optional Global Color Table
+            fs.Write(fileBytes, 0, insertionIndex);
 
-            File.WriteAllBytes(target, newBytes.ToArray());
+            // 2. Inject the Netscape looping extension
+            fs.Write(applicationExtension, 0, applicationExtension.Length);
+
+            // 3. Write the rest of the original GIF data
+            fs.Write(fileBytes, insertionIndex, fileBytes.Length - insertionIndex);
         }
 
         /// <summary>

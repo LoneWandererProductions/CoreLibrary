@@ -89,9 +89,14 @@ namespace Imaging
         internal const string GifMetadata = "gif";
 
         /// <summary>
-        ///     The GIF metadata query delay. Value: "/grctlext/Delay"
+        ///     The GIF metadata query delay (const). Value: "/grctlext/Delay"
         /// </summary>
         internal const string GifMetadataQueryDelay = "/grctlext/Delay";
+
+        /// <summary>
+        /// The GIF metadata query disposal (const). Value: "/grctlext/Disposal"
+        /// </summary>
+        internal const string GifMetadataQueryDisposal= "/grctlext/Disposal";
 
         /// <summary>
         ///     The flag indicating the presence of a global color table in the GIF file. Value: 0x80
