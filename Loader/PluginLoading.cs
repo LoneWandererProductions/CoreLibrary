@@ -29,20 +29,32 @@ namespace Loader
 
             var result = new List<TContract>();
 
+            // Safety check: if the directory isn't there, there are no plugins to load.
+            if (!Directory.Exists(directory))
+                return result;
+
             foreach (var file in Directory.EnumerateFiles(directory, "*.dll"))
             {
-                var asm = Assembly.LoadFrom(file);
-
-                foreach (var type in asm.GetTypes())
+                try
                 {
-                    if (type.IsAbstract || type.IsInterface)
-                        continue;
+                    var asm = Assembly.LoadFrom(Path.GetFullPath(file));
 
-                    if (!typeof(TContract).IsAssignableFrom(type))
-                        continue;
+                    foreach (var type in asm.GetTypes())
+                    {
+                        if (type.IsAbstract || type.IsInterface)
+                            continue;
 
-                    if (Activator.CreateInstance(type) is TContract instance)
-                        result.Add(instance);
+                        if (typeof(TContract).IsAssignableFrom(type))
+                        {
+                            if (Activator.CreateInstance(type) is TContract instance)
+                                result.Add(instance);
+                        }
+                    }
+                }
+                catch (BadImageFormatException)
+                {
+                    // Skip files that aren't valid .NET assemblies (e.g., native DLLs)
+                    continue;
                 }
             }
 
