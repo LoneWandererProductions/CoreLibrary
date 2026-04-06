@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 // ReSharper disable MemberCanBeInternal
@@ -57,9 +58,17 @@ namespace FileHandler
                 return value ?? new List<string>();
 
             return value
-                .Select(path => new FilePathWrapper(path))
-                .OrderBy(fps => fps)
-                .Select(fps => fps.FullPath)
+                .Select(path => new
+                {
+                    FullPath = path,
+                    Directory = Path.GetDirectoryName(path) ?? string.Empty,
+                    FileName = Path.GetFileName(path) ?? string.Empty
+                })
+                // 1. Group by Directory first (Natural Sort)
+                .OrderBy(x => x.Directory, new PureNaturalComparer())
+                // 2. Then sort files within that specific directory
+                .ThenBy(x => x.FileName, new PureNaturalComparer())
+                .Select(x => x.FullPath)
                 .ToList();
         }
     }

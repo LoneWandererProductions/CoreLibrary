@@ -657,12 +657,8 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
-            // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
 
             switch (SelectionTool)
@@ -671,19 +667,24 @@ namespace Common.Images
                     {
                         var currentCanvasPos = e.GetPosition(MainCanvas);
                         var transform = (MatrixTransform)BtmImage.RenderTransform;
-                        var matrix = transform.Matrix;
+                        Matrix matrix = transform.Matrix;
 
-                        // 1. Calculate the raw intended offsets
+                        // 1. Calculate intended new offsets
                         double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
                         double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
 
-                        // 2. Constraint: Keep image in Top-Left
-                        // Math.Min(newX, 0) ensures that if the user tries to drag the image 
-                        // to the right (positive X), it stops at exactly 0.
-                        matrix.OffsetX = Math.Min(newX, 0);
-                        matrix.OffsetY = Math.Min(newY, 0);
+                        // 2. Boundary Checks
+                        double viewWidth = ScrollView.ActualWidth;
+                        double viewHeight = ScrollView.ActualHeight;
+                        double tWidth = BtmImage.ActualWidth * matrix.M11;
+                        double tHeight = BtmImage.ActualHeight * matrix.M22;
 
-                        // 3. Update the UI
+                        // 3. Clamp panning only if image is larger than view
+                        if (tWidth > viewWidth)
+                            matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
+                        if (tHeight > viewHeight)
+                            matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
+
                         BtmImage.RenderTransform = new MatrixTransform(matrix);
                         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                         break;
@@ -691,29 +692,12 @@ namespace Common.Images
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
-                {
-                    // Update the adorner for rectangle or ellipse selection
                     SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
-
                     break;
-                }
 
                 case ImageZoomTools.FreeForm:
-                {
-                    // Update the adorner for free form selection by adding points
                     SelectionAdorner?.AddFreeFormPoint(mousePos);
-
                     break;
-                }
-
-                case ImageZoomTools.Trace:
-                    // Handle pixel selection if needed
-                    break;
-                case ImageZoomTools.Dot:
-                    break;
-                default:
-                    // Nothing
-                    return;
             }
         }
 
@@ -735,17 +719,30 @@ namespace Common.Images
                 // 1. Perform the scale
                 matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
 
-                // 2. Constraint: Ensure we haven't scrolled the image into "positive" space
-                // This keeps the image flush against the top and left edges.
-                matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
-                matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
+                // 2. Calculate Boundaries
+                double viewWidth = ScrollView.ActualWidth;
+                double viewHeight = ScrollView.ActualHeight;
+                double transformedWidth = BtmImage.ActualWidth * matrix.M11;
+                double transformedHeight = BtmImage.ActualHeight * matrix.M22;
 
-                // 3. Apply updates
+                // 3. Clamp X Offset
+                if (transformedWidth > viewWidth)
+                    matrix.OffsetX = Math.Max(Math.Min(matrix.OffsetX, 0), viewWidth - transformedWidth);
+                else
+                    matrix.OffsetX = 0; // Keep flush left when smaller than view
+
+                // 4. Clamp Y Offset
+                if (transformedHeight > viewHeight)
+                    matrix.OffsetY = Math.Max(Math.Min(matrix.OffsetY, 0), viewHeight - transformedHeight);
+                else
+                    matrix.OffsetY = 0;
+
+                // 5. Apply and Sync Sizes
                 BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                // Sync Canvas size (using the now-constrained matrix)
-                MainCanvas.Width = BtmImage.ActualWidth * matrix.M11;
-                MainCanvas.Height = BtmImage.ActualHeight * matrix.M22;
+                // CRITICAL: Canvas must be at least the size of the Viewport to prevent "jumping"
+                MainCanvas.Width = Math.Max(transformedWidth, viewWidth);
+                MainCanvas.Height = Math.Max(transformedHeight, viewHeight);
 
                 SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                 e.Handled = true;
@@ -823,23 +820,20 @@ namespace Common.Images
         /// </summary>
         private void ResetTransforms()
         {
-            // 1. Reset the Matrix to Identity
-            // This sets ScaleX/Y to 1.0 and OffsetX/Y to 0 in one shot.
+            // 1. Reset Matrix
             BtmImage.RenderTransform = new MatrixTransform(Matrix.Identity);
 
-            // 2. Reset the "Virtual" Canvas size
-            // Since we are no longer using LayoutTransform, we must manually 
-            // tell the ScrollViewer that the content is back to its original size.
-            MainCanvas.Width = BtmImage.ActualWidth;
-            MainCanvas.Height = BtmImage.ActualHeight;
+            // 2. Sync Sizes (Use ActualWidth if loaded, otherwise Source width)
+            double baseWidth = BtmImage.ActualWidth > 0 ? BtmImage.ActualWidth : (BtmImage.Source?.Width ?? 0);
+            double baseHeight = BtmImage.ActualHeight > 0 ? BtmImage.ActualHeight : (BtmImage.Source?.Height ?? 0);
 
-            // 3. Reset the ScrollViewer position
-            // ScrollToHome() is better than ScrollToTop() because it 
-            // resets both the Vertical AND Horizontal scrollbars.
+            MainCanvas.Width = Math.Max(baseWidth, ScrollView.ActualWidth);
+            MainCanvas.Height = Math.Max(baseHeight, ScrollView.ActualHeight);
+
+            // 3. Reset Viewport
             ScrollView.ScrollToHome();
-
-            // 4. Update the UI and Adorner
             ScrollView.UpdateLayout();
+
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
