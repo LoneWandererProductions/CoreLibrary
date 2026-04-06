@@ -569,12 +569,13 @@ namespace Common.Images
         {
             // Capture and track the mouse.
             _mouseDown = true;
+            _ = MainCanvas.CaptureMouse();
 
             // Get the mouse position relative to the image (consistent with panning logic)
-            var rawPoint = e.GetPosition(BtmImage);
+            //var rawPoint = e.GetPosition(BtmImage);
 
             //TODO problem with our DPI and multiple Monitor Setup
-            _startPoint = rawPoint;
+            _startPoint = e.GetPosition(MainCanvas);
 
             // Capture the mouse
             _ = MainCanvas.CaptureMouse();
@@ -667,17 +668,26 @@ namespace Common.Images
             switch (SelectionTool)
             {
                 case ImageZoomTools.Move:
-                {
-                    // Use the image coordinate space so panning respects the current image transform/zoom
-                    var position = e.GetPosition(BtmImage);
-                    var matrix = BtmImage.RenderTransform.Value;
-                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-                    BtmImage.RenderTransform = new MatrixTransform(matrix);
+                    {
+                        var currentCanvasPos = e.GetPosition(MainCanvas);
+                        var transform = (MatrixTransform)BtmImage.RenderTransform;
+                        var matrix = transform.Matrix;
 
-                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                    break;
-                }
+                        // 1. Calculate the raw intended offsets
+                        double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
+                        double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+
+                        // 2. Constraint: Keep image in Top-Left
+                        // Math.Min(newX, 0) ensures that if the user tries to drag the image 
+                        // to the right (positive X), it stops at exactly 0.
+                        matrix.OffsetX = Math.Min(newX, 0);
+                        matrix.OffsetY = Math.Min(newY, 0);
+
+                        // 3. Update the UI
+                        BtmImage.RenderTransform = new MatrixTransform(matrix);
+                        SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                        break;
+                    }
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
@@ -716,13 +726,29 @@ namespace Common.Images
         {
             lock (_lock)
             {
-                var zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
-                var newZoomScale = Scale.ScaleX * zoomFactor; // Assume uniform scaling, so use ScaleX
+                var transform = (MatrixTransform)BtmImage.RenderTransform;
+                Matrix matrix = transform.Matrix;
 
-                UpdateZoomScale(newZoomScale); // Centralize logic for updating the zoom scale
+                double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
+                Point mousePos = e.GetPosition(BtmImage);
 
-                // Ensure the adorner updates with the new zoom scale
+                // 1. Perform the scale
+                matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
+
+                // 2. Constraint: Ensure we haven't scrolled the image into "positive" space
+                // This keeps the image flush against the top and left edges.
+                matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
+                matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
+
+                // 3. Apply updates
+                BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+                // Sync Canvas size (using the now-constrained matrix)
+                MainCanvas.Width = BtmImage.ActualWidth * matrix.M11;
+                MainCanvas.Height = BtmImage.ActualHeight * matrix.M22;
+
                 SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                e.Handled = true;
             }
         }
 
@@ -768,40 +794,27 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Completes the free form selection.
-        /// </summary>
-        private void CompleteFreeFormSelection()
-        {
-            var frame = SelectionAdorner.CurrentSelectionFrame;
-            SelectedFrame?.Invoke(frame); // Notify listeners that selection is done
-
-            SafeExecuteCommand(SelectedFrameCommand, frame);
-
-            SelectionAdorner.FreeFormPoints.Clear(); // Reset collected points for the next freeform drawing
-        }
-
-        /// <summary>
         ///     Updates the zoom scale for both ScaleX and ScaleY.
         /// </summary>
         /// <param name="zoomScale">The new zoom scale.</param>
         private void UpdateZoomScale(double zoomScale)
         {
-            Scale.ScaleX = zoomScale;
-            Scale.ScaleY = zoomScale;
+            var matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
 
-            // Ensure the adorner updates with the new zoom scale
+            matrix.M11 = zoomScale;
+            matrix.M22 = zoomScale;
+
+            // After a hard scale update, the offsets might need re-clamping 
+            // to ensure the image didn't jump away from the corner.
+            matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
+            matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
+
+            BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+            MainCanvas.Width = BtmImage.ActualWidth * zoomScale;
+            MainCanvas.Height = BtmImage.ActualHeight * zoomScale;
+
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-        }
-
-        /// <summary>
-        ///     Sets the clicked point.
-        /// </summary>
-        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-        private void SetClickedPoint(MouseEventArgs e)
-        {
-            var endpoint = e.GetPosition(BtmImage);
-            SelectedPoint?.Invoke(endpoint);
-            SafeExecuteCommand(SelectedPointCommand, endpoint);
         }
 
         /// <summary>
@@ -810,19 +823,24 @@ namespace Common.Images
         /// </summary>
         private void ResetTransforms()
         {
-            //reset Scaling
-            Scale.ScaleX = 1;
-            Scale.ScaleY = 1;
+            // 1. Reset the Matrix to Identity
+            // This sets ScaleX/Y to 1.0 and OffsetX/Y to 0 in one shot.
+            BtmImage.RenderTransform = new MatrixTransform(Matrix.Identity);
 
-            //reset position
-            var matrix = BtmImage.RenderTransform.Value;
-            matrix.OffsetX = 0;
-            matrix.OffsetY = 0;
-            BtmImage.RenderTransform = new MatrixTransform(matrix);
+            // 2. Reset the "Virtual" Canvas size
+            // Since we are no longer using LayoutTransform, we must manually 
+            // tell the ScrollViewer that the content is back to its original size.
+            MainCanvas.Width = BtmImage.ActualWidth;
+            MainCanvas.Height = BtmImage.ActualHeight;
 
-            //reset Scrollbar
-            ScrollView.ScrollToTop();
+            // 3. Reset the ScrollViewer position
+            // ScrollToHome() is better than ScrollToTop() because it 
+            // resets both the Vertical AND Horizontal scrollbars.
+            ScrollView.ScrollToHome();
+
+            // 4. Update the UI and Adorner
             ScrollView.UpdateLayout();
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
