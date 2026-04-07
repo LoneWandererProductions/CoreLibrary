@@ -492,7 +492,6 @@ namespace Common.Images
             _cancellationTokenSource = new CancellationTokenSource();
 
             // 2. Link the external token (from the caller) with our internal token
-            // This ensures if either one cancels, the work stops.
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(externalToken, _cancellationTokenSource.Token);
             var token = linkedCts.Token;
 
@@ -500,9 +499,9 @@ namespace Common.Images
 
             try
             {
-                // Check for cancellation before doing heavy setup
                 token.ThrowIfCancellationRequested();
 
+                // Copy items source
                 var pics = new Dictionary<int, string>(ItemsSource);
 
                 // Initialize dictionaries
@@ -518,31 +517,42 @@ namespace Common.Images
                 var thumbHeight = await Dispatcher.InvokeAsync(() => ThumbHeight);
                 var thumbGrid = await Dispatcher.InvokeAsync(() => ThumbGrid);
 
-                // Logic for dimensions
+                // --- Dimension logic ---
                 if (cellSize <= 0) cellSize = 100;
-                if (thumbHeight <= 0 && thumbWidth <= 0) thumbHeight = 1;
 
-                if (thumbHeight * thumbWidth < pics.Count)
+                if (thumbHeight <= 0) thumbHeight = 1;
+                if (thumbWidth <= 0) thumbWidth = 1;
+
+                var imageCount = pics.Count;
+
+                // First handle single-row or single-column cases
+                if (thumbHeight == 1)
                 {
-                    if (thumbWidth == 1) thumbHeight = pics.Count;
-                    else if (thumbHeight == 1) thumbWidth = pics.Count;
-                    else if (pics.Count > 1)
-                    {
-                        thumbWidth = (pics.Count + thumbHeight - 1) / thumbHeight;
-                    }
+                    // horizontal layout → width = number of images
+                    thumbWidth = imageCount;
+                }
+                else if (thumbWidth == 1)
+                {
+                    // vertical layout → height = number of images
+                    thumbHeight = imageCount;
+                }
+                else if (thumbHeight * thumbWidth < imageCount)
+                {
+                    // general case → spread images evenly
+                    thumbWidth = (imageCount + thumbHeight - 1) / thumbHeight;
                 }
 
-                // Update properties
+                // Update properties after final calculation
                 ThumbWidth = thumbWidth;
                 ThumbHeight = thumbHeight;
                 ThumbCellSize = cellSize;
 
-                // Setup grid
+                // --- Setup grid ---
                 var exGrid = ExtendedGrid.ExtendGrid(thumbWidth, thumbHeight, thumbGrid);
                 Thb.Children.Clear();
                 Thb.Children.Add(exGrid);
 
-                // --- Load images with linked token ---
+                // --- Load images with limited concurrency ---
                 var semaphore = new SemaphoreSlim(4);
                 var tasks = pics.Select(async kv =>
                 {
@@ -569,7 +579,7 @@ namespace Common.Images
             }
             catch (OperationCanceledException)
             {
-                // swallow silently
+                // silently ignore cancellations
             }
             catch (Exception ex)
             {

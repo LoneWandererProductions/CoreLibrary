@@ -162,11 +162,15 @@ namespace Common.Images
         /// <summary>
         ///     The zoom scale property
         /// </summary>
-        public static readonly DependencyProperty ZoomScaleProperty = DependencyProperty.Register(
-            nameof(ZoomScale),
-            typeof(double),
-            typeof(ImageZoom),
-            new PropertyMetadata(1.0, OnZoomScaleChanged));
+        public static readonly DependencyProperty ZoomScaleProperty =
+            DependencyProperty.Register(
+                nameof(ZoomScale),
+                typeof(double),
+                typeof(ImageZoom),
+                new FrameworkPropertyMetadata(
+                    1.0,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    OnZoomScaleChanged));
 
         /// <summary>
         ///      The selected multi-frames command property
@@ -434,7 +438,7 @@ namespace Common.Images
             }
 
             // reset position + scroll
-            ResetTransforms();
+            ResetTransforms(resetZoom: true);
 
             BtmImage.GifSource = ImageGifPath;
 
@@ -509,8 +513,8 @@ namespace Common.Images
             if (BtmImage.Source == null)
                 return;
 
-            // reset position + scroll
-            ResetTransforms();
+            // reset position + scroll (optional)
+            ResetTransforms(resetZoom: false);
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -710,41 +714,57 @@ namespace Common.Images
         {
             lock (_lock)
             {
-                var transform = (MatrixTransform)BtmImage.RenderTransform;
+                if (BtmImage.RenderTransform is not MatrixTransform transform)
+                    return;
+
+                Point mousePos = e.GetPosition(MainCanvas);
+
+                double oldZoom = ZoomScale;
+                double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
+                double newZoom = Math.Clamp(oldZoom * zoomFactor, 0.1, 20);
+
                 Matrix matrix = transform.Matrix;
 
-                double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
-                Point mousePos = e.GetPosition(BtmImage);
+                // World coordinate for Zoom
+                Point before = matrix.Transform(mousePos);
 
-                // 1. Perform the scale
-                matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
+                // 🔥 DP triggers UpdateZoomScale
+                ZoomScale = newZoom;
 
-                // 2. Calculate Boundaries
+                // Neue Matrix holen
+                matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
+
+                // World coordinate after Zoom
+                Point after = matrix.Transform(mousePos);
+
+                matrix.OffsetX += before.X - after.X;
+                matrix.OffsetY += before.Y - after.Y;
+
+                // Bounds
                 double viewWidth = ScrollView.ActualWidth;
                 double viewHeight = ScrollView.ActualHeight;
+
                 double transformedWidth = BtmImage.ActualWidth * matrix.M11;
                 double transformedHeight = BtmImage.ActualHeight * matrix.M22;
 
-                // 3. Clamp X Offset
                 if (transformedWidth > viewWidth)
                     matrix.OffsetX = Math.Max(Math.Min(matrix.OffsetX, 0), viewWidth - transformedWidth);
                 else
-                    matrix.OffsetX = 0; // Keep flush left when smaller than view
+                    matrix.OffsetX = 0;
 
-                // 4. Clamp Y Offset
                 if (transformedHeight > viewHeight)
                     matrix.OffsetY = Math.Max(Math.Min(matrix.OffsetY, 0), viewHeight - transformedHeight);
                 else
                     matrix.OffsetY = 0;
 
-                // 5. Apply and Sync Sizes
                 BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                // CRITICAL: Canvas must be at least the size of the Viewport to prevent "jumping"
+                // Canvas synchronization: Ensure the canvas is always at least as large as the visible area or the transformed image
                 MainCanvas.Width = Math.Max(transformedWidth, viewWidth);
                 MainCanvas.Height = Math.Max(transformedHeight, viewHeight);
 
                 SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
                 e.Handled = true;
             }
         }
@@ -801,11 +821,6 @@ namespace Common.Images
             matrix.M11 = zoomScale;
             matrix.M22 = zoomScale;
 
-            // After a hard scale update, the offsets might need re-clamping 
-            // to ensure the image didn't jump away from the corner.
-            matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
-            matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
-
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
             MainCanvas.Width = BtmImage.ActualWidth * zoomScale;
@@ -818,10 +833,16 @@ namespace Common.Images
         /// Resets the Transformations.
         /// reset position + scroll
         /// </summary>
-        private void ResetTransforms()
+        private void ResetTransforms(bool resetZoom = true)
         {
             // 1. Reset Matrix
-            BtmImage.RenderTransform = new MatrixTransform(Matrix.Identity);
+            var matrix = Matrix.Identity;
+
+            if (!resetZoom)
+            {
+                matrix.M11 = ZoomScale;
+                matrix.M22 = ZoomScale;
+            }
 
             // 2. Sync Sizes (Use ActualWidth if loaded, otherwise Source width)
             double baseWidth = BtmImage.ActualWidth > 0 ? BtmImage.ActualWidth : (BtmImage.Source?.Width ?? 0);

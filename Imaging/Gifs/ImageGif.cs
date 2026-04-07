@@ -68,7 +68,15 @@ namespace Imaging.Gifs
         private bool _isDisposed;
 
 
+        /// <summary>
+        /// The loader CTS
+        /// </summary>
         private CancellationTokenSource _loaderCts;
+
+        /// <summary>
+        /// Occurs when [image loaded].
+        /// </summary>
+        public event EventHandler? ImageLoaded;
 
         /// <summary>
         /// Gets or sets the GIF source.
@@ -122,35 +130,50 @@ namespace Imaging.Gifs
 
             ResetInternalState();
 
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
             try
             {
-                // 1. Get the GDI+ Bitmaps from your splitter
-                // SplitGifAsync handles the complex frame disposal logic
+                // 1. Load metadata (so delays actually work)
+                _metadata = ImageGifMetadataExtractor.ExtractGifMetadata(path);
+
+                // 2. Decode frames (background thread)
                 var rawFrames = await ImageGifHandler.SplitGifAsync(path);
 
-                if (token.IsCancellationRequested) return;
+                if (token.IsCancellationRequested)
+                    return;
 
-                // 2. Use your Extension Method to convert
-                _frames = rawFrames.Select(b => {
-                    // Use the extension you provided
+                // 3. Convert to BitmapSource (still off UI thread)
+                _frames = rawFrames.Select(b =>
+                {
                     var bi = b.BitmapToSource();
 
-                    // CRITICAL: Make the image cross-thread safe
-                    if (bi.CanFreeze) bi.Freeze();
+                    if (bi.CanFreeze)
+                        bi.Freeze();
 
-                    // Dispose the GDI+ Bitmap immediately to save RAM
                     b.Dispose();
-
                     return bi;
                 }).Cast<BitmapSource>().ToList();
 
-                // 3. Update the UI
-                if (_frames.Count > 0)
+                if (token.IsCancellationRequested || _frames.Count == 0)
+                    return;
+
+                // 4. UI update (ONLY this part touches WPF)
+                await Dispatcher.InvokeAsync(() =>
                 {
+                    if (_frames == null || _frames.Count == 0)
+                        return;
+
                     _frameIndex = 0;
                     Source = _frames[_frameIndex];
-                    if (AutoStart) StartGif();
-                }
+
+                    // 🔥 CRITICAL: notify ImageZoom that size is now valid
+                    ImageLoaded?.Invoke(this, EventArgs.Empty);
+
+                    if (AutoStart)
+                        StartGif();
+                }, DispatcherPriority.Render);
             }
             catch (Exception ex)
             {
