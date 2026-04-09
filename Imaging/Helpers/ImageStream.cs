@@ -70,87 +70,69 @@ namespace Imaging.Helpers
 
             try
             {
-                // 1. Open the stream
-                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                // Load the file into memory completely
+                var bytes = File.ReadAllBytes(path);
 
-                // 2. Wrap 'original' in a using so it's disposed immediately after drawing
-                using var original = new Bitmap(flStream);
+                using var ms = new MemoryStream(bytes);
+                using var temp = Image.FromStream(ms, useEmbeddedColorManagement: false, validateImageData: false);
 
-                var bmp = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppPArgb);
+                // Fully decouple by cloning pixel data to a new bitmap
+                var bmp = new Bitmap(temp.Width, temp.Height, temp.PixelFormat);
+                using var g = Graphics.FromImage(bmp);
+                g.DrawImage(temp, new Rectangle(0, 0, temp.Width, temp.Height));
 
-                using (var graph = Graphics.FromImage(bmp))
-                {
-                    graph.Clear(Color.Transparent);
-                    graph.CompositingMode = CompositingMode.SourceCopy;
-                    graph.CompositingQuality = CompositingQuality.HighQuality;
-                    graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graph.SmoothingMode = SmoothingMode.HighQuality;
-                    graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graph.DrawImage(original, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0,
-                    original.Width,
-                    original.Height, GraphicsUnit.Pixel);
-                }
-
-
-                return bmp;
+                return bmp; // Fully independent bitmap, no underlying reference
             }
             catch (Exception ex)
             {
                 ImageHelper.HandleException(ex);
-                // Optionally, rethrow or handle further as needed
-                throw; // This will preserve the original stack trace and exception details
+                throw;
             }
         }
 
         /// <summary>
-        ///     Resizes an image
+        /// Resizes an image
         /// </summary>
         /// <param name="image">The image to resize</param>
         /// <param name="width">The new width in pixels</param>
         /// <param name="height">The new height in pixels</param>
         /// <returns>
-        ///     A resized version of the original image as <see cref="Bitmap" />.
+        /// A resized version of the original image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        /// <exception cref="ArgumentException">
-        /// </exception>
+        /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InsufficientMemoryException"></exception>
         internal static Bitmap BitmapScaling(Bitmap image, int width, int height)
         {
             ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
-            var btm = new Bitmap(width, height);
-            //fix Resolution
+            // 1. Create the destination bitmap
+            var btm = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
             btm.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
             try
             {
-                using var graph = Graphics.FromImage(btm);
-                graph.CompositingMode = CompositingMode.SourceCopy;
-                graph.CompositingQuality = CompositingQuality.HighQuality;
-                graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graph.SmoothingMode = SmoothingMode.HighQuality;
-                graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                using (var graph = Graphics.FromImage(btm))
+                {
+                    // Same high-quality settings
+                    graph.CompositingMode = CompositingMode.SourceCopy;
+                    graph.CompositingQuality = CompositingQuality.HighQuality;
+                    graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graph.SmoothingMode = SmoothingMode.HighQuality;
+                    graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                graph.DrawImage(image, 0, 0, width, height);
-                return new Bitmap(btm);
-            }
+                    graph.DrawImage(image, 0, 0, width, height);
+                }
 
-            catch (InsufficientMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                throw new InsufficientMemoryException(ex.Message);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                throw;
+                // 2. Return the 'btm' directly. Do NOT wrap it in 'new Bitmap(btm)'
+                return btm;
             }
             catch (Exception ex)
             {
+                // 3. If it fails, clean up the memory immediately
+                btm.Dispose();
                 ImageHelper.HandleException(ex);
-                // Optionally, rethrow or handle further as needed
-                throw; // This will preserve the original stack trace and exception details
+                throw;
             }
         }
 

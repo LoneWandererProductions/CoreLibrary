@@ -67,41 +67,48 @@ namespace FileHandler
         /// <param name="target">Full qualified target File Name</param>
         /// <returns>The <see cref="bool" />Was the File Renamed.</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> RenameFile(string source, string target)
+        public static async Task<bool> RenameFile(string source, string target, int maxRetries = 5)
         {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
+            // 1. Guard Clauses
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
 
             if (source.Equals(target, StringComparison.InvariantCultureIgnoreCase))
-            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
+
+            if (!File.Exists(source)) return false;
+
+            // 2. Retry Logic Loop
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    // Move is more reliable inside Task.Run for UI apps
+                    await Task.Run(() => File.Move(source, target, overwrite: true));
+                    return true;
+                }
+                catch (IOException ex) when (IsFileLocked(ex))
+                {
+                    // If we've exhausted retries, log it and give up
+                    if (i == maxRetries - 1)
+                    {
+                        FileHandlerRegister.AddError(nameof(RenameFile), source, new Exception("File remained locked after multiple attempts.", ex));
+                        return false;
+                    }
+
+                    // Exponential backoff: Wait 100ms, then 200ms, 400ms...
+                    int delay = (int)Math.Pow(2, i) * 100;
+                    await Task.Delay(delay);
+                }
+                catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
+                {
+                    // For non-lock errors (permissions, etc.), don't retry, just log and exit
+                    FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
+                    return false;
+                }
             }
 
-            if (!File.Exists(source))
-            {
-                return false;
-            }
-
-            try
-            {
-                await Task.Run(() => File.Move(source, target, overwrite: true));
-                return true;
-            }
-            catch (IOException ex) when (IsFileLocked(ex))
-            {
-                // This is where you "skip." 
-                // Log that it's in use and return false so the caller knows it wasn't moved.
-                FileHandlerRegister.AddError(nameof(RenameFile), source, new Exception("File is currently in use by another process.", ex));
-                return false;
-            }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
-            {
-                FileHandlerRegister.AddError(nameof(RenameFile), source, ex);
-                Trace.WriteLine(ex);
-                return false;
-            }
+            return false;
         }
 
         /// <summary>

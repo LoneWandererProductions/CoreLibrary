@@ -578,7 +578,6 @@ namespace Common.Images
             // Get the mouse position relative to the image (consistent with panning logic)
             //var rawPoint = e.GetPosition(BtmImage);
 
-            //TODO problem with our DPI and multiple Monitor Setup
             //_startPoint = e.GetPosition(MainCanvas);
             _startPoint = e.GetPosition(BtmImage);
 
@@ -711,57 +710,40 @@ namespace Common.Images
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
+        /// <summary>
+        /// Handles zooming with mouse wheel (zoom to cursor, clamped to viewport)
+        /// </summary>
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (BtmImage.RenderTransform is not MatrixTransform transform)
                 return;
 
-            //Point mousePos = e.GetPosition(MainCanvas);
-            Point mousePos = e.GetPosition(BtmImage);
+            Point mousePos = e.GetPosition(MainCanvas);
 
-            double oldZoom = ZoomScale;
             double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
-            double newZoom = Math.Clamp(oldZoom * zoomFactor, 0.1, 20);
 
             Matrix matrix = transform.Matrix;
 
-            // World coordinate for Zoom
-            Point before = matrix.Transform(mousePos);
+            matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
 
-            // 🔥 DP triggers UpdateZoomScale
-            ZoomScale = newZoom;
 
-            // Neue Matrix holen
-            matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
-
-            // World coordinate after Zoom
-            Point after = matrix.Transform(mousePos);
-
-            matrix.OffsetX += before.X - after.X;
-            matrix.OffsetY += before.Y - after.Y;
-
-            // Bounds
             double viewWidth = ScrollView.ActualWidth;
             double viewHeight = ScrollView.ActualHeight;
 
             double transformedWidth = BtmImage.ActualWidth * matrix.M11;
             double transformedHeight = BtmImage.ActualHeight * matrix.M22;
 
-            if (transformedWidth > viewWidth)
-                matrix.OffsetX = Math.Max(Math.Min(matrix.OffsetX, 0), viewWidth - transformedWidth);
-            else
-                matrix.OffsetX = 0;
+            double minX = Math.Min(0, viewWidth - transformedWidth);
+            double minY = Math.Min(0, viewHeight - transformedHeight);
 
-            if (transformedHeight > viewHeight)
-                matrix.OffsetY = Math.Max(Math.Min(matrix.OffsetY, 0), viewHeight - transformedHeight);
-            else
-                matrix.OffsetY = 0;
+            matrix.OffsetX = Math.Clamp(matrix.OffsetX, minX, 0);
+            matrix.OffsetY = Math.Clamp(matrix.OffsetY, minY, 0);
 
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-            // Canvas synchronization: Ensure the canvas is always at least as large as the visible area or the transformed image
             MainCanvas.Width = Math.Max(transformedWidth, viewWidth);
             MainCanvas.Height = Math.Max(transformedHeight, viewHeight);
+
 
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 

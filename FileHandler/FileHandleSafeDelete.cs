@@ -10,7 +10,6 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
@@ -34,55 +33,35 @@ namespace FileHandler
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
-            if (!File.Exists(path))
-                return false;
+            if (!File.Exists(path)) return false;
 
-            // Wait for file unlock asynchronously
-            if (!await WaitForFileUnlockAsync(path))
+            int maxTries = FileHandlerRegister.Tries;
+
+            for (int i = 0; i < maxTries; i++)
             {
-                var ex = new Exception($"{FileHandlerResources.ErrorLock}{path}");
-                Trace.WriteLine(ex);
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
-                return false;
+                try
+                {
+                    // Use SendToRecycleBin but consider UIOption.OnlyErrorDialogs 
+                    // to prevent the "Are you sure?" popups from hanging your logic.
+                    FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                    return true;
+                }
+                catch (IOException ex) when (i < maxTries - 1)
+                {
+                    // If it's a lock/sharing violation, wait and try again
+                    // Exponential backoff is better than a flat 1-second wait
+                    int delay = (i + 1) * 200;
+                    await Task.Delay(delay);
+                }
+                catch (Exception ex)
+                {
+                    // For UnauthorizedAccess or other fatal errors, log and stop
+                    FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
+                    return false;
+                }
             }
 
-            try
-            {
-                FileSystem.DeleteFile(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
-                Trace.WriteLine(ex);
-                return false;
-            }
-            catch (IOException ex)
-            {
-                FileHandlerRegister.AddError(nameof(DeleteFile), path, ex);
-                Trace.WriteLine(ex);
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Waits for a specified file to become unlocked.
-        /// </summary>
-        /// <param name="path">The path of the file to check.</param>
-        /// <returns>True if the file is unlocked; otherwise, false.</returns>
-        private static async Task<bool> WaitForFileUnlockAsync(string path)
-        {
-            var attempts = 0;
-
-            while (FileHandleDelete.IsFileLocked(path) && attempts < FileHandlerRegister.Tries)
-            {
-                attempts++;
-                Trace.WriteLine($"{FileHandlerResources.Tries}{attempts}");
-                await Task.Delay(1000);
-            }
-
-            return !FileHandleDelete.IsFileLocked(path);
+            return false;
         }
     }
 }

@@ -737,23 +737,34 @@ namespace Common.Images
             {
                 try
                 {
+                    // 1. Die Datei wird GEÖFFNET, GELESEN und SOFORT wieder GESCHLOSSEN.
+                    byte[] imageBytes = File.ReadAllBytes(filePath);
+
                     var bitmapImage = new BitmapImage();
-                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+
+                    // MemoryStream ist hier nur der "Überbringer" der Bytes im RAM
+                    using (var ms = new MemoryStream(imageBytes))
                     {
                         bitmapImage.BeginInit();
+
+                        // WICHTIG: OnLoad kopiert die Bits in den Grafikspeicher/RAM.
+                        // Danach ist der MemoryStream (und die Datei) egal.
                         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+
                         bitmapImage.DecodePixelWidth = width;
-                        // bitmapImage.DecodePixelHeight = height; // Preserving aspect ratio usually requires setting only one dimension
-                        bitmapImage.StreamSource = stream;
+                        bitmapImage.StreamSource = ms;
                         bitmapImage.EndInit();
-                        bitmapImage.Freeze(); // Crucial: Makes it accessible to the UI thread
+
+                        // WICHTIG: Freeze macht das Objekt Thread-Safe und schließt 
+                        // alle internen Verbindungen zur Datenquelle.
+                        bitmapImage.Freeze();
                     }
 
                     return bitmapImage;
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"{ComCtlResources.ErrorCouldNotLoadImage} {ex.Message}");
+                    Trace.WriteLine($"Fehler beim Laden: {ex.Message}");
                     return null;
                 }
             });

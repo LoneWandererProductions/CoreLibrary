@@ -46,7 +46,6 @@ namespace Imaging
             return ImageStreamMedia.BitmapToSource(bmp);
         }
 
-        
 
         /// <summary>
         ///     Extension Method

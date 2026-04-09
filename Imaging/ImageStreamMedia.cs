@@ -25,29 +25,32 @@ namespace Imaging
     public static class ImageStreamMedia
     {
         /// <summary>
-        ///     Loads File one Time.
-        ///     Can only be used to load an Image Once.
-        ///     Use this for huge amounts of images that will be resized, else we will break memory limits.
+        /// Loads File one Time.
+        /// Can only be used to load an Image Once.
+        /// Use this for huge amounts of images that will be resized, else we will break memory limits.
         /// </summary>
         /// <param name="path">Path to the file.</param>
         /// <param name="width">Target width (optional).</param>
         /// <param name="height">Target height (optional).</param>
-        /// <returns>A <see cref="BitmapImage"/>.</returns>
-        /// <exception cref="IOException">Could not find the file.</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="NotSupportedException">Unsupported file type.</exception>
+        /// <returns>
+        /// A <see cref="BitmapImage" />.
+        /// </returns>
         public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
 
             try
             {
+                // 1. Read all bytes into memory immediately
+                byte[] buffer = File.ReadAllBytes(path);
+
+                using var ms = new MemoryStream(buffer);
                 var bmp = new BitmapImage();
                 bmp.BeginInit();
-                bmp.CreateOptions = BitmapCreateOptions.DelayCreation;
+
+                // This ensures WPF doesn't try to go back to the disk for anything
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.UriSource = new Uri(path);
+                bmp.StreamSource = ms;
 
                 if (width > 0 && height > 0)
                 {
@@ -56,7 +59,7 @@ namespace Imaging
                 }
 
                 bmp.EndInit();
-                bmp.Freeze(); // Must freeze only AFTER EndInit()
+                bmp.Freeze(); // Decouples from the UI thread, making it pure data
 
                 return bmp;
             }

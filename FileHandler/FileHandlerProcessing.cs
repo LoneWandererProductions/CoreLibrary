@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -65,30 +66,53 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Collects all files with a specific extension from a folder.
+        /// Collects all files with a specific extension from a folder using modern, non-blocking enumeration.
         /// </summary>
         /// <param name="path">The folder path to search.</param>
-        /// <param name="appendix">The file extension to filter by, e.g., "txt". Null or empty uses "*".</param>
-        /// <param name="subdirectories">Indicates whether to include subdirectories.</param>
-        /// <returns>A list of matching files. Returns an empty list if the folder does not exist.</returns>
-        /// <exception cref="FileHandlerException">Thrown when <paramref name="path"/> is null or empty.</exception>
-        internal static List<string>? GetFilesByExtension(string path, string? appendix, bool subdirectories)
+        /// <param name="extension">The file extension to filter by (e.g., "jpg").</param>
+        /// <param name="recursive">Indicates whether to include subdirectories.</param>
+        /// <returns>A list of matching file paths. Returns an empty list if folder is missing or inaccessible.</returns>
+        internal static List<string> GetFilesByExtension(string path, string? extension, bool recursive)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrWhiteSpace(path))
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             if (!Directory.Exists(path))
-                return null;
+            {
+                return new List<string>();
+            }
 
-            appendix = string.IsNullOrEmpty(appendix)
-                ? FileHandlerResources.Star
-                : appendix.Replace(FileHandlerResources.Dot, string.Empty);
+            // Clean up extension: remove dots, spaces, and handle null/star
+            string cleanExtension = string.IsNullOrWhiteSpace(extension)
+                ? "*"
+                : extension.Trim().TrimStart('.');
 
-            var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            string searchPattern = $"*.{cleanExtension}";
 
-            return Directory
-                .EnumerateFiles(path, $"{FileHandlerResources.StarDot}{appendix}", option)
-                .ToList();
+            // Use modern EnumerationOptions to prevent "In Use" or "Access Denied" hangs
+            var options = new EnumerationOptions
+            {
+                RecurseSubdirectories = recursive,
+                // CRITICAL: Skip folders we don't have permission for instead of crashing
+                IgnoreInaccessible = true,
+                // Skip hidden/system files to reduce IO load during heavy gallery loading
+                AttributesToSkip = FileAttributes.System | FileAttributes.Hidden,
+                MatchCasing = MatchCasing.CaseInsensitive,
+                MatchType = MatchType.Simple
+            };
+
+            try
+            {
+                // EnumerateFiles is more memory-efficient than GetFiles
+                return Directory.EnumerateFiles(path, searchPattern, options).ToList();
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            {
+                Trace.WriteLine($"Search failed for {path}: {ex.Message}");
+                return new List<string>();
+            }
         }
 
         /// <summary>
