@@ -120,6 +120,18 @@ namespace Common.Images
             new PropertyMetadata(null));
 
         /// <summary>
+        /// The sender tag property
+        /// </summary>
+        public static readonly DependencyProperty SenderTagProperty = DependencyProperty.Register(
+            nameof(SenderTag), typeof(string), typeof(Thumbnails), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// The selection property
+        /// </summary>
+        public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
+            nameof(Selection), typeof(ConcurrentDictionary<int, bool>), typeof(Thumbnails), new FrameworkPropertyMetadata(null));
+
+        /// <summary>
         ///     The refresh
         /// </summary>
         private static bool _refresh = true;
@@ -285,6 +297,18 @@ namespace Common.Images
         }
 
         /// <summary>
+        /// Gets or sets the sender tag.
+        /// </summary>
+        /// <value>
+        /// The sender tag.
+        /// </value>
+        public string SenderTag
+        {
+            get => (string)GetValue(SenderTagProperty);
+            set => SetValue(SenderTagProperty, value);
+        }
+
+        /// <summary>
         ///     The Name of the Image Control
         /// </summary>
         /// <value>
@@ -314,12 +338,16 @@ namespace Common.Images
         private ConcurrentDictionary<int, Border>? Border { get; set; }
 
         /// <summary>
-        ///     Gets or sets the selection.
+        /// Gets or sets the selection.
         /// </summary>
         /// <value>
-        ///     The selection.
+        /// The selection.
         /// </value>
-        public ConcurrentDictionary<int, bool> Selection = new();
+        public ConcurrentDictionary<int, bool> Selection
+        {
+            get => (ConcurrentDictionary<int, bool>)GetValue(SelectionProperty);
+            set => SetValue(SelectionProperty, value);
+        }
 
         /// <summary>
         /// Gets a value indicating whether this instance is selection valid.
@@ -508,7 +536,16 @@ namespace Common.Images
                 Keys = new ConcurrentDictionary<string, int>();
                 ImageDct = new ConcurrentDictionary<string, Image>();
                 Border = new ConcurrentDictionary<int, Border>();
-                Selection = new ConcurrentDictionary<int, bool>();
+
+                //needed because of Binding
+                if (Selection == null)
+                {
+                    Selection = new ConcurrentDictionary<int, bool>();
+                }
+                else
+                {
+                    Selection.Clear();
+                }
                 if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
                 // Capture UI values
@@ -741,7 +778,7 @@ namespace Common.Images
             }
 
             // Create new click object
-            var args = new ImageEventArgs { Id = id };
+            var args = new ImageEventArgs { Id = id, SenderTag = SenderTag };
             OnImageThumbClicked(args); // Trigger the event with the selected image ID
 
             // Get the parent border (since we wrapped the image in a Border)

@@ -100,7 +100,6 @@ namespace ImageCompare
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new ArgumentException(ex.Message, value);
                 }
                 catch (OutOfMemoryException ex)
                 {
