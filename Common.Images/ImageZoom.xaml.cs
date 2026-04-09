@@ -579,7 +579,8 @@ namespace Common.Images
             //var rawPoint = e.GetPosition(BtmImage);
 
             //TODO problem with our DPI and multiple Monitor Setup
-            _startPoint = e.GetPosition(MainCanvas);
+            //_startPoint = e.GetPosition(MainCanvas);
+            _startPoint = e.GetPosition(BtmImage);
 
             // Capture the mouse
             _ = MainCanvas.CaptureMouse();
@@ -712,61 +713,59 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            lock (_lock)
-            {
-                if (BtmImage.RenderTransform is not MatrixTransform transform)
-                    return;
+            if (BtmImage.RenderTransform is not MatrixTransform transform)
+                return;
 
-                Point mousePos = e.GetPosition(MainCanvas);
+            //Point mousePos = e.GetPosition(MainCanvas);
+            Point mousePos = e.GetPosition(BtmImage);
 
-                double oldZoom = ZoomScale;
-                double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
-                double newZoom = Math.Clamp(oldZoom * zoomFactor, 0.1, 20);
+            double oldZoom = ZoomScale;
+            double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
+            double newZoom = Math.Clamp(oldZoom * zoomFactor, 0.1, 20);
 
-                Matrix matrix = transform.Matrix;
+            Matrix matrix = transform.Matrix;
 
-                // World coordinate for Zoom
-                Point before = matrix.Transform(mousePos);
+            // World coordinate for Zoom
+            Point before = matrix.Transform(mousePos);
 
-                // 🔥 DP triggers UpdateZoomScale
-                ZoomScale = newZoom;
+            // 🔥 DP triggers UpdateZoomScale
+            ZoomScale = newZoom;
 
-                // Neue Matrix holen
-                matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
+            // Neue Matrix holen
+            matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
 
-                // World coordinate after Zoom
-                Point after = matrix.Transform(mousePos);
+            // World coordinate after Zoom
+            Point after = matrix.Transform(mousePos);
 
-                matrix.OffsetX += before.X - after.X;
-                matrix.OffsetY += before.Y - after.Y;
+            matrix.OffsetX += before.X - after.X;
+            matrix.OffsetY += before.Y - after.Y;
 
-                // Bounds
-                double viewWidth = ScrollView.ActualWidth;
-                double viewHeight = ScrollView.ActualHeight;
+            // Bounds
+            double viewWidth = ScrollView.ActualWidth;
+            double viewHeight = ScrollView.ActualHeight;
 
-                double transformedWidth = BtmImage.ActualWidth * matrix.M11;
-                double transformedHeight = BtmImage.ActualHeight * matrix.M22;
+            double transformedWidth = BtmImage.ActualWidth * matrix.M11;
+            double transformedHeight = BtmImage.ActualHeight * matrix.M22;
 
-                if (transformedWidth > viewWidth)
-                    matrix.OffsetX = Math.Max(Math.Min(matrix.OffsetX, 0), viewWidth - transformedWidth);
-                else
-                    matrix.OffsetX = 0;
+            if (transformedWidth > viewWidth)
+                matrix.OffsetX = Math.Max(Math.Min(matrix.OffsetX, 0), viewWidth - transformedWidth);
+            else
+                matrix.OffsetX = 0;
 
-                if (transformedHeight > viewHeight)
-                    matrix.OffsetY = Math.Max(Math.Min(matrix.OffsetY, 0), viewHeight - transformedHeight);
-                else
-                    matrix.OffsetY = 0;
+            if (transformedHeight > viewHeight)
+                matrix.OffsetY = Math.Max(Math.Min(matrix.OffsetY, 0), viewHeight - transformedHeight);
+            else
+                matrix.OffsetY = 0;
 
-                BtmImage.RenderTransform = new MatrixTransform(matrix);
+            BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                // Canvas synchronization: Ensure the canvas is always at least as large as the visible area or the transformed image
-                MainCanvas.Width = Math.Max(transformedWidth, viewWidth);
-                MainCanvas.Height = Math.Max(transformedHeight, viewHeight);
+            // Canvas synchronization: Ensure the canvas is always at least as large as the visible area or the transformed image
+            MainCanvas.Width = Math.Max(transformedWidth, viewWidth);
+            MainCanvas.Height = Math.Max(transformedHeight, viewHeight);
 
-                SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
 
         /// <summary>
@@ -879,15 +878,8 @@ namespace Common.Images
                 if (disposing)
                 {
                     // Managed resource cleanup
-
-                    // Unsubscribe event handlers
-                    if (SelectedFrame != null)
-                    {
-                        foreach (var d in SelectedFrame.GetInvocationList())
-                        {
-                            SelectedFrame -= (DelegateFrame)d;
-                        }
-                    }
+                    SelectedFrame = null;
+                    SelectedPoint = null;
 
                     if (SelectedPoint != null)
                     {

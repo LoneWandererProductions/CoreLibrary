@@ -305,7 +305,7 @@ namespace Imaging.Gifs
                 metadata.SetQuery(ImagingResources.GifMetadataQueryDelay, gifDelay);
                 // Optional but recommended: Set Disposal method to "Restore to Background" (2)
                 // This prevents transparent frames from stacking on top of each other.
-                metadata.SetQuery(ImagingResources.GifMetadataQueryDisposal, 2);
+                metadata.SetQuery(ImagingResources.GifMetadataQueryDisposal, (byte)2);
 
                 gEnc.Frames.Add(BitmapFrame.Create(src, null, metadata, null));
             }

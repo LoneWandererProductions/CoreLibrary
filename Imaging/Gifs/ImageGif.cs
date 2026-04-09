@@ -135,6 +135,15 @@ namespace Imaging.Gifs
 
             try
             {
+
+                // Fast path for non-GIFs: just load as BitmapImage and skip all the decoding/metadata overhead
+                if (!path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                {
+                    Source = ImageStreamMedia.GetBitmapImage(path);
+                    ImageLoaded?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+
                 // 1. Load metadata (so delays actually work)
                 _metadata = ImageGifMetadataExtractor.ExtractGifMetadata(path);
 
@@ -162,6 +171,8 @@ namespace Imaging.Gifs
                 // 4. UI update (ONLY this part touches WPF)
                 await Dispatcher.InvokeAsync(() =>
                 {
+                    if (token.IsCancellationRequested) return;
+
                     if (_frames == null || _frames.Count == 0)
                         return;
 

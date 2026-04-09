@@ -70,22 +70,27 @@ namespace Imaging.Helpers
 
             try
             {
-                using var flStream = new FileStream(path, FileMode.Open);
-                // Original picture information
-                var original = new Bitmap(flStream);
+                // 1. Open the stream
+                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+                // 2. Wrap 'original' in a using so it's disposed immediately after drawing
+                using var original = new Bitmap(flStream);
 
                 var bmp = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppPArgb);
 
-                using var graph = Graphics.FromImage(bmp);
-                graph.Clear(Color.Transparent);
-                graph.CompositingMode = CompositingMode.SourceCopy;
-                graph.CompositingQuality = CompositingQuality.HighQuality;
-                graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graph.SmoothingMode = SmoothingMode.HighQuality;
-                graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graph.DrawImage(original, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0,
+                using (var graph = Graphics.FromImage(bmp))
+                {
+                    graph.Clear(Color.Transparent);
+                    graph.CompositingMode = CompositingMode.SourceCopy;
+                    graph.CompositingQuality = CompositingQuality.HighQuality;
+                    graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graph.SmoothingMode = SmoothingMode.HighQuality;
+                    graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    graph.DrawImage(original, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0,
                     original.Width,
                     original.Height, GraphicsUnit.Pixel);
+                }
+
 
                 return bmp;
             }

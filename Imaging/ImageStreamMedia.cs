@@ -183,7 +183,6 @@ namespace Imaging
             return bitmapImage;
         }
 
-
         /// <summary>
         /// Bitmaps to source optimized.
         /// </summary>
