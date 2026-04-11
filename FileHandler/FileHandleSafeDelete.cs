@@ -10,6 +10,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
@@ -50,6 +51,7 @@ namespace FileHandler
                 {
                     // If it's a lock/sharing violation, wait and try again
                     // Exponential backoff is better than a flat 1-second wait
+                    Trace.WriteLine($"Attempt {i + 1} failed to delete file: {ex.Message}. Retrying...");
                     var delay = (i + 1) * 200;
                     await Task.Delay(delay);
                 }

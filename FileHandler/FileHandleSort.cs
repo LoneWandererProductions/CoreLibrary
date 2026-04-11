@@ -18,7 +18,7 @@ using System.Linq;
 namespace FileHandler
 {
     /// <summary>
-    ///     Sorting helpers for file paths using <see cref="FilePathStruct"/> for
+    ///     Sorting helpers for file paths using <see cref="PureNaturalComparer"/> for
     ///     natural, human-friendly path sorting.
     /// </summary>
     public static class FileHandleSort
@@ -33,7 +33,7 @@ namespace FileHandler
         ///     A sorted list. If the input is <c>null</c> or has 0–1 elements,
         ///     the original list is returned unchanged.
         /// </returns>
-        public static List<T>? PathSort<T>(this IEnumerable<T> values, Func<T, string> pathSelector)
+        public static List<T> PathSort<T>(this IEnumerable<T>? values, Func<T, string> pathSelector)
         {
             if (values is null)
                 return new List<T>();
@@ -44,7 +44,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        ///     Sorts a list of file path strings using <see cref="FilePathStruct"/>
+        ///     Sorts a list of file path strings using <see cref="PureNaturalComparer"/>
         ///     to improve ordering (e.g. <c>file2</c> comes before <c>file10</c>).
         /// </summary>
         /// <param name="value">The list of file paths.</param>

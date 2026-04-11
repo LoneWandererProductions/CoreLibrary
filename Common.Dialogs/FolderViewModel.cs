@@ -17,7 +17,7 @@ using ViewModel;
 
 namespace Common.Dialogs
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
     /// ViewModel for the <see cref="T:Common.Dialogs.FolderControl" /> UserControl.
     /// Handles folder navigation, file/folder loading, and command bindings for UI interaction.

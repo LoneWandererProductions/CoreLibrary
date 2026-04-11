@@ -27,7 +27,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Common.Images
 {
@@ -454,7 +453,10 @@ namespace Common.Images
             // This prevents "Double-Loading" and collection collisions
             if (_loadingTask != null)
             {
-                try { await _loadingTask; }
+                try
+                {
+                    await _loadingTask;
+                }
                 catch (OperationCanceledException)
                 {
                     /* Swallow expected cancel */
@@ -743,25 +745,19 @@ namespace Common.Images
             {
                 try
                 {
-                    // 1. Die Datei wird GEÖFFNET, GELESEN und SOFORT wieder GESCHLOSSEN.
                     var imageBytes = File.ReadAllBytes(filePath);
 
                     var bitmapImage = new BitmapImage();
 
-                    // MemoryStream ist hier nur der "Überbringer" der Bytes im RAM
                     using var ms = new MemoryStream(imageBytes);
                     bitmapImage.BeginInit();
 
-                    // WICHTIG: OnLoad kopiert die Bits in den Grafikspeicher/RAM.
-                    // Danach ist der MemoryStream (und die Datei) egal.
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 
                     bitmapImage.DecodePixelWidth = width;
                     bitmapImage.StreamSource = ms;
                     bitmapImage.EndInit();
 
-                    // WICHTIG: Freeze macht das Objekt Thread-Safe und schließt
-                    // alle internen Verbindungen zur Datenquelle.
                     bitmapImage.Freeze();
 
                     return bitmapImage;

@@ -24,11 +24,6 @@ namespace FileHandler
         internal const string Dot = ".";
 
         /// <summary>
-        ///     The star (const). Value: "*".
-        /// </summary>
-        internal const string Star = "*";
-
-        /// <summary>
         ///     The space (const). Value: " ".
         /// </summary>
         internal const string Space = " ";
@@ -42,11 +37,6 @@ namespace FileHandler
         ///     Tries (const). Value: "Tries: ".
         /// </summary>
         internal const string Tries = "Tries: ";
-
-        /// <summary>
-        ///     The file overwrite (const). Value: true.
-        /// </summary>
-        internal const bool FileOverwrite = true;
 
         /// <summary>
         ///     The sub folders (const). Value: true.

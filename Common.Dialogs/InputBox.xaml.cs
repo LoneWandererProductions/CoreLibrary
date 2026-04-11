@@ -22,13 +22,17 @@ namespace Common.Dialogs
         /// <summary>
         ///     Initializes a new instance of the <see cref="InputBox" /> class with no header or text.
         /// </summary>
-        public InputBox() : this(string.Empty, string.Empty) { }
+        public InputBox() : this(string.Empty, string.Empty)
+        {
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InputBox" /> class with a specified header.
         /// </summary>
         /// <param name="header">The header text for the InputBox title.</param>
-        public InputBox(string header) : this(header, string.Empty) { }
+        public InputBox(string header) : this(header, string.Empty)
+        {
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InputBox" /> class with a specified header and text.

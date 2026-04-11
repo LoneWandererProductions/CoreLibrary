@@ -63,7 +63,10 @@ namespace Common.Converter
                 {
                     return ColorConverter.ConvertFromString(colorName);
                 }
-                catch { return Colors.Transparent; }
+                catch
+                {
+                    return Colors.Transparent;
+                }
             }
 
             return Colors.Transparent;
