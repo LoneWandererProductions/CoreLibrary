@@ -36,16 +36,19 @@ namespace FileHandler
                     while (iy < ly && char.IsDigit(y[iy])) ny += y[iy++];
 
                     // Compare as numbers
-                    int r = long.Parse(nx).CompareTo(long.Parse(ny));
+                    var r = long.Parse(nx).CompareTo(long.Parse(ny));
                     if (r != 0) return r;
                 }
                 else
                 {
-                    int r = x[ix].CompareTo(y[iy]);
+                    var r = x[ix].CompareTo(y[iy]);
                     if (r != 0) return r;
-                    ix++; iy++;
+
+                    ix++;
+                    iy++;
                 }
             }
+
             return lx - ly;
         }
     }

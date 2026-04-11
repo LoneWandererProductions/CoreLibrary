@@ -50,6 +50,7 @@ namespace Imaging.Gifs
         /// The frames
         /// </summary>
         private List<BitmapSource>? _frames;
+
         private ImageGifInfo? _metadata;
 
         /// <summary>
@@ -135,7 +136,6 @@ namespace Imaging.Gifs
 
             try
             {
-
                 // Fast path for non-GIFs: just load as BitmapImage and skip all the decoding/metadata overhead
                 if (!path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
                 {
@@ -287,7 +287,7 @@ namespace Imaging.Gifs
                 // GIF units are 1/100 of a second. Multiply by 10 to get milliseconds.
                 var delay = _metadata.Frames[index].DelayTime * 10;
 
-                // Industry Standard: Delays of 0ms or < 20ms are forced to 100ms 
+                // Industry Standard: Delays of 0ms or < 20ms are forced to 100ms
                 // by most renderers to prevent CPU spikes and "way too fast" playback.
                 return delay < 20 ? 100 : delay;
             }

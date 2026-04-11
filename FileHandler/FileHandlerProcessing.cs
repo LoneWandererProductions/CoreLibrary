@@ -85,11 +85,11 @@ namespace FileHandler
             }
 
             // Clean up extension: remove dots, spaces, and handle null/star
-            string cleanExtension = string.IsNullOrWhiteSpace(extension)
+            var cleanExtension = string.IsNullOrWhiteSpace(extension)
                 ? "*"
                 : extension.Trim().TrimStart('.');
 
-            string searchPattern = $"*.{cleanExtension}";
+            var searchPattern = $"*.{cleanExtension}";
 
             // Use modern EnumerationOptions to prevent "In Use" or "Access Denied" hangs
             var options = new EnumerationOptions

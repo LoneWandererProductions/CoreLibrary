@@ -48,6 +48,7 @@ namespace Common.Dialogs
             set
             {
                 if (_startFolder == value) return;
+
                 _startFolder = value;
                 OnPropertyChanged(nameof(StartFolder));
 
@@ -107,6 +108,7 @@ namespace Common.Dialogs
             set
             {
                 if (_paths == value) return;
+
                 _paths = value;
                 OnPropertyChanged(nameof(Paths));
 
@@ -124,6 +126,7 @@ namespace Common.Dialogs
             set
             {
                 if (_lookUp == value) return;
+
                 _lookUp = value;
                 OnPropertyChanged(nameof(LookUp));
             }

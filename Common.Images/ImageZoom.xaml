@@ -10,25 +10,25 @@
     Name="ImgZoom"
     d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ScrollViewer x:Name="ScrollView" 
-                  VerticalScrollBarVisibility="Auto" 
-                  HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer x:Name="ScrollView"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
             <Canvas x:Name="MainCanvas"
-                Background="Transparent"
-                ClipToBounds="False"
-                MouseDown="Canvas_MouseDown"
-                MouseUp="Canvas_MouseUp"
-                MouseMove="Canvas_MouseMove"
-                MouseWheel="Canvas_MouseWheel"
-                MouseRightButtonUp="Canvas_MouseRightButtonUp">
+                    Background="Transparent"
+                    ClipToBounds="False"
+                    MouseDown="Canvas_MouseDown"
+                    MouseUp="Canvas_MouseUp"
+                    MouseMove="Canvas_MouseMove"
+                    MouseWheel="Canvas_MouseWheel"
+                    MouseRightButtonUp="Canvas_MouseRightButtonUp">
 
                 <imag:ImageGif x:Name="BtmImage"
-                           Stretch="None"
-                           SnapsToDevicePixels="True"
-                           UseLayoutRounding="True"
-                           RenderOptions.BitmapScalingMode="NearestNeighbor"
-                           ImageLoaded="BtmImage_ImageLoaded"
-                           AutoStart="{Binding ElementName=ImgZoom, Path=AutoplayGifImage}">
+                               Stretch="None"
+                               SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
+                               RenderOptions.BitmapScalingMode="NearestNeighbor"
+                               ImageLoaded="BtmImage_ImageLoaded"
+                               AutoStart="{Binding ElementName=ImgZoom, Path=AutoplayGifImage}">
 
                     <imag:ImageGif.RenderTransform>
                         <MatrixTransform x:Name="MainMatrixTransform" />

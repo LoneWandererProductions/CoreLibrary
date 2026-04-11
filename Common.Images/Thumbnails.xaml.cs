@@ -129,7 +129,8 @@ namespace Common.Images
         /// The selection property
         /// </summary>
         public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-            nameof(Selection), typeof(ConcurrentDictionary<int, bool>), typeof(Thumbnails), new FrameworkPropertyMetadata(null));
+            nameof(Selection), typeof(ConcurrentDictionary<int, bool>), typeof(Thumbnails),
+            new FrameworkPropertyMetadata(null));
 
         /// <summary>
         ///     The refresh
@@ -454,7 +455,10 @@ namespace Common.Images
             if (_loadingTask != null)
             {
                 try { await _loadingTask; }
-                catch (OperationCanceledException) { /* Swallow expected cancel */ }
+                catch (OperationCanceledException)
+                {
+                    /* Swallow expected cancel */
+                }
             }
 
             _loadingCts = new CancellationTokenSource();
@@ -520,7 +524,8 @@ namespace Common.Images
             _cancellationTokenSource = new CancellationTokenSource();
 
             // 2. Link the external token (from the caller) with our internal token
-            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(externalToken, _cancellationTokenSource.Token);
+            using var linkedCts =
+                CancellationTokenSource.CreateLinkedTokenSource(externalToken, _cancellationTokenSource.Token);
             var token = linkedCts.Token;
 
             var timer = Stopwatch.StartNew();
@@ -546,6 +551,7 @@ namespace Common.Images
                 {
                     Selection.Clear();
                 }
+
                 if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
                 // Capture UI values
@@ -641,7 +647,8 @@ namespace Common.Images
         /// <returns>
         /// Load all images async
         /// </returns>
-        private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize, int thumbWidth)
+        private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token,
+            int cellSize, int thumbWidth)
         {
             if (token.IsCancellationRequested) return;
 
@@ -718,7 +725,6 @@ namespace Common.Images
                 exGrid.Children.Add(cellContainer);
 
                 images.MouseDown += ImageClick_MouseDown;
-
             }, DispatcherPriority.Normal, token);
         }
 
@@ -738,27 +744,25 @@ namespace Common.Images
                 try
                 {
                     // 1. Die Datei wird GEÖFFNET, GELESEN und SOFORT wieder GESCHLOSSEN.
-                    byte[] imageBytes = File.ReadAllBytes(filePath);
+                    var imageBytes = File.ReadAllBytes(filePath);
 
                     var bitmapImage = new BitmapImage();
 
                     // MemoryStream ist hier nur der "Überbringer" der Bytes im RAM
-                    using (var ms = new MemoryStream(imageBytes))
-                    {
-                        bitmapImage.BeginInit();
+                    using var ms = new MemoryStream(imageBytes);
+                    bitmapImage.BeginInit();
 
-                        // WICHTIG: OnLoad kopiert die Bits in den Grafikspeicher/RAM.
-                        // Danach ist der MemoryStream (und die Datei) egal.
-                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    // WICHTIG: OnLoad kopiert die Bits in den Grafikspeicher/RAM.
+                    // Danach ist der MemoryStream (und die Datei) egal.
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 
-                        bitmapImage.DecodePixelWidth = width;
-                        bitmapImage.StreamSource = ms;
-                        bitmapImage.EndInit();
+                    bitmapImage.DecodePixelWidth = width;
+                    bitmapImage.StreamSource = ms;
+                    bitmapImage.EndInit();
 
-                        // WICHTIG: Freeze macht das Objekt Thread-Safe und schließt 
-                        // alle internen Verbindungen zur Datenquelle.
-                        bitmapImage.Freeze();
-                    }
+                    // WICHTIG: Freeze macht das Objekt Thread-Safe und schließt
+                    // alle internen Verbindungen zur Datenquelle.
+                    bitmapImage.Freeze();
 
                     return bitmapImage;
                 }

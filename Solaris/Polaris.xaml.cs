@@ -436,8 +436,8 @@ namespace Solaris
 
             // 1. Calculate the values first.
             // Integer division naturally handles the 0 case for us!
-            int gridX = (int)position.X / PolarisTextureSize;
-            int gridY = (int)position.Y / PolarisTextureSize;
+            var gridX = (int)position.X / PolarisTextureSize;
+            var gridY = (int)position.Y / PolarisTextureSize;
 
             _cursor = new Coordinate2D(gridX, gridY);
             var id = _cursor.ToId(PolarisWidth);

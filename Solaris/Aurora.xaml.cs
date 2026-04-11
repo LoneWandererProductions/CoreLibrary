@@ -477,8 +477,8 @@ namespace Solaris
         {
             var position = e.GetPosition(Touch);
 
-            int gridX = (int)position.X / AuroraTextureSize;
-            int gridY = (int)position.Y / AuroraTextureSize;
+            var gridX = (int)position.X / AuroraTextureSize;
+            var gridY = (int)position.Y / AuroraTextureSize;
 
             _cursor = new Coordinate2D(gridX, gridY);
             var id = _cursor.ToId(AuroraWidth);

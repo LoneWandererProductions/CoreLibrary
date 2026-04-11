@@ -35,13 +35,13 @@ namespace CommonFilter
 
             // 1. Establish the baseline using the very first condition.
             // (The logical operator of the first item is ignored because there is nothing before it to compare against)
-            bool result = EvaluateCondition(inputString, conditions[0]);
+            var result = EvaluateCondition(inputString, conditions[0]);
 
             // 2. Loop through the REST of the conditions and chain them together
-            for (int i = 1; i < conditions.Count; i++)
+            for (var i = 1; i < conditions.Count; i++)
             {
                 var term = conditions[i];
-                bool conditionResult = EvaluateCondition(inputString, term);
+                var conditionResult = EvaluateCondition(inputString, term);
 
                 switch (term.SelectedLogicalOperator)
                 {

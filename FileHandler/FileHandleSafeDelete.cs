@@ -35,13 +35,13 @@ namespace FileHandler
 
             if (!File.Exists(path)) return false;
 
-            int maxTries = FileHandlerRegister.Tries;
+            var maxTries = FileHandlerRegister.Tries;
 
-            for (int i = 0; i < maxTries; i++)
+            for (var i = 0; i < maxTries; i++)
             {
                 try
                 {
-                    // Use SendToRecycleBin but consider UIOption.OnlyErrorDialogs 
+                    // Use SendToRecycleBin but consider UIOption.OnlyErrorDialogs
                     // to prevent the "Are you sure?" popups from hanging your logic.
                     FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
                     return true;
@@ -50,7 +50,7 @@ namespace FileHandler
                 {
                     // If it's a lock/sharing violation, wait and try again
                     // Exponential backoff is better than a flat 1-second wait
-                    int delay = (i + 1) * 200;
+                    var delay = (i + 1) * 200;
                     await Task.Delay(delay);
                 }
                 catch (Exception ex)

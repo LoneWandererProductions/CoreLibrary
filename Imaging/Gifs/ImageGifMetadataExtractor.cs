@@ -31,11 +31,7 @@ namespace Imaging.Gifs
                 throw new FileNotFoundException(ImagingResources.FileNotFoundMessage, filePath);
             }
 
-            var metadata = new ImageGifInfo
-            {
-                Name = Path.GetFileName(filePath),
-                Size = new FileInfo(filePath).Length
-            };
+            var metadata = new ImageGifInfo { Name = Path.GetFileName(filePath), Size = new FileInfo(filePath).Length };
 
             double lastFrameDelay = 0;
 
@@ -85,7 +81,8 @@ namespace Imaging.Gifs
 
                                 if (appBlockSize >= 11)
                                 {
-                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+                                    var appIdentifier =
+                                        new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
                                     reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
 
                                     // If block size > 11, skip the anomalous padding
@@ -100,7 +97,7 @@ namespace Imaging.Gifs
                                         if (subBlockSize == 3)
                                         {
                                             reader.ReadByte(); // Loop flag
-                                                               // Use ReadUInt16 to prevent integer overflow on large delays/loops
+                                            // Use ReadUInt16 to prevent integer overflow on large delays/loops
                                             metadata.LoopCount = reader.ReadUInt16();
                                         }
                                         else
@@ -148,14 +145,14 @@ namespace Imaging.Gifs
                                 SkipExtensionBlocks(reader);
                                 break;
                         }
+
                         break;
 
                     case ImagingResources.ImageDescriptorId:
                         // Record the frame info
                         metadata.Frames.Add(new FrameInfo
                         {
-                            Description = ImagingResources.ImageFrameDescription,
-                            DelayTime = lastFrameDelay
+                            Description = ImagingResources.ImageFrameDescription, DelayTime = lastFrameDelay
                         });
 
                         // Skip Image Descriptor (Left, Top, Width, Height = 8 bytes)
@@ -204,7 +201,7 @@ namespace Imaging.Gifs
             {
                 var subBlockSize = reader.ReadByte();
 
-                // If size is 0, we found the terminator. 
+                // If size is 0, we found the terminator.
                 // Using '0' directly is safer than a resource ID if the file is weird.
                 if (subBlockSize == 0) break;
 

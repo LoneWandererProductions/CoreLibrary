@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
              Height="320"
-            Padding="5">
+             Padding="5">
 
     <Grid>
         <!-- Row/Column Definitions -->
@@ -59,17 +59,17 @@
         <!-- Display and input Path -->
         <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center">
             <TextBox x:Name="PathEntry"
-             Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
-             Padding="2"
-             Visibility="Collapsed"
-             LostFocus="PathEntry_LostFocus" />
+                     Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="2"
+                     Visibility="Collapsed"
+                     LostFocus="PathEntry_LostFocus" />
             <TextBlock x:Name="PathDisplay"
-               Text="{Binding Paths}"
-               TextTrimming="CharacterEllipsis"
-               Background="White"
-               Padding="5,2"
-               Cursor="IBeam"
-               MouseDown="PathDisplay_MouseDown" />
+                       Text="{Binding Paths}"
+                       TextTrimming="CharacterEllipsis"
+                       Background="White"
+                       Padding="5,2"
+                       Cursor="IBeam"
+                       MouseDown="PathDisplay_MouseDown" />
         </Grid>
 
         <!-- Navigation Buttons -->
