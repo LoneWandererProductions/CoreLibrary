@@ -6,21 +6,27 @@
  * PROGRAMER:    Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMethodReturnValue.Global
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
-    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions. 
-    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides. 
-    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption. 
+    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions.
+    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides.
+    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption.
     /// It implements IReadOnlyCollection to provide enumeration capabilities over the key-value pairs.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the BiMap.</typeparam>
-    /// <seealso cref="System.Collections.Generic.IReadOnlyCollection&lt;System.Collections.Generic.KeyValuePair&lt;T, T&gt;&gt;" />
-    public class BiMap<T> : IReadOnlyCollection<KeyValuePair<T, T>> where T : notnull
+    /// <seealso cref="!:System.Collections.Generic.IReadOnlyCollection&lt;System.Collections.Generic.KeyValuePair&lt;T, T&gt;&gt;" />
+    public sealed class BiMap<T> : IReadOnlyCollection<KeyValuePair<T, T>> where T : notnull
     {
         /// <summary>
         /// The forward
@@ -32,6 +38,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         private readonly Dictionary<T, T> _reverse = new();
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the count.
         /// </summary>
@@ -45,6 +52,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         private readonly object _lock = new();
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
@@ -57,17 +65,20 @@ namespace ExtendedSystemObjects
             {
                 snapshot = new Dictionary<T, T>(_forward);
             }
+
             return snapshot.GetEnumerator();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="BiMap{T}"/> class.
+        /// Initializes a new instance of the <see cref="T:ExtendedSystemObjects.BiMap`1" /> class.
         /// </summary>
         public BiMap() : this(0) { }
 

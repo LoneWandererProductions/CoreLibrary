@@ -18,6 +18,7 @@ using System.Windows.Threading;
 
 namespace Imaging.Gifs
 {
+    /// <inheritdoc cref="Image" />
     /// <summary>
     /// Image control capable of playing animated GIFs in a self-contained way.
     /// Switching GIF → non-GIF will always clear old frames and stop timers.
@@ -67,7 +68,6 @@ namespace Imaging.Gifs
         /// The is disposed
         /// </summary>
         private bool _isDisposed;
-
 
         /// <summary>
         /// The loader CTS
@@ -125,7 +125,7 @@ namespace Imaging.Gifs
         /// <param name="path">The path.</param>
         private async void LoadGifAsync(string? path)
         {
-            _loaderCts?.Cancel();
+            await _loaderCts.CancelAsync();
             _loaderCts = new CancellationTokenSource();
             var token = _loaderCts.Token;
 
@@ -282,7 +282,7 @@ namespace Imaging.Gifs
         /// <returns>Delay in milliseconds.</returns>
         private double GetDelayForFrame(int index)
         {
-            if (_metadata != null && _metadata.Frames.Count > index)
+            if (_metadata?.Frames.Count > index)
             {
                 // GIF units are 1/100 of a second. Multiply by 10 to get milliseconds.
                 var delay = _metadata.Frames[index].DelayTime * 10;

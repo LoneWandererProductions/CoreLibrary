@@ -33,7 +33,7 @@ namespace FileHandler
             }
 
             return fileExtList
-                .Select(ext => ext?.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
+                .Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
                 .ToList();
         }
 
@@ -104,7 +104,7 @@ namespace FileHandler
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                System.Diagnostics.Trace.WriteLine($"Search failed for {path}: {ex.Message}");
+                Trace.WriteLine($"Search failed for {path}: {ex.Message}");
                 return new List<string>();
             }
         }
@@ -114,7 +114,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">A collection of file or folder paths.</param>
         /// <returns>The shortest path, or null if <paramref name="source"/> is empty.</returns>
-        internal static string? SearchRoot(IReadOnlyCollection<string> source)
+        internal static string? SearchRoot(IReadOnlyCollection<string>? source)
         {
             if (source == null || source.Count == 0)
                 return null;

@@ -158,7 +158,8 @@ namespace CommunicationTests
                 }
             }
 
-            Assert.IsTrue(connected, "Failed to connect to the test server after multiple attempts. Is the port blocked?");
+            Assert.IsTrue(connected,
+                "Failed to connect to the test server after multiple attempts. Is the port blocked?");
 
             // Act
             await using var stream = client.GetStream();

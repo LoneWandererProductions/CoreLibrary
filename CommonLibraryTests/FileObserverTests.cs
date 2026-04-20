@@ -144,7 +144,7 @@ namespace CommonLibraryTests
             var runTask = observer.RunUntilCancelledAsync(cts.Token);
 
             // Cancel it almost immediately
-            cts.Cancel();
+            await cts.CancelAsync();
 
             // Await the task. If it throws an unhandled exception, the test fails.
             await runTask;

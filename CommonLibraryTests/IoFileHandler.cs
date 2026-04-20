@@ -777,8 +777,8 @@ namespace CommonLibraryTests
                 Assert.Fail("Null Reference");
             }
 
-            // Note: If SaveZip doesn't automatically delete the source files, 
-            // you might expect 3 files here (2 text files + 1 zip file). 
+            // Note: If SaveZip doesn't automatically delete the source files,
+            // you might expect 3 files here (2 text files + 1 zip file).
             // Make sure your logic aligns with this assertion!
             Assert.AreEqual(1, files.Count, "Compressed File created and or files were not deleted");
 

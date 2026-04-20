@@ -100,7 +100,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CutFiles(List<string> source, string target, bool overwrite)
+        public static bool CutFiles(List<string>? source, string target, bool overwrite)
         {
             if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
             {
