@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
  * FILE:        UnmanagedMemoryHelperTests.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Test for unmanaged memory helper functions.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,9 +13,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonExtendedObjectsTests
 {
+    /// <summary>
+    /// Basic unit tests for UnmanagedMemoryHelper functions to ensure correctness of memory allocation, reallocation, clearing, shifting, filling, indexing, and swapping operations on unmanaged memory blocks.
+    /// </summary>
     [TestClass]
     public unsafe class UnmanagedMemoryHelperTests
     {
+        /// <summary>
+        /// Allocates the reallocate free memory.
+        /// </summary>
         [TestMethod]
         public void Allocate_Reallocate_Free_Memory()
         {
@@ -65,6 +71,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Clears the sets memory to zero.
+        /// </summary>
         [TestMethod]
         public void Clear_SetsMemoryToZero()
         {
@@ -91,6 +100,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Shifts the right moves elements correctly.
+        /// </summary>
         [TestMethod]
         public void ShiftRight_MovesElementsCorrectly()
         {
@@ -123,6 +135,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Shifts the left moves elements correctly.
+        /// </summary>
         [TestMethod]
         public void ShiftLeft_MovesElementsCorrectly()
         {
@@ -151,6 +166,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Fills the memory with the specified value.
+        /// </summary>
         [TestMethod]
         public void Fill_FillsMemoryWithValue()
         {
@@ -172,6 +190,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Indexes the of finds value correctly.
+        /// </summary>
         [TestMethod]
         public void IndexOf_FindsValueCorrectly()
         {
@@ -198,6 +219,9 @@ namespace CommonExtendedObjectsTests
             }
         }
 
+        /// <summary>
+        /// Swaps the swaps elements correctly.
+        /// </summary>
         [TestMethod]
         public void Swap_SwapsElementsCorrectly()
         {

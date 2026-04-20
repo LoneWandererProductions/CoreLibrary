@@ -84,20 +84,15 @@ namespace FileHandler
                 return new List<string>();
             }
 
-            // Clean up extension: remove dots, spaces, and handle null/star
-            var cleanExtension = string.IsNullOrWhiteSpace(extension)
-                ? "*"
-                : extension.Trim().TrimStart('.');
+            // Build the correct pattern based on whether an extension was provided
+            var searchPattern = string.IsNullOrWhiteSpace(extension)
+                ? "*" // Match absolutely everything, even files without a dot
+                : $"*.{extension.Trim().TrimStart('.')}";
 
-            var searchPattern = $"*.{cleanExtension}";
-
-            // Use modern EnumerationOptions to prevent "In Use" or "Access Denied" hangs
             var options = new EnumerationOptions
             {
                 RecurseSubdirectories = recursive,
-                // CRITICAL: Skip folders we don't have permission for instead of crashing
                 IgnoreInaccessible = true,
-                // Skip hidden/system files to reduce IO load during heavy gallery loading
                 AttributesToSkip = FileAttributes.System | FileAttributes.Hidden,
                 MatchCasing = MatchCasing.CaseInsensitive,
                 MatchType = MatchType.Simple
@@ -105,12 +100,11 @@ namespace FileHandler
 
             try
             {
-                // EnumerateFiles is more memory-efficient than GetFiles
                 return Directory.EnumerateFiles(path, searchPattern, options).ToList();
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                Trace.WriteLine($"Search failed for {path}: {ex.Message}");
+                System.Diagnostics.Trace.WriteLine($"Search failed for {path}: {ex.Message}");
                 return new List<string>();
             }
         }

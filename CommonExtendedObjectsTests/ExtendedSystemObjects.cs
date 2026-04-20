@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
- * FILE:        CommonExtendedObjectsTests/ExtendedSystemObjects.cs
+ * FILE:        ExtendedSystemObjects.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      CommonExtendedObjectsTests
- * FILE:         Transactions.cs
- * PURPOSE:      Test the Transaction Log
- * PROGRAMER:    Peter Geinitz (Wayfarer)
+ * PROJECT:     CommonExtendedObjectsTests
+ * FILE:        Transactions.cs
+ * PURPOSE:     Test the Transaction Log
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

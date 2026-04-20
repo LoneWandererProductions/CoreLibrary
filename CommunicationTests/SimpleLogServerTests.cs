@@ -134,28 +134,40 @@ namespace CommunicationTests
         [TestMethod]
         public async Task Server_ShouldDisconnect_SlowClients()
         {
-            // Arrange
-            var port = 55150;
+            // Arrange: Pick a random high port to avoid parallel test collisions
+            var port = new Random().Next(50000, 60000);
             using var server = new SimpleLogServer(port, msg => { });
             server.Start();
-            await Task.Delay(100);
 
             using var client = new TcpClient();
-            await client.ConnectAsync("127.0.0.1", port);
+
+            // Resilient Connection: Try to connect multiple times in case the server is slow to boot
+            bool connected = false;
+            for (int i = 0; i < 5; i++)
+            {
+                try
+                {
+                    await client.ConnectAsync("127.0.0.1", port);
+                    connected = true;
+                    break; // Success!
+                }
+                catch (SocketException)
+                {
+                    // Server isn't ready yet, wait and retry
+                    await Task.Delay(200);
+                }
+            }
+
+            Assert.IsTrue(connected, "Failed to connect to the test server after multiple attempts. Is the port blocked?");
+
+            // Act
             await using var stream = client.GetStream();
-            // Act: Send data WITHOUT a newline
             var data = Encoding.UTF8.GetBytes("I am a bad client...");
             await stream.WriteAsync(data, 0, data.Length);
 
-            // Don't send \n. Just wait.
-            // The server should cut us off after 5 seconds.
-
-            // Assert: Try to read from the stream.
-            // If the server disconnects us, ReadAsync returns 0.
+            // Assert
             var buffer = new byte[10];
             var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-
-            // If bytesRead is 0, it means the server closed the connection.
             Assert.AreEqual(0, bytesRead, "Server should have closed the connection due to timeout.");
         }
 

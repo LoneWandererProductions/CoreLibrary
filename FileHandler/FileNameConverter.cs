@@ -28,7 +28,16 @@ namespace FileHandler
         /// <param name="subFolder">If <c>true</c>, search recursively in subfolders.</param>
         /// <returns>The number of files successfully renamed.</returns>
         public static Task<int> RemoveAppendage(string appendage, string folder, bool subFolder) =>
-            RenameFiles(folder, subFolder, name => name.RemoveAppendage(appendage));
+            RenameFiles(folder, subFolder, filePath =>
+            {
+                var directory = Path.GetDirectoryName(filePath);
+                var fileName = Path.GetFileName(filePath);
+
+                var newFileName = fileName.RemoveAppendage(appendage);
+
+                // Reconstruct the full path
+                return directory == null ? newFileName : Path.Combine(directory, newFileName);
+            });
 
         /// <summary>
         /// Adds a predefined appendage to all files in the folder that do not already start with it.

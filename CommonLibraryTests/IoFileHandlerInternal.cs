@@ -113,16 +113,17 @@ namespace CommonLibraryTests
         }
 
         /// <summary>
-        ///     Gets the files by extension invalid path returns null.
+        ///     Gets the files by extension invalid path returns empty list.
         /// </summary>
         [TestMethod]
-        public void GetFilesByExtensionInvalidPathReturnsNull()
+        public void GetFilesByExtensionInvalidPathReturnsEmptyList()
         {
             // Act
             var result = FileHandlerProcessing.GetFilesByExtension(@"C:\invalidpath", ".txt", false);
 
-            // Assert
-            Assert.IsNull(result);
+            // Assert: We expect an initialized list with 0 items, not null.
+            Assert.IsNotNull(result, "Result should be an empty list, not null.");
+            Assert.AreEqual(0, result.Count, "The list should be empty for an invalid path.");
         }
 
         /// <summary>

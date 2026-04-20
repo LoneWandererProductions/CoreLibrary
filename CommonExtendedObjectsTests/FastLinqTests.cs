@@ -2,7 +2,8 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
  * FILE:        FastLinqTests.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Some basic unit tests for FastLinq extension methods to ensure correctness and benchmark performance against standard LINQ methods.
+ *              The linq is not actual faster than standard linq, but it is more memory efficient and can be faster in certain scenarios due to reduced allocations and better cache usage.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

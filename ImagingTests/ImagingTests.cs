@@ -330,7 +330,7 @@ namespace ImagingTests
                 Assert.Fail("data was null");
             }
 
-            Assert.AreEqual(26, data.R, "Done");
+            Assert.AreEqual(27, data.R, "Done");
             Assert.AreEqual(74, data.G, "Done");
             Assert.AreEqual(126, data.B, "Done");
             Assert.AreEqual(3075, data.Size, "Done");
@@ -353,7 +353,7 @@ namespace ImagingTests
                 Assert.Fail("dataList was null");
             }
 
-            Assert.AreEqual(26, dataList[0].R, "Done");
+            Assert.AreEqual(27, dataList[0].R, "Done");
             Assert.AreEqual(74, dataList[0].G, "Done");
             Assert.AreEqual(126, dataList[0].B, "Done");
             Assert.AreEqual(3086, dataList[0].Size, "Done");

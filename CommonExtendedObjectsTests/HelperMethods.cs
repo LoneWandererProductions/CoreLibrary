@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
- * FILE:        CommonExtendedObjectsTests/HelperMethods.cs
+ * FILE:        HelperMethods.cs
  * PURPOSE:     Helper Methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
