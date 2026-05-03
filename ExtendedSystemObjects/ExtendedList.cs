@@ -29,7 +29,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Check if a List is Null or just Empty
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">List we want to check</param>
         /// <returns>Empty or not</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46,7 +46,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add Element at the first Entry
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">List we want to add to</param>
         /// <param name="item">item we will replace or add</param>
         public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
@@ -57,9 +57,30 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        /// Removes the fast.
+        /// </summary>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <param name="list">The list.</param>
+        /// <param name="item">The item.</param>
+        public static void RemoveFast<TValue>(this List<TValue> list, TValue item)
+        {
+            int index = list.IndexOf(item);
+            if (index < 0) return; // Item not found
+
+            int lastIndex = list.Count - 1;
+
+            // Move the last element into the slot of the element to remove
+            list[index] = list[lastIndex];
+
+            // Remove the now-redundant last element
+            list.RemoveAt(lastIndex);
+        }
+
+
+        /// <summary>
         ///     Only works with equal and Implemented IEquality Interface
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">List we want to add to</param>
         /// <param name="item">item we will replace or add</param>
         /// <returns>if [true] item was added, else [false]</returns>
@@ -94,7 +115,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add contents of another sequence to the base list, ensuring no duplicates
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">Base list we add to</param>
         /// <param name="range">Sequence with elements we want to add</param>
         /// <param name="invert">optional parameter invert result</param>
@@ -116,7 +137,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add contents of another sequence to the base list, ensuring no duplicates
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">Base list we add to</param>
         /// <param name="range">Sequence with elements we want to add</param>
         /// <param name="invert">If true, removes elements instead of adding them</param>
@@ -140,7 +161,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Keep only elements present in both the base list and another sequence
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">Base list to filter</param>
         /// <param name="range">Sequence with elements to retain</param>
         /// <param name="invert">If true, keeps elements not present in both sequences</param>
@@ -165,7 +186,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Keep only elements that are in either the base list or another sequence but not in both
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">Base list to modify</param>
         /// <param name="range">Sequence with elements to compare</param>
         /// <param name="invert">If true, keeps elements that are in both sequences</param>
@@ -193,7 +214,7 @@ namespace ExtendedSystemObjects
         ///     Try to Clone a List
         ///     Here we abuse the IEnumerable ToList Method
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="lst">IEnumerable</param>
         /// <returns>Clone of the Input IEnumerable</returns>
         public static List<TValue> Clone<TValue>(this IEnumerable<TValue> lst)
@@ -256,7 +277,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Chunks a list by a certain amount.
         /// </summary>
-        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="chunkSize">Size of the chunk.</param>
         /// <returns>List split into chunks</returns>
