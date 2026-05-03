@@ -29,11 +29,11 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Check if a List is Null or just Empty
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">List we want to check</param>
         /// <returns>Empty or not</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty<TValue>([NotNullWhen(false)] this ICollection<TValue> lst)
+        public static bool IsNullOrEmpty<TValue>([NotNullWhen(false)] this ICollection<TValue>? lst)
         {
             if (lst == null)
             {
@@ -46,7 +46,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add Element at the first Entry
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">List we want to add to</param>
         /// <param name="item">item we will replace or add</param>
         public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
@@ -57,7 +57,23 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        /// Removes the fast.
+        ///     Only works with equal and Implemented IEquality Interface
+        /// </summary>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <param name="lst">List we want to add to</param>
+        /// <param name="item">item we will replace or add</param>
+        /// <returns>if [true] item was added, else [false]</returns>
+        public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
+        {
+            if (lst.Contains(item)) return false;
+
+            lst.Add(item);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes element from ist fast.
+        /// Destroys order though.
         /// </summary>
         /// <typeparam name="TValue">Generic data Type</typeparam>
         /// <param name="list">The list.</param>
@@ -76,28 +92,24 @@ namespace ExtendedSystemObjects
             list.RemoveAt(lastIndex);
         }
 
-
         /// <summary>
-        ///     Only works with equal and Implemented IEquality Interface
+        /// Removes element at index fast by swapping with the last element.
+        /// Destroys order.
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
-        /// <param name="lst">List we want to add to</param>
-        /// <param name="item">item we will replace or add</param>
-        /// <returns>if [true] item was added, else [false]</returns>
-        public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <param name="index">The index.</param>
+        public static void RemoveAtFast<TValue>(this List<TValue> list, int index)
         {
-            var hashSet = new HashSet<TValue>(lst);
+            if (index < 0 || index >= list.Count) return;
 
-            // Check if the item already exists in the HashSet
-            if (hashSet.Contains(item))
-            {
-                return false; // Item already exists, no need to add
-            }
+            int lastIndex = list.Count - 1;
 
-            // Add the item to the list since it doesn't already exist
-            lst.Add(item);
+            // Move the last element into the slot of the element to remove
+            list[index] = list[lastIndex];
 
-            return true;
+            // Remove the now-redundant last element
+            list.RemoveAt(lastIndex);
         }
 
         /// <summary>
@@ -106,7 +118,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="lst">The List.</param>
         /// <returns>A Dictionary from a list with int as the key</returns>
-        public static Dictionary<int, TValue> ToDictionary<TValue>(this IEnumerable<TValue> lst)
+        public static Dictionary<int, TValue>? ToDictionary<TValue>(this IEnumerable<TValue> lst)
         {
             var index = 0;
             return lst?.ToDictionary(_ => index++);
@@ -115,7 +127,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add contents of another sequence to the base list, ensuring no duplicates
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we add to</param>
         /// <param name="range">Sequence with elements we want to add</param>
         /// <param name="invert">optional parameter invert result</param>
@@ -137,7 +149,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Add contents of another sequence to the base list, ensuring no duplicates
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we add to</param>
         /// <param name="range">Sequence with elements we want to add</param>
         /// <param name="invert">If true, removes elements instead of adding them</param>
@@ -161,7 +173,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Keep only elements present in both the base list and another sequence
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list to filter</param>
         /// <param name="range">Sequence with elements to retain</param>
         /// <param name="invert">If true, keeps elements not present in both sequences</param>
@@ -186,7 +198,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Keep only elements that are in either the base list or another sequence but not in both
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list to modify</param>
         /// <param name="range">Sequence with elements to compare</param>
         /// <param name="invert">If true, keeps elements that are in both sequences</param>
@@ -214,10 +226,10 @@ namespace ExtendedSystemObjects
         ///     Try to Clone a List
         ///     Here we abuse the IEnumerable ToList Method
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">IEnumerable</param>
         /// <returns>Clone of the Input IEnumerable</returns>
-        public static List<TValue> Clone<TValue>(this IEnumerable<TValue> lst)
+        public static List<TValue>? Clone<TValue>(this IEnumerable<TValue>? lst)
         {
             return lst?.ToList();
         }
@@ -277,7 +289,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     Chunks a list by a certain amount.
         /// </summary>
-        /// <typeparam name="TValue">Generic data Type</typeparam>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="chunkSize">Size of the chunk.</param>
         /// <returns>List split into chunks</returns>
@@ -324,8 +336,8 @@ namespace ExtendedSystemObjects
         /// <returns>
         ///     Dictionary with an conversion from the attribute Id as Key
         /// </returns>
-        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst)
-            where TValue : IIdHandling<TId>
+        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IEnumerable<TValue> lst)
+            where TValue : IIdHandling<TId> where TId : notnull
         {
             var dct = new Dictionary<TId, TValue>();
 

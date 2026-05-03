@@ -27,7 +27,7 @@ namespace ImageCompare
         /// <summary>
         ///     The Temp path dictionary
         /// </summary>
-        private static Dictionary<int, string> Translator { get; set; }
+        private static Dictionary<int, string>? Translator { get; set; }
 
         /// <summary>
         ///     Find all similar images in a folder, and possibly subfolders

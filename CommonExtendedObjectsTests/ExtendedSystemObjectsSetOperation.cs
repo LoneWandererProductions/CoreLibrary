@@ -165,6 +165,9 @@ namespace CommonExtendedObjectsTests
             CollectionAssert.AreEquivalent(new List<int> { 1, 2, 3, 4 }, list);
         }
 
+        /// <summary>
+        /// Unions the removes elements from range when inverted.
+        /// </summary>
         [TestMethod]
         public void UnionRemovesElementsFromRangeWhenInverted()
         {
@@ -184,7 +187,7 @@ namespace CommonExtendedObjectsTests
 
 
         /// <summary>
-        ///     Symmetrics the difference retains common elements when inverted.
+        ///     Symmetric difference retains common elements when inverted.
         /// </summary>
         [TestMethod]
         public void SymmetricDifferenceRetainsCommonElementsWhenInverted()
@@ -201,6 +204,91 @@ namespace CommonExtendedObjectsTests
             list.SymmetricDifference(range, true);
 
             CollectionAssert.AreEqual(new List<int> { 2, 4 }, list);
+        }
+
+        /// <summary>
+        /// Removes the fast item in middle removes item and swaps last.
+        /// </summary>
+        [TestMethod]
+        public void RemoveFast_ItemInMiddle_RemovesItemAndSwapsLast()
+        {
+            // Arrange
+            var list = new List<string> { "A", "B", "C", "D" };
+
+            // Act
+            list.RemoveFast("B");
+
+            // Assert
+            Assert.AreEqual(3, list.Count);
+            Assert.IsFalse(list.Contains("B"));
+            Assert.AreEqual("D", list[1]); // "D" should have moved to index 1
+        }
+
+        /// <summary>
+        /// Removes the fast item not found does nothing.
+        /// </summary>
+        [TestMethod]
+        public void RemoveFast_ItemNotFound_DoesNothing()
+        {
+            // Arrange
+            var list = new List<int> { 1, 2, 3 };
+
+            // Act
+            list.RemoveFast(99);
+
+            // Assert
+            Assert.AreEqual(3, list.Count);
+        }
+
+        /// <summary>
+        /// Removes at fast valid index removes and swaps.
+        /// </summary>
+        [TestMethod]
+        public void RemoveAtFast_ValidIndex_RemovesAndSwaps()
+        {
+            // Arrange
+            var list = new List<int> { 10, 20, 30, 40, 50 };
+
+            // Act
+            list.RemoveAtFast(1); // Removing 20
+
+            // Assert
+            Assert.AreEqual(4, list.Count);
+            Assert.AreEqual(50, list[1]); // Last item (50) should now be at index 1
+        }
+
+        /// <summary>
+        /// Removes at fast last index removes correctly.
+        /// </summary>
+        [TestMethod]
+        public void RemoveAtFast_LastIndex_RemovesCorrectly()
+        {
+            // Arrange
+            var list = new List<string> { "X", "Y", "Z" };
+
+            // Act
+            list.RemoveAtFast(2); // Removing "Z"
+
+            // Assert
+            Assert.AreEqual(2, list.Count);
+            Assert.AreEqual("Y", list[1]);
+            Assert.IsFalse(list.Contains("Z"));
+        }
+
+        /// <summary>
+        /// Removes at fast invalid index does not throw.
+        /// </summary>
+        [TestMethod]
+        public void RemoveAtFast_InvalidIndex_DoesNotThrow()
+        {
+            // Arrange
+            var list = new List<int> { 1, 2 };
+
+            // Act & Assert (Should not throw exception based on implementation)
+            list.RemoveAtFast(-1);
+            list.RemoveAtFast(10);
+
+            Assert.AreEqual(2, list.Count);
         }
     }
 }
