@@ -18,6 +18,7 @@ using System.Windows.Threading;
 
 namespace Imaging.Gifs
 {
+    /// <inheritdoc cref="Image" />
     /// <summary>
     /// Image control capable of playing animated GIFs in a self-contained way.
     /// Switching GIF → non-GIF will always clear old frames and stop timers.
@@ -50,6 +51,7 @@ namespace Imaging.Gifs
         /// The frames
         /// </summary>
         private List<BitmapSource>? _frames;
+
         private ImageGifInfo? _metadata;
 
         /// <summary>
@@ -66,7 +68,6 @@ namespace Imaging.Gifs
         /// The is disposed
         /// </summary>
         private bool _isDisposed;
-
 
         /// <summary>
         /// The loader CTS
@@ -124,7 +125,7 @@ namespace Imaging.Gifs
         /// <param name="path">The path.</param>
         private async void LoadGifAsync(string? path)
         {
-            _loaderCts?.Cancel();
+            await _loaderCts.CancelAsync();
             _loaderCts = new CancellationTokenSource();
             var token = _loaderCts.Token;
 
@@ -135,7 +136,6 @@ namespace Imaging.Gifs
 
             try
             {
-
                 // Fast path for non-GIFs: just load as BitmapImage and skip all the decoding/metadata overhead
                 if (!path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
                 {
@@ -282,12 +282,12 @@ namespace Imaging.Gifs
         /// <returns>Delay in milliseconds.</returns>
         private double GetDelayForFrame(int index)
         {
-            if (_metadata != null && _metadata.Frames.Count > index)
+            if (_metadata?.Frames.Count > index)
             {
                 // GIF units are 1/100 of a second. Multiply by 10 to get milliseconds.
                 var delay = _metadata.Frames[index].DelayTime * 10;
 
-                // Industry Standard: Delays of 0ms or < 20ms are forced to 100ms 
+                // Industry Standard: Delays of 0ms or < 20ms are forced to 100ms
                 // by most renderers to prevent CPU spikes and "way too fast" playback.
                 return delay < 20 ? 100 : delay;
             }

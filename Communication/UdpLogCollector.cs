@@ -58,7 +58,7 @@ namespace Communication
                 {
                     // UDP is much simpler: just receive the bytes
                     var result = await udpClient.ReceiveAsync(token);
-                    string message = Encoding.UTF8.GetString(result.Buffer);
+                    var message = Encoding.UTF8.GetString(result.Buffer);
 
                     Trace.WriteLine(string.Concat("Received UDP log from {Remote}: {Message}", result.RemoteEndPoint,
                         message));

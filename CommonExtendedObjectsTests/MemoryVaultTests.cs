@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
- * FILE:        CommonExtendedObjectsTests/MemoryVaultTests.cs
+ * FILE:        MemoryVaultTests.cs
  * PURPOSE:     Tests for the MemoryVault
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

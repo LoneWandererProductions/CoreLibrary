@@ -12,12 +12,13 @@ using System.Collections.Generic;
 
 namespace FileHandler
 {
+    /// <inheritdoc />
     /// <summary>
     /// File name comparer that implements pure natural sorting, comparing numeric parts of strings as numbers and non-numeric parts as text.
     /// This ensures that "file2" comes before "file10", and "file1a" comes before "file1b". It handles nulls and empty strings gracefully, treating null as less than any non-null string.
     /// </summary>
-    /// <seealso cref="System.Collections.Generic.IComparer&lt;System.String&gt;" />
-    public class PureNaturalComparer : IComparer<string>
+    /// <seealso cref="!:System.Collections.Generic.IComparer&lt;System.String&gt;" />
+    public sealed class PureNaturalComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
         {
@@ -36,16 +37,19 @@ namespace FileHandler
                     while (iy < ly && char.IsDigit(y[iy])) ny += y[iy++];
 
                     // Compare as numbers
-                    int r = long.Parse(nx).CompareTo(long.Parse(ny));
+                    var r = long.Parse(nx).CompareTo(long.Parse(ny));
                     if (r != 0) return r;
                 }
                 else
                 {
-                    int r = x[ix].CompareTo(y[iy]);
+                    var r = x[ix].CompareTo(y[iy]);
                     if (r != 0) return r;
-                    ix++; iy++;
+
+                    ix++;
+                    iy++;
                 }
             }
+
             return lx - ly;
         }
     }

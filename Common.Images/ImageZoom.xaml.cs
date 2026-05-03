@@ -668,31 +668,31 @@ namespace Common.Images
             switch (SelectionTool)
             {
                 case ImageZoomTools.Move:
-                    {
-                        var currentCanvasPos = e.GetPosition(MainCanvas);
-                        var transform = (MatrixTransform)BtmImage.RenderTransform;
-                        Matrix matrix = transform.Matrix;
+                {
+                    var currentCanvasPos = e.GetPosition(MainCanvas);
+                    var transform = (MatrixTransform)BtmImage.RenderTransform;
+                    var matrix = transform.Matrix;
 
-                        // 1. Calculate intended new offsets
-                        double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                        double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                    // 1. Calculate intended new offsets
+                    var newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
+                    var newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
 
-                        // 2. Boundary Checks
-                        double viewWidth = ScrollView.ActualWidth;
-                        double viewHeight = ScrollView.ActualHeight;
-                        double tWidth = BtmImage.ActualWidth * matrix.M11;
-                        double tHeight = BtmImage.ActualHeight * matrix.M22;
+                    // 2. Boundary Checks
+                    var viewWidth = ScrollView.ActualWidth;
+                    var viewHeight = ScrollView.ActualHeight;
+                    var tWidth = BtmImage.ActualWidth * matrix.M11;
+                    var tHeight = BtmImage.ActualHeight * matrix.M22;
 
-                        // 3. Clamp panning only if image is larger than view
-                        if (tWidth > viewWidth)
-                            matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
-                        if (tHeight > viewHeight)
-                            matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
+                    // 3. Clamp panning only if image is larger than view
+                    if (tWidth > viewWidth)
+                        matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
+                    if (tHeight > viewHeight)
+                        matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
 
-                        BtmImage.RenderTransform = new MatrixTransform(matrix);
-                        SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                        break;
-                    }
+                    BtmImage.RenderTransform = new MatrixTransform(matrix);
+                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                    break;
+                }
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
@@ -718,23 +718,23 @@ namespace Common.Images
             if (BtmImage.RenderTransform is not MatrixTransform transform)
                 return;
 
-            Point mousePos = e.GetPosition(MainCanvas);
+            var mousePos = e.GetPosition(MainCanvas);
 
-            double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
+            var zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
 
-            Matrix matrix = transform.Matrix;
+            var matrix = transform.Matrix;
 
             matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
 
 
-            double viewWidth = ScrollView.ActualWidth;
-            double viewHeight = ScrollView.ActualHeight;
+            var viewWidth = ScrollView.ActualWidth;
+            var viewHeight = ScrollView.ActualHeight;
 
-            double transformedWidth = BtmImage.ActualWidth * matrix.M11;
-            double transformedHeight = BtmImage.ActualHeight * matrix.M22;
+            var transformedWidth = BtmImage.ActualWidth * matrix.M11;
+            var transformedHeight = BtmImage.ActualHeight * matrix.M22;
 
-            double minX = Math.Min(0, viewWidth - transformedWidth);
-            double minY = Math.Min(0, viewHeight - transformedHeight);
+            var minX = Math.Min(0, viewWidth - transformedWidth);
+            var minY = Math.Min(0, viewHeight - transformedHeight);
 
             matrix.OffsetX = Math.Clamp(matrix.OffsetX, minX, 0);
             matrix.OffsetY = Math.Clamp(matrix.OffsetY, minY, 0);
@@ -826,8 +826,8 @@ namespace Common.Images
             }
 
             // 2. Sync Sizes (Use ActualWidth if loaded, otherwise Source width)
-            double baseWidth = BtmImage.ActualWidth > 0 ? BtmImage.ActualWidth : (BtmImage.Source?.Width ?? 0);
-            double baseHeight = BtmImage.ActualHeight > 0 ? BtmImage.ActualHeight : (BtmImage.Source?.Height ?? 0);
+            var baseWidth = BtmImage.ActualWidth > 0 ? BtmImage.ActualWidth : (BtmImage.Source?.Width ?? 0);
+            var baseHeight = BtmImage.ActualHeight > 0 ? BtmImage.ActualHeight : (BtmImage.Source?.Height ?? 0);
 
             MainCanvas.Width = Math.Max(baseWidth, ScrollView.ActualWidth);
             MainCanvas.Height = Math.Max(baseHeight, ScrollView.ActualHeight);

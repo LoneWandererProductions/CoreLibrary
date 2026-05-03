@@ -33,7 +33,7 @@ namespace FileHandler
             }
 
             return fileExtList
-                .Select(ext => ext?.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
+                .Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
                 .ToList();
         }
 
@@ -84,20 +84,15 @@ namespace FileHandler
                 return new List<string>();
             }
 
-            // Clean up extension: remove dots, spaces, and handle null/star
-            string cleanExtension = string.IsNullOrWhiteSpace(extension)
-                ? "*"
-                : extension.Trim().TrimStart('.');
+            // Build the correct pattern based on whether an extension was provided
+            var searchPattern = string.IsNullOrWhiteSpace(extension)
+                ? "*" // Match absolutely everything, even files without a dot
+                : $"*.{extension.Trim().TrimStart('.')}";
 
-            string searchPattern = $"*.{cleanExtension}";
-
-            // Use modern EnumerationOptions to prevent "In Use" or "Access Denied" hangs
             var options = new EnumerationOptions
             {
                 RecurseSubdirectories = recursive,
-                // CRITICAL: Skip folders we don't have permission for instead of crashing
                 IgnoreInaccessible = true,
-                // Skip hidden/system files to reduce IO load during heavy gallery loading
                 AttributesToSkip = FileAttributes.System | FileAttributes.Hidden,
                 MatchCasing = MatchCasing.CaseInsensitive,
                 MatchType = MatchType.Simple
@@ -105,7 +100,6 @@ namespace FileHandler
 
             try
             {
-                // EnumerateFiles is more memory-efficient than GetFiles
                 return Directory.EnumerateFiles(path, searchPattern, options).ToList();
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
@@ -120,7 +114,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">A collection of file or folder paths.</param>
         /// <returns>The shortest path, or null if <paramref name="source"/> is empty.</returns>
-        internal static string? SearchRoot(IReadOnlyCollection<string> source)
+        internal static string? SearchRoot(IReadOnlyCollection<string>? source)
         {
             if (source == null || source.Count == 0)
                 return null;

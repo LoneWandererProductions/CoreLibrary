@@ -112,17 +112,15 @@ namespace Imaging.Helpers
 
             try
             {
-                using (var graph = Graphics.FromImage(btm))
-                {
-                    // Same high-quality settings
-                    graph.CompositingMode = CompositingMode.SourceCopy;
-                    graph.CompositingQuality = CompositingQuality.HighQuality;
-                    graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graph.SmoothingMode = SmoothingMode.HighQuality;
-                    graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                using var graph = Graphics.FromImage(btm);
+                // Same high-quality settings
+                graph.CompositingMode = CompositingMode.SourceCopy;
+                graph.CompositingQuality = CompositingQuality.HighQuality;
+                graph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graph.SmoothingMode = SmoothingMode.HighQuality;
+                graph.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                    graph.DrawImage(image, 0, 0, width, height);
-                }
+                graph.DrawImage(image, 0, 0, width, height);
 
                 // 2. Return the 'btm' directly. Do NOT wrap it in 'new Bitmap(btm)'
                 return btm;

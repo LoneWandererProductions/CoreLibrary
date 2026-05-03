@@ -73,10 +73,7 @@ namespace Common.Images
         public string StartColor
         {
             get => (string)GetValue(StartColorProperty);
-            set
-            {
-                SetValue(StartColorProperty, value);
-            }
+            set { SetValue(StartColorProperty, value); }
         }
 
         /// <summary>

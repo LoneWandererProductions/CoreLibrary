@@ -16,7 +16,7 @@ using ViewModel;
 
 namespace Common.Dialogs
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
     /// Represents a single folder or file in a TreeView. Supports lazy loading of children and selection tracking.
     /// </summary>
@@ -119,12 +119,9 @@ namespace Common.Dialogs
         /// Safes the has children.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>If folder has child</returns>
-        /// <summary>
-        /// Safely checks if a folder has children without throwing exceptions for files.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>True if the folder has children; otherwise, false.</returns>
+        /// <returns>
+        /// If folder has child
+        /// </returns>
         private static bool SafeHasChildren(string path)
         {
             try

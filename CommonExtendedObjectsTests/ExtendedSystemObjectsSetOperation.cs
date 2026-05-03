@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonExtendedObjectsTests
- * FILE:        CommonExtendedObjectsTests/ExtendedSystemObjectsSetOperation.cs
+ * FILE:        ExtendedSystemObjectsSetOperation.cs
  * PURPOSE:     Tests for ExtendedSystemObjects, Set Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

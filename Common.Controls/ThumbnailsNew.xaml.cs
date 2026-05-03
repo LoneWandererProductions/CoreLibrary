@@ -79,7 +79,10 @@ namespace Common.Controls
                     bi.Freeze(); // Vital for cross-thread
                     return bi;
                 }
-                catch { return null; }
+                catch
+                {
+                    return null;
+                }
             });
         }
     }

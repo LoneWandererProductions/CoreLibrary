@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonLibraryTests
- * FILE:        CommonLibraryTests/XMLItem.cs
+ * FILE:        XMLItem.cs
  * PURPOSE:     Test Object
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

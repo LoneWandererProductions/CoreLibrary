@@ -42,7 +42,7 @@ namespace Imaging
             try
             {
                 // 1. Read all bytes into memory immediately
-                byte[] buffer = File.ReadAllBytes(path);
+                var buffer = File.ReadAllBytes(path);
 
                 using var ms = new MemoryStream(buffer);
                 var bmp = new BitmapImage();

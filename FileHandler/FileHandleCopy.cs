@@ -62,7 +62,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed, optional, default true.</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFiles(List<string> source, string target, bool overwrite = true)
+        public static bool CopyFiles(List<string>? source, string target, bool overwrite = true)
         {
             if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);

@@ -139,9 +139,7 @@ namespace Common.Dialogs
 
             var openFile = new OpenFileDialog
             {
-                Filter = appendage,
-                InitialDirectory = folder,
-                Multiselect = true // This enables multi-selection
+                Filter = appendage, InitialDirectory = folder, Multiselect = true // This enables multi-selection
             };
 
             if (openFile.ShowDialog() != true)
@@ -151,8 +149,8 @@ namespace Common.Dialogs
 
             // Convert the array of selected paths into a List of PathObjects
             return openFile.FileNames
-                           .Select(path => new PathObject { FilePath = path })
-                           .ToList();
+                .Select(path => new PathObject { FilePath = path })
+                .ToList();
         }
 
         /// <summary>

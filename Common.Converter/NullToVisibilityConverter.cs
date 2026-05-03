@@ -48,12 +48,12 @@ namespace Common.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Check if value is null
-            bool isNull = value == null;
+            var isNull = value == null;
 
             // Apply inversion:
             // If Invert is false: Null -> Hidden/Collapsed, Not Null -> Visible
             // If Invert is true:  Null -> Visible, Not Null -> Hidden/Collapsed
-            bool shouldHide = Invert ? !isNull : isNull;
+            var shouldHide = Invert ? !isNull : isNull;
 
             if (shouldHide)
             {

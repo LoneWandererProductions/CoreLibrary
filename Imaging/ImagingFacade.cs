@@ -263,7 +263,7 @@ namespace Imaging
         /// <param name="x">X-coordinate for overlay placement.</param>
         /// <param name="y">Y-coordinate for overlay placement.</param>
         /// <returns>The combined <see cref="Bitmap"/>.</returns>
-        public static Bitmap? Combine(Bitmap baseImage, Bitmap overlay, int x, int y)
+        public static Bitmap Combine(Bitmap baseImage, Bitmap overlay, int x, int y)
             => new ImageRender().CombineBitmap(baseImage, overlay, x, y);
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace Imaging
         /// <returns>
         /// The generated texture as a <see cref="Bitmap" />.
         /// </returns>
-        public static Bitmap? GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
+        public static Bitmap GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
             object? shapeParams = null, Point? startPoint = null)
             => new TextureGenerator().GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint,
                 shapeParams);
@@ -418,7 +418,7 @@ namespace Imaging
         /// <param name="shapeParams">Optional parameters for the shape.</param>
         /// <param name="startPoint">Optional starting point.</param>
         /// <returns>The generated texture as a <see cref="Bitmap"/>.</returns>
-        public static Bitmap? GenerateTexture(int width, int height, TextureType type, MaskShape shape,
+        public static Bitmap GenerateTexture(int width, int height, TextureType type, MaskShape shape,
             object shapeParams, Point? startPoint = null)
             => new TextureGenerator().GenerateTexture(width, height, type, shape, startPoint, shapeParams);
 

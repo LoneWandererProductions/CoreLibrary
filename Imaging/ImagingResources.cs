@@ -96,7 +96,7 @@ namespace Imaging
         /// <summary>
         /// The GIF metadata query disposal (const). Value: "/grctlext/Disposal"
         /// </summary>
-        internal const string GifMetadataQueryDisposal= "/grctlext/Disposal";
+        internal const string GifMetadataQueryDisposal = "/grctlext/Disposal";
 
         /// <summary>
         ///     The flag indicating the presence of a global color table in the GIF file. Value: 0x80
@@ -374,7 +374,7 @@ namespace Imaging
         /// <summary>
         ///     The File Appendix
         /// </summary>
-        public static readonly List<string> Appendix =
+        public static readonly List<string> Appendix = 
 
         [
             JpgExt,
