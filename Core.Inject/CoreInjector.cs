@@ -7,8 +7,10 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Core.Inject
 {
@@ -16,7 +18,7 @@ namespace Core.Inject
     ///     A simple dependency injection container that handles the registration and resolution of services.
     ///     Supports singleton, transient, scoped, and instance-based registrations.
     /// </summary>
-    public sealed class CoreInjector
+    public sealed class CoreInjector : IDisposable
     {
         /// <summary>
         ///     Stores the registered service factories, indexed by service type.
@@ -24,9 +26,14 @@ namespace Core.Inject
         private readonly Dictionary<Type, Func<object>> _registrations = new();
 
         /// <summary>
+        /// The singleton instances
+        /// </summary>
+        private readonly ConcurrentDictionary<Type, object> _singletonInstances = new();
+
+        /// <summary>
         ///     The current scope for managing scoped dependencies.
         /// </summary>
-        private SimpleScope _currentScope;
+        private readonly AsyncLocal<SimpleScope?> _currentScope = new();
 
         /// <summary>
         ///     Registers a singleton service with a specific implementation type.
@@ -35,16 +42,10 @@ namespace Core.Inject
         /// <typeparam name="TService">The service type.</typeparam>
         /// <typeparam name="TImplementation">The implementation type for the service.</typeparam>
         /// <exception cref="InvalidOperationException">Thrown if the service is already registered.</exception>
-        public void RegisterSingleton<TService, TImplementation>() where TImplementation : TService, new()
+        public void RegisterSingleton<TService, TImplementation>() where TImplementation : TService
         {
-            if (_registrations.ContainsKey(typeof(TService)))
-            {
-                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceRegisteredSingleTon,
-                    typeof(TService).Name));
-            }
-
-            TImplementation instance = new();
-            _registrations[typeof(TService)] = () => instance; // Always return the same instance
+            _registrations[typeof(TService)] = () =>
+                _singletonInstances.GetOrAdd(typeof(TService), _ => CreateInstance(typeof(TImplementation)));
         }
 
         /// <summary>
@@ -109,12 +110,12 @@ namespace Core.Inject
         {
             _registrations[typeof(TService)] = () =>
             {
-                if (_currentScope == null)
+                if (_currentScope.Value == null)
                 {
                     throw new InvalidOperationException(CoreInjectResource.ErrorNoActiveScope);
                 }
 
-                return _currentScope.Resolve<TService>(() => new TImplementation());
+                return _currentScope.Value.Resolve<TService>(() => new TImplementation());
             };
         }
 
@@ -143,9 +144,9 @@ namespace Core.Inject
         /// <returns>The resolved service instance.</returns>
         public TService Resolve<TService>()
         {
-            if (_currentScope != null && _registrations.ContainsKey(typeof(TService)))
+            if (_currentScope.Value != null && _registrations.ContainsKey(typeof(TService)))
             {
-                return _currentScope.Resolve<TService>(() => (TService)_registrations[typeof(TService)]());
+                return _currentScope.Value.Resolve<TService>(() => (TService)_registrations[typeof(TService)]());
             }
 
             return (TService)Resolve(typeof(TService));
@@ -157,7 +158,7 @@ namespace Core.Inject
         /// </summary>
         public void BeginScope()
         {
-            _currentScope = new SimpleScope();
+            _currentScope.Value = new SimpleScope();
         }
 
         /// <summary>
@@ -166,10 +167,22 @@ namespace Core.Inject
         /// </summary>
         public void EndScope()
         {
-            _currentScope?.Dispose();
-            _currentScope = null;
+            _currentScope.Value?.Dispose();
+            _currentScope.Value = null;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            // Only dispose things we actually created!
+            foreach (var instance in _singletonInstances.Values)
+            {
+                (instance as IDisposable)?.Dispose();
+            }
+            _singletonInstances.Clear();
+        }
 
         /// <summary>
         ///     Resolves a service by its type.

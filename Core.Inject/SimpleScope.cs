@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Core.Inject
 {
@@ -23,7 +23,7 @@ namespace Core.Inject
         /// <summary>
         ///     Stores instances of services that should persist within the current scope.
         /// </summary>
-        private readonly Dictionary<Type, object> _scopedInstances = new();
+        private readonly ConcurrentDictionary<Type, object> _scopedInstances = new();
 
         /// <inheritdoc />
         /// <summary>
