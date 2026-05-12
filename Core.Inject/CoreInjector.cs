@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Inject
 {
@@ -118,6 +119,23 @@ namespace Core.Inject
         }
 
         /// <summary>
+        /// Registers the transient.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="implementationType">Type of the implementation.</param>
+        /// <exception cref="System.InvalidOperationException">Service {serviceType.Name} is already registered.</exception>
+        public void RegisterTransient(Type serviceType, Type implementationType)
+        {
+            if (_registrations.ContainsKey(serviceType))
+            {
+                throw new InvalidOperationException($"Service {serviceType.Name} is already registered.");
+            }
+
+            // We store a factory that calls our new CreateInstance method
+            _registrations[serviceType] = () => CreateInstance(implementationType);
+        }
+
+        /// <summary>
         ///     Resolves an instance of the requested service type.
         ///     If a scope is active, the service will be resolved within that scope.
         /// </summary>
@@ -131,23 +149,6 @@ namespace Core.Inject
             }
 
             return (TService)Resolve(typeof(TService));
-        }
-
-        /// <summary>
-        ///     Resolves a service by its type.
-        /// </summary>
-        /// <param name="serviceType">The type of the service.</param>
-        /// <returns>The resolved service instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the service cannot be resolved.</exception>
-        private object Resolve(Type serviceType)
-        {
-            if (!_registrations.TryGetValue(serviceType, out var factory))
-            {
-                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceNotRegistered,
-                    serviceType.Name));
-            }
-
-            return factory();
         }
 
         /// <summary>
@@ -167,6 +168,53 @@ namespace Core.Inject
         {
             _currentScope?.Dispose();
             _currentScope = null;
+        }
+
+
+        /// <summary>
+        ///     Resolves a service by its type.
+        /// </summary>
+        /// <param name="serviceType">The type of the service.</param>
+        /// <returns>The resolved service instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the service cannot be resolved.</exception>
+        private object Resolve(Type serviceType)
+        {
+            if (!_registrations.TryGetValue(serviceType, out var factory))
+            {
+                throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorServiceNotRegistered,
+                    serviceType.Name));
+            }
+
+            return factory();
+        }
+
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <param name="implementationType">Type of the implementation.</param>
+        /// <returns>The created instance.</returns>
+        private object CreateInstance(Type implementationType)
+        {
+            // Find the best constructor (for now, we'll just take the first one)
+            var constructor = implementationType.GetConstructors()
+                .OrderByDescending(c => c.GetParameters().Length) // Pick the one with the most params
+                .First();
+
+            var parameters = constructor.GetParameters();
+
+            if (parameters.Length == 0)
+            {
+                return Activator.CreateInstance(implementationType);
+            }
+
+            // Recursively resolve each dependency found in the constructor
+            var parameterInstances = new List<object>();
+            foreach (var parameter in parameters)
+            {
+                parameterInstances.Add(Resolve(parameter.ParameterType));
+            }
+
+            return constructor.Invoke(parameterInstances.ToArray());
         }
     }
 }

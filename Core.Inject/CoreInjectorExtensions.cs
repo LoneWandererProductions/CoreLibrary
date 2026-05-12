@@ -33,23 +33,12 @@ namespace Core.Inject
                 .Where(t => t.IsClass && !t.IsAbstract)
                 .SelectMany(t => t.GetInterfaces(), (t, i) => new { Implementation = t, Interface = i });
 
-            foreach (var type in types.Where(type => !injector.IsServiceRegistered(type.Interface)))
+            foreach (var type in types)
             {
-                // Try to register the service
-                try
+                if (!injector.IsServiceRegistered(type.Interface))
                 {
-                    var method = typeof(CoreInjector)
-                        .GetMethod(CoreInjectResource.MethodRegisterTransient,
-                            BindingFlags.Public | BindingFlags.Instance)
-                        ?.MakeGenericMethod(type.Interface, type.Implementation);
-
-                    method?.Invoke(injector, null);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    // Log and handle any errors if needed, this should not happen anymore
-                    throw new InvalidOperationException(string.Format(CoreInjectResource.ErrorRegisteringService,
-                        type.Interface.Name, ex.Message));
+                    // Now we call the non-generic version directly!
+                    injector.RegisterTransient(type.Interface, type.Implementation);
                 }
             }
         }
