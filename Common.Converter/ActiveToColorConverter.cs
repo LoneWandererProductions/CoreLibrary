@@ -1,27 +1,24 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimControls
- * FILE:        NotNullToBooleanConverter.cs
- * PURPOSE:     NotNull to Boolean converter.
+ * PROJECT:     Common.Converter
+ * FILE:        ActiveToColorConverter.cs
+ * PURPOSE:     Convert a boolean value to a color for WPF bindings.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
-
-// ReSharper disable UnusedType.Global
 
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Common.Converter
 {
-    /// <inheritdoc />
     /// <summary>
-    /// Converts between a not-null value and a boolean.
+    /// Converter that converts a boolean value to a color for WPF bindings. It returns Gold for true (active) and Dark Gray for false (inactive).
     /// </summary>
-    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
-    public class NotNullToBooleanConverter : IValueConverter
+    /// <seealso cref="System.Windows.Data.IValueConverter" />
+    public class ActiveToColorConverter : IValueConverter
     {
-        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -32,10 +29,15 @@ namespace Common.Converter
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
-        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
-            => value != null;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool isActive && isActive)
+            {
+                return new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold for Active
+            }
+            return new SolidColorBrush(Color.FromRgb(60, 60, 60)); // Dark Gray for Inactive
+        }
 
-        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -47,6 +49,20 @@ namespace Common.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => Binding.DoNothing;
+        {
+            if (value is SolidColorBrush brush)
+            {
+                var color = brush.Color;
+                if (color == Color.FromRgb(255, 215, 0)) // Gold
+                {
+                    return true;
+                }
+                if (color == Color.FromRgb(60, 60, 60)) // Dark Gray
+                {
+                    return false;
+                }
+            }
+            return false;   
+        }
     }
 }
