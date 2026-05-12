@@ -227,7 +227,7 @@ namespace Imaging
         /// <param name="startPoint">The start point.</param>
         /// <returns>The selected Image area.</returns>
         /// <exception cref="T:System.ArgumentOutOfRangeException">shape - null</exception>
-        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null,
+        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null)
         {
             var btm = ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
@@ -331,7 +331,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        public BitmapImage GetBitmapImageFileStream(string path)
+        public BitmapImage? GetBitmapImageFileStream(string path)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path);
         }
@@ -352,7 +352,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        public BitmapImage GetBitmapImageFileStream(string path, int width, int height)
+        public BitmapImage? GetBitmapImageFileStream(string path, int width, int height)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path, width, height);
         }

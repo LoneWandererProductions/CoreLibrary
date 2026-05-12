@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteExecute.cs
+ * FILE:        SqliteExecute.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -21,7 +21,7 @@ namespace SqliteHelper
     /// <summary>
     ///     Just execute our queries here
     /// </summary>
-    internal sealed class SqliteExecute
+    internal sealed class SqliteExecute : IDisposable
     {
         /// <summary>
         ///     Logging of System Messages
@@ -31,7 +31,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Send our Message to the Subscribers
         /// </summary>
-        public EventHandler<MessageItem> SetMessage { get; set; }
+        public event EventHandler<MessageItem>? SetMessage;
+
+        /// <summary>
+        /// The disposed
+        /// </summary>
+        private bool _disposed;
 
         /// <summary>
         ///     Switch to a new database Context
@@ -940,7 +945,7 @@ namespace SqliteHelper
                 cmd.CommandText = sqlQuery;
 
                 // Syntax Checker initialization
-                var syntax = new SqliteSyntax(SetMessage);
+                var syntax = new SqliteSyntax(msg => SetMessage?.Invoke(this, msg));
 
                 // Cache parameters to reuse objects (Optimization)
                 var paramCache = new Dictionary<int, SQLiteParameter>();
@@ -1364,6 +1369,20 @@ namespace SqliteHelper
         private void OnError(MessageItem dbMessage)
         {
             SetMessage?.Invoke(this, dbMessage);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            // Wipes the invocation list, freeing any subscribers 
+            // that forgot to unsubscribe, preventing memory leaks!
+            SetMessage = null;
+
+            _disposed = true;
         }
     }
 }

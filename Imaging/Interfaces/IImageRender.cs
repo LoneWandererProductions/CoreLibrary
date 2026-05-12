@@ -234,7 +234,7 @@ namespace Imaging.Interfaces
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        BitmapImage GetBitmapImageFileStream(string path);
+        BitmapImage? GetBitmapImageFileStream(string path);
 
         /// <summary>
         ///     Loads File in a Stream
@@ -251,7 +251,7 @@ namespace Imaging.Interfaces
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        BitmapImage GetBitmapImageFileStream(string path, int width, int height);
+        BitmapImage? GetBitmapImageFileStream(string path, int width, int height);
 
         /// <summary>
         /// Bitmaps to bitmap image.
@@ -261,7 +261,7 @@ namespace Imaging.Interfaces
         /// The Image as <see cref="BitmapImage" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        BitmapImage BitmapToBitmapImage(Bitmap image);
+        BitmapImage? BitmapToBitmapImage(Bitmap image);
 
         /// <summary>
         /// Bitmaps the image  bitmap.

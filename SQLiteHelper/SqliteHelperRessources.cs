@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteHelperResources.cs
+ * FILE:        SqliteHelperResources.cs
  * PURPOSE:     Basic String Resources and magic Numbers
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

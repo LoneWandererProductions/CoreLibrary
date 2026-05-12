@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqLiteDataTypes.cs
+ * FILE:        SqLiteDataTypes.cs
  * PURPOSE:     Enums of Types Sqlite Supports
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,19 +1,19 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteDatabase.cs
+ * FILE:        SqliteDatabase.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite, packed into a light weight wrapper for easy to use SqlLite Integration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global, it is not used yet
+// ReSharper disable MemberCanBeInternal, these are public information and Methods, they should be visible to the outside
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global, it is not used yet
-// ReSharper disable MemberCanBeInternal, these are public information and Methods, they should be visible to the outside
 
 namespace SqliteHelper
 {
@@ -46,51 +46,24 @@ namespace SqliteHelper
         /// <summary>
         ///     Initiate Database
         /// </summary>
-        public SqliteDatabase()
+        /// <param name="location">Path to location. Defaults to current directory.</param>
+        /// <param name="dbName">Name of the Database. Defaults to standard name.</param>
+        /// <param name="timeOut">Time Out. Defaults to 300.</param>
+        public SqliteDatabase(string? location = null, string? dbName = null, int timeOut = 3)
         {
-            Location = Directory.GetCurrentDirectory();
-            DbName = SqliteHelperResources.StandardName;
-
-            InitiateSystem();
-        }
-
-        /// <summary>
-        ///     Initiate Database
-        /// </summary>
-        /// <param name="dbName">Name of the Database</param>
-        public SqliteDatabase(string? dbName)
-        {
-            Location = Directory.GetCurrentDirectory();
-            DbName = dbName;
-
-            InitiateSystem();
-        }
-
-        /// <summary>
-        ///     Initiate Database
-        /// </summary>
-        /// <param name="location">Path to location</param>
-        /// <param name="dbName">Name of the Database</param>
-        public SqliteDatabase(string? location, string? dbName)
-        {
-            Location = location;
-            DbName = dbName;
-
-            InitiateSystem();
-        }
-
-        /// <summary>
-        ///     Initiate Database
-        /// </summary>
-        /// <param name="location">Path to location</param>
-        /// <param name="dbName">Name of the Database</param>
-        /// <param name="timeOut">Time Out</param>
-        public SqliteDatabase(string? location, string? dbName, int timeOut)
-        {
-            Location = location;
-            DbName = dbName;
+            // 1. Assign values, falling back to defaults if null was provided
+            Location = location ?? Directory.GetCurrentDirectory();
+            DbName = dbName ?? SqliteHelperResources.StandardName;
             TimeOut = timeOut;
 
+            // 2. Validate to ensure the user didn't explicitly pass an empty/whitespace string ("")
+            if (string.IsNullOrWhiteSpace(Location))
+                throw new ArgumentException("Location cannot be empty.", nameof(location));
+
+            if (string.IsNullOrWhiteSpace(DbName))
+                throw new ArgumentException("Database name cannot be empty.", nameof(dbName));
+
+            // 3. Start the system
             InitiateSystem();
         }
 

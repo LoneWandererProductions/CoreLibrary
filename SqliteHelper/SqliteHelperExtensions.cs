@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteHelperExtensions.cs
+ * FILE:        SqliteHelperExtensions.cs
  * PURPOSE:     Extensions of SqliteHelper
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

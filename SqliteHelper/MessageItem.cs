@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/MessageItem.cs
+ * FILE:        MessageItem.cs
  * PURPOSE:     Internal Message Item
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

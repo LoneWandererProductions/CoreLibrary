@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/Config.cs
+ * FILE:        Config.cs
  * PURPOSE:     Config Object of our Wrapper
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -18,12 +18,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the location.
         /// </summary>
-        public string? Location { get; internal init; }
+        public string Location { get; internal init; } = null!;
 
         /// <summary>
         ///     Gets or sets the Database name.
         /// </summary>
-        public string? DbName { get; internal init; }
+        public string DbName { get; internal init; } = null!;
 
         /// <summary>
         ///     Gets or sets the time out.
@@ -38,12 +38,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the last Errors.
         /// </summary>
-        public string LastError { get; internal init; }
+        public string? LastError { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the List Errors.
         /// </summary>
-        public List<string> ListErrors { get; internal init; }
+        public List<string>? ListErrors { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the max lines error.

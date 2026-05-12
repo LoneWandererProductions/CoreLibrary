@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteProcessing.cs
+ * FILE:        SqliteProcessing.cs
  * PURPOSE:     Processing of various Database Objects processing and Checks
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

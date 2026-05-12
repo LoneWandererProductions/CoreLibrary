@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/ISqliteDatabase.cs
+ * FILE:        ISqliteDatabase.cs
  * PURPOSE:     SQLiteHelper Interface
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

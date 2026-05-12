@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteHelper.cs
+ * FILE:        SqliteHelper.cs
  * PURPOSE:     Helper Class for some Conversions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

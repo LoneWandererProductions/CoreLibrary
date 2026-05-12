@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/MessageHandling.cs
+ * FILE:        MessageHandling.cs
  * PURPOSE:     Collects all Errors and Status Messages
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -37,7 +37,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Last Message
         /// </summary>
-        internal static string LastError { get; private set; }
+        internal static string? LastError { get; private set; }
 
         /// <summary>
         ///     List of Errors

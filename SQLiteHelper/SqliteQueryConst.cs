@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqliteQueryConst.cs
+ * FILE:        SqliteQueryConst.cs
  * PURPOSE:     Const Sql Parameters for basic SqLite Operations, mostly basic Data types no Objects for portability, one Exception though I need a plan for this
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

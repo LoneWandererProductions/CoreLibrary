@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/CompareOperator.cs
+ * FILE:        CompareOperator.cs
  * PURPOSE:     Compare Operators
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

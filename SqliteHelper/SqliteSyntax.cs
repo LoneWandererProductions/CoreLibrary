@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/SqLiteDataTypes.cs
+ * FILE:        SqLiteDataTypes.cs
  * PURPOSE:     Enums of Types Sqlite Supports and Syntax Checking
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -20,7 +20,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Send our Message to the Subscribers
         /// </summary>
-        private readonly EventHandler<MessageItem> _setMessage;
+        private readonly Action<MessageItem>? _onMessage;
 
         /// <summary>
         ///     Logging of System Messages
@@ -30,10 +30,10 @@ namespace SqliteHelper
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqliteSyntax" /> class.
         /// </summary>
-        /// <param name="setMessage">The set message.</param>
-        public SqliteSyntax(EventHandler<MessageItem> setMessage = null)
+        /// <param name="onMessage">The action to invoke when a message is set.</param>
+        public SqliteSyntax(Action<MessageItem>? onMessage = null)
         {
-            _setMessage = setMessage;
+            _onMessage = onMessage;
         }
 
         /// <summary>
@@ -163,17 +163,8 @@ namespace SqliteHelper
         /// <param name="message">The message.</param>
         private void LogError(string message)
         {
-            _message = new MessageItem { Message = message, Level = 0 };
-            OnError(_message);
-        }
-
-        /// <summary>
-        ///     Inform Subscribers about the News
-        /// </summary>
-        /// <param name="dbMessage">Message</param>
-        private void OnError(MessageItem dbMessage)
-        {
-            _setMessage?.Invoke(this, dbMessage);
+            var dbMessage = new MessageItem { Message = message, Level = 0 };
+            _onMessage?.Invoke(dbMessage);
         }
     }
 }

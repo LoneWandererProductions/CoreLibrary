@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SqliteHelper
- * FILE:        SqliteHelper/TableRow.cs
+ * FILE:        TableRow.cs
  * PURPOSE:     Describes a Table Header
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
