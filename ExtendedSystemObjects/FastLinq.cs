@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects
 {
@@ -136,6 +137,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="T">The element type of the collection.</typeparam>
         /// <param name="span">The source span to check.</param>
         /// <returns>True if the collection contains at least one element; otherwise false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyFast<T>(this ReadOnlySpan<T> span)
         {
             return span.Length != 0;
@@ -149,9 +151,36 @@ namespace ExtendedSystemObjects
         /// <typeparam name="T">The element type of the collection.</typeparam>
         /// <param name="span">The source span to check.</param>
         /// <returns>True if the collection contains at least one element; otherwise false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyFast<T>(this Span<T> span)
         {
             return span.Length != 0;
+        }
+
+        /// <summary>
+        /// High-performance 'Any' check for Lists.
+        /// Avoids the IEnumerable/IEnumerator allocation.
+        /// </summary>
+        /// <typeparam name="T">The element type of the collection.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>True if the collection contains at least one element; otherwise false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFast<T>(this List<T> list)
+        {
+            return list != null && list.Count != 0;
+        }
+
+        /// <summary>
+        /// High-performance 'Any' check for Arrays.
+        /// Zero allocations, direct length check.
+        /// </summary>
+        /// <typeparam name="T">The element type of the collection.</typeparam>
+        /// <param name="array">The array.</param>
+        /// <returns>True if the collection contains at least one element; otherwise false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFast<T>(this T[] array)
+        {
+            return array != null && array.Length != 0;
         }
 
         /// <summary>
@@ -221,6 +250,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="T">The element type of the collection.</typeparam>
         /// <param name="span">The source span to count.</param>
         /// <returns>The number of elements in the collection.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CountFast<T>(this ReadOnlySpan<T> span)
         {
             return span.Length;
