@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ExtendedSystemObjects;
 using LightVector.Enums;
 using LightVector.Interfaces;
 
@@ -48,7 +49,7 @@ namespace LightVector
             var canvas = new Canvas();
 
             // If no objects, return an empty 0x0 canvas
-            if (!_vectorObjects.Any()) return canvas;
+            if (!_vectorObjects.AnyFast()) return canvas;
 
             var minX = double.MaxValue;
             var minY = double.MaxValue;
