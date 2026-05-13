@@ -1,17 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedMemoryHelperTests.cs
  * PURPOSE:     Test for unmanaged memory helper functions.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     /// Basic unit tests for UnmanagedMemoryHelper functions to ensure correctness of memory allocation, reallocation, clearing, shifting, filling, indexing, and swapping operations on unmanaged memory blocks.
@@ -28,7 +26,7 @@ namespace CommonExtendedObjectsTests
             const int count = 10;
 
             var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
-            Assert.AreNotEqual(IntPtr.Zero, ptr);
+            Assert.AreNotEqual(nint.Zero, ptr);
 
             try
             {
@@ -42,7 +40,7 @@ namespace CommonExtendedObjectsTests
                 // Reallocate to bigger size
                 const int newCount = 20;
                 var newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
-                Assert.AreNotEqual(IntPtr.Zero, newPtr);
+                Assert.AreNotEqual(nint.Zero, newPtr);
                 ptr = newPtr;
 
                 intPtr = (int*)ptr.ToPointer();

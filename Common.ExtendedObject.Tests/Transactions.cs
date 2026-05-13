@@ -1,15 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        Transactions.cs
  * PURPOSE:     Test the Transaction Log
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     [TestClass]
     public class Transactions
@@ -36,11 +35,11 @@ namespace CommonExtendedObjectsTests
             public string Name { get; init; }
 
             /// <summary>
-            /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+            /// Determines whether the specified <see cref="object" />, is equal to this instance.
             /// </summary>
-            /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+            /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
             /// <returns>
-            ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
             /// </returns>
             public override bool Equals(object obj) => obj is DataItem item && Name == item.Name;
 

@@ -1,19 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        FastLinqTests.cs
  * PURPOSE:     Some basic unit tests for FastLinq extension methods to ensure correctness and benchmark performance against standard LINQ methods.
  *              The linq is not actual faster than standard linq, but it is more memory efficient and can be faster in certain scenarios due to reduced allocations and better cache usage.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Diagnostics;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExtendedSystemObjects;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     /// Basic unit tests for FastLinq extension methods to ensure correctness and benchmark performance against standard LINQ methods.

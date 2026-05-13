@@ -9,7 +9,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBeInternal, if we make it Internal Serialization will fail!
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     The coordinates class.

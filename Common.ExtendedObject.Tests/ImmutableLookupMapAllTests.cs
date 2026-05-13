@@ -1,19 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        ImmutableLookupMapAllTests.cs
  * PURPOSE:     Unified test suite for both ImmutableLookupMap and ImmutableLookupMapUnmanaged
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     Unified tests for both ImmutableLookupMap and ImmutableLookupMapUnmanaged.

@@ -1,18 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedMapTests.cs
  * PURPOSE:     Some basic function tests for UnmanagedMap
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     [TestClass]
     public class UnmanagedMapTests

@@ -1,18 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedIntListTests.cs
  * PURPOSE:     Tests for my custom list
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     Some basic sanity tests for my list

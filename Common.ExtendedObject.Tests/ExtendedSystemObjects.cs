@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        ExtendedSystemObjects.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,17 +10,13 @@
 
 #pragma warning disable 649
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using ExtendedSystemObjects;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 using Mathematics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     CommonLibraryTests Extended system objects unit test class.

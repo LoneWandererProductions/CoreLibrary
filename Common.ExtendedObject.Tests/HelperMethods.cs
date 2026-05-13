@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        HelperMethods.cs
  * PURPOSE:     Helper Methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using ExtendedSystemObjects;
 using Mathematics;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     The helper methods class.
@@ -47,7 +47,7 @@ namespace CommonExtendedObjectsTests
                         res += spanOne[iOne + k] * spanTwo[iTwo];
                     }
 
-                    spanResult[(i * w) + j] = res;
+                    spanResult[i * w + j] = res;
                 }
             }
 

@@ -1,17 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        MemoryVaultTests.cs
  * PURPOSE:     Tests for the MemoryVault
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Threading;
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     ///     Some basic tests for Memory Vault

@@ -1,16 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedListTests.cs
  * PURPOSE:     Tests for our UnmanagedList class, ensuring correct behavior of all operations including edge cases.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExtendedSystemObjects;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     /// General tests for the UnmanagedList class, covering construction, basic list operations (add, remove, insert),

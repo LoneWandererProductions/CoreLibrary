@@ -1,16 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        BiMapTestss.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using ExtendedSystemObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     /// <summary>
     /// Some generic tests for BiMap. These tests cover basic functionality such as adding pairs, retrieving values, and ensuring that duplicate values are not allowed.

@@ -1,18 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonExtendedObjectsTests
+ * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedIntArray.cs
  * PURPOSE:     Tests for my custom array
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Diagnostics;
 using ExtendedSystemObjects;
 using ExtendedSystemObjects.Interfaces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonExtendedObjectsTests
+namespace Common.ExtendedObject.Tests
 {
     [TestClass]
     public class UnmanagedIntArrayTests
