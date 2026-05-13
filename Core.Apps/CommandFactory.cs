@@ -42,7 +42,7 @@ namespace Core.Apps
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
                 new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
-                new WhoAmI(weave.Runtime.Variables), new Tree()
+                new WhoAmI(weave.Runtime.Variables), new Tree(), new DependencyExplorer(weave.Runtime.Variables)
             };
 
             return modules;
@@ -67,7 +67,8 @@ namespace Core.Apps
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
                 new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
-                new WhoAmI(weave.Runtime.Variables), new Tree()
+                new WhoAmI(weave.Runtime.Variables), new Tree(),
+                new DependencyExplorer(weave.Runtime.Variables),
             };
 
             // Filter by Namespace

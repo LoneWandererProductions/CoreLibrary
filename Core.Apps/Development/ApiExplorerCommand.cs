@@ -42,7 +42,6 @@ namespace Core.Apps.Development
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
-
         /// <inheritdoc />
         /// <summary>
         ///  folder + optional outputMode
