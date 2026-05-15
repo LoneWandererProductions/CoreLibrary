@@ -15,10 +15,29 @@ namespace Core.StateExecutive.Builder
     /// </summary>
     public sealed class TransitionBuilder
     {
+        /// <summary>
+        /// The parent
+        /// </summary>
         private readonly StateBuilder _parent;
+
+        /// <summary>
+        /// The target state identifier
+        /// </summary>
         private readonly string _targetStateId;
+
+        /// <summary>
+        /// The condition
+        /// </summary>
         private Func<IStateContext, bool> _condition = _ => true;
+
+        /// <summary>
+        /// The claims
+        /// </summary>
         private readonly List<(string key, int amount)> _claims = new();
+
+        /// <summary>
+        /// The effects
+        /// </summary>
         private readonly List<Action<IStateContext>> _effects = new();
 
         /// <summary>

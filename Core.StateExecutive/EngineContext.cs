@@ -27,7 +27,7 @@ namespace Core.StateExecutive
         /// <value>
         /// The state of the current.
         /// </value>
-        public IState CurrentState { get; private set; }
+        public IState? CurrentState { get; private set; }
 
         /// <summary>
         /// Registers the state.

@@ -33,19 +33,47 @@ namespace Core.Apps
         /// </returns>
         public static IReadOnlyList<ICommand> GetCommands(Weave? weave = null)
         {
-            ICommand[] modules =
-            {
-                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(), new HeaderExtractor(),
-                new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
-                new WhoAmI(weave.Runtime.Variables), new Tree(), new DependencyExplorer(weave.Runtime.Variables)
-            };
+            // 1. Use a List instead of an array so we can dynamically add commands
+            var modules = new List<ICommand>();
 
-            return modules;
+            // 2. Safely extract the registry. If weave is null, producers can't function properly.
+            var registry = weave?.Runtime?.Variables;
+
+            // --- ANALYZER & DEVELOPMENT (Standalone) ---
+            // These don't require the registry in their constructor
+            modules.AddRange(new ICommand[]
+            {
+                new HeaderExtractor(),
+                new ResXtract(),
+                new AllocationAnalyzer(),
+                new DisposableAnalyzer(),
+                new DoubleNewlineAnalyzer(),
+                new DuplicateStringLiteralAnalyzer(),
+                new EventHandlerAnalyzer(),
+                new HotPathAnalyzer(),
+                new LicenseHeaderAnalyzer(),
+                new UnusedClassAnalyzer(),
+                new UnusedConstantAnalyzer(),
+                new UnusedLocalVariableAnalyzer(),
+                new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(),
+                new DocCommentCoverageCommand(),
+                new DeadReferenceAnalyzer(),
+                new ApiExplorerCommand(),
+                new LogTailCommand(),
+                new SmartPingPro(),
+                new Tree()
+            });
+
+            // --- PRODUCERS (Require Registry) ---
+            if (registry != null)
+            {
+                modules.Add(new DirectorySizeAnalyzer(registry));
+                modules.Add(new FileLockScanner(registry));
+                modules.Add(new WhoAmI(registry));
+                modules.Add(new DependencyExplorer(registry));
+            }
+            return modules.AsReadOnly();
         }
 
         /// <summary>
@@ -58,18 +86,7 @@ namespace Core.Apps
         /// </returns>
         public static IReadOnlyList<ICommand> GetCommands(string userSpace, Weave? weave = null)
         {
-            ICommand[] modules =
-            {
-                new DirectorySizeAnalyzer(weave.Runtime.Variables), new LogTailCommand(), new HeaderExtractor(),
-                new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new ApiExplorerCommand(),
-                new FileLockScanner(weave.Runtime.Variables), new SmartPingPro(),
-                new WhoAmI(weave.Runtime.Variables), new Tree(),
-                new DependencyExplorer(weave.Runtime.Variables),
-            };
+            var modules = GetCommands(weave);
 
             // Filter by Namespace
             return modules
