@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        Simple3DRenderer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     A simple 3D renderer for basic shapes and sprites, using OpenGL 4.5 and OpenTK.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
