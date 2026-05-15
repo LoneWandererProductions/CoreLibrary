@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ShaderTypeApp.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Enumeration of application-defined shader types for use in shader management and rendering logic.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

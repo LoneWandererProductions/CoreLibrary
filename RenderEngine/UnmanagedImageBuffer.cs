@@ -444,6 +444,19 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Clears the specified r.
+        /// </summary>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        public void Clear(byte r, byte g, byte b, byte a)
+        {
+            var colorValue = PackBgra(a, r, g, b);
+            MemoryMarshal.Cast<byte, uint>(BufferSpan).Fill(colorValue);
+        }
+
+        /// <summary>
         /// Packs bytes into a single uint in BGRA order (little endian).
         /// </summary>
         public static uint PackBgra(byte a, byte r, byte g, byte b)

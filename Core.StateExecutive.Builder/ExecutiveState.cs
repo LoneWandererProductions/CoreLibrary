@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Core.StateExecutive.Builder
  * FILE:        ExecutiveState.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     State of the State Executive Engine. Each state has a unique ID and a list of transitions to other states.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -12,7 +12,7 @@ namespace Core.StateExecutive.Builder
 {
     /// <inheritdoc />
     /// <summary>
-    /// Stat eof the State Executive Engine. Each state has a unique ID and a list of transitions to other states.
+    /// State of the State Executive Engine. Each state has a unique ID and a list of transitions to other states.
     /// </summary>
     /// <seealso cref="Core.StateExecutive.Interfaces.IState" />
     internal sealed class ExecutiveState : IState

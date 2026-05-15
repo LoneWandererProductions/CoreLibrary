@@ -23,6 +23,9 @@ namespace RenderEngine
     /// </summary>
     public static class OpenTkHelper
     {
+        /// <summary>
+        /// The gl version
+        /// </summary>
         private static Version? _glVersion;
 
         /// <summary>
@@ -197,7 +200,11 @@ namespace RenderEngine
         /// Loads a cubemap texture from six image files.
         /// </summary>
         /// <param name="filePaths">Array of six image file paths in cubemap order.</param>
-        /// <returns>OpenGL cubemap texture ID.</returns>
+        /// <returns>
+        /// OpenGL cubemap texture ID.
+        /// </returns>
+        /// <exception cref="System.ArgumentException">Cube map must have exactly 6 textures. - filePaths</exception>
+        /// <exception cref="System.IO.FileNotFoundException">Cubemap texture not found: {filePaths[i]}</exception>
         /// <exception cref="ArgumentException">Thrown if array length is not 6.</exception>
         internal static int LoadCubeMap(string[] filePaths)
         {
@@ -263,6 +270,11 @@ namespace RenderEngine
         /// Checks if the system supports at least the given OpenGL version.
         /// Caches the result to avoid repeated GLContext queries.
         /// </summary>
+        /// <param name="requiredMajor">The required major.</param>
+        /// <param name="requiredMinor">The required minor.</param>
+        /// <returns>
+        ///   <c>true</c> if [is open gl compatible] [the specified required major]; otherwise, <c>false</c>.
+        /// </returns>
         internal static bool IsOpenGlCompatible(int requiredMajor = 4, int requiredMinor = 5)
         {
             if (_glVersion == null)

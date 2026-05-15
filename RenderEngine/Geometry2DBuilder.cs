@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        Geometry2DBuilder.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Builder for 2D geometry vertex buffers.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -16,6 +16,11 @@ namespace RenderEngine
     /// </summary>
     internal static class Geometry2DBuilder
     {
+        /// <summary>
+        /// Builds the colored lines.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <returns>Array of floats representing the colored lines.</returns>
         internal static float[] BuildColoredLines(
             (float x, float y, int r, int g, int b, int a)[] points)
         {
@@ -34,6 +39,15 @@ namespace RenderEngine
             return data;
         }
 
+        /// <summary>
+        /// Builds the solid quad.
+        /// </summary>
+        /// <param name="p0">The p0.</param>
+        /// <param name="p1">The p1.</param>
+        /// <param name="p2">The p2.</param>
+        /// <param name="p3">The p3.</param>
+        /// <param name="fill">The fill.</param>
+        /// <returns>Array of floats representing a solid quad.</returns>
         internal static float[] BuildSolidQuad(
             (int x, int y) p0,
             (int x, int y) p1,
@@ -53,6 +67,13 @@ namespace RenderEngine
             };
         }
 
+        /// <summary>
+        /// Builds the colored triangle.
+        /// </summary>
+        /// <param name="p0">The p0.</param>
+        /// <param name="p1">The p1.</param>
+        /// <param name="p2">The p2.</param>
+        /// <returns>Array of floats representing a colored triangle.</returns>
         public static float[] BuildColoredTriangle(
             (float x, float y, int r, int g, int b, int a) p0,
             (float x, float y, int r, int g, int b, int a) p1,
@@ -66,6 +87,14 @@ namespace RenderEngine
             };
         }
 
+        /// <summary>
+        /// Builds the textured quad.
+        /// </summary>
+        /// <param name="p0">The p0.</param>
+        /// <param name="p1">The p1.</param>
+        /// <param name="p2">The p2.</param>
+        /// <param name="p3">The p3.</param>
+        /// <returns>Array of floats representing a textured quad.</returns>
         public static float[] BuildTexturedQuad(
             (int x, int y) p0,
             (int x, int y) p1,
@@ -79,6 +108,12 @@ namespace RenderEngine
             };
         }
 
+        /// <summary>
+        /// Builds the polyline.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>Array of floats representing a polyline.</returns>
         internal static (float x, float y, int r, int g, int b, int a)[] BuildPolyline(
             ReadOnlySpan<(float x, float y)> points,
             (int r, int g, int b, int a) color)
@@ -98,6 +133,15 @@ namespace RenderEngine
             return data;
         }
 
+        /// <summary>
+        /// Builds the rect outline.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="w">The w.</param>
+        /// <param name="h">The h.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>Array of floats representing a rectangle outline.</returns>
         public static (float x, float y, int r, int g, int b, int a)[]
             BuildRectOutline(
                 float x, float y,
@@ -110,6 +154,15 @@ namespace RenderEngine
         }
 
 
+        /// <summary>
+        /// Builds the circle outline.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>Array of floats representing a circle outline.</returns>
         internal static (float x, float y, int r, int g, int b, int a)[] BuildCircleOutline(
             float cx, float cy,
             float radius,
