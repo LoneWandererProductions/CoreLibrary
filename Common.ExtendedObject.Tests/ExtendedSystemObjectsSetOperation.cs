@@ -245,7 +245,14 @@ namespace Common.ExtendedObject.Tests
         public void RemoveAtFast_ValidIndex_RemovesAndSwaps()
         {
             // Arrange
-            var list = new List<int> { 10, 20, 30, 40, 50 };
+            var list = new List<int>
+            {
+                10,
+                20,
+                30,
+                40,
+                50
+            };
 
             // Act
             list.RemoveAtFast(1); // Removing 20

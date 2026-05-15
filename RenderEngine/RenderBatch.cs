@@ -128,7 +128,8 @@ namespace RenderEngine
         /// <param name="p3">The p3.</param>
         /// <param name="p4">The p4.</param>
         /// <param name="textureId">The texture identifier.</param>
-        public void AddTexturedQuad((int x, int y) p1, (int x, int y) p2, (int x, int y) p3, (int x, int y) p4, int textureId)
+        public void AddTexturedQuad((int x, int y) p1, (int x, int y) p2, (int x, int y) p3, (int x, int y) p4,
+            int textureId)
         {
             AddTexturedTriangle(p1, p2, p3, textureId);
             AddTexturedTriangle(p1, p3, p4, textureId);
@@ -178,7 +179,8 @@ namespace RenderEngine
         /// <param name="v3">The v3.</param>
         /// <param name="uv3">The uv3.</param>
         /// <param name="textureId">The texture identifier.</param>
-        public void AddTextured3DTriangle(Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2, Vector3 v3, Vector2 uv3, int textureId)
+        public void AddTextured3DTriangle(Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2, Vector3 v3, Vector2 uv3,
+            int textureId)
         {
             if (!Textured3DBatches.TryGetValue(textureId, out var list))
             {

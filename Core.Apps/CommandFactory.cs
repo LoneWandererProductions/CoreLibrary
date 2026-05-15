@@ -43,26 +43,12 @@ namespace Core.Apps
             // These don't require the registry in their constructor
             modules.AddRange(new ICommand[]
             {
-                new HeaderExtractor(),
-                new ResXtract(),
-                new AllocationAnalyzer(),
-                new DisposableAnalyzer(),
-                new DoubleNewlineAnalyzer(),
-                new DuplicateStringLiteralAnalyzer(),
-                new EventHandlerAnalyzer(),
-                new HotPathAnalyzer(),
-                new LicenseHeaderAnalyzer(),
-                new UnusedClassAnalyzer(),
-                new UnusedConstantAnalyzer(),
-                new UnusedLocalVariableAnalyzer(),
-                new UnusedParameterAnalyzer(),
-                new UnusedPrivateFieldAnalyzer(),
-                new DocCommentCoverageCommand(),
-                new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(),
-                new LogTailCommand(),
-                new SmartPingPro(),
-                new Tree()
+                new HeaderExtractor(), new ResXtract(), new AllocationAnalyzer(), new DisposableAnalyzer(),
+                new DoubleNewlineAnalyzer(), new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(),
+                new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
+                new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
+                new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
+                new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree()
             });
 
             // --- PRODUCERS (Require Registry) ---
@@ -73,6 +59,7 @@ namespace Core.Apps
                 modules.Add(new WhoAmI(registry));
                 modules.Add(new DependencyExplorer(registry));
             }
+
             return modules.AsReadOnly();
         }
 

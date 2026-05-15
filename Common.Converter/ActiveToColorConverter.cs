@@ -51,6 +51,7 @@ namespace Common.Converter
             {
                 return ActiveBrush; // Gold for Active
             }
+
             return InactiveBrush; // Dark Gray for Inactive
         }
 

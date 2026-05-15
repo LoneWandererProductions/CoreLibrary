@@ -181,6 +181,7 @@ namespace Core.Inject
             {
                 (instance as IDisposable)?.Dispose();
             }
+
             _singletonInstances.Clear();
         }
 

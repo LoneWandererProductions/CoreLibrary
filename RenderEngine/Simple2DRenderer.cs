@@ -14,11 +14,14 @@
  *              - Add text rendering
  */
 
+// ReSharper disable UnusedType.Global
+
 using OpenTK.Graphics.OpenGL4;
 using System;
 
 namespace RenderEngine
 {
+    /// <inheritdoc />
     /// <summary>
     /// Simple GPU-accelerated 2D renderer for colored lines, solid quads, and textured quads.
     /// </summary>
@@ -122,12 +125,24 @@ namespace RenderEngine
             _initialized = true;
         }
 
+        /// <summary>
+        /// Flushes the specified batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
         public void Flush(RenderBatch batch)
         {
             EnsureInitialized();
             FlushBatch(batch);
         }
 
+        /// <summary>
+        /// Draws the line.
+        /// </summary>
+        /// <param name="x0">The x0.</param>
+        /// <param name="y0">The y0.</param>
+        /// <param name="x1">The x1.</param>
+        /// <param name="y1">The y1.</param>
+        /// <param name="color">The color.</param>
         public void DrawLine(
             float x0, float y0,
             float x1, float y1,
@@ -139,6 +154,14 @@ namespace RenderEngine
             });
         }
 
+        /// <summary>
+        /// Draws the rect outline.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="w">The w.</param>
+        /// <param name="h">The h.</param>
+        /// <param name="color">The color.</param>
         public void DrawRectOutline(
             float x, float y,
             float w, float h,
@@ -150,6 +173,11 @@ namespace RenderEngine
             DrawColoredLines(data);
         }
 
+        /// <summary>
+        /// Draws the polyline.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="color">The color.</param>
         public void DrawPolyline(
             ReadOnlySpan<(float x, float y)> points,
             (int r, int g, int b, int a) color)
@@ -303,6 +331,14 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Draws the circle outline.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="color">The color.</param>
         public void DrawCircleOutline(
             float cx, float cy,
             float radius,
@@ -315,6 +351,14 @@ namespace RenderEngine
             DrawColoredLines(data);
         }
 
+        /// <summary>
+        /// Draws the solid circle.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="fill">The fill.</param>
         public void DrawSolidCircle(
             float cx, float cy,
             float radius,
@@ -324,6 +368,14 @@ namespace RenderEngine
             DrawSolidEllipse(cx, cy, radius, radius, segments, fill);
         }
 
+        /// <summary>
+        /// Draws the textured circle.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedCircle(
             float cx, float cy,
             float radius,
@@ -333,6 +385,15 @@ namespace RenderEngine
             DrawTexturedEllipse(cx, cy, radius, radius, segments, textureId);
         }
 
+        /// <summary>
+        /// Draws the solid ellipse.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radiusX">The radius x.</param>
+        /// <param name="radiusY">The radius y.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="fill">The fill.</param>
         public void DrawSolidEllipse(
             float cx, float cy,
             float radiusX, float radiusY,
@@ -398,6 +459,15 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Draws the textured ellipse.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radiusX">The radius x.</param>
+        /// <param name="radiusY">The radius y.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedEllipse(
             float cx, float cy,
             float radiusX, float radiusY,
@@ -496,6 +566,10 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Flushes the batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
         private unsafe void FlushBatch(RenderBatch batch)
         {
             EnsureInitialized();
@@ -547,38 +621,40 @@ namespace RenderEngine
             }
 
             // --- Textured Vertices ---
-            if (batch.TexturedBatches.Count > 0)
+            if (batch.TexturedBatches.Count <= 0)
             {
-                BindShaderAndViewport(_ui2DTextureShader);
-                GL.BindVertexArray(_vaoTex);
-
-                // Loop through each texture group
-                foreach (var kvp in batch.TexturedBatches)
-                {
-                    var texId = kvp.Key;
-                    var dataList = kvp.Value;
-
-                    if (dataList.Count == 0) continue;
-
-                    var data = dataList.ToArray();
-                    EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
-
-                    // Bind the specific texture for this batch
-                    GL.ActiveTexture(TextureUnit.Texture0);
-
-                    // Use checkerboard if the texture ID is invalid (< 0)
-                    GL.BindTexture(TextureTarget.Texture2D, texId < 0 ? GetOrCreateCheckerboardTexture() : texId);
-                    GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
-
-                    // Upload and draw
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
-                    GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
-                    GL.DrawArrays(PrimitiveType.Triangles, 0, data.Length / 4);
-                }
-
-                GL.BindTexture(TextureTarget.Texture2D, 0);
-                GL.BindVertexArray(0);
+                return;
             }
+
+            BindShaderAndViewport(_ui2DTextureShader);
+            GL.BindVertexArray(_vaoTex);
+
+            // Loop through each texture group
+            foreach (var kvp in batch.TexturedBatches)
+            {
+                var texId = kvp.Key;
+                var dataList = kvp.Value;
+
+                if (dataList.Count == 0) continue;
+
+                var data = dataList.ToArray();
+                EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
+
+                // Bind the specific texture for this batch
+                GL.ActiveTexture(TextureUnit.Texture0);
+
+                // Use checkerboard if the texture ID is invalid (< 0)
+                GL.BindTexture(TextureTarget.Texture2D, texId < 0 ? GetOrCreateCheckerboardTexture() : texId);
+                GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
+
+                // Upload and draw
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, data.Length / 4);
+            }
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.BindVertexArray(0);
         }
 
         /// <summary>
@@ -586,7 +662,7 @@ namespace RenderEngine
         /// This performs a GPU → CPU readback of the active framebuffer.
         /// Result is top-left origin (software style).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="UnmanagedImageBuffer"/> containing the captured frame.</returns>
         public UnmanagedImageBuffer CaptureFrame()
         {
             EnsureInitialized();
@@ -671,6 +747,12 @@ namespace RenderEngine
             return texId;
         }
 
+        /// <summary>
+        /// Ensures the buffer capacity.
+        /// </summary>
+        /// <param name="vbo">The vbo.</param>
+        /// <param name="currentCapacity">The current capacity.</param>
+        /// <param name="requiredFloats">The required floats.</param>
         private void EnsureBufferCapacity(int vbo, ref int currentCapacity, int requiredFloats)
         {
             if (requiredFloats <= currentCapacity) return;
@@ -686,7 +768,11 @@ namespace RenderEngine
                 BufferUsageHint.DynamicDraw);
         }
 
-        // FIX 5: Create once and cache
+        /// <summary>
+        ///  Gets the or create checkerboard texture.
+        ///  Create once and cache
+        /// </summary>
+        /// <returns></returns>
         public int GetOrCreateCheckerboardTexture()
         {
             EnsureInitialized();
