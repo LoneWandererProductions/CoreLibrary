@@ -20,6 +20,22 @@ namespace Common.Converter
     public class ActiveToColorConverter : IValueConverter
     {
         /// <summary>
+        /// Gets or sets the active brush.
+        /// </summary>
+        /// <value>
+        /// The active brush.
+        /// </value>
+        public Brush ActiveBrush { get; set; } = new SolidColorBrush(Color.FromRgb(255, 215, 0));
+
+        /// <summary>
+        /// Gets or sets the inactive brush.
+        /// </summary>
+        /// <value>
+        /// The inactive brush.
+        /// </value>
+        public Brush InactiveBrush { get; set; } = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+
+        /// <summary>
         /// Converts a value.
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
@@ -33,9 +49,9 @@ namespace Common.Converter
         {
             if (value is bool isActive && isActive)
             {
-                return new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold for Active
+                return ActiveBrush; // Gold for Active
             }
-            return new SolidColorBrush(Color.FromRgb(60, 60, 60)); // Dark Gray for Inactive
+            return InactiveBrush; // Dark Gray for Inactive
         }
 
         /// <summary>
@@ -52,17 +68,14 @@ namespace Common.Converter
         {
             if (value is SolidColorBrush brush)
             {
-                var color = brush.Color;
-                if (color == Color.FromRgb(255, 215, 0)) // Gold
-                {
+                if (ActiveBrush is SolidColorBrush active && brush.Color == active.Color)
                     return true;
-                }
-                if (color == Color.FromRgb(60, 60, 60)) // Dark Gray
-                {
+
+                if (InactiveBrush is SolidColorBrush inactive && brush.Color == inactive.Color)
                     return false;
-                }
             }
-            return false;   
+
+            return Binding.DoNothing;
         }
     }
 }

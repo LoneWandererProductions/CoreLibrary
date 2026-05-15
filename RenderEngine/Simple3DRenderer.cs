@@ -8,7 +8,7 @@
 
 using OpenTK.Graphics.OpenGL4;
 using System;
-using System.Numerics; 
+using System.Numerics;
 using TK = OpenTK.Mathematics;
 
 namespace RenderEngine
