@@ -74,7 +74,7 @@ namespace Common.Dialogs
         /// <summary>
         /// Raised when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// The parent vm

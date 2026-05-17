@@ -666,11 +666,12 @@ namespace CommonLibraryTests
         ///     Cuts the files file list non existent file returns false.
         /// </summary>
         [TestMethod]
-        public async Task CutFilesFileListNonExistentFileReturnsFalseAsync()
+        public Task CutFilesFileListNonExistentFileReturnsFalseAsync()
         {
             var fileList = new List<string> { "NonExistentFile.txt" };
             var result = FileHandleCut.CutFiles(fileList, TestTargetDir, true);
             Assert.IsFalse(result);
+            return Task.CompletedTask;
         }
 
         /// <summary>
