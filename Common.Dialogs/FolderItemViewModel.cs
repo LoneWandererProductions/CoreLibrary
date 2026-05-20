@@ -67,7 +67,7 @@ namespace Common.Dialogs
                 OnPropertyChanged(nameof(IsSelected));
 
                 if (_isSelected)
-                    _parentVm.SelectedFolder = this; // ← direct, safe
+                    _parentVm.SelectedFolder = this;
             }
         }
 

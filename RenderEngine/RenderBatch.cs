@@ -269,12 +269,21 @@ namespace RenderEngine
         /// <summary>
         /// Clears this instance.
         /// </summary>
+        /// <summary>
+        /// Resets the batch tracking for the next frame.
+        /// Retains unmanaged capacities to prevent future allocations, 
+        /// but resets lengths and clears managed lists.
+        /// </summary>
         public void Clear()
         {
+            // These reset Length to 0 instantly without freeing the underlying buffer memory.
+            // The next frame will cleanly overwrite the old memory.
             SolidLineVertices.Clear();
             SolidTriangleVertices.Clear();
             Solid3DVertices.Clear();
 
+            // Clear the managed dictionaries to prevent them from growing to infinity.
+            // Note: To avoid GC thrashing, clear the inner lists instead of dropping the keys.
             foreach (var list in TexturedBatches.Values)
             {
                 list.Clear();
@@ -292,11 +301,10 @@ namespace RenderEngine
         /// Adds the host action.
         /// </summary>
         /// <param name="action">The action.</param>
-        /// <exception cref="System.ArgumentNullException">action</exception>
+        /// <exception cref="ArgumentNullException">action</exception>
         public void AddHostAction(Action action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
-
             HostActions.Add(action);
         }
     }

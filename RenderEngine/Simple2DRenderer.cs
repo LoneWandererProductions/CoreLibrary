@@ -19,6 +19,7 @@ using System;
 
 namespace RenderEngine
 {
+    ///<inheritdoc/>
     /// <summary>
     /// Simple GPU-accelerated 2D renderer for colored lines, solid quads, and textured quads.
     /// </summary>
@@ -40,6 +41,9 @@ namespace RenderEngine
         /// </value>
         public int Height { get; }
 
+        /// <summary>
+        /// The resources
+        /// </summary>
         private readonly GlResourceManager _resources;
 
         // Solid VAO/VBO
@@ -714,7 +718,7 @@ namespace RenderEngine
         private void BindShaderAndViewport(int shaderId)
         {
             GL.UseProgram(shaderId);
-            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), Width, (float)Height);
+            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), (float)Width, (float)Height);
         }
 
         /// <summary>

@@ -203,8 +203,8 @@ namespace RenderEngine
         /// <returns>
         /// OpenGL cubemap texture ID.
         /// </returns>
-        /// <exception cref="System.ArgumentException">Cube map must have exactly 6 textures. - filePaths</exception>
-        /// <exception cref="System.IO.FileNotFoundException">Cubemap texture not found: {filePaths[i]}</exception>
+        /// <exception cref="ArgumentException">Cube map must have exactly 6 textures. - filePaths</exception>
+        /// <exception cref="FileNotFoundException">Cubemap texture not found: {filePaths[i]}</exception>
         /// <exception cref="ArgumentException">Thrown if array length is not 6.</exception>
         internal static int LoadCubeMap(string[] filePaths)
         {

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        Simple3DRenderer.cs
- * PURPOSE:     A simple 3D renderer for basic shapes and sprites, using OpenGL 4.5 and OpenTK.
+ * PURPOSE:     A simple 3D renderer for basic shapes and sprites.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,14 +13,32 @@ using TK = OpenTK.Mathematics;
 
 namespace RenderEngine
 {
+    ///<inheritdoc/>
     /// <summary>
-    /// 3D renderer for basic shapes and sprites, using OpenGL 4.5 and OpenTK. Designed for simplicity and ease of use, not performance.
+    /// 3D Renderer for basic shapes and sprites, using OpenGL for rendering.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     public sealed class Simple3DRenderer : IDisposable
     {
+        /// <summary>
+        /// Gets the width.
+        /// </summary>
+        /// <value>
+        /// The width.
+        /// </value>
         public int Width { get; private set; }
+
+        /// <summary>
+        /// Gets the height.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
         public int Height { get; private set; }
+
+        /// <summary>
+        /// The resources
+        /// </summary>
         private readonly GlResourceManager _resources;
 
         private int _vaoSolid, _vboSolid, _vaoTex, _vboTex;
@@ -40,6 +58,15 @@ namespace RenderEngine
             SetCamera(new Vector3(8, 15, 25), new Vector3(8, 0, 8), Vector3.UnitY);
         }
 
+        public void SetProjection(float fovDegrees, float aspect, float near, float far)
+        {
+            _projection = TK.Matrix4.CreatePerspectiveFieldOfView(
+                TK.MathHelper.DegreesToRadians(fovDegrees),
+                aspect,
+                near,
+                far);
+        }
+
         public void UpdateProjection(int width, int height)
         {
             if (width <= 0) width = 1;
@@ -47,13 +74,16 @@ namespace RenderEngine
             Width = width;
             Height = height;
             var aspect = width / (float)height;
-            _projection =
-                TK.Matrix4.CreatePerspectiveFieldOfView(TK.MathHelper.DegreesToRadians(45f), aspect, 0.1f, 1000f);
+
+            // Using a large far plane for terrain visibility
+            SetProjection(45f, aspect, 0.1f, 10000f);
         }
 
         public void SetCamera(Vector3 position, Vector3 target, Vector3 up)
         {
-            // Convert System.Numerics to OpenTK here using the extension or manual copy
+            if (Vector3.DistanceSquared(position, target) < 0.001f)
+                target += Vector3.UnitZ;
+
             _view = TK.Matrix4.LookAt(
                 new TK.Vector3(position.X, position.Y, position.Z),
                 new TK.Vector3(target.X, target.Y, target.Z),
@@ -64,6 +94,7 @@ namespace RenderEngine
         {
             if (_initialized) return;
 
+            // Solid Shader Setup
             _vaoSolid = GL.GenVertexArray();
             _vboSolid = GL.GenBuffer();
             GL.BindVertexArray(_vaoSolid);
@@ -75,6 +106,7 @@ namespace RenderEngine
             GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 7 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
+            // Textured Shader Setup
             _vaoTex = GL.GenVertexArray();
             _vboTex = GL.GenBuffer();
             GL.BindVertexArray(_vaoTex);
@@ -87,6 +119,7 @@ namespace RenderEngine
             GL.EnableVertexAttribArray(1);
             GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 9 * sizeof(float), 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
+
             GL.BindVertexArray(0);
 
             _shaderSolid = _resources.GetShaderProgram(ShaderTypeApp.VertexColor);
@@ -94,7 +127,6 @@ namespace RenderEngine
             _initialized = true;
         }
 
-        // --- FIXED SIGNATURES ---
         public void DrawTriangle(Vector3 v0, Vector3 v1, Vector3 v2, (int r, int g, int b, int a) color)
         {
             EnsureInitialized();
@@ -102,16 +134,22 @@ namespace RenderEngine
             GL.BindVertexArray(_vaoSolid);
             var model = TK.Matrix4.Identity;
             UploadMatrices(_shaderSolid, ref model);
+
             var r = color.r / 255f;
             var g = color.g / 255f;
             var b = color.b / 255f;
             var a = color.a / 255f;
+
             float[] data = { v0.X, v0.Y, v0.Z, r, g, b, a, v1.X, v1.Y, v1.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a };
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }
 
+        // ============================================================
+        // RE-ADDED: DrawTexturedTriangle for Immediate Mode
+        // ============================================================
         public void DrawTexturedTriangle(Vector3 v0, Vector2 uv0, Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2,
             int textureId)
         {
@@ -122,21 +160,28 @@ namespace RenderEngine
             UploadMatrices(_shaderTex, ref model);
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureId);
+
             float[] data =
             {
                 v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, 1, 1, 1, 1, v2.X, v2.Y,
                 v2.Z, uv2.X, uv2.Y, 1, 1, 1, 1
             };
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }
 
+        // ============================================================
+        // RE-ADDED: DrawSprite for Immediate Mode
+        // ============================================================
         public void DrawSprite(Vector3 position, float radius, int textureId)
         {
             EnsureInitialized();
             GL.UseProgram(_shaderTex);
             GL.BindVertexArray(_vaoTex);
+
+            // Billboarding math
             TK.Vector3 right = new(_view[0, 0], _view[1, 0], _view[2, 0]);
             TK.Vector3 up = new(_view[0, 1], _view[1, 1], _view[2, 1]);
             TK.Vector3 pos = new(position.X, position.Y, position.Z);
@@ -150,20 +195,49 @@ namespace RenderEngine
             UploadMatrices(_shaderTex, ref model);
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureId);
+
             float[] data =
             {
                 v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, 1, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1,
                 1, 1, 1, v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1, v3.X, v3.Y, v3.Z,
                 0, 1, 1, 1, 1, 1
             };
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
 
+        private void UploadMatrices(int shader, ref TK.Matrix4 model)
+        {
+            var locModel = GL.GetUniformLocation(shader, "model");
+            var locView = GL.GetUniformLocation(shader, "view");
+            var locProj = GL.GetUniformLocation(shader, "projection");
+
+            if (locModel != -1) GL.UniformMatrix4(locModel, false, ref model);
+            if (locView != -1) GL.UniformMatrix4(locView, false, ref _view);
+            if (locProj != -1) GL.UniformMatrix4(locProj, false, ref _projection);
+        }
+
+        /// <summary>
+        /// Manually sets a custom projection matrix (e.g., from System.Numerics for Ortho).
+        /// </summary>
+        /// <param name="projection">The custom projection matrix from System.Numerics.</param>
+        public void SetCustomProjection(Matrix4x4 projection)
+        {
+            // AND convert System.Numerics.Matrix4x4 to OpenTK.Mathematics.Matrix4
+            _projection = new TK.Matrix4(
+                projection.M11, projection.M12, projection.M13, projection.M14,
+                projection.M21, projection.M22, projection.M23, projection.M24,
+                projection.M31, projection.M32, projection.M33, projection.M34,
+                projection.M41, projection.M42, projection.M43, projection.M44
+            );
+        }
+
         public unsafe void Flush(RenderBatch batch)
         {
             EnsureInitialized();
+
             if (batch.Solid3DVertices.Length > 0)
             {
                 GL.UseProgram(_shaderSolid);
@@ -186,7 +260,6 @@ namespace RenderEngine
                 foreach (var kvp in batch.Textured3DBatches)
                 {
                     if (kvp.Value.Count == 0) continue;
-
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, kvp.Key);
                     var data = kvp.Value.ToArray();
@@ -200,13 +273,6 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
-        private void UploadMatrices(int shader, ref TK.Matrix4 model)
-        {
-            GL.UniformMatrix4(GL.GetUniformLocation(shader, "model"), false, ref model);
-            GL.UniformMatrix4(GL.GetUniformLocation(shader, "view"), false, ref _view);
-            GL.UniformMatrix4(GL.GetUniformLocation(shader, "projection"), false, ref _projection);
-        }
-
         private void EnsureBufferCapacity(int vbo, ref int cap, int req)
         {
             if (req <= cap) return;
@@ -216,10 +282,10 @@ namespace RenderEngine
             GL.BufferData(BufferTarget.ArrayBuffer, cap * sizeof(float), IntPtr.Zero, BufferUsageHint.DynamicDraw);
         }
 
+        ///<inheritdoc/>
         public void Dispose()
         {
             if (!_initialized) return;
-
             GL.DeleteBuffer(_vboSolid);
             GL.DeleteVertexArray(_vaoSolid);
             GL.DeleteBuffer(_vboTex);
