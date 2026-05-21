@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
+
 namespace Core.MemoryLog
 {
     /// <summary>

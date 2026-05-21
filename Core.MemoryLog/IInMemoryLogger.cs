@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System.Runtime.CompilerServices;
 
