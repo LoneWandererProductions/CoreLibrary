@@ -149,7 +149,7 @@ namespace Imaging
             var width = bitmap.Width;
             var height = bitmap.Height;
 
-            // 1. Memory Copy to WriteableBitmap (Your efficient logic)
+            // 1. Direct Memory Copy to WriteableBitmap (Your efficient pointer logic)
             var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
@@ -169,20 +169,21 @@ namespace Imaging
             var bitmapImage = new BitmapImage();
             using (var stream = new MemoryStream())
             {
-                // BMP Encoder is leaner and faster than PNG for internal memory swaps
-                var encoder = new BmpBitmapEncoder();
+                // THE GRIP: Changed from BmpBitmapEncoder to PngBitmapEncoder.
+                // PNG natively handles Bgra32 transparency channels without dropping pixel arrays.
+                var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(wbmp));
                 encoder.Save(stream);
                 stream.Position = 0;
 
                 bitmapImage.BeginInit();
                 bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // Forces synchronous load before stream closure
                 bitmapImage.StreamSource = stream;
                 bitmapImage.EndInit();
             }
 
-            bitmapImage.Freeze();
+            bitmapImage.Freeze(); // Detach thread affinity for safe UI thread rendering
             return bitmapImage;
         }
 

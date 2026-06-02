@@ -6,14 +6,15 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using ExtendedSystemObjects;
+using Imaging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using ExtendedSystemObjects;
-using Imaging;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris
@@ -46,48 +47,83 @@ namespace Solaris
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            if (map == null)
+            if (map == null || textures == null)
             {
                 return background;
             }
 
-            // Using ConcurrentBag removes the need for thread blocking (locking)
+            // 1. Safe Sequential Cache Hydration Pass (File I/O)
+            foreach (var texture in textures.Values)
+            {
+                if (string.IsNullOrWhiteSpace(texture.Path)) continue;
+
+                if (!ImageCache.ContainsKey(texture.Path))
+                {
+                    try
+                    {
+                        var loadedBmp = Render.GetBitmapFile(texture.Path);
+                        if (loadedBmp != null)
+                        {
+                            ImageCache[texture.Path] = loadedBmp;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.WriteLine($"[CRITICAL] Failed to decode asset {texture.Path}: {ex.Message}");
+                    }
+                }
+            }
+
+            // 2. High-Speed Memory Map Translation Pass
             var tiles = new ConcurrentBag<Box>();
 
             Parallel.ForEach(map, tile =>
             {
                 if (tile.Value is not { Count: > 0 }) return;
 
-                var x = tile.Key % width * textureSize;
-                var y = tile.Key / width * textureSize;
+                var x = (tile.Key % width) * textureSize;
+                var y = (tile.Key / width) * textureSize;
 
                 foreach (var textureId in tile.Value)
                 {
-                    var texture = textures[textureId];
-                    var image = ImageCache.GetOrAdd(texture.Path, path => Render.GetBitmapFile(path));
-                    tiles.Add(new Box { X = x, Y = y, Layer = texture.Layer, Image = image });
+                    if (!textures.TryGetValue(textureId, out var texture)) continue;
+
+                    if (ImageCache.TryGetValue(texture.Path, out var cachedImage))
+                    {
+                        tiles.Add(new Box { X = x, Y = y, Layer = texture.Layer, Image = cachedImage });
+                    }
                 }
             });
 
-            // Convert to a list to sort by layer (so top layers render last)
             var sortedTiles = tiles.ToList();
             sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            foreach (var slice in sortedTiles)
+            // 3. THE GRAPHICS FIX: Open the graphics envelope ONCE for the whole map sheet
+            using (var graph = Graphics.FromImage(background))
             {
-                Render.CombineBitmap(background, slice.Image, slice.X, slice.Y);
-            }
+                // Optional: Ensure a clean alpha base line across the canvas space
+                graph.Clear(System.Drawing.Color.Transparent);
+
+                // Blit all 100 tiles rapidly into the open graphics pipeline context
+                foreach (var slice in sortedTiles)
+                {
+                    if (slice.Image != null)
+                    {
+                        graph.DrawImage(slice.Image,
+                            new Rectangle(slice.X, slice.Y, slice.Image.Width, slice.Image.Height));
+                    }
+                }
+            } // GDI+ flushes all operations to system memory and closes cleanly here ONCE
 
             return background;
         }
-
         /// <summary>
         /// Generates a grid overlay.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        /// <returns></returns>
+        /// <returns>ImageSource representing the grid overlay.</returns>
         internal static ImageSource GenerateGrid(int width, int height, int textureSize)
         {
             using var bitmap = new Bitmap(width * textureSize, height * textureSize);
@@ -109,7 +145,7 @@ namespace Solaris
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="padding">The padding.</param>
-        /// <returns></returns>
+        /// <returns>ImageSource representing the number overlay.</returns>
         internal static ImageSource GenerateNumbers(int width, int height, int textureSize, int padding = 2)
         {
             using var bitmap = new Bitmap(width * textureSize, height * textureSize);
@@ -139,7 +175,7 @@ namespace Solaris
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="idTexture">The identifier texture.</param>
-        /// <returns></returns>
+        /// <returns>MapChangeResult representing the result of the operation.</returns>
         internal static MapChangeResult AddTile(
             Dictionary<int, List<int>>? map, KeyValuePair<int, int> idTexture)
         {
@@ -155,7 +191,7 @@ namespace Solaris
         /// <param name="map">The map.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="idLayer">The identifier layer.</param>
-        /// <returns></returns>
+        /// <returns>MapChangeResult representing the result of the operation.</returns>
         internal static MapChangeResult RemoveTile(
             Dictionary<int, List<int>>? map, Dictionary<int, Texture> textures, KeyValuePair<int, int> idLayer)
         {
@@ -194,7 +230,7 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
         /// <returns>Image on screen</returns>
-        public static Bitmap? AddDisplay(
+        public static Bitmap AddDisplay(
             int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
             KeyValuePair<int, int> idTile)
         {
@@ -231,7 +267,7 @@ namespace Solaris
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        /// <returns>Movement animation</returns>
+        /// <returns>Task representing the asynchronous operation.</returns>
         internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
             int width, int height, int textureSize)
         {

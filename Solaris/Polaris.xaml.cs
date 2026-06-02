@@ -434,8 +434,6 @@ namespace Solaris
         {
             var position = e.GetPosition(Touch);
 
-            // 1. Calculate the values first.
-            // Integer division naturally handles the 0 case for us!
             var gridX = (int)position.X / PolarisTextureSize;
             var gridY = (int)position.Y / PolarisTextureSize;
 
