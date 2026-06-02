@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Imaging;
 using Mathematics;
+using Solaris.Solaris;
 
 namespace Solaris
 {
@@ -105,6 +106,13 @@ namespace Solaris
         public static readonly DependencyProperty AuroraRemoveDisplayProperty = DependencyProperty.Register(
             nameof(AuroraRemoveDisplay), typeof(int), typeof(Aurora),
             new PropertyMetadata(0, OnRemoveDisplayChanged));
+
+        /// <summary>
+        /// The aurora glyphs property
+        /// </summary>
+        public static readonly DependencyProperty AuroraGlyphsProperty = DependencyProperty.Register(
+            nameof(AuroraGlyphs), typeof(Dictionary<int, OverlayGlyph>), typeof(Aurora),
+            new PropertyMetadata(null, OnGlyphsChanged));
 
         #endregion
 
@@ -285,6 +293,18 @@ namespace Solaris
             set => SetValue(AuroraGridProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the aurora glyphs.
+        /// </summary>
+        /// <value>
+        /// The aurora glyphs.
+        /// </value>
+        public Dictionary<int, OverlayGlyph>? AuroraGlyphs
+        {
+            get => (Dictionary<int, OverlayGlyph>?)GetValue(AuroraGlyphsProperty);
+            set => SetValue(AuroraGlyphsProperty, value);
+        }
+
         #endregion
 
         #region Dependency Property Callbacks (Safe execution)
@@ -412,6 +432,17 @@ namespace Solaris
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Called when [glyphs changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnGlyphsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Aurora)d;
+            control.UpdateGlyphLayer();
+        }
+
         #endregion
 
         #region Setup and Memory Management
@@ -466,6 +497,15 @@ namespace Solaris
             _thirdLayer?.Dispose();
             _thirdLayer = newBitmap;
             // Only assign if required, usually overlaid later
+        }
+
+        /// <summary>
+        /// Redraws only the vector annotation layer cleanly without touching heavy ground assets.
+        /// </summary>
+        public void UpdateGlyphLayer()
+        {
+            var overlayBmp = Helper.GenerateGlyphOverlay(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraGlyphs);
+            LayerFour.Source = overlayBmp?.ToBitmapImage();
         }
 
         /// <summary>

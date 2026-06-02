@@ -11,6 +11,7 @@
         <Image Name="LayerOne" />
         <Image Name="LayerTwo" />
         <Image Name="LayerThree" />
+        <Image Name="LayerFour"/>
         <Label Name="Touch" MouseDown="Touch_MouseDown" />
     </Grid>
 </UserControl>

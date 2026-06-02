@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using ExtendedSystemObjects;
-using Imaging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +13,9 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using ExtendedSystemObjects;
+using Imaging;
+using Solaris.Solaris;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris
@@ -168,6 +169,63 @@ namespace Solaris
             }
 
             return bitmap.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Generates a transparent vector overlay layer hosting crisp numbers or Unicode symbols.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="glyphMap">The glyph map.</param>
+        /// <returns>Bitmap representing the glyph overlay.</returns>
+        internal static Bitmap GenerateGlyphOverlay(
+            int width, int height, int textureSize,
+            Dictionary<int, OverlayGlyph>? glyphMap)
+        {
+            var overlayFrame = new Bitmap(width * textureSize, height * textureSize);
+
+            if (glyphMap == null || glyphMap.Count == 0) return overlayFrame;
+
+            using (var g = Graphics.FromImage(overlayFrame))
+            {
+                // THE GRIP: Enable high-fidelity vector text rendering
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+                // Establish string formatting rules to ensure symbols center perfectly inside the cell block
+                using (var sf = new StringFormat())
+                {
+                    sf.Alignment = StringAlignment.Center;
+                    sf.LineAlignment = StringAlignment.Center;
+
+                    foreach (var kp in glyphMap)
+                    {
+                        int tileIndex = kp.Key;
+                        OverlayGlyph glyph = kp.Value;
+
+                        if (string.IsNullOrEmpty(glyph.Symbol)) continue;
+
+                        // Map flat index location straight into 2D chessboard pixel boundaries
+                        int cellX = (tileIndex % width) * textureSize;
+                        int cellY = (tileIndex / width) * textureSize;
+
+                        // Calculate the exact destination boundaries of the chessboard cell space
+                        var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
+
+                        // Build font family profile dynamically
+                        var fontStyle = glyph.IsBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+                        using (var font = new Font(glyph.FontName, glyph.FontSize, fontStyle))
+                        using (var brush = new SolidColorBrush(glyph.Color))
+                        {
+                            // Draw the crisp vector character straight onto the bitmap buffer plane
+                            g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
+                        }
+                    }
+                }
+            }
+
+            return overlayFrame;
         }
 
         /// <summary>
