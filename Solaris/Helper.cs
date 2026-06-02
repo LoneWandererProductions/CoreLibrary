@@ -216,7 +216,7 @@ namespace Solaris
                         // Build font family profile dynamically
                         var fontStyle = glyph.IsBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
                         using (var font = new Font(glyph.FontName, glyph.FontSize, fontStyle))
-                        using (var brush = new SolidColorBrush(glyph.Color))
+                        using (var brush = new System.Drawing.SolidBrush(glyph.Color))
                         {
                             // Draw the crisp vector character straight onto the bitmap buffer plane
                             g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
