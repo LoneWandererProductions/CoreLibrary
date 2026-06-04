@@ -112,6 +112,9 @@ namespace Solaris
         /// </value>
         internal Bitmap? BitmapLayerThree { get; private set; }
 
+        /// <summary>
+        /// Occurs when [clicked].
+        /// </summary>
         public event EventHandler<int>? Clicked;
 
         #region CLR Property Wrappers (MUST stay purely Get/Set)

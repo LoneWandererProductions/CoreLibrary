@@ -70,7 +70,8 @@ namespace Solaris
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Trace.WriteLine($"[CRITICAL] Failed to decode asset {texture.Path}: {ex.Message}");
+                        System.Diagnostics.Trace.WriteLine(
+                            $"[CRITICAL] Failed to decode asset {texture.Path}: {ex.Message}");
                     }
                 }
             }
@@ -100,24 +101,23 @@ namespace Solaris
             sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
             // 3. THE GRAPHICS FIX: Open the graphics envelope ONCE for the whole map sheet
-            using (var graph = Graphics.FromImage(background))
-            {
-                // Optional: Ensure a clean alpha base line across the canvas space
-                graph.Clear(System.Drawing.Color.Transparent);
+            using var graph = Graphics.FromImage(background);
+            // Optional: Ensure a clean alpha base line across the canvas space
+            graph.Clear(System.Drawing.Color.Transparent);
 
-                // Blit all 100 tiles rapidly into the open graphics pipeline context
-                foreach (var slice in sortedTiles)
+            // Blit all 100 tiles rapidly into the open graphics pipeline context
+            foreach (var slice in sortedTiles)
+            {
+                if (slice.Image != null)
                 {
-                    if (slice.Image != null)
-                    {
-                        graph.DrawImage(slice.Image,
-                            new Rectangle(slice.X, slice.Y, slice.Image.Width, slice.Image.Height));
-                    }
+                    graph.DrawImage(slice.Image,
+                        new Rectangle(slice.X, slice.Y, slice.Image.Width, slice.Image.Height));
                 }
-            } // GDI+ flushes all operations to system memory and closes cleanly here ONCE
+            }
 
             return background;
         }
+
         /// <summary>
         /// Generates a grid overlay.
         /// </summary>
@@ -187,42 +187,36 @@ namespace Solaris
 
             if (glyphMap == null || glyphMap.Count == 0) return overlayFrame;
 
-            using (var g = Graphics.FromImage(overlayFrame))
+            using var g = Graphics.FromImage(overlayFrame);
+            // THE GRIP: Enable high-fidelity vector text rendering
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+            // Establish string formatting rules to ensure symbols center perfectly inside the cell block
+            using var sf = new StringFormat();
+            sf.Alignment = StringAlignment.Center;
+            sf.LineAlignment = StringAlignment.Center;
+
+            foreach (var kp in glyphMap)
             {
-                // THE GRIP: Enable high-fidelity vector text rendering
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                int tileIndex = kp.Key;
+                OverlayGlyph glyph = kp.Value;
 
-                // Establish string formatting rules to ensure symbols center perfectly inside the cell block
-                using (var sf = new StringFormat())
-                {
-                    sf.Alignment = StringAlignment.Center;
-                    sf.LineAlignment = StringAlignment.Center;
+                if (string.IsNullOrEmpty(glyph.Symbol)) continue;
 
-                    foreach (var kp in glyphMap)
-                    {
-                        int tileIndex = kp.Key;
-                        OverlayGlyph glyph = kp.Value;
+                // Map flat index location straight into 2D chessboard pixel boundaries
+                int cellX = (tileIndex % width) * textureSize;
+                int cellY = (tileIndex / width) * textureSize;
 
-                        if (string.IsNullOrEmpty(glyph.Symbol)) continue;
+                // Calculate the exact destination boundaries of the chessboard cell space
+                var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
 
-                        // Map flat index location straight into 2D chessboard pixel boundaries
-                        int cellX = (tileIndex % width) * textureSize;
-                        int cellY = (tileIndex / width) * textureSize;
-
-                        // Calculate the exact destination boundaries of the chessboard cell space
-                        var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
-
-                        // Build font family profile dynamically
-                        var fontStyle = glyph.IsBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
-                        using (var font = new Font(glyph.FontName, glyph.FontSize, fontStyle))
-                        using (var brush = new System.Drawing.SolidBrush(glyph.Color))
-                        {
-                            // Draw the crisp vector character straight onto the bitmap buffer plane
-                            g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
-                        }
-                    }
-                }
+                // Build font family profile dynamically
+                var fontStyle = glyph.IsBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+                using var font = new Font(glyph.FontName, glyph.FontSize, fontStyle);
+                using var brush = new System.Drawing.SolidBrush(glyph.Color);
+                // Draw the crisp vector character straight onto the bitmap buffer plane
+                g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
             }
 
             return overlayFrame;
