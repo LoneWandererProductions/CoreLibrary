@@ -14,7 +14,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 
@@ -155,7 +154,7 @@ namespace ExtendedSystemObjects
             // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
-                // 2. Clean pointer arithmetic. '_ptr + Capacity' automatically moves the pointer 
+                // 2. Clean pointer arithmetic. '_ptr + Capacity' automatically moves the pointer
                 //    by the correct byte offset because '_ptr' is strongly typed as int*.
                 UnmanagedMemoryHelper.Clear<int>(_ptr + Capacity, newSize - Capacity);
             }
@@ -292,7 +291,7 @@ namespace ExtendedSystemObjects
             EnsureCapacity(Length + count);
 
             // Shift elements to the right
-            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length, Capacity);
+            UnmanagedMemoryHelper.ShiftRight(_ptr, index, count, Length);
 
             for (var i = 0; i < count; i++)
             {

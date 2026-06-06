@@ -271,7 +271,7 @@ namespace RenderEngine
         /// </summary>
         /// <summary>
         /// Resets the batch tracking for the next frame.
-        /// Retains unmanaged capacities to prevent future allocations, 
+        /// Retains unmanaged capacities to prevent future allocations,
         /// but resets lengths and clears managed lists.
         /// </summary>
         public void Clear()

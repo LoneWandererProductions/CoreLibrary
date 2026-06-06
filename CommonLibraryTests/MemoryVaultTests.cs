@@ -24,7 +24,7 @@ namespace CommonLibraryTests
         [TestMethod]
         public void Vault_MemoryTracking_StaysInSync()
         {
-            var vault = MemoryVault<byte[]>.Instance;
+            MemoryVault<byte[]?> vault = MemoryVault<byte[]>.Instance;
             vault.Clear(); // Ensure a clean state
 
             var largeData = new byte[1024 * 1024]; // 1MB

@@ -75,9 +75,10 @@ namespace ExtendedSystemObjects
             Capacity = 1 << _capacityPowerOf2;
             _resizeThreshold = (int)(Capacity * 0.7f);
 
-            // NativeMemory.AllocZeroed automatically handles the byte count 
+            // NativeMemory.AllocZeroed automatically handles the byte count
             // and clears the memory in one optimized call.
-            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity, (nuint)sizeof(EntryGeneric<TValue>));
+            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity,
+                (nuint)sizeof(EntryGeneric<TValue>));
 
             if (_entries == null)
             {
@@ -272,6 +273,7 @@ namespace ExtendedSystemObjects
                 value = _entries[idx].value;
                 return true;
             }
+
             value = default;
             return false;
         }
@@ -343,7 +345,8 @@ namespace ExtendedSystemObjects
         {
             if (_capacityPowerOf2 >= MaxPowerOf2)
             {
-                throw new InvalidOperationException($"The map has reached its maximum capacity of {1 << MaxPowerOf2} entries.");
+                throw new InvalidOperationException(
+                    $"The map has reached its maximum capacity of {1 << MaxPowerOf2} entries.");
             }
 
             Rehash(_capacityPowerOf2 + 1);
@@ -361,6 +364,7 @@ namespace ExtendedSystemObjects
                 Rehash(targetPower); // genuinely sparse, shrink
                 return;
             }
+
             Rehash(_capacityPowerOf2); // healthy load, just clear tombstones
         }
 
@@ -378,7 +382,8 @@ namespace ExtendedSystemObjects
             _resizeThreshold = (int)(Capacity * 0.7f);
 
             // Use NativeMemory to allocate zeroed-out memory efficiently
-            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity, (nuint)sizeof(EntryGeneric<TValue>));
+            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity,
+                (nuint)sizeof(EntryGeneric<TValue>));
 
             Count = 0;
             _usedCount = 0;

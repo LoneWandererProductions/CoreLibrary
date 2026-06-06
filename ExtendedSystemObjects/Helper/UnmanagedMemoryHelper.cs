@@ -85,16 +85,15 @@ namespace ExtendedSystemObjects.Helper
         }
 
         /// <summary>
-        ///     Shifts the right. Adding data at index.
+        /// Shifts the right. Adding data at index.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>
         /// <param name="index">The index.</param>
         /// <param name="count">The count.</param>
         /// <param name="length">The length.</param>
-        /// <param name="capacity">The capacity.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ShiftRight<T>(T* ptr, int index, int count, int length, int capacity) where T : unmanaged
+        internal static void ShiftRight<T>(T* ptr, int index, int count, int length) where T : unmanaged
         {
             int elementsToShift = length - index;
             if (elementsToShift <= 0 || count <= 0)

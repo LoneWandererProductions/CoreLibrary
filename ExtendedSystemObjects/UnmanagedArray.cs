@@ -14,7 +14,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using ExtendedSystemObjects.Helper;
 using ExtendedSystemObjects.Interfaces;
 
@@ -198,7 +197,7 @@ namespace ExtendedSystemObjects
 
             if (newSize == Capacity) return;
 
-            _ptr = (T*)UnmanagedMemoryHelper.Reallocate<T>(_ptr, newSize);
+            _ptr = UnmanagedMemoryHelper.Reallocate<T>(_ptr, newSize);
 
             if (newSize > Capacity)
             {

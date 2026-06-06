@@ -100,6 +100,7 @@ namespace Common.ExtendedObject.Tests
                 UnmanagedMemoryHelper.Free(ptr);
             }
         }
+
         /// <summary>
         /// Shifts the right moves elements correctly.
         /// </summary>
@@ -118,7 +119,7 @@ namespace Common.ExtendedObject.Tests
                 }
 
                 // Shift right at index 2 by 2 positions
-                UnmanagedMemoryHelper.ShiftRight(intPtr, 2, 2, count, capacity);
+                UnmanagedMemoryHelper.ShiftRight(intPtr, 2, 2, count);
 
                 // Now elements 3,4,5 moved right by 2: positions 4,5,6
                 // Index 2 and 3 now free (undefined content)

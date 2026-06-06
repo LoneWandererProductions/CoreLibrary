@@ -1378,7 +1378,7 @@ namespace SqliteHelper
         {
             if (_disposed) return;
 
-            // Wipes the invocation list, freeing any subscribers 
+            // Wipes the invocation list, freeing any subscribers
             // that forgot to unsubscribe, preventing memory leaks!
             SetMessage = null;
 

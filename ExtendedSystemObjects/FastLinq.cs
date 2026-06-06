@@ -23,7 +23,7 @@ namespace ExtendedSystemObjects
     {
         /// <summary>
         /// Executes the specified action for each element in the given read-only span.
-        /// Zero allocations, fully inlineable.
+        /// Zero allocations, fully inline-able.
         /// </summary>
         /// <typeparam name="T">The element type of the span.</typeparam>
         /// <param name="span">The span to iterate over.</param>
@@ -39,7 +39,7 @@ namespace ExtendedSystemObjects
 
         /// <summary>
         /// Executes the specified action for each element in the given writable span, passing elements by value.
-        /// Zero allocations, fully inlineable.
+        /// Zero allocations, fully inline-able.
         /// </summary>
         /// <typeparam name="T">The element type of the span.</typeparam>
         /// <param name="span">The span to iterate over.</param>
@@ -165,7 +165,7 @@ namespace ExtendedSystemObjects
         /// <param name="list">The list.</param>
         /// <returns>True if the collection contains at least one element; otherwise false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool AnyFast<T>(this List<T> list)
+        public static bool AnyFast<T>(this List<T>? list)
         {
             return list != null && list.Count != 0;
         }

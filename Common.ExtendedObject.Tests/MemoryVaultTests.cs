@@ -16,7 +16,7 @@ namespace Common.ExtendedObject.Tests
     [TestClass]
     public class MemoryVaultTests
     {
-        private MemoryVault<string> _vault;
+        private MemoryVault<string?> _vault;
 
         [TestInitialize]
         public void TestInitialize()
@@ -47,7 +47,7 @@ namespace Common.ExtendedObject.Tests
         public void GetDataShouldReturnCorrectData()
         {
             // Arrange
-            const string data = "TestData";
+            const string? data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
@@ -64,7 +64,7 @@ namespace Common.ExtendedObject.Tests
         public void RemoveDataShouldRemoveCorrectItem()
         {
             // Arrange
-            const string data = "TestData";
+            const string? data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
@@ -83,7 +83,7 @@ namespace Common.ExtendedObject.Tests
         public void AddMetadataShouldStoreMetadataCorrectly()
         {
             // Arrange
-            const string data = "TestData";
+            const string? data = "TestData";
             var identifier = _vault.Add(data);
             var metadata = new VaultMetadata
             {
@@ -107,7 +107,7 @@ namespace Common.ExtendedObject.Tests
         public void SaveShouldPersistData()
         {
             // Arrange
-            const string data = "TestData";
+            const string? data = "TestData";
             var identifier = _vault.Add(data);
 
             // Act
@@ -132,7 +132,7 @@ namespace Common.ExtendedObject.Tests
         public void SaveShouldPersistExpiredDataCorrectly()
         {
             // Arrange
-            const string data = "TestData";
+            const string? data = "TestData";
             var identifier = _vault.Add(data, TimeSpan.FromMilliseconds(100)); // Expiry after 100ms
 
             // Act

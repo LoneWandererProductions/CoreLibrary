@@ -60,7 +60,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The description.
         /// </value>
-        public string Description { get; init; }
+        public string? Description { get; init; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance has expire time.

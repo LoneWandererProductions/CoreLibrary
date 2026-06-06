@@ -230,7 +230,7 @@ namespace ExtendedSystemObjects
         /// <param name="key">The key.</param>
         /// <param name="category">The category.</param>
         /// <returns>Checks if category exists and returns if it does.</returns>
-        public bool TryGetCategory(TK key, out string category)
+        public bool TryGetCategory(TK key, out string? category)
         {
             _lock.EnterReadLock();
             try

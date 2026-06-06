@@ -34,7 +34,7 @@ namespace ExtendedSystemObjects
         /// <param name="data">The data.</param>
         /// <param name="expiryTime">The expiry time.</param>
         /// <param name="description">A short description of the item, optional.</param>
-        public VaultItem(TU data, TimeSpan? expiryTime, string description = "")
+        public VaultItem(TU? data, TimeSpan? expiryTime, string? description = "")
         {
             Data = data;
             ExpiryTime = expiryTime;
@@ -80,7 +80,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///      The data.
         /// </value>
-        public TU Data { get; init; }
+        public TU? Data { get; init; }
 
         /// <summary>
         ///      Gets the expiry date.
@@ -112,7 +112,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///      The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         ///      HasExpired checks if the item has passed its expiration timed.

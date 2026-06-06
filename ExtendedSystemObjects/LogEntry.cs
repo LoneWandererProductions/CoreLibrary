@@ -21,7 +21,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The data.
         /// </value>
-        public object Data { get; init; }
+        public object? Data { get; init; }
 
         /// <summary>
         ///     Gets or sets the state.
