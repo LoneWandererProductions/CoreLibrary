@@ -1,11 +1,11 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      ExtendedSystemObjects
- * FILE:         UnmanagedMap.cs
- * PURPOSE:      A high-performance unmanaged key-value store similar to a Dictionary.
- * Unlike typical dictionaries, entries are marked as deleted (tombstoned)
- * and only physically removed during explicit compaction, improving
- * insertion and deletion performance by avoiding frequent reallocations.
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        UnmanagedMap.cs
+ * PURPOSE:     A high-performance unmanaged key-value store similar to a Dictionary.
+ *              Unlike typical dictionaries, entries are marked as deleted (tombstoned)
+ *              and only physically removed during explicit compaction, improving
+ *              insertion and deletion performance by avoiding frequent reallocations.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -52,6 +52,11 @@ namespace ExtendedSystemObjects
         private int _capacityPowerOf2;
 
         /// <summary>
+        /// The resize threshold
+        /// </summary>
+        private int _resizeThreshold;
+
+        /// <summary>
         /// The entries
         /// </summary>
         private EntryGeneric<TValue>* _entries;
@@ -64,16 +69,20 @@ namespace ExtendedSystemObjects
         /// Initializes a new instance of the <see cref="UnmanagedMap{TValue}"/> class.
         /// </summary>
         /// <param name="capacityPowerOf2">The capacity power of2.</param>
-        public UnmanagedMap(int? capacityPowerOf2 = null)
+        public UnmanagedMap(int capacityPowerOf2 = 8)
         {
-            var power = capacityPowerOf2 ?? 8;
-            power = Math.Clamp(power, MinPowerOf2, MaxPowerOf2);
+            _capacityPowerOf2 = Math.Clamp(capacityPowerOf2, MinPowerOf2, MaxPowerOf2);
+            Capacity = 1 << _capacityPowerOf2;
+            _resizeThreshold = (int)(Capacity * 0.7f);
 
-            Capacity = 1 << power;
-            _capacityPowerOf2 = power;
+            // NativeMemory.AllocZeroed automatically handles the byte count 
+            // and clears the memory in one optimized call.
+            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity, (nuint)sizeof(EntryGeneric<TValue>));
 
-            _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * Capacity);
-            Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
+            if (_entries == null)
+            {
+                throw new OutOfMemoryException("Failed to allocate unmanaged memory for UnmanagedMap.");
+            }
         }
 
         /// <summary>
@@ -138,9 +147,9 @@ namespace ExtendedSystemObjects
             for (var i = 0; i < Capacity; i++)
             {
                 var entry = _entries[i];
-                if (entry.Used == SharedResources.Occupied)
+                if (entry.used == SharedResources.Occupied)
                 {
-                    values.Add(entry.Value);
+                    values.Add(entry.value);
                 }
             }
 
@@ -174,62 +183,77 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(int key, TValue value)
         {
-            // Trigger Resize or Compact based on total used slots (including tombstones)
-            // 0.7 is the standard threshold for linear probing performance health
-            if (_usedCount >= Capacity * 0.7f)
+            // Trigger Resize or Compact based on threshold
+            if (_usedCount >= _resizeThreshold)
             {
-                // If tombstones make up more than half the used slots, just Compact
                 if (_usedCount - Count > Count) Compact();
                 else Resize();
             }
 
+            // Use a mixing function to prevent clustering
             var mask = Capacity - 1;
-            var hashIndex = key & mask;
+            var hashIndex = GenerateHash(key, mask);
             var firstTombstone = -1;
 
             for (var i = 0; i < Capacity; i++)
             {
+                // Triangular probing: offset = i*(i+1)/2
                 var idx = (hashIndex + i) & mask;
+
                 ref var slot = ref _entries[idx];
 
-                if (slot.Used == SharedResources.Empty)
+                if (slot.used == SharedResources.Empty)
                 {
-                    // Reclaim first tombstone found in the chain, or use this empty slot
+                    // We hit an empty slot. If we found a tombstone earlier, use that instead.
                     var targetIdx = (firstTombstone != -1) ? firstTombstone : idx;
 
                     ref var target = ref _entries[targetIdx];
-                    target.Key = key;
-                    target.Value = value;
-                    target.Used = SharedResources.Occupied;
+                    target.key = key;
+                    target.value = value;
+                    target.used = SharedResources.Occupied;
 
                     Count++;
-                    // Only increment usedCount if we took a truly empty slot
                     if (firstTombstone == -1) _usedCount++;
                     return;
                 }
 
-                if (slot.Used == SharedResources.Tombstone)
+                if (slot.used == SharedResources.Tombstone)
                 {
                     if (firstTombstone == -1) firstTombstone = idx;
                 }
-                else if (slot.Key == key)
+                else if (slot.key == key)
                 {
-                    slot.Value = value;
+                    // Key already exists, update and exit
+                    slot.value = value;
                     return;
                 }
             }
+
+            // Fallback: If we scanned the whole table and didn't hit Empty,
+            // but we found a tombstone, we can safely insert there.
+            if (firstTombstone != -1)
+            {
+                ref var target = ref _entries[firstTombstone];
+                target.key = key;
+                target.value = value;
+                target.used = SharedResources.Occupied;
+                Count++;
+                return;
+            }
+
+            throw new InvalidOperationException("Map is completely full and cannot accept new keys.");
         }
 
         /// <summary>
         /// Gets the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Value associated with the specified key.</returns>
         /// <exception cref="KeyNotFoundException">Key {key} not found.</exception>
         public TValue Get(int key)
         {
             var idx = FindIndex(key);
-            if (idx >= 0) return _entries[idx].Value;
+            if (idx >= 0) return _entries[idx].value;
 
             throw new KeyNotFoundException($"Key {key} not found.");
         }
@@ -243,12 +267,11 @@ namespace ExtendedSystemObjects
         public bool TryGetValue(int key, out TValue value)
         {
             var idx = FindIndex(key);
-            if (idx >= 0)
+            if (idx != -1) // -1 is the failure case
             {
-                value = _entries[idx].Value;
+                value = _entries[idx].value;
                 return true;
             }
-
             value = default;
             return false;
         }
@@ -265,8 +288,8 @@ namespace ExtendedSystemObjects
             if (idx >= 0)
             {
                 ref var slot = ref _entries[idx];
-                value = slot.Value;
-                slot.Used = SharedResources.Tombstone;
+                value = slot.value;
+                slot.used = SharedResources.Tombstone;
                 Count--;
                 return true;
             }
@@ -291,17 +314,19 @@ namespace ExtendedSystemObjects
         private int FindIndex(int key)
         {
             var mask = Capacity - 1;
-            var startIndex = key & mask;
+            var startIndex = GenerateHash(key, mask);
 
             for (var i = 0; i < Capacity; i++)
             {
+                // Triangular probing: offset = i*(i+1)/2
                 var idx = (startIndex + i) & mask;
+
                 ref var slot = ref _entries[idx];
 
                 // CRITICAL: We must stop at Empty, but SKIP Tombstones
-                if (slot.Used == SharedResources.Empty) return -1;
+                if (slot.used == SharedResources.Empty) return -1;
 
-                if (slot.Used == SharedResources.Occupied && slot.Key == key)
+                if (slot.used == SharedResources.Occupied && slot.key == key)
                 {
                     return idx;
                 }
@@ -313,9 +338,13 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Resizes this instance.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the map has reached its maximum configured capacity.</exception>
         public void Resize()
         {
-            if (_capacityPowerOf2 >= MaxPowerOf2) return;
+            if (_capacityPowerOf2 >= MaxPowerOf2)
+            {
+                throw new InvalidOperationException($"The map has reached its maximum capacity of {1 << MaxPowerOf2} entries.");
+            }
 
             Rehash(_capacityPowerOf2 + 1);
         }
@@ -326,15 +355,13 @@ namespace ExtendedSystemObjects
         public void Compact()
         {
             // Only shrink if we are well below 25% load factor
-            if (Count / (float)Capacity >= 0.25f && _usedCount < Capacity * 0.7f)
+            if (Count / (float)Capacity < 0.25f)
             {
-                // If we aren't shrinking, we still rehash to same size to clear tombstones
-                Rehash(_capacityPowerOf2);
+                var targetPower = Math.Max(MinPowerOf2, _capacityPowerOf2 - 1);
+                Rehash(targetPower); // genuinely sparse, shrink
                 return;
             }
-
-            var targetPower = Math.Max(MinPowerOf2, _capacityPowerOf2 - 1);
-            Rehash(targetPower);
+            Rehash(_capacityPowerOf2); // healthy load, just clear tombstones
         }
 
         /// <summary>
@@ -348,22 +375,58 @@ namespace ExtendedSystemObjects
 
             _capacityPowerOf2 = newPowerOf2;
             Capacity = 1 << _capacityPowerOf2;
+            _resizeThreshold = (int)(Capacity * 0.7f);
 
-            _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * Capacity);
-            Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
+            // Use NativeMemory to allocate zeroed-out memory efficiently
+            _entries = (EntryGeneric<TValue>*)NativeMemory.AllocZeroed((nuint)Capacity, (nuint)sizeof(EntryGeneric<TValue>));
 
             Count = 0;
             _usedCount = 0;
 
-            for (var i = 0; i < oldCapacity; i++)
+            try
             {
-                if (oldEntries[i].Used == SharedResources.Occupied)
+                for (var i = 0; i < oldCapacity; i++)
                 {
-                    Set(oldEntries[i].Key, oldEntries[i].Value);
+                    if (oldEntries[i].used == SharedResources.Occupied)
+                    {
+                        // Optimization: Directly insert into the new table.
+                        // We bypass Set() because we don't need to check load factors,
+                        // and we can assume no duplicates existed in the old table.
+                        InsertRaw(oldEntries[i].key, oldEntries[i].value);
+                    }
                 }
             }
+            finally
+            {
+                NativeMemory.Free(oldEntries);
+            }
+        }
 
-            Marshal.FreeHGlobal((IntPtr)oldEntries);
+        /// <summary>
+        /// Inserts the raw.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        private void InsertRaw(int key, TValue value)
+        {
+            var mask = Capacity - 1;
+            var hashIndex = GenerateHash(key, mask);
+
+            for (var i = 0; i < Capacity; i++)
+            {
+                // Triangular probing: offset = i*(i+1)/2
+                var idx = (hashIndex + i) & mask;
+
+                if (_entries[idx].used == SharedResources.Empty)
+                {
+                    _entries[idx].key = key;
+                    _entries[idx].value = value;
+                    _entries[idx].used = SharedResources.Occupied;
+                    Count++;
+                    _usedCount++;
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -376,7 +439,7 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
+            NativeMemory.Clear(_entries, (nuint)Capacity * (nuint)sizeof(EntryGeneric<TValue>));
             Count = 0;
             _usedCount = 0;
         }
@@ -388,13 +451,44 @@ namespace ExtendedSystemObjects
         {
             if (_entries != null)
             {
-                Marshal.FreeHGlobal((IntPtr)_entries);
+                NativeMemory.Free(_entries);
                 _entries = null;
             }
 
             Capacity = 0;
             Count = 0;
             _usedCount = 0;
+        }
+
+        /// <summary>
+        /// Gets the keys snapshot.
+        /// </summary>
+        /// <returns>List of all available Keys.</returns>
+        private List<int> GetKeysSnapshot()
+        {
+            var keys = new List<int>(Count);
+            for (var i = 0; i < Capacity; i++)
+            {
+                if (_entries[i].used == SharedResources.Occupied) keys.Add(_entries[i].key);
+            }
+
+            return keys;
+        }
+
+        /// <summary>
+        /// Generatehashes the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="mask">The mask.</param>
+        /// <returns>Returns the generated hash.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int GenerateHash(int key, int mask)
+        {
+            uint h = (uint)key;
+            h ^= h >> 16;
+            h *= 0x45d9f3b;
+            h ^= h >> 16;
+            return (int)(h & (uint)mask);
         }
 
         /// <summary>
@@ -428,22 +522,7 @@ namespace ExtendedSystemObjects
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString() =>
-            $"Count = {Count}, Capacity = {Capacity}, LoadFactor = {Count / (float)Capacity:P1}";
-
-        /// <summary>
-        /// Gets the keys snapshot.
-        /// </summary>
-        /// <returns>List of all available Keys.</returns>
-        private List<int> GetKeysSnapshot()
-        {
-            var keys = new List<int>(Count);
-            for (var i = 0; i < Capacity; i++)
-            {
-                if (_entries[i].Used == SharedResources.Occupied) keys.Add(_entries[i].Key);
-            }
-
-            return keys;
-        }
+            $"Count = {Count}, Capacity = {Capacity}, LoadFactor = {_usedCount / (float)Capacity:P1}";
 
         /// <summary>
         /// Finalizes an instance of the <see cref="UnmanagedMap{TValue}"/> class.

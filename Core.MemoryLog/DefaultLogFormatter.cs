@@ -18,7 +18,7 @@ namespace Core.MemoryLog
         /// <summary>
         /// The order
         /// </summary>
-        private readonly List<string> _order;
+        private readonly IReadOnlyList<string> _order;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultLogFormatter"/> class.
@@ -51,7 +51,7 @@ namespace Core.MemoryLog
 
             foreach (var field in _order)
             {
-                parts.Add(field switch
+                var value = field switch
                 {
                     LogResources.TimeStamp => $"[{entry.Timestamp:O}]",
                     LogResources.LibraryName => $"[{entry.LibraryName}]",
@@ -61,7 +61,9 @@ namespace Core.MemoryLog
                         ? SafeFormat(entry.Message, entry.Args)
                         : entry.Message ?? string.Empty,
                     _ => string.Empty
-                });
+                };
+
+                if (value != null) parts.Add(value);
             }
 
             var result = string.Join(" ", parts.Where(p => !string.IsNullOrEmpty(p)));

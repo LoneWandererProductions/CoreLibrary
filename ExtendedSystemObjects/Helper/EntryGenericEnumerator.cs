@@ -75,12 +75,12 @@ namespace ExtendedSystemObjects.Helper
             while (++_index < _capacity)
             {
                 var entry = _entries[_index];
-                if (entry.Used != SharedResources.Occupied)
+                if (entry.used != SharedResources.Occupied)
                 {
                     continue;
                 }
 
-                Current = (entry.Key, entry.Value);
+                Current = (entry.key, entry.value);
                 return true;
             }
 

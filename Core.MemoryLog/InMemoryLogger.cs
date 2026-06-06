@@ -47,6 +47,11 @@ namespace Core.MemoryLog
         /// </summary>
         public static InMemoryLogger Instance => MemoryInstance.Value;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="InMemoryLogger"/> class from being created.
+        /// </summary>
+        private InMemoryLogger() : this(1000) { }
+
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
         /// Gets or sets the minimum log level for this logger.
@@ -267,7 +272,7 @@ namespace Core.MemoryLog
         ///   <c>true</c> if there are logs with the specified log level for the library; otherwise, <c>false</c>.
         /// </returns>
         public bool HasLogsWithLevel(string libraryName, LogLevel logLevel)
-            => _libraryLogs.ContainsKey(libraryName) && _libraryLogs[libraryName].Any(l => l.Level == logLevel);
+            => _libraryLogs.TryGetValue(libraryName, out var q) && q.Any(l => l.Level == logLevel);
 
         /// <inheritdoc />
         /// <summary>
@@ -300,8 +305,7 @@ namespace Core.MemoryLog
         /// </summary>
         public void ClearAllLogs()
         {
-            foreach (var queue in _libraryLogs.Values)
-                queue.Clear();
+            _libraryLogs.Clear();
         }
 
         #endregion
@@ -318,8 +322,7 @@ namespace Core.MemoryLog
             using var writer = new StreamWriter(filePath, append);
 
             foreach (var log in GetLogs()
-                         .Where(l => l.Level >= minimumLevel)
-                         .OrderBy(l => l.Timestamp))
+                         .Where(l => l.Level >= minimumLevel))
             {
                 writer.WriteLine(Formatter.Format(log));
             }
@@ -333,8 +336,7 @@ namespace Core.MemoryLog
         {
             try
             {
-                var assembly = System.Reflection.Assembly.GetCallingAssembly();
-                return assembly.GetName().Name ?? "UnknownLibrary";
+                return System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownLibrary";
             }
             catch
             {
@@ -389,8 +391,8 @@ namespace Core.MemoryLog
         /// <param name="state">The state.</param>
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
-            Func<TState, Exception, string?>? formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string?>? formatter)
         {
             if (!IsEnabled(logLevel)) return;
 

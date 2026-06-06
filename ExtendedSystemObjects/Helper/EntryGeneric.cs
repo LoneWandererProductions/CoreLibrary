@@ -18,18 +18,21 @@ namespace ExtendedSystemObjects.Helper
     public struct EntryGeneric<TValue> where TValue : unmanaged
     {
         /// <summary>
-        ///     The key
+        /// The used
+        /// checked first in every probe
+        /// 3 bytes padding (compiler), then:
         /// </summary>
-        public int Key;
+        public byte used;
 
         /// <summary>
-        ///     The value
+        /// The key
+        /// checked second
         /// </summary>
-        public TValue Value;
+        public int key;
 
         /// <summary>
-        ///     The used
+        /// The value only read on hit
         /// </summary>
-        public byte Used;
+        public TValue value;
     }
 }
