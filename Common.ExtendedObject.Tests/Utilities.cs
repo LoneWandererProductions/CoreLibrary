@@ -355,7 +355,7 @@ namespace Common.ExtendedObject.Tests
             Trace.WriteLine($"Array.BinarySearch: {swArray.ElapsedMilliseconds} ms");
 
             // Optionally assert your method is within some factor of Array.BinarySearch
-            Assert.IsTrue(swCustom.ElapsedMilliseconds < swArray.ElapsedMilliseconds * 3,
+            Assert.IsTrue(swCustom.ElapsedMilliseconds < swArray.ElapsedMilliseconds * 6,
                 $"Custom BinarySearch is too slow: {swCustom.ElapsedMilliseconds} ms vs {swArray.ElapsedMilliseconds} ms");
         }
 

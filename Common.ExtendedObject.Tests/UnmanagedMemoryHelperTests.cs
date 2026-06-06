@@ -25,47 +25,46 @@ namespace Common.ExtendedObject.Tests
         {
             const int count = 10;
 
-            var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
-            Assert.AreNotEqual(nint.Zero, ptr);
+            // 1. Allocate directly to a strongly-typed int*
+            int* ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
+            Assert.IsTrue(ptr != null, "Allocation failed; pointer is null.");
 
             try
             {
-                // Write values to allocated memory
-                var intPtr = (int*)ptr.ToPointer();
+                // Write values directly without .ToPointer() boilerplate
                 for (var i = 0; i < count; i++)
                 {
-                    intPtr[i] = i;
+                    ptr[i] = i;
                 }
 
-                // Reallocate to bigger size
+                // Reallocate to a bigger size
                 const int newCount = 20;
-                var newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
-                Assert.AreNotEqual(nint.Zero, newPtr);
+                int* newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
+                Assert.IsTrue(newPtr != null, "Reallocation failed; pointer is null.");
                 ptr = newPtr;
 
-                intPtr = (int*)ptr.ToPointer();
-
-                // Check old values still there
+                // Check old values are preserved
                 for (var i = 0; i < count; i++)
                 {
-                    Assert.AreEqual(i, intPtr[i]);
+                    Assert.AreEqual(i, ptr[i]);
                 }
 
-                // Write new values
+                // Write new values into the expanded region
                 for (var i = count; i < newCount; i++)
                 {
-                    intPtr[i] = i * 2;
+                    ptr[i] = i * 2;
                 }
 
-                // Check new values
+                // Verify new values
                 for (var i = count; i < newCount; i++)
                 {
-                    Assert.AreEqual(i * 2, intPtr[i]);
+                    Assert.AreEqual(i * 2, ptr[i]);
                 }
             }
             finally
             {
-                Marshal.FreeHGlobal(ptr);
+                // Fixed: Pair custom allocator with its matching Free utility
+                UnmanagedMemoryHelper.Free(ptr);
             }
         }
 
@@ -76,28 +75,31 @@ namespace Common.ExtendedObject.Tests
         public void Clear_SetsMemoryToZero()
         {
             const int count = 5;
-            var ptr = UnmanagedMemoryHelper.Allocate<int>(count);
+            int* ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
+
             try
             {
-                var intPtr = (int*)ptr.ToPointer();
+                // Pollute the buffer
                 for (var i = 0; i < count; i++)
                 {
-                    intPtr[i] = 123;
+                    ptr[i] = 123;
                 }
 
+                // Clear using pure pointer arithmetic
                 UnmanagedMemoryHelper.Clear<int>(ptr, count);
 
+                // Assert zero-init block
                 for (var i = 0; i < count; i++)
                 {
-                    Assert.AreEqual(0, intPtr[i]);
+                    Assert.AreEqual(0, ptr[i]);
                 }
             }
             finally
             {
-                Marshal.FreeHGlobal(ptr);
+                // Fixed: Avoided breaking internal tracking state
+                UnmanagedMemoryHelper.Free(ptr);
             }
         }
-
         /// <summary>
         /// Shifts the right moves elements correctly.
         /// </summary>

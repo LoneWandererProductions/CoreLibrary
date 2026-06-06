@@ -65,18 +65,11 @@ namespace ExtendedSystemObjects
         /// <param name="initialCapacity">The size. Default is 16.</param>
         public UnmanagedList(int initialCapacity = 16)
         {
-            Capacity = initialCapacity;
+            Capacity = initialCapacity > 0 ? initialCapacity : 16;
             Length = 0;
-            if (initialCapacity > 0)
-            {
-                _buffer = UnmanagedMemoryHelper.Allocate<T>(initialCapacity);
-                _ptr = (T*)_buffer;
-            }
-            else
-            {
-                _buffer = IntPtr.Zero;
-                _ptr = null;
-            }
+
+            // Zero-initialized memory allocation natively
+            _ptr = UnmanagedMemoryHelper.AllocateZeroed<T>(Capacity);
         }
 
         /// <summary>
@@ -223,6 +216,10 @@ namespace ExtendedSystemObjects
             Length -= count;
         }
 
+        /// <summary>
+        /// Pushes the range.
+        /// </summary>
+        /// <param name="values">The values.</param>
         public void PushRange(ReadOnlySpan<T> values)
         {
             if (values.IsEmpty) return;
@@ -233,6 +230,10 @@ namespace ExtendedSystemObjects
             Length += values.Length;
         }
 
+        /// <summary>
+        /// Converts to array.
+        /// </summary>
+        /// <returns>An array containing the elements of the list.</returns>
         public T[] ToArray()
         {
             EnsureNotDisposed();
@@ -243,6 +244,11 @@ namespace ExtendedSystemObjects
             return result;
         }
 
+        /// <summary>
+        /// Removes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>True if the value was found and removed; otherwise, false.</returns>
         public bool Remove(T value)
         {
             var comparer = EqualityComparer<T>.Default;
@@ -269,21 +275,15 @@ namespace ExtendedSystemObjects
             EnsureNotDisposed();
             ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 
-            if (newSize == Capacity)
-            {
-                return;
-            }
+            if (newSize == Capacity) return;
 
-            var newBuffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, newSize);
-            var newPtr = (T*)newBuffer;
+            _ptr = (T*)UnmanagedMemoryHelper.Reallocate<T>(_ptr, newSize);
 
             if (newSize > Capacity)
             {
-                UnmanagedMemoryHelper.Clear<T>(new IntPtr(newPtr + Capacity), newSize - Capacity);
+                UnmanagedMemoryHelper.Clear<T>(_ptr + Capacity, newSize - Capacity);
             }
 
-            _buffer = newBuffer;
-            _ptr = newPtr;
             Capacity = newSize;
 
             if (Length > newSize)
@@ -298,8 +298,6 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            // We don't actually need to zero out the memory with Span.Clear.
-            // Setting Length to 0 is instantly fast and means the next Add() will just overwrite the old garbage memory.
             EnsureNotDisposed();
             Length = 0;
         }
@@ -353,20 +351,17 @@ namespace ExtendedSystemObjects
         ///     Ensures the capacity.
         /// </summary>
         /// <param name="min">The minimum capacity.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacity(int min)
         {
             EnsureNotDisposed();
             if (min <= Capacity) return;
 
-            var newCapacity = Capacity == 0 ? 4 : Capacity * 2;
+            int newCapacity = Capacity == 0 ? 4 : Capacity * 2;
             if (newCapacity < min) newCapacity = min;
 
-            _buffer = _buffer == IntPtr.Zero
-                ? UnmanagedMemoryHelper.Allocate<T>(newCapacity)
-                : UnmanagedMemoryHelper.Reallocate<T>(_buffer, newCapacity);
-
-            _ptr = (T*)_buffer;
-            Capacity = newCapacity;
+            // Routed safely through Resize to handle geometric updates and zeroing consistently
+            Resize(newCapacity);
         }
 
         /// <summary>
@@ -424,12 +419,14 @@ namespace ExtendedSystemObjects
             return new Span<T>(_ptr, Length);
         }
 
+        /// <summary>
+        /// Trims the excess.
+        /// </summary>
         public void TrimExcess()
         {
             if (Length == Capacity) return;
 
-            _buffer = UnmanagedMemoryHelper.Reallocate<T>(_buffer, Length);
-            _ptr = (T*)_buffer;
+            _ptr = (T*)UnmanagedMemoryHelper.Reallocate<T>(_ptr, Length);
             Capacity = Length;
         }
 
@@ -440,7 +437,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(UnmanagedArray<T>));
+            if (_disposed) throw new ObjectDisposedException(nameof(UnmanagedList<T>));
         }
 
         /// <summary>
@@ -462,15 +459,17 @@ namespace ExtendedSystemObjects
         {
             if (_disposed) return;
 
-            if (_buffer != IntPtr.Zero)
+            if (_ptr != null)
             {
-                Marshal.FreeHGlobal(_buffer);
-
-                _buffer = IntPtr.Zero;
+                // Fixed: Paired correctly with tracking modern allocator helper
+                UnmanagedMemoryHelper.Free(_ptr);
                 _ptr = null;
             }
 
+            Capacity = 0;
+            Length = 0;
             _disposed = true;
+            _ = disposing;
         }
     }
 }

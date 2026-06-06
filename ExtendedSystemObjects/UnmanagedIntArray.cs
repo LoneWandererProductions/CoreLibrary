@@ -29,11 +29,6 @@ namespace ExtendedSystemObjects
     public sealed unsafe class UnmanagedIntArray : IUnmanagedArray<int>, IEnumerable<int>
     {
         /// <summary>
-        ///     The buffer
-        /// </summary>
-        private IntPtr _buffer;
-
-        /// <summary>
         ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
@@ -54,10 +49,8 @@ namespace ExtendedSystemObjects
             Capacity = size;
             Length = size;
 
-            _buffer = UnmanagedMemoryHelper.Allocate<int>(size);
-            _ptr = (int*)_buffer;
-
-            UnmanagedMemoryHelper.Clear<int>(_buffer, size); // Zero out memory on allocation
+            // Allocate and clear in a single native call
+            _ptr = UnmanagedMemoryHelper.AllocateZeroed<int>(size);
         }
 
         /// <summary>
@@ -156,13 +149,15 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            _buffer = UnmanagedMemoryHelper.Reallocate<int>(_buffer, newSize);
-            _ptr = (int*)_buffer;
+            // 1. Reallocate directly into the typed pointer. No more IntPtr middleman.
+            _ptr = UnmanagedMemoryHelper.Reallocate<int>(_ptr, newSize);
 
             // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
-                UnmanagedMemoryHelper.Clear<int>((IntPtr)(_ptr + Capacity), newSize - Capacity);
+                // 2. Clean pointer arithmetic. '_ptr + Capacity' automatically moves the pointer 
+                //    by the correct byte offset because '_ptr' is strongly typed as int*.
+                UnmanagedMemoryHelper.Clear<int>(_ptr + Capacity, newSize - Capacity);
             }
 
             Capacity = newSize;
@@ -179,7 +174,8 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Clear()
         {
-            UnmanagedMemoryHelper.Clear<int>(_buffer, Length);
+            // No casting, no IntPtr, just pure native clearing.
+            UnmanagedMemoryHelper.Clear<int>(_ptr, Length);
         }
 
         /// <inheritdoc />
@@ -418,23 +414,17 @@ namespace ExtendedSystemObjects
         /// </summary>
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-            {
-                return;
-            }
+            if (_disposed) return;
 
-            if (_buffer != IntPtr.Zero)
+            if (_ptr != null)
             {
-                Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
+                UnmanagedMemoryHelper.Free(_ptr);
                 _ptr = null;
-                Length = 0;
-                Capacity = 0;
             }
 
+            Length = 0;
+            Capacity = 0;
             _disposed = true;
-
-            // 'disposing' parameter unused but required by pattern.
             _ = disposing;
         }
     }

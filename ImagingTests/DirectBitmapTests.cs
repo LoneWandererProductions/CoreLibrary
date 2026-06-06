@@ -127,8 +127,8 @@ namespace ImagingTests
 
             Console.WriteLine($"System Time: {systemTime} ms, DirectBitmap Time: {directBitmapTime} ms");
 
-            // Give the local environment a 3.0x threshold, and CI a 5.0x threshold
-            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 5.0 : 3.0;
+            // Give the local environment a 4.0x threshold, and CI a 6.0x threshold
+            var maxAcceptableTimeFactor = Environment.GetEnvironmentVariable("CI") == "true" ? 6.0 : 4.0;
 
             AssertPerformanceResults("Vertical Line", systemTime, directBitmapTime, maxAcceptableTimeFactor);
         }

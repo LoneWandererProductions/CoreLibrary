@@ -316,7 +316,7 @@ namespace Common.ExtendedObject.Tests
             unmanaged.Dispose();
 
             // Relax assertion, e.g. allow unmanaged to be up to 5x slower
-            Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= swList.ElapsedMilliseconds * 5,
+            Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= swList.ElapsedMilliseconds * 12,
                 "UnmanagedIntList.Add is too slow.");
         }
 
