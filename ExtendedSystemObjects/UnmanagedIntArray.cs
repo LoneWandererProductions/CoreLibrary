@@ -149,14 +149,14 @@ namespace ExtendedSystemObjects
             }
 
             // 1. Reallocate directly into the typed pointer. No more IntPtr middleman.
-            _ptr = UnmanagedMemoryHelper.Reallocate<int>(_ptr, newSize);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, newSize);
 
             // If growing, clear the newly allocated portion
             if (newSize > Capacity)
             {
                 // 2. Clean pointer arithmetic. '_ptr + Capacity' automatically moves the pointer
                 //    by the correct byte offset because '_ptr' is strongly typed as int*.
-                UnmanagedMemoryHelper.Clear<int>(_ptr + Capacity, newSize - Capacity);
+                UnmanagedMemoryHelper.Clear(_ptr + Capacity, newSize - Capacity);
             }
 
             Capacity = newSize;
@@ -174,7 +174,7 @@ namespace ExtendedSystemObjects
         public void Clear()
         {
             // No casting, no IntPtr, just pure native clearing.
-            UnmanagedMemoryHelper.Clear<int>(_ptr, Length);
+            UnmanagedMemoryHelper.Clear(_ptr, Length);
         }
 
         /// <inheritdoc />

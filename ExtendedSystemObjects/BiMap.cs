@@ -31,12 +31,12 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// The forward
         /// </summary>
-        private readonly Dictionary<T, T> _forward = new();
+        private readonly Dictionary<T, T> _forward;
 
         /// <summary>
         /// The reverse
         /// </summary>
-        private readonly Dictionary<T, T> _reverse = new();
+        private readonly Dictionary<T, T> _reverse;
 
         /// <inheritdoc />
         /// <summary>

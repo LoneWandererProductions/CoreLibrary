@@ -260,6 +260,7 @@ namespace RenderEngine
                 foreach (var kvp in batch.Textured3DBatches)
                 {
                     if (kvp.Value.Count == 0) continue;
+
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, kvp.Key);
                     var data = kvp.Value.ToArray();
@@ -286,6 +287,7 @@ namespace RenderEngine
         public void Dispose()
         {
             if (!_initialized) return;
+
             GL.DeleteBuffer(_vboSolid);
             GL.DeleteVertexArray(_vaoSolid);
             GL.DeleteBuffer(_vboTex);
