@@ -81,11 +81,34 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Clear<T>(T* buffer, int count) where T : unmanaged
         {
+<<<<<<< HEAD
+            unsafe
+            {
+                Clear((T*)buffer, count);
+            }
+        }
+
+        /// <summary>
+        /// Clears a block of unmanaged memory using a typed pointer.
+        /// </summary>
+        /// <typeparam name="T">The unmanaged value type used in the memory block.</typeparam>
+        /// <param name="ptr">The PTR.</param>
+        /// <param name="count">The count.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void Clear<T>(T* ptr, int count) where T : unmanaged
+        {
+            new Span<T>(ptr, count).Clear();
+        }
+
+        /// <summary>
+        ///     Shifts the right. Adding data at index.
+=======
             NativeMemory.Clear(buffer, (nuint)count * (nuint)sizeof(T));
         }
 
         /// <summary>
         /// Shifts the right. Adding data at index.
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>

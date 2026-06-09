@@ -548,8 +548,8 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Ensures the capacity of the internal buffer is at least the specified minimum size.
-        ///     Resizes the buffer if necessary by doubling its capacity or setting it to the minimum required size.
+        /// Ensures the capacity of the internal buffer is at least the specified minimum size.
+        /// Resizes the buffer if necessary by doubling its capacity or setting it to the minimum required size.
         /// </summary>
         /// <param name="min">The minimum capacity required.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

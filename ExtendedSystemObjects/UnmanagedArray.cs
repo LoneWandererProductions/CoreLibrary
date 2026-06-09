@@ -54,8 +54,14 @@ namespace ExtendedSystemObjects
             Capacity = size;
             Length = size;
 
+<<<<<<< HEAD
+            // Fixed the initialization assignment bug here
+            _ptr = (T*)UnmanagedMemoryHelper.Allocate<T>(size);
+            UnmanagedMemoryHelper.Clear<T>(_ptr, size);
+=======
             _ptr = (T*)UnmanagedMemoryHelper.Allocate<T>(size);
             UnmanagedMemoryHelper.Clear(_ptr, size);
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
         }
 
         /// <summary>
@@ -192,6 +198,19 @@ namespace ExtendedSystemObjects
 
             if (newSize == Capacity) return;
 
+<<<<<<< HEAD
+            // Reallocate directly using the cast pointer
+            var newBuffer = UnmanagedMemoryHelper.Reallocate<T>((IntPtr)_ptr, newSize);
+            var newPtr = (T*)newBuffer;
+
+            if (newSize > Capacity)
+            {
+                // Utilize the new pointer Clear overload cleanly
+                UnmanagedMemoryHelper.Clear<T>(newPtr + Capacity, newSize - Capacity);
+            }
+
+            _ptr = newPtr;
+=======
             _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, newSize);
 
             if (newSize > Capacity)
@@ -199,6 +218,7 @@ namespace ExtendedSystemObjects
                 UnmanagedMemoryHelper.Clear(_ptr + Capacity, newSize - Capacity);
             }
 
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
             Capacity = newSize;
 
             if (Length > newSize)
@@ -214,7 +234,11 @@ namespace ExtendedSystemObjects
         public void Clear()
         {
             EnsureNotDisposed();
+<<<<<<< HEAD
+            UnmanagedMemoryHelper.Clear<T>(_ptr, Length);
+=======
             UnmanagedMemoryHelper.Clear(_ptr, Length);
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
         }
 
         /// <inheritdoc />
@@ -316,8 +340,12 @@ namespace ExtendedSystemObjects
 
             if (_ptr != null)
             {
+<<<<<<< HEAD
+                Marshal.FreeHGlobal((IntPtr)_ptr);
+=======
                 // Standardized with tracking allocation layers safely
                 UnmanagedMemoryHelper.Free(_ptr);
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
                 _ptr = null;
             }
 

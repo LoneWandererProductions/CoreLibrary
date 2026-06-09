@@ -79,32 +79,15 @@ namespace ExtendedSystemObjects
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-        /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Gets the current number of elements in the array.
-        /// </summary>
         public int Length { get; private set; }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Gets or sets the <see cref="!:T" /> at the specified index.
-        /// </summary>
-        /// <value>
-        ///     The <see cref="!:T" />.
-        /// </value>
-        /// <param name="i">The i.</param>
-        /// <returns>Value at index.</returns>
         /// <exception cref="T:System.IndexOutOfRangeException"></exception>
         public int this[int i]
         {
@@ -135,10 +118,6 @@ namespace ExtendedSystemObjects
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Resizes the internal buffer to the new capacity.
-        ///     If newSize is smaller than current Length, Length is reduced.
-        /// </summary>
         public void Resize(int newSize)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(newSize);
@@ -168,9 +147,6 @@ namespace ExtendedSystemObjects
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Clears the array by setting all elements to zero.
-        /// </summary>
         public void Clear()
         {
             // No casting, no IntPtr, just pure native clearing.
@@ -277,8 +253,12 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Inserts 'count' copies of 'value' at the given index.
+        /// Inserts 'count' copies of 'value' at the given index.
         /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="count">The count.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
         public void InsertAt(int index, int value, int count = 1)
         {
             if (index < 0 || index > Length)
@@ -302,8 +282,10 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Removes multiple elements efficiently, given sorted indices.
+        /// Removes multiple elements efficiently, given sorted indices.
         /// </summary>
+        /// <param name="indices">The indices.</param>
+        /// <exception cref="System.IndexOutOfRangeException"></exception>
         public void RemoveMultiple(ReadOnlySpan<int> indices)
         {
             EnsureNotDisposed();
@@ -360,8 +342,9 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Returns a Span over the used portion of the array.
+        /// Returns a Span over the used portion of the array.
         /// </summary>
+        /// <returns>A span representing the used portion of the array.</returns>
         public Span<int> AsSpan()
         {
             EnsureNotDisposed();
@@ -369,9 +352,10 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Ensures capacity to hold at least minCapacity elements.
-        ///     Grows capacity exponentially if needed.
+        /// Ensures capacity to hold at least minCapacity elements.
+        /// Grows capacity exponentially if needed.
         /// </summary>
+        /// <param name="minCapacity">The minimum capacity.</param>
         public void EnsureCapacity(int minCapacity)
         {
             if (minCapacity <= Capacity)
