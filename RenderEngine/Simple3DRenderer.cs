@@ -41,16 +41,50 @@ namespace RenderEngine
         /// </summary>
         private readonly GlResourceManager _resources;
 
+        /// <summary>
+        /// The vao solid
+        /// </summary>
         private int _vaoSolid, _vboSolid, _vaoTex, _vboTex;
+
+        /// <summary>
+        /// The shader solid
+        /// </summary>
         private int _shaderSolid, _shaderTex;
+
+        /// <summary>
+        /// The initialized
+        /// </summary>
         private bool _initialized;
+
+        /// <summary>
+        /// The vbo solid capacity
+        /// </summary>
         private int _vboSolidCapacity = 16384, _vboTexCapacity = 16384;
 
+        /// <summary>
+        /// The projection
+        /// </summary>
         private TK.Matrix4 _projection;
+
+        /// <summary>
+        /// The view
+        /// </summary>
         private TK.Matrix4 _view;
 
+        /// <summary>
+        /// Gets the view matrix.
+        /// </summary>
+        /// <value>
+        /// The view matrix.
+        /// </value>
         public TK.Matrix4 ViewMatrix => _view;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Simple3DRenderer"/> class.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="resources">The resources.</param>
         public Simple3DRenderer(int width, int height, GlResourceManager resources)
         {
             _resources = resources;
@@ -58,6 +92,13 @@ namespace RenderEngine
             SetCamera(new Vector3(8, 15, 25), new Vector3(8, 0, 8), Vector3.UnitY);
         }
 
+        /// <summary>
+        /// Sets the projection.
+        /// </summary>
+        /// <param name="fovDegrees">The fov degrees.</param>
+        /// <param name="aspect">The aspect.</param>
+        /// <param name="near">The near plane distance.</param>
+        /// <param name="far">The far plane distance.</param>
         public void SetProjection(float fovDegrees, float aspect, float near, float far)
         {
             _projection = TK.Matrix4.CreatePerspectiveFieldOfView(
@@ -67,6 +108,11 @@ namespace RenderEngine
                 far);
         }
 
+        /// <summary>
+        /// Updates the projection.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         public void UpdateProjection(int width, int height)
         {
             if (width <= 0) width = 1;
@@ -79,6 +125,12 @@ namespace RenderEngine
             SetProjection(45f, aspect, 0.1f, 10000f);
         }
 
+        /// <summary>
+        /// Sets the camera.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="target">The target.</param>
+        /// <param name="up">Up.</param>
         public void SetCamera(Vector3 position, Vector3 target, Vector3 up)
         {
             if (Vector3.DistanceSquared(position, target) < 0.001f)
@@ -90,6 +142,9 @@ namespace RenderEngine
                 new TK.Vector3(up.X, up.Y, up.Z));
         }
 
+        /// <summary>
+        /// Ensures the initialized.
+        /// </summary>
         private void EnsureInitialized()
         {
             if (_initialized) return;
@@ -127,6 +182,13 @@ namespace RenderEngine
             _initialized = true;
         }
 
+        /// <summary>
+        /// Draws the triangle.
+        /// </summary>
+        /// <param name="v0">The v0.</param>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="color">The color.</param>
         public void DrawTriangle(Vector3 v0, Vector3 v1, Vector3 v2, (int r, int g, int b, int a) color)
         {
             EnsureInitialized();
@@ -140,16 +202,28 @@ namespace RenderEngine
             var b = color.b / 255f;
             var a = color.a / 255f;
 
-            float[] data = { v0.X, v0.Y, v0.Z, r, g, b, a, v1.X, v1.Y, v1.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a };
+            float[] data =
+            {
+                v0.X, v0.Y, v0.Z, r, g, b, a,
+                v1.X, v1.Y, v1.Z, r, g, b, a,
+                v2.X, v2.Y, v2.Z, r, g, b, a
+            };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }
 
-        // ============================================================
-        // RE-ADDED: DrawTexturedTriangle for Immediate Mode
-        // ============================================================
+        /// <summary>
+        /// Draws the textured triangle.
+        /// </summary>
+        /// <param name="v0">The v0.</param>
+        /// <param name="uv0">The uv0.</param>
+        /// <param name="v1">The v1.</param>
+        /// <param name="uv1">The uv1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="uv2">The uv2.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedTriangle(Vector3 v0, Vector2 uv0, Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2,
             int textureId)
         {
@@ -163,8 +237,9 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, 1, 1, 1, 1, v2.X, v2.Y,
-                v2.Z, uv2.X, uv2.Y, 1, 1, 1, 1
+                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, 1, 1, 1, 1,
+                v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, 1, 1, 1, 1,
+                v2.X, v2.Y, v2.Z, uv2.X, uv2.Y, 1, 1, 1, 1
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -172,9 +247,12 @@ namespace RenderEngine
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }
 
-        // ============================================================
-        // RE-ADDED: DrawSprite for Immediate Mode
-        // ============================================================
+        /// <summary>
+        /// Draws the sprite.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawSprite(Vector3 position, float radius, int textureId)
         {
             EnsureInitialized();
@@ -198,9 +276,12 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, 1, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1,
-                1, 1, 1, v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1, v3.X, v3.Y, v3.Z,
-                0, 1, 1, 1, 1, 1
+                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1,
+                v1.X, v1.Y, v1.Z, 1, 0, 1, 1, 1, 1,
+                v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1,
+                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1,
+                v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1,
+                v3.X, v3.Y, v3.Z, 0, 1, 1, 1, 1, 1
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -208,6 +289,11 @@ namespace RenderEngine
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
 
+        /// <summary>
+        /// Uploads the matrices.
+        /// </summary>
+        /// <param name="shader">The shader.</param>
+        /// <param name="model">The model.</param>
         private void UploadMatrices(int shader, ref TK.Matrix4 model)
         {
             var locModel = GL.GetUniformLocation(shader, "model");
@@ -234,6 +320,10 @@ namespace RenderEngine
             );
         }
 
+        /// <summary>
+        /// Flushes the specified batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
         public unsafe void Flush(RenderBatch batch)
         {
             EnsureInitialized();
@@ -274,6 +364,12 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Ensures the buffer capacity.
+        /// </summary>
+        /// <param name="vbo">The vertex buffer object.</param>
+        /// <param name="cap">The current capacity.</param>
+        /// <param name="req">The required capacity.</param>
         private void EnsureBufferCapacity(int vbo, ref int cap, int req)
         {
             if (req <= cap) return;

@@ -454,7 +454,6 @@ namespace RenderEngine
                 data[idx++] = v1;
             }
 
-            // FIXED: Using correct texture VBO and capacity
             EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, idx);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -718,7 +717,7 @@ namespace RenderEngine
         private void BindShaderAndViewport(int shaderId)
         {
             GL.UseProgram(shaderId);
-            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), (float)Width, (float)Height);
+            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), Width, (float)Height);
         }
 
         /// <summary>

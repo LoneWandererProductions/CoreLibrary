@@ -37,11 +37,13 @@ namespace RenderEngine
         /// </summary>
         private bool _disposed;
 
+        public bool UseMatrices { get; set; } = true;
+
         // --- Textures ---
 
         /// <summary>
         /// Gets the texture.
-        /// Be carefull, this can overwrite existing textures.
+        /// Be careful, this can overwrite existing textures.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Id of Texture</returns>
@@ -126,11 +128,10 @@ namespace RenderEngine
                     break;
 
                 case ShaderTypeApp.Wireframe:
-                    var useMatrices = true;
-                    vertexSrc = useMatrices
+                    vertexSrc = UseMatrices
                         ? ShaderResource.WireframeVertexShader
                         : ShaderResource.WireframeVertexShaderPassThrough;
-                    fragmentSrc = useMatrices
+                    fragmentSrc = UseMatrices
                         ? ShaderResource.WireframeFragmentShader
                         : ShaderResource.WireframeFragmentShaderPassThrough;
                     break;
