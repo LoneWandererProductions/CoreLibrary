@@ -24,7 +24,7 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that detects unused private fields, methods, and constants in a file. It uses the Roslyn API to parse the C# code, identify private members, and check if they are referenced anywhere in the file. If a private member is found to be unused, it reports a diagnostic message indicating the member's name and location. 
+    /// Analyzer that detects unused private fields, methods, and constants in a file. It uses the Roslyn API to parse the C# code, identify private members, and check if they are referenced anywhere in the file. If a private member is found to be unused, it reports a diagnostic message indicating the member's name and location.
     /// This helps developers identify and clean up dead code, improving readability and maintainability.
     /// </summary>
     /// <seealso cref="ICommand" />
@@ -101,7 +101,8 @@ namespace Core.Apps.Rules
 
                 if (results.Count == 0) return CommandResult.Ok("No unused private members found.");
 
-                var output = string.Join("\n", results.Select(d => $"{Path.GetFileName(d.FilePath)} ({d.LineNumber}): {d.Message}"));
+                var output = string.Join("\n",
+                    results.Select(d => $"{Path.GetFileName(d.FilePath)} ({d.LineNumber}): {d.Message}"));
                 return CommandResult.Ok($"Unused members detected:\n{output}", EnumTypes.Wstring);
             }
             catch (Exception ex)

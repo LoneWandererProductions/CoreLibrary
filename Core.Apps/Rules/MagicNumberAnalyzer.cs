@@ -24,7 +24,7 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that detects unexplained numeric literals (magic numbers) in method bodies, which can hurt readability and maintainability. 
+    /// Analyzer that detects unexplained numeric literals (magic numbers) in method bodies, which can hurt readability and maintainability.
     /// It ignores common "safe" numbers like 0, 1, -1, and 2, as well as literals that are part of constant definitions.
     /// </summary>
     /// <seealso cref="ICommand" />
@@ -61,7 +61,6 @@ namespace Core.Apps.Rules
                 .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
                 .AddSyntaxTrees(tree);
 
-            var model = compilation.GetSemanticModel(tree);
             var root = tree.GetCompilationUnitRoot();
 
             // Find all methods
@@ -113,7 +112,8 @@ namespace Core.Apps.Rules
             {
                 var results = AnalyzerExecutor.ExecutePath(this, args, "Usage: MagicNumber <fileOrDirectoryPath>");
                 var output = results.Count > 0
-                    ? string.Join("\n", results.Select(d => $"{Path.GetFileName(d.FilePath)} ({d.LineNumber}): {d.Message}"))
+                    ? string.Join("\n",
+                        results.Select(d => $"{Path.GetFileName(d.FilePath)} ({d.LineNumber}): {d.Message}"))
                     : "No magic numbers found.";
                 return CommandResult.Ok(output, EnumTypes.Wstring);
             }

@@ -307,8 +307,7 @@ namespace Core.Viewer
                 // e.g., "code -g C:\path\file.cs:15" or just passing the path
                 var psi = new ProcessStartInfo
                 {
-                    FileName = target.FilePath,
-                    UseShellExecute = true // Opens with the default system application
+                    FileName = target.FilePath, UseShellExecute = true // Opens with the default system application
                 };
 
                 Process.Start(psi);

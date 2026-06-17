@@ -202,12 +202,7 @@ namespace RenderEngine
             var b = color.b / 255f;
             var a = color.a / 255f;
 
-            float[] data =
-            {
-                v0.X, v0.Y, v0.Z, r, g, b, a,
-                v1.X, v1.Y, v1.Z, r, g, b, a,
-                v2.X, v2.Y, v2.Z, r, g, b, a
-            };
+            float[] data = { v0.X, v0.Y, v0.Z, r, g, b, a, v1.X, v1.Y, v1.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
@@ -237,9 +232,8 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, 1, 1, 1, 1,
-                v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, 1, 1, 1, 1,
-                v2.X, v2.Y, v2.Z, uv2.X, uv2.Y, 1, 1, 1, 1
+                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, 1, 1, 1, 1, v2.X, v2.Y,
+                v2.Z, uv2.X, uv2.Y, 1, 1, 1, 1
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -276,12 +270,9 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1,
-                v1.X, v1.Y, v1.Z, 1, 0, 1, 1, 1, 1,
-                v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1,
-                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1,
-                v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1,
-                v3.X, v3.Y, v3.Z, 0, 1, 1, 1, 1, 1
+                v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v1.X, v1.Y, v1.Z, 1, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1,
+                1, 1, 1, v0.X, v0.Y, v0.Z, 0, 0, 1, 1, 1, 1, v2.X, v2.Y, v2.Z, 1, 1, 1, 1, 1, 1, v3.X, v3.Y, v3.Z,
+                0, 1, 1, 1, 1, 1
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);

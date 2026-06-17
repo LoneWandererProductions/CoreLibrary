@@ -27,7 +27,8 @@ namespace ExtendedSystemObjects
     /// <typeparam name="TV">Type of dictionary values.</typeparam>
     /// <seealso cref="!:System.Collections.Generic.IEnumerable&lt;(TK Key, System.String Category, TV Value)&gt;" />
     [Serializable]
-    public sealed class CategorizedDictionary<TK, TV> : IEnumerable<(TK Key, string Category, TV Value)> where TK : notnull
+    public sealed class CategorizedDictionary<TK, TV> : IEnumerable<(TK Key, string Category, TV Value)>
+        where TK : notnull
     {
         /// <summary>
         /// Internal storage mapping keys to (Category, Value) pairs.

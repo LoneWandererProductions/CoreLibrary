@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.Text;
 using Weaver.Interfaces;
 using Weaver.Messages;
@@ -117,7 +119,6 @@ namespace Weaver.Registry
             }
 
             // 5. Update the stack (_registry) to know this key is a list
-            // Note: You will need to add a `VmValue.FromList()` factory method to your struct
             _registry[key] = VmValue.FromList();
         }
 

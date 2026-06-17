@@ -93,9 +93,9 @@ namespace Communication
         }
 
         /// <summary>
-        ///     Handles the client.
+        /// Handles the client.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="client">The client.</param>
         private static async Task HandleClientAsync(TcpClient client)
         {
             try

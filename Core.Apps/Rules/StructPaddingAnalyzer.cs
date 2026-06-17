@@ -28,7 +28,6 @@ namespace Core.Apps.Rules
     /// <seealso cref="ICommand" />
     public sealed class StructPaddingAnalyzer : ICodeAnalyzer, ICommand
     {
-
         /// <inheritdoc cref="ICodeAnalyzer" />
         public string Name => "StructPadding";
 
@@ -55,10 +54,8 @@ namespace Core.Apps.Rules
             foreach (var structDecl in root.DescendantNodes().OfType<StructDeclarationSyntax>())
             {
                 var fields = structDecl.Members.OfType<FieldDeclarationSyntax>();
-                var fieldList = fields.SelectMany(f => f.Declaration.Variables.Select(v => new {
-                    Name = v.Identifier.Text,
-                    Size = GetFieldSize(f.Declaration.Type.ToString())
-                })).ToList();
+                var fieldList = fields.SelectMany(f => f.Declaration.Variables.Select(v =>
+                    new { Name = v.Identifier.Text, Size = GetFieldSize(f.Declaration.Type.ToString()) })).ToList();
 
                 if (fieldList.Count <= 1) continue;
 

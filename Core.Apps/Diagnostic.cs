@@ -93,10 +93,10 @@ namespace Core.Apps
         /// </value>
         public string SeveritySymbol => Severity switch
         {
-            DiagnosticSeverity.Error => "\U0001F534",   // 🔴
+            DiagnosticSeverity.Error => "\U0001F534", // 🔴
             DiagnosticSeverity.Warning => "\U0001F7E1", // 🟡
-            DiagnosticSeverity.Info => "\U0001F535",    // 🔵
-            _ => "\u26AA"                               // ⚪
+            DiagnosticSeverity.Info => "\U0001F535", // 🔵
+            _ => "\u26AA" // ⚪
         };
 
         /// <summary>

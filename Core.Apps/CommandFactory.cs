@@ -48,8 +48,8 @@ namespace Core.Apps
                 new HotPathAnalyzer(), new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(),
                 new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
-                new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(), new StructPaddingAnalyzer(),
-                new UnusedMemberAnalyzer(), new MagicNumberAnalyzer()
+                new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(),
+                new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer()
             });
 
             // --- PRODUCERS (Require Registry) ---

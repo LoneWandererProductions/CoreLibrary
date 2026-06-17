@@ -18,6 +18,12 @@ using Weaver.Registry;
 
 namespace Core.Apps.Development
 {
+    /// <inheritdoc cref="ICommand" />
+    /// <summary>
+    /// Builds a map of project dependencies by scanning .csproj files in a given directory. It extracts both NuGet package references and project references, creating a structured representation of how projects depend on each other and on external libraries. The resulting map is stored in the registry for use in WPF visualizations or scripts, allowing developers to easily understand and analyze their project's dependency graph.
+    /// </summary>
+    /// <seealso cref="Weaver.Interfaces.ICommand" />
+    /// <seealso cref="Weaver.Interfaces.IRegistryProducer" />
     public sealed class DependencyExplorer : ICommand, IRegistryProducer
     {
         /// <summary>
@@ -59,6 +65,7 @@ namespace Core.Apps.Development
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
+        /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
             if (args.Length < 1) return CommandResult.Fail("Usage: depexplore <root_folder>");
@@ -89,14 +96,9 @@ namespace Core.Apps.Development
                     .Where(v => !string.IsNullOrEmpty(v))
                     .ToList();
 
-                // 4. Create a Sub-Object for this project
-                var details = new Dictionary<string, VmValue>
-                {
-                    { "packages", VmValue.FromString(string.Join(", ", packages)) },
-                    { "references", VmValue.FromString(string.Join(", ", refs)) }
-                };
-
-                projectMap[projName] = VmValue.FromObject(); // In your registry, this links to the dict
+                // 4. Flatten directly into projectMap using prefixed keys
+                projectMap[$"{projName}.packages"] = VmValue.FromString(string.Join(", ", packages));
+                projectMap[$"{projName}.references"] = VmValue.FromString(string.Join(", ", refs));
 
                 sb.AppendLine($"Project: {projName}");
                 sb.AppendLine($"  - Libraries: {string.Join(", ", packages)}");
