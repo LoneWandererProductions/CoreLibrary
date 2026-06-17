@@ -69,7 +69,6 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Executes the analyzer on a directory path using centralized RunAnalyze logic.
         /// </summary>
-        /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
             List<Diagnostic> results;

@@ -70,12 +70,7 @@ namespace Core.Apps.Rules
                     if (symbol is not ILocalSymbol localSymbol)
                         continue;
 
-                    var references = root.DescendantNodes()
-                        .OfType<IdentifierNameSyntax>()
-                        .Where(id =>
-                            SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, localSymbol));
-
-                    if (references.Any())
+                    if (CoreHelper.IsSymbolUsed(model, root, localSymbol))
                         continue;
 
                     var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;

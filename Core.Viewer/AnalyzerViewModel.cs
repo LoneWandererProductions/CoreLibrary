@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Core.Viewer
- * FILE:        CoreViewer/AnalyzerViewModel.cs
+ * FILE:        AnalyzerViewModel.cs
  * PURPOSE:     ViewModel for Analyzer Viewer, handles loading and running analyzers, filtering diagnostics, and folder selection
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
