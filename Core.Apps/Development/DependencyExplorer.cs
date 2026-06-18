@@ -65,7 +65,6 @@ namespace Core.Apps.Development
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        /// <inheritdoc />
         public CommandResult Execute(params string[] args)
         {
             if (args.Length < 1) return CommandResult.Fail("Usage: depexplore <root_folder>");
@@ -84,26 +83,23 @@ namespace Core.Apps.Development
                 var projName = Path.GetFileNameWithoutExtension(projFile);
                 var doc = XDocument.Load(projFile);
 
-                // 2. Extract NuGet Packages
-                var packages = doc.Descendants("PackageReference")
-                    .Select(x => x.Attribute("Include")?.Value)
-                    .Where(v => v != null)
+                // 1. Create a list of VmValues for Packages
+                var packageList = doc.Descendants("PackageReference")
+                    .Select(x => VmValue.FromString(x.Attribute("Include")?.Value))
                     .ToList();
 
-                // 3. Extract Project References
-                var refs = doc.Descendants("ProjectReference")
-                    .Select(x => Path.GetFileNameWithoutExtension(x.Attribute("Include")?.Value ?? ""))
-                    .Where(v => !string.IsNullOrEmpty(v))
+                // Store as a temporary list in the heap
+                _variables.SetList($"{projName}_pkgs", packageList);
+
+                // 2. Create a list of VmValues for References
+                var refList = doc.Descendants("ProjectReference")
+                    .Select(x => VmValue.FromString(Path.GetFileNameWithoutExtension(x.Attribute("Include")?.Value)))
                     .ToList();
 
-                // 4. Flatten directly into projectMap using prefixed keys
-                projectMap[$"{projName}.packages"] = VmValue.FromString(string.Join(", ", packages));
-                projectMap[$"{projName}.references"] = VmValue.FromString(string.Join(", ", refs));
+                _variables.SetList($"{projName}_refs", refList);
 
-                sb.AppendLine($"Project: {projName}");
-                sb.AppendLine($"  - Libraries: {string.Join(", ", packages)}");
-                sb.AppendLine($"  - Projects:  {string.Join(", ", refs)}");
-                sb.AppendLine();
+                // 3. Build the Object containing pointers to those lists
+                projectMap[projName] = VmValue.FromObject(); // Or use Pointer/Object hybrid logic
             }
 
             // 5. Store in the Registry for WPF or Scripts to use
