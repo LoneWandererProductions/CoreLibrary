@@ -37,9 +37,20 @@ namespace RenderEngine
         /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [use matrices].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use matrices]; otherwise, <c>false</c>.
+        /// </value>
         public bool UseMatrices { get; set; } = true;
 
         // --- Textures ---
+
+        /// <summary>
+        /// The fallback texture identifier
+        /// </summary>
+        private int _fallbackTextureId = -1;
 
         /// <summary>
         /// Gets the texture.
@@ -60,6 +71,44 @@ namespace RenderEngine
 
             _textureCache[filePath] = texId;
             return texId;
+        }
+
+        /// <summary>
+        /// Gets the fallback texture.
+        /// </summary>
+        /// <returns>Id of Texture, fallback, checkerboard</returns>
+        public int GetFallbackTexture()
+        {
+            if (_fallbackTextureId >= 0) return _fallbackTextureId;
+
+            var pixels = new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255 };
+            _fallbackTextureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, _fallbackTextureId);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 2, 2, 0,
+                PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+
+            // 1. CLAMP TO EDGE: Stops the edges from wrapping around and bleeding colors at the borders
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+
+            // 2. MIPMAPS: Keep it sharp up close, but blend it in the distance to stop the diagonal zippering
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.NearestMipmapLinear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+
+            // 3. ANISOTROPIC FILTERING: The ultimate fix for viewing textures at sharp "roof" angles.
+            // (Using hex codes safely bypasses any OpenTK version differences for this extension)
+            GL.GetFloat((GetPName)0x84FF, out float maxAniso); // GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
+            if (maxAniso > 0.0f)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, maxAniso); // GL_TEXTURE_MAX_ANISOTROPY_EXT
+            }
+
+            // Generate the smaller mipmap versions so the MinFilter works
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            return _fallbackTextureId;
         }
 
         /// <summary>
@@ -269,6 +318,12 @@ namespace RenderEngine
 
             _textureCache.Clear();
             _programCache.Clear();
+
+            if (_fallbackTextureId >= 0)
+            {
+                GL.DeleteTexture(_fallbackTextureId);
+                _fallbackTextureId = -1;
+            }
 
             GC.SuppressFinalize(this);
         }
